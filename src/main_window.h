@@ -18,23 +18,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include "application.h"
-#include "config.h"
-#include <glibmm.h>
+#ifndef __MAIN_WINDOW_H__
+#define __MAIN_WINDOW_H__
 
-int main (int argc, char *argv[])
-{	
-	try
+#include <libgnomeuimm.h>
+#include <libglademm.h>
+
+class MainWindow : public Gtk::Window
+{
+private:
+	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
+	Gtk::DrawingArea* drawing_area_video;
+public:
+	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Window(cobject), glade(glade)
 	{
-		g_message("Me TV %s", VERSION);
-		Application application(argc, argv);
-		application.run();
+		drawing_area_video = (Gtk::DrawingArea*)glade->get_widget("drawing_area_video");
+		drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	}
-	catch(const Glib::Error& error)
-	{
-		g_error(error.what().c_str());
-	}
-	g_debug("Me TV terminated normally");
-	
-	return 0;
-}
+};
+
+
+#endif
