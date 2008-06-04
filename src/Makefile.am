@@ -22,7 +22,10 @@ me_tv_SOURCES = \
 	main.cc\
 	../config.h \
 	application.h \
-	main_window.h
+	main_window.h \
+	channels_dialog.h \
+	preferences_dialog.h \
+	scan_dialog.h
 
 me_tv_LDFLAGS = 
 

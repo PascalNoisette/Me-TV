@@ -23,6 +23,8 @@
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
+#include "channels_dialog.h"
+#include "preferences_dialog.h"
 
 class MainWindow : public Gtk::Window
 {
@@ -34,8 +36,57 @@ public:
 	{
 		drawing_area_video = (Gtk::DrawingArea*)glade->get_widget("drawing_area_video");
 		drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
+		
+		glade->connect_clicked("menu_item_open",		sigc::mem_fun(*this, &MainWindow::on_menu_item_open_clicked));
+		glade->connect_clicked("menu_item_quit",		sigc::mem_fun(*this, &MainWindow::on_menu_item_quit_clicked));
+		glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
+		glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
+		glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));
+	}
+	
+	void on_menu_item_open_clicked()
+	{
+		Gtk::FileChooserDialog dialog(*this, "Open media file ...");
+		dialog.add_button(Gtk::Stock::CANCEL, -1);
+		dialog.add_button(Gtk::Stock::OPEN, 0);
+		gint response = dialog.run();
+		dialog.hide();
+		
+		if (response == 0)
+		{
+			Glib::ustring filename = dialog.get_filename();
+			g_debug("File opened '%s'", filename.c_str());
+		}
+	}
+
+	void on_menu_item_quit_clicked()
+	{
+		Gnome::Main::quit();
+	}
+		
+	void on_menu_item_channels_clicked()
+	{
+		ChannelsDialog* channels_dialog = NULL;
+		glade->get_widget_derived("dialog_channels", channels_dialog);
+		channels_dialog->run();
+		channels_dialog->hide();
+	}
+
+	void on_menu_item_preferences_clicked()
+	{
+		PreferencesDialog* preferences_dialog = NULL;
+		glade->get_widget_derived("dialog_preferences", preferences_dialog);
+		preferences_dialog->run();
+		preferences_dialog->hide();
+	}
+
+	void on_menu_item_about_clicked()
+	{
+		Gtk::Dialog* about_dialog = NULL;
+		glade->get_widget("dialog_about", about_dialog);
+		about_dialog->run();
+		about_dialog->hide();
 	}
 };
-
 
 #endif
