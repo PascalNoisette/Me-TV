@@ -1915,14 +1915,14 @@ xshm</property>
                   <widget class="GtkHBox" id="hbox15">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkTextView" id="textview2">
+                      <widget class="GtkTextView" id="text_view_displayed_channels">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="tooltip" translatable="yes">Use arrows to move channels up or down the displayed list</property>
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkVScrollbar" id="vscrollbar1">
+                      <widget class="GtkVScrollbar" id="v_scroll_bar_displayed_channels">
                         <property name="visible">True</property>
                         <property name="adjustment">0 0 100 1 10 10</property>
                       </widget>
@@ -1982,7 +1982,7 @@ xshm</property>
                     <property name="visible">True</property>
                     <property name="homogeneous">True</property>
                     <child>
-                      <widget class="GtkButton" id="button1">
+                      <widget class="GtkButton" id="button_move_highlighted_channel_up">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2001,7 +2001,7 @@ xshm</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkButton" id="button2">
+                      <widget class="GtkButton" id="button_move_highlighted_channel_down">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2230,10 +2230,16 @@ xshm</property>
                 <child>
                   <widget class="GtkTable" id="table1">
                     <property name="visible">True</property>
-                    <property name="n_rows">6</property>
+                    <property name="n_rows">8</property>
                     <property name="n_columns">2</property>
                     <property name="row_spacing">16</property>
                     <property name="homogeneous">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                     <child>
                       <placeholder/>
                     </child>
@@ -2311,6 +2317,37 @@ xshm</property>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
                         <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckButton" id="check_button_manually_scan_file">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="label" translatable="yes">Select a region file to Scan   </property>
+                        <property name="response_id">0</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkVBox" id="vbox12">
+                        <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkFileChooserButton" id="file_chooser_button_select_file_to_scan">
+                            <property name="visible">True</property>
+                            <property name="tooltip" translatable="yes">Select a region file to scan</property>
+                            <property name="title" translatable="yes">Select a file</property>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
                       </packing>
                     </child>
                   </widget>
@@ -2401,7 +2438,7 @@ xshm</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkVScrollbar" id="vscrollbar2">
+                      <widget class="GtkVScrollbar" id="v_scroll_bar_scanned_channels">
                         <property name="visible">True</property>
                         <property name="adjustment">0 0 100 1 10 10</property>
                       </widget>
