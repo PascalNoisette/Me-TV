@@ -36,6 +36,12 @@ public:
 	Application(int argc, char *argv[])
 		: Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv)
 	{
+		if (!Glib::thread_supported())
+		{
+			Glib::thread_init();
+		}
+		gdk_threads_init();
+		
 		Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
 		Glib::ustring glade_path = current_directory + "/me-tv.glade"; 
 
