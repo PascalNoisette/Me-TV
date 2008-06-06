@@ -21,11 +21,26 @@
 #include "application.h"
 #include "config.h"
 #include <glibmm.h>
+#include <glib/gprintf.h>
+
+void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
+{
+	gchar buffer[100];
+	struct tm now;
+	time_t t = time(NULL);
+	localtime_r(&t, &now);
+	strftime(buffer, 100, "%x %T", &now);
+	g_printf("%s: %s\n", buffer, message);
+}
 
 int main (int argc, char *argv[])
 {	
 	try
 	{
+		g_log_set_handler(G_LOG_DOMAIN,
+			(GLogLevelFlags)(G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION),
+			log_handler, NULL);
+		
 		g_message("Me TV %s", VERSION);
 		Application application(argc, argv);
 		application.run();

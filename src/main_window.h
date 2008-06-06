@@ -25,12 +25,14 @@
 #include <libglademm.h>
 #include "channels_dialog.h"
 #include "preferences_dialog.h"
+#include "ffmpeg_renderer.h"
 
 class MainWindow : public Gtk::Window
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
 	Gtk::DrawingArea* drawing_area_video;
+	FFMpegRenderer renderer;
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Window(cobject), glade(glade)
 	{
@@ -38,10 +40,14 @@ public:
 		drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 		
 		glade->connect_clicked("menu_item_open",		sigc::mem_fun(*this, &MainWindow::on_menu_item_open_clicked));
+		glade->connect_clicked("menu_item_close",		sigc::mem_fun(*this, &MainWindow::on_menu_item_close_clicked));
 		glade->connect_clicked("menu_item_quit",		sigc::mem_fun(*this, &MainWindow::on_menu_item_quit_clicked));
 		glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
 		glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 		glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));
+
+		Gtk::AboutDialog* dialog_about = (Gtk::AboutDialog*)glade->get_widget("dialog_about");
+		dialog_about->set_version(VERSION);
 	}
 	
 	void on_menu_item_open_clicked()
@@ -49,16 +55,24 @@ public:
 		Gtk::FileChooserDialog dialog(*this, "Open media file ...");
 		dialog.add_button(Gtk::Stock::CANCEL, -1);
 		dialog.add_button(Gtk::Stock::OPEN, 0);
+		dialog.set_default_response(0);
 		gint response = dialog.run();
 		dialog.hide();
 		
 		if (response == 0)
 		{
 			Glib::ustring filename = dialog.get_filename();
-			g_debug("File opened '%s'", filename.c_str());
+			g_debug("Playing '%s'", filename.c_str());
+			renderer.set_drawing_area(drawing_area_video);
+			renderer.open(filename);
 		}
 	}
 
+	void on_menu_item_close_clicked()
+	{
+		renderer.close();
+	}
+		
 	void on_menu_item_quit_clicked()
 	{
 		Gnome::Main::quit();

@@ -25,7 +25,13 @@ me_tv_SOURCES = \
 	main_window.h \
 	channels_dialog.h \
 	preferences_dialog.h \
-	scan_dialog.h
+	scan_dialog.h \
+	ffmpeg_renderer.cc \
+	stream_thread.cc \
+	ffmpeg_renderer.h \
+	stream_thread.h \
+	exception.h \
+	thread.h
 
 me_tv_LDFLAGS = 
 
