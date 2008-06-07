@@ -17,31 +17,37 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
+ 
+#ifndef __DVB_TRANSPONDER_H__
+#define __DVB_TRANSPONDER_H__
 
-#ifndef __APPLICATION_H__
-#define __APPLICATION_H__
+#include <glibmm.h>
+#include <linux/dvb/frontend.h>
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-#include <giomm.h>
-#include "config.h"
-#include "device_manager.h"
-#include "profile_manager.h"
-
-class Application : public Gnome::Main
+namespace Dvb
 {
-private:
-	static Application* current;
-	Glib::RefPtr<Gnome::Glade::Xml> glade;
-	ProfileManager profile_manager;
-	Dvb::DeviceManager device_manager;
+	class Service;
 
-public:
-	Application(int argc, char *argv[]);
-	void run();
-	static Application& get_current();
-	
-	ProfileManager& get_profile_manager() { return profile_manager; }
-};
+	class Transponder
+	{
+	private:
+		GHashTable* services;
+
+	public:
+		Transponder();
+
+		struct dvb_frontend_parameters	frontend_parameters;
+		guint							polarisation;
+		guint							satellite_number;
+		gboolean						hi_band;
+
+		guint get_frequency() const { return frontend_parameters.frequency; }
+		gpointer get_frequency_pointer() { return &(frontend_parameters.frequency); }
+		
+		void add_service(Service& service);
+		Service* get_service(guint service_id);
+		GHashTable* get_services() { return services; }
+	};
+}
 
 #endif

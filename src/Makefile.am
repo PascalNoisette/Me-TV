@@ -31,7 +31,24 @@ me_tv_SOURCES = \
 	ffmpeg_renderer.h \
 	stream_thread.h \
 	exception.h \
-	thread.h
+	thread.h \
+	application.cc \
+	profile_manager.h \
+	dvb_frontend.cc \
+	dvb_frontend.h \
+	dvb_scanner.cc \
+	dvb_scanner.h \
+	dvb_demuxer.cc \
+	dvb_demuxer.h \
+	dvb_si.cc \
+	dvb_si.h \
+	dvb_service.cc \
+	dvb_service.h \
+	dvb_transponder.cc \
+	dvb_transponder.h \
+	atsc_text.cc \
+	atsc_text.h \
+	device_manager.h
 
 me_tv_LDFLAGS = 
 

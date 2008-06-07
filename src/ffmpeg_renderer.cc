@@ -18,30 +18,38 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __APPLICATION_H__
-#define __APPLICATION_H__
+#include "ffmpeg_renderer.h"
+#include <gdk/gdk.h>
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-#include <giomm.h>
-#include "config.h"
-#include "device_manager.h"
-#include "profile_manager.h"
-
-class Application : public Gnome::Main
+FFMpegRenderer::FFMpegRenderer()
 {
-private:
-	static Application* current;
-	Glib::RefPtr<Gnome::Glade::Xml> glade;
-	ProfileManager profile_manager;
-	Dvb::DeviceManager device_manager;
+}
 
-public:
-	Application(int argc, char *argv[]);
-	void run();
-	static Application& get_current();
-	
-	ProfileManager& get_profile_manager() { return profile_manager; }
-};
+FFMpegRenderer::~FFMpegRenderer()
+{
+	close();
+}
 
-#endif
+void FFMpegRenderer::mute(gboolean state)
+{
+}
+
+void FFMpegRenderer::open(const Glib::ustring& mrl)
+{
+	this->mrl = mrl;
+	stream_thread.start(mrl);
+}
+
+void FFMpegRenderer::close()
+{
+	stream_thread.terminate();
+
+	gdk_threads_leave();
+	stream_thread.join(true);
+	gdk_threads_enter();		
+}
+
+void FFMpegRenderer::set_drawing_area(Gtk::DrawingArea* d)
+{
+	stream_thread.set_drawing_area(d);
+}

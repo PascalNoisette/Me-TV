@@ -61,6 +61,7 @@ public:
 		
 		if (response == 0)
 		{
+			renderer.close();
 			Glib::ustring filename = dialog.get_filename();
 			g_debug("Playing '%s'", filename.c_str());
 			renderer.set_drawing_area(drawing_area_video);

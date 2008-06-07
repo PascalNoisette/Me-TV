@@ -17,31 +17,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
+ 
+#ifndef __DVB_SERVICE_H__
+#define __DVB_SERVICE_H__
 
-#ifndef __APPLICATION_H__
-#define __APPLICATION_H__
+#include <glibmm.h>
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-#include <giomm.h>
-#include "config.h"
-#include "device_manager.h"
-#include "profile_manager.h"
-
-class Application : public Gnome::Main
+namespace Dvb
 {
-private:
-	static Application* current;
-	Glib::RefPtr<Gnome::Glade::Xml> glade;
-	ProfileManager profile_manager;
-	Dvb::DeviceManager device_manager;
+	class Transponder;
 
-public:
-	Application(int argc, char *argv[]);
-	void run();
-	static Application& get_current();
-	
-	ProfileManager& get_profile_manager() { return profile_manager; }
-};
+	class Service
+	{
+	private:
+		Transponder& transponder;
+	public:
+		Service(Transponder& transponder);
+			
+		Glib::ustring	name;
+		guint			id;
+		
+		const Transponder& get_transponder() const { return transponder; }
+		
+		gboolean operator ==(const Service& service) const;
+		gboolean operator !=(const Service& service) const;
+	};
+}
 
 #endif

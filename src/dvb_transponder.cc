@@ -17,31 +17,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
+ 
+#include "dvb_transponder.h"
+#include "dvb_service.h"
 
-#ifndef __APPLICATION_H__
-#define __APPLICATION_H__
+using namespace Dvb;
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-#include <giomm.h>
-#include "config.h"
-#include "device_manager.h"
-#include "profile_manager.h"
-
-class Application : public Gnome::Main
+Transponder::Transponder()
 {
-private:
-	static Application* current;
-	Glib::RefPtr<Gnome::Glade::Xml> glade;
-	ProfileManager profile_manager;
-	Dvb::DeviceManager device_manager;
+	services = g_hash_table_new(g_int_hash, g_int_equal);
+}
 
-public:
-	Application(int argc, char *argv[]);
-	void run();
-	static Application& get_current();
-	
-	ProfileManager& get_profile_manager() { return profile_manager; }
-};
+void Transponder::add_service(Service& service)
+{
+	g_hash_table_insert (services, &(service.id), &service);
+}
 
-#endif
+Service* Transponder::get_service(guint service_id)
+{
+	return (Service*)g_hash_table_lookup(services,  &service_id);
+}

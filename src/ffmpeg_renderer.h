@@ -18,30 +18,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __APPLICATION_H__
-#define __APPLICATION_H__
+#ifndef __FFMPEG_RENDERER_H__
+#define __FFMPEG_RENDERER_H__
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-#include <giomm.h>
-#include "config.h"
-#include "device_manager.h"
-#include "profile_manager.h"
+#include "stream_thread.h"
+#include <glibmm.h>
 
-class Application : public Gnome::Main
+class FFMpegRenderer
 {
 private:
-	static Application* current;
-	Glib::RefPtr<Gnome::Glade::Xml> glade;
-	ProfileManager profile_manager;
-	Dvb::DeviceManager device_manager;
+	Glib::ustring		mrl;
+	StreamThread		stream_thread;
 
 public:
-	Application(int argc, char *argv[]);
-	void run();
-	static Application& get_current();
-	
-	ProfileManager& get_profile_manager() { return profile_manager; }
+	FFMpegRenderer();
+	~FFMpegRenderer();
+
+	void set_drawing_area(Gtk::DrawingArea* d);
+	void open(const Glib::ustring& mrl);
+	void close();
+	void on_timer() {}
+	void mute(gboolean state);
+	void set_audio_channel(gint channel) {}
+	void set_subtitle_channel(gint channel) {}
+	void set_dual_language_state(gint state) {}
 };
 
 #endif

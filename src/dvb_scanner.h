@@ -18,30 +18,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __APPLICATION_H__
-#define __APPLICATION_H__
+#ifndef __DVB_SCANNER_H__
+#define __DVB_SCANNER_H__
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-#include <giomm.h>
-#include "config.h"
-#include "device_manager.h"
-#include "profile_manager.h"
+#include "dvb_frontend.h"
+#include "dvb_service.h"
+#include <vector>
 
-class Application : public Gnome::Main
+namespace Dvb
 {
-private:
-	static Application* current;
-	Glib::RefPtr<Gnome::Glade::Xml> glade;
-	ProfileManager profile_manager;
-	Dvb::DeviceManager device_manager;
+	struct StringTable
+	{
+		const char*	text;
+		guint		value;
+	};
 
-public:
-	Application(int argc, char *argv[]);
-	void run();
-	static Application& get_current();
-	
-	ProfileManager& get_profile_manager() { return profile_manager; }
-};
+	class Scanner
+	{
+	private:
+		guint convert_string_to_value(const StringTable* table, const gchar* text);
+		void process_terrestrial_line(Frontend& frontend, const Glib::ustring& line, guint wait_timeout);	
+	public:
+		Scanner();
+			
+		void start(Frontend& frontend, const Glib::ustring& region_file_path, guint wait_timeout);
+			
+		sigc::signal<void, Service> signal_service;
+		sigc::signal<void, double> signal_progress;
+	};
+}
 
 #endif

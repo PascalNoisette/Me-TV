@@ -17,31 +17,37 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
+ 
+#ifndef __DVB_DEMUXER_H__
+#define __DVB_DEMUXER_H__
 
-#ifndef __APPLICATION_H__
-#define __APPLICATION_H__
+#include <linux/dvb/dmx.h>
+#include <linux/types.h>
+#include <sys/poll.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <glibmm.h>
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-#include <giomm.h>
-#include "config.h"
-#include "device_manager.h"
-#include "profile_manager.h"
-
-class Application : public Gnome::Main
+namespace Dvb
 {
-private:
-	static Application* current;
-	Glib::RefPtr<Gnome::Glade::Xml> glade;
-	ProfileManager profile_manager;
-	Dvb::DeviceManager device_manager;
+	class Demuxer
+	{
+	private:
+		int fd;
+		struct pollfd pfd[1];
 
-public:
-	Application(int argc, char *argv[]);
-	void run();
-	static Application& get_current();
-	
-	ProfileManager& get_profile_manager() { return profile_manager; }
-};
+	public:
+		Demuxer(const Glib::ustring& device_path);
+		~Demuxer();
+
+		void set_pes_filter(uint16_t pid, dmx_pes_type_t pestype);		
+		void set_filter(ushort pid, ushort table_id, ushort mask = 0);
+		void set_buffer_size(unsigned int buffer_size);
+		gint read(unsigned char* buffer, size_t length);
+		gboolean poll(guint timeout);
+		void stop();
+		int get_fd() const;
+	};
+}
 
 #endif

@@ -18,30 +18,68 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __APPLICATION_H__
-#define __APPLICATION_H__
+#ifndef __THREAD_H__
+#define __THREAD_H__
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-#include <giomm.h>
-#include "config.h"
-#include "device_manager.h"
-#include "profile_manager.h"
+#include <glibmm.h>
+#include "exception.h"
 
-class Application : public Gnome::Main
+class Thread
 {
 private:
-	static Application* current;
-	Glib::RefPtr<Gnome::Glade::Xml> glade;
-	ProfileManager profile_manager;
-	Dvb::DeviceManager device_manager;
-
+	gboolean		terminated;
+	Glib::Thread*	thread;
 public:
-	Application(int argc, char *argv[]);
-	void run();
-	static Application& get_current();
+	Thread()
+	{
+		terminated = true;
+		thread = NULL;
+	}
 	
-	ProfileManager& get_profile_manager() { return profile_manager; }
+	void start()
+	{
+		if (thread != NULL)
+		{
+			throw Exception("Thread has already been started");
+		}
+		
+		terminated = false;
+		thread = Glib::Thread::create(sigc::mem_fun(*this, &Thread::on_run), true);
+	}
+		
+	virtual void run() = 0;
+		
+	void on_run()
+	{		
+		try
+		{
+			run();
+		}
+		CATCH
+	}
+		
+	void join(gboolean terminate = false)
+	{
+		if (thread != NULL)
+		{
+			if (terminate)
+			{
+				terminated = true;
+			}
+			
+			thread->join();
+		}
+	}
+		
+	void terminate()
+	{
+		terminated = true;
+	}
+		
+	gboolean is_terminated() const
+	{
+		return terminated;
+	}
 };
 
 #endif
