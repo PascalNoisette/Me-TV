@@ -26,24 +26,6 @@
 #include "scan_dialog.h"
 #include "application.h"
 
-class ComboBoxText : public Gtk::ComboBoxText
-{
-public:
-	ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
-			: Gtk::ComboBoxText(cobject)
-	{
-	}
-};
-
-class ComboBoxEntryText : public Gtk::ComboBoxEntryText
-{
-public:
-	ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
-			: Gtk::ComboBoxEntryText(cobject)
-	{
-	}
-};
-
 class ChannelsDialog : public Gtk::Dialog
 {
 private:
@@ -52,18 +34,18 @@ public:
 	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
 		Gtk::Dialog(cobject), glade(glade)
 	{
-		glade->connect_clicked("button_scan", sigc::mem_fun(*this, &ChannelsDialog::on_menu_item_scan_clicked));
+		glade->connect_clicked("button_scan", sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
 
 		ProfileManager& profile_manager = Application::get_current().get_profile_manager();
+		Profile profile = profile_manager.get_current();
 		
 		ComboBoxEntryText* combo_box_entry_text_profile = NULL;
 		glade->get_widget_derived("combo_box_entry_profile", combo_box_entry_text_profile);
-		Profile profile = profile_manager.get_current();
 		combo_box_entry_text_profile->append_text(profile.get_name());
 		combo_box_entry_text_profile->set_active_text(profile.get_name());
 	}
 		
-	void on_menu_item_scan_clicked()
+	void on_button_scan_clicked()
 	{
 		ScanDialog* scan_dialog = NULL;
 		glade->get_widget_derived("dialog_scan", scan_dialog);

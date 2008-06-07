@@ -23,7 +23,9 @@
 
 #include <glibmm.h>
 #include <giomm.h>
+#include <glibmm/i18n.h>
 #include "dvb_frontend.h"
+#include "exception.h"
 
 namespace Dvb
 {
@@ -39,6 +41,9 @@ namespace Dvb
 		{
 			return Glib::ustring::compose("/dev/dvb/adapter%1/frontend%2", adapter, frontend);
 		}
+		
+		std::list<Adapter*> adapters;
+		std::list<Frontend*> frontends;
 
 	public:
 		DeviceManager()
@@ -47,13 +52,15 @@ namespace Dvb
 			guint adapter_count = 0;
 			while (Gio::File::create_for_path(get_adapter_string(adapter_count))->query_exists())
 			{
-				Adapter adapter(adapter_count);
+				Adapter* adapter = new Adapter(adapter_count);
+				adapters.push_back(adapter);
 				
 				guint frontend_count = 0;
 				while (Gio::File::create_for_path(get_frontend_string(adapter_count, frontend_count))->query_exists())
 				{
-					Frontend frontend(adapter, frontend_count);
-					g_debug("Registered %s", frontend.get_frontend_info().name);
+					Frontend* frontend = new Frontend(*adapter, frontend_count);
+					g_debug("Registered %s", frontend->get_frontend_info().name);
+					frontends.push_back(frontend);
 					frontend_count++;
 				}
 
@@ -61,6 +68,49 @@ namespace Dvb
 			}
 			
 			g_debug("Device manager initialised with %d DVB adapter(s)", adapter_count);
+		}
+		
+		~DeviceManager()
+		{
+			while (frontends.size() > 0)
+			{
+				Frontend* frontend = *(frontends.begin());
+				frontends.pop_front();
+				Glib::ustring device_name = frontend->get_frontend_info().name;
+				free(frontend);
+				g_debug("Deregistered %s", device_name.c_str());
+			}
+			
+			while (adapters.size() > 0)
+			{
+				free(*(adapters.begin()));
+				adapters.pop_front();
+			}
+		}
+			
+		const std::list<Frontend*> get_frontends() const { return frontends; }
+			
+		Frontend& get_frontend_by_name(const Glib::ustring& frontend_name)
+		{
+			Frontend* result = NULL;
+			
+			std::list<Dvb::Frontend*>::const_iterator frontend_iterator = frontends.begin();
+			while (frontend_iterator != frontends.end() && result == NULL)
+			{
+				Dvb::Frontend* frontend = *frontend_iterator;
+				if (frontend_name == frontend->get_frontend_info().name)
+				{
+					result = frontend;
+				}
+				frontend_iterator++;
+			}
+
+			if (result == NULL)
+			{
+				throw Exception(Glib::ustring::format(_("Failed to find frontend '%s'"), frontend_name.c_str()));
+			}
+
+			return *result;
 		}
 	};
 }

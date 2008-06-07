@@ -139,7 +139,7 @@ guint Scanner::convert_string_to_value(const StringTable* table, const gchar* te
 {
 	gboolean found = false;
 	const StringTable*	current = table;
-		
+
 	while (current->text != NULL && !found)
 	{
 		if (g_str_equal(text,current->text))
@@ -154,7 +154,7 @@ guint Scanner::convert_string_to_value(const StringTable* table, const gchar* te
 	
 	if (!found)
 	{
-		throw Exception(Glib::ustring::format("Failed to find a value for '%s'", text));
+		throw Exception(Glib::ustring::format("Failed to find a value for ", text));
 	}
 	
 	return (guint)current->value;
@@ -178,7 +178,8 @@ void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& 
 	{
 		SI::SectionParser parser;
 		SI::ServiceDescriptionSection sds;
-		Demuxer demuxer_sds(frontend.get_adapter().get_demux_path());
+		Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
+		Demuxer demuxer_sds(demux_path);
 
 		frontend.tune_to(transponder, wait_timeout);		
 		demuxer_sds.set_filter(SDT_PID, SDT_ID);
@@ -219,6 +220,10 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path, g
 		}
 		else
 		{
+			if (Glib::str_has_suffix(line, "\n"))
+			{
+				line = line.substr(0, line.length()-1);
+			}
 			lines.push_back(line);
 		}
 		
@@ -244,6 +249,7 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path, g
 			throw Exception("Me TV cannot process a line in the initial tuning file");
 		}
 		
-		signal_progress(count/(gdouble)size);
+		signal_progress(++count/(gdouble)size);
+		iterator++;
 	}
 }

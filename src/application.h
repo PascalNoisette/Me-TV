@@ -42,6 +42,7 @@ public:
 	static Application& get_current();
 	
 	ProfileManager& get_profile_manager() { return profile_manager; }
+	Dvb::DeviceManager& get_device_manager() { return device_manager; }
 };
 
 #endif

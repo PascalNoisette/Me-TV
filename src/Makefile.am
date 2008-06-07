@@ -48,7 +48,8 @@ me_tv_SOURCES = \
 	dvb_transponder.h \
 	atsc_text.cc \
 	atsc_text.h \
-	device_manager.h
+	device_manager.h \
+	me-tv.h
 
 me_tv_LDFLAGS = 
 

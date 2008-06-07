@@ -52,7 +52,7 @@ namespace Dvb
 			return Glib::ustring::format(path + "/frontend", frontend);
 		}
 			
-		Glib::ustring get_demux_path() const { return path + "/demuxer0"; }
+		Glib::ustring get_demux_path() const { return path + "/demux0"; }
 			
 		gboolean frontend_exists(guint frontend)
 		{

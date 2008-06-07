@@ -43,8 +43,8 @@ namespace Dvb
 			
 		void start(Frontend& frontend, const Glib::ustring& region_file_path, guint wait_timeout);
 			
-		sigc::signal<void, Service> signal_service;
-		sigc::signal<void, double> signal_progress;
+		sigc::signal<void, Service&> signal_service;
+		sigc::signal<void, gdouble> signal_progress;
 	};
 }
 

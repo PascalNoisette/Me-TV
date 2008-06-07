@@ -24,13 +24,7 @@
 #include <ffmpeg/swscale.h>
 #include <alsa/asoundlib.h>
 #include <gdk/gdk.h>
-
-class GdkLock
-{
-public:
-	GdkLock() { gdk_threads_enter(); }
-	~GdkLock() { gdk_threads_leave(); }
-};
+#include "me-tv.h"
 
 class AlsaException : public Exception
 {
