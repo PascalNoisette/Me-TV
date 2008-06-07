@@ -341,7 +341,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkMenuItem" id="menu_item_channels">
+                      <widget class="GtkMenuItem" id="menu_item_channels1">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Channel Editor</property>
                         <property name="use_underline">True</property>
@@ -349,7 +349,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkMenuItem" id="menu_item_meter">
+                      <widget class="GtkCheckMenuItem" id="menu_item_meter">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Show Meters</property>
                         <property name="use_underline">True</property>
@@ -681,6 +681,38 @@ found in /usr/share/common-licenses/GPL file.</property>
           </packing>
         </child>
         <child>
+          <widget class="GtkVBox" id="vbox8">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkHBox" id="hbox15">
+                <property name="visible">True</property>
+                <child>
+                  <widget class="GtkProgressBar" id="progress_bar_signal_strength_alt">
+                    <property name="visible">True</property>
+                    <property name="text" translatable="yes">Signal Strength</property>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkProgressBar" id="progress_bar_signal_noise_alt">
+                    <property name="visible">True</property>
+                    <property name="text" translatable="yes">S/N Ratio</property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
           <widget class="GtkVPaned" id="vpaned_main">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -832,7 +864,7 @@ found in /usr/share/common-licenses/GPL file.</property>
             </child>
           </widget>
           <packing>
-            <property name="position">2</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
@@ -934,7 +966,7 @@ found in /usr/share/common-licenses/GPL file.</property>
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="padding">3</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
@@ -943,7 +975,7 @@ found in /usr/share/common-licenses/GPL file.</property>
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="position">4</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </widget>
