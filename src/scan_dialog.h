@@ -69,6 +69,7 @@ private:
 
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;
+		
 public:
 	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Dialog(cobject), glade(glade)
 	{
