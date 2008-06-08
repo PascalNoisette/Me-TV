@@ -2008,7 +2008,7 @@ xshm</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkTreeView" id="treeview_displayed_channels">
+                  <widget class="GtkTreeView" id="tree_view_displayed_channels">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip" translatable="yes">Select a channel to move up or down</property>
@@ -2399,7 +2399,7 @@ xshm</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkTreeView" id="treeview_scanned_channels">
+                  <widget class="GtkTreeView" id="tree_view_scanned_channels">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip" translatable="yes">Click here to adjust channel atributes</property>
