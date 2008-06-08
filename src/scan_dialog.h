@@ -27,6 +27,7 @@
 #include "dvb_scanner.h"
 #include "thread.h"
 #include "me-tv.h"
+#include <ext/hash_map>
 
 class ScanThread : public Thread
 {
@@ -50,12 +51,13 @@ public:
 class ScanDialog : public Gtk::Dialog
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
-	ComboBoxText* combo_box_scan_device;
-	Gtk::ProgressBar* progress_bar_scan;
-	Gtk::TreeView* treeview_scanned_channels;
-	ScanThread* scan_thread;
-		
+	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
+	ComboBoxText*							combo_box_scan_device;
+	Gtk::ProgressBar*						progress_bar_scan;
+	Gtk::TreeView*							treeview_scanned_channels;
+	ScanThread*								scan_thread;
+	StringHashTable<Dvb::Service&>			services;
+
 	class ModelColumns : public Gtk::TreeModelColumnRecord
 	{
 	public:
@@ -78,16 +80,19 @@ public:
 		glade->connect_clicked("button_device_scan", sigc::mem_fun(*this, &ScanDialog::on_button_device_scan_clicked));
 		progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
 		treeview_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("treeview_scanned_channels"));
-		
+			
 		list_store = Gtk::ListStore::create(columns);
 		treeview_scanned_channels->set_model(list_store);
 		treeview_scanned_channels->append_column("Service Name", columns.column_text);
-				
-		combo_box_scan_device = NULL;
-		glade->get_widget_derived("combo_box_scan_device", combo_box_scan_device);
-
+		
+		Glib::RefPtr<Gtk::TreeSelection> selection = treeview_scanned_channels->get_selection();
+		selection->set_mode(Gtk::SELECTION_MULTIPLE);
+		
 		Dvb::DeviceManager& device_manager = Application::get_current().get_device_manager();
 		const std::list<Dvb::Frontend*> frontends = device_manager.get_frontends();
+		
+		combo_box_scan_device = NULL;
+		glade->get_widget_derived("combo_box_scan_device", combo_box_scan_device);
 		
 		std::list<Dvb::Frontend*>::const_iterator frontend_iterator = frontends.begin();
 		while (frontend_iterator != frontends.end())
@@ -119,33 +124,59 @@ public:
 	{
 		stop_scan();
 		
+		list_store->clear();
+
 		Glib::ustring device_name = combo_box_scan_device->get_active_text();
 		Dvb::DeviceManager& device_manager = Application::get_current().get_device_manager();
 		Dvb::Frontend& frontend = device_manager.get_frontend_by_name(device_name);
 		
 		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_select_file_to_scan"));
 		Glib::ustring initial_tuning_file = file_chooser->get_filename();
-		g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
 
-		scan_thread = new ScanThread(frontend, initial_tuning_file);
-		Dvb::Scanner& scanner = scan_thread->get_scanner();
-		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
-		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
-		scan_thread->start();
+		if (initial_tuning_file.empty())
+		{
+			Gtk::MessageDialog dialog(*this, "No tuning file has been selected");
+			dialog.run();
+		}
+		else
+		{
+			g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
+			scan_thread = new ScanThread(frontend, initial_tuning_file);
+			Dvb::Scanner& scanner = scan_thread->get_scanner();
+			scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
+			scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
+			scan_thread->start();
+		}
 	}
-		
+
 	void on_signal_service(Dvb::Service& service)
 	{
 		GdkLock gdk_lock;
 		Gtk::TreeModel::iterator iterator = list_store->append();
 		Gtk::TreeModel::Row row = *iterator;
 		row[columns.column_text] = service.name;
+		treeview_scanned_channels->get_selection()->select(row);
+		services.set(service.name, service);
 	}
 		
-	void on_signal_progress(gdouble progress)
+	void on_signal_progress(guint step, gsize total)
 	{
 		GdkLock gdk_lock;
-		progress_bar_scan->set_fraction(progress);
+		progress_bar_scan->set_fraction(step/(gdouble)total);
+	}
+		
+	std::list<Dvb::Service> get_selected_services()
+	{
+		std::list<Dvb::Service> result;
+		std::list<Gtk::TreeModel::Path> selected_services = treeview_scanned_channels->get_selection()->get_selected_rows();		
+		std::list<Gtk::TreeModel::Path>::iterator iterator = selected_services.begin();
+		while (iterator != selected_services.end())
+		{
+			Gtk::TreeModel::Row row(*list_store->get_iter(*iterator));
+			result.push_back(services.get(row.get_value(columns.column_text)));
+			iterator++;
+		}
+		return result;
 	}
 };
 

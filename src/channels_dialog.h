@@ -35,7 +35,7 @@ public:
 		Gtk::Dialog(cobject), glade(glade)
 	{
 		glade->connect_clicked("button_scan", sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
-
+		
 		ProfileManager& profile_manager = Application::get_current().get_profile_manager();
 		Profile profile = profile_manager.get_current();
 		
@@ -47,10 +47,21 @@ public:
 		
 	void on_button_scan_clicked()
 	{
-		ScanDialog* scan_dialog = NULL;
-		glade->get_widget_derived("dialog_scan", scan_dialog);
-		scan_dialog->run();
-		scan_dialog->hide();
+		gsize frontend_count = Application::get_current().get_device_manager().get_frontends().size();
+		if (frontend_count == 0)
+		{
+			Gtk::MessageDialog dialog(*this, "There are no tuners to scan", false, Gtk::MESSAGE_ERROR);
+			dialog.run();
+		}
+		else
+		{
+			ScanDialog* scan_dialog = NULL;
+			glade->get_widget_derived("dialog_scan", scan_dialog);
+			scan_dialog->run();
+			scan_dialog->hide();
+			
+			std::list<Dvb::Service> selected_services = scan_dialog->get_selected_services();
+		}
 	}
 };
 

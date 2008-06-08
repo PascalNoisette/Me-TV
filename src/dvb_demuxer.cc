@@ -20,7 +20,7 @@
  
 #include "dvb_demuxer.h"
 #include "exception.h"
-#include <glibmm/i18n.h>
+#include "me-tv.h"
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <unistd.h>

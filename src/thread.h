@@ -29,6 +29,7 @@ class Thread
 private:
 	gboolean		terminated;
 	Glib::Thread*	thread;
+	Glib::Mutex		mutex;
 public:
 	Thread()
 	{
@@ -38,6 +39,7 @@ public:
 	
 	void start()
 	{
+		Glib::Mutex::Lock lock(mutex);
 		if (thread != NULL)
 		{
 			throw Exception("Thread has already been started");
@@ -51,15 +53,14 @@ public:
 		
 	void on_run()
 	{		
-		try
-		{
-			run();
-		}
+		TRY
+		run();
 		CATCH
 	}
 		
 	void join(gboolean terminate = false)
 	{
+		Glib::Mutex::Lock lock(mutex);
 		if (thread != NULL)
 		{
 			if (terminate)
@@ -76,8 +77,9 @@ public:
 		terminated = true;
 	}
 		
-	gboolean is_terminated() const
+	gboolean is_terminated()
 	{
+		Glib::Mutex::Lock lock(mutex);
 		return terminated;
 	}
 };

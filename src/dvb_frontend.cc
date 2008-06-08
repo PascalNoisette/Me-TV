@@ -20,7 +20,7 @@
  
 #include "dvb_frontend.h"
 #include "exception.h"
-#include <glibmm/i18n.h>
+#include "me-tv.h"
 
 using namespace Dvb;
 

@@ -19,9 +19,9 @@
  */
 
 #include "stream_thread.h"
-#include <ffmpeg/avcodec.h>
-#include <ffmpeg/avformat.h>
-#include <ffmpeg/swscale.h>
+#include <avcodec.h>
+#include <avformat.h>
+#include <swscale.h>
 #include <alsa/asoundlib.h>
 #include <gdk/gdk.h>
 #include "me-tv.h"

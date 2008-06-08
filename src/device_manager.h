@@ -23,12 +23,29 @@
 
 #include <glibmm.h>
 #include <giomm.h>
-#include <glibmm/i18n.h>
 #include "dvb_frontend.h"
 #include "exception.h"
+#include "me-tv.h"
+#include "scheduler.h"
 
 namespace Dvb
 {
+	typedef enum
+	{
+		USAGE_TYPE_SCANNING,
+		USAGE_TYPE_RECORDING,		
+		USAGE_TYPE_VIEWING,
+		USAGE_TYPE_EPG_UPDATE
+	} UsageType;
+	
+	class FrontendEvent : public Event
+	{
+	private:
+		UsageType usage_type;
+	public:
+		FrontendEvent(UsageType usage_type, Event event) : Event(event), usage_type(usage_type) {}
+	};
+	
 	class DeviceManager
 	{
 	private:
@@ -44,6 +61,7 @@ namespace Dvb
 		
 		std::list<Adapter*> adapters;
 		std::list<Frontend*> frontends;
+		Scheduler scheduler;
 
 	public:
 		DeviceManager()
@@ -111,6 +129,11 @@ namespace Dvb
 			}
 
 			return *result;
+		}
+			
+		Frontend* request_frontend(UsageType usage_type, Event event)
+		{
+			scheduler.add(event);
 		}
 	};
 }

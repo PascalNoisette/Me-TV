@@ -22,7 +22,6 @@
 #include "application.h"
 #include "exception.h"
 #include "atsc_text.h"
-#include <glibmm/i18n.h>
 
 #define SHORT_EVENT			0x4D
 #define EXTENDED_EVENT		0x4E
@@ -107,7 +106,7 @@ static guint32 crc32(const char *data, int len)
     return crc;
 }
 
-Event::Event()
+Dvb::SI::Event::Event()
 {
 	event_id = 0;
 	start_time = 0;

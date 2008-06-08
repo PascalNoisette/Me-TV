@@ -24,8 +24,9 @@
 #include <glibmm.h>
 #include <errno.h>
 
-#define CATCH 		catch(const Glib::Exception& exception) { g_debug(exception.what().c_str()); } \
-		catch(...) { g_debug("An unhandled error occurred"); }
+#define TRY		try {
+#define CATCH	} catch(const Glib::Exception& exception) { g_debug(exception.what().c_str()); } \
+				catch(...) { g_debug("An unhandled error occurred"); }
 
 class Exception : public Glib::Exception
 {

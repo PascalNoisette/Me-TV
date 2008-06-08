@@ -154,7 +154,7 @@ guint Scanner::convert_string_to_value(const StringTable* table, const gchar* te
 	
 	if (!found)
 	{
-		throw Exception(Glib::ustring::format("Failed to find a value for ", text));
+		throw Exception(Glib::ustring::format("Failed to find a value for '%s'", Glib::ustring(text)));
 	}
 	
 	return (guint)current->value;
@@ -249,7 +249,11 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path, g
 			throw Exception("Me TV cannot process a line in the initial tuning file");
 		}
 		
-		signal_progress(++count/(gdouble)size);
+		signal_progress(++count, size);
 		iterator++;
 	}
+
+	signal_progress(size, size);
+	
+	g_debug("Scanner finished");
 }
