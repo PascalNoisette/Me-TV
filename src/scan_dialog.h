@@ -29,6 +29,10 @@
 #include "me-tv.h"
 #include <ext/hash_map>
 
+#ifndef SCAN_DIRECTORY
+#define SCAN_DIRECTORY "/usr/share/doc/dvb-utils/examples/scan"
+#endif
+
 class ScannedService
 {
 public:
@@ -63,6 +67,8 @@ private:
 	ComboBoxText*							combo_box_scan_device;
 	Gtk::ProgressBar*						progress_bar_scan;
 	Gtk::TreeView*							tree_view_scanned_channels;
+	Gtk::ComboBox*							combo_box_select_country;
+	Gtk::ComboBox*							combo_box_select_region;
 	ScanThread*								scan_thread;
 
 	class ModelColumns : public Gtk::TreeModelColumnRecord
@@ -88,7 +94,7 @@ public:
 	{
 		scan_thread = NULL;
 		
-		glade->connect_clicked("button_device_scan", sigc::mem_fun(*this, &ScanDialog::on_button_device_scan_clicked));
+		glade->connect_clicked("button_start_scan", sigc::mem_fun(*this, &ScanDialog::on_button_start_scan_clicked));
 		progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
 		tree_view_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_scanned_channels"));
 			
@@ -113,6 +119,26 @@ public:
 			frontend_iterator++;
 		}
 		combo_box_scan_device->set_active(0);
+		
+		combo_box_select_country = dynamic_cast<Gtk::ComboBox*>(glade->get_widget("combo_box_select_country"));
+		combo_box_select_region = dynamic_cast<Gtk::ComboBox*>(glade->get_widget("combo_box_select_region"));
+/*
+		Glib::ustring frontend_directory = "/dvb-t";
+		Glib::RefPtr<Gio::File> scan_directory = Gio::File::create_for_path(SCAN_DIRECTORY + frontend_directory);
+		Glib::RefPtr<Gio::FileEnumerator> children = scan_directory->enumerate_children();
+		Glib::RefPtr<Gio::FileInfo> current_file = children->next_file();
+		while (current_file)
+		{
+			Glib::ustring name = current_file->get_name();
+			if (name.substr(3,1) == "-")
+			{
+				Glib::ustring country = name.substr(0,2);
+				Glib::ustring region = name.substr(3);
+				g_debug("COUNTRY: '%s', REGION '%s'", country.c_str(), region.c_str());
+			}
+			current_file = children->next_file();
+		}
+		*/
 	}
 		
 	~ScanDialog()
@@ -131,7 +157,7 @@ public:
 		}
 	}
 
-	void on_button_device_scan_clicked()
+	void on_button_start_scan_clicked()
 	{
 		stop_scan();
 		

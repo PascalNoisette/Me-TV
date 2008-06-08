@@ -23,9 +23,11 @@
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
+#include "meters_dialog.h"
 #include "channels_dialog.h"
 #include "preferences_dialog.h"
 #include "ffmpeg_renderer.h"
+#include "device_manager.h"
 
 class MainWindow : public Gtk::Window
 {
@@ -42,6 +44,7 @@ public:
 		glade->connect_clicked("menu_item_open",		sigc::mem_fun(*this, &MainWindow::on_menu_item_open_clicked));
 		glade->connect_clicked("menu_item_close",		sigc::mem_fun(*this, &MainWindow::on_menu_item_close_clicked));
 		glade->connect_clicked("menu_item_quit",		sigc::mem_fun(*this, &MainWindow::on_menu_item_quit_clicked));
+		glade->connect_clicked("menu_item_meters",		sigc::mem_fun(*this, &MainWindow::on_menu_item_meters_clicked));
 		glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
 		glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 		glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));
@@ -79,6 +82,26 @@ public:
 		Gnome::Main::quit();
 	}
 		
+	void on_menu_item_meters_clicked()
+	{
+		MetersDialog* meters_dialog = NULL;
+		glade->get_widget_derived("dialog_meters", meters_dialog);
+		Dvb::DeviceManager& device_manager = Application::get_current().get_device_manager();
+		const std::list<Dvb::Frontend*> frontends = device_manager.get_frontends();
+		if (frontends.size() == 0)
+		{
+			Gtk::MessageDialog dialog(*this, _("No tuners available"), Gtk::MESSAGE_ERROR);
+			dialog.run();
+		}
+		else
+		{
+			Dvb::Frontend* frontend = *(frontends.begin());
+			meters_dialog->start(*frontend);
+			meters_dialog->run();
+			meters_dialog->hide();
+		}
+	}
+
 	void on_menu_item_channels_clicked()
 	{
 		ChannelsDialog* channels_dialog = NULL;

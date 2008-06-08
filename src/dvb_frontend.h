@@ -79,6 +79,9 @@ namespace Dvb
 		const struct dvb_frontend_info& get_frontend_info() const;
 		int get_fd() const { return fd; }
 		const Adapter& get_adapter() const { return adapter; }
+			
+		guint get_signal_strength();
+		guint get_snr();
 	};
 }
 

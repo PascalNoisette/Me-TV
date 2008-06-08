@@ -141,3 +141,23 @@ void Frontend::wait_lock(guint wait_seconds)
 		throw Exception(_("Failed to lock to channel"));
 	}
 }
+
+guint Frontend::get_signal_strength()
+{
+	guint result = 0;
+	if (ioctl(fd, FE_READ_SIGNAL_STRENGTH, &result) == -1)
+	{
+		throw SystemException(_("Failed to get signal strength"));
+	}
+	return result;
+}
+
+guint Frontend::get_snr()
+{
+	guint result = 0;
+	if (ioctl(fd, FE_READ_SNR, &result) == -1)
+	{
+		throw SystemException(_("Failed to get signal to noise ratio"));
+	}
+	return result;
+}
