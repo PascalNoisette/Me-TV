@@ -73,10 +73,11 @@ namespace Dvb
 		Frontend(const Adapter& adapter, guint frontend);
 		~Frontend();
 
+		void tune_to (const Transponder& transponder, guint timeout = 10);
+			
 		int get_frontend_type() const { return frontend_info.type; }
 		const struct dvb_frontend_info& get_frontend_info() const;
 		int get_fd() const { return fd; }
-		void tune_to (const Transponder& transponder, guint timeout = 10);
 		const Adapter& get_adapter() const { return adapter; }
 	};
 }

@@ -162,17 +162,22 @@ guint Scanner::convert_string_to_value(const StringTable* table, const gchar* te
 
 void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& line, guint wait_timeout)
 {
+	struct dvb_frontend_parameters frontend_parameters;
+
 	StringSplitter splitter(line, " ", 100);
+	
+	frontend_parameters.frequency						= splitter.get_int_value(1);
+	frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth_t)convert_string_to_value(bandwidth_table, splitter.get_value(2));
+	frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate_t)convert_string_to_value(fec_table, splitter.get_value(3));
+	frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate_t)convert_string_to_value(fec_table, splitter.get_value(4));
+	frontend_parameters.u.ofdm.constellation			= (fe_modulation_t)convert_string_to_value(qam_table, splitter.get_value(5));
+	frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode_t)convert_string_to_value(modulation_table, splitter.get_value(6));
+	frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval_t)convert_string_to_value(guard_table, splitter.get_value(7));
+	frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy_t)convert_string_to_value(hierarchy_table, splitter.get_value(8));
+	frontend_parameters.inversion						= INVERSION_AUTO;
+
 	Transponder transponder;
-	transponder.frontend_parameters.frequency						= splitter.get_int_value(1);
-	transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth_t)convert_string_to_value(bandwidth_table, splitter.get_value(2));
-	transponder.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate_t)convert_string_to_value(fec_table, splitter.get_value(3));
-	transponder.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate_t)convert_string_to_value(fec_table, splitter.get_value(4));
-	transponder.frontend_parameters.u.ofdm.constellation			= (fe_modulation_t)convert_string_to_value(qam_table, splitter.get_value(5));
-	transponder.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode_t)convert_string_to_value(modulation_table, splitter.get_value(6));
-	transponder.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval_t)convert_string_to_value(guard_table, splitter.get_value(7));
-	transponder.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy_t)convert_string_to_value(hierarchy_table, splitter.get_value(8));
-	transponder.frontend_parameters.inversion						= INVERSION_AUTO;
+	transponder.frontend_parameters = frontend_parameters;
 	
 	try
 	{
@@ -190,12 +195,7 @@ void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& 
 		{
 			for (guint i = 0; i < number_of_services; i++)
 			{
-				SI::Service dvb_service = sds.services[i];
-				Service service(transponder);
-				service.id = dvb_service.id;
-				service.name = dvb_service.name;
-				transponder.add_service(service);
-				signal_service(service);
+				signal_service(frontend_parameters, sds.services[i].id, sds.services[i].name);
 			}
 		}
 	}

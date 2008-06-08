@@ -20,20 +20,36 @@
  
 #include "dvb_transponder.h"
 #include "dvb_service.h"
+#include "exception.h"
+#include "me-tv.h"
 
 using namespace Dvb;
 
-Transponder::Transponder()
-{
-	services = g_hash_table_new(g_int_hash, g_int_equal);
-}
-
 void Transponder::add_service(Service& service)
 {
-	g_hash_table_insert (services, &(service.id), &service);
+	services.push_back(service);
 }
 
-Service* Transponder::get_service(guint service_id)
+Service& Transponder::get_service(guint service_id)
 {
-	return (Service*)g_hash_table_lookup(services,  &service_id);
+	Service* result = NULL;
+	gboolean found = false;
+
+	ServiceList::iterator iterator = services.begin();
+	while (iterator != services.end() && !found)
+	{
+		Service& service = *iterator;
+		if (service.id == service_id)
+		{
+			result = &service;
+			found = true;
+		}
+	}
+
+	if (result == NULL)
+	{
+		throw Exception(Glib::ustring::format(_("Failed to find service with service ID %d"), service_id));
+	}
+	
+	return *result;
 }

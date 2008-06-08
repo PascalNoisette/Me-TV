@@ -23,30 +23,22 @@
 
 #include <glibmm.h>
 #include <linux/dvb/frontend.h>
+#include "dvb_service.h"
 
 namespace Dvb
 {
-	class Service;
-
 	class Transponder
 	{
-	private:
-		GHashTable* services;
-
 	public:
-		Transponder();
-
+		ServiceList						services;
 		struct dvb_frontend_parameters	frontend_parameters;
 		guint							polarisation;
 		guint							satellite_number;
 		gboolean						hi_band;
-
-		guint get_frequency() const { return frontend_parameters.frequency; }
-		gpointer get_frequency_pointer() { return &(frontend_parameters.frequency); }
 		
 		void add_service(Service& service);
-		Service* get_service(guint service_id);
-		GHashTable* get_services() { return services; }
+		Service& get_service(guint service_id);
+		ServiceList get_services() { return services; }
 	};
 }
 

@@ -23,14 +23,14 @@
 
 using namespace Dvb;
 
-Service::Service(Transponder& transponder) : transponder(transponder)
+Service::Service(const Transponder& transponder) : transponder(transponder)
 {
 	id = 0;
 }
 
 gboolean Service::operator ==(const Service& service) const
 {
-	return service.id == id && service.transponder.get_frequency() == transponder.get_frequency();
+	return service.id == id && service.transponder.frontend_parameters.frequency == transponder.frontend_parameters.frequency;
 }
 
 gboolean Service::operator !=(const Service& service) const

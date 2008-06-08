@@ -30,18 +30,18 @@ namespace Dvb
 	class Service
 	{
 	private:
-		Transponder& transponder;
 	public:
-		Service(Transponder& transponder);
+		Service(const Transponder& transponder);
 			
-		Glib::ustring	name;
-		guint			id;
-		
-		const Transponder& get_transponder() const { return transponder; }
+		Glib::ustring		name;
+		guint				id;
+		const Transponder&	transponder;
 		
 		gboolean operator ==(const Service& service) const;
 		gboolean operator !=(const Service& service) const;
 	};
+
+	typedef std::list<Service> ServiceList;
 }
 
 #endif

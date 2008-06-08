@@ -29,6 +29,14 @@
 #include "me-tv.h"
 #include <ext/hash_map>
 
+class ScannedService
+{
+public:
+	guint id;
+	Glib::ustring name;
+	struct dvb_frontend_parameters frontend_parameters;
+};
+
 class ScanThread : public Thread
 {
 public:
@@ -54,19 +62,22 @@ private:
 	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
 	ComboBoxText*							combo_box_scan_device;
 	Gtk::ProgressBar*						progress_bar_scan;
-	Gtk::TreeView*							treeview_scanned_channels;
+	Gtk::TreeView*							tree_view_scanned_channels;
 	ScanThread*								scan_thread;
-	StringHashTable<Dvb::Service&>			services;
 
 	class ModelColumns : public Gtk::TreeModelColumnRecord
 	{
 	public:
 		ModelColumns()
 		{
-			add(column_text);
+			add(column_id);
+			add(column_name);
+			add(column_frontend_parameters);
 		}
 
-		Gtk::TreeModelColumn<Glib::ustring> column_text;
+		Gtk::TreeModelColumn<guint>								column_id;
+		Gtk::TreeModelColumn<Glib::ustring>						column_name;
+		Gtk::TreeModelColumn<struct dvb_frontend_parameters>	column_frontend_parameters;
 	};
 
 	ModelColumns columns;
@@ -79,13 +90,13 @@ public:
 		
 		glade->connect_clicked("button_device_scan", sigc::mem_fun(*this, &ScanDialog::on_button_device_scan_clicked));
 		progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
-		treeview_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("treeview_scanned_channels"));
+		tree_view_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_scanned_channels"));
 			
 		list_store = Gtk::ListStore::create(columns);
-		treeview_scanned_channels->set_model(list_store);
-		treeview_scanned_channels->append_column("Service Name", columns.column_text);
+		tree_view_scanned_channels->set_model(list_store);
+		tree_view_scanned_channels->append_column("Service Name", columns.column_name);
 		
-		Glib::RefPtr<Gtk::TreeSelection> selection = treeview_scanned_channels->get_selection();
+		Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scanned_channels->get_selection();
 		selection->set_mode(Gtk::SELECTION_MULTIPLE);
 		
 		Dvb::DeviceManager& device_manager = Application::get_current().get_device_manager();
@@ -149,14 +160,15 @@ public:
 		}
 	}
 
-	void on_signal_service(Dvb::Service& service)
+	void on_signal_service(struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name)
 	{
 		GdkLock gdk_lock;
 		Gtk::TreeModel::iterator iterator = list_store->append();
 		Gtk::TreeModel::Row row = *iterator;
-		row[columns.column_text] = service.name;
-		treeview_scanned_channels->get_selection()->select(row);
-		services.set(service.name, service);
+		row[columns.column_id] = id;
+		row[columns.column_name] = name;
+		row[columns.column_frontend_parameters] = frontend_parameters;
+		tree_view_scanned_channels->get_selection()->select(row);
 	}
 		
 	void on_signal_progress(guint step, gsize total)
@@ -165,15 +177,19 @@ public:
 		progress_bar_scan->set_fraction(step/(gdouble)total);
 	}
 		
-	std::list<Dvb::Service> get_selected_services()
+	std::list<ScannedService> get_scanned_services()
 	{
-		std::list<Dvb::Service> result;
-		std::list<Gtk::TreeModel::Path> selected_services = treeview_scanned_channels->get_selection()->get_selected_rows();		
+		std::list<ScannedService> result;
+		std::list<Gtk::TreeModel::Path> selected_services = tree_view_scanned_channels->get_selection()->get_selected_rows();		
 		std::list<Gtk::TreeModel::Path>::iterator iterator = selected_services.begin();
 		while (iterator != selected_services.end())
 		{
 			Gtk::TreeModel::Row row(*list_store->get_iter(*iterator));
-			result.push_back(services.get(row.get_value(columns.column_text)));
+			ScannedService service;
+			service.id = row.get_value(columns.column_id);
+			service.name = row.get_value(columns.column_name);
+			service.frontend_parameters = row.get_value(columns.column_frontend_parameters);
+			result.push_back(service);
 			iterator++;
 		}
 		return result;

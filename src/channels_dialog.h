@@ -60,7 +60,7 @@ public:
 			scan_dialog->run();
 			scan_dialog->hide();
 			
-			std::list<Dvb::Service> selected_services = scan_dialog->get_selected_services();
+			std::list<ScannedService> selected_services = scan_dialog->get_scanned_services();
 		}
 	}
 };
