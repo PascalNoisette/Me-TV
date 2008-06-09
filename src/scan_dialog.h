@@ -64,11 +64,11 @@ class ScanDialog : public Gtk::Dialog
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
-	ComboBoxText*							combo_box_scan_device;
 	Gtk::ProgressBar*						progress_bar_scan;
 	Gtk::TreeView*							tree_view_scanned_channels;
-	Gtk::ComboBox*							combo_box_select_country;
-	Gtk::ComboBox*							combo_box_select_region;
+	ComboBoxText*							combo_box_scan_device;
+	ComboBoxText*							combo_box_select_country;
+	ComboBoxText*							combo_box_select_region;
 	ScanThread*								scan_thread;
 
 	class ModelColumns : public Gtk::TreeModelColumnRecord
@@ -89,6 +89,22 @@ private:
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;
 		
+	Glib::ustring get_initial_tuning_dir(Dvb::Frontend& frontend)
+	{
+		Glib::ustring path = SCAN_DIRECTORY;
+
+		switch(frontend.get_frontend_info().type)
+		{
+		case FE_OFDM:   path += "/dvb-t";       break;
+		case FE_QAM:    path += "/dvb-c";       break;
+		case FE_QPSK:   path += "/dvb-s";       break;
+		case FE_ATSC:   path += "/atsc";        break;
+		default:		throw Exception("Unknown frontend type");
+		}
+
+		return path;
+	}
+
 public:
 	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Dialog(cobject), glade(glade)
 	{
@@ -113,6 +129,12 @@ public:
 		combo_box_scan_device = NULL;
 		glade->get_widget_derived("combo_box_scan_device", combo_box_scan_device);
 		
+		combo_box_select_country = NULL;
+		glade->get_widget_derived("combo_box_select_country", combo_box_select_country);
+
+		combo_box_select_region = NULL;
+		glade->get_widget_derived("combo_box_select_region", combo_box_select_region);
+
 		std::list<Dvb::Frontend*>::const_iterator frontend_iterator = frontends.begin();
 		while (frontend_iterator != frontends.end())
 		{
@@ -122,30 +144,46 @@ public:
 		}
 		combo_box_scan_device->set_active(0);
 		
-		combo_box_select_country = dynamic_cast<Gtk::ComboBox*>(glade->get_widget("combo_box_select_country"));
-		combo_box_select_region = dynamic_cast<Gtk::ComboBox*>(glade->get_widget("combo_box_select_region"));
-/*
-		Glib::ustring frontend_directory = "/dvb-t";
-		Glib::RefPtr<Gio::File> scan_directory = Gio::File::create_for_path(SCAN_DIRECTORY + frontend_directory);
-		Glib::RefPtr<Gio::FileEnumerator> children = scan_directory->enumerate_children();
-		Glib::RefPtr<Gio::FileInfo> current_file = children->next_file();
-		while (current_file)
+		Glib::ustring device_name = combo_box_scan_device->get_active_text();
+		Glib::ustring scan_directory_path = get_initial_tuning_dir(device_manager.get_frontend_by_name(device_name));
+
+		Glib::RefPtr<Gio::File> scan_directory = Gio::File::create_for_path(scan_directory_path);
+		
+		// This is a hack because I can't get scan_directory->enumerate_children() to work
+		GFileEnumerator* children = g_file_enumerate_children(scan_directory->gobj(),
+			"*", G_FILE_QUERY_INFO_NONE, NULL, NULL);
+		if (children == NULL)
 		{
-			Glib::ustring name = current_file->get_name();
-			if (name.substr(3,1) == "-")
+			throw Exception("Children failed");
+		}
+		
+		GFileInfo* file_info = g_file_enumerator_next_file(children, NULL, NULL);
+		while (file_info != NULL)
+		{
+			Glib::ustring name = g_file_info_get_name(file_info);
+			if (name.substr(2,1) == "-")
 			{
 				Glib::ustring country = name.substr(0,2);
 				Glib::ustring region = name.substr(3);
-				g_debug("COUNTRY: '%s', REGION '%s'", country.c_str(), region.c_str());
+				combo_box_select_country->append_text(country);
+				combo_box_select_region->append_text(region);
 			}
-			current_file = children->next_file();
+			file_info = g_file_enumerator_next_file(children, NULL, NULL);
 		}
-		*/
+		
+		combo_box_select_country->set_active(0);
+		combo_box_select_region->set_active(0);
 	}
 		
 	~ScanDialog()
 	{
 		stop_scan();
+	}
+		
+	void on_hide()
+	{
+		stop_scan();
+		Widget::on_hide();
 	}
 	
 	void stop_scan()
@@ -161,11 +199,10 @@ public:
 	}
 
 	void on_button_start_scan_clicked()
-	{
-		progress_bar_scan->show();
-		
+	{		
 		stop_scan();
 		
+		progress_bar_scan->show();
 		list_store->clear();
 
 		Glib::ustring device_name = combo_box_scan_device->get_active_text();
