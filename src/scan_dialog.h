@@ -27,7 +27,6 @@
 #include "dvb_scanner.h"
 #include "thread.h"
 #include "me-tv.h"
-#include <ext/hash_map>
 
 #ifndef SCAN_DIRECTORY
 #define SCAN_DIRECTORY "/usr/share/doc/dvb-utils/examples/scan"
@@ -258,6 +257,7 @@ public:
 			service.name = row.get_value(columns.column_name);
 			service.frontend_parameters = row.get_value(columns.column_frontend_parameters);
 			result.push_back(service);
+
 			iterator++;
 		}
 		return result;
