@@ -35,7 +35,8 @@ Application::Application(int argc, char *argv[]) :
 	gdk_threads_init();
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
-	Glib::ustring glade_path = current_directory + "/me-tv.glade"; 
+	Glib::ustring glade_path = current_directory + "/me-tv.glade";
+	dvb_thread = NULL;
 
 	if (!Gio::File::create_for_path(glade_path)->query_exists())
 	{
@@ -53,6 +54,7 @@ void Application::run()
 {
 	MainWindow* main_window = NULL;
 	glade->get_widget_derived("window_main", main_window);
+	main_window->set_renderer(renderer);
 	Gnome::Main::run(*main_window);
 }
 
@@ -70,7 +72,13 @@ void Application::on_active_channel_changed(Channel& channel)
 		throw Exception(_("No frontend available"));
 	}
 	
-	Dvb::Transponder transponder;
-	transponder.frontend_parameters = channel.frontend_parameters;
-	frontend->tune_to(transponder);
+	if (dvb_thread != NULL)
+	{
+		dvb_thread->join(true);
+		delete dvb_thread;
+	}
+	
+	dvb_thread = new DvbThread(*frontend, channel, renderer);
+	dvb_thread->start();
 }
+

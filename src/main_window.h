@@ -34,7 +34,7 @@ class MainWindow : public Gtk::Window
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
 	Gtk::DrawingArea* drawing_area_video;
-	FFMpegRenderer renderer;
+	FFMpegRenderer* renderer;
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Window(cobject), glade(glade)
 	{
@@ -57,7 +57,12 @@ public:
 		Gtk::AboutDialog* dialog_about = (Gtk::AboutDialog*)glade->get_widget("dialog_about");
 		dialog_about->set_version(VERSION);
 	}
-	
+		
+	void set_renderer(FFMpegRenderer& r)
+	{
+		renderer = &r;
+	}
+		
 	void on_menu_item_open_clicked()
 	{
 		Gtk::FileChooserDialog dialog(*this, "Open media file ...");
@@ -69,17 +74,17 @@ public:
 		
 		if (response == 0)
 		{
-			renderer.close();
+			renderer->close();
 			Glib::ustring filename = dialog.get_filename();
 			g_debug("Playing '%s'", filename.c_str());
-			renderer.set_drawing_area(drawing_area_video);
-			renderer.open(filename);
+			renderer->set_drawing_area(drawing_area_video);
+			renderer->open(filename);
 		}
 	}
 
 	void on_menu_item_close_clicked()
 	{
-		renderer.close();
+		renderer->close();
 	}
 		
 	void on_menu_item_quit_clicked()
