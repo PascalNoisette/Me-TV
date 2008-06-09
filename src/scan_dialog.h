@@ -53,7 +53,7 @@ public:
 		
 	void run()
 	{
-		scanner.start(frontend, initial_tuning_file, 2);
+		scanner.start(frontend, initial_tuning_file, 1);
 	}
 
 	Dvb::Scanner& get_scanner() { return scanner; }
@@ -110,6 +110,8 @@ public:
 		scan_thread = NULL;
 		
 		glade->connect_clicked("button_start_scan", sigc::mem_fun(*this, &ScanDialog::on_button_start_scan_clicked));
+		glade->connect_clicked("button_scan_wizard_ok", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_ok_clicked));
+
 		progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
 		tree_view_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_scanned_channels"));
 		
@@ -261,6 +263,11 @@ public:
 			iterator++;
 		}
 		return result;
+	}
+		
+	void on_button_scan_wizard_ok_clicked()
+	{
+		stop_scan();
 	}
 };
 

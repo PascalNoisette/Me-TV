@@ -113,6 +113,13 @@ public:
 		glade->get_widget_derived("dialog_channels", channels_dialog);
 		channels_dialog->run();
 		channels_dialog->hide();
+		
+		ChannelList channels = channels_dialog->get_channels();
+		Channel& channel = *(channels.begin());
+		
+		g_debug("Tuning to channel: '%s'", channel.name.c_str());
+		
+		Application::get_current().get_channel_manager().set_active(channel);
 	}
 
 	void on_menu_item_preferences_clicked()

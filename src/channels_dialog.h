@@ -25,46 +25,7 @@
 #include <libglademm.h>
 #include "scan_dialog.h"
 #include "application.h"
-
-typedef enum
-{
-	CHANNEL_TYPE_NONE,
-	CHANNEL_TYPE_DVB,
-	CHANNEL_TYPE_CUSTOM
-} ChannelType;
-
-class Channel
-{
-public:
-	virtual const Glib::ustring& get_name() const { throw Exception("get_name() not available"); }
-	virtual ChannelType get_type() const { return CHANNEL_TYPE_NONE; }
-	virtual Glib::ustring get_type_text() const  { throw Exception("get_type_text() not available"); }
-};
-
-typedef std::list<Channel> ChannelList;
-
-class DvbChannel : public Channel
-{
-public:
-	struct dvb_frontend_parameters frontend_parameters;
-	guint service_id;
-	Glib::ustring service_name;
-	const Glib::ustring& get_name() const { return service_name; }
-	ChannelType get_type() const { return CHANNEL_TYPE_DVB; }
-	Glib::ustring get_type_text() const { return "DVB"; }
-};
-
-class CustomChannel : public Channel
-{
-public:
-	Glib::ustring name;
-	Glib::ustring pre_command;
-	Glib::ustring post_command;
-	Glib::ustring mrl;
-	const Glib::ustring& get_name() const { return name; }
-	ChannelType get_type() const { return CHANNEL_TYPE_CUSTOM; }
-	Glib::ustring get_type_text() const { return "Custom"; }
-};
+#include "channel_manager.h"
 
 class ChannelsDialog : public Gtk::Dialog
 {
@@ -75,12 +36,10 @@ private:
 		ModelColumns()
 		{
 			add(column_name);
-			add(column_type);
 			add(column_channel);
 		}
 
 		Gtk::TreeModelColumn<Glib::ustring>		column_name;
-		Gtk::TreeModelColumn<Glib::ustring>		column_type;
 		Gtk::TreeModelColumn<Channel>			column_channel;
 	};
 		
@@ -88,7 +47,7 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
 	Gtk::TreeView* tree_view_displayed_channels;
-	ChannelList channels;
+
 public:
 	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
 		Gtk::Dialog(cobject), glade(glade)
@@ -108,7 +67,6 @@ public:
 		list_store = Gtk::ListStore::create(columns);
 		tree_view_displayed_channels->set_model(list_store);
 		tree_view_displayed_channels->append_column("Channel Name", columns.column_name);
-		tree_view_displayed_channels->append_column("Type", columns.column_type);
 	}
 
 	void on_button_scan_clicked()
@@ -121,8 +79,6 @@ public:
 		}
 		else
 		{
-			channels.clear();
-			
 			ScanDialog* scan_dialog = NULL;
 			glade->get_widget_derived("dialog_scan", scan_dialog);
 			scan_dialog->run();
@@ -134,23 +90,35 @@ public:
 			{
 				ScannedService& scanned_service = *iterator;
 
-				DvbChannel channel;
-				channel.service_id = scanned_service.id;
-				channel.service_name = scanned_service.name;
-				channel.frontend_parameters = scanned_service.frontend_parameters;
-				channels.push_back(channel);
+				Channel channel;
+				channel.service_id			= scanned_service.id;
+				channel.name				= scanned_service.name;
+				channel.frontend_parameters	= scanned_service.frontend_parameters;
 
 				Gtk::TreeModel::iterator row_iterator = list_store->append();
 				Gtk::TreeModel::Row row = *row_iterator;
-				row[columns.column_name] = channel.service_name;
-				row[columns.column_type] = "DVB";
-				row[columns.column_channel] = channel;
-				
-				g_debug("Added channel '%s'", channel.service_name.c_str());
+				row[columns.column_name]	= channel.name;
+				row[columns.column_channel]	= channel;
 				
 				iterator++;
 			}		
 		}
+	}
+		
+	ChannelList get_channels()
+	{
+		ChannelList result;
+		Glib::RefPtr<Gtk::TreeModel> model = tree_view_displayed_channels->get_model();
+		Gtk::TreeModel::Children children = model->children();
+		Gtk::TreeIter iterator = children.begin();
+		while (iterator != children.end())
+		{
+			Gtk::TreeModel::Row row(*iterator);
+			result.push_back(row.get_value(columns.column_channel));
+
+			iterator++;
+		}
+		return result;
 	}
 };
 

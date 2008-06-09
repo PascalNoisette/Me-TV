@@ -131,9 +131,9 @@ namespace Dvb
 			return *result;
 		}
 			
-		Frontend* request_frontend(UsageType usage_type, Event event)
+		Frontend* request_frontend(Event event)
 		{
-			scheduler.add(event);
+			return *(frontends.begin());
 		}
 	};
 }

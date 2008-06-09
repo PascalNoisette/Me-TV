@@ -27,22 +27,27 @@
 #include "config.h"
 #include "device_manager.h"
 #include "profile_manager.h"
+#include "channel_manager.h"
 
 class Application : public Gnome::Main
 {
 private:
 	static Application* current;
 	Glib::RefPtr<Gnome::Glade::Xml> glade;
-	ProfileManager profile_manager;
-	Dvb::DeviceManager device_manager;
+	ProfileManager		profile_manager;
+	Dvb::DeviceManager	device_manager;
+	ChannelManager		channel_manager;
 
+	void on_active_channel_changed(Channel& channel);
+		
 public:
 	Application(int argc, char *argv[]);
 	void run();
 	static Application& get_current();
 	
-	ProfileManager& get_profile_manager() { return profile_manager; }
-	Dvb::DeviceManager& get_device_manager() { return device_manager; }
+	ProfileManager& get_profile_manager()		{ return profile_manager; }
+	Dvb::DeviceManager& get_device_manager()	{ return device_manager; }
+	ChannelManager& get_channel_manager()		{ return channel_manager; }
 };
 
 #endif

@@ -45,6 +45,8 @@ Application::Application(int argc, char *argv[]) :
 	g_debug("Using glade file '%s'", glade_path.c_str());
 	
 	glade = Gnome::Glade::Xml::create(glade_path);
+	
+	channel_manager.signal_active_channel_changed.connect(sigc::mem_fun(*this, &Application::on_active_channel_changed));
 }
 
 void Application::run()
@@ -57,4 +59,18 @@ void Application::run()
 Application& Application::get_current()
 {
 	return *current;
+}
+
+void Application::on_active_channel_changed(Channel& channel)
+{
+	Event event(0, 0);
+	Dvb::Frontend* frontend = device_manager.request_frontend(event);
+	if (frontend == NULL)
+	{
+		throw Exception(_("No frontend available"));
+	}
+	
+	Dvb::Transponder transponder;
+	transponder.frontend_parameters = channel.frontend_parameters;
+	frontend->tune_to(transponder);
 }
