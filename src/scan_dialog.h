@@ -97,7 +97,9 @@ public:
 		glade->connect_clicked("button_start_scan", sigc::mem_fun(*this, &ScanDialog::on_button_start_scan_clicked));
 		progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
 		tree_view_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_scanned_channels"));
-			
+		
+		progress_bar_scan->hide();
+		
 		list_store = Gtk::ListStore::create(columns);
 		tree_view_scanned_channels->set_model(list_store);
 		tree_view_scanned_channels->append_column("Service Name", columns.column_name);
@@ -148,6 +150,7 @@ public:
 	
 	void stop_scan()
 	{
+		progress_bar_scan->hide();
 		if (scan_thread != NULL)
 		{
 			g_debug("Stopping scan");
@@ -159,6 +162,8 @@ public:
 
 	void on_button_start_scan_clicked()
 	{
+		progress_bar_scan->show();
+		
 		stop_scan();
 		
 		list_store->clear();

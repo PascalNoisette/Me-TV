@@ -49,7 +49,8 @@ me_tv_SOURCES = \
 	atsc_text.cc \
 	atsc_text.h \
 	device_manager.h \
-	me-tv.h
+	me-tv.h \
+	meters_dialog.h
 
 me_tv_LDFLAGS = 
 

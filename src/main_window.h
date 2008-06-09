@@ -38,8 +38,11 @@ private:
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Window(cobject), glade(glade)
 	{
-		drawing_area_video = (Gtk::DrawingArea*)glade->get_widget("drawing_area_video");
+		drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 		drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
+		
+		glade->get_widget("vbox_epg")->hide();
+		glade->get_widget("hbox_search_bar")->hide();
 		
 		glade->connect_clicked("menu_item_open",		sigc::mem_fun(*this, &MainWindow::on_menu_item_open_clicked));
 		glade->connect_clicked("menu_item_close",		sigc::mem_fun(*this, &MainWindow::on_menu_item_close_clicked));
@@ -48,6 +51,8 @@ public:
 		glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
 		glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 		glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));
+
+		glade->connect_clicked("event_box_video",		sigc::mem_fun(*this, &MainWindow::on_event_box_video_clicked));
 
 		Gtk::AboutDialog* dialog_about = (Gtk::AboutDialog*)glade->get_widget("dialog_about");
 		dialog_about->set_version(VERSION);
@@ -124,6 +129,12 @@ public:
 		glade->get_widget("dialog_about", about_dialog);
 		about_dialog->run();
 		about_dialog->hide();
+	}
+		
+	void on_event_box_video_clicked()
+	{
+		Gtk::MessageDialog dialog(*this, "Got click");
+		dialog.run();
 	}
 };
 

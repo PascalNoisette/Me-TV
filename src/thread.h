@@ -58,22 +58,32 @@ public:
 		CATCH
 	}
 		
-	void join(gboolean terminate = false)
+	void join(gboolean term = false)
 	{
-		Glib::Mutex::Lock lock(mutex);
-		if (thread != NULL)
+		gboolean do_join = false;
+		
 		{
-			if (terminate)
+			Glib::Mutex::Lock lock(mutex);
+			if (thread != NULL)
 			{
-				terminated = true;
+				if (term)
+				{
+					terminated = true;
+				}
 			}
 			
+			do_join = true;
+		}
+		
+		if (do_join)
+		{
 			thread->join();
 		}
 	}
 		
 	void terminate()
 	{
+		Glib::Mutex::Lock lock(mutex);
 		terminated = true;
 	}
 		

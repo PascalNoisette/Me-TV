@@ -25,7 +25,7 @@
 #include <libglademm.h>
 #include "thread.h"
 
-#define METERS_POLL_INTERVAL 1000000
+#define METERS_POLL_INTERVAL 100000
 
 class MetersDialog : public Gtk::Dialog
 {
@@ -78,6 +78,13 @@ public:
 		label_meters_device_name->set_label(frontend->get_frontend_info().name);
 		meters_thread.start();
 	}
+		
+	void stop()
+	{
+		g_debug("Stopping meters thread");
+		meters_thread.terminate();
+		meters_thread.join();
+	}
 
 	void update_meters()
 	{
@@ -97,8 +104,15 @@ public:
 
 	void set_meters(gdouble strength, gdouble snr)
 	{
-		progress_bar_signal_strength->set_fraction(strength);
-		progress_bar_signal_noise->set_fraction(snr);
+		gdouble bits16 = 1 << 16;
+		progress_bar_signal_strength->set_fraction(strength/bits16);
+		progress_bar_signal_noise->set_fraction(snr/bits16);
+	}
+
+	void on_hide()
+	{
+		stop();
+		Widget::on_hide();
 	}
 };
 

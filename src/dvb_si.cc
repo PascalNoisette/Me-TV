@@ -192,9 +192,6 @@ void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& sect
 
 			offset += descriptor_length + 2;
 		}
-
-		g_debug("SERVICE: ID: %d, Name: '%s', Provider: '%s', Type: %d",
-			service.id, service.name.c_str(), service.provider_name.c_str(), service.type);
 		
 		section.services.push_back(service);
 	}
