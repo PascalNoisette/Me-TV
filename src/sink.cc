@@ -421,7 +421,11 @@ void GtkAlsaSink::run()
 	{
 		AVPacket* packet = packet_queue.pop();
 		
-		if (packet != NULL)
+		if (packet == NULL)
+		{
+			terminate();
+		}
+		else
 		{
 			if (packet->stream_index == video_stream_index)
 			{

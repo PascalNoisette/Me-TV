@@ -130,7 +130,8 @@ public:
 		channels_dialog->hide();
 		
 		ChannelList channels = channels_dialog->get_channels();
-		Channel& channel = *(channels.begin());
+		ChannelList::iterator iterator = channels.begin();
+		Channel& channel = *iterator;
 		
 		g_debug("Tuning to channel: '%s'", channel.name.c_str());
 		

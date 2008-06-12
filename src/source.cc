@@ -61,22 +61,22 @@ void Source::create()
 {
 	format_context = NULL;
 
-	const gchar* filename = mrl.c_str();
 	av_register_all();
 	
-	g_debug("Opening '%s'", filename);
-	if (av_open_input_file(&format_context, filename, NULL, 0, NULL) != 0)
+	g_debug("Opening '%s'", mrl.c_str());	
+	
+	if (av_open_input_file(&format_context, mrl.c_str(), NULL, 0, NULL) != 0)
 	{
 		throw Exception("Failed to open input file: " + mrl);
 	}
-	g_debug("'%s' opened", filename);
+	g_debug("'%s' opened", mrl.c_str());
 
 	if (av_find_stream_info(format_context)<0)
 	{
 		throw Exception(_("Couldn't find stream information"));
 	}
 
-	dump_format(format_context, 0, filename, false);
+	dump_format(format_context, 0, mrl.c_str(), false);
 }
 
 void Source::remove_all_demuxers()
@@ -228,4 +228,3 @@ AVStream* Source::get_stream(guint index) const
 	}
 	return format_context->streams[index];
 }
-

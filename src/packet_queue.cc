@@ -28,8 +28,12 @@ PacketQueue::PacketQueue()
 	
 void PacketQueue::push(AVPacket* packet)
 {
-	Glib::Mutex::Lock lock(mutex);
-	
+	while (get_size() > 10 && !finished)
+	{
+		usleep(1000);
+	}
+
+	Glib::Mutex::Lock lock(mutex);	
 	if (av_dup_packet(packet) < 0)
 	{
 		throw Exception("Failed to dup packet");
