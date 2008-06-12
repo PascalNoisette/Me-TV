@@ -42,15 +42,14 @@ typedef std::list<Sink*> SinkList;
 class AlsaAudioThread : public Thread
 {
 private:
-	PacketQueue&	audio_packet_buffers;
+	PacketQueue&	audio_packet_queue;
 	AVStream*		audio_stream;
 	Glib::Timer&	timer;
 		
 	void run ();
 		
 public:	
-	AlsaAudioThread(Glib::Timer& timer, PacketQueue& audio_packet_buffers);
-	void start(AVStream* stream);
+	AlsaAudioThread(Glib::Timer& timer, PacketQueue& audio_packet_buffers, AVStream* audio_stream);
 };
 
 class GtkVideoThread : public Thread
@@ -67,7 +66,7 @@ private:
 	gint					startx;
 	gint					starty;
 	guchar*					video_buffer;
-	PacketQueue&			video_packet_buffer;	
+	PacketQueue&			video_packet_queue;	
 	AVPicture				picture;
 	AVStream*				video_stream;
 	AVFrame*				frame;
@@ -78,9 +77,8 @@ private:
 	void run();
 
 public:
-	GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_buffer, Gtk::DrawingArea& drawing_area);
+	GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_buffer, AVStream* audio_stream, Gtk::DrawingArea& drawing_area);
 	~GtkVideoThread();
-	void start(AVStream* stream);
 };
 
 class GtkAlsaSink : public Sink

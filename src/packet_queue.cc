@@ -41,9 +41,9 @@ void PacketQueue::push(AVPacket* packet)
 
 AVPacket* PacketQueue::pop()
 {
-	while (get_size() == 0)
+	while (get_size() == 0 && !finished)
 	{
-		sleep(1000);
+		usleep(1000);
 	}
 
 	AVPacket* packet = NULL;
@@ -68,7 +68,7 @@ gboolean PacketQueue::is_empty()
 	return queue.empty();
 }
 	
-void PacketQueue::set_finished()
+void PacketQueue::finish()
 {
 	finished = true;
 }

@@ -216,6 +216,7 @@ void Source::run()
 			packet_queue.push(&packet);
 		}
 	}
+	packet_queue.finish();
 	g_debug("Source thread loop finished");
 }
 

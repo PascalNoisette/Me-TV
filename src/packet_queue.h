@@ -39,7 +39,7 @@ public:
 	AVPacket* pop();
 	gsize get_size();
 	gboolean is_empty();
-	void set_finished();
+	void finish();
 	gboolean is_finished();
 };
 

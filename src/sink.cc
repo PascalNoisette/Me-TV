@@ -100,18 +100,14 @@ void AlsaAudioThread::run()
 	gsize total_audio_buffer_size = 0;
 	while (!is_terminated())
 	{			
-		if (audio_packet_buffers.is_finished())
+		AVPacket* packet = audio_packet_queue.pop();
+		
+		if (packet == NULL)
 		{
 			terminate();
 		}
-		else if (audio_packet_buffers.is_empty())
-		{
-			usleep(10000);
-		}
 		else
 		{
-			AVPacket* packet = audio_packet_buffers.pop();
-
 			int audio_buffer_length = sizeof(data) - total_audio_buffer_size;
 			gint ffmpeg_result = avcodec_decode_audio2(
 				audio_stream->codec,
@@ -157,17 +153,8 @@ void AlsaAudioThread::run()
 	avcodec_close(audio_stream->codec);
 }
 	
-AlsaAudioThread::AlsaAudioThread(Glib::Timer& timer, PacketQueue& audio_packet_buffers) :
-	Thread("Alsa Audio"), audio_packet_buffers(audio_packet_buffers), timer(timer)
-{
-	audio_stream = NULL;
-}
-
-void AlsaAudioThread::start(AVStream* stream)
-{
-	audio_stream = stream;		
-	Thread::start();
-}
+AlsaAudioThread::AlsaAudioThread(Glib::Timer& timer, PacketQueue& audio_packet_queue, AVStream* audio_stream) :
+	Thread("Alsa Audio"), audio_packet_queue(audio_packet_queue), timer(timer), audio_stream(audio_stream) {}
 
 void GtkVideoThread::draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc)
 {
@@ -256,13 +243,11 @@ void GtkVideoThread::run()
 	{
 		video_frame_finished = false;
 		
-		if (video_packet_buffer.is_finished())
+		AVPacket* packet = video_packet_queue.pop();
+		
+		if (packet == NULL)
 		{
 			terminate();
-		}
-		else if (video_packet_buffer.is_empty())
-		{
-			usleep(1000);
 		}
 		else
 		{
@@ -282,9 +267,7 @@ void GtkVideoThread::run()
 			}
 
 			frame_count++;
-			
-			AVPacket* packet = video_packet_buffer.pop();
-			
+						
 			avcodec_decode_video(video_stream->codec,
 				frame, &video_frame_finished, packet->data, packet->size);
 			if (video_frame_finished && !drop_frame)
@@ -302,12 +285,11 @@ void GtkVideoThread::run()
 	avcodec_close(video_stream->codec);
 }
 
-GtkVideoThread::GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_buffer, Gtk::DrawingArea& drawing_area) :
-	Thread("GTK Video"), video_packet_buffer(video_packet_buffer), timer(timer), drawing_area(drawing_area)
+GtkVideoThread::GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_queue, AVStream* video_stream, Gtk::DrawingArea& drawing_area) :
+	Thread("GTK Video"), video_packet_queue(video_packet_queue), timer(timer), drawing_area(drawing_area), video_stream(video_stream)
 {
 	img_convert_ctx	= NULL;
 	video_buffer	= NULL;
-	video_stream	= NULL;
 	previous_width	= 0;
 	previous_width	= 0;
 	video_width		= 0;
@@ -360,16 +342,12 @@ GtkVideoThread::~GtkVideoThread()
 		video_buffer = NULL;
 	}
 }
-	
-void GtkVideoThread::start(AVStream* stream)
-{
-	video_stream = stream;
-	Thread::start();
-}
 
 GtkAlsaSink::GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 	Sink(pipeline), packet_queue(get_pipeline().get_packet_queue())
 {
+	video_thread = NULL;
+	audio_thread = NULL;
 	video_stream_index = -1;
 	audio_stream_index = -1;
 
@@ -396,12 +374,22 @@ GtkAlsaSink::GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 			break;
 		}
 	}
+	
+	if (video_stream_index >= 0)
+	{
+		video_thread = new GtkVideoThread(timer, video_packet_queue, source.get_stream(video_stream_index), drawing_area);
+	}
+
+	if (audio_stream_index >= 0)
+	{
+		audio_thread = new AlsaAudioThread(timer, audio_packet_queue, source.get_stream(audio_stream_index));
+	}
 }
 
 GtkAlsaSink::~GtkAlsaSink()
 {
-	video_packet_queue.set_finished();
-	audio_packet_queue.set_finished();
+	video_packet_queue.finish();
+	audio_packet_queue.finish();
 	
 	if (video_thread != NULL)
 	{
@@ -418,42 +406,51 @@ GtkAlsaSink::~GtkAlsaSink()
 
 void GtkAlsaSink::run()
 {
+	if (video_thread != NULL)
+	{
+		video_thread->start();
+	}
+	
+	if (audio_thread != NULL)
+	{
+		audio_thread->start();
+	}
+
 	g_debug("Starting GtkAlsaSink loop");
 	while (!is_terminated())
 	{
 		AVPacket* packet = packet_queue.pop();
-
-		if (packet == NULL && packet_queue.get_size() == 0 && packet_queue.is_finished())
+		
+		if (packet != NULL)
 		{
-			terminate();
-		}
-		else
-		{
-			if (packet != NULL)
+			if (packet->stream_index == video_stream_index)
 			{
-				if (packet->stream_index == video_stream_index)
-				{
-					video_packet_queue.push(packet);
-					g_debug("Video packet pushed");
-				}
-				else if (packet->stream_index == audio_stream_index)
-				{
-					audio_packet_queue.push(packet);
-				}
-				else
-				{
-					av_free_packet(packet);
-				}
+				video_packet_queue.push(packet);
+			}
+			else if (packet->stream_index == audio_stream_index)
+			{
+				audio_packet_queue.push(packet);
+			}
+			else
+			{
+				av_free_packet(packet);
 			}
 		}
 	}
 	g_debug("Finished GtkAlsaSink loop");
 	
-	video_packet_queue.set_finished();
-	audio_packet_queue.set_finished();
+	video_packet_queue.finish();
+	audio_packet_queue.finish();
 
-	video_thread->join();
-	audio_thread->join();
-
+	if (video_thread != NULL)
+	{
+		video_thread->join();
+	}
+	
+	if (audio_thread != NULL)
+	{
+		audio_thread->join();
+	}
+	
 	g_debug("GtkAlsaSink thread finished");
 }
