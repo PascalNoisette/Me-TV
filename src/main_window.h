@@ -90,7 +90,11 @@ public:
 	void on_menu_item_close_clicked()
 	{
 		PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-		pipeline_manager.remove(pipeline_manager.get_pipeline("main_window"));
+		Pipeline* pipeline = pipeline_manager.get_pipeline("main_window");
+		if (pipeline != NULL)
+		{
+			pipeline_manager.remove(pipeline);
+		}
 	}
 		
 	void on_menu_item_quit_clicked()

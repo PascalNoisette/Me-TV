@@ -33,7 +33,7 @@ class Sink : public Thread
 private:
 	Pipeline& pipeline;
 public:
-	Sink(Pipeline& pipeline) : pipeline(pipeline) {}
+	Sink(Pipeline& pipeline) : Thread("Sink"), pipeline(pipeline) {}
 	Pipeline& get_pipeline() { return pipeline; }
 };
 
@@ -95,10 +95,11 @@ private:
 	AlsaAudioThread*	audio_thread;
 	Glib::Timer			timer;
 
+	void run();
+		
 public:
 	GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area);
 	~GtkAlsaSink();
-	void run();
 };
 
 #endif

@@ -59,8 +59,13 @@ Pipeline* PipelineManager::get_pipeline(const Glib::ustring& name)
 
 void PipelineManager::remove(Pipeline* pipeline)
 {
+	if (pipeline == NULL)
+	{
+		throw Exception("Failed to remove pipeline: Pipeline was NULL");
+	}
+	
 	g_debug("Stopping pipeline '%s'", pipeline->get_name().c_str());
-	pipeline->join(true);
+	pipeline->stop();
 	g_debug("Pipeline stopped");
 	
 	pipelines.remove(pipeline);
@@ -121,12 +126,32 @@ void Pipeline::add_sink(const Glib::ustring& mrl, const Glib::ustring& video_cod
 	throw Exception("Not implemented");
 }
 
-void Pipeline::run()
+void Pipeline::start()
 {
-	while (!is_terminated())
+	g_debug("Starting pipeline");
+	get_source().start();
+	SinkList::iterator iterator = sinks.begin();
+	while (iterator != sinks.end())
 	{
-		throw Exception("Not implemented");
+		Sink* sink = *iterator;
+		sink->start();
+		iterator++;
+	}	
+	g_debug("Pipeline started");
+}
+
+void Pipeline::stop()
+{
+	g_debug("Stopping pipeline");
+	get_source().join(true);
+	SinkList::iterator iterator = sinks.begin();
+	while (iterator != sinks.end())
+	{
+		Sink* sink = *iterator;
+		sink->join(true);
+		iterator++;
 	}
+	g_debug("Pipeline stopped");
 }
 
 Source& Pipeline::get_source()

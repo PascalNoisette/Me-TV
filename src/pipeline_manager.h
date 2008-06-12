@@ -27,7 +27,7 @@
 #include "sink.h"
 #include "packet_queue.h"
 
-class Pipeline : public Thread
+class Pipeline
 {
 private:
 	Glib::ustring	name;
@@ -40,7 +40,8 @@ public:
 	~Pipeline();
 	
 	const Glib::ustring& get_name() const { return name; }
-	void run();
+	void start();
+	void stop();
 	void set_source(const Channel& channel);
 	void set_source(const Glib::ustring& mrl);
 	void add_sink(Gtk::DrawingArea& drawing_area);

@@ -30,68 +30,17 @@ private:
 	gboolean		terminated;
 	Glib::Thread*	thread;
 	Glib::Mutex		mutex;
+	Glib::ustring	name;
 public:
-	Thread()
-	{
-		terminated = true;
-		thread = NULL;
-	}
-	
-	void start()
-	{
-		Glib::Mutex::Lock lock(mutex);
-		if (thread != NULL)
-		{
-			throw Exception("Thread has already been started");
-		}
-		
-		terminated = false;
-		thread = Glib::Thread::create(sigc::mem_fun(*this, &Thread::on_run), true);
-	}
-		
+	Thread(const Glib::ustring& name);
+
 	virtual void run() = 0;
-		
-	void on_run()
-	{		
-		TRY
-		run();
-		CATCH
-	}
-		
-	void join(gboolean term = false)
-	{
-		gboolean do_join = false;
-		
-		{
-			Glib::Mutex::Lock lock(mutex);
-			if (thread != NULL)
-			{
-				if (term)
-				{
-					terminated = true;
-				}
-				
-				do_join = true;
-			}		
-		}
-		
-		if (do_join)
-		{
-			thread->join();
-		}
-	}
-		
-	void terminate()
-	{
-		Glib::Mutex::Lock lock(mutex);
-		terminated = true;
-	}
-		
-	gboolean is_terminated()
-	{
-		Glib::Mutex::Lock lock(mutex);
-		return terminated;
-	}
+	
+	void start();
+	void on_run();
+	void join(gboolean term = false);
+	void terminate();
+	gboolean is_terminated();
 };
 
 #endif

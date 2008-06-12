@@ -24,7 +24,7 @@
 #include "scheduler.h"
 #include "application.h"
 
-Source::Source(PacketQueue& packet_queue, const Channel& channel) : packet_queue(packet_queue)
+Source::Source(PacketQueue& packet_queue, const Channel& channel) : Thread("Source"), packet_queue(packet_queue)
 {
 	Dvb::Frontend& frontend = get_frontend();
 	
@@ -42,7 +42,7 @@ Source::Source(PacketQueue& packet_queue, const Channel& channel) : packet_queue
 	create();
 }
 
-Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) : packet_queue(packet_queue)
+Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) : Thread("Source"), packet_queue(packet_queue)
 {
 	this->mrl = mrl;
 	create();
@@ -67,9 +67,7 @@ void Source::create()
 	g_debug("Opening '%s'", filename);
 	if (av_open_input_file(&format_context, filename, NULL, 0, NULL) != 0)
 	{
-		Glib::ustring message = "Failed to open input file: ";
-		message += filename;
-		throw Exception(message);
+		throw Exception("Failed to open input file: " + mrl);
 	}
 	g_debug("'%s' opened", filename);
 
@@ -103,6 +101,7 @@ Dvb::Demuxer& Source::add_pes_demuxer(const Glib::ustring& demux_path,
 	
 void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 {
+	g_debug("Setting up DVB");
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 	
 	remove_all_demuxers();
@@ -167,6 +166,7 @@ void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	{
 		add_pes_demuxer(demux_path, pms.teletext_streams[i].pid, DMX_PES_OTHER, "teletext");
 	}
+	g_debug("Finished setting up DVB");
 }
 
 Dvb::Frontend& Source::get_frontend()
@@ -206,7 +206,7 @@ void Source::run()
 		AVPacket packet;
 
 		gint result = av_read_frame(format_context, &packet);
-		
+
 		if (result < 0)
 		{
 			terminate();
@@ -216,7 +216,7 @@ void Source::run()
 			packet_queue.push(&packet);
 		}
 	}
-	g_debug("Source thread finished");
+	g_debug("Source thread loop finished");
 }
 
 AVStream* Source::get_stream(guint index) const

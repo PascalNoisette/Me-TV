@@ -56,7 +56,8 @@ me_tv_SOURCES = \
 	packet_queue.cc \
 	packet_queue.h \
 	sink.h \
-	sink.cc
+	sink.cc \
+	thread.cc
 
 me_tv_LDFLAGS = 
 

@@ -41,10 +41,19 @@ void PacketQueue::push(AVPacket* packet)
 
 AVPacket* PacketQueue::pop()
 {
-	Glib::Mutex::Lock lock(mutex);
-	AVPacket* front = queue.front();
-	queue.pop();
-	return front;
+	while (get_size() == 0)
+	{
+		sleep(1000);
+	}
+
+	AVPacket* packet = NULL;
+	if (!finished)
+	{
+		Glib::Mutex::Lock lock(mutex);
+		packet = queue.front();
+		queue.pop();
+	}
+	return packet;
 }
 
 gsize PacketQueue::get_size()
