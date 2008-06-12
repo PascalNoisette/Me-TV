@@ -50,7 +50,8 @@ public:
 		glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 		glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));
 
-		glade->connect_clicked("event_box_video",		sigc::mem_fun(*this, &MainWindow::on_event_box_video_clicked));
+		Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
+		event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
 
 		Gtk::AboutDialog* dialog_about = (Gtk::AboutDialog*)glade->get_widget("dialog_about");
 		dialog_about->set_version(VERSION);
@@ -154,10 +155,27 @@ public:
 		about_dialog->hide();
 	}
 		
-	void on_event_box_video_clicked()
+	bool on_event_box_video_button_pressed(GdkEventButton* event)
 	{
-		Gtk::MessageDialog dialog(*this, "Got click");
-		dialog.run();
+		if (event->button == 1)
+		{
+			if (event->type == GDK_2BUTTON_PRESS)
+			{
+				if (get_window()->get_state() & Gdk::WINDOW_STATE_FULLSCREEN)
+				{
+					unfullscreen();
+				}
+				else
+				{
+					fullscreen();
+				}
+				
+			}
+		}
+		else if (event->button == 3)
+		{
+			// EPG
+		}
 	}
 };
 
