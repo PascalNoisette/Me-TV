@@ -50,4 +50,6 @@ namespace Dvb
 	};
 }
 
+typedef std::list<Dvb::Demuxer*> DemuxerList;
+
 #endif

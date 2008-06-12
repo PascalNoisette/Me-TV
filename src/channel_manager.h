@@ -22,6 +22,9 @@
 #define __CHANNEL_MANGER_H__
 
 #include <glibmm.h>
+#include <glibmm/i18n.h>
+#include <dvb_frontend.h>
+#include "exception.h"
 
 #define CHANNEL_FLAG_DVB		1
 

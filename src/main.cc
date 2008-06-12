@@ -37,6 +37,12 @@ int main (int argc, char *argv[])
 {	
 	try
 	{
+		if (!Glib::thread_supported())
+		{
+			Glib::thread_init();
+		}
+		gdk_threads_init();
+
 		g_log_set_handler(G_LOG_DOMAIN,
 			(GLogLevelFlags)(G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION),
 			log_handler, NULL);

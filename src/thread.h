@@ -70,9 +70,9 @@ public:
 				{
 					terminated = true;
 				}
-			}
-			
-			do_join = true;
+				
+				do_join = true;
+			}		
 		}
 		
 		if (do_join)

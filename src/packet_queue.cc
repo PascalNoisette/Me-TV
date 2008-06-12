@@ -18,38 +18,53 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include "ffmpeg_renderer.h"
-#include <gdk/gdk.h>
+#include "packet_queue.h"
+#include "exception.h"
 
-FFMpegRenderer::FFMpegRenderer()
+PacketQueue::PacketQueue()
 {
+	finished = false;
+}
+	
+void PacketQueue::push(AVPacket* packet)
+{
+	Glib::Mutex::Lock lock(mutex);
+	
+	if (av_dup_packet(packet) < 0)
+	{
+		throw Exception("Failed to dup packet");
+	}
+	AVPacket* new_packet = new AVPacket();
+	*new_packet = *packet;
+	queue.push(new_packet);
 }
 
-FFMpegRenderer::~FFMpegRenderer()
+AVPacket* PacketQueue::pop()
 {
-	close();
+	Glib::Mutex::Lock lock(mutex);
+	AVPacket* front = queue.front();
+	queue.pop();
+	return front;
 }
 
-void FFMpegRenderer::mute(gboolean state)
+gsize PacketQueue::get_size()
 {
+	Glib::Mutex::Lock lock(mutex);
+	return queue.size();
+}
+	
+gboolean PacketQueue::is_empty()
+{
+	Glib::Mutex::Lock lock(mutex);
+	return queue.empty();
+}
+	
+void PacketQueue::set_finished()
+{
+	finished = true;
 }
 
-void FFMpegRenderer::open(const Glib::ustring& mrl)
+gboolean PacketQueue::is_finished()
 {
-	this->mrl = mrl;
-	stream_thread.start(mrl);
-}
-
-void FFMpegRenderer::close()
-{
-	stream_thread.terminate();
-
-	gdk_threads_leave();
-	stream_thread.join(true);
-	gdk_threads_enter();		
-}
-
-void FFMpegRenderer::set_drawing_area(Gtk::DrawingArea* d)
-{
-	stream_thread.set_drawing_area(d);
+	return finished && is_empty();
 }

@@ -26,15 +26,13 @@
 #include "meters_dialog.h"
 #include "channels_dialog.h"
 #include "preferences_dialog.h"
-#include "ffmpeg_renderer.h"
-#include "device_manager.h"
 
 class MainWindow : public Gtk::Window
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
-	Gtk::DrawingArea* drawing_area_video;
-	FFMpegRenderer* renderer;
+	Gtk::DrawingArea*	drawing_area_video;
+		
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Window(cobject), glade(glade)
 	{
@@ -58,9 +56,13 @@ public:
 		dialog_about->set_version(VERSION);
 	}
 		
-	void set_renderer(FFMpegRenderer& r)
+	Gtk::DrawingArea& get_drawing_area()
 	{
-		renderer = &r;
+		if (drawing_area_video == NULL)
+		{
+			throw Exception(_("The video drawing area has not been created"));
+		}
+		return *drawing_area_video;
 	}
 		
 	void on_menu_item_open_clicked()
@@ -74,17 +76,21 @@ public:
 		
 		if (response == 0)
 		{
-			renderer->close();
 			Glib::ustring filename = dialog.get_filename();
 			g_debug("Playing '%s'", filename.c_str());
-			renderer->set_drawing_area(drawing_area_video);
-			renderer->open(filename);
+			
+			PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
+			Pipeline& pipeline = pipeline_manager.create("main_window");
+			pipeline.set_source(filename);
+			pipeline.add_sink(*drawing_area_video);
+			pipeline.start();
 		}
 	}
 
 	void on_menu_item_close_clicked()
 	{
-		renderer->close();
+		PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
+		pipeline_manager.remove(pipeline_manager.get_pipeline("main_window"));
 	}
 		
 	void on_menu_item_quit_clicked()
@@ -94,9 +100,7 @@ public:
 		
 	void on_menu_item_meters_clicked()
 	{
-		MetersDialog* meters_dialog = NULL;
-		glade->get_widget_derived("dialog_meters", meters_dialog);
-		Dvb::DeviceManager& device_manager = Application::get_current().get_device_manager();
+		Dvb::DeviceManager& device_manager = get_application().get_device_manager();
 		const std::list<Dvb::Frontend*> frontends = device_manager.get_frontends();
 		if (frontends.size() == 0)
 		{
@@ -105,6 +109,8 @@ public:
 		}
 		else
 		{
+			MetersDialog* meters_dialog = NULL;
+			glade->get_widget_derived("dialog_meters", meters_dialog);
 			Dvb::Frontend* frontend = *(frontends.begin());
 			meters_dialog->start(*frontend);
 			meters_dialog->run();
@@ -124,7 +130,7 @@ public:
 		
 		g_debug("Tuning to channel: '%s'", channel.name.c_str());
 		
-		Application::get_current().get_channel_manager().set_active(channel);
+		get_application().get_channel_manager().set_active(channel);
 	}
 
 	void on_menu_item_preferences_clicked()

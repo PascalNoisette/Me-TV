@@ -23,20 +23,23 @@
 
 Application* Application::current = NULL;
 
+Application& get_application()
+{
+	return Application::get_current();
+}
+
 Application::Application(int argc, char *argv[]) :
 	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv)
 {
-	current = this;
-	
-	if (!Glib::thread_supported())
+	if (current != NULL)
 	{
-		Glib::thread_init();
+		throw Exception("Application has already been initialised");
 	}
-	gdk_threads_init();
+	
+	current = this;
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
 	Glib::ustring glade_path = current_directory + "/me-tv.glade";
-	dvb_thread = NULL;
 
 	if (!Gio::File::create_for_path(glade_path)->query_exists())
 	{
@@ -47,38 +50,36 @@ Application::Application(int argc, char *argv[]) :
 	
 	glade = Gnome::Glade::Xml::create(glade_path);
 	
-	channel_manager.signal_active_channel_changed.connect(sigc::mem_fun(*this, &Application::on_active_channel_changed));
+	channel_manager.signal_active_channel_changed.connect(
+		sigc::mem_fun(*this, &Application::on_active_channel_changed));
 }
 
 void Application::run()
 {
 	MainWindow* main_window = NULL;
 	glade->get_widget_derived("window_main", main_window);
-	main_window->set_renderer(renderer);
 	Gnome::Main::run(*main_window);
 }
 
 Application& Application::get_current()
 {
+	if (current == NULL)
+	{
+		throw Exception("Application has not been initialised");
+	}
+	
 	return *current;
 }
 
 void Application::on_active_channel_changed(Channel& channel)
 {
-	Event event(0, 0);
-	Dvb::Frontend* frontend = device_manager.request_frontend(event);
-	if (frontend == NULL)
-	{
-		throw Exception(_("No frontend available"));
-	}
-	
-	if (dvb_thread != NULL)
-	{
-		dvb_thread->join(true);
-		delete dvb_thread;
-	}
-	
-	dvb_thread = new DvbThread(*frontend, channel, renderer);
-	dvb_thread->start();
+	MainWindow* main_window = NULL;
+	glade->get_widget_derived("window_main", main_window);
+
+	Pipeline& pipeline = pipeline_manager.create("main_window");
+	pipeline.set_source(channel);
+	pipeline.add_sink(main_window->get_drawing_area());
+	pipeline.start();
 }
+
 

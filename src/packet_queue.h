@@ -18,30 +18,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __FFMPEG_RENDERER_H__
-#define __FFMPEG_RENDERER_H__
+#ifndef __PACKET_QUEUE_H__
+#define __PACKET_QUEUE_H__
 
-#include "stream_thread.h"
+#include <ffmpeg/avformat.h>
 #include <glibmm.h>
+#include <queue>
 
-class FFMpegRenderer
+class PacketQueue
 {
 private:
-	Glib::ustring		mrl;
-	StreamThread		stream_thread;
-
+	gboolean				finished;
+	std::queue<AVPacket*>	queue;
+	Glib::Mutex				mutex;
+		
 public:
-	FFMpegRenderer();
-	~FFMpegRenderer();
-
-	void set_drawing_area(Gtk::DrawingArea* d);
-	void open(const Glib::ustring& mrl);
-	void close();
-	void on_timer() {}
-	void mute(gboolean state);
-	void set_audio_channel(gint channel) {}
-	void set_subtitle_channel(gint channel) {}
-	void set_dual_language_state(gint state) {}
+	PacketQueue();
+	
+	void push(AVPacket* packet);
+	AVPacket* pop();
+	gsize get_size();
+	gboolean is_empty();
+	void set_finished();
+	gboolean is_finished();
 };
 
 #endif

@@ -26,10 +26,6 @@ me_tv_SOURCES = \
 	channels_dialog.h \
 	preferences_dialog.h \
 	scan_dialog.h \
-	ffmpeg_renderer.cc \
-	stream_thread.cc \
-	ffmpeg_renderer.h \
-	stream_thread.h \
 	exception.h \
 	thread.h \
 	application.cc \
@@ -50,7 +46,17 @@ me_tv_SOURCES = \
 	atsc_text.h \
 	device_manager.h \
 	me-tv.h \
-	meters_dialog.h
+	meters_dialog.h \
+	source.cc \
+	source.h \
+	scan_dialog.cc \
+	channels_dialog.cc \
+	pipeline_manager.cc \
+	pipeline_manager.h \
+	packet_queue.cc \
+	packet_queue.h \
+	sink.h \
+	sink.cc
 
 me_tv_LDFLAGS = 
 

@@ -18,13 +18,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include "stream_thread.h"
+#include "sink.h"
+#include "me-tv.h"
+#include "pipeline_manager.h"
 #include <avcodec.h>
 #include <avformat.h>
 #include <swscale.h>
 #include <alsa/asoundlib.h>
-#include <gdk/gdk.h>
-#include "me-tv.h"
 
 class AlsaException : public Exception
 {
@@ -46,8 +46,8 @@ private:
 public:
 	AlsaException(const char* fmt, ...) : Exception(get_message(snd_strerror(errno),fmt)) {}
 };
-		
-void AudioStreamThread::run ()
+
+void AlsaAudioThread::run()
 {
 	snd_pcm_t* handle = NULL;
 	
@@ -55,8 +55,6 @@ void AudioStreamThread::run ()
 	{
 		throw Exception("ASSERT: audio_stream is NULL");
 	}
-	
-	mutex.lock();
 
 	AVCodec* audio_codec = avcodec_find_decoder(audio_stream->codec->codec_id);
 	if (audio_codec == NULL)
@@ -69,7 +67,6 @@ void AudioStreamThread::run ()
 	{
 		throw Exception("Failed to open audio codec");
 	}
-	mutex.unlock();
 
 	const gchar* device = "default";
 	
@@ -113,7 +110,6 @@ void AudioStreamThread::run ()
 		}
 		else
 		{
-			mutex.lock();
 			AVPacket* packet = audio_packet_buffers.pop();
 
 			int audio_buffer_length = sizeof(data) - total_audio_buffer_size;
@@ -136,8 +132,6 @@ void AudioStreamThread::run ()
 			}
 			av_free_packet(packet);
 			delete packet;
-
-			mutex.unlock();
 			
 			if (count++ > number_audio_buffers)
 			{
@@ -163,19 +157,19 @@ void AudioStreamThread::run ()
 	avcodec_close(audio_stream->codec);
 }
 	
-AudioStreamThread::AudioStreamThread(Glib::Timer& timer, Glib::Mutex& mutex, PacketQueue& audio_packet_buffers)
-		: audio_packet_buffers(audio_packet_buffers), mutex(mutex), timer(timer)
+AlsaAudioThread::AlsaAudioThread(Glib::Timer& timer, PacketQueue& audio_packet_buffers) :
+	audio_packet_buffers(audio_packet_buffers), timer(timer)
 {
 	audio_stream = NULL;
 }
 
-void AudioStreamThread::start(AVStream* stream)
+void AlsaAudioThread::start(AVStream* stream)
 {
 	audio_stream = stream;		
 	Thread::start();
 }
-		
-void VideoStreamThread::draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc)
+
+void GtkVideoThread::draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc)
 {
 	gint width = 0;
 	gint height = 0;
@@ -249,54 +243,14 @@ void VideoStreamThread::draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk
 		video_width * 3);
 }
 
-void VideoStreamThread::run()
+void GtkVideoThread::run()
 {
-	gdouble		frame_rate = 0;
-	gboolean	video_frame_finished = false;
-
 	Glib::RefPtr<Gdk::Window> window = drawing_area.get_window();
 	Glib::RefPtr<Gdk::GC> gc = Gdk::GC::create(window);
-	
-	mutex.lock();		
-	
-	AVCodec* video_codec = avcodec_find_decoder(video_stream->codec->codec_id);
-	if (video_codec == NULL)
-	{
-		throw Exception("Failed to find video codec");
-	}
-	g_debug("VIDEO CODEC: '%s'", video_codec->name);
 
-	if (video_codec->capabilities & CODEC_CAP_TRUNCATED)
-	{
-		video_stream->codec->flags |= CODEC_FLAG_TRUNCATED;
-	}
-
-	if (video_stream->r_frame_rate.den != 0 && video_stream->r_frame_rate.num != 0)
-	{
-		frame_rate = av_q2d(video_stream->r_frame_rate);
-	}
-	else
-	{
-		frame_rate = 1/av_q2d(video_stream->codec->time_base);
-	}
-	g_debug("FRAME RATE: %5.2f", frame_rate);
-	
-	if (avcodec_open(video_stream->codec, video_codec) < 0)
-	{
-		throw Exception("Failed to open video codec");
-	}
-
-	frame = avcodec_alloc_frame();
-	if (frame == NULL)
-	{
-		throw Exception("Failed to allocate frame");
-	}
-
-	sample_aspect_ratio = video_stream->codec->sample_aspect_ratio;
-	mutex.unlock();
-
-	guint frame_count = 0;
-	guint interval = 1000000 / frame_rate;
+	gboolean	video_frame_finished = false;
+	guint		frame_count = 0;
+	guint		interval = 1000000 / frame_rate;
 
 	while (!is_terminated())
 	{
@@ -331,8 +285,6 @@ void VideoStreamThread::run()
 			
 			AVPacket* packet = video_packet_buffer.pop();
 			
-			mutex.lock();
-			
 			avcodec_decode_video(video_stream->codec,
 				frame, &video_frame_finished, packet->data, packet->size);
 			if (video_frame_finished && !drop_frame)
@@ -342,20 +294,16 @@ void VideoStreamThread::run()
 			}
 			av_free_packet(packet);
 			delete packet;
-			
-			mutex.unlock();
 		}
 	}
 	g_debug("Video thread finished");
 	
-	mutex.lock();
 	av_free(frame);
 	avcodec_close(video_stream->codec);
-	mutex.unlock();
 }
 
-VideoStreamThread::VideoStreamThread(Glib::Timer& timer, Gtk::DrawingArea& drawing_area, Glib::Mutex& mutex, PacketQueue& video_packet_buffer)
-		: video_packet_buffer(video_packet_buffer), mutex(mutex), timer(timer), drawing_area(drawing_area)
+GtkVideoThread::GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_buffer, Gtk::DrawingArea& drawing_area)
+		: video_packet_buffer(video_packet_buffer), timer(timer), drawing_area(drawing_area)
 {
 	img_convert_ctx	= NULL;
 	video_buffer	= NULL;
@@ -367,9 +315,44 @@ VideoStreamThread::VideoStreamThread(Glib::Timer& timer, Gtk::DrawingArea& drawi
 	startx			= 0;
 	starty			= 0;
 	frame			= NULL;
+
+	AVCodec* video_codec = avcodec_find_decoder(video_stream->codec->codec_id);
+	if (video_codec == NULL)
+	{
+		throw Exception("Failed to find video codec");
+	}
+	g_debug("VIDEO CODEC: '%s'", video_codec->name);
+
+	if (video_codec->capabilities & CODEC_CAP_TRUNCATED)
+	{
+		video_stream->codec->flags |= CODEC_FLAG_TRUNCATED;
+	}
+
+	if (video_stream->r_frame_rate.den != 0 && video_stream->r_frame_rate.num != 0)
+	{
+		frame_rate = av_q2d(video_stream->r_frame_rate);
+	}
+	else
+	{
+		frame_rate = 1/av_q2d(video_stream->codec->time_base);
+	}
+	g_debug("FRAME RATE: %5.2f", frame_rate);
+	
+	if (avcodec_open(video_stream->codec, video_codec) < 0)
+	{
+		throw Exception("Failed to open video codec");
+	}
+
+	frame = avcodec_alloc_frame();
+	if (frame == NULL)
+	{
+		throw Exception("Failed to allocate frame");
+	}
+
+	sample_aspect_ratio = video_stream->codec->sample_aspect_ratio;
 }
 
-VideoStreamThread::~VideoStreamThread()
+GtkVideoThread::~GtkVideoThread()
 {
 	if (video_buffer != NULL)
 	{
@@ -378,148 +361,78 @@ VideoStreamThread::~VideoStreamThread()
 	}
 }
 	
-void VideoStreamThread::start(AVStream* stream)
+void GtkVideoThread::start(AVStream* stream)
 {
 	video_stream = stream;
 	Thread::start();
 }
-		
-void StreamThread::run()
-{
-	Glib::Timer			timer;
-	AVFormatContext*	format_context;
-	PacketQueue			video_packet_buffer;
-	VideoStreamThread*	video_stream_thread = NULL;
-	PacketQueue			audio_packet_buffer;
-	AudioStreamThread*	audio_stream_thread = NULL;
-	gint				video_stream_index;
-	gint				audio_stream_index;
 
-	const gchar* filename = mrl.c_str();
-	
+GtkAlsaSink::GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
+	Sink(pipeline), packet_queue(get_pipeline().get_packet_queue())
+{
 	video_stream_index = -1;
 	audio_stream_index = -1;
-	
-	mutex.lock();
-	av_register_all();
-	
-	if (av_open_input_file(&format_context, filename, NULL, 0, NULL) != 0)
-	{
-		Glib::ustring message = "Failed to open input file: ";
-		message += filename;
-		throw Exception(message);
-	}
 
-	if (av_find_stream_info(format_context)<0)
-	{
-		throw Exception("Couldn't find stream information");
-	}
-
-	dump_format(format_context, 0, filename, false);
+	Source& source = get_pipeline().get_source();
+	gsize stream_count = source.get_stream_count();
 	
-	for (guint index = 0; index < format_context->nb_streams; index++)
+	for (guint index = 0; index < stream_count; index++)
 	{
-		AVStream* stream = format_context->streams[index];
+		AVStream* stream = source.get_stream(index);
 		switch (stream->codec->codec_type)
 		{
 		case CODEC_TYPE_VIDEO:
-			video_stream_index = index;
+			if (video_stream_index == -1)
+			{
+				video_stream_index = index;
+			}
 			break;
 		case CODEC_TYPE_AUDIO:
-			audio_stream_index = index;
+			if (audio_stream_index == -1)
+			{
+				audio_stream_index = index;
+			}
 			g_debug("Stream language: '%s'", stream->language);
 			break;
 		}
 	}
+}
+
+GtkAlsaSink::~GtkAlsaSink()
+{
+	video_packet_queue.set_finished();
+	audio_packet_queue.set_finished();
 	
-	if (video_stream_index != -1 && drawing_area != NULL)
+	if (video_thread != NULL)
 	{
-		g_debug("Creating video stream thread");
-		video_stream_thread = new VideoStreamThread(timer, *drawing_area, mutex, video_packet_buffer);
-		video_stream_thread->start(format_context->streams[video_stream_index]);
+		video_thread->join();
+		delete video_thread;
 	}
 	
-	if (audio_stream_index != -1)
+	if (audio_thread != NULL)
 	{
-		g_debug("Creating audio stream thread");
-		audio_stream_thread = new AudioStreamThread(timer, mutex, audio_packet_buffer);
-		audio_stream_thread->start(format_context->streams[audio_stream_index]);
+		audio_thread->join();
+		delete audio_thread;
 	}
-	mutex.unlock();
-	
-	timer.start();
-	
-	g_debug("Entering stream loop");
+}
+
+void GtkAlsaSink::run()
+{
 	while (!is_terminated())
 	{
-		AVPacket packet;
+		AVPacket* packet = packet_queue.pop();
 		
-		gint result = 0;
-
-		mutex.lock();
-		result = av_read_frame(format_context, &packet);
-		mutex.unlock();
-		
-		if (result < 0)
+		if (packet->stream_index == video_stream_index)
 		{
-			terminate();
+			video_packet_queue.push(packet);
+		}
+		else if (packet->stream_index == audio_stream_index)
+		{
+			audio_packet_queue.push(packet);
 		}
 		else
 		{
-			// Make sure that we don't get too far ahead
-			while ((audio_packet_buffer.get_size() > 10 || video_packet_buffer.get_size() > 10) && !is_terminated())
-			{
-				usleep(1000);
-			}
-			
-			if (packet.stream_index == video_stream_index)
-			{
-				video_packet_buffer.push(&packet);
-			}
-			else if (packet.stream_index == audio_stream_index)
-			{
-				audio_packet_buffer.push(&packet);
-			}
-			else
-			{
-				av_free_packet(&packet);
-			}
+			av_free_packet(packet);
 		}
 	}
-	g_debug("Stream thread finished");
-
-	video_packet_buffer.set_finished();
-	audio_packet_buffer.set_finished();
-	
-	if (video_stream_thread != NULL)
-	{
-		video_stream_thread->join();
-		delete video_stream_thread;
-	}
-	
-	if (audio_stream_thread != NULL)
-	{
-		audio_stream_thread->join();
-		delete audio_stream_thread;
-	}
-	
-	av_close_input_file(format_context);
-	format_context = NULL;
-}
-
-StreamThread::StreamThread()
-{
-	drawing_area = NULL;
-}
-	
-void StreamThread::start(const Glib::ustring& mrl)
-{
-	this->mrl = mrl;
-	g_debug("Starting stream thread");
-	Thread::start();
-}
-
-void StreamThread::set_drawing_area(Gtk::DrawingArea* d)
-{
-	drawing_area = d;
 }

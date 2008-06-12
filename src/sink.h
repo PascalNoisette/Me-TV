@@ -18,89 +18,42 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __STREAM_THREAD_H__
-#define __STREAM_THREAD_H__
+#ifndef __SINK_H__
+#define __SINK_H__
 
-#include <ffmpeg/avformat.h>
-#include <glibmm.h>
-#include <gtkmm.h>
-#include <gdkmm.h>
-#include <queue>
+#include "packet_queue.h"
 #include "thread.h"
+#include <list>
+#include <gtkmm.h>
 
-class PacketQueue
+class Pipeline;
+
+class Sink : public Thread
 {
 private:
-	gboolean				finished;
-	std::queue<AVPacket*>	queue;
-	Glib::Mutex				mutex;
-		
+	Pipeline& pipeline;
 public:
-	PacketQueue()
-	{
-		finished = false;
-	}
-		
-	void push(AVPacket* packet)
-	{
-		Glib::Mutex::Lock lock(mutex);
-		
-		if (av_dup_packet(packet) < 0)
-		{
-			throw Exception("Failed to dup packet");
-		}
-		AVPacket* new_packet = new AVPacket();
-		*new_packet = *packet;
-		queue.push(new_packet);
-	}
-
-	AVPacket* pop()
-	{
-		Glib::Mutex::Lock lock(mutex);
-		AVPacket* front = queue.front();
-		queue.pop();
-		return front;
-	}
-
-	gsize get_size()
-	{
-		Glib::Mutex::Lock lock(mutex);
-		return queue.size();
-	}
-		
-	gboolean is_empty()
-	{
-		Glib::Mutex::Lock lock(mutex);
-		return queue.empty();
-	}
-		
-	gboolean set_finished()
-	{
-		finished = true;
-	}
-
-	gboolean is_finished()
-	{
-		return finished && is_empty();
-	}
+	Sink(Pipeline& pipeline) : pipeline(pipeline) {}
+	Pipeline& get_pipeline() { return pipeline; }
 };
 
-class AudioStreamThread : public Thread
+typedef std::list<Sink*> SinkList;
+
+class AlsaAudioThread : public Thread
 {
 private:
 	PacketQueue&	audio_packet_buffers;
 	AVStream*		audio_stream;
-	Glib::Mutex&	mutex;
 	Glib::Timer&	timer;
 		
 	void run ();
 		
 public:	
-	AudioStreamThread(Glib::Timer& timer, Glib::Mutex& mutex, PacketQueue& audio_packet_buffers);
+	AlsaAudioThread(Glib::Timer& timer, PacketQueue& audio_packet_buffers);
 	void start(AVStream* stream);
 };
 
-class VideoStreamThread : public Thread
+class GtkVideoThread : public Thread
 {
 private:
 	Gtk::DrawingArea&		drawing_area;
@@ -118,32 +71,34 @@ private:
 	AVPicture				picture;
 	AVStream*				video_stream;
 	AVFrame*				frame;
-	Glib::Mutex&			mutex;
+	gdouble					frame_rate;
 	Glib::Timer&			timer;
 		
 	void draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc);
 	void run();
 
 public:
-	VideoStreamThread(Glib::Timer& timer, Gtk::DrawingArea& drawing_area,
-					  Glib::Mutex& mutex, PacketQueue& video_packet_buffer);
-	~VideoStreamThread();
+	GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_buffer, Gtk::DrawingArea& drawing_area);
+	~GtkVideoThread();
 	void start(AVStream* stream);
 };
 
-class StreamThread : public Thread
+class GtkAlsaSink : public Sink
 {
 private:
-	Glib::ustring		mrl;
-	Glib::Mutex			mutex;
-	Gtk::DrawingArea*	drawing_area;
-		
-	void run();
-		
+	PacketQueue&		packet_queue;
+	PacketQueue			video_packet_queue;
+	PacketQueue			audio_packet_queue;
+	gint				video_stream_index;
+	gint				audio_stream_index;
+	GtkVideoThread*		video_thread;
+	AlsaAudioThread*	audio_thread;
+	Glib::Timer			timer;
+
 public:
-	StreamThread();
-	void set_drawing_area(Gtk::DrawingArea* d);
-	void start(const Glib::ustring& mrl);
+	GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area);
+	~GtkAlsaSink();
+	void run();
 };
 
 #endif
