@@ -23,160 +23,30 @@
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
-#include "meters_dialog.h"
-#include "channels_dialog.h"
-#include "preferences_dialog.h"
 
 class MainWindow : public Gtk::Window
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
-	Gtk::DrawingArea*	drawing_area_video;
+	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
+	Gtk::DrawingArea*						drawing_area_video;
+	
+	void fullscreen();
+	void unfullscreen();
+	gboolean is_fullscreen();
 		
 public:
-	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Window(cobject), glade(glade)
-	{
-		drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
-		drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
-		
-		glade->get_widget("vbox_epg")->hide();
-		glade->get_widget("hbox_search_bar")->hide();
-		
-		glade->connect_clicked("menu_item_open",		sigc::mem_fun(*this, &MainWindow::on_menu_item_open_clicked));
-		glade->connect_clicked("menu_item_close",		sigc::mem_fun(*this, &MainWindow::on_menu_item_close_clicked));
-		glade->connect_clicked("menu_item_quit",		sigc::mem_fun(*this, &MainWindow::on_menu_item_quit_clicked));
-		glade->connect_clicked("menu_item_meters",		sigc::mem_fun(*this, &MainWindow::on_menu_item_meters_clicked));
-		glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
-		glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
-		glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));
+	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 
-		Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
-		event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
+	Gtk::DrawingArea& get_drawing_area();
 
-		Gtk::AboutDialog* dialog_about = (Gtk::AboutDialog*)glade->get_widget("dialog_about");
-		dialog_about->set_version(VERSION);
-	}
-		
-	Gtk::DrawingArea& get_drawing_area()
-	{
-		if (drawing_area_video == NULL)
-		{
-			throw Exception(_("The video drawing area has not been created"));
-		}
-		return *drawing_area_video;
-	}
-		
-	void on_menu_item_open_clicked()
-	{
-		Gtk::FileChooserDialog dialog(*this, "Open media file ...");
-		dialog.add_button(Gtk::Stock::CANCEL, -1);
-		dialog.add_button(Gtk::Stock::OPEN, 0);
-		dialog.set_default_response(0);
-		gint response = dialog.run();
-		dialog.hide();
-		
-		if (response == 0)
-		{
-			Glib::ustring filename = dialog.get_filename();
-			g_debug("Playing '%s'", filename.c_str());
-			
-			PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-			Pipeline& pipeline = pipeline_manager.create("main_window");
-			pipeline.set_source(filename);
-			pipeline.add_sink(*drawing_area_video);
-			pipeline.start();
-		}
-	}
-
-	void on_menu_item_close_clicked()
-	{
-		PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-		Pipeline* pipeline = pipeline_manager.get_pipeline("main_window");
-		if (pipeline != NULL)
-		{
-			pipeline_manager.remove(pipeline);
-		}
-	}
-		
-	void on_menu_item_quit_clicked()
-	{
-		Gnome::Main::quit();
-	}
-		
-	void on_menu_item_meters_clicked()
-	{
-		Dvb::DeviceManager& device_manager = get_application().get_device_manager();
-		const std::list<Dvb::Frontend*> frontends = device_manager.get_frontends();
-		if (frontends.size() == 0)
-		{
-			Gtk::MessageDialog dialog(*this, _("No tuners available"), Gtk::MESSAGE_ERROR);
-			dialog.run();
-		}
-		else
-		{
-			MetersDialog* meters_dialog = NULL;
-			glade->get_widget_derived("dialog_meters", meters_dialog);
-			Dvb::Frontend* frontend = *(frontends.begin());
-			meters_dialog->start(*frontend);
-			meters_dialog->run();
-			meters_dialog->hide();
-		}
-	}
-
-	void on_menu_item_channels_clicked()
-	{
-		ChannelsDialog* channels_dialog = NULL;
-		glade->get_widget_derived("dialog_channels", channels_dialog);
-		channels_dialog->run();
-		channels_dialog->hide();
-		
-		ChannelList channels = channels_dialog->get_channels();
-		ChannelList::iterator iterator = channels.begin();
-		Channel& channel = *iterator;
-		
-		g_debug("Tuning to channel: '%s'", channel.name.c_str());
-		
-		get_application().get_channel_manager().set_active(channel);
-	}
-
-	void on_menu_item_preferences_clicked()
-	{
-		PreferencesDialog* preferences_dialog = NULL;
-		glade->get_widget_derived("dialog_preferences", preferences_dialog);
-		preferences_dialog->run();
-		preferences_dialog->hide();
-	}
-
-	void on_menu_item_about_clicked()
-	{
-		Gtk::Dialog* about_dialog = NULL;
-		glade->get_widget("dialog_about", about_dialog);
-		about_dialog->run();
-		about_dialog->hide();
-	}
-		
-	bool on_event_box_video_button_pressed(GdkEventButton* event)
-	{
-		if (event->button == 1)
-		{
-			if (event->type == GDK_2BUTTON_PRESS)
-			{
-				if (get_window()->get_state() & Gdk::WINDOW_STATE_FULLSCREEN)
-				{
-					unfullscreen();
-				}
-				else
-				{
-					fullscreen();
-				}
-				
-			}
-		}
-		else if (event->button == 3)
-		{
-			// EPG
-		}
-	}
+	void on_menu_item_open_clicked();
+	void on_menu_item_close_clicked();
+	void on_menu_item_quit_clicked();
+	void on_menu_item_meters_clicked();
+	void on_menu_item_channels_clicked();
+	void on_menu_item_preferences_clicked();
+	void on_menu_item_about_clicked();
+	bool on_event_box_video_button_pressed(GdkEventButton* event);
 };
 
 #endif

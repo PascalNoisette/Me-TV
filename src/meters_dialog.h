@@ -24,6 +24,7 @@
 #include <libgnomeuimm.h>
 #include <libglademm.h>
 #include "thread.h"
+#include "me-tv.h"
 
 #define METERS_POLL_INTERVAL 100000
 
