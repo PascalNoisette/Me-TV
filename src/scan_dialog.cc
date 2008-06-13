@@ -47,7 +47,7 @@ Glib::ustring ScanDialog::get_initial_tuning_dir(Dvb::Frontend& frontend)
 ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Dialog(cobject), glade(glade)
 {
 	scan_thread = NULL;
-	
+
 	glade->connect_clicked("button_start_scan", sigc::mem_fun(*this, &ScanDialog::on_button_start_scan_clicked));
 	glade->connect_clicked("button_scan_wizard_ok", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_ok_clicked));
 
@@ -65,7 +65,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	
 	Dvb::DeviceManager& device_manager = get_application().get_device_manager();
 	const std::list<Dvb::Frontend*> frontends = device_manager.get_frontends();
-	
+
 	combo_box_scan_device = NULL;
 	glade->get_widget_derived("combo_box_scan_device", combo_box_scan_device);
 	
@@ -119,7 +119,7 @@ ScanDialog::~ScanDialog()
 {
 	stop_scan();
 }
-	
+
 void ScanDialog::on_hide()
 {
 	stop_scan();
@@ -128,11 +128,10 @@ void ScanDialog::on_hide()
 
 void ScanDialog::stop_scan()
 {
-	progress_bar_scan->hide();
 	if (scan_thread != NULL)
 	{
 		g_debug("Stopping scan");
-		scan_thread->join();
+		scan_thread->join(true);
 		delete scan_thread;
 		scan_thread = NULL;
 	}
@@ -182,7 +181,8 @@ void ScanDialog::on_signal_service(struct dvb_frontend_parameters& frontend_para
 void ScanDialog::on_signal_progress(guint step, gsize total)
 {
 	GdkLock gdk_lock;
-	progress_bar_scan->set_fraction(step/(gdouble)total);
+	gdouble fraction = total == 0 ? 0 : step/(gdouble)total;
+	progress_bar_scan->set_fraction(fraction);
 }
 	
 std::list<ScannedService> ScanDialog::get_scanned_services()

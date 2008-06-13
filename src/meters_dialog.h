@@ -67,8 +67,7 @@ public:
 
 	~MetersDialog()
 	{
-		meters_thread.terminate();
-		meters_thread.join();
+		stop();
 	}
 
 	void start(Dvb::Frontend& f)
@@ -80,9 +79,9 @@ public:
 		
 	void stop()
 	{
-		g_debug("Stopping meters thread");
-		meters_thread.terminate();
-		meters_thread.join();
+		gdk_threads_leave();
+		meters_thread.join(true);
+		gdk_threads_enter();
 	}
 
 	void update_meters()

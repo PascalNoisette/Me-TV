@@ -133,6 +133,7 @@ struct StringTable hierarchy_table[] =
 
 Scanner::Scanner()
 {
+	terminated = false;
 }
 
 guint Scanner::convert_string_to_value(const StringTable* table, const gchar* text)
@@ -212,7 +213,7 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path, g
 	std::list<Glib::ustring> lines;
 	Glib::ustring line;
 	Glib::IOStatus status = initial_tuning_file->read_line(line);
-	while (status == Glib::IO_STATUS_NORMAL)
+	while (status == Glib::IO_STATUS_NORMAL && !terminated)
 	{
 		if (Glib::str_has_prefix(line, "#")|| line.empty())
 		{
@@ -256,4 +257,9 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path, g
 	signal_progress(size, size);
 	
 	g_debug("Scanner finished");
+}
+
+void Scanner::terminate()
+{
+	terminated = true;
 }

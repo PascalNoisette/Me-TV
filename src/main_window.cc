@@ -24,6 +24,7 @@
 #include "preferences_dialog.h"
 #include "pipeline_manager.h"
 #include "application.h"
+#include "scan_dialog.h"
 #include <config.h>
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Window(cobject), glade(glade)
@@ -127,18 +128,60 @@ void MainWindow::on_menu_item_meters_clicked()
 
 void MainWindow::on_menu_item_channels_clicked()
 {
+	gboolean done = false;
+	
 	ChannelsDialog* channels_dialog = NULL;
 	glade->get_widget_derived("dialog_channels", channels_dialog);
-	channels_dialog->run();
-	channels_dialog->hide();
-	
-	ChannelList channels = channels_dialog->get_channels();
-	ChannelList::iterator iterator = channels.begin();
-	Channel& channel = *iterator;
-	
-	g_debug("Tuning to channel: '%s'", channel.name.c_str());
-	
-	get_application().get_channel_manager().set_active(channel);
+
+	while (!done)
+	{
+		gint result = channels_dialog->run();
+		channels_dialog->hide();
+		
+		// Pressed Cancel
+		if (result == 0)
+		{
+			done = true;
+		}
+
+		// Pressed OK
+		else if (result == 1)
+		{
+			ChannelList channels = channels_dialog->get_channels();
+			if (channels.size() > 0)
+			{
+				ChannelList::iterator iterator = channels.begin();
+				Channel& channel = *iterator;		
+				g_debug("Tuning to channel: '%s'", channel.name.c_str());
+				get_application().get_channel_manager().set_active(channel);
+			}
+			done = true;
+		}
+		
+		// Pressed scan button
+		else if (result == 2)
+		{
+			gsize frontend_count = Application::get_current().get_device_manager().get_frontends().size();
+			if (frontend_count == 0)
+			{
+				Gtk::MessageDialog dialog(*this, "There are no tuners to scan", false, Gtk::MESSAGE_ERROR);
+				dialog.run();
+			}
+			else
+			{
+				ScanDialog* scan_dialog = NULL;
+				glade->get_widget_derived("dialog_scan", scan_dialog);
+				guint scan_dialog_result = scan_dialog->run();
+				scan_dialog->hide();
+			
+				if (scan_dialog_result == 1)
+				{
+					std::list<ScannedService> scanned_services = scan_dialog->get_scanned_services();
+					channels_dialog->add_selected_services(scanned_services);
+				}
+			}
+		}
+	}
 }
 
 void MainWindow::on_menu_item_preferences_clicked()

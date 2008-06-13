@@ -46,38 +46,7 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 
 void ChannelsDialog::on_button_scan_clicked()
 {
-	gsize frontend_count = Application::get_current().get_device_manager().get_frontends().size();
-	if (frontend_count == 0)
-	{
-		Gtk::MessageDialog dialog(*this, "There are no tuners to scan", false, Gtk::MESSAGE_ERROR);
-		dialog.run();
-	}
-	else
-	{
-		ScanDialog* scan_dialog = NULL;
-		glade->get_widget_derived("dialog_scan", scan_dialog);
-		scan_dialog->run();
-		scan_dialog->hide();
-		
-		std::list<ScannedService> selected_services = scan_dialog->get_scanned_services();
-		std::list<ScannedService>::iterator iterator = selected_services.begin();
-		while (iterator != selected_services.end())
-		{
-			ScannedService& scanned_service = *iterator;
-
-			Channel channel;
-			channel.service_id			= scanned_service.id;
-			channel.name				= scanned_service.name;
-			channel.frontend_parameters	= scanned_service.frontend_parameters;
-
-			Gtk::TreeModel::iterator row_iterator = list_store->append();
-			Gtk::TreeModel::Row row = *row_iterator;
-			row[columns.column_name]	= channel.name;
-			row[columns.column_channel]	= channel;
-			
-			iterator++;
-		}		
-	}
+	response(2);
 }
 	
 ChannelList ChannelsDialog::get_channels()
@@ -94,4 +63,25 @@ ChannelList ChannelsDialog::get_channels()
 		iterator++;
 	}
 	return result;
+}
+
+void ChannelsDialog::add_selected_services(std::list<ScannedService>& selected_services)
+{
+	std::list<ScannedService>::iterator iterator = selected_services.begin();
+	while (iterator != selected_services.end())
+	{
+		ScannedService& scanned_service = *iterator;
+
+		Channel channel;
+		channel.service_id			= scanned_service.id;
+		channel.name				= scanned_service.name;
+		channel.frontend_parameters	= scanned_service.frontend_parameters;
+
+		Gtk::TreeModel::iterator row_iterator = list_store->append();
+		Gtk::TreeModel::Row row = *row_iterator;
+		row[columns.column_name]	= channel.name;
+		row[columns.column_channel]	= channel;
+		
+		iterator++;			
+	}
 }

@@ -24,6 +24,7 @@
 #include <libgnomeuimm.h>
 #include <libglademm.h>
 #include "channel_manager.h"
+#include "scan_dialog.h"
 
 class ChannelsDialog : public Gtk::Dialog
 {
@@ -45,11 +46,12 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
 	Gtk::TreeView* tree_view_displayed_channels;
-
+		
 public:
 	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	void on_button_scan_clicked();
 	ChannelList get_channels();
+	void add_selected_services(std::list<ScannedService>& selected_services);
 };
 
 #endif

@@ -54,6 +54,11 @@ public:
 	{
 		scanner.start(frontend, initial_tuning_file, 1);
 	}
+		
+	void stop()
+	{
+		scanner.terminate();
+	}
 
 	Dvb::Scanner& get_scanner() { return scanner; }
 };
@@ -92,7 +97,7 @@ private:
 public:
 	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	~ScanDialog();
-		
+
 	void on_hide();	
 	void stop_scan();
 	void on_button_start_scan_clicked();

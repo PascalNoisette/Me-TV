@@ -46,6 +46,7 @@ void Thread::join(gboolean term)
 	if (do_join)
 	{
 		thread->join();
+		thread = NULL;
 	}
 }
 	
