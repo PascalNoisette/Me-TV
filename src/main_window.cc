@@ -32,6 +32,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	
 	glade->get_widget("hbox_search_bar")->hide();
+	glade->get_widget("event_box_video")->signal_motion_notify_event().connect(
+		sigc::mem_fun(*this, &MainWindow::on_event_box_video_motion_notify_event));
 	
 	glade->connect_clicked("menu_item_open",		sigc::mem_fun(*this, &MainWindow::on_menu_item_open_clicked));
 	glade->connect_clicked("menu_item_close",		sigc::mem_fun(*this, &MainWindow::on_menu_item_close_clicked));
@@ -46,6 +48,15 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	Gtk::AboutDialog* dialog_about = (Gtk::AboutDialog*)glade->get_widget("dialog_about");
 	dialog_about->set_version(VERSION);
+
+	is_cursor_visible = true;
+	gchar     bits[] = {0};
+	GdkColor  color = {0, 0, 0, 0};
+	GdkPixmap* pixmap = gdk_bitmap_create_from_data(NULL, bits, 1, 1);
+	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
+
+	last_motion_time = time(NULL);
+	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
 }
 	
 Gtk::DrawingArea& MainWindow::get_drawing_area()
@@ -167,11 +178,16 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 		gboolean visible = glade->get_widget("vbox_epg")->property_visible();
 		glade->get_widget("vbox_epg")->property_visible() = !visible;
 		glade->get_widget("menubar")->property_visible() = !visible;
-		glade->get_widget("statusbar")->property_visible() = !visible;
-		glade->get_widget("handlebox_toolbar")->property_visible() = !visible;
-		
-		glade->get_widget("statusbar")->property_visible() = visible && !is_fullscreen(); 
+		glade->get_widget("handlebox_toolbar")->property_visible() = !visible;		
+		glade->get_widget("statusbar")->property_visible() = !visible || !is_fullscreen(); 
 	}
+}
+
+bool MainWindow::on_event_box_video_motion_notify_event(GdkEventMotion* event)
+{
+	last_motion_time = time(NULL);
+	glade->get_widget("event_box_video")->get_window()->set_cursor();
+	is_cursor_visible = true;
 }
 
 void MainWindow::unfullscreen()
@@ -197,4 +213,16 @@ void MainWindow::fullscreen()
 gboolean MainWindow::is_fullscreen()
 {
 	return get_window()->get_state() & Gdk::WINDOW_STATE_FULLSCREEN;
+}
+
+bool MainWindow::on_timeout()
+{
+	if (time(NULL) - last_motion_time > 3 && is_cursor_visible)
+	{
+		GdkLock gdk_lock();
+		glade->get_widget("event_box_video")->get_window()->set_cursor(Gdk::Cursor(hidden_cursor));
+		is_cursor_visible = false;
+	}
+	
+	return true;
 }

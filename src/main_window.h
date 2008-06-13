@@ -29,15 +29,14 @@ class MainWindow : public Gtk::Window
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
 	Gtk::DrawingArea*						drawing_area_video;
-	
+	guint									last_motion_time;
+	Glib::RefPtr<Glib::TimeoutSource>		timeout;
+	GdkCursor*								hidden_cursor;
+	gboolean								is_cursor_visible;
+		
 	void fullscreen();
 	void unfullscreen();
 	gboolean is_fullscreen();
-		
-public:
-	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
-
-	Gtk::DrawingArea& get_drawing_area();
 
 	void on_menu_item_open_clicked();
 	void on_menu_item_close_clicked();
@@ -46,7 +45,13 @@ public:
 	void on_menu_item_channels_clicked();
 	void on_menu_item_preferences_clicked();
 	void on_menu_item_about_clicked();
+	bool on_timeout();
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
+	bool on_event_box_video_motion_notify_event(GdkEventMotion* event);
+public:
+	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+
+	Gtk::DrawingArea& get_drawing_area();
 };
 
 #endif
