@@ -35,6 +35,7 @@ private:
 public:
 	Sink(Pipeline& pipeline) : Thread("Sink"), pipeline(pipeline) {}
 	Pipeline& get_pipeline() { return pipeline; }
+	virtual void stop() = 0;
 };
 
 typedef std::list<Sink*> SinkList;
@@ -92,8 +93,11 @@ private:
 	GtkVideoThread*		video_thread;
 	AlsaAudioThread*	audio_thread;
 	Glib::Timer			timer;
-
+	Glib::Mutex			mutex;
+		
 	void run();
+	void stop();
+	void destroy();
 		
 public:
 	GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area);

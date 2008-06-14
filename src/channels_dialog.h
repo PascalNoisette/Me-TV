@@ -51,7 +51,7 @@ public:
 	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	void on_button_scan_clicked();
 	ChannelList get_channels();
-	void add_selected_services(std::list<ScannedService>& selected_services);
+	void add_scanned_services(std::list<ScannedService>& selected_services);
 };
 
 #endif

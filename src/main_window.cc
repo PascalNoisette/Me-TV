@@ -64,7 +64,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	widget_epg->update();
 }
-	
+
+MainWindow::~MainWindow()
+{
+	stop();
+}
+
 Gtk::DrawingArea& MainWindow::get_drawing_area()
 {
 	if (drawing_area_video == NULL)
@@ -88,8 +93,10 @@ void MainWindow::on_menu_item_open_clicked()
 		Glib::ustring filename = dialog.get_filename();
 		g_debug("Playing '%s'", filename.c_str());
 		
+		stop();
+		
 		PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-		Pipeline& pipeline = pipeline_manager.create("main_window");
+		Pipeline& pipeline = pipeline_manager.create("display");
 		pipeline.set_source(filename);
 		pipeline.add_sink(*drawing_area_video);
 		pipeline.start();
@@ -98,12 +105,7 @@ void MainWindow::on_menu_item_open_clicked()
 
 void MainWindow::on_menu_item_close_clicked()
 {
-	PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-	Pipeline* pipeline = pipeline_manager.get_pipeline("main_window");
-	if (pipeline != NULL)
-	{
-		pipeline_manager.remove(pipeline);
-	}
+	stop();
 }
 	
 void MainWindow::on_menu_item_quit_clicked()
@@ -181,7 +183,7 @@ void MainWindow::on_menu_item_channels_clicked()
 				if (scan_dialog_result == 1)
 				{
 					std::list<ScannedService> scanned_services = scan_dialog->get_scanned_services();
-					channels_dialog->add_selected_services(scanned_services);
+					channels_dialog->add_scanned_services(scanned_services);
 				}
 			}
 		}
@@ -278,4 +280,15 @@ bool MainWindow::on_timeout()
 	}
 	
 	return true;
+}
+
+void MainWindow::stop()
+{
+	PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
+	Pipeline* pipeline = pipeline_manager.get_pipeline("display");
+	if (pipeline != NULL)
+	{
+		pipeline->stop();
+		pipeline_manager.remove(pipeline);
+	}
 }

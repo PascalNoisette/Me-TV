@@ -53,6 +53,7 @@ public:
 	AVFormatContext* get_format_context() const { return format_context; }
 	AVStream* get_stream(guint index) const;
 	gsize get_stream_count() const { return format_context->nb_streams; }
+	void stop();
 };
 
 #endif

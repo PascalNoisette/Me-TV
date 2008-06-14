@@ -34,6 +34,7 @@ PipelineManager::~PipelineManager()
 	
 Pipeline& PipelineManager::create(const Glib::ustring& name)
 {
+	Glib::Mutex::Lock lock(mutex);
 	Pipeline* pipeline = new Pipeline(name);
 	g_debug("Pipeline created");
 	pipelines.push_back(pipeline);
@@ -43,9 +44,10 @@ Pipeline& PipelineManager::create(const Glib::ustring& name)
 	
 Pipeline* PipelineManager::get_pipeline(const Glib::ustring& name)
 {
+	Glib::Mutex::Lock lock(mutex);
 	Pipeline* result = NULL;
 	PipelineList::iterator iterator = pipelines.begin();
-	while (iterator != pipelines.end() && result != NULL)
+	while (iterator != pipelines.end() && result == NULL)
 	{
 		Pipeline* pipeline = *iterator;
 		if (pipeline->get_name() == name)
@@ -59,6 +61,7 @@ Pipeline* PipelineManager::get_pipeline(const Glib::ustring& name)
 
 void PipelineManager::remove(Pipeline* pipeline)
 {
+	Glib::Mutex::Lock lock(mutex);
 	if (pipeline == NULL)
 	{
 		throw Exception("Failed to remove pipeline: Pipeline was NULL");
@@ -136,19 +139,19 @@ void Pipeline::start()
 		Sink* sink = *iterator;
 		sink->start();
 		iterator++;
-	}	
+	}
 	g_debug("Pipeline started");
 }
 
 void Pipeline::stop()
 {
 	g_debug("Stopping pipeline");
-	get_source().join(true);
+	get_source().stop();
 	SinkList::iterator iterator = sinks.begin();
 	while (iterator != sinks.end())
 	{
 		Sink* sink = *iterator;
-		sink->join(true);
+		sink->stop();
 		iterator++;
 	}
 	g_debug("Pipeline stopped");

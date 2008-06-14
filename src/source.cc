@@ -228,3 +228,9 @@ AVStream* Source::get_stream(guint index) const
 	}
 	return format_context->streams[index];
 }
+
+void Source::stop()
+{
+	packet_queue.finish();
+	join(true);
+}

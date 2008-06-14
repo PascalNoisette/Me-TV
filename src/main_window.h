@@ -36,6 +36,7 @@ private:
 	gboolean			is_cursor_visible;
 	MetersDialog*		meters_dialog;
 		
+	void stop();
 	void fullscreen();
 	void unfullscreen();
 	gboolean is_fullscreen();
@@ -52,6 +53,7 @@ private:
 	bool on_event_box_video_motion_notify_event(GdkEventMotion* event);
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	~MainWindow();
 
 	Gtk::DrawingArea& get_drawing_area();
 };

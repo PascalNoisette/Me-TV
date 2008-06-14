@@ -65,10 +65,10 @@ ChannelList ChannelsDialog::get_channels()
 	return result;
 }
 
-void ChannelsDialog::add_selected_services(std::list<ScannedService>& selected_services)
+void ChannelsDialog::add_scanned_services(std::list<ScannedService>& scanned_services)
 {
-	std::list<ScannedService>::iterator iterator = selected_services.begin();
-	while (iterator != selected_services.end())
+	std::list<ScannedService>::iterator iterator = scanned_services.begin();
+	while (iterator != scanned_services.end())
 	{
 		ScannedService& scanned_service = *iterator;
 

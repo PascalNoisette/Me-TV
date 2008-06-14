@@ -34,7 +34,7 @@ private:
 	Source*			source;
 	SinkList		sinks;
 	PacketQueue		packet_queue;
-
+		
 public:
 	Pipeline(const Glib::ustring& name);
 	~Pipeline();
@@ -57,6 +57,7 @@ class PipelineManager
 {
 private:
 	PipelineList pipelines;
+	Glib::Mutex		mutex;
 public:
 	~PipelineManager();
 	Pipeline& create(const Glib::ustring& name);

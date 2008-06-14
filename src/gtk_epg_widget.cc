@@ -96,6 +96,8 @@ void GtkEpgWidget::update_table()
 			iterator++;
 		}
 		get_window()->thaw_updates();
+		
+		show_all();
 	}
 }
 

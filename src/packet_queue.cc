@@ -33,14 +33,17 @@ void PacketQueue::push(AVPacket* packet)
 		usleep(1000);
 	}
 
-	Glib::Mutex::Lock lock(mutex);	
-	if (av_dup_packet(packet) < 0)
+	if (!finished)
 	{
-		throw Exception("Failed to dup packet");
+		Glib::Mutex::Lock lock(mutex);	
+		if (av_dup_packet(packet) < 0)
+		{
+			throw Exception("Failed to dup packet");
+		}
+		AVPacket* new_packet = new AVPacket();
+		*new_packet = *packet;
+		queue.push(new_packet);
 	}
-	AVPacket* new_packet = new AVPacket();
-	*new_packet = *packet;
-	queue.push(new_packet);
 }
 
 AVPacket* PacketQueue::pop()

@@ -388,20 +388,7 @@ GtkAlsaSink::GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 
 GtkAlsaSink::~GtkAlsaSink()
 {
-	video_packet_queue.finish();
-	audio_packet_queue.finish();
-	
-	if (video_thread != NULL)
-	{
-		video_thread->join();
-		delete video_thread;
-	}
-	
-	if (audio_thread != NULL)
-	{
-		audio_thread->join();
-		delete audio_thread;
-	}
+	stop();
 }
 
 void GtkAlsaSink::run()
@@ -442,19 +429,36 @@ void GtkAlsaSink::run()
 		}
 	}
 	g_debug("Finished GtkAlsaSink loop");
+
+	destroy();
+	
+	g_debug("GtkAlsaSink thread finished");
+}
+
+void GtkAlsaSink::destroy()
+{
+	Glib::Mutex::Lock lock(mutex);
 	
 	video_packet_queue.finish();
-	audio_packet_queue.finish();
+	audio_packet_queue.finish();	
 
 	if (video_thread != NULL)
 	{
-		video_thread->join();
+		gdk_threads_leave();
+		video_thread->join(true);
+		gdk_threads_enter();
+		video_thread = NULL;
 	}
 	
 	if (audio_thread != NULL)
 	{
-		audio_thread->join();
+		audio_thread->join(true);
+		audio_thread = NULL;
 	}
-	
-	g_debug("GtkAlsaSink thread finished");
+}
+
+void GtkAlsaSink::stop()
+{
+	destroy();
+	join(true);
 }

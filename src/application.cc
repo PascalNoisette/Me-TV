@@ -77,7 +77,7 @@ void Application::on_display_channel_changed(Channel& channel)
 	MainWindow* main_window = NULL;
 	glade->get_widget_derived("window_main", main_window);
 
-	Pipeline& pipeline = pipeline_manager.create("main_window");
+	Pipeline& pipeline = pipeline_manager.create("display");
 	pipeline.set_source(channel);
 	pipeline.add_sink(main_window->get_drawing_area());
 	pipeline.start();
