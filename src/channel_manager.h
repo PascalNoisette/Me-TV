@@ -53,7 +53,7 @@ class ChannelManager
 {
 private:
 	ChannelList channels;
-	Channel active_channel;
+	Channel display_channel;
 
 	Channel* find_channel(const Glib::ustring& name)
 	{
@@ -86,10 +86,10 @@ public:
 		return *channel;
 	}
 
-	void set_active(Channel& channel)
+	void set_display_channel(Channel& channel)
 	{
-		active_channel = channel;
-		signal_active_channel_changed(channel);
+		display_channel = channel;
+		signal_display_channel_changed(display_channel);
 	}
 
 	void add_channel(Channel& channel)
@@ -103,8 +103,18 @@ public:
 
 		channels.push_back(channel);
 	}
+		
+	const ChannelList& get_channels() const
+	{
+		return channels;
+	}
 
-	sigc::signal<void, Channel&> signal_active_channel_changed;
+	const Channel& get_display_channel() const
+	{
+		return display_channel;
+	}
+	
+	sigc::signal<void, Channel&> signal_display_channel_changed;
 };
 
 

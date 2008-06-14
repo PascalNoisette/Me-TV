@@ -21,18 +21,20 @@
 #ifndef __MAIN_WINDOW_H__
 #define __MAIN_WINDOW_H__
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
+#include "gtk_epg_widget.h"
+#include "meters_dialog.h"
 
 class MainWindow : public Gtk::Window
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
-	Gtk::DrawingArea*						drawing_area_video;
-	guint									last_motion_time;
 	Glib::RefPtr<Glib::TimeoutSource>		timeout;
-	GdkCursor*								hidden_cursor;
-	gboolean								is_cursor_visible;
+	Gtk::DrawingArea*	drawing_area_video;
+	GtkEpgWidget*		widget_epg;
+	guint				last_motion_time;
+	GdkCursor*			hidden_cursor;
+	gboolean			is_cursor_visible;
+	MetersDialog*		meters_dialog;
 		
 	void fullscreen();
 	void unfullscreen();

@@ -21,10 +21,7 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
-#include <libgnomeuimm.h>
 #include <libglademm.h>
-#include <giomm.h>
-#include "config.h"
 #include "device_manager.h"
 #include "profile_manager.h"
 #include "channel_manager.h"
@@ -41,7 +38,7 @@ private:
 	PipelineManager					pipeline_manager;
 
 	Dvb::Frontend& get_frontend();
-	void on_active_channel_changed(Channel& channel);
+	void on_display_channel_changed(Channel& channel);
 
 public:
 	Application(int argc, char *argv[]);

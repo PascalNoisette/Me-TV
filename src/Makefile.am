@@ -58,7 +58,10 @@ me_tv_SOURCES = \
 	sink.h \
 	sink.cc \
 	thread.cc \
-	main_window.cc
+	main_window.cc \
+	channel_manager.h \
+	gtk_epg_widget.cc \
+	gtk_epg_widget.h
 
 me_tv_LDFLAGS = 
 

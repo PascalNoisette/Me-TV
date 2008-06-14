@@ -20,6 +20,7 @@
 
 #include "application.h"
 #include "main_window.h"
+#include "config.h"
 
 Application* Application::current = NULL;
 
@@ -50,8 +51,8 @@ Application::Application(int argc, char *argv[]) :
 	
 	glade = Gnome::Glade::Xml::create(glade_path);
 	
-	channel_manager.signal_active_channel_changed.connect(
-		sigc::mem_fun(*this, &Application::on_active_channel_changed));
+	channel_manager.signal_display_channel_changed.connect(
+		sigc::mem_fun(*this, &Application::on_display_channel_changed));
 }
 
 void Application::run()
@@ -71,7 +72,7 @@ Application& Application::get_current()
 	return *current;
 }
 
-void Application::on_active_channel_changed(Channel& channel)
+void Application::on_display_channel_changed(Channel& channel)
 {
 	MainWindow* main_window = NULL;
 	glade->get_widget_derived("window_main", main_window);
@@ -81,5 +82,3 @@ void Application::on_active_channel_changed(Channel& channel)
 	pipeline.add_sink(main_window->get_drawing_area());
 	pipeline.start();
 }
-
-

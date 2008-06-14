@@ -32,6 +32,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	
+	glade->get_widget_derived("vbox_epg", widget_epg);
 	glade->get_widget("hbox_search_bar")->hide();
 	glade->get_widget("event_box_video")->signal_motion_notify_event().connect(
 		sigc::mem_fun(*this, &MainWindow::on_event_box_video_motion_notify_event));
@@ -58,6 +59,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	last_motion_time = time(NULL);
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
+
+	glade->get_widget_derived("dialog_meters", meters_dialog);
+
+	widget_epg->update();
 }
 	
 Gtk::DrawingArea& MainWindow::get_drawing_area()
@@ -117,12 +122,10 @@ void MainWindow::on_menu_item_meters_clicked()
 	}
 	else
 	{
-		MetersDialog* meters_dialog = NULL;
-		glade->get_widget_derived("dialog_meters", meters_dialog);
+		meters_dialog->stop();
 		Dvb::Frontend* frontend = *(frontends.begin());
 		meters_dialog->start(*frontend);
-		meters_dialog->run();
-		meters_dialog->hide();
+		meters_dialog->show();
 	}
 }
 
@@ -137,6 +140,7 @@ void MainWindow::on_menu_item_channels_clicked()
 	{
 		gint result = channels_dialog->run();
 		channels_dialog->hide();
+		widget_epg->update();
 		
 		// Pressed Cancel
 		if (result == 0)
@@ -153,7 +157,7 @@ void MainWindow::on_menu_item_channels_clicked()
 				ChannelList::iterator iterator = channels.begin();
 				Channel& channel = *iterator;		
 				g_debug("Tuning to channel: '%s'", channel.name.c_str());
-				get_application().get_channel_manager().set_active(channel);
+				get_application().get_channel_manager().set_display_channel(channel);
 			}
 			done = true;
 		}
@@ -190,6 +194,7 @@ void MainWindow::on_menu_item_preferences_clicked()
 	glade->get_widget_derived("dialog_preferences", preferences_dialog);
 	preferences_dialog->run();
 	preferences_dialog->hide();
+	widget_epg->update();
 }
 
 void MainWindow::on_menu_item_about_clicked()
@@ -218,11 +223,16 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 	}
 	else if (event->button == 3)
 	{
-		gboolean visible = glade->get_widget("vbox_epg")->property_visible();
-		glade->get_widget("vbox_epg")->property_visible() = !visible;
-		glade->get_widget("menubar")->property_visible() = !visible;
-		glade->get_widget("handlebox_toolbar")->property_visible() = !visible;		
-		glade->get_widget("statusbar")->property_visible() = !visible || !is_fullscreen(); 
+		gboolean show = !glade->get_widget("vbox_epg")->property_visible();
+		glade->get_widget("vbox_epg")->property_visible() = show;
+		glade->get_widget("menubar")->property_visible() = show;
+		glade->get_widget("handlebox_toolbar")->property_visible() = show;		
+		glade->get_widget("statusbar")->property_visible() = show || !is_fullscreen();
+		
+		if (show)
+		{
+			widget_epg->update();
+		}
 	}
 }
 
