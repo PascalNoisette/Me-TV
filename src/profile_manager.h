@@ -23,53 +23,35 @@
 
 #include <glibmm.h>
 #include <gconfmm.h>
+#include "me-tv.h"
+#include "channel_manager.h"
 
 class Profile
 {
-private:
-	Glib::ustring name;
-	Glib::ustring path;
-	std::list<Glib::ustring> channels;
 public:
-	Profile(Glib::RefPtr<Gnome::Conf::Client> client, const Glib::ustring& node)
-	{
-		path = "/apps/me-tv/profiles/" + node;
-		name = client->get_string(path + "/name");
-		channels = client->get_string_list(path + "/channels");
-	}
-		
-	const Glib::ustring& get_name() const { return name; }
-	std::list<Glib::ustring>& get_channels() { return channels; }
+	Glib::ustring	name;
+	ChannelList		channels;
 };
+
+typedef std::list<Profile> ProfileList;
 
 class ProfileManager
 {
 protected:
 	Glib::RefPtr<Gnome::Conf::Client> client;
+	ProfileList profiles;
+	Profile* current_profile;
+
+	Profile* find_profile(const Glib::ustring& profile_name);
 public:
-	ProfileManager() : client(Gnome::Conf::Client::get_default_client())
-	{
-	}
+	ProfileManager();
+	~ProfileManager();
 		
-	Profile get_current()
-	{
-		Glib::ustring current_profile = client->get_string("/apps/me-tv/current_profile");
-		if (current_profile.empty())
-		{
-			current_profile = "profile_1";
-			client->set("/apps/me-tv/current_profile", current_profile);
-		}
-		if (!client->dir_exists("/apps/me-tv/profiles/" + current_profile))
-		{
-			client->set("/apps/me-tv/profiles/profile_1/name", Glib::ustring("Default"));
-		}
-		return Profile(client, current_profile);
-	}
-		
-	void set_current(const Profile& profile)
-	{
-		client->set("/apps/me-tv/current_profile", profile.get_name());
-	}
+	Profile& get_current_profile();
+	Profile& get_profile(const Glib::ustring& profile_name);
+
+	void load();
+	void save();
 };
 
 #endif

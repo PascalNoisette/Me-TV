@@ -42,7 +42,7 @@ private:
 	Gtk::ScrolledWindow* scrolled_window_epg;
 
 	void on_button_program_clicked();
-	void on_button_channel_name_clicked();
+	void on_button_channel_name_clicked(const Glib::ustring& channel_name);
 	void on_button_epg_previous_clicked();
 	void on_button_epg_now_clicked();
 	void on_button_epg_next_clicked();

@@ -113,6 +113,13 @@ Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, guint left_a
 	button->set_alignment(0, 0.5);
 	Gtk::Label* label = dynamic_cast<Gtk::Label*>(button->get_child());
 	label->set_use_markup(true);
+	button->signal_clicked().connect(
+		sigc::bind<Glib::ustring>
+		(
+			sigc::mem_fun(*this, &GtkEpgWidget::on_button_channel_name_clicked),
+			text
+		)
+	);
 	return *button;
 }
 
@@ -130,8 +137,9 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 	table_epg->attach(widget, left_attach, right_attach, top_attach, bottom_attach, Gtk::FILL, Gtk::FILL, 0, 0);
 }
 
-void GtkEpgWidget::on_button_channel_name_clicked()
+void GtkEpgWidget::on_button_channel_name_clicked(const Glib::ustring& channel_name)
 {
+	get_application().get_channel_manager().set_display_channel(channel_name);
 }
 
 void GtkEpgWidget::on_button_epg_previous_clicked()

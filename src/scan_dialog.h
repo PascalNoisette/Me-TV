@@ -93,18 +93,20 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 		
 	Glib::ustring get_initial_tuning_dir(Dvb::Frontend& frontend);
+		
+	void on_file_chooser_button_select_file_to_scan_clicked();
+	void on_button_scan_wizard_ok_clicked();
+	void on_button_start_scan_clicked();
+	void on_signal_service(struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name);
+	void on_signal_progress(guint step, gsize total);
+	void on_hide();	
 
 public:
 	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	~ScanDialog();
 
-	void on_hide();	
 	void stop_scan();
-	void on_button_start_scan_clicked();
-	void on_signal_service(struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name);
-	void on_signal_progress(guint step, gsize total);
 	std::list<ScannedService> get_scanned_services();
-	void on_button_scan_wizard_ok_clicked();
 };
 
 #endif

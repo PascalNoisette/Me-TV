@@ -437,13 +437,16 @@ void GtkAlsaSink::run()
 
 void GtkAlsaSink::destroy()
 {
+	g_debug(__PRETTY_FUNCTION__);
 	Glib::Mutex::Lock lock(mutex);
 	
+	g_debug("Finishing queues");
 	video_packet_queue.finish();
 	audio_packet_queue.finish();	
 
 	if (video_thread != NULL)
 	{
+		g_debug("Waiting for video thread to terminate");
 		gdk_threads_leave();
 		video_thread->join(true);
 		gdk_threads_enter();
@@ -452,13 +455,17 @@ void GtkAlsaSink::destroy()
 	
 	if (audio_thread != NULL)
 	{
+		g_debug("Waiting for audio thread to terminate");
 		audio_thread->join(true);
 		audio_thread = NULL;
 	}
+	
+	g_debug("GtkAlsaSink destroyed");
 }
 
 void GtkAlsaSink::stop()
 {
 	destroy();
+	g_debug("Waiting for GtkAlsaSink to terminate");
 	join(true);
 }

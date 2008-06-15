@@ -27,12 +27,6 @@
 
 namespace Dvb
 {
-	struct StringTable
-	{
-		const char*	text;
-		guint		value;
-	};
-
 	class Scanner
 	{
 	private:

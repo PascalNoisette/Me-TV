@@ -38,7 +38,7 @@ Glib::ustring ScanDialog::get_initial_tuning_dir(Dvb::Frontend& frontend)
 	case FE_QAM:    path += "/dvb-c";       break;
 	case FE_QPSK:   path += "/dvb-s";       break;
 	case FE_ATSC:   path += "/atsc";        break;
-	default:		throw Exception("Unknown frontend type");
+	default:		throw Exception(_("Unknown frontend type"));
 	}
 
 	return path;
@@ -49,8 +49,8 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	scan_thread = NULL;
 
 	glade->connect_clicked("button_start_scan", sigc::mem_fun(*this, &ScanDialog::on_button_start_scan_clicked));
-	glade->connect_clicked("button_scan_wizard_ok", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_ok_clicked));
-
+//	glade->connect_clicked("button_scan_wizard_ok", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_ok_clicked));
+	
 	progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
 	tree_view_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_scanned_channels"));
 	
@@ -94,7 +94,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 		"*", G_FILE_QUERY_INFO_NONE, NULL, NULL);
 	if (children == NULL)
 	{
-		throw Exception("Children failed");
+		throw Exception(_("Failed to enumerate children"));
 	}
 	
 	GFileInfo* file_info = g_file_enumerator_next_file(children, NULL, NULL);
@@ -202,9 +202,4 @@ std::list<ScannedService> ScanDialog::get_scanned_services()
 		iterator++;
 	}
 	return result;
-}
-	
-void ScanDialog::on_button_scan_wizard_ok_clicked()
-{
-	stop_scan();
 }

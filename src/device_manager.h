@@ -125,7 +125,7 @@ namespace Dvb
 
 			if (result == NULL)
 			{
-				throw Exception(Glib::ustring::format(_("Failed to find frontend '%s'"), frontend_name.c_str()));
+				throw Exception(Glib::ustring::compose(_("Failed to find frontend '%1'"), frontend_name));
 			}
 
 			return *result;

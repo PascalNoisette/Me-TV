@@ -28,9 +28,9 @@ PacketQueue::PacketQueue()
 	
 void PacketQueue::push(AVPacket* packet)
 {
-	while (get_size() > 10 && !finished)
+	while (get_size() > 100 && !finished)
 	{
-		usleep(1000);
+		usleep(100);
 	}
 
 	if (!finished)

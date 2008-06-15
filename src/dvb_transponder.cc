@@ -48,7 +48,7 @@ Service& Transponder::get_service(guint service_id)
 
 	if (result == NULL)
 	{
-		throw Exception(Glib::ustring::format(_("Failed to find service with service ID %d"), service_id));
+		throw Exception(Glib::ustring::compose(_("Failed to find service with service ID %1"), service_id));
 	}
 	
 	return *result;

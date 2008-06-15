@@ -24,6 +24,79 @@
 
 using namespace Dvb;
 
+struct StringTable bandwidth_table[] =
+{
+	{ "8MHz", BANDWIDTH_8_MHZ },
+	{ "7MHz", BANDWIDTH_7_MHZ },
+	{ "6MHz", BANDWIDTH_6_MHZ },
+	{ "AUTO", BANDWIDTH_AUTO },
+	{ NULL, 0 }
+};
+
+struct StringTable fec_table[] =
+{
+	{ "NONE", FEC_NONE },
+	{ "1/2",  FEC_1_2 },
+	{ "2/3",  FEC_2_3 },
+	{ "3/4",  FEC_3_4 },
+	{ "4/5",  FEC_4_5 },
+	{ "5/6",  FEC_5_6 },
+	{ "6/7",  FEC_6_7 },
+	{ "7/8",  FEC_7_8 },
+	{ "8/9",  FEC_8_9 },
+	{ "AUTO", FEC_AUTO },
+	{ NULL, 0 }
+};
+
+struct StringTable qam_table[] =
+{
+	{ "QPSK",   QPSK },
+	{ "QAM16",  QAM_16 },
+	{ "QAM32",  QAM_32 },
+	{ "QAM64",  QAM_64 },
+	{ "QAM128", QAM_128 },
+	{ "QAM256", QAM_256 },
+	{ "AUTO",   QAM_AUTO },
+	{ "8VSB",   VSB_8 },
+	{ "16VSB",  VSB_16 },
+	{ NULL, 0 }
+};
+
+struct StringTable modulation_table[] =
+{
+	{ "2k",   TRANSMISSION_MODE_2K },
+	{ "8k",   TRANSMISSION_MODE_8K },
+	{ "AUTO", TRANSMISSION_MODE_AUTO },
+	{ NULL, 0 }
+};
+
+struct StringTable guard_table[] =
+{
+	{ "1/32", GUARD_INTERVAL_1_32 },
+	{ "1/16", GUARD_INTERVAL_1_16 },
+	{ "1/8",  GUARD_INTERVAL_1_8 },
+	{ "1/4",  GUARD_INTERVAL_1_4 },
+	{ "AUTO", GUARD_INTERVAL_AUTO },
+	{ NULL, 0 }
+};
+
+struct StringTable hierarchy_table[] =
+{
+	{ "NONE", HIERARCHY_NONE },
+	{ "1",    HIERARCHY_1 },
+	{ "2",    HIERARCHY_2 },
+	{ "4",    HIERARCHY_4 },
+	{ "AUTO", HIERARCHY_AUTO },
+	{ NULL, 0 }
+};
+
+struct StringTable* Frontend::get_bandwidth_table()	{ return bandwidth_table; }
+struct StringTable* Frontend::get_fec_table()			{ return fec_table; }
+struct StringTable* Frontend::get_qam_table()			{ return qam_table; }
+struct StringTable* Frontend::get_modulation_table()	{ return modulation_table; }
+struct StringTable* Frontend::get_guard_table()		{ return guard_table; }
+struct StringTable* Frontend::get_hierarchy_table()	{ return hierarchy_table; }
+
 Frontend::Frontend(const Adapter& adapter, guint frontend) : adapter(adapter)
 {
 	fd = -1;
@@ -47,6 +120,56 @@ Frontend::~Frontend()
 	{
 		close(fd);
 	}
+}
+
+guint Frontend::convert_string_to_value(const StringTable* table, const gchar* text)
+{
+	gboolean found = false;
+	const StringTable*	current = table;
+
+	while (current->text != NULL && !found)
+	{
+		if (g_str_equal(text,current->text))
+		{
+			found = true;
+		}
+		else
+		{
+			current++;
+		}
+	}
+	
+	if (!found)
+	{
+		throw Exception(Glib::ustring::compose(_("Failed to find a value for '%1'"), Glib::ustring(text)));
+	}
+	
+	return (guint)current->value;
+}
+
+const gchar* Frontend::convert_value_to_string(const StringTable* table, guint value)
+{
+	gboolean found = false;
+	const StringTable*	current = table;
+
+	while (current->text != NULL && !found)
+	{
+		if (value == current->value)
+		{
+			found = true;
+		}
+		else
+		{
+			current++;
+		}
+	}
+	
+	if (!found)
+	{
+		throw Exception(Glib::ustring::compose(_("Failed to find a text value for '%1'"), value));
+	}
+	
+	return current->text;
 }
 
 void Frontend::tune_to (const Transponder& transponder, guint wait_seconds)

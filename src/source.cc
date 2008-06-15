@@ -24,7 +24,8 @@
 #include "scheduler.h"
 #include "application.h"
 
-Source::Source(PacketQueue& packet_queue, const Channel& channel) : Thread("Source"), packet_queue(packet_queue)
+Source::Source(PacketQueue& packet_queue, const Channel& channel) :
+	Thread("Source"), packet_queue(packet_queue)
 {
 	Dvb::Frontend& frontend = get_frontend();
 	
@@ -42,7 +43,8 @@ Source::Source(PacketQueue& packet_queue, const Channel& channel) : Thread("Sour
 	create();
 }
 
-Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) : Thread("Source"), packet_queue(packet_queue)
+Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) :
+	Thread("Source"), packet_queue(packet_queue)
 {
 	this->mrl = mrl;
 	create();
@@ -193,7 +195,7 @@ void Source::execute_command(const Glib::ustring& command)
 	}
 	if (!standard_error.empty())
 	{
-		throw Exception(Glib::ustring::format("standard_error: '%s'", standard_error.c_str()));
+		throw Exception(Glib::ustring::compose("standard_error: '%1'", standard_error));
 	}
 	g_debug("Command complete");
 }

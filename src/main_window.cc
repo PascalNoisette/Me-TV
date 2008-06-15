@@ -154,13 +154,10 @@ void MainWindow::on_menu_item_channels_clicked()
 		else if (result == 1)
 		{
 			ChannelList channels = channels_dialog->get_channels();
-			if (channels.size() > 0)
-			{
-				ChannelList::iterator iterator = channels.begin();
-				Channel& channel = *iterator;		
-				g_debug("Tuning to channel: '%s'", channel.name.c_str());
-				get_application().get_channel_manager().set_display_channel(channel);
-			}
+			ChannelManager& channel_manager = get_application().get_channel_manager();
+			channel_manager.clear();
+			channel_manager.add_channels(channels);
+			widget_epg->update();
 			done = true;
 		}
 		

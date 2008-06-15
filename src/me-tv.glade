@@ -1296,14 +1296,22 @@ Every week</property>
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <child>
-              <widget class="GtkTreeView" id="treeview_scheduled_recordings">
-                <property name="width_request">500</property>
-                <property name="height_request">100</property>
+              <widget class="GtkScrolledWindow" id="scrolledwindow2">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                <property name="headers_clickable">True</property>
-                <property name="enable_grid_lines">GTK_TREE_VIEW_GRID_LINES_BOTH</property>
+                <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <child>
+                  <widget class="GtkTreeView" id="treeview_scheduled_recordings">
+                    <property name="width_request">500</property>
+                    <property name="height_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                    <property name="headers_clickable">True</property>
+                    <property name="enable_grid_lines">GTK_TREE_VIEW_GRID_LINES_BOTH</property>
+                  </widget>
+                </child>
               </widget>
             </child>
             <child>
@@ -2244,7 +2252,7 @@ channels.conf
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkRadioButton" id="radiobutton_select_scan_options">
+                      <widget class="GtkRadioButton" id="radio_button_scan_by_location">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="label" translatable="yes">By location</property>
@@ -2259,14 +2267,14 @@ channels.conf
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkRadioButton" id="radiobutton_select_country">
+                      <widget class="GtkRadioButton" id="radio_button_scan_by_country">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="label" translatable="yes">Select a file to scan</property>
                         <property name="response_id">0</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <property name="group">radiobutton_select_scan_options</property>
+                        <property name="group">radio_button_scan_by_location</property>
                       </widget>
                       <packing>
                         <property name="right_attach">2</property>

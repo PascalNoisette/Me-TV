@@ -25,6 +25,7 @@
 #include <libglademm.h>
 #include <gdk/gdk.h>
 #include <glibmm/i18n.h>
+#include <list>
 
 class ComboBoxText : public Gtk::ComboBoxText
 {
@@ -50,5 +51,7 @@ public:
 	GdkLock() { gdk_threads_enter(); }
 	~GdkLock() { gdk_threads_leave(); }
 };
+
+typedef std::list<Glib::ustring> StringList;
 
 #endif

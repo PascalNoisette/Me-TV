@@ -39,12 +39,7 @@ public:
 	guint service_id;
 	struct dvb_frontend_parameters frontend_parameters;
 
-	Channel()
-	{
-		flags = 0;
-		service_id = 0;
-		memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
-	}
+	Channel();
 };
 
 typedef std::list<Channel> ChannelList;
@@ -54,66 +49,17 @@ class ChannelManager
 private:
 	ChannelList channels;
 	Channel display_channel;
-
-	Channel* find_channel(const Glib::ustring& name)
-	{
-		gboolean found = false;
-		Channel* channel = NULL;
-
-		ChannelList::iterator iterator = channels.begin();
-		while (iterator != channels.end() && !found)
-		{
-			channel = &(*iterator);
-			if (channel->name == name)
-			{
-				found = true;
-			}
-		}
-
-		return channel;
-	}
+	Channel* find_channel(const Glib::ustring& channel_name);
 
 public:
-	Channel& get_channel(const Glib::ustring& name)
-	{
-		Channel* channel = find_channel(name);
-
-		if (channel == NULL)
-		{
-			throw Exception(Glib::ustring::format(_("Channel '%s' not found"), name));
-		}
-
-		return *channel;
-	}
-
-	void set_display_channel(Channel& channel)
-	{
-		display_channel = channel;
-		signal_display_channel_changed(display_channel);
-	}
-
-	void add_channel(Channel& channel)
-	{
-		Channel* c = find_channel(channel.name);
-		
-		if (c != NULL)
-		{
-			throw Exception(_("Cannot add channel '%s', it already exists"));
-		}
-
-		channels.push_back(channel);
-	}
-		
-	const ChannelList& get_channels() const
-	{
-		return channels;
-	}
-
-	const Channel& get_display_channel() const
-	{
-		return display_channel;
-	}
-	
+	Channel& get_channel(const Glib::ustring& name);
+	void set_display_channel(const Glib::ustring& channel_name);
+	void set_display_channel(Channel& channel);
+	void add_channel(Channel& channel);
+	void add_channels(ChannelList& channels);
+	void clear();
+	const ChannelList& get_channels() const;
+	const Channel& get_display_channel() const;
 	sigc::signal<void, Channel&> signal_display_channel_changed;
 };
 

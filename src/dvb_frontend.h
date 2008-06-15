@@ -37,6 +37,12 @@ struct diseqc_cmd
 
 namespace Dvb
 {
+	struct StringTable
+	{
+		const char*	text;
+		guint		value;
+	};
+	
 	class Adapter
 	{
 	private:
@@ -44,12 +50,12 @@ namespace Dvb
 	public:
 		Adapter(guint adapter)
 		{
-			path = Glib::ustring::format("/dev/dvb/adapter", adapter);
+			path = Glib::ustring::compose("/dev/dvb/adapter%1", adapter);
 		}
 
 		Glib::ustring get_frontend_path(guint frontend) const
 		{
-			return Glib::ustring::format(path + "/frontend", frontend);
+			return Glib::ustring::compose(path + "/frontend%1", frontend);
 		}
 			
 		Glib::ustring get_demux_path() const { return path + "/demux0"; }
@@ -81,6 +87,16 @@ namespace Dvb
 		int get_fd() const { return fd; }
 		const Adapter& get_adapter() const { return adapter; }
 			
+		static struct StringTable* get_bandwidth_table();
+		static struct StringTable* get_fec_table();
+		static struct StringTable* get_qam_table();
+		static struct StringTable* get_modulation_table();
+		static struct StringTable* get_guard_table();
+		static struct StringTable* get_hierarchy_table();
+
+		static guint convert_string_to_value(const StringTable* table, const gchar* text);
+		static const gchar* convert_value_to_string(const StringTable* table, guint value);
+
 		guint get_signal_strength();
 		guint get_snr();
 	};
