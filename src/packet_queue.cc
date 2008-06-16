@@ -35,7 +35,7 @@ void PacketQueue::push(AVPacket* packet)
 
 	if (!finished)
 	{
-		Glib::Mutex::Lock lock(mutex);	
+		Glib::RecMutex::Lock lock(mutex);	
 		if (av_dup_packet(packet) < 0)
 		{
 			throw Exception("Failed to dup packet");
@@ -56,7 +56,7 @@ AVPacket* PacketQueue::pop()
 	AVPacket* packet = NULL;
 	if (!finished)
 	{
-		Glib::Mutex::Lock lock(mutex);
+		Glib::RecMutex::Lock lock(mutex);
 		packet = queue.front();
 		queue.pop();
 	}
@@ -65,13 +65,13 @@ AVPacket* PacketQueue::pop()
 
 gsize PacketQueue::get_size()
 {
-	Glib::Mutex::Lock lock(mutex);
+	Glib::RecMutex::Lock lock(mutex);
 	return queue.size();
 }
 	
 gboolean PacketQueue::is_empty()
 {
-	Glib::Mutex::Lock lock(mutex);
+	Glib::RecMutex::Lock lock(mutex);
 	return queue.empty();
 }
 	

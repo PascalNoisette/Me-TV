@@ -49,7 +49,6 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	scan_thread = NULL;
 
 	glade->connect_clicked("button_start_scan", sigc::mem_fun(*this, &ScanDialog::on_button_start_scan_clicked));
-//	glade->connect_clicked("button_scan_wizard_ok", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_ok_clicked));
 	
 	progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
 	tree_view_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_scanned_channels"));

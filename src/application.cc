@@ -53,6 +53,8 @@ Application::Application(int argc, char *argv[]) :
 	
 	channel_manager.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));
+
+	channel_manager.add_channels(profile_manager.get_current_profile().channels);
 }
 
 void Application::run()
@@ -77,6 +79,12 @@ void Application::on_display_channel_changed(Channel& channel)
 	MainWindow* main_window = NULL;
 	glade->get_widget_derived("window_main", main_window);
 
+	Pipeline* existing_pipeline = pipeline_manager.find_pipeline("display");
+	if (existing_pipeline != NULL)
+	{
+		pipeline_manager.remove(existing_pipeline);
+	}
+	
 	Pipeline& pipeline = pipeline_manager.create("display");
 	pipeline.set_source(channel);
 	pipeline.add_sink(main_window->get_drawing_area());

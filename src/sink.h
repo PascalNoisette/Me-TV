@@ -85,15 +85,15 @@ public:
 class GtkAlsaSink : public Sink
 {
 private:
-	PacketQueue&		packet_queue;
-	PacketQueue			video_packet_queue;
-	PacketQueue			audio_packet_queue;
-	gint				video_stream_index;
-	gint				audio_stream_index;
-	GtkVideoThread*		video_thread;
-	AlsaAudioThread*	audio_thread;
-	Glib::Timer			timer;
-	Glib::Mutex			mutex;
+	PacketQueue&			packet_queue;
+	PacketQueue				video_packet_queue;
+	PacketQueue				audio_packet_queue;
+	gint					video_stream_index;
+	gint					audio_stream_index;
+	GtkVideoThread*			video_thread;
+	AlsaAudioThread*		audio_thread;
+	Glib::Timer				timer;
+	Glib::StaticRecMutex	mutex;
 		
 	void run();
 	void stop();

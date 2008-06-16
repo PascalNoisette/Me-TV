@@ -20,7 +20,7 @@
 
 #include "profile_manager.h"
 
-#define GCONF_PATH "/apps/me-tv.1"
+#define GCONF_PATH "/apps/me-tv.3"
 
 ProfileManager::ProfileManager() : client(Gnome::Conf::Client::get_default_client())
 {
@@ -45,7 +45,9 @@ void ProfileManager::load()
 
 		Profile profile;
 		profile.name = client->get_string(profile_path + "/name");
-		
+
+		g_debug("Loading '%s' profile", profile.name.c_str());
+
 		Glib::ustring channels_path = profile_path + "/channels";
 		StringList channels = client->all_dirs(channels_path);
 		StringList::iterator channel_iterator = channels.begin();
@@ -55,6 +57,7 @@ void ProfileManager::load()
 			
 			Channel channel;
 			channel.name = client->get_string(channel_path + "/name");
+			g_debug("Channel '%s' read", channel.name.c_str());
 			
 			profile.channels.push_back(channel);
 			channel_iterator++;
@@ -139,7 +142,7 @@ void ProfileManager::save()
 		{
 			Channel& channel = *channel_iterator;
 			
-			Glib::ustring channel_path = Glib::ustring::compose(profile_path + "/channel_%1", channel_count);
+			Glib::ustring channel_path = Glib::ustring::compose(profile_path + "/channels/channel_%1", channel_count);
 			
 			client->set(channel_path + "/name",			channel.name);
 			client->set(channel_path + "/pre_command", 	channel.pre_command);

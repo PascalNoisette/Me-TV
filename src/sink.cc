@@ -438,7 +438,7 @@ void GtkAlsaSink::run()
 void GtkAlsaSink::destroy()
 {
 	g_debug(__PRETTY_FUNCTION__);
-	Glib::Mutex::Lock lock(mutex);
+	Glib::RecMutex::Lock lock(mutex);
 	
 	g_debug("Finishing queues");
 	video_packet_queue.finish();

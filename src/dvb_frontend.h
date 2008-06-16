@@ -95,7 +95,7 @@ namespace Dvb
 		static struct StringTable* get_hierarchy_table();
 
 		static guint convert_string_to_value(const StringTable* table, const gchar* text);
-		static const gchar* convert_value_to_string(const StringTable* table, guint value);
+		static Glib::ustring convert_value_to_string(const StringTable* table, guint value);
 
 		guint get_signal_strength();
 		guint get_snr();

@@ -56,12 +56,12 @@ typedef std::list<Pipeline*> PipelineList;
 class PipelineManager
 {
 private:
-	PipelineList pipelines;
-	Glib::Mutex		mutex;
+	PipelineList			pipelines;
+	Glib::StaticRecMutex	mutex;
 public:
 	~PipelineManager();
 	Pipeline& create(const Glib::ustring& name);
-	Pipeline* get_pipeline(const Glib::ustring& name);
+	Pipeline* find_pipeline(const Glib::ustring& name);
 	void remove(Pipeline* pipeline);
 };
 

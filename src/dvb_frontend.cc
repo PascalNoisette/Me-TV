@@ -147,7 +147,7 @@ guint Frontend::convert_string_to_value(const StringTable* table, const gchar* t
 	return (guint)current->value;
 }
 
-const gchar* Frontend::convert_value_to_string(const StringTable* table, guint value)
+Glib::ustring Frontend::convert_value_to_string(const StringTable* table, guint value)
 {
 	gboolean found = false;
 	const StringTable*	current = table;

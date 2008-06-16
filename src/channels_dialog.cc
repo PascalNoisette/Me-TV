@@ -28,6 +28,7 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 	Gtk::Dialog(cobject), glade(glade)
 {
 	glade->connect_clicked("button_scan", sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
+	glade->connect_clicked("button_remove_selected_channels", sigc::mem_fun(*this, &ChannelsDialog::on_button_button_remove_selected_channels_clicked));
 	
 	ProfileManager& profile_manager = Application::get_current().get_profile_manager();
 	Profile& profile = profile_manager.get_current_profile();
@@ -48,7 +49,18 @@ void ChannelsDialog::on_button_scan_clicked()
 {
 	response(2);
 }
-	
+
+void ChannelsDialog::on_button_button_remove_selected_channels_clicked()
+{
+	std::list<Gtk::TreeModel::Path> selected_channels = tree_view_displayed_channels->get_selection()->get_selected_rows();		
+	std::list<Gtk::TreeModel::Path>::iterator iterator = selected_channels.begin();
+	while (iterator != selected_channels.end())
+	{		
+		list_store->erase(list_store->get_iter(*iterator));
+		iterator++;
+	}
+}
+
 ChannelList ChannelsDialog::get_channels()
 {
 	ChannelList result;
@@ -59,10 +71,27 @@ ChannelList ChannelsDialog::get_channels()
 	{
 		Gtk::TreeModel::Row row(*iterator);
 		result.push_back(row.get_value(columns.column_channel));
-
 		iterator++;
 	}
 	return result;
+}
+
+void ChannelsDialog::set_channels(const ChannelList& channels)
+{
+	list_store->clear();
+	
+	ChannelList::const_iterator iterator = channels.begin();
+	while (iterator != channels.end())
+	{
+		const Channel& channel = *iterator;
+
+		Gtk::TreeModel::iterator row_iterator = list_store->append();
+		Gtk::TreeModel::Row row		= *row_iterator;
+		row[columns.column_name]	= channel.name;
+		row[columns.column_channel]	= channel;
+		
+		iterator++;			
+	}
 }
 
 void ChannelsDialog::add_scanned_services(std::list<ScannedService>& scanned_services)
@@ -78,7 +107,7 @@ void ChannelsDialog::add_scanned_services(std::list<ScannedService>& scanned_ser
 		channel.frontend_parameters	= scanned_service.frontend_parameters;
 
 		Gtk::TreeModel::iterator row_iterator = list_store->append();
-		Gtk::TreeModel::Row row = *row_iterator;
+		Gtk::TreeModel::Row row		= *row_iterator;
 		row[columns.column_name]	= channel.name;
 		row[columns.column_channel]	= channel;
 		

@@ -30,7 +30,7 @@ class PacketQueue
 private:
 	gboolean				finished;
 	std::queue<AVPacket*>	queue;
-	Glib::Mutex				mutex;
+	Glib::StaticRecMutex	mutex;
 		
 public:
 	PacketQueue();

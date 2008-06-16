@@ -47,10 +47,13 @@ private:
 	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
 	Gtk::TreeView* tree_view_displayed_channels;
 		
+	void on_button_scan_clicked();
+	void on_button_button_remove_selected_channels_clicked();
+		
 public:
 	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
-	void on_button_scan_clicked();
 	ChannelList get_channels();
+	void set_channels(const ChannelList& channels);
 	void add_scanned_services(std::list<ScannedService>& selected_services);
 };
 

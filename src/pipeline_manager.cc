@@ -33,8 +33,14 @@ PipelineManager::~PipelineManager()
 }
 	
 Pipeline& PipelineManager::create(const Glib::ustring& name)
-{
-	Glib::Mutex::Lock lock(mutex);
+{	
+	if (find_pipeline(name) != NULL)
+	{
+		throw Exception("A pipeline with that name already exists");
+	}
+	
+	Glib::RecMutex::Lock lock(mutex);
+
 	Pipeline* pipeline = new Pipeline(name);
 	g_debug("Pipeline created");
 	pipelines.push_back(pipeline);
@@ -42,9 +48,9 @@ Pipeline& PipelineManager::create(const Glib::ustring& name)
 	return *pipeline;
 }
 	
-Pipeline* PipelineManager::get_pipeline(const Glib::ustring& name)
+Pipeline* PipelineManager::find_pipeline(const Glib::ustring& name)
 {
-	Glib::Mutex::Lock lock(mutex);
+	Glib::RecMutex::Lock lock(mutex);
 	Pipeline* result = NULL;
 	PipelineList::iterator iterator = pipelines.begin();
 	while (iterator != pipelines.end() && result == NULL)
@@ -61,7 +67,7 @@ Pipeline* PipelineManager::get_pipeline(const Glib::ustring& name)
 
 void PipelineManager::remove(Pipeline* pipeline)
 {
-	Glib::Mutex::Lock lock(mutex);
+	Glib::RecMutex::Lock lock(mutex);
 	if (pipeline == NULL)
 	{
 		throw Exception("Failed to remove pipeline: Pipeline was NULL");

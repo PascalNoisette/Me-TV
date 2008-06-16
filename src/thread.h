@@ -27,10 +27,10 @@
 class Thread
 {
 private:
-	gboolean		terminated;
-	Glib::Thread*	thread;
-	Glib::Mutex		mutex;
-	Glib::ustring	name;
+	gboolean				terminated;
+	Glib::Thread*			thread;
+	Glib::StaticRecMutex	mutex;
+	Glib::ustring			name;
 public:
 	Thread(const Glib::ustring& name);
 

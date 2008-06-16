@@ -33,7 +33,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	
 	glade->get_widget_derived("vbox_epg", widget_epg);
-	glade->get_widget("hbox_search_bar")->hide();
 	glade->get_widget("event_box_video")->signal_motion_notify_event().connect(
 		sigc::mem_fun(*this, &MainWindow::on_event_box_video_motion_notify_event));
 	
@@ -61,6 +60,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
 
 	glade->get_widget_derived("dialog_meters", meters_dialog);
+
+	show();
+	glade->get_widget("hbox_search_bar")->hide();
 
 	widget_epg->update();
 }
@@ -135,9 +137,11 @@ void MainWindow::on_menu_item_channels_clicked()
 {
 	gboolean done = false;
 	
+	ChannelManager& channel_manager = get_application().get_channel_manager();
 	ChannelsDialog* channels_dialog = NULL;
 	glade->get_widget_derived("dialog_channels", channels_dialog);
-
+	channels_dialog->set_channels(channel_manager.get_channels());
+	
 	while (!done)
 	{
 		gint result = channels_dialog->run();
@@ -154,9 +158,11 @@ void MainWindow::on_menu_item_channels_clicked()
 		else if (result == 1)
 		{
 			ChannelList channels = channels_dialog->get_channels();
-			ChannelManager& channel_manager = get_application().get_channel_manager();
 			channel_manager.clear();
 			channel_manager.add_channels(channels);
+			
+			get_application().get_profile_manager().get_current_profile().channels = channels;
+			
 			widget_epg->update();
 			done = true;
 		}
@@ -282,10 +288,9 @@ bool MainWindow::on_timeout()
 void MainWindow::stop()
 {
 	PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-	Pipeline* pipeline = pipeline_manager.get_pipeline("display");
+	Pipeline* pipeline = pipeline_manager.find_pipeline("display");
 	if (pipeline != NULL)
 	{
-		pipeline->stop();
 		pipeline_manager.remove(pipeline);
 	}
 }
