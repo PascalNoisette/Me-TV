@@ -27,8 +27,9 @@
 ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
 	Gtk::Dialog(cobject), glade(glade)
 {
-	glade->connect_clicked("button_scan", sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
-	glade->connect_clicked("button_remove_selected_channels", sigc::mem_fun(*this, &ChannelsDialog::on_button_button_remove_selected_channels_clicked));
+	glade->connect_clicked("button_scan",							sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
+	glade->connect_clicked("button_remove_selected_channels",		sigc::mem_fun(*this, &ChannelsDialog::on_button_button_remove_selected_channels_clicked));
+	glade->connect_clicked("button_select_all_displayed_channels",	sigc::mem_fun(*this, &ChannelsDialog::on_button_select_all_displayed_channels_clicked));
 	
 	ProfileManager& profile_manager = Application::get_current().get_profile_manager();
 	Profile& profile = profile_manager.get_current_profile();
@@ -43,6 +44,15 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_displayed_channels->set_model(list_store);
 	tree_view_displayed_channels->append_column("Channel Name", columns.column_name);
+	
+	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_displayed_channels->get_selection();
+	selection->set_mode(Gtk::SELECTION_MULTIPLE);
+}
+
+
+void ChannelsDialog::on_button_select_all_displayed_channels_clicked()
+{
+	tree_view_displayed_channels->get_selection()->select_all();
 }
 
 void ChannelsDialog::on_button_scan_clicked()
@@ -52,13 +62,15 @@ void ChannelsDialog::on_button_scan_clicked()
 
 void ChannelsDialog::on_button_button_remove_selected_channels_clicked()
 {
-	std::list<Gtk::TreeModel::Path> selected_channels = tree_view_displayed_channels->get_selection()->get_selected_rows();		
-	std::list<Gtk::TreeModel::Path>::iterator iterator = selected_channels.begin();
-	while (iterator != selected_channels.end())
+	get_window()->freeze_updates();
+	Glib::RefPtr<Gtk::TreeSelection> tree_selection = tree_view_displayed_channels->get_selection();
+	std::list<Gtk::TreeModel::Path> selected_channels = tree_selection->get_selected_rows();
+	while (selected_channels.size() > 0)
 	{		
-		list_store->erase(list_store->get_iter(*iterator));
-		iterator++;
+		list_store->erase(list_store->get_iter(*selected_channels.begin()));
+		selected_channels = tree_selection->get_selected_rows();
 	}
+	get_window()->thaw_updates();
 }
 
 ChannelList ChannelsDialog::get_channels()

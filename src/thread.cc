@@ -2,6 +2,7 @@
 
 Thread::Thread(const Glib::ustring& name)
 {
+	g_static_rec_mutex_init(mutex.gobj());
 	terminated = true;
 	thread = NULL;
 	this->name = name;

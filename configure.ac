@@ -30,7 +30,7 @@ AM_PROG_LIBTOOL
 
 
 
-PKG_CHECK_MODULES(ME_TV, [libgnomemm-2.6 libgnomeuimm-2.6 giomm-2.4 libavcodec libavformat libswscale gconfmm-2.6])
+PKG_CHECK_MODULES(ME_TV, [libgnomemm-2.6 libgnomeuimm-2.6 giomm-2.4 libavcodec libavformat libswscale gconfmm-2.6 gthread-2.0])
 AC_SUBST(ME_TV_CFLAGS)
 AC_SUBST(ME_TV_LIBS)
 

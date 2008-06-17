@@ -346,6 +346,8 @@ GtkVideoThread::~GtkVideoThread()
 GtkAlsaSink::GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 	Sink(pipeline), packet_queue(get_pipeline().get_packet_queue())
 {
+	g_static_rec_mutex_init(mutex.gobj());
+
 	video_thread = NULL;
 	audio_thread = NULL;
 	video_stream_index = -1;

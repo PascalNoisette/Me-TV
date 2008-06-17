@@ -90,12 +90,21 @@ struct StringTable hierarchy_table[] =
 	{ NULL, 0 }
 };
 
-struct StringTable* Frontend::get_bandwidth_table()	{ return bandwidth_table; }
+struct StringTable inversion_table[] =
+{
+	{ "INVERSION_OFF",	INVERSION_OFF },
+	{ "INVERSION_ON",	INVERSION_ON },
+	{ "INVERSION_AUTO",	INVERSION_AUTO },
+	{ NULL, 0 }
+};
+
+struct StringTable* Frontend::get_bandwidth_table()		{ return bandwidth_table; }
 struct StringTable* Frontend::get_fec_table()			{ return fec_table; }
 struct StringTable* Frontend::get_qam_table()			{ return qam_table; }
 struct StringTable* Frontend::get_modulation_table()	{ return modulation_table; }
-struct StringTable* Frontend::get_guard_table()		{ return guard_table; }
-struct StringTable* Frontend::get_hierarchy_table()	{ return hierarchy_table; }
+struct StringTable* Frontend::get_guard_table()			{ return guard_table; }
+struct StringTable* Frontend::get_hierarchy_table()		{ return hierarchy_table; }
+struct StringTable* Frontend::get_inversion_table()		{ return inversion_table; }
 
 Frontend::Frontend(const Adapter& adapter, guint frontend) : adapter(adapter)
 {
@@ -122,14 +131,14 @@ Frontend::~Frontend()
 	}
 }
 
-guint Frontend::convert_string_to_value(const StringTable* table, const gchar* text)
+guint Frontend::convert_string_to_value(const StringTable* table, const Glib::ustring& text)
 {
 	gboolean found = false;
 	const StringTable*	current = table;
 
 	while (current->text != NULL && !found)
 	{
-		if (g_str_equal(text,current->text))
+		if (text == current->text)
 		{
 			found = true;
 		}
@@ -141,7 +150,7 @@ guint Frontend::convert_string_to_value(const StringTable* table, const gchar* t
 	
 	if (!found)
 	{
-		throw Exception(Glib::ustring::compose(_("Failed to find a value for '%1'"), Glib::ustring(text)));
+		throw Exception(Glib::ustring::compose(_("Failed to find a value for '%1'"), text));
 	}
 	
 	return (guint)current->value;

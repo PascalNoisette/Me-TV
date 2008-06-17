@@ -24,6 +24,11 @@
 #include "sink.h"
 #include "exception.h"
 
+PipelineManager::PipelineManager()
+{
+	g_static_rec_mutex_init(mutex.gobj());
+}
+
 PipelineManager::~PipelineManager()
 {
 	while (!pipelines.empty())

@@ -20,7 +20,7 @@
 
 #include "profile_manager.h"
 
-#define GCONF_PATH "/apps/me-tv.3"
+#define GCONF_PATH "/apps/me-tv.4"
 
 ProfileManager::ProfileManager() : client(Gnome::Conf::Client::get_default_client())
 {
@@ -56,7 +56,23 @@ void ProfileManager::load()
 			Glib::ustring channel_path = *channel_iterator;
 			
 			Channel channel;
-			channel.name = client->get_string(channel_path + "/name");
+			channel.name			= client->get_string(channel_path + "/name");
+			channel.pre_command		= client->get_string(channel_path + "/pre_command");
+			channel.post_command	= client->get_string(channel_path + "/post_command");
+			channel.mrl				= client->get_string(channel_path + "/mrl");
+			channel.service_id		= client->get_int(channel_path + "/service_id");
+			channel.flags			= client->get_int(channel_path + "/flags");
+			
+			channel.frontend_parameters.frequency						= client->get_int(channel_path + "/frequency");
+			channel.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_bandwidth_table(),	client->get_string(channel_path + "/ofdm.bandwidth"));
+			channel.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_fec_table(),			client->get_string(channel_path + "/ofdm.code_rate_HP"));
+			channel.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_fec_table(),			client->get_string(channel_path + "/ofdm.code_rate_LP"));
+			channel.frontend_parameters.u.ofdm.constellation			= (fe_modulation)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_qam_table(),			client->get_string(channel_path + "/ofdm.constellation"));
+			channel.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode)		Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_modulation_table(),	client->get_string(channel_path + "/ofdm.transmission_mode"));
+			channel.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval)		Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_guard_table(),		client->get_string(channel_path + "/ofdm.guard_interval"));
+			channel.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_hierarchy_table(),	client->get_string(channel_path + "/ofdm.hierarchy_information"));
+			channel.frontend_parameters.inversion						= (fe_spectral_inversion)	Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_inversion_table(),	client->get_string(channel_path + "/inversion"));
+
 			g_debug("Channel '%s' read", channel.name.c_str());
 			
 			profile.channels.push_back(channel);
@@ -159,7 +175,7 @@ void ProfileManager::save()
 			client->set(channel_path + "/ofdm.transmission_mode",		Dvb::Frontend::convert_value_to_string(Dvb::Frontend::get_modulation_table(),	channel.frontend_parameters.u.ofdm.transmission_mode));
 			client->set(channel_path + "/ofdm.guard_interval",			Dvb::Frontend::convert_value_to_string(Dvb::Frontend::get_guard_table(),		channel.frontend_parameters.u.ofdm.guard_interval));
 			client->set(channel_path + "/ofdm.hierarchy_information",	Dvb::Frontend::convert_value_to_string(Dvb::Frontend::get_hierarchy_table(),	channel.frontend_parameters.u.ofdm.hierarchy_information));
-			client->set(channel_path + "/frontend_parameters.inversion", "INVERSION_AUTO");
+			client->set(channel_path + "/inversion",					Dvb::Frontend::convert_value_to_string(Dvb::Frontend::get_inversion_table(),	channel.frontend_parameters.inversion));
 			
 			channel_count++;
 			channel_iterator++;

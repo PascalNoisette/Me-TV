@@ -59,6 +59,7 @@ private:
 	PipelineList			pipelines;
 	Glib::StaticRecMutex	mutex;
 public:
+	PipelineManager();
 	~PipelineManager();
 	Pipeline& create(const Glib::ustring& name);
 	Pipeline* find_pipeline(const Glib::ustring& name);
