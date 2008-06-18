@@ -148,8 +148,6 @@ void MainWindow::on_menu_item_channels_clicked()
 		channels_dialog->hide();
 		widget_epg->update();
 		
-		g_debug("Result %d", result);
-		
 		// Pressed Cancel
 		if (result == Gtk::RESPONSE_CANCEL || result == Gtk::RESPONSE_DELETE_EVENT)
 		{

@@ -56,6 +56,7 @@ void ProfileManager::unset_directory(const Glib::ustring& path)
 		client->unset(key);
 		entry_iterator++;
 	}
+	client->clear_cache();
 }
 
 void ProfileManager::load()

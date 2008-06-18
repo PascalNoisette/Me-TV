@@ -44,6 +44,11 @@ Glib::ustring ScanDialog::get_initial_tuning_dir(Dvb::Frontend& frontend)
 	return path;
 }
 
+bool compare_country (Country& c1, Country c2)
+{
+	return c1.name < c2.name;
+}
+
 ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Dialog(cobject), glade(glade)
 {
 	scan_thread = NULL;
@@ -102,18 +107,28 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 		Glib::ustring name = g_file_info_get_name(file_info);
 		if (name.substr(2,1) == "-")
 		{
-			Glib::ustring country = name.substr(0,2);
-			Glib::ustring region = name.substr(3);
-			combo_box_select_country->append_text(country);
-			combo_box_select_region->append_text(region);
+			Glib::ustring country_name = name.substr(0,2);
+			Glib::ustring region_name = name.substr(3);
+			Country& country = get_country(country_name);
+			country.regions.push_back(region_name);
 		}
 		file_info = g_file_enumerator_next_file(children, NULL, NULL);
 	}
-	
+
+	// Populate controls
+	countries.sort(compare_country);
+	CountryList::iterator country_iterator = countries.begin();
+	while (country_iterator != countries.end())
+	{
+		Country& country = *country_iterator;
+		country.regions.sort();
+		combo_box_select_country->append_text(country.name);
+		country_iterator++;
+	}
+	combo_box_select_country->signal_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_combo_box_select_country_changed));
 	combo_box_select_country->set_active(0);
-	combo_box_select_region->set_active(0);
 }
-	
+
 ScanDialog::~ScanDialog()
 {
 	stop_scan();
@@ -123,6 +138,19 @@ void ScanDialog::on_hide()
 {
 	stop_scan();
 	Widget::on_hide();
+}
+
+void ScanDialog::on_combo_box_select_country_changed()
+{
+	combo_box_select_region->clear_items();
+	Country& country = get_country(combo_box_select_country->get_active_text());
+	StringList::iterator region_iterator = country.regions.begin();
+	while (region_iterator != country.regions.end())
+	{
+		combo_box_select_region->append_text(*region_iterator);
+		region_iterator++;
+	}
+	combo_box_select_region->set_active(0);
 }
 
 void ScanDialog::stop_scan()
@@ -147,8 +175,21 @@ void ScanDialog::on_button_start_scan_clicked()
 	Dvb::DeviceManager& device_manager = Application::get_current().get_device_manager();
 	Dvb::Frontend& frontend = device_manager.get_frontend_by_name(device_name);
 	
-	Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_select_file_to_scan"));
-	Glib::ustring initial_tuning_file = file_chooser->get_filename();
+	Glib::ustring initial_tuning_file;
+	
+	Gtk::RadioButton* radio_button_scan_by_location = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_by_location"));
+	if (radio_button_scan_by_location->get_active())
+	{
+		Glib::ustring country_name = combo_box_select_country->get_active_text();
+		Glib::ustring region_name = combo_box_select_region->get_active_text();
+		Glib::ustring initial_tuning_dir = get_initial_tuning_dir(frontend);
+		initial_tuning_file = initial_tuning_dir + "/" + country_name + "-" + region_name;
+	}
+	else
+	{
+		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_select_file_to_scan"));
+		initial_tuning_file = file_chooser->get_filename();
+	}
 
 	if (initial_tuning_file.empty())
 	{
@@ -183,7 +224,7 @@ void ScanDialog::on_signal_progress(guint step, gsize total)
 	gdouble fraction = total == 0 ? 0 : step/(gdouble)total;
 	progress_bar_scan->set_fraction(fraction);
 }
-	
+
 std::list<ScannedService> ScanDialog::get_scanned_services()
 {
 	std::list<ScannedService> result;
@@ -202,3 +243,38 @@ std::list<ScannedService> ScanDialog::get_scanned_services()
 	}
 	return result;
 }
+
+Country& ScanDialog::get_country(const Glib::ustring& country_name)
+{
+	Country* result = find_country(country_name);
+
+	// If we don't have the country already then create one
+	if (result == NULL)
+	{
+		Country country;
+		country.name = country_name;
+		countries.push_back(country);
+		result = find_country(country_name);
+	}
+	
+	return *result;
+}
+
+Country* ScanDialog::find_country(const Glib::ustring& country_name)
+{
+	Country* result = NULL;
+	
+	CountryList::iterator country_iterator = countries.begin();
+	while (country_iterator != countries.end() && result == NULL)
+	{
+		Country& country = *country_iterator;
+		if (country.name == country_name)
+		{
+			result = &(*country_iterator);
+		}
+		country_iterator++;
+	}
+	
+	return result;
+}
+

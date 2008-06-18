@@ -40,12 +40,22 @@ public:
 	struct dvb_frontend_parameters frontend_parameters;
 };
 
+class Country
+{
+public:
+	Glib::ustring name;
+	StringList regions;
+};
+
+typedef std::list<Country> CountryList;
+
 class ScanThread : public Thread
 {
 public:
 	Dvb::Scanner scanner;
 	Glib::ustring initial_tuning_file;
 	Dvb::Frontend& frontend;
+				
 public:
 	ScanThread(Dvb::Frontend& frontend, const Glib::ustring& file) :
 		Thread("Scan"), frontend(frontend), initial_tuning_file(file) {}
@@ -73,6 +83,7 @@ private:
 	ComboBoxText*							combo_box_select_country;
 	ComboBoxText*							combo_box_select_region;
 	ScanThread*								scan_thread;
+	CountryList								countries;
 
 	class ModelColumns : public Gtk::TreeModelColumnRecord
 	{
@@ -93,8 +104,11 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 		
 	Glib::ustring get_initial_tuning_dir(Dvb::Frontend& frontend);
-		
+	Country* find_country(const Glib::ustring& country_name);
+	Country& get_country(const Glib::ustring& country);
+
 	void on_file_chooser_button_select_file_to_scan_clicked();
+	void on_combo_box_select_country_changed();
 	void on_button_scan_wizard_ok_clicked();
 	void on_button_start_scan_clicked();
 	void on_signal_service(struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name);
