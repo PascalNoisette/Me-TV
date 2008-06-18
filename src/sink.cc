@@ -281,7 +281,6 @@ void GtkVideoThread::run()
 	}
 	g_debug("Video thread finished");
 	
-	av_free(frame);
 	avcodec_close(video_stream->codec);
 }
 
@@ -336,6 +335,11 @@ GtkVideoThread::GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_que
 
 GtkVideoThread::~GtkVideoThread()
 {
+	if (frame != NULL)
+	{
+		av_free(frame);
+	}
+	
 	if (video_buffer != NULL)
 	{
 		delete [] video_buffer;

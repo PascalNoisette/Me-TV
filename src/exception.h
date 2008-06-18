@@ -23,10 +23,13 @@
 
 #include <glibmm.h>
 #include <errno.h>
+#include "me-tv.h"
 
 #define TRY		try {
-#define CATCH	} catch(const Glib::Exception& exception) { g_debug(exception.what().c_str()); } \
-				catch(...) { g_debug("An unhandled error occurred"); }
+#define CATCH	} catch(const Glib::Exception& exception) { get_signal_error().emit(exception.what().c_str()); } \
+				catch(...) { get_signal_error().emit("An unhandled error occurred"); }
+#define THREAD_CATCH	} catch(const Glib::Exception& exception) { GdkLock gdk_lock; get_signal_error().emit(exception.what().c_str()); } \
+						catch(...) { GdkLock gdk_lock; get_signal_error().emit("An unhandled error occurred"); }
 
 class Exception : public Glib::Exception
 {

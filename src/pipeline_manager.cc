@@ -157,7 +157,10 @@ void Pipeline::start()
 void Pipeline::stop()
 {
 	g_debug("Stopping pipeline");
-	get_source().stop();
+	if (source != NULL)
+	{
+		source->stop();
+	}
 	SinkList::iterator iterator = sinks.begin();
 	while (iterator != sinks.end())
 	{

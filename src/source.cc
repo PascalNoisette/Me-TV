@@ -30,16 +30,16 @@ Source::Source(PacketQueue& packet_queue, const Channel& channel) :
 	g_message(_("Tuning to '%s'"), channel.name.c_str());
 	Dvb::Frontend& frontend = get_frontend();
 	
-	if (this->mrl.empty())
+	if (mrl.empty())
 	{
-		this->mrl = frontend.get_adapter().get_dvr_path();
+		mrl = frontend.get_adapter().get_dvr_path();
 	}
 	
 	if (!channel.pre_command.empty())
 	{
 		execute_command(channel.pre_command);
 	}
-	
+
 	post_command = channel.post_command;
 	
 	if (channel.flags & CHANNEL_FLAG_DVB)
@@ -181,7 +181,8 @@ void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	gsize teletext_streams_size = pms.teletext_streams.size();
 	for (guint i = 0; i < teletext_streams_size; i++)
 	{
-		add_pes_demuxer(demux_path, pms.teletext_streams[i].pid, DMX_PES_OTHER, "teletext");
+		g_debug("Ignoring TT stream");
+		//add_pes_demuxer(demux_path, pms.teletext_streams[i].pid, DMX_PES_OTHER, "teletext");
 	}
 	g_debug("Finished setting up DVB");
 }

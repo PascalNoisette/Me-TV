@@ -133,7 +133,12 @@ namespace Dvb
 			
 		Frontend* request_frontend(Event event)
 		{
-			return *(frontends.begin());
+			Frontend* result = NULL;
+			if (frontends.size() > 0)
+			{
+				result = *(frontends.begin());
+			}
+			return result;
 		}
 	};
 }

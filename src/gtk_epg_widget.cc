@@ -140,7 +140,9 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 
 void GtkEpgWidget::on_button_channel_name_clicked(const Glib::ustring& channel_name)
 {
+	TRY
 	get_application().get_channel_manager().set_display_channel(channel_name);
+	CATCH
 }
 
 void GtkEpgWidget::on_button_epg_previous_clicked()

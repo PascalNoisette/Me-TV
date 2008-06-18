@@ -41,6 +41,7 @@ private:
 	void unfullscreen();
 	gboolean is_fullscreen();
 
+	void on_error(const Glib::ustring& message);
 	void on_menu_item_open_clicked();
 	void on_menu_item_close_clicked();
 	void on_menu_item_quit_clicked();

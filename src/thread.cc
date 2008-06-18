@@ -24,7 +24,7 @@ void Thread::on_run()
 {		
 	TRY
 	run();
-	CATCH
+	THREAD_CATCH
 }
 	
 void Thread::join(gboolean term)

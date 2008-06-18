@@ -125,6 +125,7 @@ Frontend::Frontend(const Adapter& adapter, guint frontend) : adapter(adapter)
 
 Frontend::~Frontend()
 {
+	g_debug("Frontend destroyed");
 	if (fd != -1)
 	{
 		close(fd);

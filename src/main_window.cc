@@ -65,11 +65,19 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->get_widget("hbox_search_bar")->hide();
 
 	widget_epg->update();
+	
+	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
 }
 
 MainWindow::~MainWindow()
 {
 	stop();
+}
+
+void MainWindow::on_error(const Glib::ustring& message)
+{
+	Gtk::MessageDialog dialog(*this, message);
+	dialog.run();
 }
 
 Gtk::DrawingArea& MainWindow::get_drawing_area()

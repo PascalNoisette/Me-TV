@@ -27,6 +27,10 @@
 #include <glibmm/i18n.h>
 #include <list>
 
+typedef sigc::signal<void, const Glib::ustring&> StringSignal;
+
+StringSignal& get_signal_error();
+
 class ComboBoxText : public Gtk::ComboBoxText
 {
 public:

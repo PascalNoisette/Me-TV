@@ -20,8 +20,16 @@
 
 #include "application.h"
 #include "config.h"
+#include "me-tv.h"
 #include <glibmm.h>
 #include <glib/gprintf.h>
+
+StringSignal	signal_error;
+
+StringSignal& get_signal_error()
+{
+	return signal_error;
+}
 
 void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
@@ -31,6 +39,11 @@ void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar 
 	localtime_r(&t, &now);
 	strftime(buffer, 100, "%x %T", &now);
 	g_printf("%s: %s\n", buffer, message);
+}
+
+void on_error(const Glib::ustring& message)
+{
+	g_message(message.c_str());
 }
 
 int main (int argc, char *argv[])
@@ -48,6 +61,7 @@ int main (int argc, char *argv[])
 			log_handler, NULL);
 		
 		g_message("Me TV %s", VERSION);
+		signal_error.connect(sigc::ptr_fun(on_error));
 		Application application(argc, argv);
 		application.run();
 	}
