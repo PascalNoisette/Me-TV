@@ -35,11 +35,13 @@ private:
 	DemuxerList			demuxers;
 	PacketQueue&		packet_queue;
 	AVFormatContext*	format_context;
+	Glib::ustring		post_command;
 
 	void execute_command(const Glib::ustring& command);
 	void remove_all_demuxers();
 	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
 		guint pid, dmx_pes_type_t pid_type, const gchar* type_text);
+	Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
 	void setup_dvb(Dvb::Frontend& frontend, const Channel& channel);
 	Dvb::Frontend& get_frontend();
 	void run();

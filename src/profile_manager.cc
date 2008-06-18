@@ -20,17 +20,45 @@
 
 #include "profile_manager.h"
 
-#define GCONF_PATH "/apps/me-tv.4"
+#define GCONF_PATH "/apps/me-tv"
 
 ProfileManager::ProfileManager() : client(Gnome::Conf::Client::get_default_client())
 {
 	current_profile = NULL;
+	unset_directory("/apps/me-tv.1");
+	unset_directory("/apps/me-tv.2");
+	unset_directory("/apps/me-tv.3");
+	unset_directory("/apps/me-tv.4");
+	unset_directory("/apps/me-tv.5");
 	load();
 }
 
 ProfileManager::~ProfileManager()
 {
 	save();
+}
+
+void ProfileManager::unset_directory(const Glib::ustring& path)
+{
+	g_debug("unset_directory(%s)", path.c_str());
+
+	StringList directories = client->all_dirs(path);
+	StringList::iterator directory_iterator = directories.begin();
+	while (directory_iterator != directories.end())
+	{
+		unset_directory(*directory_iterator);
+		directory_iterator++;
+	}
+	
+	std::list<Gnome::Conf::Entry> entries = client->all_entries(path);
+	std::list<Gnome::Conf::Entry>::const_iterator entry_iterator = entries.begin();
+	while (entry_iterator != entries.end())
+	{
+		const Glib::ustring& key = (*entry_iterator).get_key();
+		g_debug("unset(%s)", key.c_str());
+		client->unset(key);
+		entry_iterator++;
+	}
 }
 
 void ProfileManager::load()
@@ -142,14 +170,18 @@ void ProfileManager::save()
 	guint profile_count = 0;
 	
 	client->set(GCONF_PATH"/current_profile", get_current_profile().name);
-		
+	
+	// Delete old data
+	Glib::ustring profiles_path = GCONF_PATH"/profiles";
+	unset_directory(profiles_path);
+
 	ProfileList::iterator profile_iterator = profiles.begin();
 	while (profile_iterator != profiles.end())
 	{
 		Profile& profile = *profile_iterator;
 		guint channel_count = 0;
 	
-		Glib::ustring profile_path = Glib::ustring::compose(GCONF_PATH"/profiles/profile_%1", profile_count);
+		Glib::ustring profile_path = Glib::ustring::compose(profiles_path + "/profile_%1", profile_count);
 
 		client->set(profile_path + "/name", profile.name);
 		

@@ -25,18 +25,24 @@
 #include "application.h"
 
 Source::Source(PacketQueue& packet_queue, const Channel& channel) :
-	Thread("Source"), packet_queue(packet_queue)
+	Thread("Channel Source"), packet_queue(packet_queue)
 {
+	g_message(_("Tuning to '%s'"), channel.name.c_str());
 	Dvb::Frontend& frontend = get_frontend();
 	
-	this->mrl = frontend.get_adapter().get_dvr_path();
-
+	if (this->mrl.empty())
+	{
+		this->mrl = frontend.get_adapter().get_dvr_path();
+	}
+	
 	if (!channel.pre_command.empty())
 	{
 		execute_command(channel.pre_command);
 	}
 	
-	if (channel.flags | CHANNEL_FLAG_DVB)
+	post_command = channel.post_command;
+	
+	if (channel.flags & CHANNEL_FLAG_DVB)
 	{
 		setup_dvb(frontend, channel);
 	}
@@ -44,7 +50,7 @@ Source::Source(PacketQueue& packet_queue, const Channel& channel) :
 }
 
 Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) :
-	Thread("Source"), packet_queue(packet_queue)
+	Thread("MRL Source"), packet_queue(packet_queue)
 {
 	this->mrl = mrl;
 	create();
@@ -52,6 +58,11 @@ Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) :
 
 Source::~Source()
 {
+	if (!post_command.empty())
+	{
+		execute_command(post_command);
+	}
+	
 	if (format_context != NULL)
 	{
 		av_close_input_file(format_context);
@@ -65,8 +76,8 @@ void Source::create()
 
 	av_register_all();
 	
+	usleep(100000000);
 	g_debug("Opening '%s'", mrl.c_str());	
-	
 	if (av_open_input_file(&format_context, mrl.c_str(), NULL, 0, NULL) != 0)
 	{
 		throw Exception("Failed to open input file: " + mrl);
@@ -100,7 +111,15 @@ Dvb::Demuxer& Source::add_pes_demuxer(const Glib::ustring& demux_path,
 	demuxer->set_pes_filter(pid, pid_type);
 	return *demuxer;
 }
-	
+
+Dvb::Demuxer& Source::add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id)
+{	
+	Dvb::Demuxer* demuxer = new Dvb::Demuxer(demux_path);
+	demuxers.push_back(demuxer);
+	demuxer->set_filter(pid, id);
+	return *demuxer;
+}
+
 void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 {
 	g_debug("Setting up DVB");
@@ -112,12 +131,10 @@ void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	transponder.frontend_parameters = channel.frontend_parameters;
 	frontend.tune_to(transponder);
 	
-	Dvb::Demuxer demuxer_pat(demux_path);
-	Dvb::Demuxer demuxer_pmt(demux_path);
+	Dvb::Demuxer& demuxer_pat = add_section_demuxer(demux_path, PAT_PID, PAT_ID);
 	Dvb::SI::SectionParser parser;
 	
 	Dvb::SI::ProgramAssociationSection pas;
-	demuxer_pat.set_filter(PAT_PID, PAT_ID);
 	parser.parse_pas(demuxer_pat, pas);
 	guint length = pas.program_associations.size();
 	guint pmt_pid = 0;
@@ -137,12 +154,11 @@ void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	{
 		throw Exception(_("Failed to find PMT ID for service"));
 	}
-	demuxer_pat.stop();
 	
-	demuxer_pmt.set_filter(pmt_pid, PMT_ID);
+	Dvb::Demuxer& demuxer_pmt = add_section_demuxer(demux_path, pmt_pid, PMT_ID);
+
 	Dvb::SI::ProgramMapSection pms;
 	parser.parse_pms(demuxer_pmt, pms);
-	demuxer_pmt.stop();
 
 	gsize video_streams_size = pms.video_streams.size();
 	for (guint i = 0; i < video_streams_size; i++)
@@ -219,6 +235,9 @@ void Source::run()
 		}
 	}
 	packet_queue.finish();
+	
+	av_close_input_file(format_context);
+	format_context = NULL;
 	g_debug("Source thread loop finished");
 }
 
