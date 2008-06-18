@@ -49,7 +49,6 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
 }
 
-
 void ChannelsDialog::on_button_select_all_displayed_channels_clicked()
 {
 	tree_view_displayed_channels->get_selection()->select_all();
@@ -57,7 +56,7 @@ void ChannelsDialog::on_button_select_all_displayed_channels_clicked()
 
 void ChannelsDialog::on_button_scan_clicked()
 {
-	response(2);
+	response(1);
 }
 
 void ChannelsDialog::on_button_button_remove_selected_channels_clicked()

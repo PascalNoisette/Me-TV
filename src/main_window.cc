@@ -148,14 +148,16 @@ void MainWindow::on_menu_item_channels_clicked()
 		channels_dialog->hide();
 		widget_epg->update();
 		
+		g_debug("Result %d", result);
+		
 		// Pressed Cancel
-		if (result == 0)
+		if (result == Gtk::RESPONSE_CANCEL || result == Gtk::RESPONSE_DELETE_EVENT)
 		{
 			done = true;
 		}
 
 		// Pressed OK
-		else if (result == 1)
+		else if (result == Gtk::RESPONSE_OK)
 		{
 			ChannelList channels = channels_dialog->get_channels();
 			channel_manager.clear();
@@ -168,7 +170,7 @@ void MainWindow::on_menu_item_channels_clicked()
 		}
 		
 		// Pressed scan button
-		else if (result == 2)
+		else if (result == 1)
 		{
 			gsize frontend_count = Application::get_current().get_device_manager().get_frontends().size();
 			if (frontend_count == 0)
@@ -183,7 +185,7 @@ void MainWindow::on_menu_item_channels_clicked()
 				guint scan_dialog_result = scan_dialog->run();
 				scan_dialog->hide();
 			
-				if (scan_dialog_result == 1)
+				if (scan_dialog_result == Gtk::RESPONSE_OK)
 				{
 					std::list<ScannedService> scanned_services = scan_dialog->get_scanned_services();
 					channels_dialog->add_scanned_services(scanned_services);

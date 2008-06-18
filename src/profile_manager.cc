@@ -40,8 +40,6 @@ ProfileManager::~ProfileManager()
 
 void ProfileManager::unset_directory(const Glib::ustring& path)
 {
-	g_debug("unset_directory(%s)", path.c_str());
-
 	StringList directories = client->all_dirs(path);
 	StringList::iterator directory_iterator = directories.begin();
 	while (directory_iterator != directories.end())
@@ -55,7 +53,6 @@ void ProfileManager::unset_directory(const Glib::ustring& path)
 	while (entry_iterator != entries.end())
 	{
 		const Glib::ustring& key = (*entry_iterator).get_key();
-		g_debug("unset(%s)", key.c_str());
 		client->unset(key);
 		entry_iterator++;
 	}
@@ -74,40 +71,47 @@ void ProfileManager::load()
 		Profile profile;
 		profile.name = client->get_string(profile_path + "/name");
 
-		g_debug("Loading '%s' profile", profile.name.c_str());
-
-		Glib::ustring channels_path = profile_path + "/channels";
-		StringList channels = client->all_dirs(channels_path);
-		StringList::iterator channel_iterator = channels.begin();
-		while (channel_iterator != channels.end())
+		if (profile.name.empty())
 		{
-			Glib::ustring channel_path = *channel_iterator;
-			
-			Channel channel;
-			channel.name			= client->get_string(channel_path + "/name");
-			channel.pre_command		= client->get_string(channel_path + "/pre_command");
-			channel.post_command	= client->get_string(channel_path + "/post_command");
-			channel.mrl				= client->get_string(channel_path + "/mrl");
-			channel.service_id		= client->get_int(channel_path + "/service_id");
-			channel.flags			= client->get_int(channel_path + "/flags");
-			
-			channel.frontend_parameters.frequency						= client->get_int(channel_path + "/frequency");
-			channel.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_bandwidth_table(),	client->get_string(channel_path + "/ofdm.bandwidth"));
-			channel.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_fec_table(),			client->get_string(channel_path + "/ofdm.code_rate_HP"));
-			channel.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_fec_table(),			client->get_string(channel_path + "/ofdm.code_rate_LP"));
-			channel.frontend_parameters.u.ofdm.constellation			= (fe_modulation)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_qam_table(),			client->get_string(channel_path + "/ofdm.constellation"));
-			channel.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode)		Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_modulation_table(),	client->get_string(channel_path + "/ofdm.transmission_mode"));
-			channel.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval)		Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_guard_table(),		client->get_string(channel_path + "/ofdm.guard_interval"));
-			channel.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_hierarchy_table(),	client->get_string(channel_path + "/ofdm.hierarchy_information"));
-			channel.frontend_parameters.inversion						= (fe_spectral_inversion)	Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_inversion_table(),	client->get_string(channel_path + "/inversion"));
-
-			g_debug("Channel '%s' read", channel.name.c_str());
-			
-			profile.channels.push_back(channel);
-			channel_iterator++;
+			g_message("Profile at '%s' ignored because the profile name is empty", profile_path.c_str());
 		}
-		
-		profiles.push_back(profile);
+		else
+		{
+			g_debug("Loading '%s' profile", profile.name.c_str());
+
+			Glib::ustring channels_path = profile_path + "/channels";
+			StringList channels = client->all_dirs(channels_path);
+			StringList::iterator channel_iterator = channels.begin();
+			while (channel_iterator != channels.end())
+			{
+				Glib::ustring channel_path = *channel_iterator;
+				
+				Channel channel;
+				channel.name			= client->get_string(channel_path + "/name");
+				channel.pre_command		= client->get_string(channel_path + "/pre_command");
+				channel.post_command	= client->get_string(channel_path + "/post_command");
+				channel.mrl				= client->get_string(channel_path + "/mrl");
+				channel.service_id		= client->get_int(channel_path + "/service_id");
+				channel.flags			= client->get_int(channel_path + "/flags");
+				
+				channel.frontend_parameters.frequency						= client->get_int(channel_path + "/frequency");
+				channel.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_bandwidth_table(),	client->get_string(channel_path + "/ofdm.bandwidth"));
+				channel.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_fec_table(),			client->get_string(channel_path + "/ofdm.code_rate_HP"));
+				channel.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_fec_table(),			client->get_string(channel_path + "/ofdm.code_rate_LP"));
+				channel.frontend_parameters.u.ofdm.constellation			= (fe_modulation)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_qam_table(),			client->get_string(channel_path + "/ofdm.constellation"));
+				channel.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode)		Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_modulation_table(),	client->get_string(channel_path + "/ofdm.transmission_mode"));
+				channel.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval)		Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_guard_table(),		client->get_string(channel_path + "/ofdm.guard_interval"));
+				channel.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy)			Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_hierarchy_table(),	client->get_string(channel_path + "/ofdm.hierarchy_information"));
+				channel.frontend_parameters.inversion						= (fe_spectral_inversion)	Dvb::Frontend::convert_string_to_value(Dvb::Frontend::get_inversion_table(),	client->get_string(channel_path + "/inversion"));
+
+				g_debug("Channel '%s' read", channel.name.c_str());
+				
+				profile.channels.push_back(channel);
+				channel_iterator++;
+			}
+			
+			profiles.push_back(profile);
+		}
 		profile_iterator++;
 	}
 	

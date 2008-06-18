@@ -76,7 +76,6 @@ void Source::create()
 
 	av_register_all();
 	
-	usleep(100000000);
 	g_debug("Opening '%s'", mrl.c_str());	
 	if (av_open_input_file(&format_context, mrl.c_str(), NULL, 0, NULL) != 0)
 	{
