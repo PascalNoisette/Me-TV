@@ -22,7 +22,7 @@
         <child>
           <widget class="GtkImage" id="image7">
             <property name="visible">True</property>
-            <property name="pixbuf">Program_Details1.png</property>
+            <property name="pixbuf">Program_Details2.png</property>
           </widget>
           <packing>
             <property name="expand">False</property>
@@ -955,233 +955,247 @@ found in /usr/share/common-licenses/GPL file.</property>
         <property name="visible">True</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkTable" id="table_scheduled_recordings">
+          <widget class="GtkHBox" id="hbox19">
             <property name="visible">True</property>
-            <property name="n_rows">7</property>
-            <property name="n_columns">2</property>
             <child>
-              <widget class="GtkLabel" id="label_start_date">
+              <widget class="GtkImage" id="image11">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Start Date:</property>
-              </widget>
-              <packing>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="label_description">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Description:</property>
+                <property name="pixbuf">Recordings_Banner_1.png</property>
               </widget>
             </child>
             <child>
-              <widget class="GtkLabel" id="label_channel">
+              <widget class="GtkTable" id="table_scheduled_recordings">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Channel:</property>
-              </widget>
-              <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="label_recording_type">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Recording Type:</property>
-              </widget>
-              <packing>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="label_duration">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Duration:</property>
-              </widget>
-              <packing>
-                <property name="top_attach">6</property>
-                <property name="bottom_attach">7</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkEntry" id="entry_description">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-              </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkComboBox" id="combo_box_service">
-                <property name="visible">True</property>
-                <property name="items" translatable="yes"></property>
-              </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkHBox" id="hbox_duration">
-                <property name="visible">True</property>
+                <property name="n_rows">7</property>
+                <property name="n_columns">2</property>
                 <child>
-                  <widget class="GtkSpinButton" id="spinbutton_duration">
+                  <widget class="GtkComboBox" id="combo_box_record_type">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="max_length">4</property>
-                    <property name="width_chars">4</property>
-                    <property name="adjustment">0 0 1439 1 10 10</property>
-                    <property name="climb_rate">1</property>
-                    <property name="numeric">True</property>
+                    <property name="items" translatable="yes">Don't record (delete)
+Once off
+Every day except weekends
+Every day including weekends
+Every week</property>
                   </widget>
                   <packing>
-                    <property name="expand">False</property>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label_duration_text">
+                  <widget class="GtkLabel" id="label_start_day">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">minutes</property>
+                    <property name="label" translatable="yes">Start Day:</property>
                   </widget>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">6</property>
-                <property name="bottom_attach">7</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkHBox" id="hbox_start_time">
-                <property name="visible">True</property>
-                <child>
-                  <widget class="GtkSpinButton" id="spinbutton_start_time_hour">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="max_length">2</property>
-                    <property name="width_chars">2</property>
-                    <property name="adjustment">0 0 23 1 10 10</property>
-                    <property name="climb_rate">1</property>
-                    <property name="numeric">True</property>
-                    <property name="wrap">True</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
+                    <property name="top_attach">4</property>
+                    <property name="bottom_attach">5</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label_colon">
+                  <widget class="GnomeDateEdit" id="date_edit_start_date">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">:</property>
+                    <property name="dateedit_flags"></property>
                   </widget>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="position">1</property>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">3</property>
+                    <property name="bottom_attach">4</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkSpinButton" id="spinbutton_start_time_minute">
+                  <widget class="GtkComboBox" id="combo_box_start_day">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="max_length">2</property>
-                    <property name="width_chars">2</property>
-                    <property name="adjustment">0 0 59 1 10 10</property>
-                    <property name="climb_rate">1</property>
-                    <property name="numeric">True</property>
-                    <property name="wrap">True</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-              </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">5</property>
-                <property name="bottom_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="label_start_time">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Start Time:</property>
-              </widget>
-              <packing>
-                <property name="top_attach">5</property>
-                <property name="bottom_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkComboBox" id="combo_box_start_day">
-                <property name="visible">True</property>
-                <property name="items" translatable="yes">Sunday
+                    <property name="items" translatable="yes">Sunday
 Monday
 Tuesday
 Wednesday
 Thursday
 Friday
 Saturday</property>
+                  </widget>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">4</property>
+                    <property name="bottom_attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label_start_time">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Start Time:</property>
+                  </widget>
+                  <packing>
+                    <property name="top_attach">5</property>
+                    <property name="bottom_attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkHBox" id="hbox_start_time">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkSpinButton" id="spinbutton_start_time_hour">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="max_length">2</property>
+                        <property name="width_chars">2</property>
+                        <property name="adjustment">0 0 23 1 10 10</property>
+                        <property name="climb_rate">1</property>
+                        <property name="numeric">True</property>
+                        <property name="wrap">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_colon">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">:</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkSpinButton" id="spinbutton_start_time_minute">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="max_length">2</property>
+                        <property name="width_chars">2</property>
+                        <property name="adjustment">0 0 59 1 10 10</property>
+                        <property name="climb_rate">1</property>
+                        <property name="numeric">True</property>
+                        <property name="wrap">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">5</property>
+                    <property name="bottom_attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkHBox" id="hbox_duration">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkSpinButton" id="spinbutton_duration">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="max_length">4</property>
+                        <property name="width_chars">4</property>
+                        <property name="adjustment">0 0 1439 1 10 10</property>
+                        <property name="climb_rate">1</property>
+                        <property name="numeric">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_duration_text">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">minutes</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">6</property>
+                    <property name="bottom_attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkComboBox" id="combo_box_service">
+                    <property name="visible">True</property>
+                    <property name="items" translatable="yes"></property>
+                  </widget>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkEntry" id="entry_description">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                  </widget>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label_duration">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Duration:</property>
+                  </widget>
+                  <packing>
+                    <property name="top_attach">6</property>
+                    <property name="bottom_attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label_recording_type">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Recording Type:</property>
+                  </widget>
+                  <packing>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label_channel">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Channel:</property>
+                  </widget>
+                  <packing>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label_description">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Description:</property>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label_start_date">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Start Date:</property>
+                  </widget>
+                  <packing>
+                    <property name="top_attach">3</property>
+                    <property name="bottom_attach">4</property>
+                  </packing>
+                </child>
               </widget>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">4</property>
-                <property name="bottom_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GnomeDateEdit" id="date_edit_start_date">
-                <property name="visible">True</property>
-                <property name="dateedit_flags"></property>
-              </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="label_start_day">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Start Day:</property>
-              </widget>
-              <packing>
-                <property name="top_attach">4</property>
-                <property name="bottom_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkComboBox" id="combo_box_record_type">
-                <property name="visible">True</property>
-                <property name="items" translatable="yes">Don't record (delete)
-Once off
-Every day except weekends
-Every day including weekends
-Every week</property>
-              </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </widget>
