@@ -58,6 +58,12 @@ Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) :
 
 Source::~Source()
 {
+	if (format_context != NULL)
+	{
+		av_close_input_file(format_context);
+		format_context = NULL;
+	}
+
 	if (!post_command.empty())
 	{
 		execute_command(post_command);
@@ -236,8 +242,6 @@ void Source::run()
 	}
 	packet_queue.finish();
 	
-	av_close_input_file(format_context);
-	format_context = NULL;
 	g_debug("Source thread loop finished");
 }
 
