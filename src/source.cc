@@ -24,8 +24,11 @@
 #include "scheduler.h"
 #include "application.h"
 
+#define TS_PACKET_SIZE	188
+#define BUFFER_SIZE		TS_PACKET_SIZE * 100
+
 Source::Source(PacketQueue& packet_queue, const Channel& channel) :
-	Thread("Channel Source"), packet_queue(packet_queue)
+	Thread("Channel Source"), packet_queue(packet_queue), buffer(BUFFER_SIZE)
 {	
 	g_message(_("Creating source for '%s'"), channel.name.c_str());
 
@@ -53,7 +56,7 @@ Source::Source(PacketQueue& packet_queue, const Channel& channel) :
 }
 
 Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) :
-	Thread("MRL Source"), packet_queue(packet_queue)
+	Thread("MRL Source"), packet_queue(packet_queue), buffer(BUFFER_SIZE)
 {
 	this->mrl = mrl;
 	create(false);
@@ -85,42 +88,33 @@ int read_data(void* data, guchar* buffer, int size)
 	return source->read_data(buffer, size);
 }
 
-int Source::read_data(guchar* source_buffer, int size)
+int Source::read_data(guchar* destination_buffer, int size)
 {
 	gsize bytes_read = 0;
 
-	if (total_bytes_read < 15000000)
+	if (!opened)
 	{
-		memcpy(buffer, source_buffer, BUFFER_SIZE);
-		bytes_read = BUFFER_SIZE;
+		memcpy(destination_buffer, buffer.get_buffer(), buffer.get_size());
+		bytes_read = size;
 	}
 	else
 	{
-		input_channel->read((gchar*)source_buffer, size, bytes_read);
+		input_channel->read((gchar*)destination_buffer, size, bytes_read);
 	}
 
-	total_bytes_read += bytes_read;
 	return bytes_read;
 }
 
 void Source::create(gboolean is_dvb)
-{
-	total_bytes_read = 0;
-	packet_count =0;
-	
+{	
 	format_context = NULL;
 
 	av_register_all();
 	
 	if (is_dvb)
 	{		
-		gsize bytes_read = 0;
 		input_channel = Glib::IOChannel::create_from_file(mrl, "r");
 		input_channel->set_encoding("");
-
-		g_debug("Reading sample packets");
-		input_channel->read((gchar*)buffer, BUFFER_SIZE, bytes_read);
-		g_debug("Read %d sample packets", bytes_read/188);
 
 		AVInputFormat* input_format = av_find_input_format("mpegts");
 		if(input_format == NULL)
@@ -129,8 +123,31 @@ void Source::create(gboolean is_dvb)
 		}
 		input_format->flags |= AVFMT_NOFILE; 
 
+		g_debug("Reading sample packets");
+		gboolean got_pat = false;
+		while (!got_pat)
+		{
+			gsize buffer_size = 0;
+			input_channel->read((gchar*)buffer.get_buffer(), buffer.get_max_size(), buffer_size);
+			buffer.set_size(buffer_size);
+			g_debug("Read %d sample packets", buffer_size/TS_PACKET_SIZE);
+
+			guchar* b = buffer.get_buffer();
+			for (int i = 0; i < buffer_size; i += TS_PACKET_SIZE)
+			{
+				guint sync = b[i];
+				guint pid = ((b[i+1] & 0x1F)<<8) + b[i+2];
+				if (sync == 0x47 && pid == 0)
+				{
+					g_debug("PAT read");
+					got_pat = true;
+				}
+			}
+		}
+
+		opened = false;
 		ByteIOContext io_context;
-		if (init_put_byte(&io_context, buffer, BUFFER_SIZE, 0, this, ::read_data, NULL, NULL) < 0)
+		if (init_put_byte(&io_context, buffer.get_buffer(), buffer.get_max_size(), 0, this, ::read_data, NULL, NULL) < 0)
 		{
 			throw Exception("Failed to initialise byte IO context");
 		}
@@ -140,6 +157,7 @@ void Source::create(gboolean is_dvb)
 		{
 			throw Exception("Failed to open input stream: " + mrl);
 		}
+		opened = true;
 	}
 	else
 	{
@@ -199,11 +217,14 @@ void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	transponder.frontend_parameters = channel.frontend_parameters;
 	frontend.tune_to(transponder);
 	
-	Dvb::Demuxer& demuxer_pat = add_section_demuxer(demux_path, PAT_PID, PAT_ID);
+	Dvb::Demuxer demuxer_pat(demux_path);
+	demuxer_pat.set_filter(PAT_PID, PAT_ID);
 	Dvb::SI::SectionParser parser;
 	
 	Dvb::SI::ProgramAssociationSection pas;
 	parser.parse_pas(demuxer_pat, pas);
+	demuxer_pat.stop();
+
 	guint length = pas.program_associations.size();
 	guint pmt_pid = 0;
 	
@@ -223,17 +244,16 @@ void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 		throw Exception(_("Failed to find PMT ID for service"));
 	}
 	
-	Dvb::Demuxer& demuxer_pmt = add_section_demuxer(demux_path, pmt_pid, PMT_ID);
+	Dvb::Demuxer demuxer_pmt(demux_path);
+	demuxer_pmt.set_filter(pmt_pid, PMT_ID);
 
 	Dvb::SI::ProgramMapSection pms;
 	parser.parse_pms(demuxer_pmt, pms);
-	
-	demuxer_pat.stop();
 	demuxer_pmt.stop();
+		
+	add_pes_demuxer(demux_path, PAT_PID, DMX_PES_OTHER, "PAT");
+	add_pes_demuxer(demux_path, pmt_pid, DMX_PES_OTHER, "PMT");
 	
-	demuxer_pat.set_filter(0, PAT_ID);
-	demuxer_pat.set_filter(pmt_pid, PMT_ID);
-
 	gsize video_streams_size = pms.video_streams.size();
 	for (guint i = 0; i < video_streams_size; i++)
 	{
@@ -335,3 +355,10 @@ void Source::stop()
 	packet_queue.finish();
 	join(true);
 }
+
+void Source::seek(guint position)
+{
+	packet_queue.flush();
+	av_seek_frame(format_context, -1, position, 0);
+}
+

@@ -52,6 +52,7 @@ private:
 	bool on_timeout();
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
 	bool on_event_box_video_motion_notify_event(GdkEventMotion* event);
+	bool on_event_box_video_scroll_event(GdkEventScroll* event);
 
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);

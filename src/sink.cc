@@ -432,6 +432,8 @@ void GtkAlsaSink::run()
 			{
 				av_free_packet(packet);
 			}
+			
+			delete packet;
 		}
 	}
 	g_debug("Finished GtkAlsaSink loop");

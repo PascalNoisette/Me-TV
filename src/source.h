@@ -28,7 +28,29 @@
 #include "packet_queue.h"
 #include <glibmm.h>
 
-#define BUFFER_SIZE 188*100
+class Buffer
+{
+private:
+	guchar* buffer;
+	gsize max_size;
+	gsize size;
+public:
+	Buffer(gsize max_size) : max_size(max_size)
+	{
+		buffer = new guchar[max_size];
+		size = 0;
+	}
+		
+	~Buffer()
+	{
+		delete [] buffer;
+	}
+	
+	void set_size(guint s) { size = s; }
+	gsize get_size() const { return size; }
+	gsize get_max_size() const { return max_size; }
+	guchar* get_buffer() const { return buffer; }
+};
 
 class Source : public Thread
 {
@@ -39,9 +61,8 @@ private:
 	AVFormatContext*				format_context;
 	Glib::ustring					post_command;
 	Glib::RefPtr<Glib::IOChannel>	input_channel;
-	guchar							buffer[BUFFER_SIZE];
-	guint							packet_count;
-	gsize							total_bytes_read;
+	Buffer							buffer;
+	gboolean						opened;
 
 	void execute_command(const Glib::ustring& command);
 	void remove_all_demuxers();
@@ -59,6 +80,7 @@ public:
 	~Source();
 	
 	int read_data(guchar* buffer, int size);
+	void seek(guint position);
 
 	AVFormatContext* get_format_context() const { return format_context; }
 	AVStream* get_stream(guint index) const;

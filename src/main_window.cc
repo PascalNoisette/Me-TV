@@ -33,8 +33,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	
 	glade->get_widget_derived("vbox_epg", widget_epg);
-	glade->get_widget("event_box_video")->signal_motion_notify_event().connect(
-		sigc::mem_fun(*this, &MainWindow::on_event_box_video_motion_notify_event));
 	
 	glade->connect_clicked("menu_item_open",		sigc::mem_fun(*this, &MainWindow::on_menu_item_open_clicked));
 	glade->connect_clicked("menu_item_close",		sigc::mem_fun(*this, &MainWindow::on_menu_item_close_clicked));
@@ -46,6 +44,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
+	event_box_video->signal_motion_notify_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_motion_notify_event));
+	event_box_video->signal_scroll_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_scroll_event));
 
 	Gtk::AboutDialog* dialog_about = (Gtk::AboutDialog*)glade->get_widget("dialog_about");
 	dialog_about->set_version(VERSION);
@@ -247,6 +247,8 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 			widget_epg->update();
 		}
 	}
+	
+	return true;
 }
 
 bool MainWindow::on_event_box_video_motion_notify_event(GdkEventMotion* event)
@@ -254,6 +256,30 @@ bool MainWindow::on_event_box_video_motion_notify_event(GdkEventMotion* event)
 	last_motion_time = time(NULL);
 	glade->get_widget("event_box_video")->get_window()->set_cursor();
 	is_cursor_visible = true;
+	
+	return true;
+}
+
+bool MainWindow::on_event_box_video_scroll_event(GdkEventScroll* event)
+{
+	switch(event->direction)
+	{
+		case GDK_SCROLL_UP:
+			{
+//				PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
+//				Pipeline& pipeline = pipeline_manager.get_pipeline("display");
+			}
+			break;
+		case GDK_SCROLL_DOWN:
+			{
+//				PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
+//				Pipeline& pipeline = pipeline_manager.get_pipeline("display");
+//				pipeline.get_source().seek(0);
+			}
+			break;
+	}
+	
+	return true;
 }
 
 void MainWindow::unfullscreen()

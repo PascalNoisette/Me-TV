@@ -26,6 +26,13 @@ PacketQueue::PacketQueue()
 	g_static_rec_mutex_init(mutex.gobj());
 	finished = false;
 }
+
+PacketQueue::~PacketQueue()
+{
+	Glib::RecMutex::Lock lock(mutex);	
+	finished = true;
+	flush();
+}
 	
 void PacketQueue::push(AVPacket* packet)
 {
@@ -84,4 +91,14 @@ void PacketQueue::finish()
 gboolean PacketQueue::is_finished()
 {
 	return finished && is_empty();
+}
+
+void PacketQueue::flush()
+{
+	Glib::RecMutex::Lock lock(mutex);
+	while (queue.size() > 0)
+	{
+		delete queue.front();
+		queue.pop();
+	}
 }

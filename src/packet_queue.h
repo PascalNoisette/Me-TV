@@ -34,6 +34,7 @@ private:
 		
 public:
 	PacketQueue();
+	~PacketQueue();
 	
 	void push(AVPacket* packet);
 	AVPacket* pop();
@@ -41,6 +42,7 @@ public:
 	gboolean is_empty();
 	void finish();
 	gboolean is_finished();
+	void flush();
 };
 
 #endif

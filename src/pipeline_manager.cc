@@ -70,6 +70,18 @@ Pipeline* PipelineManager::find_pipeline(const Glib::ustring& name)
 	return result;
 }
 
+Pipeline& PipelineManager::get_pipeline(const Glib::ustring& name)
+{
+	Pipeline* pipeline = find_pipeline(name);
+
+	if (pipeline == NULL)
+	{
+		throw Exception(Glib::ustring::compose(_("Failed to find pipeline '%1'"), name));
+	}
+	
+	return *pipeline;
+}
+
 void PipelineManager::remove(Pipeline* pipeline)
 {
 	Glib::RecMutex::Lock lock(mutex);
