@@ -44,9 +44,9 @@ Glib::ustring ScanDialog::get_initial_tuning_dir(Dvb::Frontend& frontend)
 	return path;
 }
 
-bool compare_country (Country& c1, Country c2)
+bool compare_countries (const Country& a, const Country& b)
 {
-	return c1.name < c2.name;
+	return a.name < b.name;
 }
 
 ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Dialog(cobject), glade(glade)
@@ -116,7 +116,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	}
 
 	// Populate controls
-	countries.sort(compare_country);
+	countries.sort(compare_countries);
 	CountryList::iterator country_iterator = countries.begin();
 	while (country_iterator != countries.end())
 	{

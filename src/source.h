@@ -28,14 +28,20 @@
 #include "packet_queue.h"
 #include <glibmm.h>
 
+#define BUFFER_SIZE 188*100
+
 class Source : public Thread
 {
 private:
-	Glib::ustring		mrl;
-	DemuxerList			demuxers;
-	PacketQueue&		packet_queue;
-	AVFormatContext*	format_context;
-	Glib::ustring		post_command;
+	Glib::ustring					mrl;
+	DemuxerList						demuxers;
+	PacketQueue&					packet_queue;
+	AVFormatContext*				format_context;
+	Glib::ustring					post_command;
+	Glib::RefPtr<Glib::IOChannel>	input_channel;
+	guchar							buffer[BUFFER_SIZE];
+	guint							packet_count;
+	gsize							total_bytes_read;
 
 	void execute_command(const Glib::ustring& command);
 	void remove_all_demuxers();
@@ -45,13 +51,15 @@ private:
 	void setup_dvb(Dvb::Frontend& frontend, const Channel& channel);
 	Dvb::Frontend& get_frontend();
 	void run();
-	void create();
-		
+	void create(gboolean is_dvb);
+				
 public:
 	Source(PacketQueue& packet_queue, const Channel& channel);
 	Source(PacketQueue& packet_queue, const Glib::ustring& mrl);
 	~Source();
 	
+	int read_data(guchar* buffer, int size);
+
 	AVFormatContext* get_format_context() const { return format_context; }
 	AVStream* get_stream(guint index) const;
 	gsize get_stream_count() const { return format_context->nb_streams; }

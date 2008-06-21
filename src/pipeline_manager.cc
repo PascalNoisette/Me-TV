@@ -78,9 +78,7 @@ void PipelineManager::remove(Pipeline* pipeline)
 		throw Exception("Failed to remove pipeline: Pipeline was NULL");
 	}
 	
-	g_debug("Stopping pipeline '%s'", pipeline->get_name().c_str());
 	pipeline->stop();
-	g_debug("Pipeline stopped");
 	
 	pipelines.remove(pipeline);
 	g_debug("Pipeline removed");
@@ -156,7 +154,7 @@ void Pipeline::start()
 
 void Pipeline::stop()
 {
-	g_debug("Stopping pipeline");
+	g_debug("Stopping pipeline '%s'", name.c_str());
 	if (source != NULL)
 	{
 		source->stop();

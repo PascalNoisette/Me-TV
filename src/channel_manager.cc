@@ -22,6 +22,16 @@
 #include "profile_manager.h"
 #include "exception.h"
 
+bool channel_sort_by_index(const Channel& a, const Channel& b)
+{
+	return a.index < b.index;
+}
+
+bool channel_sort_by_name(const Channel& a, const Channel& b)
+{
+	return a.name < b.name;
+}
+
 Channel::Channel()
 {
 	flags = 0;

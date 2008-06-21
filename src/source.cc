@@ -26,14 +26,10 @@
 
 Source::Source(PacketQueue& packet_queue, const Channel& channel) :
 	Thread("Channel Source"), packet_queue(packet_queue)
-{
-	g_message(_("Tuning to '%s'"), channel.name.c_str());
-	Dvb::Frontend& frontend = get_frontend();
-	
-	if (mrl.empty())
-	{
-		mrl = frontend.get_adapter().get_dvr_path();
-	}
+{	
+	g_message(_("Creating source for '%s'"), channel.name.c_str());
+
+	mrl = channel.mrl;
 	
 	if (!channel.pre_command.empty())
 	{
@@ -44,16 +40,23 @@ Source::Source(PacketQueue& packet_queue, const Channel& channel) :
 	
 	if (channel.flags & CHANNEL_FLAG_DVB)
 	{
+		Dvb::Frontend& frontend = get_frontend();
+		if (mrl.empty())
+		{
+			mrl = frontend.get_adapter().get_dvr_path();
+		}
+
 		setup_dvb(frontend, channel);
 	}
-	create();
+	
+	create(channel.flags & CHANNEL_FLAG_DVB);
 }
 
 Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) :
 	Thread("MRL Source"), packet_queue(packet_queue)
 {
 	this->mrl = mrl;
-	create();
+	create(false);
 }
 
 Source::~Source()
@@ -76,17 +79,77 @@ Source::~Source()
 	}
 }
 
-void Source::create()
+int read_data(void* data, guchar* buffer, int size)
 {
+	Source* source = (Source*)data;
+	return source->read_data(buffer, size);
+}
+
+int Source::read_data(guchar* source_buffer, int size)
+{
+	gsize bytes_read = 0;
+
+	if (total_bytes_read < 15000000)
+	{
+		memcpy(buffer, source_buffer, BUFFER_SIZE);
+		bytes_read = BUFFER_SIZE;
+	}
+	else
+	{
+		input_channel->read((gchar*)source_buffer, size, bytes_read);
+	}
+
+	total_bytes_read += bytes_read;
+	return bytes_read;
+}
+
+void Source::create(gboolean is_dvb)
+{
+	total_bytes_read = 0;
+	packet_count =0;
+	
 	format_context = NULL;
 
 	av_register_all();
 	
-	g_debug("Opening '%s'", mrl.c_str());	
-	if (av_open_input_file(&format_context, mrl.c_str(), NULL, 0, NULL) != 0)
-	{
-		throw Exception("Failed to open input file: " + mrl);
+	if (is_dvb)
+	{		
+		gsize bytes_read = 0;
+		input_channel = Glib::IOChannel::create_from_file(mrl, "r");
+		input_channel->set_encoding("");
+
+		g_debug("Reading sample packets");
+		input_channel->read((gchar*)buffer, BUFFER_SIZE, bytes_read);
+		g_debug("Read %d sample packets", bytes_read/188);
+
+		AVInputFormat* input_format = av_find_input_format("mpegts");
+		if(input_format == NULL)
+		{
+			throw Exception(_("Failed to find input format"));
+		}
+		input_format->flags |= AVFMT_NOFILE; 
+
+		ByteIOContext io_context;
+		if (init_put_byte(&io_context, buffer, BUFFER_SIZE, 0, this, ::read_data, NULL, NULL) < 0)
+		{
+			throw Exception("Failed to initialise byte IO context");
+		}
+		
+		g_debug("Opening '%s' stream", mrl.c_str());
+		if (av_open_input_stream(&format_context, &io_context, "", input_format, NULL) < 0) 
+		{
+			throw Exception("Failed to open input stream: " + mrl);
+		}
 	}
+	else
+	{
+		g_debug("Opening '%s' file", mrl.c_str());
+		if (av_open_input_file(&format_context, mrl.c_str(), NULL, 0, NULL) < 0) 
+		{
+			throw Exception("Failed to open input file: " + mrl);
+		}
+	}
+	
 	g_debug("'%s' opened", mrl.c_str());
 
 	if (av_find_stream_info(format_context)<0)
@@ -144,7 +207,7 @@ void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	guint length = pas.program_associations.size();
 	guint pmt_pid = 0;
 	
-	g_debug(_("Found %d associations"), length);
+	g_debug("Found %d associations", length);
 	for (guint i = 0; i < length; i++)
 	{
 		Dvb::SI::ProgramAssociation program_association = pas.program_associations[i];
@@ -164,6 +227,12 @@ void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 
 	Dvb::SI::ProgramMapSection pms;
 	parser.parse_pms(demuxer_pmt, pms);
+	
+	demuxer_pat.stop();
+	demuxer_pmt.stop();
+	
+	demuxer_pat.set_filter(0, PAT_ID);
+	demuxer_pat.set_filter(pmt_pid, PMT_ID);
 
 	gsize video_streams_size = pms.video_streams.size();
 	for (guint i = 0; i < video_streams_size; i++)
@@ -174,8 +243,14 @@ void Source::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	gsize audio_streams_size = pms.audio_streams.size();
 	for (guint i = 0; i < audio_streams_size; i++)
 	{
-		add_pes_demuxer(demux_path, pms.audio_streams[i].pid, DMX_PES_OTHER,
-			pms.audio_streams[i].is_ac3 ? "AC3" : "audio");
+		if (pms.audio_streams[i].is_ac3)
+		{
+			g_debug("Ignoring AC3 stream");
+		}
+		else
+		{
+			add_pes_demuxer(demux_path, pms.audio_streams[i].pid, DMX_PES_OTHER, "audio");
+		}
 	}
 				
 	gsize subtitle_streams_size = pms.subtitle_streams.size();
@@ -256,6 +331,7 @@ AVStream* Source::get_stream(guint index) const
 
 void Source::stop()
 {
+	g_debug("Stopping source");
 	packet_queue.finish();
 	join(true);
 }

@@ -86,8 +86,9 @@ void ProfileManager::load()
 			while (channel_iterator != channels.end())
 			{
 				Glib::ustring channel_path = *channel_iterator;
-				
+
 				Channel channel;
+				channel.index			= client->get_int(channel_path + "/index");
 				channel.name			= client->get_string(channel_path + "/name");
 				channel.pre_command		= client->get_string(channel_path + "/pre_command");
 				channel.post_command	= client->get_string(channel_path + "/post_command");
@@ -111,8 +112,11 @@ void ProfileManager::load()
 				channel_iterator++;
 			}
 			
+			profile.channels.sort(channel_sort_by_index);
+	
 			profiles.push_back(profile);
 		}
+		
 		profile_iterator++;
 	}
 	
@@ -197,6 +201,7 @@ void ProfileManager::save()
 			
 			Glib::ustring channel_path = Glib::ustring::compose(profile_path + "/channels/channel_%1", channel_count);
 			
+			client->set(channel_path + "/index",		(int)channel_count);
 			client->set(channel_path + "/name",			channel.name);
 			client->set(channel_path + "/pre_command", 	channel.pre_command);
 			client->set(channel_path + "/post_command", channel.post_command);
@@ -221,6 +226,8 @@ void ProfileManager::save()
 		profile_count++;
 		profile_iterator++;
 	}
+	
+	client->clear_cache();
 }
 
 Profile& ProfileManager::get_current_profile()

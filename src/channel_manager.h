@@ -26,11 +26,13 @@
 #include <dvb_frontend.h>
 #include "exception.h"
 
+#define CHANNEL_FLAG_NONE		0
 #define CHANNEL_FLAG_DVB		1
 
 class Channel
 {
 public:
+	int index;
 	guint flags;
 	Glib::ustring name;
 	Glib::ustring pre_command;
@@ -43,6 +45,9 @@ public:
 };
 
 typedef std::list<Channel> ChannelList;
+
+bool channel_sort_by_index(const Channel& a, const Channel& b);
+bool channel_sort_by_name(const Channel& a, const Channel& b);
 
 class ChannelManager
 {

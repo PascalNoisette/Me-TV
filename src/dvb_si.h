@@ -228,6 +228,7 @@ namespace Dvb
 			SectionParser();
 			
 			gsize get_text(Glib::ustring& s, const guchar* buffer);
+			const guchar* get_buffer() const { return buffer; };
 
 			void parse_pas (Demuxer& demuxer, ProgramAssociationSection& section);
 			void parse_pms (Demuxer& demuxer, ProgramMapSection& section);
