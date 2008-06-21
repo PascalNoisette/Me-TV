@@ -91,6 +91,7 @@ Gtk::DrawingArea& MainWindow::get_drawing_area()
 	
 void MainWindow::on_menu_item_open_clicked()
 {
+	TRY
 	Gtk::FileChooserDialog dialog(*this, "Open media file ...");
 	dialog.add_button(Gtk::Stock::CANCEL, -1);
 	dialog.add_button(Gtk::Stock::OPEN, 0);
@@ -111,6 +112,7 @@ void MainWindow::on_menu_item_open_clicked()
 		pipeline.add_sink(*drawing_area_video);
 		pipeline.start();
 	}
+	CATCH
 }
 
 void MainWindow::on_menu_item_close_clicked()

@@ -89,6 +89,7 @@ Application& Application::get_current()
 
 void Application::on_display_channel_changed(Channel& channel)
 {
+	TRY
 	MainWindow* main_window = NULL;
 	glade->get_widget_derived("window_main", main_window);
 
@@ -102,4 +103,5 @@ void Application::on_display_channel_changed(Channel& channel)
 	pipeline.set_source(channel);
 	pipeline.add_sink(main_window->get_drawing_area());
 	pipeline.start();
+	CATCH
 }

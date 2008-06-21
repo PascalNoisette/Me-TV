@@ -24,7 +24,16 @@
 #include <avcodec.h>
 #include <avformat.h>
 #include <swscale.h>
+#include <gdk/gdkx.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
 #include <alsa/asoundlib.h>
+#include <X11/extensions/Xv.h>
+#include <X11/extensions/Xvlib.h>
+#include <X11/extensions/XShm.h>
+
+#define GUID_YUV12_PLANAR 0x32315659
 
 class AlsaException : public Exception
 {
@@ -160,8 +169,10 @@ AlsaAudioThread::AlsaAudioThread(Glib::Timer& timer, PacketQueue& audio_packet_q
 
 class GtkVideoOutput : public VideoOutput
 {
+private:
+	Glib::RefPtr<Gdk::GC> gc;
 public:
-	GtkVideoOutput(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc) : VideoOutput(window,gc)
+	GtkVideoOutput(Glib::RefPtr<Gdk::Window>& window) : VideoOutput(window), gc(Gdk::GC::create(window))
 	{
 	}
 	
@@ -172,23 +183,87 @@ public:
 
 	void draw(gint x, gint y, guint width, guint height, guchar* buffer, gsize stride)
 	{
-		window->draw_rgb_image(gc,
-			x, y,
-			width, height,
-			Gdk::RGB_DITHER_NONE,
-			buffer,
-			stride);
+		window->draw_rgb_image(gc, x, y, width, height, Gdk::RGB_DITHER_NONE, buffer, stride);
 	}
 };
+
+class XvVideoOutput : public VideoOutput
+{
+private:
+	gint			xv_port;
+	XvImage*		image;
+	Display*		display;
+	GC				gc;
+
+public:
+	XvVideoOutput(Glib::RefPtr<Gdk::Window>& window) : VideoOutput(window)
+	{
+		xv_port = -1;
+		image = NULL;
+		display = NULL;
+		
+		guint number_of_adapters = 0;
+		XvAdaptorInfo* adapter_info = NULL;
+		gc = XCreateGC(display, GDK_WINDOW_XID(window->gobj()), 0, 0);
+		
+		display = GDK_DISPLAY();
+		guint result = XvQueryAdaptors(display, GDK_ROOT_WINDOW(), &number_of_adapters, &adapter_info);
+
+		for (int i = 0; i < number_of_adapters; i++)
+		{
+			g_debug("name: '%s', type: %s%s%s%s%s, ports: %ld, first port: %ld",
+				adapter_info[i].name,
+				(adapter_info[i].type & XvInputMask)	? "input | "	: "",
+				(adapter_info[i].type & XvOutputMask)	? "output | "	: "",
+				(adapter_info[i].type & XvVideoMask)	? "video | "	: "",
+				(adapter_info[i].type & XvStillMask)	? "still | "	: "",
+				(adapter_info[i].type & XvImageMask)	? "image | "	: "",
+				adapter_info[i].num_ports,
+				adapter_info[i].base_id);
+			
+			for (int j = 0; j < adapter_info[i].num_formats; j++)
+			{
+				g_debug("* depth = %d, visual = %ld",
+					adapter_info[i].formats[j].depth,
+					adapter_info[i].formats[j].visual_id);
+			}
+			
+			xv_port = adapter_info[i].base_id;
+		}
+		
+		if (xv_port == -1)
+		{
+			throw Exception(_("Failed to find suitable Xv port"));
+		}
+		
+		g_debug("Selected port %d", xv_port);
+		
+		gint width, height;
+		get_size(width, height);
+		image = XvCreateImage(display, xv_port, 0x32595559, NULL, width, height);
+	}
 	
-void VideoThread::draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc)
+	void clear(guint width, guint height)
+	{
+	}
+
+	void draw(gint x, gint y, guint width, guint height, guchar* buffer, gsize stride)
+	{
+		g_debug("Picture");
+		XvPutImage(display, xv_port, window, gc, image,
+		    0, 0, image->width, image->height,
+		    x, y, width, height);
+	}
+};
+
+void VideoThread::draw()
 {
 	gint width = 0;
 	gint height = 0;
 	
 	AVCodecContext* video_codec_context = video_stream->codec;
 	
-	window->get_size(width, height);
+	video_output->get_size(width, height);
 		
 	if (previous_width != width || previous_height != height)
 	{
@@ -243,7 +318,7 @@ void VideoThread::draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>&
 
 		video_output->clear(video_width, video_height);
 	}
-
+		
 	sws_scale(img_convert_ctx, frame->data, frame->linesize, 0,
 		video_codec_context->height, picture.data, picture.linesize);
 	
@@ -256,17 +331,21 @@ void VideoThread::draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>&
 void VideoThread::run()
 {
 	Glib::RefPtr<Gdk::Window> window = drawing_area.get_window();
-	Glib::RefPtr<Gdk::GC> gc = Gdk::GC::create(window);
 
 	gboolean	video_frame_finished = false;
 	guint		frame_count = 0;
 	guint		interval = 1000000 / frame_rate;
+	gboolean	first = true;
 
 	Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
 	Glib::ustring video_output_name = client->get_string(GCONF_PATH"/video_output");
 	if (video_output_name == "GTK")
 	{
-		video_output = new GtkVideoOutput(window, gc);
+		video_output = new GtkVideoOutput(window);
+	}
+	else if (video_output_name == "Xv")
+	{
+		video_output = new XvVideoOutput(window);
 	}
 	else
 	{
@@ -304,10 +383,18 @@ void VideoThread::run()
 						
 			avcodec_decode_video(video_stream->codec,
 				frame, &video_frame_finished, packet->data, packet->size);
+			if (first && !video_frame_finished)
+			{
+				g_debug("Flushing");
+				avcodec_flush_buffers(video_stream->codec);
+				avcodec_decode_video(video_stream->codec,
+					frame, &video_frame_finished, packet->data, packet->size);
+			}
 			if (video_frame_finished && !drop_frame)
 			{
-				GdkLock gdk_lock;
-				draw(window, gc);
+				first = false;
+				GdkLock gdk_locks;
+				draw();
 			}
 			av_free_packet(packet);
 			delete packet;
@@ -425,11 +512,13 @@ Sink::Sink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 	if (video_stream_index >= 0)
 	{
 		video_thread = new VideoThread(timer, video_packet_queue, source.get_stream(video_stream_index), drawing_area);
+		g_debug("Video thread created");
 	}
 
 	if (audio_stream_index >= 0)
 	{
 		audio_thread = new AlsaAudioThread(timer, audio_packet_queue, source.get_stream(audio_stream_index));
+		g_debug("Audio thread created");
 	}
 }
 

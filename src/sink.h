@@ -45,11 +45,14 @@ class VideoOutput
 {
 protected:
 	Glib::RefPtr<Gdk::Window>& window;
-	Glib::RefPtr<Gdk::GC>& gc;
 public:
-	VideoOutput(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc) : window(window), gc(gc) {}
+	VideoOutput(Glib::RefPtr<Gdk::Window>& window) : window(window) {}
 	virtual void clear(guint width, guint height) = 0;
 	virtual void draw(gint x, gint y, guint width, guint height, guchar* buffer, gsize stride) = 0;
+	void get_size(gint& width, gint& height)
+	{
+		window->get_size(width, height);
+	}
 };
 
 class VideoThread : public Thread
@@ -74,7 +77,7 @@ private:
 	Glib::Timer&			timer;
 	VideoOutput*			video_output;
 		
-	void draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc);
+	void draw();
 	void run();
 
 public:

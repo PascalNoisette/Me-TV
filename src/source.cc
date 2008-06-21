@@ -129,7 +129,6 @@ void Source::create(gboolean is_dvb)
 		input_channel->read((gchar*)buffer.get_buffer(), buffer.get_max_size(), buffer_size);
 		buffer.set_size(buffer_size);
 	
-		/*
 		g_debug("Reading sample packets");
 		gboolean got_pat = false;
 		while (!got_pat)
@@ -151,7 +150,6 @@ void Source::create(gboolean is_dvb)
 				}
 			}
 		}
-*/
 
 		opened = false;
 		ByteIOContext io_context;
