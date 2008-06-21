@@ -31,7 +31,7 @@ Demuxer::Demuxer(const Glib::ustring& device_path)
 {
 	fd = -1;
 	
-	if((fd = open(device_path.c_str(),O_RDWR|O_NONBLOCK)) < 0)
+	if ((fd = open(device_path.c_str(),O_RDWR|O_NONBLOCK)) < 0)
 	{
 		throw SystemException(_("Failed to open demux device"));
 	}

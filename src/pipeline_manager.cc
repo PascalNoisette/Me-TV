@@ -142,7 +142,7 @@ void Pipeline::set_source(const Glib::ustring& mrl)
 
 void Pipeline::add_sink(Gtk::DrawingArea& drawing_area)
 {
-	sinks.push_back(new GtkAlsaSink(*this, drawing_area));
+	sinks.push_back(new Sink(*this, drawing_area));
 }
 
 void Pipeline::add_sink(const Glib::ustring& mrl, const Glib::ustring& video_codec, const Glib::ustring& audio_codec)

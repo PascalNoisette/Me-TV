@@ -154,9 +154,34 @@ void AlsaAudioThread::run()
 }
 	
 AlsaAudioThread::AlsaAudioThread(Glib::Timer& timer, PacketQueue& audio_packet_queue, AVStream* audio_stream) :
-	Thread("Alsa Audio"), audio_packet_queue(audio_packet_queue), timer(timer), audio_stream(audio_stream) {}
+	Thread("Alsa Audio"), audio_packet_queue(audio_packet_queue), timer(timer), audio_stream(audio_stream)
+{
+}
 
-void GtkVideoThread::draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc)
+class GtkVideoOutput : public VideoOutput
+{
+public:
+	GtkVideoOutput(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc) : VideoOutput(window,gc)
+	{
+	}
+	
+	void clear(guint width, guint height)
+	{
+		window->draw_rectangle(gc, true, 0, 0, width, height);
+	}
+
+	void draw(gint x, gint y, guint width, guint height, guchar* buffer, gsize stride)
+	{
+		window->draw_rgb_image(gc,
+			x, y,
+			width, height,
+			Gdk::RGB_DITHER_NONE,
+			buffer,
+			stride);
+	}
+};
+	
+void VideoThread::draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc)
 {
 	gint width = 0;
 	gint height = 0;
@@ -216,21 +241,19 @@ void GtkVideoThread::draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::G
 
 		avpicture_fill(&picture, video_buffer, PIX_FMT_RGB24, video_width, video_height);
 
-		window->draw_rectangle(gc, true, 0, 0, width, height);
+		video_output->clear(video_width, video_height);
 	}
 
 	sws_scale(img_convert_ctx, frame->data, frame->linesize, 0,
 		video_codec_context->height, picture.data, picture.linesize);
 	
-	window->draw_rgb_image(gc,
-		startx, starty,
+	video_output->draw(startx, starty,
 		video_width, video_height,
-		Gdk::RGB_DITHER_NONE,
 		video_buffer,
 		video_width * 3);
 }
 
-void GtkVideoThread::run()
+void VideoThread::run()
 {
 	Glib::RefPtr<Gdk::Window> window = drawing_area.get_window();
 	Glib::RefPtr<Gdk::GC> gc = Gdk::GC::create(window);
@@ -239,6 +262,17 @@ void GtkVideoThread::run()
 	guint		frame_count = 0;
 	guint		interval = 1000000 / frame_rate;
 
+	Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
+	Glib::ustring video_output_name = client->get_string(GCONF_PATH"/video_output");
+	if (video_output_name == "GTK")
+	{
+		video_output = new GtkVideoOutput(window, gc);
+	}
+	else
+	{
+		throw Exception(Glib::ustring::compose(_("Unknown video output '%1'"), video_output_name));
+	}
+	
 	while (!is_terminated())
 	{
 		video_frame_finished = false;
@@ -281,10 +315,16 @@ void GtkVideoThread::run()
 	}
 	g_debug("Video thread finished");
 	
+	if (video_output != NULL)
+	{
+		delete video_output;
+		video_output = NULL;
+	}
+	
 	avcodec_close(video_stream->codec);
 }
 
-GtkVideoThread::GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_queue, AVStream* video_stream, Gtk::DrawingArea& drawing_area) :
+VideoThread::VideoThread(Glib::Timer& timer, PacketQueue& video_packet_queue, AVStream* video_stream, Gtk::DrawingArea& drawing_area) :
 	Thread("GTK Video"), video_packet_queue(video_packet_queue), timer(timer), drawing_area(drawing_area), video_stream(video_stream)
 {
 	img_convert_ctx	= NULL;
@@ -296,6 +336,7 @@ GtkVideoThread::GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_que
 	startx			= 0;
 	starty			= 0;
 	frame			= NULL;
+	video_output	= NULL;
 
 	AVCodec* video_codec = avcodec_find_decoder(video_stream->codec->codec_id);
 	if (video_codec == NULL)
@@ -333,7 +374,7 @@ GtkVideoThread::GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_que
 	sample_aspect_ratio = video_stream->codec->sample_aspect_ratio;
 }
 
-GtkVideoThread::~GtkVideoThread()
+VideoThread::~VideoThread()
 {
 	if (frame != NULL)
 	{
@@ -347,8 +388,8 @@ GtkVideoThread::~GtkVideoThread()
 	}
 }
 
-GtkAlsaSink::GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
-	Sink(pipeline), packet_queue(get_pipeline().get_packet_queue())
+Sink::Sink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
+	Thread("Sink"), pipeline(pipeline), packet_queue(pipeline.get_packet_queue())
 {
 	g_static_rec_mutex_init(mutex.gobj());
 
@@ -357,7 +398,7 @@ GtkAlsaSink::GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 	video_stream_index = -1;
 	audio_stream_index = -1;
 
-	Source& source = get_pipeline().get_source();
+	Source& source = pipeline.get_source();
 	gsize stream_count = source.get_stream_count();
 	
 	for (guint index = 0; index < stream_count; index++)
@@ -383,7 +424,7 @@ GtkAlsaSink::GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 	
 	if (video_stream_index >= 0)
 	{
-		video_thread = new GtkVideoThread(timer, video_packet_queue, source.get_stream(video_stream_index), drawing_area);
+		video_thread = new VideoThread(timer, video_packet_queue, source.get_stream(video_stream_index), drawing_area);
 	}
 
 	if (audio_stream_index >= 0)
@@ -392,12 +433,12 @@ GtkAlsaSink::GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 	}
 }
 
-GtkAlsaSink::~GtkAlsaSink()
+Sink::~Sink()
 {
 	stop();
 }
 
-void GtkAlsaSink::run()
+void Sink::run()
 {
 	if (video_thread != NULL)
 	{
@@ -409,7 +450,7 @@ void GtkAlsaSink::run()
 		audio_thread->start();
 	}
 
-	g_debug("Starting GtkAlsaSink loop");
+	g_debug("Starting Sink loop");
 	while (!is_terminated())
 	{
 		AVPacket* packet = packet_queue.pop();
@@ -436,14 +477,14 @@ void GtkAlsaSink::run()
 			delete packet;
 		}
 	}
-	g_debug("Finished GtkAlsaSink loop");
+	g_debug("Finished Sink loop");
 
 	destroy();
 	
-	g_debug("GtkAlsaSink thread finished");
+	g_debug("Sink thread finished");
 }
 
-void GtkAlsaSink::destroy()
+void Sink::destroy()
 {
 	g_debug(__PRETTY_FUNCTION__);
 	Glib::RecMutex::Lock lock(mutex);
@@ -471,9 +512,9 @@ void GtkAlsaSink::destroy()
 	g_debug("GtkAlsaSink destroyed");
 }
 
-void GtkAlsaSink::stop()
+void Sink::stop()
 {
 	destroy();
-	g_debug("Waiting for GtkAlsaSink to terminate");
+	g_debug("Waiting for Sink to terminate");
 	join(true);
 }

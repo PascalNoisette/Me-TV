@@ -19,17 +19,11 @@
  */
 
 #include "profile_manager.h"
-
-#define GCONF_PATH "/apps/me-tv"
+#include "me-tv.h"
 
 ProfileManager::ProfileManager() : client(Gnome::Conf::Client::get_default_client())
 {
 	current_profile = NULL;
-	unset_directory("/apps/me-tv.1");
-	unset_directory("/apps/me-tv.2");
-	unset_directory("/apps/me-tv.3");
-	unset_directory("/apps/me-tv.4");
-	unset_directory("/apps/me-tv.5");
 	load();
 }
 

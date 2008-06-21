@@ -27,6 +27,8 @@
 #include <glibmm/i18n.h>
 #include <list>
 
+#define GCONF_PATH "/apps/me-tv"
+
 typedef sigc::signal<void, const Glib::ustring&> StringSignal;
 
 StringSignal& get_signal_error();

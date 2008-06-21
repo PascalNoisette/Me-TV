@@ -64,6 +64,8 @@ Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) :
 
 Source::~Source()
 {
+	remove_all_demuxers();
+	
 	if (format_context != NULL)
 	{
 		av_close_input_file(format_context);
@@ -123,6 +125,11 @@ void Source::create(gboolean is_dvb)
 		}
 		input_format->flags |= AVFMT_NOFILE; 
 
+		gsize buffer_size = 0;
+		input_channel->read((gchar*)buffer.get_buffer(), buffer.get_max_size(), buffer_size);
+		buffer.set_size(buffer_size);
+	
+		/*
 		g_debug("Reading sample packets");
 		gboolean got_pat = false;
 		while (!got_pat)
@@ -144,6 +151,7 @@ void Source::create(gboolean is_dvb)
 				}
 			}
 		}
+*/
 
 		opened = false;
 		ByteIOContext io_context;
@@ -185,6 +193,7 @@ void Source::remove_all_demuxers()
 		Dvb::Demuxer* demuxer = demuxers.front();
 		demuxers.pop_front();
 		delete demuxer;
+		g_debug("Demuxer removed");
 	}
 }
 

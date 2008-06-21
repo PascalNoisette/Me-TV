@@ -28,18 +28,6 @@
 
 class Pipeline;
 
-class Sink : public Thread
-{
-private:
-	Pipeline& pipeline;
-public:
-	Sink(Pipeline& pipeline) : Thread("Sink"), pipeline(pipeline) {}
-	Pipeline& get_pipeline() { return pipeline; }
-	virtual void stop() = 0;
-};
-
-typedef std::list<Sink*> SinkList;
-
 class AlsaAudioThread : public Thread
 {
 private:
@@ -53,7 +41,18 @@ public:
 	AlsaAudioThread(Glib::Timer& timer, PacketQueue& audio_packet_buffers, AVStream* audio_stream);
 };
 
-class GtkVideoThread : public Thread
+class VideoOutput
+{
+protected:
+	Glib::RefPtr<Gdk::Window>& window;
+	Glib::RefPtr<Gdk::GC>& gc;
+public:
+	VideoOutput(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc) : window(window), gc(gc) {}
+	virtual void clear(guint width, guint height) = 0;
+	virtual void draw(gint x, gint y, guint width, guint height, guchar* buffer, gsize stride) = 0;
+};
+
+class VideoThread : public Thread
 {
 private:
 	Gtk::DrawingArea&		drawing_area;
@@ -73,35 +72,41 @@ private:
 	AVFrame*				frame;
 	gdouble					frame_rate;
 	Glib::Timer&			timer;
+	VideoOutput*			video_output;
 		
 	void draw(Glib::RefPtr<Gdk::Window>& window, Glib::RefPtr<Gdk::GC>& gc);
 	void run();
 
 public:
-	GtkVideoThread(Glib::Timer& timer, PacketQueue& video_packet_buffer, AVStream* audio_stream, Gtk::DrawingArea& drawing_area);
-	~GtkVideoThread();
+	VideoThread(Glib::Timer& timer, PacketQueue& video_packet_buffer, AVStream* audio_stream,
+		Gtk::DrawingArea& drawing_area);
+	~VideoThread();
 };
 
-class GtkAlsaSink : public Sink
+class Sink : public Thread
 {
 private:
+	Pipeline&				pipeline;
 	PacketQueue&			packet_queue;
 	PacketQueue				video_packet_queue;
 	PacketQueue				audio_packet_queue;
 	gint					video_stream_index;
 	gint					audio_stream_index;
-	GtkVideoThread*			video_thread;
+	VideoThread*			video_thread;
 	AlsaAudioThread*		audio_thread;
 	Glib::Timer				timer;
 	Glib::StaticRecMutex	mutex;
 		
 	void run();
-	void stop();
 	void destroy();
 		
 public:
-	GtkAlsaSink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area);
-	~GtkAlsaSink();
+	Sink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area);
+	~Sink();
+
+	void stop();
 };
+
+typedef std::list<Sink*> SinkList;
 
 #endif

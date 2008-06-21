@@ -29,6 +29,16 @@ Application& get_application()
 	return Application::get_current();
 }
 
+void set_default(Glib::RefPtr<Gnome::Conf::Client> client, const Glib::ustring& path, const Glib::ustring& value)
+{
+	Gnome::Conf::Value v = client->get(path);
+	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
+	{
+		g_debug("Setting string configuration value '%s' = '%s'", path.c_str(), value.c_str());
+		client->set(path, value);
+	}
+}
+
 Application::Application(int argc, char *argv[]) :
 	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv)
 {
@@ -38,6 +48,9 @@ Application::Application(int argc, char *argv[]) :
 	}
 	
 	current = this;
+	
+	Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
+	set_default(client, GCONF_PATH"/video_output", "GTK");
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
 	Glib::ustring glade_path = current_directory + "/me-tv.glade";
