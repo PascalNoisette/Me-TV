@@ -50,7 +50,7 @@ Application::Application(int argc, char *argv[]) :
 	current = this;
 	
 	Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
-	set_default(client, GCONF_PATH"/video_output", "GTK");
+	set_default(client, GCONF_PATH"/video_output", "Xv");
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
 	Glib::ustring glade_path = current_directory + "/me-tv.glade";

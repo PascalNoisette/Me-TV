@@ -38,7 +38,7 @@
 #define XV_IMAGE_FORMAT_I420			0x30323449
 #define XV_IMAGE_FORMAT					XV_IMAGE_FORMAT_FOURCC_YUY2
 #define AV_PIXEL_FORMAT					PIX_FMT_YUYV422
-#define	BITS_PER_PIXEL					3
+#define	BITS_PER_PIXEL					2
 
 class AlsaException : public Exception
 {
