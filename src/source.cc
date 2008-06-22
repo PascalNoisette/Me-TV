@@ -368,4 +368,3 @@ void Source::seek(guint position)
 	packet_queue.flush();
 	av_seek_frame(format_context, -1, position, 0);
 }
-

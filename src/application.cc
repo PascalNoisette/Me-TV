@@ -99,9 +99,7 @@ void Application::on_display_channel_changed(Channel& channel)
 		pipeline_manager.remove(existing_pipeline);
 	}
 	
-	Pipeline& pipeline = pipeline_manager.create("display");
-	pipeline.set_source(channel);
-	pipeline.add_sink(main_window->get_drawing_area());
+	Pipeline& pipeline = pipeline_manager.create("display", channel, main_window->get_drawing_area());
 	pipeline.start();
 	CATCH
 }

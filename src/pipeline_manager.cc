@@ -24,6 +24,34 @@
 #include "sink.h"
 #include "exception.h"
 
+class ChannelPipeline : public Pipeline
+{
+private:
+	Channel channel;
+		
+	void create_source()
+	{
+		source = new Source(packet_queue, channel);
+	}
+public:
+	ChannelPipeline(const Glib::ustring& name, const Channel& channel, Gtk::DrawingArea& drawing_area) :
+		Pipeline(name, drawing_area), channel(channel) {}
+};
+
+class MrlPipeline : public Pipeline
+{
+private:
+	Glib::ustring mrl;
+
+	void create_source()
+	{
+		source = new Source(packet_queue, mrl);
+	}
+public:
+	MrlPipeline(const Glib::ustring& name, const Glib::ustring& mrl, Gtk::DrawingArea& drawing_area) :
+		Pipeline(name, drawing_area), mrl(mrl) {}
+};
+
 PipelineManager::PipelineManager()
 {
 	g_static_rec_mutex_init(mutex.gobj());
@@ -37,7 +65,7 @@ PipelineManager::~PipelineManager()
 	}
 }
 	
-Pipeline& PipelineManager::create(const Glib::ustring& name)
+Pipeline& PipelineManager::create(const Glib::ustring& name, const Glib::ustring& mrl, Gtk::DrawingArea& drawing_area)
 {	
 	if (find_pipeline(name) != NULL)
 	{
@@ -46,13 +74,29 @@ Pipeline& PipelineManager::create(const Glib::ustring& name)
 	
 	Glib::RecMutex::Lock lock(mutex);
 
-	Pipeline* pipeline = new Pipeline(name);
+	Pipeline* pipeline = new MrlPipeline(name, mrl, drawing_area);
 	g_debug("Pipeline created");
 	pipelines.push_back(pipeline);
 	g_debug("Pipeline added");
 	return *pipeline;
 }
 	
+Pipeline& PipelineManager::create(const Glib::ustring& name, const Channel& channel, Gtk::DrawingArea& drawing_area)
+{	
+	if (find_pipeline(name) != NULL)
+	{
+		throw Exception("A pipeline with that name already exists");
+	}
+	
+	Glib::RecMutex::Lock lock(mutex);
+
+	Pipeline* pipeline = new ChannelPipeline(name, channel, drawing_area);
+	g_debug("Pipeline created");
+	pipelines.push_back(pipeline);
+	g_debug("Pipeline added");
+	return *pipeline;
+}
+
 Pipeline* PipelineManager::find_pipeline(const Glib::ustring& name)
 {
 	Glib::RecMutex::Lock lock(mutex);
@@ -90,7 +134,7 @@ void PipelineManager::remove(Pipeline* pipeline)
 		throw Exception("Failed to remove pipeline: Pipeline was NULL");
 	}
 	
-	pipeline->stop();
+	pipeline->join(true);
 	
 	pipelines.remove(pipeline);
 	g_debug("Pipeline removed");
@@ -99,9 +143,9 @@ void PipelineManager::remove(Pipeline* pipeline)
 	g_debug("Pipeline destroyed");
 }
 
-Pipeline::Pipeline(const Glib::ustring& name)
+Pipeline::Pipeline(const Glib::ustring& name, Gtk::DrawingArea& drawing_area) :
+	Thread(Glib::ustring::compose(_("'%1' pipeline"), name)), drawing_area(drawing_area)
 {
-	source = NULL;
 	this->name = name;
 }
 
@@ -120,67 +164,6 @@ Pipeline::~Pipeline()
 	}
 }
 
-void Pipeline::set_source(const Channel& channel)
-{
-	if (source != NULL)
-	{
-		throw Exception("Failed to set channel source: A source has already been assigned to this pipeline");
-	}
-
-	source = new Source(packet_queue, channel);
-}
-
-void Pipeline::set_source(const Glib::ustring& mrl)
-{
-	if (source != NULL)
-	{
-		throw Exception("Failed to set mrl source: A source has already been assigned to this pipeline");
-	}
-	
-	source = new Source(packet_queue, mrl);
-}
-
-void Pipeline::add_sink(Gtk::DrawingArea& drawing_area)
-{
-	sinks.push_back(new Sink(*this, drawing_area));
-}
-
-void Pipeline::add_sink(const Glib::ustring& mrl, const Glib::ustring& video_codec, const Glib::ustring& audio_codec)
-{
-	throw Exception("Not implemented");
-}
-
-void Pipeline::start()
-{
-	g_debug("Starting pipeline");
-	get_source().start();
-	SinkList::iterator iterator = sinks.begin();
-	while (iterator != sinks.end())
-	{
-		Sink* sink = *iterator;
-		sink->start();
-		iterator++;
-	}
-	g_debug("Pipeline started");
-}
-
-void Pipeline::stop()
-{
-	g_debug("Stopping pipeline '%s'", name.c_str());
-	if (source != NULL)
-	{
-		source->stop();
-	}
-	SinkList::iterator iterator = sinks.begin();
-	while (iterator != sinks.end())
-	{
-		Sink* sink = *iterator;
-		sink->stop();
-		iterator++;
-	}
-	g_debug("Pipeline stopped");
-}
-
 Source& Pipeline::get_source()
 {
 	if (source == NULL)
@@ -190,3 +173,40 @@ Source& Pipeline::get_source()
 	return *source;
 }
 
+void Pipeline::run()
+{
+	g_debug("Starting pipeline");
+	
+	create_source();
+	get_source().start();
+	
+	sinks.push_back(new Sink(*this, drawing_area));
+	SinkList::iterator iterator = sinks.begin();
+	while (iterator != sinks.end())
+	{
+		Sink* sink = *iterator;
+		sink->start();
+		iterator++;
+	}
+	g_debug("Pipeline started");
+
+	while (!packet_queue.is_finished() && !is_terminated())
+	{
+		usleep(10000);
+	}
+
+	g_debug("Stopping pipeline '%s'", name.c_str());
+	if (source != NULL)
+	{
+		source->stop();
+	}
+
+	iterator = sinks.begin();
+	while (iterator != sinks.end())
+	{
+		Sink* sink = *iterator;
+		sink->stop();
+		iterator++;
+	}
+	g_debug("Pipeline stopped");
+}

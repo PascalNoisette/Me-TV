@@ -27,25 +27,25 @@
 #include "sink.h"
 #include "packet_queue.h"
 
-class Pipeline
+class Pipeline : public Thread
 {
 private:
-	Glib::ustring	name;
-	Source*			source;
-	SinkList		sinks;
-	PacketQueue		packet_queue;
+	Glib::ustring		name;
+	SinkList			sinks;
+	Gtk::DrawingArea&	drawing_area;
 		
+	virtual void create_source() = 0;
+	void run();
+		
+protected:
+	Source*			source;
+	PacketQueue		packet_queue;
+
 public:
-	Pipeline(const Glib::ustring& name);
+	Pipeline(const Glib::ustring& name, Gtk::DrawingArea& drawing_area);
 	~Pipeline();
-	
+		
 	const Glib::ustring& get_name() const { return name; }
-	void start();
-	void stop();
-	void set_source(const Channel& channel);
-	void set_source(const Glib::ustring& mrl);
-	void add_sink(Gtk::DrawingArea& drawing_area);
-	void add_sink(const Glib::ustring& mrl, const Glib::ustring& video_codec, const Glib::ustring& audio_codec);
 	PacketQueue& get_packet_queue() { return packet_queue; }
 	Source& get_source();
 	SinkList& get_sinks() { return sinks; }
@@ -61,7 +61,8 @@ private:
 public:
 	PipelineManager();
 	~PipelineManager();
-	Pipeline& create(const Glib::ustring& name);
+	Pipeline& create(const Glib::ustring& name, const Channel& channel, Gtk::DrawingArea& drawing_area);
+	Pipeline& create(const Glib::ustring& name, const Glib::ustring& mrl, Gtk::DrawingArea& drawing_area);
 	Pipeline* find_pipeline(const Glib::ustring& name);
 	Pipeline& get_pipeline(const Glib::ustring& name);
 	void remove(Pipeline* pipeline);

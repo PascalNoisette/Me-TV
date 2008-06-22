@@ -107,9 +107,7 @@ void MainWindow::on_menu_item_open_clicked()
 		stop();
 		
 		PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-		Pipeline& pipeline = pipeline_manager.create("display");
-		pipeline.set_source(filename);
-		pipeline.add_sink(*drawing_area_video);
+		Pipeline& pipeline = pipeline_manager.create("display", filename, *drawing_area_video);
 		pipeline.start();
 	}
 	CATCH

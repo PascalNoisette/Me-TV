@@ -33,12 +33,12 @@
 #include <X11/extensions/Xvlib.h>
 #include <X11/extensions/XShm.h>
 
-#define XV_IMAGE_FORMAT_YUV12_PLANAR	0x32315659
-#define XV_IMAGE_FORMAT_FOURCC_YUY2		0x32595559
-#define XV_IMAGE_FORMAT_I420			0x30323449
-#define XV_IMAGE_FORMAT					XV_IMAGE_FORMAT_FOURCC_YUY2
-#define AV_PIXEL_FORMAT					PIX_FMT_YUYV422
-#define	BITS_PER_PIXEL					2
+#define XV_IMAGE_FORMAT_YV12	0x32315659 /* 21VY */
+#define XV_IMAGE_FORMAT_YUY2	0x32595559 /* 2YUY */
+#define XV_IMAGE_FORMAT_I420	0x30323449 /* 024I */
+#define XV_IMAGE_FORMAT			XV_IMAGE_FORMAT_YUY2
+#define AV_PIXEL_FORMAT			PIX_FMT_YUYV422
+#define	BITS_PER_PIXEL			2
 
 class AlsaException : public Exception
 {
@@ -185,7 +185,7 @@ public:
 	
 	void draw(gint x, gint y, guint width, guint height)
 	{
-		window->draw_rgb_image(gc, x, y, width, height, Gdk::RGB_DITHER_NONE, buffer, width*BITS_PER_PIXEL);
+		window->draw_rgb_image(gc, x, y, width, height, Gdk::RGB_DITHER_NONE, buffer, width);
 	}
 
 	void on_size(guint width, guint height, guchar* buffer)
@@ -351,10 +351,12 @@ void VideoThread::run()
 	Glib::ustring video_output_name = client->get_string(GCONF_PATH"/video_output");
 	if (video_output_name == "GTK")
 	{
+		GdkLock gdk_lock;
 		video_output = new GtkVideoOutput(window);
 	}
 	else if (video_output_name == "Xv")
 	{
+		GdkLock gdk_lock;
 		video_output = new XvVideoOutput(window);
 	}
 	else
@@ -608,7 +610,7 @@ void Sink::destroy()
 		audio_thread = NULL;
 	}
 	
-	g_debug("GtkAlsaSink destroyed");
+	g_debug("Sink destroyed");
 }
 
 void Sink::stop()
