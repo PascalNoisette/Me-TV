@@ -33,7 +33,12 @@
 #include <X11/extensions/Xvlib.h>
 #include <X11/extensions/XShm.h>
 
-#define GUID_YUV12_PLANAR 0x32315659
+#define XV_IMAGE_FORMAT_YUV12_PLANAR	0x32315659
+#define XV_IMAGE_FORMAT_FOURCC_YUY2		0x32595559
+#define XV_IMAGE_FORMAT_I420			0x30323449
+#define XV_IMAGE_FORMAT					XV_IMAGE_FORMAT_FOURCC_YUY2
+#define AV_PIXEL_FORMAT					PIX_FMT_YUYV422
+#define	BITS_PER_PIXEL					3
 
 class AlsaException : public Exception
 {
@@ -171,19 +176,22 @@ class GtkVideoOutput : public VideoOutput
 {
 private:
 	Glib::RefPtr<Gdk::GC> gc;
+	guchar* buffer;
 public:
 	GtkVideoOutput(Glib::RefPtr<Gdk::Window>& window) : VideoOutput(window), gc(Gdk::GC::create(window))
 	{
+		buffer = NULL;
 	}
 	
-	void clear(guint width, guint height)
+	void draw(gint x, gint y, guint width, guint height)
 	{
-		window->draw_rectangle(gc, true, 0, 0, width, height);
+		window->draw_rgb_image(gc, x, y, width, height, Gdk::RGB_DITHER_NONE, buffer, width*BITS_PER_PIXEL);
 	}
 
-	void draw(gint x, gint y, guint width, guint height, guchar* buffer, gsize stride)
+	void on_size(guint width, guint height, guchar* buffer)
 	{
-		window->draw_rgb_image(gc, x, y, width, height, Gdk::RGB_DITHER_NONE, buffer, stride);
+		this->buffer = buffer;
+		window->draw_rectangle(gc, true, 0, 0, width, height);		
 	}
 };
 
@@ -200,34 +208,27 @@ public:
 	{
 		xv_port = -1;
 		image = NULL;
-		display = NULL;
-		
+		display = GDK_DISPLAY();
+
 		guint number_of_adapters = 0;
 		XvAdaptorInfo* adapter_info = NULL;
 		gc = XCreateGC(display, GDK_WINDOW_XID(window->gobj()), 0, 0);
 		
-		display = GDK_DISPLAY();
 		guint result = XvQueryAdaptors(display, GDK_ROOT_WINDOW(), &number_of_adapters, &adapter_info);
 
 		for (int i = 0; i < number_of_adapters; i++)
 		{
-			g_debug("name: '%s', type: %s%s%s%s%s, ports: %ld, first port: %ld",
+			g_debug("name: '%s', type: %s%s%s%s%s%s, ports: %ld, first port: %ld",
 				adapter_info[i].name,
 				(adapter_info[i].type & XvInputMask)	? "input | "	: "",
 				(adapter_info[i].type & XvOutputMask)	? "output | "	: "",
 				(adapter_info[i].type & XvVideoMask)	? "video | "	: "",
 				(adapter_info[i].type & XvStillMask)	? "still | "	: "",
 				(adapter_info[i].type & XvImageMask)	? "image | "	: "",
+				(adapter_info[i].type & XvRGB)			? "RGB"			: "YUV",
 				adapter_info[i].num_ports,
 				adapter_info[i].base_id);
-			
-			for (int j = 0; j < adapter_info[i].num_formats; j++)
-			{
-				g_debug("* depth = %d, visual = %ld",
-					adapter_info[i].formats[j].depth,
-					adapter_info[i].formats[j].visual_id);
-			}
-			
+
 			xv_port = adapter_info[i].base_id;
 		}
 		
@@ -236,23 +237,35 @@ public:
 			throw Exception(_("Failed to find suitable Xv port"));
 		}
 		
-		g_debug("Selected port %d", xv_port);
+		int number_of_formats;
+		XvImageFormatValues* list = XvListImageFormats( display, xv_port, &number_of_formats);
+		for (int i = 0; i < number_of_formats; i++)
+		{
+			g_debug("0x%08x (%c%c%c%c) %s",
+				list[ i ].id,
+				( list[ i ].id ) & 0xff,
+				( list[ i ].id >> 8 ) & 0xff,
+				( list[ i ].id >> 16 ) & 0xff,
+				( list[ i ].id >> 24 ) & 0xff,
+				( list[ i ].format == XvPacked ) ? "packed" : "planar" );			
+		}
 		
-		gint width, height;
-		get_size(width, height);
-		image = XvCreateImage(display, xv_port, 0x32595559, NULL, width, height);
-	}
-	
-	void clear(guint width, guint height)
-	{
+		g_debug("Selected port %d", xv_port);
 	}
 
-	void draw(gint x, gint y, guint width, guint height, guchar* buffer, gsize stride)
-	{
-		g_debug("Picture");
-		XvPutImage(display, xv_port, window, gc, image,
+	void draw(gint x, gint y, guint width, guint height)
+	{		
+		XvPutImage(display, xv_port, GDK_WINDOW_XID(window->gobj()), gc, image,
 		    0, 0, image->width, image->height,
 		    x, y, width, height);
+	}
+		
+	void on_size(guint width, guint height, guchar* buffer)
+	{
+		XFree(image);
+		image = NULL;
+		g_debug("Creating Xv image");
+		image = XvCreateImage(display, xv_port, XV_IMAGE_FORMAT, (gchar*)buffer, width, height);
 	}
 };
 
@@ -302,7 +315,7 @@ void VideoThread::draw()
 
 		img_convert_ctx = sws_getContext(
 			video_codec_context->width, video_codec_context->height, video_codec_context->pix_fmt,
-			video_width, video_height, PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
+			video_width, video_height, AV_PIXEL_FORMAT, SWS_BILINEAR, NULL, NULL, NULL);
 		if (img_convert_ctx == NULL)
 		{
 			throw Exception("Cannot initialise the conversion context");
@@ -311,21 +324,18 @@ void VideoThread::draw()
 		delete [] video_buffer;
 		video_buffer = NULL;
 		
-		gsize video_buffer_size = avpicture_get_size(PIX_FMT_RGB24, video_width, video_height);
+		gsize video_buffer_size = avpicture_get_size(AV_PIXEL_FORMAT, video_width, video_height);
 		video_buffer = new guchar[video_buffer_size];
 
-		avpicture_fill(&picture, video_buffer, PIX_FMT_RGB24, video_width, video_height);
+		avpicture_fill(&picture, video_buffer, AV_PIXEL_FORMAT, video_width, video_height);
 
-		video_output->clear(video_width, video_height);
+		video_output->on_size(video_width, video_height, video_buffer);
 	}
 		
 	sws_scale(img_convert_ctx, frame->data, frame->linesize, 0,
 		video_codec_context->height, picture.data, picture.linesize);
 	
-	video_output->draw(startx, starty,
-		video_width, video_height,
-		video_buffer,
-		video_width * 3);
+	video_output->draw(startx, starty, video_width, video_height);
 }
 
 void VideoThread::run()

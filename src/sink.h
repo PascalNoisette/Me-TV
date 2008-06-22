@@ -47,12 +47,12 @@ protected:
 	Glib::RefPtr<Gdk::Window>& window;
 public:
 	VideoOutput(Glib::RefPtr<Gdk::Window>& window) : window(window) {}
-	virtual void clear(guint width, guint height) = 0;
-	virtual void draw(gint x, gint y, guint width, guint height, guchar* buffer, gsize stride) = 0;
+	virtual void draw(gint x, gint y, guint width, guint height) = 0;
 	void get_size(gint& width, gint& height)
 	{
 		window->get_size(width, height);
 	}
+	virtual void on_size(guint width, guint height, guchar* buffer) = 0;
 };
 
 class VideoThread : public Thread
