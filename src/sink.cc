@@ -180,13 +180,13 @@ public:
 	
 	void draw(gint x, gint y, guint width, guint height)
 	{
-		window->draw_rgb_image(gc, x, y, width, height, Gdk::RGB_DITHER_NONE, buffer, width*3);
+		window->draw_rgb_image(gc, x, y, width, height, Gdk::RGB_DITHER_MAX, buffer, width*3);
 	}
 
 	void on_size(guint width, guint height, guchar* buffer)
 	{
 		this->buffer = buffer;
-		window->draw_rectangle(gc, true, 0, 0, width, height);		
+		window->draw_rectangle(gc, true, 0, 0, width, height);
 	}
 };
 
@@ -249,7 +249,7 @@ public:
 	}
 
 	void draw(gint x, gint y, guint width, guint height)
-	{		
+	{
 		XvPutImage(display, xv_port, GDK_WINDOW_XID(window->gobj()), gc, image,
 		    0, 0, image->width, image->height,
 		    x, y, width, height);
@@ -307,6 +307,8 @@ void VideoThread::draw()
 			startx = 0;
 			starty = (height - video_height)/2;
 		}
+		
+		video_width = (video_width/2)*2;
 
 		img_convert_ctx = sws_getContext(
 			video_codec_context->width, video_codec_context->height, video_codec_context->pix_fmt,
@@ -394,7 +396,7 @@ void VideoThread::run()
 				frame, &video_frame_finished, packet->data, packet->size);
 			if (first && !video_frame_finished)
 			{
-				g_debug("Flushing");
+				g_debug("Flushing buffers");
 				avcodec_flush_buffers(video_stream->codec);
 				avcodec_decode_video(video_stream->codec,
 					frame, &video_frame_finished, packet->data, packet->size);
@@ -416,8 +418,6 @@ void VideoThread::run()
 		video_output = NULL;
 	}
 	
-	avcodec_close(video_stream->codec);
-
 	g_debug("Video thread finished");
 }
 
@@ -473,6 +473,11 @@ VideoThread::VideoThread(Glib::Timer& timer, PacketQueue& video_packet_queue, AV
 
 VideoThread::~VideoThread()
 {
+	if (video_stream != NULL)
+	{
+		avcodec_close(video_stream->codec);
+	}
+
 	if (frame != NULL)
 	{
 		av_free(frame);

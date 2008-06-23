@@ -67,6 +67,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	widget_epg->update();
 	
 	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
+	
+	//drawing_area_video->set_double_buffered(tr);
+	set_keep_above();
 }
 
 MainWindow::~MainWindow()
