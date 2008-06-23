@@ -33,12 +33,7 @@
 #include <X11/extensions/Xvlib.h>
 #include <X11/extensions/XShm.h>
 
-#define XV_IMAGE_FORMAT_YV12	0x32315659 /* 21VY */
-#define XV_IMAGE_FORMAT_YUY2	0x32595559 /* 2YUY */
-#define XV_IMAGE_FORMAT_I420	0x30323449 /* 024I */
-#define XV_IMAGE_FORMAT			XV_IMAGE_FORMAT_YUY2
-#define AV_PIXEL_FORMAT			PIX_FMT_YUYV422
-#define	BITS_PER_PIXEL			2
+#define XV_IMAGE_FORMAT_YUY2	0x32595559
 
 class AlsaException : public Exception
 {
@@ -185,7 +180,7 @@ public:
 	
 	void draw(gint x, gint y, guint width, guint height)
 	{
-		window->draw_rgb_image(gc, x, y, width, height, Gdk::RGB_DITHER_NONE, buffer, width);
+		window->draw_rgb_image(gc, x, y, width, height, Gdk::RGB_DITHER_NONE, buffer, width*3);
 	}
 
 	void on_size(guint width, guint height, guchar* buffer)
@@ -265,7 +260,7 @@ public:
 		XFree(image);
 		image = NULL;
 		g_debug("Creating Xv image");
-		image = XvCreateImage(display, xv_port, XV_IMAGE_FORMAT, (gchar*)buffer, width, height);
+		image = XvCreateImage(display, xv_port, XV_IMAGE_FORMAT_YUY2, (gchar*)buffer, width, height);
 	}
 };
 
@@ -315,7 +310,7 @@ void VideoThread::draw()
 
 		img_convert_ctx = sws_getContext(
 			video_codec_context->width, video_codec_context->height, video_codec_context->pix_fmt,
-			video_width, video_height, AV_PIXEL_FORMAT, SWS_BILINEAR, NULL, NULL, NULL);
+			video_width, video_height, pixel_format, SWS_BILINEAR, NULL, NULL, NULL);
 		if (img_convert_ctx == NULL)
 		{
 			throw Exception("Cannot initialise the conversion context");
@@ -324,10 +319,10 @@ void VideoThread::draw()
 		delete [] video_buffer;
 		video_buffer = NULL;
 		
-		gsize video_buffer_size = avpicture_get_size(AV_PIXEL_FORMAT, video_width, video_height);
+		gsize video_buffer_size = avpicture_get_size(pixel_format, video_width, video_height);
 		video_buffer = new guchar[video_buffer_size];
 
-		avpicture_fill(&picture, video_buffer, AV_PIXEL_FORMAT, video_width, video_height);
+		avpicture_fill(&picture, video_buffer, pixel_format, video_width, video_height);
 
 		video_output->on_size(video_width, video_height, video_buffer);
 	}
@@ -353,11 +348,13 @@ void VideoThread::run()
 	{
 		GdkLock gdk_lock;
 		video_output = new GtkVideoOutput(window);
+		pixel_format = PIX_FMT_RGB24;
 	}
 	else if (video_output_name == "Xv")
 	{
 		GdkLock gdk_lock;
 		video_output = new XvVideoOutput(window);
+		pixel_format = PIX_FMT_YUYV422;
 	}
 	else
 	{
@@ -412,8 +409,7 @@ void VideoThread::run()
 			delete packet;
 		}
 	}
-	g_debug("Video thread finished");
-	
+
 	if (video_output != NULL)
 	{
 		delete video_output;
@@ -421,6 +417,8 @@ void VideoThread::run()
 	}
 	
 	avcodec_close(video_stream->codec);
+
+	g_debug("Video thread finished");
 }
 
 VideoThread::VideoThread(Glib::Timer& timer, PacketQueue& video_packet_queue, AVStream* video_stream, Gtk::DrawingArea& drawing_area) :

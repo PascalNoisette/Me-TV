@@ -76,6 +76,7 @@ private:
 	gdouble					frame_rate;
 	Glib::Timer&			timer;
 	VideoOutput*			video_output;
+	guint					pixel_format;
 		
 	void draw();
 	void run();
