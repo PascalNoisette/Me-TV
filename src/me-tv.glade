@@ -1941,7 +1941,6 @@ xshm</property>
   <widget class="GtkDialog" id="dialog_channels">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Me TV - Channels Editor</property>
-    <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <property name="default_height">275</property>
@@ -1952,13 +1951,7 @@ xshm</property>
         <property name="visible">True</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkImage" id="image5">
-            <property name="visible">True</property>
-            <property name="pixbuf">Channels_editor_Banner-7.png</property>
-          </widget>
-          <packing>
-            <property name="position">1</property>
-          </packing>
+          <placeholder/>
         </child>
         <child>
           <widget class="GtkHBox" id="hbox6">
