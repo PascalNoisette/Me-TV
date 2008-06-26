@@ -352,6 +352,9 @@ void MainWindow::stop()
 
 void MainWindow::set_preview(gboolean set)
 {
+	glade->get_widget("menubar")->property_visible() = set;
+	glade->get_widget("statusbar")->property_visible() = set;
+	glade->get_widget("handlebox_toolbar")->property_visible() = set;
 	glade->get_widget("vbox_controls")->property_visible() = set;
 	glade->get_widget("scrolled_window_epg")->property_visible() = set;
 
