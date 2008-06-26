@@ -2090,39 +2090,23 @@ xshm</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="image_position">GTK_POS_BOTTOM</property>
+                        <property name="label" translatable="yes">gtk-go-up</property>
+                        <property name="use_stock">True</property>
+                        <property name="image_position">GTK_POS_TOP</property>
                         <property name="response_id">0</property>
-                        <child>
-                          <widget class="GtkImage" id="image1">
-                            <property name="visible">True</property>
-                            <property name="tooltip" translatable="yes">Move highlighted channel up the list</property>
-                            <property name="stock">gtk-go-up</property>
-                          </widget>
-                        </child>
                       </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                      </packing>
                     </child>
                     <child>
                       <widget class="GtkButton" id="button_move_highlighted_channel_down">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="image_position">GTK_POS_TOP</property>
+                        <property name="label" translatable="yes">gtk-go-down</property>
+                        <property name="use_stock">True</property>
+                        <property name="image_position">GTK_POS_BOTTOM</property>
                         <property name="response_id">0</property>
-                        <child>
-                          <widget class="GtkImage" id="image2">
-                            <property name="visible">True</property>
-                            <property name="tooltip" translatable="yes">Move highlighted channel down the list</property>
-                            <property name="stock">gtk-go-down</property>
-                          </widget>
-                        </child>
                       </widget>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -2145,6 +2129,7 @@ xshm</property>
             <child>
               <widget class="GtkHBox" id="hbox17">
                 <property name="visible">True</property>
+                <property name="homogeneous">True</property>
                 <child>
                   <widget class="GtkVBox" id="vbox7">
                     <property name="visible">True</property>
@@ -2155,6 +2140,9 @@ xshm</property>
                           <placeholder/>
                         </child>
                       </widget>
+                      <packing>
+                        <property name="fill">False</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkButton" id="button_remove_selected_channels">
@@ -2168,6 +2156,7 @@ xshm</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">False</property>
                         <property name="padding">2</property>
                         <property name="position">1</property>
                       </packing>
@@ -2184,6 +2173,7 @@ xshm</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">False</property>
                         <property name="padding">2</property>
                         <property name="position">2</property>
                       </packing>
@@ -2205,6 +2195,7 @@ xshm</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">False</property>
                         <property name="padding">3</property>
                         <property name="position">3</property>
                       </packing>
@@ -2217,10 +2208,14 @@ xshm</property>
                         </child>
                       </widget>
                       <packing>
+                        <property name="fill">False</property>
                         <property name="position">4</property>
                       </packing>
                     </child>
                   </widget>
+                  <packing>
+                    <property name="fill">False</property>
+                  </packing>
                 </child>
               </widget>
               <packing>
