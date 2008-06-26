@@ -342,6 +342,8 @@ void Source::run()
 			packet_queue.push(&packet);
 		}
 	}
+	
+	g_debug("Marking source queue as finished");
 	packet_queue.finish();
 	
 	g_debug("Source thread loop finished");

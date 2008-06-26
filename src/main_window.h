@@ -29,18 +29,21 @@ class MainWindow : public Gtk::Window
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
 	Glib::RefPtr<Glib::TimeoutSource>		timeout;
-	Gtk::DrawingArea*	drawing_area_video;
-	GtkEpgWidget*		widget_epg;
-	guint				last_motion_time;
-	GdkCursor*			hidden_cursor;
-	gboolean			is_cursor_visible;
-	MetersDialog*		meters_dialog;
-		
+	Gtk::DrawingArea*						drawing_area_video;
+	GtkEpgWidget*							widget_epg;
+	guint									last_motion_time;
+	GdkCursor*								hidden_cursor;
+	gboolean								is_cursor_visible;
+	MetersDialog*							meters_dialog;
+
 	void stop();
 	void fullscreen();
 	void unfullscreen();
 	gboolean is_fullscreen();
+	
+	void set_preview(gboolean set);
 
+	bool on_timeout();
 	void on_error(const Glib::ustring& message);
 	void on_menu_item_open_clicked();
 	void on_menu_item_close_clicked();
@@ -49,10 +52,12 @@ private:
 	void on_menu_item_channels_clicked();
 	void on_menu_item_preferences_clicked();
 	void on_menu_item_about_clicked();
-	bool on_timeout();
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
 	bool on_event_box_video_motion_notify_event(GdkEventMotion* event);
 	bool on_event_box_video_scroll_event(GdkEventScroll* event);
+	void on_button_epg_previous_clicked();
+	void on_button_epg_now_clicked();
+	void on_button_epg_next_clicked();
 
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);

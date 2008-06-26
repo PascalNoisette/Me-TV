@@ -38,7 +38,7 @@ void PacketQueue::push(AVPacket* packet)
 {
 	while (get_size() > 100 && !finished)
 	{
-		usleep(100);
+		usleep(1000);
 	}
 
 	if (!finished)
@@ -62,12 +62,13 @@ AVPacket* PacketQueue::pop()
 	}
 
 	AVPacket* packet = NULL;
-	if (!finished)
+	Glib::RecMutex::Lock lock(mutex);
+	if (queue.size() > 0)
 	{
-		Glib::RecMutex::Lock lock(mutex);
 		packet = queue.front();
 		queue.pop();
 	}
+
 	return packet;
 }
 

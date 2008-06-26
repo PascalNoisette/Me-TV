@@ -22,13 +22,9 @@
 #include "application.h"
 
 GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
-	Gtk::VBox(cobject), glade(glade)
+	Gtk::ScrolledWindow(cobject), glade(glade)
 {
 	offset = 0;
-
-	glade->connect_clicked("button_epg_previous", sigc::mem_fun(*this, &GtkEpgWidget::on_button_epg_previous_clicked));
-	glade->connect_clicked("button_epg_now", sigc::mem_fun(*this, &GtkEpgWidget::on_button_epg_now_clicked));
-	glade->connect_clicked("button_epg_next", sigc::mem_fun(*this, &GtkEpgWidget::on_button_epg_next_clicked));
 
 	table_epg			= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
 	scrolled_window_epg	= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
@@ -37,7 +33,7 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 	last_number_columns = 0;
 }
 
-void GtkEpgWidget::set_offset(gint value)
+void GtkEpgWidget::set_offset(guint value)
 {
 	if (value < 0)
 	{
@@ -47,6 +43,11 @@ void GtkEpgWidget::set_offset(gint value)
 	offset = value;
 	
 	update();
+}
+
+void GtkEpgWidget::increment_offset(gint value)
+{
+	set_offset(offset + value);
 }
 
 void GtkEpgWidget::update()
@@ -143,19 +144,4 @@ void GtkEpgWidget::on_button_channel_name_clicked(const Glib::ustring& channel_n
 	TRY
 	get_application().get_channel_manager().set_display_channel(channel_name);
 	CATCH
-}
-
-void GtkEpgWidget::on_button_epg_previous_clicked()
-{
-	set_offset(offset - span_seconds);
-}
-
-void GtkEpgWidget::on_button_epg_now_clicked()
-{
-	set_offset(0);
-}
-
-void GtkEpgWidget::on_button_epg_next_clicked()
-{
-	set_offset(offset + span_seconds);
 }

@@ -578,7 +578,7 @@ void Sink::run()
 				av_free_packet(packet);
 			}
 			
-			delete packet;
+			//delete packet;
 		}
 	}
 	g_debug("Finished Sink loop");
@@ -599,18 +599,20 @@ void Sink::destroy()
 
 	if (video_thread != NULL)
 	{
-		g_debug("Waiting for video thread to terminate");
+		g_debug("Waiting for video thread to join ...");
 		gdk_threads_leave();
 		video_thread->join(true);
 		gdk_threads_enter();
 		video_thread = NULL;
+		g_debug("Video thread joined");
 	}
 	
 	if (audio_thread != NULL)
 	{
-		g_debug("Waiting for audio thread to terminate");
+		g_debug("Waiting for audio thread to join ...");
 		audio_thread->join(true);
 		audio_thread = NULL;
+		g_debug("Audio thread joined");
 	}
 	
 	g_debug("Sink destroyed");
@@ -619,6 +621,7 @@ void Sink::destroy()
 void Sink::stop()
 {
 	destroy();
-	g_debug("Waiting for Sink to terminate");
+	g_debug("Waiting for Sink to join ...");
 	join(true);
+	g_debug("Sink joined");
 }

@@ -32,7 +32,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	
-	glade->get_widget_derived("vbox_epg", widget_epg);
+	glade->get_widget_derived("scrolled_window_epg", widget_epg);
+	
+	if (widget_epg == NULL)
+	{
+		throw Exception("Failed to load EPG widget");
+	}
 	
 	glade->connect_clicked("menu_item_open",		sigc::mem_fun(*this, &MainWindow::on_menu_item_open_clicked));
 	glade->connect_clicked("menu_item_close",		sigc::mem_fun(*this, &MainWindow::on_menu_item_close_clicked));
@@ -41,6 +46,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
 	glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));
+
+	glade->connect_clicked("button_epg_previous", sigc::mem_fun(*this, &MainWindow::on_button_epg_previous_clicked));
+	glade->connect_clicked("button_epg_now", sigc::mem_fun(*this, &MainWindow::on_button_epg_now_clicked));
+	glade->connect_clicked("button_epg_next", sigc::mem_fun(*this, &MainWindow::on_button_epg_next_clicked));
 
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
@@ -68,7 +77,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	
 	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
 	
-	//drawing_area_video->set_double_buffered(tr);
 	set_keep_above();
 }
 
@@ -239,11 +247,8 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 	}
 	else if (event->button == 3)
 	{
-		gboolean show = !glade->get_widget("vbox_epg")->property_visible();
-		glade->get_widget("vbox_epg")->property_visible() = show;
-		glade->get_widget("menubar")->property_visible() = show;
-		glade->get_widget("handlebox_toolbar")->property_visible() = show;		
-		glade->get_widget("statusbar")->property_visible() = show || !is_fullscreen();
+		gboolean show = !glade->get_widget("scrolled_window_epg")->property_visible();
+		set_preview(show);
 		
 		if (show)
 		{
@@ -285,23 +290,36 @@ bool MainWindow::on_event_box_video_scroll_event(GdkEventScroll* event)
 	return true;
 }
 
+void MainWindow::on_button_epg_previous_clicked()
+{
+	widget_epg->increment_offset(-3600);
+}
+
+void MainWindow::on_button_epg_now_clicked()
+{
+	widget_epg->set_offset(0);
+}
+
+void MainWindow::on_button_epg_next_clicked()
+{
+	widget_epg->increment_offset(3600);
+}
+
 void MainWindow::unfullscreen()
 {
-	glade->get_widget("menubar")->show();
-	glade->get_widget("statusbar")->show();
-	glade->get_widget("handlebox_toolbar")->show();
-	glade->get_widget("vbox_epg")->show();
+	glade->get_widget("menubar")->property_visible() = true;
+	glade->get_widget("statusbar")->property_visible() = true;
+	glade->get_widget("handlebox_toolbar")->property_visible() = true;
 
 	Gtk::Window::unfullscreen();
 }
 
 void MainWindow::fullscreen()
 {
-	glade->get_widget("menubar")->hide();
-	glade->get_widget("statusbar")->hide();
-	glade->get_widget("handlebox_toolbar")->hide();
-	glade->get_widget("vbox_epg")->hide();
-
+	set_preview(false);
+	glade->get_widget("menubar")->property_visible() = false;
+	glade->get_widget("statusbar")->property_visible() = false;
+	glade->get_widget("handlebox_toolbar")->property_visible() = false;
 	Gtk::Window::fullscreen();
 }
 
@@ -330,4 +348,20 @@ void MainWindow::stop()
 	{
 		pipeline_manager.remove(pipeline);
 	}
+}
+
+void MainWindow::set_preview(gboolean set)
+{
+	glade->get_widget("vbox_controls")->property_visible() = set;
+	glade->get_widget("scrolled_window_epg")->property_visible() = set;
+
+	Gtk::VBox* vbox_main_window = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main_window"));
+	Gtk::HBox* hbox_top = dynamic_cast<Gtk::HBox*>(glade->get_widget("hbox_top"));
+	Gtk::Widget* viewport_video_window = glade->get_widget("viewport_video_window");
+
+	gtk_box_set_child_packing((GtkBox*)hbox_top->gobj(), viewport_video_window->gobj(),
+		!set, !set, 0, GTK_PACK_END);
+
+	gtk_box_set_child_packing((GtkBox*)vbox_main_window->gobj(), (GtkWidget*)hbox_top->gobj(),
+		!set, !set, 0, GTK_PACK_START);
 }

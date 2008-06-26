@@ -25,7 +25,7 @@
 #include <libglademm.h>
 #include "channel_manager.h"
 
-class GtkEpgWidget : public Gtk::VBox
+class GtkEpgWidget : public Gtk::ScrolledWindow
 {
 private:
 	gint offset;
@@ -43,12 +43,8 @@ private:
 
 	void on_button_program_clicked();
 	void on_button_channel_name_clicked(const Glib::ustring& channel_name);
-	void on_button_epg_previous_clicked();
-	void on_button_epg_now_clicked();
-	void on_button_epg_next_clicked();
 		
 	void clear();
-	void set_offset(gint value);
 	void update_table();
 	Gtk::Button& attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach);
 	Gtk::Label& attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach);
@@ -57,7 +53,10 @@ private:
 
 public:
 	GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	
 	void update();
+	void set_offset(guint value);
+	void increment_offset(gint value);
 };
 
 #endif
