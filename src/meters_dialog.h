@@ -52,6 +52,7 @@ private:
 	Gtk::ProgressBar*	progress_bar_signal_strength;
 	Gtk::ProgressBar*	progress_bar_signal_noise;
 	Gtk::Label*			label_meters_device_name;
+	ComboBoxText*		combo_box_meters_device_name;
 	MetersThread		meters_thread;
 	Dvb::Frontend*		frontend;
 
@@ -61,9 +62,11 @@ public:
 	{
 		progress_bar_signal_strength = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_strength"));
 		progress_bar_signal_noise = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_noise"));
-		label_meters_device_name = dynamic_cast<Gtk::Label*>(glade->get_widget("label_meters_device_name"));
 		
+		glade->get_widget_derived("combo_box_meters_device_name", combo_box_meters_device_name);
+
 		glade->connect_clicked("button_meters_close", sigc::mem_fun(*this, &Gtk::Widget::hide));
+
 		set_meters(0, 0);
 	}
 
