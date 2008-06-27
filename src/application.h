@@ -33,7 +33,7 @@ private:
 	static Application*				current;
 	Glib::RefPtr<Gnome::Glade::Xml>	glade;
 	ProfileManager					profile_manager;
-	Dvb::DeviceManager				device_manager;
+	DeviceManager					device_manager;
 	ChannelManager					channel_manager;
 	PipelineManager					pipeline_manager;
 
@@ -46,7 +46,7 @@ public:
 	static Application& get_current();
 	
 	ProfileManager&		get_profile_manager()	{ return profile_manager; }
-	Dvb::DeviceManager&	get_device_manager()	{ return device_manager; }
+	DeviceManager&		get_device_manager()	{ return device_manager; }
 	ChannelManager&		get_channel_manager()	{ return channel_manager; }
 	PipelineManager&	get_pipeline_manager()	{ return pipeline_manager; }
 };

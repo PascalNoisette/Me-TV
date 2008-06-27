@@ -24,7 +24,7 @@
 #include <libgnomeuimm.h>
 #include <libglademm.h>
 #include "thread.h"
-#include "me-tv.h"
+#include "me-tv-ui.h"
 
 #define METERS_POLL_INTERVAL 100000
 
@@ -52,7 +52,7 @@ private:
 	Gtk::ProgressBar*	progress_bar_signal_strength;
 	Gtk::ProgressBar*	progress_bar_signal_noise;
 	Gtk::Label*			label_meters_device_name;
-	ComboBoxText*		combo_box_meters_device_name;
+	ComboBoxFrontend*	combo_box_meters_device_name;
 	MetersThread		meters_thread;
 	Dvb::Frontend*		frontend;
 
@@ -62,9 +62,7 @@ public:
 	{
 		progress_bar_signal_strength = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_strength"));
 		progress_bar_signal_noise = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_noise"));
-		
 		glade->get_widget_derived("combo_box_meters_device_name", combo_box_meters_device_name);
-
 		glade->connect_clicked("button_meters_close", sigc::mem_fun(*this, &Gtk::Widget::hide));
 
 		set_meters(0, 0);
@@ -75,10 +73,9 @@ public:
 		stop();
 	}
 
-	void start(Dvb::Frontend& f)
+	void start()
 	{
-		frontend = &f;
-		label_meters_device_name->set_label(frontend->get_frontend_info().name);
+		frontend = &combo_box_meters_device_name->get_selected_frontend();
 		meters_thread.start();
 	}
 		

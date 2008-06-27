@@ -67,9 +67,6 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scanned_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
 	
-	Dvb::DeviceManager& device_manager = get_application().get_device_manager();
-	const std::list<Dvb::Frontend*> frontends = device_manager.get_frontends();
-
 	combo_box_scan_device = NULL;
 	glade->get_widget_derived("combo_box_scan_device", combo_box_scan_device);
 	
@@ -78,18 +75,8 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	combo_box_select_region = NULL;
 	glade->get_widget_derived("combo_box_select_region", combo_box_select_region);
-
-	std::list<Dvb::Frontend*>::const_iterator frontend_iterator = frontends.begin();
-	while (frontend_iterator != frontends.end())
-	{
-		Dvb::Frontend* frontend = *frontend_iterator;
-		combo_box_scan_device->append_text(frontend->get_frontend_info().name);
-		frontend_iterator++;
-	}
-	combo_box_scan_device->set_active(0);
 	
-	Glib::ustring device_name = combo_box_scan_device->get_active_text();
-	Glib::ustring scan_directory_path = get_initial_tuning_dir(device_manager.get_frontend_by_name(device_name));
+	Glib::ustring scan_directory_path = get_initial_tuning_dir(combo_box_scan_device->get_selected_frontend());
 
 	Glib::RefPtr<Gio::File> scan_directory = Gio::File::create_for_path(scan_directory_path);
 	
@@ -172,7 +159,7 @@ void ScanDialog::on_button_start_scan_clicked()
 	list_store->clear();
 
 	Glib::ustring device_name = combo_box_scan_device->get_active_text();
-	Dvb::DeviceManager& device_manager = Application::get_current().get_device_manager();
+	DeviceManager& device_manager = get_application().get_device_manager();
 	Dvb::Frontend& frontend = device_manager.get_frontend_by_name(device_name);
 	
 	Glib::ustring initial_tuning_file;

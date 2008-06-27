@@ -63,7 +63,10 @@ me_tv_SOURCES = \
 	gtk_epg_widget.cc \
 	gtk_epg_widget.h \
 	channel_manager.cc \
-	profile_manager.cc
+	profile_manager.cc \
+	me-tv-ui.h \
+	me-tv-ui.cc \
+	device_manager.cc
 
 me_tv_LDFLAGS = 
 

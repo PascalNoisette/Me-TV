@@ -26,7 +26,7 @@
 #include "device_manager.h"
 #include "dvb_scanner.h"
 #include "thread.h"
-#include "me-tv.h"
+#include "me-tv-ui.h"
 
 #ifndef SCAN_DIRECTORY
 #define SCAN_DIRECTORY "/usr/share/doc/dvb-utils/examples/scan"
@@ -79,7 +79,7 @@ private:
 	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
 	Gtk::ProgressBar*						progress_bar_scan;
 	Gtk::TreeView*							tree_view_scanned_channels;
-	ComboBoxText*							combo_box_scan_device;
+	ComboBoxFrontend*						combo_box_scan_device;
 	ComboBoxText*							combo_box_select_country;
 	ComboBoxText*							combo_box_select_region;
 	ScanThread*								scan_thread;

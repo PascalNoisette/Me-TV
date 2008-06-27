@@ -68,8 +68,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	last_motion_time = time(NULL);
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
 
-	glade->get_widget_derived("dialog_meters", meters_dialog);
-
 	show();
 	glade->get_widget("hbox_search_bar")->hide();
 
@@ -136,20 +134,12 @@ void MainWindow::on_menu_item_quit_clicked()
 	
 void MainWindow::on_menu_item_meters_clicked()
 {
-	Dvb::DeviceManager& device_manager = get_application().get_device_manager();
-	const std::list<Dvb::Frontend*> frontends = device_manager.get_frontends();
-	if (frontends.size() == 0)
-	{
-		Gtk::MessageDialog dialog(*this, _("No tuners available"), Gtk::MESSAGE_ERROR);
-		dialog.run();
-	}
-	else
-	{
-		meters_dialog->stop();
-		Dvb::Frontend* frontend = *(frontends.begin());
-		meters_dialog->start(*frontend);
-		meters_dialog->show();
-	}
+	TRY
+	glade->get_widget_derived("dialog_meters", meters_dialog);
+	meters_dialog->stop();
+	meters_dialog->start();
+	meters_dialog->show();
+	CATCH
 }
 
 void MainWindow::on_menu_item_channels_clicked()

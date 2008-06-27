@@ -21,9 +21,6 @@
 #ifndef __ME_TV_H__
 #define __ME_TV_H__
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-#include <gdk/gdk.h>
 #include <glibmm/i18n.h>
 #include <list>
 
@@ -32,31 +29,6 @@
 typedef sigc::signal<void, const Glib::ustring&> StringSignal;
 
 StringSignal& get_signal_error();
-
-class ComboBoxText : public Gtk::ComboBoxText
-{
-public:
-	ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
-			: Gtk::ComboBoxText(cobject)
-	{
-	}
-};
-
-class ComboBoxEntryText : public Gtk::ComboBoxEntryText
-{
-public:
-	ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
-			: Gtk::ComboBoxEntryText(cobject)
-	{
-	}
-};
-
-class GdkLock
-{
-public:
-	GdkLock() { gdk_threads_enter(); }
-	~GdkLock() { gdk_threads_leave(); }
-};
 
 typedef std::list<Glib::ustring> StringList;
 

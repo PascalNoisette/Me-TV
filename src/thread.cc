@@ -19,6 +19,7 @@
  */
 
 #include "thread.h"
+#include "me-tv-ui.h"
 
 Thread::Thread(const Glib::ustring& name)
 {

@@ -28,119 +28,40 @@
 #include "me-tv.h"
 #include "scheduler.h"
 
-namespace Dvb
+typedef enum
 {
-	typedef enum
-	{
-		USAGE_TYPE_SCANNING,
-		USAGE_TYPE_RECORDING,		
-		USAGE_TYPE_VIEWING,
-		USAGE_TYPE_EPG_UPDATE
-	} UsageType;
+	USAGE_TYPE_SCANNING,
+	USAGE_TYPE_RECORDING,		
+	USAGE_TYPE_VIEWING,
+	USAGE_TYPE_EPG_UPDATE
+} UsageType;
+
+class FrontendEvent : public Event
+{
+private:
+	UsageType usage_type;
+public:
+	FrontendEvent(UsageType usage_type, Event event) : Event(event), usage_type(usage_type) {}
+};
+
+class DeviceManager
+{
+private:
+	Glib::ustring get_adapter_string(guint adapter);
+	Glib::ustring get_frontend_string(guint adapter, guint frontend);
 	
-	class FrontendEvent : public Event
-	{
-	private:
-		UsageType usage_type;
-	public:
-		FrontendEvent(UsageType usage_type, Event event) : Event(event), usage_type(usage_type) {}
-	};
-	
-	class DeviceManager
-	{
-	private:
-		Glib::ustring get_adapter_string(guint adapter)
-		{
-			return Glib::ustring::compose("/dev/dvb/adapter%1", adapter);
-		}
+	std::list<Dvb::Adapter*> adapters;
+	std::list<Dvb::Frontend*> frontends;
+	Scheduler scheduler;
 
-		Glib::ustring get_frontend_string(guint adapter, guint frontend)
-		{
-			return Glib::ustring::compose("/dev/dvb/adapter%1/frontend%2", adapter, frontend);
-		}
+public:
+	DeviceManager();
+	~DeviceManager();
 		
-		std::list<Adapter*> adapters;
-		std::list<Frontend*> frontends;
-		Scheduler scheduler;
-
-	public:
-		DeviceManager()
-		{
-			g_debug("Device manager starting");
-			guint adapter_count = 0;
-			while (Gio::File::create_for_path(get_adapter_string(adapter_count))->query_exists())
-			{
-				Adapter* adapter = new Adapter(adapter_count);
-				adapters.push_back(adapter);
-				
-				guint frontend_count = 0;
-				while (Gio::File::create_for_path(get_frontend_string(adapter_count, frontend_count))->query_exists())
-				{
-					Frontend* frontend = new Frontend(*adapter, frontend_count);
-					g_debug("Registered %s", frontend->get_frontend_info().name);
-					frontends.push_back(frontend);
-					frontend_count++;
-				}
-
-				adapter_count++;
-			}
-			
-			g_debug("Device manager initialised with %d DVB adapter(s)", adapter_count);
-		}
+	const std::list<Dvb::Frontend*> get_frontends() const;
 		
-		~DeviceManager()
-		{
-			while (frontends.size() > 0)
-			{
-				Frontend* frontend = *(frontends.begin());
-				frontends.pop_front();
-				Glib::ustring device_name = frontend->get_frontend_info().name;
-				free(frontend);
-				g_debug("Deregistered %s", device_name.c_str());
-			}
-			
-			while (adapters.size() > 0)
-			{
-				free(*(adapters.begin()));
-				adapters.pop_front();
-			}
-		}
-			
-		const std::list<Frontend*> get_frontends() const { return frontends; }
-			
-		Frontend& get_frontend_by_name(const Glib::ustring& frontend_name)
-		{
-			Frontend* result = NULL;
-			
-			std::list<Dvb::Frontend*>::const_iterator frontend_iterator = frontends.begin();
-			while (frontend_iterator != frontends.end() && result == NULL)
-			{
-				Dvb::Frontend* frontend = *frontend_iterator;
-				if (frontend_name == frontend->get_frontend_info().name)
-				{
-					result = frontend;
-				}
-				frontend_iterator++;
-			}
-
-			if (result == NULL)
-			{
-				throw Exception(Glib::ustring::compose(_("Failed to find frontend '%1'"), frontend_name));
-			}
-
-			return *result;
-		}
-			
-		Frontend* request_frontend(Event event)
-		{
-			Frontend* result = NULL;
-			if (frontends.size() > 0)
-			{
-				result = *(frontends.begin());
-			}
-			return result;
-		}
-	};
-}
+	Dvb::Frontend& get_frontend_by_name(const Glib::ustring& frontend_name);
+	Dvb::Frontend* request_frontend(Event event);
+};
 
 #endif
