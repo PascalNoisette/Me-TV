@@ -108,21 +108,21 @@ void AlsaAudioThread::run()
 	gsize count = 0;
 	gsize total_audio_buffer_size = 0;
 	while (!is_terminated())
-	{			
-		AVPacket* packet = audio_packet_queue.pop();
-		
-		if (packet == NULL)
+	{
+		if (audio_packet_queue.get_size() == 0)
 		{
-			terminate();
+			usleep(1000);
 		}
 		else
 		{
+			AVPacket packet = audio_packet_queue.pop();
+			
 			int audio_buffer_length = sizeof(data) - total_audio_buffer_size;
 			gint ffmpeg_result = avcodec_decode_audio2(
 				audio_stream->codec,
 				(int16_t*)data + total_audio_buffer_size,
 				&audio_buffer_length,
-				packet->data, packet->size);
+				packet.data, packet.size);
 			
 			total_audio_buffer_size += audio_buffer_length/2;
 			
@@ -135,8 +135,7 @@ void AlsaAudioThread::run()
 			{
 				throw Exception("ASSERT: audio_buffer_size < 0, not implemented");
 			}
-			av_free_packet(packet);
-			delete packet;
+			av_free_packet(&packet);
 			
 			if (count++ > number_audio_buffers)
 			{
@@ -365,16 +364,16 @@ void VideoThread::run()
 	
 	while (!is_terminated())
 	{
-		video_frame_finished = false;
-		
-		AVPacket* packet = video_packet_queue.pop();
-		
-		if (packet == NULL)
+		if (video_packet_queue.get_size() == 0)
 		{
-			terminate();
+			usleep(1000);
 		}
 		else
 		{
+			video_frame_finished = false;
+			
+			AVPacket packet = video_packet_queue.pop();
+			
 			gboolean drop_frame = false;
 			gdouble elapsed = timer.elapsed();
 			guint frame_wanted = elapsed * frame_rate;
@@ -393,13 +392,13 @@ void VideoThread::run()
 			frame_count++;
 						
 			avcodec_decode_video(video_stream->codec,
-				frame, &video_frame_finished, packet->data, packet->size);
+				frame, &video_frame_finished, packet.data, packet.size);
 			if (first && !video_frame_finished)
 			{
 				g_debug("Flushing buffers");
 				avcodec_flush_buffers(video_stream->codec);
 				avcodec_decode_video(video_stream->codec,
-					frame, &video_frame_finished, packet->data, packet->size);
+					frame, &video_frame_finished, packet.data, packet.size);
 			}
 			if (video_frame_finished && !drop_frame)
 			{
@@ -407,8 +406,7 @@ void VideoThread::run()
 				GdkLock gdk_locks;
 				draw();
 			}
-			av_free_packet(packet);
-			delete packet;
+			av_free_packet(&packet);
 		}
 	}
 
@@ -557,28 +555,26 @@ void Sink::run()
 	g_debug("Starting Sink loop");
 	while (!is_terminated())
 	{
-		AVPacket* packet = packet_queue.pop();
-		
-		if (packet == NULL)
+		if (packet_queue.get_size() == 0)
 		{
-			terminate();
+			usleep(1000);
 		}
 		else
 		{
-			if (packet->stream_index == video_stream_index)
+			AVPacket packet = packet_queue.pop();
+			
+			if (packet.stream_index == video_stream_index)
 			{
 				video_packet_queue.push(packet);
 			}
-			else if (packet->stream_index == audio_stream_index)
+			else if (packet.stream_index == audio_stream_index)
 			{
 				audio_packet_queue.push(packet);
 			}
 			else
 			{
-				av_free_packet(packet);
+				av_free_packet(&packet);
 			}
-			
-			//delete packet;
 		}
 	}
 	g_debug("Finished Sink loop");

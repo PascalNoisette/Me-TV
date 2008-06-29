@@ -29,15 +29,15 @@ class PacketQueue
 {
 private:
 	gboolean				finished;
-	std::queue<AVPacket*>	queue;
+	std::queue<AVPacket>	queue;
 	Glib::StaticRecMutex	mutex;
 		
 public:
 	PacketQueue();
 	~PacketQueue();
 	
-	void push(AVPacket* packet);
-	AVPacket* pop();
+	void push(AVPacket& packet);
+	AVPacket pop();
 	gsize get_size();
 	gboolean is_empty();
 	void finish();

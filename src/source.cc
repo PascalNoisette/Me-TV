@@ -90,18 +90,22 @@ int read_data(void* data, guchar* buffer, int size)
 	return source->read_data(buffer, size);
 }
 
+//Glib::RefPtr<Glib::IOChannel> output_channel = Glib::IOChannel::create_from_file("/home/michael/dump.mpeg", "w");
+
 int Source::read_data(guchar* destination_buffer, int size)
 {
 	gsize bytes_read = 0;
 
-	if (!opened)
+//	if (!opened)
 	{
-		memcpy(destination_buffer, buffer.get_buffer(), buffer.get_size());
-		bytes_read = size;
+//		memcpy(destination_buffer, buffer.get_buffer(), buffer.get_size());
+//		bytes_read = size;
 	}
-	else
+//	else
 	{
 		input_channel->read((gchar*)destination_buffer, size, bytes_read);
+//		gsize bytes_written = 0;
+//		output_channel->write((gchar*)destination_buffer, bytes_read, bytes_written);
 	}
 
 	return bytes_read;
@@ -117,6 +121,7 @@ void Source::create(gboolean is_dvb)
 	{		
 		input_channel = Glib::IOChannel::create_from_file(mrl, "r");
 		input_channel->set_encoding("");
+//		output_channel->set_encoding("");
 
 		AVInputFormat* input_format = av_find_input_format("mpegts");
 		if(input_format == NULL)
@@ -128,7 +133,6 @@ void Source::create(gboolean is_dvb)
 		gsize buffer_size = 0;
 		input_channel->read((gchar*)buffer.get_buffer(), buffer.get_max_size(), buffer_size);
 		buffer.set_size(buffer_size);
-	
 		g_debug("Reading sample packets");
 		gboolean got_pat = false;
 		while (!got_pat)
@@ -339,7 +343,7 @@ void Source::run()
 		}
 		else
 		{
-			packet_queue.push(&packet);
+			packet_queue.push(packet);
 		}
 	}
 	

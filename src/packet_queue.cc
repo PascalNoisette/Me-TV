@@ -34,7 +34,7 @@ PacketQueue::~PacketQueue()
 	flush();
 }
 	
-void PacketQueue::push(AVPacket* packet)
+void PacketQueue::push(AVPacket& packet)
 {
 	while (get_size() > 100 && !finished)
 	{
@@ -44,30 +44,24 @@ void PacketQueue::push(AVPacket* packet)
 	if (!finished)
 	{
 		Glib::RecMutex::Lock lock(mutex);	
-		if (av_dup_packet(packet) < 0)
+		if (av_dup_packet(&packet) < 0)
 		{
 			throw Exception("Failed to dup packet");
 		}
-		AVPacket* new_packet = new AVPacket();
-		*new_packet = *packet;
+		AVPacket new_packet = packet;
 		queue.push(new_packet);
 	}
 }
 
-AVPacket* PacketQueue::pop()
+AVPacket PacketQueue::pop()
 {
-	while (get_size() == 0 && !finished)
-	{
-		usleep(1000);
-	}
-
-	AVPacket* packet = NULL;
 	Glib::RecMutex::Lock lock(mutex);
-	if (queue.size() > 0)
+	if (queue.size() == 0)
 	{
-		packet = queue.front();
-		queue.pop();
+		throw Exception("Packet underrun");
 	}
+	AVPacket packet = queue.front();
+	queue.pop();
 
 	return packet;
 }
@@ -99,7 +93,6 @@ void PacketQueue::flush()
 	Glib::RecMutex::Lock lock(mutex);
 	while (queue.size() > 0)
 	{
-		delete queue.front();
 		queue.pop();
 	}
 }
