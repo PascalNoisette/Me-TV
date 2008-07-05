@@ -27,8 +27,7 @@
 #define TS_PACKET_SIZE	188
 #define BUFFER_SIZE		TS_PACKET_SIZE * 100
 
-Source::Source(PacketQueue& packet_queue, const Channel& channel) :
-	Thread("Channel Source"), packet_queue(packet_queue), buffer(BUFFER_SIZE)
+Source::Source(const Channel& channel) : buffer(BUFFER_SIZE)
 {	
 	g_message(_("Creating source for '%s'"), channel.name.c_str());
 
@@ -55,8 +54,7 @@ Source::Source(PacketQueue& packet_queue, const Channel& channel) :
 	create(channel.flags & CHANNEL_FLAG_DVB);
 }
 
-Source::Source(PacketQueue& packet_queue, const Glib::ustring& mrl) :
-	Thread("MRL Source"), packet_queue(packet_queue), buffer(BUFFER_SIZE)
+Source::Source(const Glib::ustring& mrl) : buffer(BUFFER_SIZE)
 {
 	this->mrl = mrl;
 	create(false);
@@ -90,22 +88,18 @@ int read_data(void* data, guchar* buffer, int size)
 	return source->read_data(buffer, size);
 }
 
-//Glib::RefPtr<Glib::IOChannel> output_channel = Glib::IOChannel::create_from_file("/home/michael/dump.mpeg", "w");
-
 int Source::read_data(guchar* destination_buffer, int size)
 {
 	gsize bytes_read = 0;
 
-//	if (!opened)
+	if (!opened)
 	{
-//		memcpy(destination_buffer, buffer.get_buffer(), buffer.get_size());
-//		bytes_read = size;
+		memcpy(destination_buffer, buffer.get_data(), buffer.get_length());
+		bytes_read = size;
 	}
-//	else
+	else
 	{
 		input_channel->read((gchar*)destination_buffer, size, bytes_read);
-//		gsize bytes_written = 0;
-//		output_channel->write((gchar*)destination_buffer, bytes_read, bytes_written);
 	}
 
 	return bytes_read;
@@ -121,7 +115,6 @@ void Source::create(gboolean is_dvb)
 	{		
 		input_channel = Glib::IOChannel::create_from_file(mrl, "r");
 		input_channel->set_encoding("");
-//		output_channel->set_encoding("");
 
 		AVInputFormat* input_format = av_find_input_format("mpegts");
 		if(input_format == NULL)
@@ -129,7 +122,7 @@ void Source::create(gboolean is_dvb)
 			throw Exception(_("Failed to find input format"));
 		}
 		input_format->flags |= AVFMT_NOFILE; 
-
+/*
 		gsize buffer_size = 0;
 		input_channel->read((gchar*)buffer.get_buffer(), buffer.get_max_size(), buffer_size);
 		buffer.set_size(buffer_size);
@@ -154,10 +147,10 @@ void Source::create(gboolean is_dvb)
 				}
 			}
 		}
-
+*/
 		opened = false;
 		ByteIOContext io_context;
-		if (init_put_byte(&io_context, buffer.get_buffer(), buffer.get_max_size(), 0, this, ::read_data, NULL, NULL) < 0)
+		if (init_put_byte(&io_context, buffer.get_data(), buffer.get_length(), 0, this, ::read_data, NULL, NULL) < 0)
 		{
 			throw Exception("Failed to initialise byte IO context");
 		}
@@ -328,31 +321,6 @@ void Source::execute_command(const Glib::ustring& command)
 	g_debug("Command complete");
 }
 
-void Source::run()
-{	
-	g_debug("Entering source thread loop");
-	while (!is_terminated())
-	{
-		AVPacket packet;
-
-		gint result = av_read_frame(format_context, &packet);
-
-		if (result < 0)
-		{
-			terminate();
-		}
-		else
-		{
-			packet_queue.push(packet);
-		}
-	}
-	
-	g_debug("Marking source queue as finished");
-	packet_queue.finish();
-	
-	g_debug("Source thread loop finished");
-}
-
 AVStream* Source::get_stream(guint index) const
 {
 	if (index >= format_context->nb_streams)
@@ -362,15 +330,12 @@ AVStream* Source::get_stream(guint index) const
 	return format_context->streams[index];
 }
 
-void Source::stop()
-{
-	g_debug("Stopping source");
-	packet_queue.finish();
-	join(true);
-}
-
 void Source::seek(guint position)
 {
-	packet_queue.flush();
 	av_seek_frame(format_context, -1, position, 0);
+}
+
+gboolean Source::read(AVPacket* packet)
+{
+	return av_read_frame(format_context, packet) >= 0;
 }

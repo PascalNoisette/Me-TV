@@ -31,7 +31,7 @@ private:
 		
 	void create_source()
 	{
-		source = new Source(packet_queue, channel);
+		source = new Source(channel);
 	}
 public:
 	ChannelPipeline(const Glib::ustring& name, const Channel& channel, Gtk::DrawingArea& drawing_area) :
@@ -45,7 +45,7 @@ private:
 
 	void create_source()
 	{
-		source = new Source(packet_queue, mrl);
+		source = new Source(mrl);
 	}
 public:
 	MrlPipeline(const Glib::ustring& name, const Glib::ustring& mrl, Gtk::DrawingArea& drawing_area) :
@@ -175,38 +175,42 @@ Source& Pipeline::get_source()
 
 void Pipeline::run()
 {
+	AVPacket packet;
+	gboolean first = true;
+	
 	g_debug("Starting pipeline");
 	
 	create_source();
-	get_source().start();
-	
 	sinks.push_back(new Sink(*this, drawing_area));
-	SinkList::iterator iterator = sinks.begin();
-	while (iterator != sinks.end())
+	
+	g_debug("Entering source thread loop");
+	while (!is_terminated())
 	{
-		Sink* sink = *iterator;
-		sink->start();
-		iterator++;
-	}
-	g_debug("Pipeline started");
+		if (!source->read(&packet))
+		{
+			terminate();
+		}
+		else
+		{			
+			SinkList::iterator iterator = sinks.begin();
+			while (iterator != sinks.end())
+			{
+				Sink* sink = *iterator;
 
-	while (!packet_queue.is_finished() && !is_terminated())
-	{
-		usleep(10000);
-	}
+				if (first)
+				{
+					sink->reset_timer();
+				}
 
-	g_debug("Stopping pipeline '%s'", name.c_str());
-	if (source != NULL)
-	{
-		source->stop();
-	}
+				sink->write(&packet);
+				iterator++;
+			}
+			
+			first = false;
+		}
 
-	iterator = sinks.begin();
-	while (iterator != sinks.end())
-	{
-		Sink* sink = *iterator;
-		sink->stop();
-		iterator++;
+		av_free_packet(&packet);
 	}
-	g_debug("Pipeline stopped");
+		
+	g_debug("Pipeline thread finished");
 }

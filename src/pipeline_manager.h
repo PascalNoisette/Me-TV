@@ -25,7 +25,6 @@
 #include "thread.h"
 #include "source.h"
 #include "sink.h"
-#include "packet_queue.h"
 
 class Pipeline : public Thread
 {
@@ -39,14 +38,12 @@ private:
 		
 protected:
 	Source*			source;
-	PacketQueue		packet_queue;
 
 public:
 	Pipeline(const Glib::ustring& name, Gtk::DrawingArea& drawing_area);
 	~Pipeline();
 		
 	const Glib::ustring& get_name() const { return name; }
-	PacketQueue& get_packet_queue() { return packet_queue; }
 	Source& get_source();
 	SinkList& get_sinks() { return sinks; }
 };

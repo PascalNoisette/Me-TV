@@ -53,8 +53,6 @@ me_tv_SOURCES = \
 	channels_dialog.cc \
 	pipeline_manager.cc \
 	pipeline_manager.h \
-	packet_queue.cc \
-	packet_queue.h \
 	sink.h \
 	sink.cc \
 	thread.cc \
@@ -66,7 +64,8 @@ me_tv_SOURCES = \
 	profile_manager.cc \
 	me-tv-ui.h \
 	me-tv-ui.cc \
-	device_manager.cc
+	device_manager.cc \
+	buffer_queue.h
 
 me_tv_LDFLAGS = 
 

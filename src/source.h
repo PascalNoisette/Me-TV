@@ -25,39 +25,15 @@
 #include "dvb_frontend.h"
 #include "dvb_demuxer.h"
 #include "thread.h"
-#include "packet_queue.h"
+#include "buffer_queue.h"
+#include <avformat.h>
 #include <glibmm.h>
 
-class Buffer
-{
-private:
-	guchar* buffer;
-	gsize max_size;
-	gsize size;
-public:
-	Buffer(gsize max_size) : max_size(max_size)
-	{
-		buffer = new guchar[max_size];
-		size = 0;
-	}
-		
-	~Buffer()
-	{
-		delete [] buffer;
-	}
-	
-	void set_size(guint s) { size = s; }
-	gsize get_size() const { return size; }
-	gsize get_max_size() const { return max_size; }
-	guchar* get_buffer() const { return buffer; }
-};
-
-class Source : public Thread
+class Source
 {
 private:
 	Glib::ustring					mrl;
 	DemuxerList						demuxers;
-	PacketQueue&					packet_queue;
 	AVFormatContext*				format_context;
 	Glib::ustring					post_command;
 	Glib::RefPtr<Glib::IOChannel>	input_channel;
@@ -71,21 +47,20 @@ private:
 	Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
 	void setup_dvb(Dvb::Frontend& frontend, const Channel& channel);
 	Dvb::Frontend& get_frontend();
-	void run();
 	void create(gboolean is_dvb);
 				
 public:
-	Source(PacketQueue& packet_queue, const Channel& channel);
-	Source(PacketQueue& packet_queue, const Glib::ustring& mrl);
+	Source(const Channel& channel);
+	Source(const Glib::ustring& mrl);
 	~Source();
 	
 	int read_data(guchar* buffer, int size);
 	void seek(guint position);
+	gboolean read(AVPacket* packet);
 
 	AVFormatContext* get_format_context() const { return format_context; }
 	AVStream* get_stream(guint index) const;
 	gsize get_stream_count() const { return format_context->nb_streams; }
-	void stop();
 };
 
 #endif
