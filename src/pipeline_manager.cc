@@ -147,6 +147,7 @@ Pipeline::Pipeline(const Glib::ustring& name, Gtk::DrawingArea& drawing_area) :
 	Thread(Glib::ustring::compose(_("'%1' pipeline"), name)), drawing_area(drawing_area)
 {
 	this->name = name;
+	source = NULL;
 }
 
 Pipeline::~Pipeline()

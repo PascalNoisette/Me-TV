@@ -62,6 +62,8 @@ Source::Source(const Glib::ustring& mrl) : buffer(BUFFER_SIZE)
 
 Source::~Source()
 {
+	g_debug("Destroying source");
+
 	remove_all_demuxers();
 	
 	if (format_context != NULL)
@@ -80,6 +82,7 @@ Source::~Source()
 		av_close_input_file(format_context);
 		format_context = NULL;
 	}
+	g_debug("Source destroyed");
 }
 
 int Source::read_data(void* data, guchar* buffer, int size)
