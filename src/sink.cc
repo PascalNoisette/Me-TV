@@ -287,8 +287,19 @@ public:
 		
 		if (image == NULL)
 		{
+			static gchar* buffer = NULL;
+			
+			if (buffer != NULL)
+			{
+				delete buffer;
+				buffer = NULL;
+			}
+			
+			const Size& size = video_image->get_size();
+			buffer = new gchar[size.width * size.height * 2];
+			
 			image = XvCreateImage(display, xv_port, XV_IMAGE_FORMAT_YUY2,
-				(gchar*)video_image->get_image_data(), rectangle.width, rectangle.height);
+				buffer, rectangle.width, rectangle.height);
 		}
 		
 		XvPutImage(display, xv_port, GDK_WINDOW_XID(window->gobj()), gc, image,
