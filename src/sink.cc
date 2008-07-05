@@ -34,9 +34,10 @@
 
 #define XV_IMAGE_FORMAT_YUY2	0x32595559
 
-#define VIDEO_IMAGE_BUFFER_SIZE	10
-#define AUDIO_BUFFER_SIZE		10
-#define FRAME_TOLERANCE			2
+#define VIDEO_IMAGE_BUFFER_SIZE		10
+#define AUDIO_BUFFER_SIZE			10
+#define VIDEO_FRAME_TOLERANCE		2
+#define AUDIO_SAMPLE_TOLERANCE		1000
 
 class AlsaException : public Exception
 {
@@ -60,7 +61,7 @@ public:
 };
 
 AlsaAudioThread::AlsaAudioThread(Glib::Timer& timer, BufferQueue& audio_buffer_queue, guint channels, guint sample_rate) :
-	Thread("Alsa Audio"), audio_buffer_queue(audio_buffer_queue), timer(timer)
+	Thread("ALSA Audio"), audio_buffer_queue(audio_buffer_queue), timer(timer), sample_rate(sample_rate)
 {
 	handle = NULL;
 	const gchar* device = "default";
@@ -100,6 +101,8 @@ AlsaAudioThread::~AlsaAudioThread()
 
 void AlsaAudioThread::run()
 {
+	guint sample_count = 0;
+	
 	while (!is_terminated())
 	{
 		if (audio_buffer_queue.get_size() == 0)
@@ -109,19 +112,43 @@ void AlsaAudioThread::run()
 		else
 		{
 			Buffer* buffer = audio_buffer_queue.pop();
-			
-			snd_pcm_sframes_t frames = snd_pcm_writei(handle, buffer->get_data(), buffer->get_length()/4);
-			if (frames == -EPIPE)
+
+			gboolean drop = false;
+			gdouble elapsed = timer.elapsed();
+			guint buffer_length = buffer->get_length()/4;
+			guint want_count = elapsed * sample_rate;
+
+			//g_debug("AUDIO: want = %d, got = %d", want_count, sample_count);
+			if ((want_count + AUDIO_SAMPLE_TOLERANCE) < sample_count)
 			{
-				snd_pcm_prepare(handle);
-				snd_pcm_start(handle);
+				guint wait_samples = sample_count - want_count;
+				guint delay = (wait_samples / (double)sample_rate) * 1000000;
+				//g_debug("Delaying audio for %d microseconds", delay);
+				usleep(delay);
 			}
-			else if (frames < 0)
+			else if ((want_count - AUDIO_SAMPLE_TOLERANCE) > sample_count)
 			{
-				throw AlsaException("Failed to write to ALSA audio interface");
+				g_debug("Dropping audio sample");
+				drop = true;
+			}
+			
+			if (!drop)
+			{
+				snd_pcm_sframes_t frames = snd_pcm_writei(handle, buffer->get_data(), buffer_length);
+				if (frames == -EPIPE)
+				{
+					snd_pcm_prepare(handle);
+					snd_pcm_start(handle);
+				}
+				else if (frames < 0)
+				{
+					throw AlsaException("Failed to write to ALSA audio interface");
+				}
 			}
 			
 			delete buffer;
+
+			sample_count += buffer_length;
 		}
 	}
 	g_debug("Audio thread finished");
@@ -302,14 +329,14 @@ void VideoThread::run()
 			gdouble elapsed = timer.elapsed(microseconds);
 			guint wanted_frame = (guint)(elapsed * frame_rate);
 			
-			if ((wanted_frame + FRAME_TOLERANCE) < frame_count)
+			if ((wanted_frame + VIDEO_FRAME_TOLERANCE) < frame_count)
 			{
 				guint wait_frames = frame_count - wanted_frame;
 				usleep(wait_frames * frame_rate * 1000);
 			}
-			else if ((wanted_frame - FRAME_TOLERANCE) > frame_count)
+			else if ((wanted_frame - VIDEO_FRAME_TOLERANCE) > frame_count)
 			{
-				g_debug("Dropping frame");
+				g_debug("Dropping video frame");
 				drop = true;
 			}
 

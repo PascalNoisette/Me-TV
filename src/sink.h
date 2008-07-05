@@ -117,8 +117,9 @@ private:
 	BufferQueue&	audio_buffer_queue;
 	Glib::Timer&	timer;
 	snd_pcm_t*		handle;
+	guint			sample_rate;
 		
-	void run ();
+	void run();
 		
 public:	
 	AlsaAudioThread(Glib::Timer& timer, BufferQueue& audio_buffer_queue, guint channels, guint sample_rate);
