@@ -283,24 +283,27 @@ public:
 
 	void draw(VideoImage* video_image)
 	{
+		static gchar* buffer = NULL;
+
 		Rectangle rectangle = calculate_drawing_rectangle(video_image);
+		const Size& size = video_image->get_size();
+		guint image_data_length = size.width * size.height * 2;
 		
 		if (image == NULL)
-		{
-			static gchar* buffer = NULL;
-			
+		{			
 			if (buffer != NULL)
 			{
 				delete buffer;
 				buffer = NULL;
 			}
 			
-			const Size& size = video_image->get_size();
-			buffer = new gchar[size.width * size.height * 2];
+			buffer = new gchar[image_data_length];
 			
 			image = XvCreateImage(display, xv_port, XV_IMAGE_FORMAT_YUY2,
 				buffer, rectangle.width, rectangle.height);
 		}
+		
+		memcpy(buffer, video_image->get_image_data(), image_data_length);
 		
 		XvPutImage(display, xv_port, GDK_WINDOW_XID(window->gobj()), gc, image,
 		    0, 0, image->width, image->height,
