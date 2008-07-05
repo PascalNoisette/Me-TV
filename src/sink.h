@@ -22,13 +22,94 @@
 #define __SINK_H__
 
 #include "thread.h"
-#include "buffer_queue.h"
 #include <list>
 #include <gtkmm.h>
 #include <avformat.h>
 #include <alsa/asoundlib.h>
 
 class Pipeline;
+#include <queue>
+
+class Buffer
+{
+private:
+	gsize	length;
+	guchar*	data;
+public:
+	Buffer(gulong length) : length(length) { data = new guchar[length]; }
+	~Buffer() { delete [] data; }
+		
+	gsize get_length() const { return length; }
+	guchar* get_data() const { return data; }
+};
+
+class Size
+{
+public:
+	Size() : width(0), height(0) {}
+	Size(guint width, guint height) : width(width), height(height) {}
+	guint width;
+	guint height;
+};
+
+class VideoImage
+{
+private:
+	Buffer image_data;
+	Size size;
+	guint bits_per_pixel;
+public:
+	VideoImage(guint width, guint height, guint bits_per_pixel) :
+		size(width, height), image_data(width * height * bits_per_pixel) {}
+	guchar* get_image_data() const { return image_data.get_data(); }
+	const Size& get_size() const { return size; }
+};
+
+template<class T>
+class Queue
+{
+private:
+	Glib::StaticRecMutex    mutex;
+	std::queue<T>			queue;
+public:
+	Queue<T>()
+	{
+		g_static_rec_mutex_init(mutex.gobj());
+	}
+
+	void push(T& data)
+	{
+		Glib::RecMutex::Lock lock(mutex);
+		queue.push(data);
+	}
+
+	T& front()
+	{
+		Glib::RecMutex::Lock lock(mutex);
+		return queue.front();
+	}
+		
+	T& pop()
+	{
+		Glib::RecMutex::Lock lock(mutex);
+		if (queue.size() == 0)
+		{
+			throw Exception("Buffer queue underrun");
+		}
+		T& buffer = queue.front();
+		queue.pop();
+		return buffer;
+	}
+
+	gsize get_size()
+	{
+		Glib::RecMutex::Lock lock(mutex);
+		return queue.size();
+	}
+};
+
+typedef Queue<Buffer*> BufferQueue;
+typedef Queue<VideoImage*> VideoImageQueue;
 
 class AlsaAudioThread : public Thread
 {
@@ -62,17 +143,7 @@ public:
 	void get_size(gint& width, gint& height) { window->get_size(width, height); }
 	virtual void on_size(guint width, guint height) = 0;
 
-	Rectangle calculate_drawing_rectangle(VideoImage* video_image)
-	{
-		Rectangle rectangle;
-		int window_width = 0, window_height = 0;
-		window->get_size(window_width, window_height);
-		const Size& size = video_image->get_size();
-		rectangle.width = size.width;
-		rectangle.height = size.height;
-		return rectangle;
-	}
-
+	Rectangle calculate_drawing_rectangle(VideoImage* video_image);
 };
 
 class VideoThread : public Thread
@@ -106,8 +177,6 @@ private:
 	AVPicture					picture;
 	AVStream*					video_stream;
 	AVFrame*					frame;
-	gint						startx;
-	gint						starty;
 	gint						previous_width;
 	gint						previous_height;
 	gint						video_width;

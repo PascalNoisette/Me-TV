@@ -127,6 +127,52 @@ void AlsaAudioThread::run()
 	g_debug("Audio thread finished");
 }
 
+Rectangle VideoOutput::calculate_drawing_rectangle(VideoImage* video_image)
+{
+	Rectangle rectangle;
+	int window_width = 0, window_height = 0;
+	window->get_size(window_width, window_height);
+	const Size& image_size = video_image->get_size();
+
+	gdouble image_aspect_ratio = image_size.width / (gdouble)image_size.height;
+	if ((image_aspect_ratio*window_height) > window_width)
+	{
+		rectangle.width = window_width;
+		rectangle.height = window_width / image_aspect_ratio;
+	}
+	else
+	{
+		rectangle.width = image_aspect_ratio * window_height;
+		rectangle.height = window_height;
+	}
+	
+	if (image_size.width < rectangle.width)
+	{
+		gdouble ratio = image_size.width/(gdouble)rectangle.width;
+		rectangle.height *= ratio;
+		rectangle.width *= ratio;
+	}
+	
+	if (image_size.height < rectangle.height)
+	{
+		gdouble ratio = image_size.height/(gdouble)rectangle.height;
+		rectangle.height *= ratio;
+		rectangle.width *= ratio;
+	}
+
+	if ((image_aspect_ratio*window_height) > window_width)
+	{
+		rectangle.y = (window_height-rectangle.height)/2;
+	}
+	else
+	{
+		rectangle.x = (window_width-rectangle.width)/2;
+	}
+
+	return rectangle;
+}
+
+
 class GtkVideoOutput : public VideoOutput
 {
 private:
@@ -138,9 +184,10 @@ public:
 	
 	void draw(VideoImage* video_image)
 	{
+		const Size& size = video_image->get_size();
 		Rectangle rectangle = calculate_drawing_rectangle(video_image);
 		window->draw_rgb_image(gc, rectangle.x, rectangle.y, rectangle.width, rectangle.height,
-			Gdk::RGB_DITHER_MAX, video_image->get_image_data(), rectangle.width*3);
+			Gdk::RGB_DITHER_MAX, video_image->get_image_data(), size.width*3);
 	}
 
 	void on_size(guint width, guint height)
@@ -447,8 +494,10 @@ void Sink::push_video_packet(AVPacket* packet)
 		gint width = 0;
 		gint height = 0;
 
-		drawing_area.get_window()->get_size(width, height);
-			
+		{
+			GdkLock gdk_lock;
+			drawing_area.get_window()->get_size(width, height);
+		}	
 		if (previous_width != width || previous_height != height)
 		{
 			g_debug("Size changed (%d, %d)", width, height);
@@ -474,15 +523,11 @@ void Sink::push_video_packet(AVPacket* packet)
 			{
 				video_width = height * aspect_ratio;
 				video_height = height;
-				startx = (width - video_width)/2;
-				starty = 0;
 			}
 			else
 			{
 				video_width = width;
 				video_height = width / aspect_ratio; 
-				startx = 0;
-				starty = (height - video_height)/2;
 			}
 			
 			video_width = (video_width/2)*2;
@@ -506,6 +551,7 @@ void Sink::push_video_packet(AVPacket* packet)
 
 			avpicture_fill(&picture, video_buffer, pixel_format, video_width, video_height);
 
+			GdkLock gdk_lock;
 			video_output->on_size(video_width, video_height);
 		}
 		

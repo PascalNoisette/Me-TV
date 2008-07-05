@@ -82,7 +82,7 @@ Source::~Source()
 	}
 }
 
-int read_data(void* data, guchar* buffer, int size)
+int Source::read_data(void* data, guchar* buffer, int size)
 {
 	Source* source = (Source*)data;
 	return source->read_data(buffer, size);
@@ -124,8 +124,6 @@ void Source::create(gboolean is_dvb)
 		input_format->flags |= AVFMT_NOFILE; 
 
 		g_debug("Reading sample packets");
-	//	input_channel->read((gchar*)buffer.get_data(), (gsize)buffer.get_length(), buffer_bytes_read);
-		
 		gboolean got_pat = false;
 		while (!got_pat)
 		{
@@ -147,7 +145,7 @@ void Source::create(gboolean is_dvb)
 
 		opened = false;
 		ByteIOContext io_context;
-		if (init_put_byte(&io_context, buffer.get_data(), buffer.get_length(), 0, this, ::read_data, NULL, NULL) < 0)
+		if (init_put_byte(&io_context, buffer.get_data(), buffer.get_length(), 0, this, Source::read_data, NULL, NULL) < 0)
 		{
 			throw Exception("Failed to initialise byte IO context");
 		}

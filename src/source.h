@@ -25,7 +25,7 @@
 #include "dvb_frontend.h"
 #include "dvb_demuxer.h"
 #include "thread.h"
-#include "buffer_queue.h"
+#include "sink.h"
 #include <avformat.h>
 #include <glibmm.h>
 
@@ -49,13 +49,15 @@ private:
 	void setup_dvb(Dvb::Frontend& frontend, const Channel& channel);
 	Dvb::Frontend& get_frontend();
 	void create(gboolean is_dvb);
-				
+
+	static int read_data(void* data, guchar* buffer, int size);
+	int read_data(guchar* buffer, int size);
+
 public:
 	Source(const Channel& channel);
 	Source(const Glib::ustring& mrl);
 	~Source();
 	
-	int read_data(guchar* buffer, int size);
 	void seek(guint position);
 	gboolean read(AVPacket* packet);
 

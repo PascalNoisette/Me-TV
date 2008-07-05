@@ -64,8 +64,7 @@ me_tv_SOURCES = \
 	profile_manager.cc \
 	me-tv-ui.h \
 	me-tv-ui.cc \
-	device_manager.cc \
-	buffer_queue.h
+	device_manager.cc 
 
 me_tv_LDFLAGS = 
 
