@@ -39,6 +39,7 @@ private:
 	Glib::RefPtr<Glib::IOChannel>	input_channel;
 	Buffer							buffer;
 	gboolean						opened;
+	gsize							buffer_bytes_read;
 
 	void execute_command(const Glib::ustring& command);
 	void remove_all_demuxers();

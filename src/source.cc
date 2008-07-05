@@ -94,7 +94,7 @@ int Source::read_data(guchar* destination_buffer, int size)
 
 	if (!opened)
 	{
-		memcpy(destination_buffer, buffer.get_data(), buffer.get_length());
+		memcpy(destination_buffer, buffer.get_data(), buffer_bytes_read);
 		bytes_read = size;
 	}
 	else
@@ -122,21 +122,18 @@ void Source::create(gboolean is_dvb)
 			throw Exception(_("Failed to find input format"));
 		}
 		input_format->flags |= AVFMT_NOFILE; 
-/*
-		gsize buffer_size = 0;
-		input_channel->read((gchar*)buffer.get_buffer(), buffer.get_max_size(), buffer_size);
-		buffer.set_size(buffer_size);
+
 		g_debug("Reading sample packets");
+	//	input_channel->read((gchar*)buffer.get_data(), (gsize)buffer.get_length(), buffer_bytes_read);
+		
 		gboolean got_pat = false;
 		while (!got_pat)
 		{
-			gsize buffer_size = 0;
-			input_channel->read((gchar*)buffer.get_buffer(), buffer.get_max_size(), buffer_size);
-			buffer.set_size(buffer_size);
-			g_debug("Read %d sample packets", buffer_size/TS_PACKET_SIZE);
+			input_channel->read((gchar*)buffer.get_data(), buffer.get_length(), buffer_bytes_read);
+			g_debug("Read %d sample packets", buffer_bytes_read/TS_PACKET_SIZE);
 
-			guchar* b = buffer.get_buffer();
-			for (int i = 0; i < buffer_size; i += TS_PACKET_SIZE)
+			guchar* b = buffer.get_data();
+			for (int i = 0; i < buffer_bytes_read; i += TS_PACKET_SIZE)
 			{
 				guint sync = b[i];
 				guint pid = ((b[i+1] & 0x1F)<<8) + b[i+2];
@@ -147,7 +144,7 @@ void Source::create(gboolean is_dvb)
 				}
 			}
 		}
-*/
+
 		opened = false;
 		ByteIOContext io_context;
 		if (init_put_byte(&io_context, buffer.get_data(), buffer.get_length(), 0, this, ::read_data, NULL, NULL) < 0)
