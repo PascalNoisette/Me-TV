@@ -26,8 +26,12 @@
 #include "dvb_demuxer.h"
 #include "thread.h"
 #include "sink.h"
-#include <avformat.h>
-#include <glibmm.h>
+
+typedef enum
+{
+	SOURCE_TYPE_STREAM,
+	SOURCE_TYPE_FILE
+} SourceType;
 
 class Source
 {
@@ -40,7 +44,8 @@ private:
 	Buffer							buffer;
 	gboolean						opened;
 	gsize							buffer_bytes_read;
-
+	SourceType						source_type;
+		
 	void execute_command(const Glib::ustring& command);
 	void remove_all_demuxers();
 	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
@@ -48,7 +53,7 @@ private:
 	Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
 	void setup_dvb(Dvb::Frontend& frontend, const Channel& channel);
 	Dvb::Frontend& get_frontend();
-	void create(gboolean is_dvb);
+	void create();
 
 	static int read_data(void* data, guchar* buffer, int size);
 	int read_data(guchar* buffer, int size);
@@ -58,7 +63,9 @@ public:
 	Source(const Glib::ustring& mrl);
 	~Source();
 	
-	void seek(guint position);
+	void seek(gint64 position);
+	gint64 get_position();
+
 	gboolean read(AVPacket* packet);
 
 	AVFormatContext* get_format_context() const { return format_context; }

@@ -68,3 +68,13 @@ GdkLock::~GdkLock()
 {
 	gdk_threads_leave();
 }
+
+GdkUnlock::GdkUnlock()
+{
+	gdk_threads_leave();
+}
+
+GdkUnlock::~GdkUnlock()
+{
+	gdk_threads_enter();
+}

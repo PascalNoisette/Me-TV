@@ -24,7 +24,7 @@
 #include <glibmm.h>
 #include <glib/gprintf.h>
 
-StringSignal	signal_error;
+StringSignal signal_error;
 
 StringSignal& get_signal_error()
 {

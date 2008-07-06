@@ -54,4 +54,11 @@ public:
 	~GdkLock();
 };
 
+class GdkUnlock
+{
+public:
+	GdkUnlock();
+	~GdkUnlock();
+};
+
 #endif

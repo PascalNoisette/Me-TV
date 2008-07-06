@@ -264,15 +264,16 @@ bool MainWindow::on_event_box_video_scroll_event(GdkEventScroll* event)
 	{
 		case GDK_SCROLL_UP:
 			{
-//				PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-//				Pipeline& pipeline = pipeline_manager.get_pipeline("display");
+				PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
+				Pipeline& pipeline = pipeline_manager.get_pipeline("display");
+				pipeline.seek(pipeline.get_position() - 50);
 			}
 			break;
 		case GDK_SCROLL_DOWN:
 			{
-//				PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-//				Pipeline& pipeline = pipeline_manager.get_pipeline("display");
-//				pipeline.get_source().seek(0);
+				PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
+				Pipeline& pipeline = pipeline_manager.get_pipeline("display");
+				pipeline.seek(pipeline.get_position() - 50);
 			}
 			break;
 	}

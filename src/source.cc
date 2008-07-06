@@ -24,8 +24,9 @@
 #include "scheduler.h"
 #include "application.h"
 
-#define TS_PACKET_SIZE	188
-#define BUFFER_SIZE		TS_PACKET_SIZE * 100
+#define TS_PACKET_SIZE			188
+#define BUFFER_SIZE				TS_PACKET_SIZE * 100
+#define TIME_SHIFT_BUFFER_SIZE	1000000
 
 Source::Source(const Channel& channel) : buffer(BUFFER_SIZE)
 {	
@@ -42,6 +43,7 @@ Source::Source(const Channel& channel) : buffer(BUFFER_SIZE)
 	
 	if (channel.flags & CHANNEL_FLAG_DVB)
 	{
+		source_type = SOURCE_TYPE_STREAM;
 		Dvb::Frontend& frontend = get_frontend();
 		if (mrl.empty())
 		{
@@ -51,13 +53,14 @@ Source::Source(const Channel& channel) : buffer(BUFFER_SIZE)
 		setup_dvb(frontend, channel);
 	}
 	
-	create(channel.flags & CHANNEL_FLAG_DVB);
+	create();
 }
 
 Source::Source(const Glib::ustring& mrl) : buffer(BUFFER_SIZE)
 {
 	this->mrl = mrl;
-	create(false);
+	source_type = SOURCE_TYPE_FILE;
+	create();
 }
 
 Source::~Source()
@@ -108,16 +111,17 @@ int Source::read_data(guchar* destination_buffer, int size)
 	return bytes_read;
 }
 
-void Source::create(gboolean is_dvb)
+void Source::create()	
 {	
 	format_context = NULL;
 
 	av_register_all();
 	
-	if (is_dvb)
+	if (source_type == SOURCE_TYPE_STREAM)
 	{		
 		input_channel = Glib::IOChannel::create_from_file(mrl, "r");
 		input_channel->set_encoding("");
+		input_channel->set_buffer_size(TIME_SHIFT_BUFFER_SIZE);
 
 		AVInputFormat* input_format = av_find_input_format("mpegts");
 		if(input_format == NULL)
@@ -160,7 +164,7 @@ void Source::create(gboolean is_dvb)
 		}
 		opened = true;
 	}
-	else
+	else if (source_type == SOURCE_TYPE_FILE)
 	{
 		g_debug("Opening '%s' file", mrl.c_str());
 		if (av_open_input_file(&format_context, mrl.c_str(), NULL, 0, NULL) < 0) 
@@ -328,12 +332,24 @@ AVStream* Source::get_stream(guint index) const
 	return format_context->streams[index];
 }
 
-void Source::seek(guint position)
+void Source::seek(gint64 position)
 {
-	av_seek_frame(format_context, -1, position, 0);
+	if (source_type == SOURCE_TYPE_FILE)
+	{
+		av_seek_frame(format_context, -1, position, 0);
+	}
+	else
+	{
+		input_channel->seek(-1000, Glib::SEEK_TYPE_CUR);
+	}
 }
 
 gboolean Source::read(AVPacket* packet)
 {
 	return av_read_frame(format_context, packet) >= 0;
+}
+
+gint64 Source::get_position()
+{
+	return 0;
 }

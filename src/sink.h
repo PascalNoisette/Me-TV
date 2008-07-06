@@ -21,11 +21,11 @@
 #ifndef __SINK_H__
 #define __SINK_H__
 
+#include <avformat.h>
 #include "thread.h"
+#include <alsa/asoundlib.h>
 #include <list>
 #include <gtkmm.h>
-#include <avformat.h>
-#include <alsa/asoundlib.h>
 
 class Pipeline;
 #include <queue>

@@ -46,6 +46,9 @@ public:
 	const Glib::ustring& get_name() const { return name; }
 	Source& get_source();
 	SinkList& get_sinks() { return sinks; }
+
+	void seek(guint position);
+	guint get_position();
 };
 
 typedef std::list<Pipeline*> PipelineList;

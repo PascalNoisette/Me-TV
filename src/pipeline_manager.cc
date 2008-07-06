@@ -134,7 +134,10 @@ void PipelineManager::remove(Pipeline* pipeline)
 		throw Exception("Failed to remove pipeline: Pipeline was NULL");
 	}
 	
-	pipeline->join(true);
+	{
+		GdkUnlock gdk_unlock;
+		pipeline->join(true);
+	}
 	
 	pipelines.remove(pipeline);
 	g_debug("Pipeline removed");
@@ -214,4 +217,14 @@ void Pipeline::run()
 	}
 		
 	g_debug("Pipeline thread finished");
+}
+
+void Pipeline::seek(guint position)
+{
+	source->seek(position);
+}
+
+guint Pipeline::get_position()
+{
+	return source->get_position();
 }

@@ -662,9 +662,10 @@ void Sink::destroy()
 	if (video_thread != NULL)
 	{
 		g_debug("Waiting for video thread to join ...");
-		gdk_threads_leave();
-		video_thread->join(true);
-		gdk_threads_enter();
+		{
+			GdkUnlock gdk_unlock;
+			video_thread->join(true);
+		}
 		video_thread = NULL;
 		g_debug("Video thread joined");
 	}
