@@ -142,7 +142,6 @@ public:
 	VideoOutput(Glib::RefPtr<Gdk::Window> window) : window(window) {}
 	virtual void draw(VideoImage* video_image) = 0;
 	void get_size(gint& width, gint& height) { window->get_size(width, height); }
-	virtual void on_size(guint width, guint height) = 0;
 
 	Rectangle calculate_drawing_rectangle(VideoImage* video_image);
 };

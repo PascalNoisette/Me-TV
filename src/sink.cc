@@ -35,7 +35,7 @@
 #define XV_IMAGE_FORMAT_YUY2	0x32595559
 
 #define VIDEO_IMAGE_BUFFER_SIZE		10
-#define AUDIO_BUFFER_SIZE			10
+#define AUDIO_BUFFER_SIZE			100
 #define VIDEO_FRAME_TOLERANCE		2
 #define AUDIO_SAMPLE_TOLERANCE		1000
 
@@ -211,15 +211,22 @@ public:
 	
 	void draw(VideoImage* video_image)
 	{
+		static gint previous_width = 0, previous_height = 0;
+		gint width = 0, height = 0;
+
+		window->get_size(width, height);
+		if (previous_width != width || previous_height != height)
+		{
+			window->draw_rectangle(gc, true, 0, 0, width, height);
+
+			previous_width = width;
+			previous_height = height;
+		}
+
 		const Size& size = video_image->get_size();
 		Rectangle rectangle = calculate_drawing_rectangle(video_image);
 		window->draw_rgb_image(gc, rectangle.x, rectangle.y, rectangle.width, rectangle.height,
 			Gdk::RGB_DITHER_MAX, video_image->get_image_data(), size.width*3);
-	}
-
-	void on_size(guint width, guint height)
-	{
-		window->draw_rectangle(gc, true, 0, 0, width, height);
 	}
 };
 
@@ -284,10 +291,23 @@ public:
 	void draw(VideoImage* video_image)
 	{
 		static gchar* buffer = NULL;
+		static gint previous_width = 0, previous_height = 0;
 
 		Rectangle rectangle = calculate_drawing_rectangle(video_image);
-		const Size& size = video_image->get_size();
-		guint image_data_length = size.width * size.height * 2;
+		const Size& image_size = video_image->get_size();
+		guint image_data_length = image_size.width * image_size.height * 2;
+		
+		if (previous_width != image_size.width || previous_height != image_size.height)
+		{
+			if (image != NULL)
+			{
+				XFree(image);
+				image = NULL;
+			}
+
+			previous_width = image_size.width;
+			previous_height = image_size.height;
+		}
 		
 		if (image == NULL)
 		{			
@@ -302,21 +322,12 @@ public:
 			image = XvCreateImage(display, xv_port, XV_IMAGE_FORMAT_YUY2,
 				buffer, rectangle.width, rectangle.height);
 		}
-		
+				
 		memcpy(buffer, video_image->get_image_data(), image_data_length);
 		
 		XvPutImage(display, xv_port, GDK_WINDOW_XID(window->gobj()), gc, image,
 		    0, 0, image->width, image->height,
 		    rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-	}
-	
-	void on_size(guint width, guint height)
-	{
-		if (image != NULL)
-		{
-			XFree(image);
-			image = NULL;
-		}
 	}
 };
 
@@ -343,6 +354,7 @@ void VideoThread::run()
 			gdouble elapsed = timer.elapsed(microseconds);
 			guint wanted_frame = (guint)(elapsed * frame_rate);
 			
+			//g_debug("VIDEO: want = %d, got = %d", wanted_frame, frame_count);
 			if ((wanted_frame + VIDEO_FRAME_TOLERANCE) < frame_count)
 			{
 				guint wait_frames = frame_count - wanted_frame;
@@ -538,7 +550,8 @@ void Sink::push_video_packet(AVPacket* packet)
 		{
 			GdkLock gdk_lock;
 			drawing_area.get_window()->get_size(width, height);
-		}	
+		}
+		
 		if (previous_width != width || previous_height != height)
 		{
 			g_debug("Size changed (%d, %d)", width, height);
@@ -592,8 +605,8 @@ void Sink::push_video_packet(AVPacket* packet)
 
 			avpicture_fill(&picture, video_buffer, pixel_format, video_width, video_height);
 
-			GdkLock gdk_lock;
-			video_output->on_size(video_width, video_height);
+//			GdkLock gdk_lock;
+//			video_output->on_size(video_width, video_height);
 		}
 		
 		sws_scale(img_convert_ctx, frame->data, frame->linesize, 0,
