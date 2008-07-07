@@ -31,6 +31,7 @@ private:
 		
 	void create_source()
 	{
+		Glib::RecMutex::Lock lock(mutex);
 		source = new Source(channel);
 	}
 public:
@@ -45,6 +46,7 @@ private:
 
 	void create_source()
 	{
+		Glib::RecMutex::Lock lock(mutex);
 		source = new Source(mrl);
 	}
 public:
@@ -151,25 +153,31 @@ Pipeline::Pipeline(const Glib::ustring& name, Gtk::DrawingArea& drawing_area) :
 {
 	this->name = name;
 	source = NULL;
+	g_static_rec_mutex_init(mutex.gobj());
 }
 
 Pipeline::~Pipeline()
-{
+{	
+	Glib::RecMutex::Lock lock(mutex);
+	
+	while (!sinks.empty())
+	{
+		Sink* sink = *(sinks.begin());
+		delete sink;
+		sinks.pop_front();
+	}
+
 	if (source != NULL)
 	{
 		delete source;
 		source = NULL;
 	}
-	
-	while (!sinks.empty())
-	{
-		Sink* sink = *(sinks.begin());
-		sinks.pop_front();
-	}
 }
 
 Source& Pipeline::get_source()
 {
+	Glib::RecMutex::Lock lock(mutex);
+		
 	if (source == NULL)
 	{
 		throw Exception(_("Source has not been set"));
@@ -180,7 +188,6 @@ Source& Pipeline::get_source()
 void Pipeline::run()
 {
 	AVPacket packet;
-	gboolean first = true;
 	
 	g_debug("Starting pipeline");
 	
@@ -188,6 +195,7 @@ void Pipeline::run()
 	sinks.push_back(new Sink(*this, drawing_area));
 	
 	g_debug("Entering source thread loop");
+	timer.start();
 	while (!is_terminated())
 	{
 		if (!source->read(&packet))
@@ -200,22 +208,14 @@ void Pipeline::run()
 			while (iterator != sinks.end())
 			{
 				Sink* sink = *iterator;
-
-				if (first)
-				{
-					sink->reset_timer();
-				}
-
 				sink->write(&packet);
 				iterator++;
 			}
-			
-			first = false;
 		}
 
 		av_free_packet(&packet);
 	}
-		
+	timer.stop();
 	g_debug("Pipeline thread finished");
 }
 
@@ -227,4 +227,16 @@ void Pipeline::seek(guint position)
 guint Pipeline::get_position()
 {
 	return source->get_position();
+}
+
+guint Pipeline::get_duration()
+{
+	Glib::RecMutex::Lock lock(mutex);
+	
+	if (source == NULL)
+	{
+		throw Exception("Source is NULL");
+	}
+	
+	return source->get_duration();
 }

@@ -36,8 +36,8 @@
 
 #define VIDEO_IMAGE_BUFFER_SIZE		10
 #define AUDIO_BUFFER_SIZE			100
-#define VIDEO_FRAME_TOLERANCE		2
-#define AUDIO_SAMPLE_TOLERANCE		1000
+#define VIDEO_FRAME_TOLERANCE		1
+#define AUDIO_SAMPLE_TOLERANCE		0
 
 class AlsaException : public Exception
 {
@@ -60,8 +60,8 @@ public:
 	AlsaException(const char* fmt, ...) : Exception(get_message(snd_strerror(errno),fmt)) {}
 };
 
-AlsaAudioThread::AlsaAudioThread(Glib::Timer& timer, BufferQueue& audio_buffer_queue, guint channels, guint sample_rate) :
-	Thread("ALSA Audio"), audio_buffer_queue(audio_buffer_queue), timer(timer), sample_rate(sample_rate)
+AlsaAudioThread::AlsaAudioThread(Pipeline& pipeline, BufferQueue& audio_buffer_queue, guint channels, guint sample_rate) :
+	Thread("ALSA Audio"), audio_buffer_queue(audio_buffer_queue), pipeline(pipeline), sample_rate(sample_rate)
 {
 	handle = NULL;
 	const gchar* device = "default";
@@ -114,7 +114,7 @@ void AlsaAudioThread::run()
 			Buffer* buffer = audio_buffer_queue.pop();
 
 			gboolean drop = false;
-			gdouble elapsed = timer.elapsed();
+			gdouble elapsed = pipeline.get_elapsed();
 			guint buffer_length = buffer->get_length()/4;
 			guint want_count = elapsed * sample_rate;
 
@@ -331,8 +331,8 @@ public:
 	}
 };
 
-VideoThread::VideoThread(Glib::Timer& timer, VideoImageQueue& video_image_queue, VideoOutput* video_output, gdouble frame_rate) :
-	Thread("GTK Video"), video_image_queue(video_image_queue), timer(timer), video_output(video_output), frame_rate(frame_rate)
+VideoThread::VideoThread(Pipeline& pipeline, VideoImageQueue& video_image_queue, VideoOutput* video_output, gdouble frame_rate) :
+	Thread("GTK Video"), video_image_queue(video_image_queue), pipeline(pipeline), video_output(video_output), frame_rate(frame_rate)
 {
 }
 
@@ -350,8 +350,7 @@ void VideoThread::run()
 		else
 		{
 			frame_count++;
-			gulong microseconds = 0;
-			gdouble elapsed = timer.elapsed(microseconds);
+			gdouble elapsed = pipeline.get_elapsed();
 			guint wanted_frame = (guint)(elapsed * frame_rate);
 			
 			//g_debug("VIDEO: want = %d, got = %d", wanted_frame, frame_count);
@@ -473,7 +472,7 @@ Sink::Sink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 			throw Exception(Glib::ustring::compose(_("Unknown video output '%1'"), video_output_name));
 		}
 
-		video_thread = new VideoThread(timer, video_image_queue, video_output, frame_rate);
+		video_thread = new VideoThread(pipeline, video_image_queue, video_output, frame_rate);
 		g_debug("Video thread created");
 		video_thread->start();
 	}
@@ -493,12 +492,10 @@ Sink::Sink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 			throw Exception("Failed to open audio codec");
 		}
 
-		audio_thread = new AlsaAudioThread(timer, audio_buffer_queue, audio_stream->codec->channels, audio_stream->codec->sample_rate);
+		audio_thread = new AlsaAudioThread(pipeline, audio_buffer_queue, audio_stream->codec->channels, audio_stream->codec->sample_rate);
 		g_debug("Audio thread created");
 		audio_thread->start();
 	}
-	
-	timer.start();
 }
 
 Sink::~Sink()
@@ -524,6 +521,7 @@ Sink::~Sink()
 	if (frame != NULL)
 	{
 		av_free(frame);
+		frame = NULL;
 	}
 	
 	if (video_buffer != NULL)
@@ -604,9 +602,6 @@ void Sink::push_video_packet(AVPacket* packet)
 			video_buffer = new guchar[video_buffer_size];
 
 			avpicture_fill(&picture, video_buffer, pixel_format, video_width, video_height);
-
-//			GdkLock gdk_lock;
-//			video_output->on_size(video_width, video_height);
 		}
 		
 		sws_scale(img_convert_ctx, frame->data, frame->linesize, 0,
@@ -648,11 +643,6 @@ void Sink::push_audio_packet(AVPacket* packet)
 	Buffer* buffer = new Buffer(audio_buffer_length);
 	memcpy(buffer->get_data(), data, audio_buffer_length);
 	audio_buffer_queue.push(buffer);
-}
-
-void Sink::reset_timer()
-{
-	timer.start();
 }
 
 void Sink::write(AVPacket* packet)

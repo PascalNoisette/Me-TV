@@ -29,6 +29,8 @@
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Window(cobject), glade(glade)
 {
+	statusbar = dynamic_cast<Gtk::Statusbar*>(glade->get_widget("statusbar"));
+	h_scale_position = dynamic_cast<Gtk::HScale*>(glade->get_widget("h_scale_position"));
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	
@@ -319,8 +321,32 @@ gboolean MainWindow::is_fullscreen()
 	return get_window()->get_state() & Gdk::WINDOW_STATE_FULLSCREEN;
 }
 
+Glib::ustring make_time_string(guint t)
+{
+	Glib::ustring result;
+
+	guint seconds = t % 60;
+	guint minutes = (t/60) % 60;
+	guint hours = (t/(60*60)) % 60;
+	
+	gchar buffer[100];
+	if (hours > 0)
+	{
+		snprintf(buffer, 100, "%d:%02d:%02d", hours, minutes, seconds);
+	}
+	else
+	{
+		snprintf(buffer, 100, "%02d:%02d", minutes, seconds);
+	}
+	buffer[99] = 0;
+	result += buffer;
+		
+	return result;
+}
+
 bool MainWindow::on_timeout()
 {
+	TRY
 	if (time(NULL) - last_motion_time > 3 && is_cursor_visible)
 	{
 		GdkLock gdk_lock();
@@ -328,6 +354,26 @@ bool MainWindow::on_timeout()
 		is_cursor_visible = false;
 	}
 	
+	PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
+	Pipeline* pipeline = pipeline_manager.find_pipeline("display");
+	if (pipeline != NULL)
+	{
+		GdkLock gdk_lock();
+		guint elapsed = pipeline->get_elapsed();
+		guint duration = pipeline->get_duration();
+		
+		h_scale_position->set_range(0, duration);
+		h_scale_position->set_value(elapsed);
+		
+		Glib::ustring text = make_time_string(elapsed);
+		text += "/";
+		text += make_time_string(duration);
+		
+		statusbar->pop();
+		statusbar->push(text);
+	}
+	THREAD_CATCH
+		
 	return true;
 }
 
@@ -348,6 +394,7 @@ void MainWindow::set_preview(gboolean set)
 	glade->get_widget("handlebox_toolbar")->property_visible() = set;
 	glade->get_widget("vbox_controls")->property_visible() = set;
 	glade->get_widget("scrolled_window_epg")->property_visible() = set;
+	glade->get_widget("h_scale_position")->property_visible() = set;
 
 	Gtk::VBox* vbox_main_window = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main_window"));
 	Gtk::HBox* hbox_top = dynamic_cast<Gtk::HBox*>(glade->get_widget("hbox_top"));

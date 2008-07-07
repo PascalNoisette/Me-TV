@@ -67,6 +67,7 @@ public:
 	gint64 get_position();
 
 	gboolean read(AVPacket* packet);
+	guint get_duration();
 
 	AVFormatContext* get_format_context() const { return format_context; }
 	AVStream* get_stream(guint index) const;

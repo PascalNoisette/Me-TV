@@ -115,14 +115,14 @@ class AlsaAudioThread : public Thread
 {
 private:
 	BufferQueue&	audio_buffer_queue;
-	Glib::Timer&	timer;
+	Pipeline&		pipeline;
 	snd_pcm_t*		handle;
 	guint			sample_rate;
 		
 	void run();
 		
 public:	
-	AlsaAudioThread(Glib::Timer& timer, BufferQueue& audio_buffer_queue, guint channels, guint sample_rate);
+	AlsaAudioThread(Pipeline& pipeline, BufferQueue& audio_buffer_queue, guint channels, guint sample_rate);
 	~AlsaAudioThread();
 };
 
@@ -150,14 +150,14 @@ class VideoThread : public Thread
 {
 private:
 	VideoImageQueue&	video_image_queue;	
-	Glib::Timer&		timer;
+	Pipeline&			pipeline;
 	VideoOutput*		video_output;
 	gdouble				frame_rate;
 		
 	void run();
 
 public:
-	VideoThread(Glib::Timer& timer, VideoImageQueue& video_image_queue, VideoOutput* video_output, gdouble frame_rate);
+	VideoThread(Pipeline& pipeline, VideoImageQueue& video_image_queue, VideoOutput* video_output, gdouble frame_rate);
 };
 
 class Sink
@@ -170,7 +170,6 @@ private:
 	gint						audio_stream_index;
 	VideoThread*				video_thread;
 	AlsaAudioThread*			audio_thread;
-	Glib::Timer					timer;
 	Glib::StaticRecMutex		mutex;
 	Gtk::DrawingArea&			drawing_area;
 	struct SwsContext*			img_convert_ctx;
@@ -197,7 +196,6 @@ public:
 	Sink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area);
 	~Sink();
 	
-	void reset_timer();
 	void write(AVPacket* packet);
 };
 

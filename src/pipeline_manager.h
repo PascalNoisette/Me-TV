@@ -29,14 +29,16 @@
 class Pipeline : public Thread
 {
 private:
-	Glib::ustring		name;
-	SinkList			sinks;
-	Gtk::DrawingArea&	drawing_area;
+	Glib::ustring			name;
+	SinkList				sinks;
+	Gtk::DrawingArea&		drawing_area;
+	Glib::Timer				timer;
 		
 	virtual void create_source() = 0;
 	void run();
 		
 protected:
+	Glib::StaticRecMutex	mutex;
 	Source*			source;
 
 public:
@@ -46,6 +48,8 @@ public:
 	const Glib::ustring& get_name() const { return name; }
 	Source& get_source();
 	SinkList& get_sinks() { return sinks; }
+	gdouble get_elapsed() { return timer.elapsed(); }
+	guint get_duration();
 
 	void seek(guint position);
 	guint get_position();

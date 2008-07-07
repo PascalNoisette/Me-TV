@@ -35,6 +35,8 @@ private:
 	GdkCursor*								hidden_cursor;
 	gboolean								is_cursor_visible;
 	MetersDialog*							meters_dialog;
+	Gtk::HScale*							h_scale_position;
+	Gtk::Statusbar*							statusbar;
 
 	void stop();
 	void fullscreen();

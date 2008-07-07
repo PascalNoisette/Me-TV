@@ -353,3 +353,13 @@ gint64 Source::get_position()
 {
 	return 0;
 }
+
+guint Source::get_duration()
+{
+	if (format_context == NULL)
+	{
+		throw Exception("format_context is NULL");
+	}
+	
+	return format_context->duration / AV_TIME_BASE;
+}
