@@ -22,17 +22,21 @@
 #include "channels_dialog.h"
 #include "meters_dialog.h"
 #include "preferences_dialog.h"
-#include "pipeline_manager.h"
 #include "application.h"
 #include "scan_dialog.h"
 #include <config.h>
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Window(cobject), glade(glade)
 {
+	display_mode = DISPLAY_MODE_EPG;
+	
+	
 	statusbar = dynamic_cast<Gtk::Statusbar*>(glade->get_widget("statusbar"));
-	h_scale_position = dynamic_cast<Gtk::HScale*>(glade->get_widget("h_scale_position"));
+	glade->get_widget("event_box_video")->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
+	glade->get_widget("aspect_frame_video")->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
+	drawing_area_video->set_double_buffered(false);
 	
 	glade->get_widget_derived("scrolled_window_epg", widget_epg);
 	
@@ -71,7 +75,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
 
 	show();
-	glade->get_widget("hbox_search_bar")->hide();
 
 	widget_epg->update();
 	
@@ -116,10 +119,8 @@ void MainWindow::on_menu_item_open_clicked()
 		g_debug("Playing '%s'", filename.c_str());
 		
 		stop();
-		
-		PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-		Pipeline& pipeline = pipeline_manager.create("display", filename, *drawing_area_video);
-		pipeline.start();
+
+		// TODO - File open
 	}
 	CATCH
 }
@@ -240,7 +241,7 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 	else if (event->button == 3)
 	{
 		gboolean show = !glade->get_widget("scrolled_window_epg")->property_visible();
-		set_preview(show);
+		set_display_mode(show ? DISPLAY_MODE_EPG : DISPLAY_MODE_VIDEO);
 		
 		if (show)
 		{
@@ -266,16 +267,10 @@ bool MainWindow::on_event_box_video_scroll_event(GdkEventScroll* event)
 	{
 		case GDK_SCROLL_UP:
 			{
-				PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-				Pipeline& pipeline = pipeline_manager.get_pipeline("display");
-				pipeline.seek(pipeline.get_position() - 50);
 			}
 			break;
 		case GDK_SCROLL_DOWN:
 			{
-				PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-				Pipeline& pipeline = pipeline_manager.get_pipeline("display");
-				pipeline.seek(pipeline.get_position() - 50);
 			}
 			break;
 	}
@@ -303,13 +298,11 @@ void MainWindow::unfullscreen()
 	glade->get_widget("menubar")->property_visible() = true;
 	glade->get_widget("statusbar")->property_visible() = true;
 	glade->get_widget("handlebox_toolbar")->property_visible() = true;
-
 	Gtk::Window::unfullscreen();
 }
 
 void MainWindow::fullscreen()
 {
-	set_preview(false);
 	glade->get_widget("menubar")->property_visible() = false;
 	glade->get_widget("statusbar")->property_visible() = false;
 	glade->get_widget("handlebox_toolbar")->property_visible() = false;
@@ -353,25 +346,7 @@ bool MainWindow::on_timeout()
 		glade->get_widget("event_box_video")->get_window()->set_cursor(Gdk::Cursor(hidden_cursor));
 		is_cursor_visible = false;
 	}
-	
-	PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-	Pipeline* pipeline = pipeline_manager.find_pipeline("display");
-	if (pipeline != NULL)
-	{
-		GdkLock gdk_lock();
-		guint elapsed = pipeline->get_elapsed();
-		guint duration = pipeline->get_duration();
-		
-		h_scale_position->set_range(0, duration);
-		h_scale_position->set_value(elapsed);
-		
-		Glib::ustring text = make_time_string(elapsed);
-		text += "/";
-		text += make_time_string(duration);
-		
-		statusbar->pop();
-		statusbar->push(text);
-	}
+
 	THREAD_CATCH
 		
 	return true;
@@ -379,30 +354,24 @@ bool MainWindow::on_timeout()
 
 void MainWindow::stop()
 {
-	PipelineManager& pipeline_manager = get_application().get_pipeline_manager();
-	Pipeline* pipeline = pipeline_manager.find_pipeline("display");
-	if (pipeline != NULL)
-	{
-		pipeline_manager.remove(pipeline);
-	}
+	// TODO - stop
 }
 
-void MainWindow::set_preview(gboolean set)
+void MainWindow::set_display_mode(DisplayMode display_mode)
 {
-	glade->get_widget("menubar")->property_visible() = set;
-	glade->get_widget("statusbar")->property_visible() = set;
-	glade->get_widget("handlebox_toolbar")->property_visible() = set;
-	glade->get_widget("vbox_controls")->property_visible() = set;
-	glade->get_widget("scrolled_window_epg")->property_visible() = set;
-	glade->get_widget("h_scale_position")->property_visible() = set;
+	glade->get_widget("menubar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
+	glade->get_widget("handlebox_toolbar")->property_visible()		= (display_mode == DISPLAY_MODE_EPG);
+	glade->get_widget("scrolled_window_epg")->property_visible()	= (display_mode == DISPLAY_MODE_EPG);
+	glade->get_widget("statusbar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
+	glade->get_widget("vbox_controls")->property_visible()			= (display_mode == DISPLAY_MODE_EPG);
 
-	Gtk::VBox* vbox_main_window = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main_window"));
+	Gtk::VBox* vbox_main = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main"));
 	Gtk::HBox* hbox_top = dynamic_cast<Gtk::HBox*>(glade->get_widget("hbox_top"));
 	Gtk::Widget* viewport_video_window = glade->get_widget("viewport_video_window");
 
 	gtk_box_set_child_packing((GtkBox*)hbox_top->gobj(), viewport_video_window->gobj(),
-		!set, !set, 0, GTK_PACK_END);
+		(display_mode != DISPLAY_MODE_EPG), (display_mode != DISPLAY_MODE_EPG), 0, GTK_PACK_END);
 
-	gtk_box_set_child_packing((GtkBox*)vbox_main_window->gobj(), (GtkWidget*)hbox_top->gobj(),
-		!set, !set, 0, GTK_PACK_START);
+	gtk_box_set_child_packing((GtkBox*)vbox_main->gobj(), (GtkWidget*)hbox_top->gobj(),
+		(display_mode != DISPLAY_MODE_EPG), (display_mode != DISPLAY_MODE_EPG), 0, GTK_PACK_START);
 }

@@ -55,13 +55,15 @@ public:
 class VideoImage
 {
 private:
-	Buffer image_data;
-	Size size;
-	guint bits_per_pixel;
+	Buffer	image_data;
+	Size	size;
+	guint	bits_per_pixel;
+	gdouble	pts;
 public:
-	VideoImage(guint width, guint height, guint bits_per_pixel) :
-		size(width, height), image_data(width * height * bits_per_pixel) {}
+	VideoImage(guint width, guint height, guint bits_per_pixel, gdouble pts) :
+		size(width, height), image_data(width * height * bits_per_pixel), pts(pts) {}
 	guchar* get_image_data() const { return image_data.get_data(); }
+	gdouble get_pts() const { return pts; }
 	const Size& get_size() const { return size; }
 };
 
@@ -88,7 +90,7 @@ public:
 		Glib::RecMutex::Lock lock(mutex);
 		return queue.front();
 	}
-		
+	
 	T& pop()
 	{
 		Glib::RecMutex::Lock lock(mutex);
@@ -108,21 +110,32 @@ public:
 	}
 };
 
-typedef Queue<Buffer*> BufferQueue;
+class AudioChunk
+{
+private:
+	Buffer	buffer;
+	gdouble pts;
+public:
+	AudioChunk(guint length, gdouble pts) : buffer(length), pts(pts) {}
+	const Buffer& get_buffer() const { return buffer; }
+	gdouble get_pts() const { return pts; }
+};
+
+typedef Queue<AudioChunk*> AudioChunkQueue;
 typedef Queue<VideoImage*> VideoImageQueue;
 
 class AlsaAudioThread : public Thread
 {
 private:
-	BufferQueue&	audio_buffer_queue;
-	Pipeline&		pipeline;
-	snd_pcm_t*		handle;
-	guint			sample_rate;
+	AudioChunkQueue&	audio_chunk_queue;
+	Pipeline&			pipeline;
+	snd_pcm_t*			handle;
+	guint				sample_rate;
 		
 	void run();
 		
 public:	
-	AlsaAudioThread(Pipeline& pipeline, BufferQueue& audio_buffer_queue, guint channels, guint sample_rate);
+	AlsaAudioThread(Pipeline& pipeline, AudioChunkQueue& audio_chunk_queue, guint channels, guint sample_rate);
 	~AlsaAudioThread();
 };
 
@@ -153,6 +166,7 @@ private:
 	Pipeline&			pipeline;
 	VideoOutput*		video_output;
 	gdouble				frame_rate;
+	AVStream*			video_stream;
 		
 	void run();
 
@@ -165,7 +179,7 @@ class Sink
 private:
 	Pipeline&					pipeline;
 	VideoImageQueue				video_image_queue;
-	BufferQueue					audio_buffer_queue;
+	AudioChunkQueue				audio_chunk_queue;
 	gint						video_stream_index;
 	gint						audio_stream_index;
 	VideoThread*				video_thread;

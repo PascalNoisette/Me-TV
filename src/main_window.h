@@ -24,11 +24,16 @@
 #include "gtk_epg_widget.h"
 #include "meters_dialog.h"
 
+typedef enum DisplayMode
+{
+	DISPLAY_MODE_VIDEO,
+	DISPLAY_MODE_EPG
+};
+
 class MainWindow : public Gtk::Window
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
-	Glib::RefPtr<Glib::TimeoutSource>		timeout;
 	Gtk::DrawingArea*						drawing_area_video;
 	GtkEpgWidget*							widget_epg;
 	guint									last_motion_time;
@@ -37,13 +42,14 @@ private:
 	MetersDialog*							meters_dialog;
 	Gtk::HScale*							h_scale_position;
 	Gtk::Statusbar*							statusbar;
+	DisplayMode								display_mode;
 
 	void stop();
 	void fullscreen();
 	void unfullscreen();
 	gboolean is_fullscreen();
 	
-	void set_preview(gboolean set);
+	void set_display_mode(DisplayMode display_mode);
 
 	bool on_timeout();
 	void on_error(const Glib::ustring& message);

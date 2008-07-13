@@ -22,10 +22,13 @@
 #define __APPLICATION_H__
 
 #include <libglademm.h>
+#include <libgnomemm.h>
+#include <gst/interfaces/xoverlay.h>
+#include <gst/video/video.h>
 #include "device_manager.h"
 #include "profile_manager.h"
 #include "channel_manager.h"
-#include "pipeline_manager.h"
+#include "dvb_demuxer.h"
 
 class Application : public Gnome::Main
 {
@@ -35,10 +38,19 @@ private:
 	ProfileManager					profile_manager;
 	DeviceManager					device_manager;
 	ChannelManager					channel_manager;
-	PipelineManager					pipeline_manager;
+	DemuxerList						demuxers;
+	GstElement*						player;
+	GstElement*						sink;
 
 	Dvb::Frontend& get_frontend();
 	void on_display_channel_changed(Channel& channel);
+	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
+
+	void remove_all_demuxers();
+	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
+		guint pid, dmx_pes_type_t pid_type, const gchar* type_text);
+	Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
+	void setup_dvb(Dvb::Frontend& frontend, const Channel& channel);
 
 public:
 	Application(int argc, char *argv[]);
@@ -48,7 +60,6 @@ public:
 	ProfileManager&		get_profile_manager()	{ return profile_manager; }
 	DeviceManager&		get_device_manager()	{ return device_manager; }
 	ChannelManager&		get_channel_manager()	{ return channel_manager; }
-	PipelineManager&	get_pipeline_manager()	{ return pipeline_manager; }
 };
 
 Application& get_application();

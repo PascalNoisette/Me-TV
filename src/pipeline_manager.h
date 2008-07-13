@@ -32,14 +32,14 @@ private:
 	Glib::ustring			name;
 	SinkList				sinks;
 	Gtk::DrawingArea&		drawing_area;
-	Glib::Timer				timer;
+	guint					start_time;
 		
 	virtual void create_source() = 0;
 	void run();
 		
 protected:
 	Glib::StaticRecMutex	mutex;
-	Source*			source;
+	Source*					source;
 
 public:
 	Pipeline(const Glib::ustring& name, Gtk::DrawingArea& drawing_area);
@@ -48,11 +48,8 @@ public:
 	const Glib::ustring& get_name() const { return name; }
 	Source& get_source();
 	SinkList& get_sinks() { return sinks; }
-	gdouble get_elapsed() { return timer.elapsed(); }
 	guint get_duration();
-
-	void seek(guint position);
-	guint get_position();
+	guint get_elapsed();
 };
 
 typedef std::list<Pipeline*> PipelineList;
@@ -60,8 +57,11 @@ typedef std::list<Pipeline*> PipelineList;
 class PipelineManager
 {
 private:
-	PipelineList			pipelines;
-	Glib::StaticRecMutex	mutex;
+	PipelineList						pipelines;
+	Glib::StaticRecMutex				mutex;
+
+	bool on_timeout();
+			
 public:
 	PipelineManager();
 	~PipelineManager();

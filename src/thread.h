@@ -38,7 +38,7 @@ public:
 	
 	void start();
 	void on_run();
-	void join(gboolean term = false);
+	void join(gboolean set_terminate = false);
 	void terminate();
 	gboolean is_terminated();
 };

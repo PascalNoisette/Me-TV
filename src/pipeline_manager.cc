@@ -57,16 +57,55 @@ public:
 PipelineManager::PipelineManager()
 {
 	g_static_rec_mutex_init(mutex.gobj());
+//	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &PipelineManager::on_timeout), 1);
 }
 
 PipelineManager::~PipelineManager()
 {
+	Glib::RecMutex::Lock lock(mutex);
 	while (!pipelines.empty())
 	{
 		remove(*(pipelines.begin()));
 	}
 }
+
+bool PipelineManager::on_timeout()
+{
+	PipelineList orpans;
+
+	g_debug("Reaper entered");
+
+	Glib::RecMutex::Lock lock(mutex);	
+
+	PipelineList::iterator iterator = pipelines.begin();
+	while (iterator != pipelines.end())
+	{
+		Pipeline* pipeline = *iterator;
+		if (pipeline->is_terminated())
+		{
+			g_debug("Pipeline reaper found orphaned pipeline '%s'", pipeline->get_name().c_str());
+			orpans.push_back(pipeline);
+		}
+		iterator++;
+	}
+
+	// Remove orphans
+	gdk_threads_leave();
+	iterator = orpans.begin();
+	while (iterator != orpans.end())
+	{
+		Pipeline* pipeline = *iterator;
+		remove(pipeline);
+		g_debug("Pipeline reaper collected pipeline '%s'", pipeline->get_name().c_str());
+		
+		iterator++;
+	}
 	
+	g_debug("Reaper exited");
+	
+	return true;
+}
+
 Pipeline& PipelineManager::create(const Glib::ustring& name, const Glib::ustring& mrl, Gtk::DrawingArea& drawing_area)
 {	
 	if (find_pipeline(name) != NULL)
@@ -153,6 +192,7 @@ Pipeline::Pipeline(const Glib::ustring& name, Gtk::DrawingArea& drawing_area) :
 {
 	this->name = name;
 	source = NULL;
+	start_time = 0;
 	g_static_rec_mutex_init(mutex.gobj());
 }
 
@@ -192,18 +232,16 @@ void Pipeline::run()
 	g_debug("Starting pipeline");
 	
 	create_source();
-	sinks.push_back(new Sink(*this, drawing_area));
+//	sinks.push_back(new Sink(*this, "/home/michael/data.mpeg"));
+
+	//sinks.push_back(new Sink(*this, drawing_area));
 	
 	g_debug("Entering source thread loop");
-	timer.start();
+	start_time = get_elapsed();
 	while (!is_terminated())
 	{
-		if (!source->read(&packet))
+		if (source->read(&packet))
 		{
-			terminate();
-		}
-		else
-		{			
 			SinkList::iterator iterator = sinks.begin();
 			while (iterator != sinks.end())
 			{
@@ -211,22 +249,22 @@ void Pipeline::run()
 				sink->write(&packet);
 				iterator++;
 			}
+			
+			av_free_packet(&packet);
 		}
-
-		av_free_packet(&packet);
+		else
+		{
+			// Trash all the sinks
+			gdk_threads_leave();
+			while (!sinks.empty())
+			{
+				Sink* sink = *(sinks.begin());
+				delete sink;
+				sinks.pop_front();
+			}
+		}
 	}
-	timer.stop();
 	g_debug("Pipeline thread finished");
-}
-
-void Pipeline::seek(guint position)
-{
-	source->seek(position);
-}
-
-guint Pipeline::get_position()
-{
-	return source->get_position();
 }
 
 guint Pipeline::get_duration()
@@ -240,3 +278,21 @@ guint Pipeline::get_duration()
 	
 	return source->get_duration();
 }
+
+guint Pipeline::get_elapsed()
+{
+	guint elapsed = (av_gettime() - start_time) * AV_TIME_BASE;
+	guint duration = get_duration();
+	if (elapsed > duration)
+	{
+		elapsed = duration;
+	}
+
+	if (elapsed < 0)
+	{
+		elapsed = 0;
+	}
+	
+	return elapsed;
+}
+

@@ -22,6 +22,7 @@
 #include <libglademm.h>
 #include <gdk/gdk.h>
 #include "application.h"
+#include "me-tv-ui.h"
 
 ComboBoxText::ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
 	: Gtk::ComboBoxText(cobject)

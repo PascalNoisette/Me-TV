@@ -47,14 +47,8 @@ me_tv_SOURCES = \
 	device_manager.h \
 	me-tv.h \
 	meters_dialog.h \
-	source.cc \
-	source.h \
 	scan_dialog.cc \
 	channels_dialog.cc \
-	pipeline_manager.cc \
-	pipeline_manager.h \
-	sink.h \
-	sink.cc \
 	thread.cc \
 	main_window.cc \
 	channel_manager.h \

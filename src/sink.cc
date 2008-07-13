@@ -35,7 +35,7 @@
 #define XV_IMAGE_FORMAT_YUY2	0x32595559
 
 #define VIDEO_IMAGE_BUFFER_SIZE		10
-#define AUDIO_BUFFER_SIZE			100
+#define AUDIO_BUFFER_SIZE			10
 #define VIDEO_FRAME_TOLERANCE		1
 #define AUDIO_SAMPLE_TOLERANCE		0
 
@@ -60,8 +60,8 @@ public:
 	AlsaException(const char* fmt, ...) : Exception(get_message(snd_strerror(errno),fmt)) {}
 };
 
-AlsaAudioThread::AlsaAudioThread(Pipeline& pipeline, BufferQueue& audio_buffer_queue, guint channels, guint sample_rate) :
-	Thread("ALSA Audio"), audio_buffer_queue(audio_buffer_queue), pipeline(pipeline), sample_rate(sample_rate)
+AlsaAudioThread::AlsaAudioThread(Pipeline& pipeline, AudioChunkQueue& audio_chunk_queue, guint channels, guint sample_rate) :
+	Thread("ALSA Audio"), audio_chunk_queue(audio_chunk_queue), pipeline(pipeline), sample_rate(sample_rate)
 {
 	handle = NULL;
 	const gchar* device = "default";
@@ -100,33 +100,50 @@ AlsaAudioThread::~AlsaAudioThread()
 }
 
 void AlsaAudioThread::run()
-{
-	guint sample_count = 0;
-	
+{	
+	guint start_time = 0;
+
 	while (!is_terminated())
 	{
-		if (audio_buffer_queue.get_size() == 0)
+		if (audio_chunk_queue.get_size() == 0)
 		{
 			usleep(1000);
 		}
 		else
 		{
-			Buffer* buffer = audio_buffer_queue.pop();
+			AudioChunk* audio_chunk = audio_chunk_queue.pop();
+			const Buffer& buffer = audio_chunk->get_buffer();
 
-			gboolean drop = false;
-			gdouble elapsed = pipeline.get_elapsed();
-			guint buffer_length = buffer->get_length()/4;
-			guint want_count = elapsed * sample_rate;
-
-			//g_debug("AUDIO: want = %d, got = %d", want_count, sample_count);
-			if ((want_count + AUDIO_SAMPLE_TOLERANCE) < sample_count)
+			guint pts = audio_chunk->get_pts();
+			if (start_time <= 0)
 			{
-				guint wait_samples = sample_count - want_count;
-				guint delay = (wait_samples / (double)sample_rate) * 1000000;
-				//g_debug("Delaying audio for %d microseconds", delay);
+				start_time = pts;
+			}
+			
+			gboolean drop = false;
+			guint elapsed = pipeline.get_elapsed();
+			guint buffer_length = buffer.get_length()/4;
+			guint want = elapsed;
+			guint got = pts - start_time;
+			
+			g_debug("AUDIO: pts = %d", pts);
+			g_debug("AUDIO: start_time = %d", start_time);
+			g_debug("AUDIO: delta = %d", pts - start_time);
+			g_debug("AUDIO: want = %d, got = %d", want, got);
+
+			if (start_time > pts)
+			{
+				g_debug("Start time was greater than PTS, resetting start time to PTS");
+				start_time = pts;
+			}
+			
+			if (want < got)
+			{
+				guint delay = (guint)((got - want) / AV_TIME_BASE);
+				g_debug("Delaying audio for %d microseconds", delay);
 				usleep(delay);
 			}
-			else if ((want_count - AUDIO_SAMPLE_TOLERANCE) > sample_count)
+			else if (want > got)
 			{
 				g_debug("Dropping audio sample");
 				drop = true;
@@ -134,7 +151,7 @@ void AlsaAudioThread::run()
 			
 			if (!drop)
 			{
-				snd_pcm_sframes_t frames = snd_pcm_writei(handle, buffer->get_data(), buffer_length);
+				snd_pcm_sframes_t frames = snd_pcm_writei(handle, buffer.get_data(), buffer_length);
 				if (frames == -EPIPE)
 				{
 					snd_pcm_prepare(handle);
@@ -146,9 +163,7 @@ void AlsaAudioThread::run()
 				}
 			}
 			
-			delete buffer;
-
-			sample_count += buffer_length;
+			delete audio_chunk;
 		}
 	}
 	g_debug("Audio thread finished");
@@ -338,7 +353,7 @@ VideoThread::VideoThread(Pipeline& pipeline, VideoImageQueue& video_image_queue,
 
 void VideoThread::run()
 {
-	guint frame_count = 0;
+	gdouble start_time = 0;
 	gboolean drop = false;
 	
 	while (!is_terminated())
@@ -349,28 +364,51 @@ void VideoThread::run()
 		}
 		else
 		{
-			frame_count++;
-			gdouble elapsed = pipeline.get_elapsed();
-			guint wanted_frame = (guint)(elapsed * frame_rate);
+			VideoImage* video_image = video_image_queue.pop();
+
+			gdouble pts = video_image->get_pts();
 			
-			//g_debug("VIDEO: want = %d, got = %d", wanted_frame, frame_count);
-			if ((wanted_frame + VIDEO_FRAME_TOLERANCE) < frame_count)
+			if (start_time <= 0)
 			{
-				guint wait_frames = frame_count - wanted_frame;
-				usleep(wait_frames * frame_rate * 1000);
+				start_time = pts;
 			}
-			else if ((wanted_frame - VIDEO_FRAME_TOLERANCE) > frame_count)
+
+			gdouble elapsed = av_gettime() / AV_TIME_BASE;
+			guint wanted_frame = (guint)(elapsed * frame_rate);
+			guint got_frame = (pts - start_time) * frame_rate;
+			
+			/*
+			g_debug("VIDEO: pts = %f", video_image->get_pts());
+			g_debug("VIDEO: start_time = %f", start_time);
+			g_debug("VIDEO: want = %d, got = %d", wanted_frame, got_frame);
+			*/
+			if ((wanted_frame + VIDEO_FRAME_TOLERANCE) < got_frame)
+			{
+				guint wait_frames = got_frame - wanted_frame;
+				guint delay = wait_frames * frame_rate * 1000;
+				if (delay < 10000000)
+				{
+					//g_debug("Delaying audio for %d microseconds", delay);
+					usleep(wait_frames * frame_rate * 1000);
+				}
+				else
+				{
+					g_debug("Frame is more than 10 seconds in the future, dropping");
+					drop = true;
+				}
+			}
+			else if ((wanted_frame - VIDEO_FRAME_TOLERANCE) > got_frame)
 			{
 				g_debug("Dropping video frame");
 				drop = true;
 			}
 
-			VideoImage* video_image = video_image_queue.pop();
 			if (!drop)
 			{
 				GdkLock gdk_lock;
 				video_output->draw(video_image);
 			}
+			
 			drop = false;
 			delete video_image;
 		}
@@ -492,7 +530,7 @@ Sink::Sink(Pipeline& pipeline, Gtk::DrawingArea& drawing_area) :
 			throw Exception("Failed to open audio codec");
 		}
 
-		audio_thread = new AlsaAudioThread(pipeline, audio_buffer_queue, audio_stream->codec->channels, audio_stream->codec->sample_rate);
+		audio_thread = new AlsaAudioThread(pipeline, audio_chunk_queue, audio_stream->codec->channels, audio_stream->codec->sample_rate);
 		g_debug("Audio thread created");
 		audio_thread->start();
 	}
@@ -531,6 +569,14 @@ Sink::~Sink()
 	}
 }
 
+void flush_video_image_queue(VideoImageQueue& video_image_queue)
+{
+	while (video_image_queue.get_size() > 0)
+	{
+		delete video_image_queue.pop();
+	}
+}
+
 void Sink::push_video_packet(AVPacket* packet)
 {
 	gboolean video_frame_finished = false;
@@ -542,6 +588,17 @@ void Sink::push_video_packet(AVPacket* packet)
 	{
 		AVCodecContext* video_codec_context = video_stream->codec;
 
+		double pts = 0;
+		if(packet->dts == AV_NOPTS_VALUE && frame->opaque && *(uint64_t*)frame->opaque != AV_NOPTS_VALUE)
+		{
+			pts = *(uint64_t *)frame->opaque;
+		}
+		else if (packet->dts != AV_NOPTS_VALUE)
+		{
+			pts = packet->dts;
+		}
+		pts *= av_q2d(video_stream->time_base);
+		
 		gint width = 0;
 		gint height = 0;
 
@@ -607,12 +664,8 @@ void Sink::push_video_packet(AVPacket* packet)
 		sws_scale(img_convert_ctx, frame->data, frame->linesize, 0,
 			video_codec_context->height, picture.data, picture.linesize);
 		
-		while (video_image_queue.get_size() > VIDEO_IMAGE_BUFFER_SIZE)
-		{
-			usleep(10000);
-		}
-		
-		VideoImage* video_image = new VideoImage(video_width, video_height, video_buffer_size/(video_width*video_height));
+		GdkLock gdk_lock;
+		VideoImage* video_image = new VideoImage(video_width, video_height, video_buffer_size/(video_width*video_height),pts);
 		memcpy(video_image->get_image_data(), video_buffer, video_buffer_size);
 		video_image_queue.push(video_image);
 	}
@@ -635,14 +688,15 @@ void Sink::push_audio_packet(AVPacket* packet)
 		throw Exception("Failed to decode audio");
 	}
 
-	while (audio_buffer_queue.get_size() > AUDIO_BUFFER_SIZE)
+	while (audio_chunk_queue.get_size() > AUDIO_BUFFER_SIZE)
 	{
-		usleep(10000);
+		usleep(1000);
 	}
 
-	Buffer* buffer = new Buffer(audio_buffer_length);
-	memcpy(buffer->get_data(), data, audio_buffer_length);
-	audio_buffer_queue.push(buffer);
+	gdouble pts = packet->dts;
+	AudioChunk* audio_chunk = new AudioChunk(audio_buffer_length, packet->pts);
+	memcpy(audio_chunk->get_buffer().get_data(), data, audio_buffer_length);
+	audio_chunk_queue.push(audio_chunk);
 }
 
 void Sink::write(AVPacket* packet)

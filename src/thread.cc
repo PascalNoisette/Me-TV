@@ -51,7 +51,7 @@ void Thread::on_run()
 	THREAD_CATCH
 }
 	
-void Thread::join(gboolean term)
+void Thread::join(gboolean set_terminate)
 {
 	gboolean do_join = false;
 	
@@ -59,7 +59,7 @@ void Thread::join(gboolean term)
 		Glib::RecMutex::Lock lock(mutex);
 		if (thread != NULL)
 		{
-			if (term)
+			if (set_terminate)
 			{
 				terminated = true;
 			}
@@ -72,9 +72,13 @@ void Thread::join(gboolean term)
 	{
 		g_debug("Thread '%s' waiting for join ...", name.c_str());
 		thread->join();
-		thread = NULL;
 		g_debug("Thread '%s' joined", name.c_str());
+
+		Glib::RecMutex::Lock lock(mutex);
+		thread = NULL;
+		terminated = true;
 	}
+	
 }
 	
 void Thread::terminate()

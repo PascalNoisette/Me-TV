@@ -94,19 +94,24 @@ int Source::read_data(void* data, guchar* buffer, int size)
 	return source->read_data(buffer, size);
 }
 
+Glib::RefPtr<Glib::IOChannel> writer = Glib::IOChannel::create_from_file("/home/michael/.me-tv/video.fifo", "w");
+
 int Source::read_data(guchar* destination_buffer, int size)
 {
 	gsize bytes_read = 0;
 
-	if (!opened)
+	/*if (!opened)
 	{
 		memcpy(destination_buffer, buffer.get_data(), buffer_bytes_read);
 		bytes_read = size;
 	}
-	else
+	else*/
 	{
 		input_channel->read((gchar*)destination_buffer, size, bytes_read);
 	}
+	
+	gsize bytes_written;
+	writer->write((gchar*)destination_buffer, bytes_read, bytes_written);
 
 	return bytes_read;
 }
@@ -114,6 +119,7 @@ int Source::read_data(guchar* destination_buffer, int size)
 void Source::create()	
 {	
 	format_context = NULL;
+	writer->set_encoding("");
 
 	av_register_all();
 	
@@ -121,7 +127,6 @@ void Source::create()
 	{		
 		input_channel = Glib::IOChannel::create_from_file(mrl, "r");
 		input_channel->set_encoding("");
-		input_channel->set_buffer_size(TIME_SHIFT_BUFFER_SIZE);
 
 		AVInputFormat* input_format = av_find_input_format("mpegts");
 		if(input_format == NULL)
@@ -332,34 +337,29 @@ AVStream* Source::get_stream(guint index) const
 	return format_context->streams[index];
 }
 
-void Source::seek(gint64 position)
-{
-	if (source_type == SOURCE_TYPE_FILE)
-	{
-		av_seek_frame(format_context, -1, position, 0);
-	}
-	else
-	{
-		input_channel->seek(-1000, Glib::SEEK_TYPE_CUR);
-	}
-}
-
 gboolean Source::read(AVPacket* packet)
 {
 	return av_read_frame(format_context, packet) >= 0;
 }
 
-gint64 Source::get_position()
-{
-	return 0;
-}
-
-guint Source::get_duration()
+gdouble Source::get_duration()
 {
 	if (format_context == NULL)
 	{
 		throw Exception("format_context is NULL");
 	}
 	
-	return format_context->duration / AV_TIME_BASE;
+	gdouble duration = format_context->duration;
+	return duration == AV_NOPTS_VALUE ? 0 : duration;
+}
+
+gdouble Source::get_start_time()
+{
+	if (format_context == NULL)
+	{
+		throw Exception("format_context is NULL");
+	}
+	
+	gdouble start_time = format_context->start_time;
+	return start_time == AV_NOPTS_VALUE ? 0 : start_time / AV_TIME_BASE;
 }

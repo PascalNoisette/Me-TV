@@ -21,6 +21,10 @@
 #include "application.h"
 #include "main_window.h"
 #include "config.h"
+#include "device_manager.h"
+#include "dvb_si.h"
+#include <gdk/gdkx.h>
+#include <gst/gstplugin.h>
 
 Application* Application::current = NULL;
 
@@ -48,6 +52,12 @@ Application::Application(int argc, char *argv[]) :
 	}
 	
 	current = this;
+	player = NULL;
+	sink = NULL;
+	
+	gst_init(&argc, &argv);
+		
+	g_debug(gst_version_string());
 	
 	Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
 	set_default(client, GCONF_PATH"/video_output", "Xv");
@@ -68,6 +78,10 @@ Application::Application(int argc, char *argv[]) :
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));
 
 	channel_manager.add_channels(profile_manager.get_current_profile().channels);
+
+	player		= create_element("playbin", "player");
+	sink		= create_element("xvimagesink", "sink");
+	g_object_set (G_OBJECT (player), "video_sink", sink, NULL);
 }
 
 void Application::run()
@@ -87,19 +101,157 @@ Application& Application::get_current()
 	return *current;
 }
 
+GstElement* Application::create_element(const Glib::ustring& factoryname, const Glib::ustring& name)
+{
+	GstElement* element = gst_element_factory_make(factoryname.c_str(), name.c_str());
+	
+	if (element == NULL)
+	{
+		throw Exception(Glib::ustring::compose(N_("Failed to create GStreamer element '%1'"), name));
+	}
+	
+	return element;
+}
+
 void Application::on_display_channel_changed(Channel& channel)
 {
 	TRY
 	MainWindow* main_window = NULL;
 	glade->get_widget_derived("window_main", main_window);
+	Dvb::Frontend& frontend = get_frontend();
 
-	Pipeline* existing_pipeline = pipeline_manager.find_pipeline("display");
-	if (existing_pipeline != NULL)
+	gst_element_set_state (GST_ELEMENT(player), GST_STATE_NULL);
+
+	setup_dvb(frontend, channel);
+
+	int window_id = GDK_WINDOW_XID(main_window->get_drawing_area().get_window()->gobj());
+
+	Glib::ustring path = "file://" + frontend.get_adapter().get_dvr_path();
+	gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (sink), window_id);
+	g_object_set (G_OBJECT (player), "uri", path.c_str(), NULL);
+	gst_element_set_state (player, GST_STATE_PLAYING);
+	
+	CATCH
+}
+
+Dvb::Frontend& Application::get_frontend()
+{
+	Event event(0, 0);
+	Dvb::Frontend* frontend = get_application().get_device_manager().request_frontend(event);
+	if (frontend == NULL)
 	{
-		pipeline_manager.remove(existing_pipeline);
+		throw Exception(_("No frontend available"));
+	}
+	return *frontend;
+}
+
+void Application::remove_all_demuxers()
+{
+	while (demuxers.size() > 0)
+	{
+		Dvb::Demuxer* demuxer = demuxers.front();
+		demuxers.pop_front();
+		delete demuxer;
+		g_debug("Demuxer removed");
+	}
+}
+
+Dvb::Demuxer& Application::add_pes_demuxer(const Glib::ustring& demux_path,
+	guint pid, dmx_pes_type_t pid_type, const gchar* type_text)
+{	
+	Dvb::Demuxer* demuxer = new Dvb::Demuxer(demux_path);
+	demuxers.push_back(demuxer);
+	g_debug(_("Setting %s PID filter to %d (0x%X)"), type_text, pid, pid);
+	demuxer->set_pes_filter(pid, pid_type);
+	return *demuxer;
+}
+
+Dvb::Demuxer& Application::add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id)
+{	
+	Dvb::Demuxer* demuxer = new Dvb::Demuxer(demux_path);
+	demuxers.push_back(demuxer);
+	demuxer->set_filter(pid, id);
+	return *demuxer;
+}
+
+void Application::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
+{
+	g_debug("Setting up DVB");
+	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
+	
+	remove_all_demuxers();
+	
+	Dvb::Transponder transponder;
+	transponder.frontend_parameters = channel.frontend_parameters;
+	frontend.tune_to(transponder);
+	
+	Dvb::Demuxer demuxer_pat(demux_path);
+	demuxer_pat.set_filter(PAT_PID, PAT_ID);
+	Dvb::SI::SectionParser parser;
+	
+	Dvb::SI::ProgramAssociationSection pas;
+	parser.parse_pas(demuxer_pat, pas);
+	demuxer_pat.stop();
+
+	guint length = pas.program_associations.size();
+	guint pmt_pid = 0;
+	
+	g_debug("Found %d associations", length);
+	for (guint i = 0; i < length; i++)
+	{
+		Dvb::SI::ProgramAssociation program_association = pas.program_associations[i];
+		
+		if (program_association.program_number == channel.service_id)
+		{
+			pmt_pid = program_association.program_map_pid;
+		}
 	}
 	
-	Pipeline& pipeline = pipeline_manager.create("display", channel, main_window->get_drawing_area());
-	pipeline.start();
-	CATCH
+	if (pmt_pid == 0)
+	{
+		throw Exception(_("Failed to find PMT ID for service"));
+	}
+	
+	Dvb::Demuxer demuxer_pmt(demux_path);
+	demuxer_pmt.set_filter(pmt_pid, PMT_ID);
+
+	Dvb::SI::ProgramMapSection pms;
+	parser.parse_pms(demuxer_pmt, pms);
+	demuxer_pmt.stop();
+		
+	add_pes_demuxer(demux_path, PAT_PID, DMX_PES_OTHER, "PAT");
+	add_pes_demuxer(demux_path, pmt_pid, DMX_PES_OTHER, "PMT");
+	
+	gsize video_streams_size = pms.video_streams.size();
+	for (guint i = 0; i < video_streams_size; i++)
+	{
+		add_pes_demuxer(demux_path, pms.video_streams[i].pid, DMX_PES_OTHER, "video");
+	}
+
+	gsize audio_streams_size = pms.audio_streams.size();
+	for (guint i = 0; i < audio_streams_size; i++)
+	{
+		if (pms.audio_streams[i].is_ac3)
+		{
+			g_debug("Ignoring AC3 stream");
+		}
+		else
+		{
+			add_pes_demuxer(demux_path, pms.audio_streams[i].pid, DMX_PES_OTHER, "audio");
+		}
+	}
+				
+	gsize subtitle_streams_size = pms.subtitle_streams.size();
+	for (guint i = 0; i < subtitle_streams_size; i++)
+	{
+		add_pes_demuxer(demux_path, pms.subtitle_streams[i].pid, DMX_PES_OTHER, "subtitle");
+	}
+
+	gsize teletext_streams_size = pms.teletext_streams.size();
+	for (guint i = 0; i < teletext_streams_size; i++)
+	{
+		g_debug("Ignoring TT stream");
+		//add_pes_demuxer(demux_path, pms.teletext_streams[i].pid, DMX_PES_OTHER, "teletext");
+	}
+	g_debug("Finished setting up DVB");
 }

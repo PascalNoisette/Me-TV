@@ -62,13 +62,11 @@ public:
 	Source(const Channel& channel);
 	Source(const Glib::ustring& mrl);
 	~Source();
-	
-	void seek(gint64 position);
-	gint64 get_position();
 
 	gboolean read(AVPacket* packet);
-	guint get_duration();
-
+	gdouble get_duration();
+	gdouble get_start_time();
+			
 	AVFormatContext* get_format_context() const { return format_context; }
 	AVStream* get_stream(guint index) const;
 	gsize get_stream_count() const { return format_context->nb_streams; }

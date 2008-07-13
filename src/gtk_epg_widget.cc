@@ -78,7 +78,7 @@ void GtkEpgWidget::clear()
 
 void GtkEpgWidget::update_table()
 {
-	if (get_window() != NULL)
+	if (get_window())
 	{
 		get_window()->freeze_updates();
 		
