@@ -66,6 +66,7 @@ private:
 	void on_button_epg_previous_clicked();
 	void on_button_epg_now_clicked();
 	void on_button_epg_next_clicked();
+	bool on_drawing_area_video_expose(GdkEventExpose* expose);
 
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);

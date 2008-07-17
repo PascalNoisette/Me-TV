@@ -31,12 +31,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	display_mode = DISPLAY_MODE_EPG;
 	
 	
-	statusbar = dynamic_cast<Gtk::Statusbar*>(glade->get_widget("statusbar"));
+//	statusbar = dynamic_cast<Gtk::Statusbar*>(glade->get_widget("statusbar"));
 	glade->get_widget("event_box_video")->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
-	glade->get_widget("aspect_frame_video")->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video->set_double_buffered(false);
+	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_video_expose));
 	
 	glade->get_widget_derived("scrolled_window_epg", widget_epg);
 	
@@ -51,8 +51,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_meters",		sigc::mem_fun(*this, &MainWindow::on_menu_item_meters_clicked));
 	glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
 	glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
-	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));
-
+	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
 	glade->connect_clicked("button_epg_previous", sigc::mem_fun(*this, &MainWindow::on_button_epg_previous_clicked));
 	glade->connect_clicked("button_epg_now", sigc::mem_fun(*this, &MainWindow::on_button_epg_now_clicked));
 	glade->connect_clicked("button_epg_next", sigc::mem_fun(*this, &MainWindow::on_button_epg_next_clicked));
@@ -296,7 +295,7 @@ void MainWindow::on_button_epg_next_clicked()
 void MainWindow::unfullscreen()
 {
 	glade->get_widget("menubar")->property_visible() = true;
-	glade->get_widget("statusbar")->property_visible() = true;
+	//glade->get_widget("statusbar")->property_visible() = true;
 	glade->get_widget("handlebox_toolbar")->property_visible() = true;
 	Gtk::Window::unfullscreen();
 }
@@ -304,7 +303,7 @@ void MainWindow::unfullscreen()
 void MainWindow::fullscreen()
 {
 	glade->get_widget("menubar")->property_visible() = false;
-	glade->get_widget("statusbar")->property_visible() = false;
+	//glade->get_widget("statusbar")->property_visible() = false;
 	glade->get_widget("handlebox_toolbar")->property_visible() = false;
 	Gtk::Window::fullscreen();
 }
@@ -312,29 +311,6 @@ void MainWindow::fullscreen()
 gboolean MainWindow::is_fullscreen()
 {
 	return get_window()->get_state() & Gdk::WINDOW_STATE_FULLSCREEN;
-}
-
-Glib::ustring make_time_string(guint t)
-{
-	Glib::ustring result;
-
-	guint seconds = t % 60;
-	guint minutes = (t/60) % 60;
-	guint hours = (t/(60*60)) % 60;
-	
-	gchar buffer[100];
-	if (hours > 0)
-	{
-		snprintf(buffer, 100, "%d:%02d:%02d", hours, minutes, seconds);
-	}
-	else
-	{
-		snprintf(buffer, 100, "%02d:%02d", minutes, seconds);
-	}
-	buffer[99] = 0;
-	result += buffer;
-		
-	return result;
 }
 
 bool MainWindow::on_timeout()
@@ -362,7 +338,7 @@ void MainWindow::set_display_mode(DisplayMode display_mode)
 	glade->get_widget("menubar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
 	glade->get_widget("handlebox_toolbar")->property_visible()		= (display_mode == DISPLAY_MODE_EPG);
 	glade->get_widget("scrolled_window_epg")->property_visible()	= (display_mode == DISPLAY_MODE_EPG);
-	glade->get_widget("statusbar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
+	//glade->get_widget("statusbar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
 	glade->get_widget("vbox_controls")->property_visible()			= (display_mode == DISPLAY_MODE_EPG);
 
 	Gtk::VBox* vbox_main = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main"));
@@ -374,4 +350,12 @@ void MainWindow::set_display_mode(DisplayMode display_mode)
 
 	gtk_box_set_child_packing((GtkBox*)vbox_main->gobj(), (GtkWidget*)hbox_top->gobj(),
 		(display_mode != DISPLAY_MODE_EPG), (display_mode != DISPLAY_MODE_EPG), 0, GTK_PACK_START);
+}
+
+bool MainWindow::on_drawing_area_video_expose(GdkEventExpose* event)
+{
+	Glib::RefPtr<const Gdk::GC> gc = drawing_area_video->get_style()->get_fg_gc(drawing_area_video->get_state());
+	drawing_area_video->get_window()->draw_rectangle(gc, true,
+		event->area.x, event->area.y, event->area.width, event->area.height);
+	return false;
 }

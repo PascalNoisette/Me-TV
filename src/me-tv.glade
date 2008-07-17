@@ -777,16 +777,19 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="width_request">100</property>
                 <property name="height_request">100</property>
                 <property name="visible">True</property>
+                <property name="app_paintable">True</property>
                 <property name="resize_mode">GTK_RESIZE_QUEUE</property>
-                <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+                <property name="shadow_type">GTK_SHADOW_NONE</property>
                 <child>
                   <widget class="GtkEventBox" id="event_box_video">
                     <property name="visible">True</property>
+                    <property name="app_paintable">True</property>
                     <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_SCROLL_MASK</property>
                     <property name="above_child">True</property>
                     <child>
                       <widget class="GtkAspectFrame" id="aspect_frame_video">
                         <property name="visible">True</property>
+                        <property name="app_paintable">True</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">GTK_SHADOW_NONE</property>
                         <property name="ratio">1.7777777910232544</property>
@@ -794,6 +797,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                         <child>
                           <widget class="GtkDrawingArea" id="drawing_area_video">
                             <property name="visible">True</property>
+                            <property name="app_paintable">True</property>
                           </widget>
                         </child>
                       </widget>
