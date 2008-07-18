@@ -144,24 +144,25 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path, g
 	guint size = lines.size();
 	guint count = 0;
 	
-	std::list<Glib::ustring>::iterator iterator = lines.begin();
-	while (iterator != lines.end())
+	for (StringList::iterator iterator = lines.begin(); iterator != lines.end(); iterator++)
 	{
-		Glib::ustring line = *iterator;
+		Glib::ustring line = *iterator;		
 
-		g_debug("Processing line: '%s'", line.c_str());
+		if (!line.empty())
+		{
+			g_debug("Processing line: '%s'", line.c_str());
 
-		if (Glib::str_has_prefix(line, "T "))
-		{
-			process_terrestrial_line(frontend, line, wait_timeout);
-		}
-		else
-		{
-			throw Exception("Me TV cannot process a line in the initial tuning file");
+			if (Glib::str_has_prefix(line, "T "))
+			{
+				process_terrestrial_line(frontend, line, wait_timeout);
+			}
+			else
+			{
+				throw Exception("Me TV cannot process a line in the initial tuning file");
+			}
 		}
 		
 		signal_progress(++count, size);
-		iterator++;
 	}
 
 	signal_progress(size, size);

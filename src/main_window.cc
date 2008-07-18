@@ -30,7 +30,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 {
 	display_mode = DISPLAY_MODE_EPG;
 	
-	
 //	statusbar = dynamic_cast<Gtk::Statusbar*>(glade->get_widget("statusbar"));
 	glade->get_widget("event_box_video")->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
