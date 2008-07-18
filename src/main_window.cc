@@ -52,6 +52,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
 	glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
+	glade->connect_clicked("menu_item_fullscreen",	sigc::mem_fun(*this, &MainWindow::on_menu_item_fullscreen_clicked));	
 
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
@@ -114,7 +115,7 @@ Gtk::DrawingArea& MainWindow::get_drawing_area()
 	}
 	return *drawing_area_video;
 }
-	
+
 void MainWindow::on_menu_item_open_clicked()
 {
 	TRY
@@ -213,6 +214,18 @@ void MainWindow::on_menu_item_preferences_clicked()
 	preferences_dialog->run();
 	preferences_dialog->hide();
 	widget_epg->update();
+}
+
+void MainWindow::on_menu_item_fullscreen_clicked()
+{
+	if (is_fullscreen())
+	{
+		unfullscreen();
+	}
+	else
+	{
+		fullscreen();
+	}
 }
 
 void MainWindow::on_menu_item_about_clicked()
