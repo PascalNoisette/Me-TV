@@ -101,7 +101,8 @@ void GtkEpgWidget::update_table()
 			t += 60*60;
 			localtime_r(&t, &tp);
 			strftime(buffer, 1000, "%x %T", &tp);
-			Gtk::Button& button_previous = attach_button(buffer, hour*6+2, (hour+1)*6+1, 0, 1);
+			Glib::ustring text = Glib::ustring::compose("<b>%1</b>", Glib::ustring(buffer));
+			Gtk::Button& button_previous = attach_button(text, hour*6+2, (hour+1)*6+1, 0, 1);
 		}
 		Gtk::Button& button_next = attach_button("<b>&gt;</b>", (epg_span_hours*6)+1, (epg_span_hours*6)+2, 0, 1);	
 		
