@@ -23,6 +23,7 @@
 
 #include <glibmm/i18n.h>
 #include <list>
+#include <vector>
 
 #define GCONF_PATH "/apps/me-tv"
 
@@ -30,6 +31,7 @@ typedef sigc::signal<void, const Glib::ustring&> StringSignal;
 
 StringSignal& get_signal_error();
 
+typedef std::vector<Glib::ustring> StringArray;
 typedef std::list<Glib::ustring> StringList;
 
 #endif

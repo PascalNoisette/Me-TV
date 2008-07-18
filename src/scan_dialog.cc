@@ -28,10 +28,10 @@
 #define SCAN_DIRECTORY "/usr/share/doc/dvb-utils/examples/scan"
 #endif
 
-Glib::ustring ScanDialog::get_initial_tuning_dir(Dvb::Frontend& frontend)
+Glib::ustring ScanDialog::get_initial_tuning_dir()
 {
 	Glib::ustring path = SCAN_DIRECTORY;
-
+	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
 	switch(frontend.get_frontend_info().type)
 	{
 	case FE_OFDM:   path += "/dvb-t";       break;
@@ -67,16 +67,13 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scanned_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
 	
-	combo_box_scan_device = NULL;
-	glade->get_widget_derived("combo_box_scan_device", combo_box_scan_device);
-	
 	combo_box_select_country = NULL;
 	glade->get_widget_derived("combo_box_select_country", combo_box_select_country);
 
 	combo_box_select_region = NULL;
 	glade->get_widget_derived("combo_box_select_region", combo_box_select_region);
 	
-	Glib::ustring scan_directory_path = get_initial_tuning_dir(combo_box_scan_device->get_selected_frontend());
+	Glib::ustring scan_directory_path = get_initial_tuning_dir();
 
 	Glib::RefPtr<Gio::File> scan_directory = Gio::File::create_for_path(scan_directory_path);
 	
@@ -158,10 +155,8 @@ void ScanDialog::on_button_start_scan_clicked()
 	progress_bar_scan->show();
 	list_store->clear();
 
-	Glib::ustring device_name = combo_box_scan_device->get_active_text();
-	DeviceManager& device_manager = get_application().get_device_manager();
-	Dvb::Frontend& frontend = device_manager.get_frontend_by_name(device_name);
-	
+	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
+
 	Glib::ustring initial_tuning_file;
 	
 	Gtk::RadioButton* radio_button_scan_by_location = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_by_location"));
@@ -169,7 +164,7 @@ void ScanDialog::on_button_start_scan_clicked()
 	{
 		Glib::ustring country_name = combo_box_select_country->get_active_text();
 		Glib::ustring region_name = combo_box_select_region->get_active_text();
-		Glib::ustring initial_tuning_dir = get_initial_tuning_dir(frontend);
+		Glib::ustring initial_tuning_dir = get_initial_tuning_dir();
 		initial_tuning_file = initial_tuning_dir + "/" + country_name + "-" + region_name;
 	}
 	else

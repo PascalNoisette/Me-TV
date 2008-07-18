@@ -37,27 +37,23 @@ ComboBoxEntryText::ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr
 ComboBoxFrontend::ComboBoxFrontend(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
 	: Gtk::ComboBoxText(cobject), device_manager(get_application().get_device_manager())
 {
-	const std::list<Dvb::Frontend*> frontends = device_manager.get_frontends();
-
-	if (frontends.size() == 0)
+	const FrontendList& frontends = device_manager.get_frontends();
+	paths.resize(frontends.size());
+	gint index = 0;
+	for (FrontendList::const_iterator iterator = frontends.begin(); iterator != frontends.end(); iterator++)
 	{
-		throw Exception(_("No tuner devices"));
-	}
-	
-	std::list<Dvb::Frontend*>::const_iterator frontend_iterator = frontends.begin();
-	while (frontend_iterator != frontends.end())
-	{
-		Dvb::Frontend* frontend = *frontend_iterator;
+		Dvb::Frontend* frontend = *iterator;
 		append_text(frontend->get_frontend_info().name);
-		frontend_iterator++;
+		paths[index++] = frontend->get_path();
 	}
+		
 	set_active(0);
 }
 
 Dvb::Frontend& ComboBoxFrontend::get_selected_frontend()
 {
-	Glib::ustring device_name = get_active_text();
-	return device_manager.get_frontend_by_name(device_name);
+	Glib::ustring path = paths[get_active()];
+	return device_manager.get_frontend_by_path(path);
 }
 
 GdkLock::GdkLock()

@@ -106,9 +106,10 @@ struct StringTable* Frontend::get_guard_table()			{ return guard_table; }
 struct StringTable* Frontend::get_hierarchy_table()		{ return hierarchy_table; }
 struct StringTable* Frontend::get_inversion_table()		{ return inversion_table; }
 
-Frontend::Frontend(const Adapter& adapter, guint frontend) : adapter(adapter)
+Frontend::Frontend(const Adapter& adapter, guint frontend_index) : adapter(adapter)
 {
 	fd = -1;
+	frontend = frontend_index;
 
 	Glib::ustring path = adapter.get_frontend_path(frontend);
 	g_debug("Opening frontend device: %s", path.c_str());

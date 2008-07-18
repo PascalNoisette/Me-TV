@@ -23,14 +23,15 @@
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
-#include "thread.h"
 #include "me-tv-ui.h"
+#include "thread.h"
 
 #define METERS_POLL_INTERVAL 100000
 
 class MetersDialog : public Gtk::Dialog
 {
 private:
+		
 	class MetersThread : public Thread
 	{
 	private:
@@ -54,66 +55,18 @@ private:
 	Gtk::Label*			label_meters_device_name;
 	ComboBoxFrontend*	combo_box_meters_device_name;
 	MetersThread		meters_thread;
-	Dvb::Frontend*		frontend;
+	Dvb::Frontend&		frontend;
+
+	void on_hide();
 
 public:	
-	MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
-		Gtk::Dialog(cobject), glade(glade), meters_thread(*this)
-	{
-		progress_bar_signal_strength = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_strength"));
-		progress_bar_signal_noise = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_noise"));
-		glade->get_widget_derived("combo_box_meters_device_name", combo_box_meters_device_name);
-		glade->connect_clicked("button_meters_close", sigc::mem_fun(*this, &Gtk::Widget::hide));
+	MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	~MetersDialog();
 
-		set_meters(0, 0);
-	}
-
-	~MetersDialog()
-	{
-		stop();
-	}
-
-	void start()
-	{
-		frontend = &combo_box_meters_device_name->get_selected_frontend();
-		meters_thread.start();
-	}
-		
-	void stop()
-	{
-		gdk_threads_leave();
-		meters_thread.join(true);
-		gdk_threads_enter();
-	}
-
-	void update_meters()
-	{
-		if (frontend == NULL)
-		{
-			throw Exception(_("Frontend was not set"));
-		}
-
-		gdouble strength = frontend->get_signal_strength();
-		gdouble snr = frontend->get_snr();
-		
-		usleep(METERS_POLL_INTERVAL);
-
-		GdkLock gdk_lock;
-		set_meters(strength, snr);
-	}
-
-	void set_meters(gdouble strength, gdouble snr)
-	{
-		gdouble bits16 = 1 << 16;
-		progress_bar_signal_strength->set_fraction(strength/bits16);
-		progress_bar_signal_noise->set_fraction(snr/bits16);
-	}
-
-	void on_hide()
-	{
-		stop();
-		Widget::on_hide();
-	}
+	void start();
+	void stop();
+	void update_meters();
+	void set_meters(gdouble strength, gdouble snr);
 };
 
 #endif

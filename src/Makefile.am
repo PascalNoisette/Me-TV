@@ -59,7 +59,8 @@ me_tv_SOURCES = \
 	me-tv-ui.h \
 	me-tv-ui.cc \
 	device_manager.cc \
-	engine.h
+	engine.h \
+	meters_dialog.cc
 
 me_tv_LDFLAGS = 
 

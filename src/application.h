@@ -41,9 +41,7 @@ private:
 	MainWindow*						main_window;
 	Engine*							engine;
 
-	Dvb::Frontend& get_frontend();
 	void on_display_channel_changed(Channel& channel);
-
 	void remove_all_demuxers();
 	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
 		guint pid, dmx_pes_type_t pid_type, const gchar* type_text);

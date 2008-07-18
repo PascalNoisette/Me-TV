@@ -79,7 +79,6 @@ private:
 	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
 	Gtk::ProgressBar*						progress_bar_scan;
 	Gtk::TreeView*							tree_view_scanned_channels;
-	ComboBoxFrontend*						combo_box_scan_device;
 	ComboBoxText*							combo_box_select_country;
 	ComboBoxText*							combo_box_select_region;
 	ScanThread*								scan_thread;
@@ -103,7 +102,7 @@ private:
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;
 		
-	Glib::ustring get_initial_tuning_dir(Dvb::Frontend& frontend);
+	Glib::ustring get_initial_tuning_dir();
 	Country* find_country(const Glib::ustring& country_name);
 	Country& get_country(const Glib::ustring& country);
 

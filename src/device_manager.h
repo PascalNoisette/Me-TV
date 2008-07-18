@@ -44,24 +44,25 @@ public:
 	FrontendEvent(UsageType usage_type, Event event) : Event(event), usage_type(usage_type) {}
 };
 
+typedef std::list<Dvb::Frontend*> FrontendList;
+
 class DeviceManager
 {
 private:
-	Glib::ustring get_adapter_string(guint adapter);
-	Glib::ustring get_frontend_string(guint adapter, guint frontend);
-	
-	std::list<Dvb::Adapter*> adapters;
-	std::list<Dvb::Frontend*> frontends;
-	Scheduler scheduler;
+	Glib::ustring get_adapter_path(guint adapter);
+	Glib::ustring get_frontend_path(guint adapter, guint frontend);
+	FrontendList frontends;		
+	Dvb::Frontend* frontend;
 
 public:
 	DeviceManager();
 	~DeviceManager();
 		
 	const std::list<Dvb::Frontend*> get_frontends() const;
-		
-	Dvb::Frontend& get_frontend_by_name(const Glib::ustring& frontend_name);
-	Dvb::Frontend* request_frontend(Event event);
+	void set_frontend(Dvb::Frontend& f) { frontend = &f; };
+	Dvb::Frontend& get_frontend_by_path(const Glib::ustring& path);
+	Dvb::Frontend& get_frontend();
+	const FrontendList& get_frontends() { return frontends; };
 };
 
 #endif

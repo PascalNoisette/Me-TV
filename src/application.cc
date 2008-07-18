@@ -94,21 +94,10 @@ Application& Application::get_current()
 void Application::on_display_channel_changed(Channel& channel)
 {
 	TRY
-	Dvb::Frontend& frontend = get_frontend();
+	Dvb::Frontend& frontend = device_manager.get_frontend();
 	setup_dvb(frontend, channel);
 	engine->play(main_window->get_drawing_area().get_window(), "file://" + frontend.get_adapter().get_dvr_path());
 	CATCH
-}
-
-Dvb::Frontend& Application::get_frontend()
-{
-	Event event(0, 0);
-	Dvb::Frontend* frontend = get_application().get_device_manager().request_frontend(event);
-	if (frontend == NULL)
-	{
-		throw Exception(_("No frontend available"));
-	}
-	return *frontend;
 }
 
 void Application::remove_all_demuxers()

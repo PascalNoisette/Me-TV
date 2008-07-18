@@ -75,6 +75,7 @@ namespace Dvb
 		struct dvb_frontend_info frontend_info;
 		void wait_lock(guint wait_seconds);
 		void diseqc(const Transponder& transponder);
+		guint frontend;
 		
 	public:
 		Frontend(const Adapter& adapter, guint frontend);
@@ -86,6 +87,7 @@ namespace Dvb
 		const struct dvb_frontend_info& get_frontend_info() const;
 		int get_fd() const { return fd; }
 		const Adapter& get_adapter() const { return adapter; }
+		Glib::ustring get_path() const { return adapter.get_frontend_path(frontend); }
 			
 		static struct StringTable* get_bandwidth_table();
 		static struct StringTable* get_fec_table();

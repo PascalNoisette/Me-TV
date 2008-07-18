@@ -44,6 +44,7 @@ private:
 	Gtk::HScale*							h_scale_position;
 	Gtk::Statusbar*							statusbar;
 	DisplayMode								display_mode;
+	Gtk::RadioButtonGroup					radio_button_group_devices;
 
 	void stop();
 	void fullscreen();
@@ -51,6 +52,7 @@ private:
 	gboolean is_fullscreen();
 	
 	void set_display_mode(DisplayMode display_mode);
+	void load_devices();
 
 	bool on_timeout();
 	void on_error(const Glib::ustring& message);

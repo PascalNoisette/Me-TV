@@ -26,11 +26,12 @@
 #include "scan_dialog.h"
 #include <config.h>
 
-MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Window(cobject), glade(glade)
+MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
+	: Gtk::Window(cobject), glade(glade)
 {
 	display_mode = DISPLAY_MODE_EPG;
 	
-//	statusbar = dynamic_cast<Gtk::Statusbar*>(glade->get_widget("statusbar"));
+	statusbar = dynamic_cast<Gtk::Statusbar*>(glade->get_widget("statusbar"));
 	glade->get_widget("event_box_video")->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
@@ -51,9 +52,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
 	glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
-	glade->connect_clicked("button_epg_previous",	sigc::mem_fun(*this, &MainWindow::on_button_epg_previous_clicked));
-	glade->connect_clicked("button_epg_now",		sigc::mem_fun(*this, &MainWindow::on_button_epg_now_clicked));
-	glade->connect_clicked("button_epg_next",		sigc::mem_fun(*this, &MainWindow::on_button_epg_next_clicked));
 
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
@@ -72,6 +70,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	last_motion_time = time(NULL);
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
 	
+	load_devices();
 	show();
 
 	widget_epg->update();
@@ -84,6 +83,21 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 MainWindow::~MainWindow()
 {
 	stop();
+}
+
+void MainWindow::load_devices()
+{
+	Gtk::MenuItem* menu_item_devices = dynamic_cast<Gtk::MenuItem*>(glade->get_widget("menu_item_devices"));
+	Gtk::Menu* sub_menu = menu_item_devices->get_submenu();
+	
+	const FrontendList& frontends = get_application().get_device_manager().get_frontends();
+	for (FrontendList::const_iterator iterator = frontends.begin(); iterator != frontends.end(); iterator++)
+	{
+		Dvb::Frontend* frontend = *iterator;
+		Glib::ustring text = frontend->get_frontend_info().name;
+		Gtk::RadioMenuItem menu_item(radio_button_group_devices, text, false);
+		//sub_menu->append(menu_item);
+	}
 }
 
 void MainWindow::on_error(const Glib::ustring& message)
@@ -116,7 +130,7 @@ void MainWindow::on_menu_item_open_clicked()
 		Glib::ustring filename = dialog.get_filename();
 		filename = "file://" + filename;
 		g_debug("Playing '%s'", filename.c_str());
-		Application::get_current().get_engine().play(drawing_area_video->get_window(), filename);
+		get_application().get_engine().play(drawing_area_video->get_window(), filename);
 	}
 	CATCH
 }
@@ -178,24 +192,15 @@ void MainWindow::on_menu_item_channels_clicked()
 		// Pressed scan button
 		else if (result == 1)
 		{
-			gsize frontend_count = Application::get_current().get_device_manager().get_frontends().size();
-			if (frontend_count == 0)
+			ScanDialog* scan_dialog = NULL;
+			glade->get_widget_derived("dialog_scan", scan_dialog);
+			guint scan_dialog_result = scan_dialog->run();
+			scan_dialog->hide();
+		
+			if (scan_dialog_result == Gtk::RESPONSE_OK)
 			{
-				Gtk::MessageDialog dialog(*this, "There are no tuners to scan", false, Gtk::MESSAGE_ERROR);
-				dialog.run();
-			}
-			else
-			{
-				ScanDialog* scan_dialog = NULL;
-				glade->get_widget_derived("dialog_scan", scan_dialog);
-				guint scan_dialog_result = scan_dialog->run();
-				scan_dialog->hide();
-			
-				if (scan_dialog_result == Gtk::RESPONSE_OK)
-				{
-					std::list<ScannedService> scanned_services = scan_dialog->get_scanned_services();
-					channels_dialog->add_scanned_services(scanned_services);
-				}
+				std::list<ScannedService> scanned_services = scan_dialog->get_scanned_services();
+				channels_dialog->add_scanned_services(scanned_services);
 			}
 		}
 	}
@@ -261,14 +266,14 @@ bool MainWindow::on_event_box_video_scroll_event(GdkEventScroll* event)
 {
 	switch(event->direction)
 	{
-		case GDK_SCROLL_UP:
-			{
-			}
-			break;
-		case GDK_SCROLL_DOWN:
-			{
-			}
-			break;
+	case GDK_SCROLL_UP:
+		{
+		}
+		break;
+	case GDK_SCROLL_DOWN:
+		{
+		}
+		break;
 	}
 	
 	return true;
@@ -292,16 +297,14 @@ void MainWindow::on_button_epg_next_clicked()
 void MainWindow::unfullscreen()
 {
 	glade->get_widget("menubar")->property_visible() = true;
-	//glade->get_widget("statusbar")->property_visible() = true;
+	glade->get_widget("statusbar")->property_visible() = true;
 	glade->get_widget("handlebox_toolbar")->property_visible() = true;
 	Gtk::Window::unfullscreen();
 }
 
 void MainWindow::fullscreen()
 {
-	glade->get_widget("menubar")->property_visible() = false;
-	//glade->get_widget("statusbar")->property_visible() = false;
-	glade->get_widget("handlebox_toolbar")->property_visible() = false;
+	set_display_mode(DISPLAY_MODE_VIDEO);
 	Gtk::Window::fullscreen();
 }
 
@@ -327,7 +330,7 @@ bool MainWindow::on_timeout()
 
 void MainWindow::stop()
 {
-	// TODO - stop
+	get_application().get_engine().stop();
 }
 
 void MainWindow::set_display_mode(DisplayMode display_mode)
@@ -335,8 +338,8 @@ void MainWindow::set_display_mode(DisplayMode display_mode)
 	glade->get_widget("menubar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
 	glade->get_widget("handlebox_toolbar")->property_visible()		= (display_mode == DISPLAY_MODE_EPG);
 	glade->get_widget("scrolled_window_epg")->property_visible()	= (display_mode == DISPLAY_MODE_EPG);
-	//glade->get_widget("statusbar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
-	glade->get_widget("vbox_controls")->property_visible()			= (display_mode == DISPLAY_MODE_EPG);
+	glade->get_widget("statusbar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
+	glade->get_widget("label_information")->property_visible()		= (display_mode == DISPLAY_MODE_EPG);
 
 	Gtk::VBox* vbox_main = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main"));
 	Gtk::HBox* hbox_top = dynamic_cast<Gtk::HBox*>(glade->get_widget("hbox_top"));

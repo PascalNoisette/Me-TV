@@ -42,6 +42,7 @@ class ComboBoxFrontend : public Gtk::ComboBoxText
 {
 private:
 	DeviceManager& device_manager;
+	StringArray paths;
 public:
 	ComboBoxFrontend(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
 	Dvb::Frontend& get_selected_frontend();
