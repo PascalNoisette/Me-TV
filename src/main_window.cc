@@ -51,9 +51,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_meters",		sigc::mem_fun(*this, &MainWindow::on_menu_item_meters_clicked));
 	glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
 	glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
-	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
 	glade->connect_clicked("menu_item_fullscreen",	sigc::mem_fun(*this, &MainWindow::on_menu_item_fullscreen_clicked));	
+	glade->connect_clicked("menu_item_scheduled_recordings",	sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
+	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
 
+	glade->connect_clicked("tool_button_scheduled_recordings", sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
+	
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
 	event_box_video->signal_motion_notify_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_motion_notify_event));
@@ -89,16 +92,24 @@ MainWindow::~MainWindow()
 void MainWindow::load_devices()
 {
 	Gtk::MenuItem* menu_item_devices = dynamic_cast<Gtk::MenuItem*>(glade->get_widget("menu_item_devices"));
-	Gtk::Menu* sub_menu = menu_item_devices->get_submenu();
+	Gtk::Menu* menu = menu_item_devices->get_submenu();
+	if (menu == NULL)
+	{
+		menu = new Gtk::Menu();
+		menu_item_devices->set_submenu(*menu);
+	}
 	
 	const FrontendList& frontends = get_application().get_device_manager().get_frontends();
 	for (FrontendList::const_iterator iterator = frontends.begin(); iterator != frontends.end(); iterator++)
 	{
 		Dvb::Frontend* frontend = *iterator;
 		Glib::ustring text = frontend->get_frontend_info().name;
-		Gtk::RadioMenuItem menu_item(radio_button_group_devices, text, false);
-		//sub_menu->append(menu_item);
+		Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(radio_button_group_devices, text, false);
+		menu->append(*menu_item);
 	}
+
+	menu_item_devices->set_submenu(*menu);
+	menu_item_devices->show_all();
 }
 
 void MainWindow::on_error(const Glib::ustring& message)
@@ -372,3 +383,24 @@ bool MainWindow::on_drawing_area_video_expose(GdkEventExpose* event)
 		event->area.x, event->area.y, event->area.width, event->area.height);
 	return false;
 }
+
+class ScheduledRecordingsDialog : public Gtk::Dialog
+{
+private:
+	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
+public:	
+	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
+		: Gtk::Dialog(cobject), glade(glade)
+	{
+		glade->connect_clicked("button_scheduled_recordings_close", sigc::mem_fun(*this, &ScheduledRecordingsDialog::hide));	
+	}
+};
+
+void MainWindow::show_scheduled_recordings_dialog()
+{
+	ScheduledRecordingsDialog* dialog_scheduled_recordings = NULL;
+	glade->get_widget_derived("dialog_scheduled_recordings", dialog_scheduled_recordings);
+	dialog_scheduled_recordings->show_all();
+	dialog_scheduled_recordings->run();
+}
+

@@ -26,7 +26,6 @@ MetersDialog::MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 {
 	progress_bar_signal_strength = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_strength"));
 	progress_bar_signal_noise = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_noise"));
-	glade->get_widget_derived("combo_box_meters_device_name", combo_box_meters_device_name);
 	glade->connect_clicked("button_meters_close", sigc::mem_fun(*this, &Gtk::Widget::hide));
 	set_meters(0, 0);
 }
@@ -62,7 +61,11 @@ void MetersDialog::update_meters()
 void MetersDialog::set_meters(gdouble strength, gdouble snr)
 {
 	gdouble bits16 = 1 << 16;
+	Glib::ustring signal_strength_text = Glib::ustring::compose("Signal Strength (%1%%)", (guint)((strength/bits16)*100));
+	Glib::ustring signal_noise_text = Glib::ustring::compose("S/N Ratio (%1%%)", (guint)((snr/bits16)*100));
+	progress_bar_signal_strength->set_text(signal_strength_text);
 	progress_bar_signal_strength->set_fraction(strength/bits16);
+	progress_bar_signal_noise->set_text(signal_noise_text);
 	progress_bar_signal_noise->set_fraction(snr/bits16);
 }
 

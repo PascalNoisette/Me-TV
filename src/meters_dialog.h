@@ -52,8 +52,6 @@ private:
 	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
 	Gtk::ProgressBar*	progress_bar_signal_strength;
 	Gtk::ProgressBar*	progress_bar_signal_noise;
-	Gtk::Label*			label_meters_device_name;
-	ComboBoxFrontend*	combo_box_meters_device_name;
 	MetersThread		meters_thread;
 	Dvb::Frontend&		frontend;
 
