@@ -87,13 +87,30 @@ void GtkEpgWidget::update_table()
 		ChannelManager& channel_manager = get_application().get_channel_manager();
 		const Channel& display_channel = channel_manager.get_display_channel();
 		const ChannelList& channels = channel_manager.get_channels();
+		Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
+		guint epg_span_hours = client->get_int(GCONF_PATH"/epg_span_hours");
 
-		guint row = 0;
+		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
+
+		Gtk::Button& button_previous = attach_button("<b>&lt;</b>", 1, 2, 0, 1);
+		time_t t = time(NULL);
+		char buffer[1000];
+		struct tm tp;
+		for (gint hour = 0; hour < epg_span_hours; hour++)
+		{
+			t += 60*60;
+			localtime_r(&t, &tp);
+			strftime(buffer, 1000, "%x %T", &tp);
+			Gtk::Button& button_previous = attach_button(buffer, hour*6+2, (hour+1)*6+1, 0, 1);
+		}
+		Gtk::Button& button_next = attach_button("<b>&gt;</b>", (epg_span_hours*6)+1, (epg_span_hours*6)+2, 0, 1);	
+		
+		guint row = 1;
 		ChannelList::const_iterator iterator = channels.begin();
 		while (iterator != channels.end())
 		{
 			const Channel& channel = *iterator;
-			create_channel_row(channel, row++, channel.name == display_channel.name);
+			create_channel_row(channel, row++, channel.name == display_channel.name, epg_span_hours);
 			iterator++;
 		}
 		get_window()->thaw_updates();
@@ -102,7 +119,7 @@ void GtkEpgWidget::update_table()
 	}
 }
 
-void GtkEpgWidget::create_channel_row(const Channel& channel, guint row, gboolean selected)
+void GtkEpgWidget::create_channel_row(const Channel& channel, guint row, gboolean selected, guint epg_span_hours)
 {
 	Gtk::Button& channel_button = attach_button("<b>" + channel.name + "</b>", 0, 1, row + 1, row + 2);
 	
@@ -113,6 +130,8 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint row, gboolea
 			channel.name
 		)
 	);
+
+	Gtk::Button& unknown_button = attach_button("Unknown", 1, epg_span_hours*6+2, row + 1, row + 2);
 }
 
 Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text,	guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)

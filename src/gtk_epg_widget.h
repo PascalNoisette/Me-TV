@@ -49,7 +49,7 @@ private:
 	Gtk::Button& attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach);
 	Gtk::Label& attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach);
 	void attach_widget(Gtk::Widget& widget, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach);
-	void create_channel_row(const Channel& channel, guint row, gboolean selected);
+	void create_channel_row(const Channel& channel, guint row, gboolean selected, guint epg_span_hours);
 
 public:
 	GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);

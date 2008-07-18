@@ -41,6 +41,16 @@ void set_default(Glib::RefPtr<Gnome::Conf::Client> client, const Glib::ustring& 
 	}
 }
 
+void set_default(Glib::RefPtr<Gnome::Conf::Client> client, const Glib::ustring& path, gint value)
+{
+	Gnome::Conf::Value v = client->get(path);
+	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
+	{
+		g_debug("Setting string configuration value '%s' = '%d'", path.c_str(), value);
+		client->set(path, value);
+	}
+}
+
 Application::Application(int argc, char *argv[]) :
 	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv)
 {
@@ -54,6 +64,7 @@ Application::Application(int argc, char *argv[]) :
 		
 	Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
 	set_default(client, GCONF_PATH"/video_output", "Xv");
+	set_default(client, GCONF_PATH"/epg_span_hours", 3);
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
 	Glib::ustring glade_path = current_directory + "/me-tv.glade";
