@@ -23,12 +23,11 @@
 
 #include <libglademm.h>
 #include <libgnomemm.h>
-#include <gst/interfaces/xoverlay.h>
-#include <gst/video/video.h>
 #include "device_manager.h"
 #include "profile_manager.h"
 #include "channel_manager.h"
 #include "dvb_demuxer.h"
+#include "main_window.h"
 
 class Application : public Gnome::Main
 {
@@ -39,12 +38,11 @@ private:
 	DeviceManager					device_manager;
 	ChannelManager					channel_manager;
 	DemuxerList						demuxers;
-	GstElement*						player;
-	GstElement*						sink;
+	MainWindow*						main_window;
+	Engine*							engine;
 
 	Dvb::Frontend& get_frontend();
 	void on_display_channel_changed(Channel& channel);
-	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
 
 	void remove_all_demuxers();
 	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
@@ -56,6 +54,7 @@ public:
 	Application(int argc, char *argv[]);
 	void run();
 	static Application& get_current();
+	Engine& get_engine();
 	
 	ProfileManager&		get_profile_manager()	{ return profile_manager; }
 	DeviceManager&		get_device_manager()	{ return device_manager; }

@@ -58,7 +58,8 @@ me_tv_SOURCES = \
 	profile_manager.cc \
 	me-tv-ui.h \
 	me-tv-ui.cc \
-	device_manager.cc 
+	device_manager.cc \
+	engine.h
 
 me_tv_LDFLAGS = 
 

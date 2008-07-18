@@ -23,6 +23,7 @@
 
 #include "gtk_epg_widget.h"
 #include "meters_dialog.h"
+#include "engine.h"
 
 typedef enum DisplayMode
 {

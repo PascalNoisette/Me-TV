@@ -23,8 +23,6 @@
 #include "config.h"
 #include "device_manager.h"
 #include "dvb_si.h"
-#include <gdk/gdkx.h>
-#include <gst/gstplugin.h>
 
 Application* Application::current = NULL;
 
@@ -52,13 +50,8 @@ Application::Application(int argc, char *argv[]) :
 	}
 	
 	current = this;
-	player = NULL;
-	sink = NULL;
-	
-	gst_init(&argc, &argv);
+	main_window = NULL;
 		
-	g_debug(gst_version_string());
-	
 	Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
 	set_default(client, GCONF_PATH"/video_output", "Xv");
 	
@@ -79,14 +72,11 @@ Application::Application(int argc, char *argv[]) :
 
 	channel_manager.add_channels(profile_manager.get_current_profile().channels);
 
-	player		= create_element("playbin", "player");
-	sink		= create_element("xvimagesink", "sink");
-	g_object_set (G_OBJECT (player), "video_sink", sink, NULL);
+	engine = new GStreamerEngine(argc, argv);
 }
 
 void Application::run()
 {
-	MainWindow* main_window = NULL;
 	glade->get_widget_derived("window_main", main_window);
 	Gnome::Main::run(*main_window);
 }
@@ -101,36 +91,12 @@ Application& Application::get_current()
 	return *current;
 }
 
-GstElement* Application::create_element(const Glib::ustring& factoryname, const Glib::ustring& name)
-{
-	GstElement* element = gst_element_factory_make(factoryname.c_str(), name.c_str());
-	
-	if (element == NULL)
-	{
-		throw Exception(Glib::ustring::compose(N_("Failed to create GStreamer element '%1'"), name));
-	}
-	
-	return element;
-}
-
 void Application::on_display_channel_changed(Channel& channel)
 {
 	TRY
-	MainWindow* main_window = NULL;
-	glade->get_widget_derived("window_main", main_window);
 	Dvb::Frontend& frontend = get_frontend();
-
-	gst_element_set_state (GST_ELEMENT(player), GST_STATE_NULL);
-
 	setup_dvb(frontend, channel);
-
-	int window_id = GDK_WINDOW_XID(main_window->get_drawing_area().get_window()->gobj());
-
-	Glib::ustring path = "file://" + frontend.get_adapter().get_dvr_path();
-	gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (sink), window_id);
-	g_object_set (G_OBJECT (player), "uri", path.c_str(), NULL);
-	gst_element_set_state (player, GST_STATE_PLAYING);
-	
+	engine->play(main_window->get_drawing_area().get_window(), "file://" + frontend.get_adapter().get_dvr_path());
 	CATCH
 }
 
@@ -254,4 +220,14 @@ void Application::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 		//add_pes_demuxer(demux_path, pms.teletext_streams[i].pid, DMX_PES_OTHER, "teletext");
 	}
 	g_debug("Finished setting up DVB");
+}
+
+Engine& Application::get_engine()
+{
+	if (engine == NULL)
+	{
+		throw Exception("Engine has not been initialised");
+	}
+	
+	return *engine;
 }

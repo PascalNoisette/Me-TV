@@ -51,9 +51,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
 	glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
-	glade->connect_clicked("button_epg_previous", sigc::mem_fun(*this, &MainWindow::on_button_epg_previous_clicked));
-	glade->connect_clicked("button_epg_now", sigc::mem_fun(*this, &MainWindow::on_button_epg_now_clicked));
-	glade->connect_clicked("button_epg_next", sigc::mem_fun(*this, &MainWindow::on_button_epg_next_clicked));
+	glade->connect_clicked("button_epg_previous",	sigc::mem_fun(*this, &MainWindow::on_button_epg_previous_clicked));
+	glade->connect_clicked("button_epg_now",		sigc::mem_fun(*this, &MainWindow::on_button_epg_now_clicked));
+	glade->connect_clicked("button_epg_next",		sigc::mem_fun(*this, &MainWindow::on_button_epg_next_clicked));
 
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
@@ -71,7 +71,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	last_motion_time = time(NULL);
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
-
+	
 	show();
 
 	widget_epg->update();
@@ -114,11 +114,9 @@ void MainWindow::on_menu_item_open_clicked()
 	if (response == 0)
 	{
 		Glib::ustring filename = dialog.get_filename();
+		filename = "file://" + filename;
 		g_debug("Playing '%s'", filename.c_str());
-		
-		stop();
-
-		// TODO - File open
+		Application::get_current().get_engine().play(drawing_area_video->get_window(), filename);
 	}
 	CATCH
 }
