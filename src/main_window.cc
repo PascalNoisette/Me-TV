@@ -100,12 +100,20 @@ void MainWindow::load_devices()
 	}
 	
 	const FrontendList& frontends = get_application().get_device_manager().get_frontends();
-	for (FrontendList::const_iterator iterator = frontends.begin(); iterator != frontends.end(); iterator++)
+	if (frontends.size() == 0)
 	{
-		Dvb::Frontend* frontend = *iterator;
-		Glib::ustring text = frontend->get_frontend_info().name;
-		Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(radio_button_group_devices, text, false);
+		Gtk::MenuItem* menu_item = new Gtk::MenuItem("No DVB Devices");
 		menu->append(*menu_item);
+	}
+	else
+	{
+		for (FrontendList::const_iterator iterator = frontends.begin(); iterator != frontends.end(); iterator++)
+		{
+			Dvb::Frontend* frontend = *iterator;
+			Glib::ustring text = frontend->get_frontend_info().name;
+			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(radio_button_group_devices, text, false);
+			menu->append(*menu_item);
+		}
 	}
 
 	menu_item_devices->set_submenu(*menu);
@@ -229,6 +237,11 @@ void MainWindow::on_menu_item_preferences_clicked()
 
 void MainWindow::on_menu_item_fullscreen_clicked()
 {
+	toggle_fullscreen();
+}
+
+void MainWindow::toggle_fullscreen()
+{
 	if (is_fullscreen())
 	{
 		unfullscreen();
@@ -253,14 +266,7 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 	{
 		if (event->type == GDK_2BUTTON_PRESS)
 		{
-			if (is_fullscreen())
-			{
-				unfullscreen();
-			}
-			else
-			{
-				fullscreen();
-			}
+			toggle_fullscreen();
 		}
 	}
 	else if (event->button == 3)
@@ -320,9 +326,6 @@ void MainWindow::on_button_epg_next_clicked()
 
 void MainWindow::unfullscreen()
 {
-	glade->get_widget("menubar")->property_visible() = true;
-	glade->get_widget("statusbar")->property_visible() = true;
-	glade->get_widget("handlebox_toolbar")->property_visible() = true;
 	Gtk::Window::unfullscreen();
 }
 

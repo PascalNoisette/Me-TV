@@ -50,6 +50,7 @@ private:
 	void fullscreen();
 	void unfullscreen();
 	gboolean is_fullscreen();
+	void toggle_fullscreen();
 	void set_display_mode(DisplayMode display_mode);
 	void load_devices();
 	void show_scheduled_recordings_dialog();
