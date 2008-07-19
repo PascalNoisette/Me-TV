@@ -19,7 +19,6 @@
  */
 
 #include "application.h"
-#include "main_window.h"
 #include "config.h"
 #include "device_manager.h"
 #include "dvb_si.h"
@@ -88,7 +87,7 @@ Application::Application(int argc, char *argv[]) :
 
 void Application::run()
 {
-	glade->get_widget_derived("window_main", main_window);
+	glade->get_widget_derived("application_window", main_window);
 	Gnome::Main::run(*main_window);
 }
 

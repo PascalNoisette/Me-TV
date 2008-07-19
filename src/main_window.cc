@@ -27,11 +27,11 @@
 #include <config.h>
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
-	: Gtk::Window(cobject), glade(glade)
+	: Gnome::UI::App(cobject), glade(glade)
 {
 	display_mode = DISPLAY_MODE_EPG;
 	
-	statusbar = dynamic_cast<Gtk::Statusbar*>(glade->get_widget("statusbar"));
+	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
 	glade->get_widget("event_box_video")->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
@@ -365,7 +365,7 @@ void MainWindow::set_display_mode(DisplayMode display_mode)
 	glade->get_widget("menubar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
 	glade->get_widget("handlebox_toolbar")->property_visible()		= (display_mode == DISPLAY_MODE_EPG);
 	glade->get_widget("scrolled_window_epg")->property_visible()	= (display_mode == DISPLAY_MODE_EPG);
-	glade->get_widget("statusbar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
+	glade->get_widget("app_bar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
 	glade->get_widget("label_information")->property_visible()		= (display_mode == DISPLAY_MODE_EPG);
 
 	Gtk::VBox* vbox_main = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main"));
@@ -406,4 +406,3 @@ void MainWindow::show_scheduled_recordings_dialog()
 	dialog_scheduled_recordings->show_all();
 	dialog_scheduled_recordings->run();
 }
-

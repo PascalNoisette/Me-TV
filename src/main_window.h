@@ -31,7 +31,7 @@ typedef enum DisplayMode
 	DISPLAY_MODE_EPG
 };
 
-class MainWindow : public Gtk::Window
+class MainWindow : public Gnome::UI::App
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
@@ -42,7 +42,7 @@ private:
 	gboolean								is_cursor_visible;
 	MetersDialog*							meters_dialog;
 	Gtk::HScale*							h_scale_position;
-	Gtk::Statusbar*							statusbar;
+	Gnome::UI::AppBar*						app_bar;
 	DisplayMode								display_mode;
 	Gtk::RadioButtonGroup					radio_button_group_devices;
 
