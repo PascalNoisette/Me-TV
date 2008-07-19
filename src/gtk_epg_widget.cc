@@ -122,7 +122,9 @@ void GtkEpgWidget::update_table()
 
 void GtkEpgWidget::create_channel_row(const Channel& channel, guint row, gboolean selected, guint epg_span_hours)
 {
-	Gtk::Button& channel_button = attach_button("<b>" + channel.name + "</b>", 0, 1, row + 1, row + 2);
+	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, row + 1, row + 2);
+	
+	channel_button.set_active(selected);
 	
 	channel_button.signal_clicked().connect(
 		sigc::bind<Glib::ustring>
@@ -135,7 +137,17 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint row, gboolea
 	Gtk::Button& unknown_button = attach_button("Unknown", 1, epg_span_hours*6+2, row + 1, row + 2);
 }
 
-Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text,	guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)
+Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)
+{
+	Gtk::ToggleButton* button = new Gtk::ToggleButton(text);
+	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach);
+	button->set_alignment(0, 0.5);
+	Gtk::Label* label = dynamic_cast<Gtk::Label*>(button->get_child());
+	label->set_use_markup(true);
+	return *button;
+}
+
+Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)
 {
 	Gtk::Button* button = new Gtk::Button(text);
 	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach);
@@ -163,5 +175,9 @@ void GtkEpgWidget::on_button_channel_name_clicked(const Glib::ustring& channel_n
 {
 	TRY
 	get_application().get_channel_manager().set_display_channel(channel_name);
+	CATCH
+
+	TRY
+	update_table();
 	CATCH
 }
