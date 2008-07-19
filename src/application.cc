@@ -146,9 +146,17 @@ void Application::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	
 	remove_all_demuxers();
 	
-	Dvb::Transponder transponder;
-	transponder.frontend_parameters = channel.frontend_parameters;
-	frontend.tune_to(transponder);
+	const Dvb::Transponder* current_transponder = frontend.get_current_transponder();
+	if (current_transponder == NULL || current_transponder->frontend_parameters.frequency != channel.frontend_parameters.frequency)
+	{
+		Dvb::Transponder transponder;
+		transponder.frontend_parameters = channel.frontend_parameters;
+		frontend.tune_to(transponder);
+	}
+	else
+	{
+		g_debug("Frontend already tuned to '%d'", channel.frontend_parameters.frequency);
+	}
 	
 	Dvb::Demuxer demuxer_pat(demux_path);
 	demuxer_pat.set_filter(PAT_PID, PAT_ID);

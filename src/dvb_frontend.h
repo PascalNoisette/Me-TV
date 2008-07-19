@@ -76,13 +76,15 @@ namespace Dvb
 		void wait_lock(guint wait_seconds);
 		void diseqc(const Transponder& transponder);
 		guint frontend;
+		const Transponder* current_transponder;
 		
 	public:
 		Frontend(const Adapter& adapter, guint frontend);
 		~Frontend();
 
 		void tune_to (const Transponder& transponder, guint timeout = 10);
-			
+		const Transponder* get_current_transponder() const { return current_transponder; }
+
 		int get_frontend_type() const { return frontend_info.type; }
 		const struct dvb_frontend_info& get_frontend_info() const;
 		int get_fd() const { return fd; }

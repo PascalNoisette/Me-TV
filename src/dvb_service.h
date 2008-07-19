@@ -29,7 +29,6 @@ namespace Dvb
 
 	class Service
 	{
-	private:
 	public:
 		Service(const Transponder& transponder);
 			

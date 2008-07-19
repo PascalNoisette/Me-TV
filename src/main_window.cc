@@ -168,6 +168,7 @@ void MainWindow::on_menu_item_quit_clicked()
 void MainWindow::on_menu_item_meters_clicked()
 {
 	TRY
+	get_application().get_device_manager().get_frontend();
 	glade->get_widget_derived("dialog_meters", meters_dialog);
 	meters_dialog->stop();
 	meters_dialog->start();

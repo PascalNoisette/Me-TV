@@ -109,6 +109,7 @@ struct StringTable* Frontend::get_inversion_table()		{ return inversion_table; }
 Frontend::Frontend(const Adapter& adapter, guint frontend_index) : adapter(adapter)
 {
 	fd = -1;
+	current_transponder = NULL;
 	frontend = frontend_index;
 
 	Glib::ustring path = adapter.get_frontend_path(frontend);
@@ -203,6 +204,8 @@ void Frontend::tune_to (const Transponder& transponder, guint wait_seconds)
 	g_message(_("Waiting for signal lock ..."));
 	wait_lock(wait_seconds);
 	g_message(_("Got signal lock"));
+	
+	current_transponder = &transponder;
 }
 
 void Frontend::diseqc(const Transponder& transponder)
