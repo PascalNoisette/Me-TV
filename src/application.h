@@ -29,6 +29,13 @@
 #include "dvb_demuxer.h"
 #include "main_window.h"
 
+class EpgThread : public Thread
+{
+public:
+	EpgThread() : Thread("EPG Thread") {}
+	void run();
+};
+
 class Application : public Gnome::Main
 {
 private:
@@ -40,6 +47,7 @@ private:
 	DemuxerList						demuxers;
 	MainWindow*						main_window;
 	Engine*							engine;
+	EpgThread						epg_thread;
 
 	void on_display_channel_changed(Channel& channel);
 	void remove_all_demuxers();

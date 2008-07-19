@@ -39,6 +39,25 @@ Channel::Channel()
 	memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
 }
 
+void Channel::add_event(const Dvb::SI::Event& event)
+{
+	gboolean found = false;
+	for (Dvb::SI::EventList::iterator i = events.begin(); i != events.end() && !found; i++)
+	{
+		Dvb::SI::Event& current_event = *i;
+		if (current_event.event_id == event.event_id)
+		{
+			found = true;
+		}
+	}
+	
+	if (!found)
+	{
+		g_debug("Event %d, %s", event.event_id, event.title.c_str());
+		events.push_back(event);
+	}
+}
+
 Channel* ChannelManager::find_channel(const Glib::ustring& name)
 {
 	Channel* channel = NULL;
@@ -120,4 +139,20 @@ const Channel& ChannelManager::get_display_channel() const
 void ChannelManager::clear()
 {
 	channels.clear();
+}
+
+Channel* ChannelManager::get_channel(guint frequency, guint service_id)
+{
+	Channel* result = NULL;
+	
+	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end() && result == NULL; iterator++)
+	{
+		Channel& channel = *iterator;
+		if (channel.frontend_parameters.frequency == frequency && channel.service_id == service_id)
+		{
+			result = &channel;
+		}
+	}
+	
+	return result;
 }

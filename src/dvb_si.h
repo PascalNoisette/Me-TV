@@ -66,6 +66,8 @@ namespace Dvb
 			Glib::ustring description;
 		};
 
+		typedef std::list<Event> EventList;
+		
 		class EventInformationSection
 		{
 		public:

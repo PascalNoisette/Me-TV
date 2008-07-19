@@ -25,13 +25,18 @@
 #include <glibmm/i18n.h>
 #include <dvb_frontend.h>
 #include "exception.h"
+#include "dvb_si.h"
 
 #define CHANNEL_FLAG_NONE		0
 #define CHANNEL_FLAG_DVB		1
 
 class Channel
 {
+private:
+	Dvb::SI::EventList events;
 public:
+	Channel();
+
 	int index;
 	guint flags;
 	Glib::ustring name;
@@ -40,8 +45,7 @@ public:
 	Glib::ustring mrl;
 	guint service_id;
 	struct dvb_frontend_parameters frontend_parameters;
-
-	Channel();
+	void add_event(const Dvb::SI::Event& event);
 };
 
 typedef std::list<Channel> ChannelList;
@@ -66,7 +70,7 @@ public:
 	const ChannelList& get_channels() const;
 	const Channel& get_display_channel() const;
 	sigc::signal<void, Channel&> signal_display_channel_changed;
+	Channel* get_channel(guint frequency, guint service_id);
 };
-
 
 #endif
