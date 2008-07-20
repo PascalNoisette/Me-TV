@@ -22,7 +22,7 @@
 #define __ENGINE_H__
 
 #include "me-tv.h"
-#include <gdk/gdkx.h>
+#include <libgnomeuimm.h>
 #include <gst/gstplugin.h>
 #include <gst/interfaces/xoverlay.h>
 #include <gst/video/video.h>
@@ -30,54 +30,33 @@
 class Engine
 {
 public:
+	virtual ~Engine() {};
 	virtual void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& mrl) = 0;
-	virtual void stop() = 0;
+	virtual void record(const Glib::ustring& filename) = 0;
+	virtual void mute(gboolean state) = 0;
 };
 
 class GStreamerEngine : public Engine
 {
 private:
-	GstElement*	player;
+	GstElement*	pipeline;
+	GstElement*	source;
+	GstElement*	decoder;
+	GstElement*	volume;
+	GstElement*	deinterlace;
 	GstElement*	sink;
 
-	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name)
-	{
-		GstElement* element = gst_element_factory_make(factoryname.c_str(), name.c_str());
-		
-		if (element == NULL)
-		{
-			throw Exception(Glib::ustring::compose(N_("Failed to create GStreamer element '%1'"), name));
-		}
-		
-		return element;
-	}
+	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
+	static void connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine);
+	void stop();
 		
 public:
-	GStreamerEngine(int argc, char* argv[])
-	{
-		gst_init(&argc, &argv);
-		g_debug(gst_version_string());
+	GStreamerEngine();
+	~GStreamerEngine();
 
-		player		= create_element("playbin", "player");
-		sink		= create_element("xvimagesink", "sink");
-		g_object_set (G_OBJECT (player), "video_sink", sink, NULL);
-	}
-		
-	void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& mrl)
-	{
-		stop();
-
-		int window_id = GDK_WINDOW_XID(window->gobj());
-		gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (sink), window_id);
-
-		g_object_set (G_OBJECT (player), "uri", mrl.c_str(), NULL);
-		gst_element_set_state (player, GST_STATE_PLAYING);
-	}
-		
-	void stop()
-	{
-		gst_element_set_state (GST_ELEMENT(player), GST_STATE_NULL);
-	}
+	void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename);
+	void record(const Glib::ustring& filename);
+	void mute(gboolean state);
 };
 
 #endif

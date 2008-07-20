@@ -55,6 +55,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_scheduled_recordings",	sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
 	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
 
+	glade->connect_clicked("tool_button_record", sigc::mem_fun(*this, &MainWindow::on_tool_button_record_clicked));	
+	glade->connect_clicked("tool_button_mute", sigc::mem_fun(*this, &MainWindow::on_tool_button_mute_clicked));	
 	glade->connect_clicked("tool_button_scheduled_recordings", sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
 	
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
@@ -86,7 +88,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 MainWindow::~MainWindow()
 {
-	stop();
 }
 
 void MainWindow::load_devices()
@@ -148,16 +149,15 @@ void MainWindow::on_menu_item_open_clicked()
 	if (response == 0)
 	{
 		Glib::ustring filename = dialog.get_filename();
-		filename = "file://" + filename;
 		g_debug("Playing '%s'", filename.c_str());
-		get_application().get_engine().play(drawing_area_video->get_window(), filename);
+		get_application().set_source(filename);
 	}
 	CATCH
 }
 
 void MainWindow::on_menu_item_close_clicked()
 {
-	stop();
+	get_application().set_source("");
 }
 	
 void MainWindow::on_menu_item_quit_clicked()
@@ -356,11 +356,6 @@ bool MainWindow::on_timeout()
 	return true;
 }
 
-void MainWindow::stop()
-{
-	get_application().get_engine().stop();
-}
-
 void MainWindow::set_display_mode(DisplayMode display_mode)
 {
 	glade->get_widget("menubar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
@@ -406,4 +401,33 @@ void MainWindow::show_scheduled_recordings_dialog()
 	glade->get_widget_derived("dialog_scheduled_recordings", dialog_scheduled_recordings);
 	dialog_scheduled_recordings->show_all();
 	dialog_scheduled_recordings->run();
+}
+
+void MainWindow::on_tool_button_record_clicked()
+{
+	TRY
+	Gtk::ToggleToolButton* tool_button_record = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"));
+	if (tool_button_record->get_active())
+	{
+		get_application().record("");
+	}
+	else
+	{
+		get_application().record("");
+	}
+	CATCH
+}
+
+void MainWindow::on_tool_button_mute_clicked()
+{
+	TRY
+	Gtk::ToggleToolButton* tool_button_mute = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"));
+	get_application().mute(tool_button_mute->get_active());
+	CATCH
+}
+
+gboolean MainWindow::get_mute_state()
+{
+	Gtk::ToggleToolButton* tool_button_mute = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"));
+	return tool_button_mute->get_active();
 }

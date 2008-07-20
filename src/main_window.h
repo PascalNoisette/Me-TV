@@ -71,6 +71,8 @@ private:
 	void on_button_epg_previous_clicked();
 	void on_button_epg_now_clicked();
 	void on_button_epg_next_clicked();
+	void on_tool_button_record_clicked();
+	void on_tool_button_mute_clicked();
 	bool on_drawing_area_video_expose(GdkEventExpose* expose);
 
 public:
@@ -78,6 +80,7 @@ public:
 	~MainWindow();
 
 	Gtk::DrawingArea& get_drawing_area();
+	gboolean get_mute_state();
 };
 
 #endif

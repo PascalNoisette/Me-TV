@@ -60,6 +60,9 @@ int main (int argc, char *argv[])
 			(GLogLevelFlags)(G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION),
 			log_handler, NULL);
 		
+		gst_init(&argc, &argv);
+		g_debug(gst_version_string());
+
 		g_message("Me TV %s", VERSION);
 		signal_error.connect(sigc::ptr_fun(on_error));
 		Application application(argc, argv);

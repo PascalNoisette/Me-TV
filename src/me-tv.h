@@ -24,6 +24,7 @@
 #include <glibmm/i18n.h>
 #include <list>
 #include <vector>
+#include <glibmm.h>
 
 #define GCONF_PATH "/apps/me-tv"
 

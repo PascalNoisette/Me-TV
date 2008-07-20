@@ -24,10 +24,6 @@
 #include "me-tv.h"
 #include "application.h"
 
-#ifndef SCAN_DIRECTORY
-#define SCAN_DIRECTORY "/usr/share/doc/dvb-utils/examples/scan"
-#endif
-
 Glib::ustring ScanDialog::get_initial_tuning_dir()
 {
 	Glib::ustring path = SCAN_DIRECTORY;
@@ -54,7 +50,10 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	scan_thread = NULL;
 
 	glade->connect_clicked("button_start_scan", sigc::mem_fun(*this, &ScanDialog::on_button_start_scan_clicked));
-	
+
+	Glib::ustring device_name = get_application().get_device_manager().get_frontend().get_frontend_info().name;
+	dynamic_cast<Gtk::Label*>(glade->get_widget("label_scan_device"))->set_label(device_name);
+		
 	progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
 	tree_view_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_scanned_channels"));
 	
@@ -76,41 +75,40 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	Glib::ustring scan_directory_path = get_initial_tuning_dir();
 
 	Glib::RefPtr<Gio::File> scan_directory = Gio::File::create_for_path(scan_directory_path);
-	
+	g_debug("Scanning directory: %s", scan_directory_path.c_str());
+			
 	// This is a hack because I can't get scan_directory->enumerate_children() to work
 	GFileEnumerator* children = g_file_enumerate_children(scan_directory->gobj(),
 		"*", G_FILE_QUERY_INFO_NONE, NULL, NULL);
-	if (children == NULL)
+	if (children != NULL)
 	{
-		throw Exception(_("Failed to enumerate children"));
-	}
-	
-	GFileInfo* file_info = g_file_enumerator_next_file(children, NULL, NULL);
-	while (file_info != NULL)
-	{
-		Glib::ustring name = g_file_info_get_name(file_info);
-		if (name.substr(2,1) == "-")
+		GFileInfo* file_info = g_file_enumerator_next_file(children, NULL, NULL);
+		while (file_info != NULL)
 		{
-			Glib::ustring country_name = name.substr(0,2);
-			Glib::ustring region_name = name.substr(3);
-			Country& country = get_country(country_name);
-			country.regions.push_back(region_name);
+			Glib::ustring name = g_file_info_get_name(file_info);
+			if (name.substr(2,1) == "-")
+			{
+				Glib::ustring country_name = name.substr(0,2);
+				Glib::ustring region_name = name.substr(3);
+				Country& country = get_country(country_name);
+				country.regions.push_back(region_name);
+			}
+			file_info = g_file_enumerator_next_file(children, NULL, NULL);
 		}
-		file_info = g_file_enumerator_next_file(children, NULL, NULL);
-	}
 
-	// Populate controls
-	countries.sort(compare_countries);
-	CountryList::iterator country_iterator = countries.begin();
-	while (country_iterator != countries.end())
-	{
-		Country& country = *country_iterator;
-		country.regions.sort();
-		combo_box_select_country->append_text(country.name);
-		country_iterator++;
+		// Populate controls
+		countries.sort(compare_countries);
+		CountryList::iterator country_iterator = countries.begin();
+		while (country_iterator != countries.end())
+		{
+			Country& country = *country_iterator;
+			country.regions.sort();
+			combo_box_select_country->append_text(country.name);
+			country_iterator++;
+		}
+		combo_box_select_country->signal_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_combo_box_select_country_changed));
+		combo_box_select_country->set_active(0);
 	}
-	combo_box_select_country->signal_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_combo_box_select_country_changed));
-	combo_box_select_country->set_active(0);
 }
 
 ScanDialog::~ScanDialog()

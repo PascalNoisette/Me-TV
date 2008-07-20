@@ -29,7 +29,7 @@
 #include "me-tv-ui.h"
 
 #ifndef SCAN_DIRECTORY
-#define SCAN_DIRECTORY "/usr/share/doc/dvb-utils/examples/scan"
+#define SCAN_DIRECTORY "/usr/share/dvb"
 #endif
 
 class ScannedService

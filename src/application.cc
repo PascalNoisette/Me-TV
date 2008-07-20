@@ -60,9 +60,9 @@ Application::Application(int argc, char *argv[]) :
 	
 	current = this;
 	main_window = NULL;
+	engine = NULL;
 		
 	Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
-	set_default(client, GCONF_PATH"/video_output", "Xv");
 	set_default(client, GCONF_PATH"/epg_span_hours", 3);
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
@@ -81,8 +81,15 @@ Application::Application(int argc, char *argv[]) :
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));
 
 	channel_manager.add_channels(profile_manager.get_current_profile().channels);
+}
 
-	engine = new GStreamerEngine(argc, argv);
+Application::~Application()
+{
+	if (engine != NULL)
+	{
+		delete engine;
+		engine = NULL;
+	}
 }
 
 void Application::run()
@@ -101,12 +108,47 @@ Application& Application::get_current()
 	return *current;
 }
 
+void Application::set_source(const Glib::ustring& source)
+{
+	g_debug("set_source(\"%s\")", source.c_str());
+	if (engine != NULL)
+	{
+		g_debug("Deleting engine");
+		delete engine;
+		engine = NULL;
+	}
+	
+	if (!source.empty())
+	{
+		engine = new GStreamerEngine();
+		engine->play(main_window->get_drawing_area().get_window(), source);
+	}
+}
+
+void Application::record(const Glib::ustring& filename)
+{
+	if (engine == NULL)
+	{
+		throw Exception("Nothing to record");
+	}
+	
+	engine->record(filename);
+}
+
+void Application::mute(gboolean state)
+{
+	if (engine != NULL)
+	{
+		engine->mute(main_window->get_mute_state());
+	}
+}
+
 void Application::on_display_channel_changed(Channel& channel)
 {
 	TRY
 	Dvb::Frontend& frontend = device_manager.get_frontend();
 	setup_dvb(frontend, channel);
-	engine->play(main_window->get_drawing_area().get_window(), "file://" + frontend.get_adapter().get_dvr_path());
+	set_source(frontend.get_adapter().get_dvr_path());
 	CATCH
 }
 
@@ -386,14 +428,4 @@ void EpgThread::run()
 	THREAD_CATCH;
 
 	g_debug(_("Exiting EPG thread"));
-}
-
-Engine& Application::get_engine()
-{
-	if (engine == NULL)
-	{
-		throw Exception("Engine has not been initialised");
-	}
-	
-	return *engine;
 }

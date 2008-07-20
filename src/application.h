@@ -58,13 +58,18 @@ private:
 
 public:
 	Application(int argc, char *argv[]);
+	~Application();
+		
 	void run();
 	static Application& get_current();
-	Engine& get_engine();
 	
 	ProfileManager&		get_profile_manager()	{ return profile_manager; }
 	DeviceManager&		get_device_manager()	{ return device_manager; }
 	ChannelManager&		get_channel_manager()	{ return channel_manager; }
+		
+	void set_source(const Glib::ustring& source);
+	void record(const Glib::ustring& filename);
+	void mute(gboolean state);
 };
 
 Application& get_application();

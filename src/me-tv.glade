@@ -1590,6 +1590,17 @@ xshm</property>
                     <property name="n_rows">5</property>
                     <property name="n_columns">2</property>
                     <child>
+                      <widget class="GtkLabel" id="label_scan_device">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Device Text</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
                       <placeholder/>
                     </child>
                     <child>
@@ -1602,17 +1613,6 @@ xshm</property>
                         <property name="label" translatable="yes">Device: </property>
                       </widget>
                       <packing>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkComboBox" id="combo_box_scan_device">
-                        <property name="visible">True</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
@@ -2298,19 +2298,9 @@ This is some example text.
                         <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_SCROLL_MASK</property>
                         <property name="above_child">True</property>
                         <child>
-                          <widget class="GtkAspectFrame" id="aspect_frame_video">
+                          <widget class="GtkDrawingArea" id="drawing_area_video">
                             <property name="visible">True</property>
                             <property name="app_paintable">True</property>
-                            <property name="label_xalign">0</property>
-                            <property name="shadow_type">GTK_SHADOW_NONE</property>
-                            <property name="ratio">1.7777777910232544</property>
-                            <property name="obey_child">False</property>
-                            <child>
-                              <widget class="GtkDrawingArea" id="drawing_area_video">
-                                <property name="visible">True</property>
-                                <property name="app_paintable">True</property>
-                              </widget>
-                            </child>
                           </widget>
                         </child>
                       </widget>

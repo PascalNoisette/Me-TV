@@ -24,6 +24,7 @@
 ProfileManager::ProfileManager() : client(Gnome::Conf::Client::get_default_client())
 {
 	current_profile = NULL;
+	//unset_directory("/apps/me-tv");
 	load();
 }
 
@@ -221,7 +222,7 @@ void ProfileManager::save()
 		profile_iterator++;
 	}
 	
-	client->clear_cache();
+	client->suggest_sync();
 }
 
 Profile& ProfileManager::get_current_profile()
