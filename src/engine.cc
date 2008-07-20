@@ -76,18 +76,20 @@ GStreamerEngine::GStreamerEngine()
 	decoder		= create_element("decodebin2", "decoder");
 	volume		= create_element("volume", "volume");
 	deinterlace	= create_element("ffdeinterlace", "deinterlace");
-	sink		= create_element("xvimagesink", "sink");
+	video_sink	= create_element("xvimagesink", "video_sink");
+	audio_sink	= create_element("alsasink", "audio_sink");
 
 	GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE(pipeline));
 	gst_bus_add_watch (bus, bus_call, this);
 	gst_object_unref (bus);
 	
 	g_signal_connect(G_OBJECT(decoder), "pad-added", G_CALLBACK(connect_dynamic_pad), this);
-	g_object_set (G_OBJECT (sink), "force-aspect-ratio", true, NULL);
+	g_object_set (G_OBJECT (video_sink), "force-aspect-ratio", true, NULL);
 
-	gst_bin_add_many(GST_BIN(pipeline), source, decoder, volume, deinterlace, sink, NULL);
+	gst_bin_add_many(GST_BIN(pipeline), source, decoder, deinterlace, video_sink, volume, audio_sink, NULL);
 	gst_element_link(source, decoder);
-	gst_element_link_many(deinterlace, sink, NULL);
+	gst_element_link_many(deinterlace, video_sink, NULL);
+	gst_element_link_many(volume, audio_sink, NULL);
 }
 
 GStreamerEngine::~GStreamerEngine()
@@ -98,13 +100,21 @@ GStreamerEngine::~GStreamerEngine()
 
 void GStreamerEngine::connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine)
 {
-	GstPad* sinkpad = gst_element_get_pad (engine->deinterlace, "sink");
-	if (sinkpad == NULL)
+	GstPad* video_sinkpad = gst_element_get_pad (engine->deinterlace, "sink");
+	if (video_sinkpad == NULL)
 	{
-		throw Exception("Failed to get sink pad");
+		throw Exception("Failed to get video sink pad");
 	}
-	gst_pad_link (pad, sinkpad);
-	gst_object_unref (sinkpad);
+	gst_pad_link (pad, video_sinkpad);
+	gst_object_unref (video_sinkpad);
+
+	GstPad* audio_sinkpad = gst_element_get_pad (engine->volume, "sink");
+	if (audio_sinkpad == NULL)
+	{
+		throw Exception("Failed to get audio sink pad");
+	}
+	gst_pad_link (pad, audio_sinkpad);
+	gst_object_unref (audio_sinkpad);
 }
 
 void GStreamerEngine::play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename)
@@ -114,7 +124,7 @@ void GStreamerEngine::play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring
 	if (!filename.empty())
 	{
 		int window_id = GDK_WINDOW_XID(window->gobj());
-		gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (sink), window_id);
+		gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (video_sink), window_id);
 
 		g_debug("GStreamer file source: %s", filename.c_str());
 		g_object_set (G_OBJECT (source), "location", filename.c_str(), NULL);
