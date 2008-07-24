@@ -42,12 +42,12 @@ private:
 	static Application*				current;
 	Glib::RefPtr<Gnome::Glade::Xml>	glade;
 	ProfileManager					profile_manager;
-	DeviceManager					device_manager;
 	ChannelManager					channel_manager;
+	DeviceManager					device_manager;
 	DemuxerList						demuxers;
 	MainWindow*						main_window;
 	Engine*							engine;
-	EpgThread						epg_thread;
+	EpgThread						epg_thread;		
 
 	void on_display_channel_changed(Channel& channel);
 	void remove_all_demuxers();

@@ -32,6 +32,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	display_mode = DISPLAY_MODE_EPG;
 	
 	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
+	app_bar->get_progress()->hide();
 	glade->get_widget("event_box_video")->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
@@ -82,6 +83,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	widget_epg->update();
 	
 	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
+	get_application().get_channel_manager().signal_display_channel_changed.connect(
+		sigc::mem_fun(*this, &MainWindow::on_display_channel_changed));
 	
 	set_keep_above();
 }
@@ -127,6 +130,13 @@ void MainWindow::on_error(const Glib::ustring& message)
 	dialog.run();
 }
 
+void MainWindow::on_display_channel_changed(Channel& channel)
+{
+	Gtk::Label* label_information = dynamic_cast<Gtk::Label*>(glade->get_widget("label_information"));
+	Glib::ustring text = Glib::ustring::compose("<b>%1</b>\n<i>%2</i>\n%2", channel.name, Glib::ustring("Unknown"), Glib::ustring("Unknown"));
+	label_information->set_label(text);
+}
+
 Gtk::DrawingArea& MainWindow::get_drawing_area()
 {
 	if (drawing_area_video == NULL)
@@ -157,7 +167,9 @@ void MainWindow::on_menu_item_open_clicked()
 
 void MainWindow::on_menu_item_close_clicked()
 {
+	TRY
 	get_application().set_source("");
+	CATCH
 }
 	
 void MainWindow::on_menu_item_quit_clicked()
@@ -178,6 +190,7 @@ void MainWindow::on_menu_item_meters_clicked()
 
 void MainWindow::on_menu_item_channels_clicked()
 {
+	TRY
 	gboolean done = false;
 	
 	ChannelManager& channel_manager = get_application().get_channel_manager();
@@ -225,15 +238,18 @@ void MainWindow::on_menu_item_channels_clicked()
 			}
 		}
 	}
+	CATCH
 }
 
 void MainWindow::on_menu_item_preferences_clicked()
 {
+	TRY
 	PreferencesDialog* preferences_dialog = NULL;
 	glade->get_widget_derived("dialog_preferences", preferences_dialog);
 	preferences_dialog->run();
 	preferences_dialog->hide();
 	widget_epg->update();
+	CATCH
 }
 
 void MainWindow::on_menu_item_fullscreen_clicked()
@@ -406,10 +422,12 @@ void MainWindow::show_scheduled_recordings_dialog()
 void MainWindow::on_tool_button_record_clicked()
 {
 	TRY
+	Application& application = get_application();
 	Gtk::ToggleToolButton* tool_button_record = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"));
 	if (tool_button_record->get_active())
 	{
-		get_application().record("");
+		const Channel& channel = application.get_channel_manager().get_display_channel();
+		application.record("/home/michael/me-tv.xvid");
 	}
 	else
 	{

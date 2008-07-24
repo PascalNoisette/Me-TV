@@ -32,8 +32,6 @@
 
 class Channel
 {
-private:
-	Dvb::SI::EventList events;
 public:
 	Channel();
 
@@ -45,7 +43,6 @@ public:
 	Glib::ustring mrl;
 	guint service_id;
 	struct dvb_frontend_parameters frontend_parameters;
-	void add_event(const Dvb::SI::Event& event);
 };
 
 typedef std::list<Channel> ChannelList;

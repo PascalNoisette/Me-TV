@@ -61,12 +61,16 @@ int main (int argc, char *argv[])
 			log_handler, NULL);
 		
 		gst_init(&argc, &argv);
+		
 		g_debug(gst_version_string());
 
 		g_message("Me TV %s", VERSION);
 		signal_error.connect(sigc::ptr_fun(on_error));
+		
+		TRY
 		Application application(argc, argv);
 		application.run();
+		CATCH
 	}
 	catch(const Glib::Error& error)
 	{

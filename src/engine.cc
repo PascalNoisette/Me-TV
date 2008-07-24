@@ -100,21 +100,23 @@ GStreamerEngine::~GStreamerEngine()
 
 void GStreamerEngine::connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine)
 {
-	GstPad* video_sinkpad = gst_element_get_pad (engine->deinterlace, "sink");
-	if (video_sinkpad == NULL)
+	// Video
+	GstPad* video_sink_pad = gst_element_get_pad (engine->deinterlace, "sink");
+	if (video_sink_pad == NULL)
 	{
 		throw Exception("Failed to get video sink pad");
 	}
-	gst_pad_link (pad, video_sinkpad);
-	gst_object_unref (video_sinkpad);
+	gst_pad_link (pad, video_sink_pad);
+	gst_object_unref (video_sink_pad);
 
-	GstPad* audio_sinkpad = gst_element_get_pad (engine->volume, "sink");
-	if (audio_sinkpad == NULL)
+	// Audio
+	GstPad* audio_sink_pad = gst_element_get_pad (engine->volume, "sink");
+	if (audio_sink_pad == NULL)
 	{
 		throw Exception("Failed to get audio sink pad");
 	}
-	gst_pad_link (pad, audio_sinkpad);
-	gst_object_unref (audio_sinkpad);
+	gst_pad_link (pad, audio_sink_pad);
+	gst_object_unref (audio_sink_pad);
 }
 
 void GStreamerEngine::play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename)

@@ -21,6 +21,7 @@
 #include "channel_manager.h"
 #include "profile_manager.h"
 #include "exception.h"
+#include "application.h"
 
 bool channel_sort_by_index(const Channel& a, const Channel& b)
 {
@@ -37,25 +38,6 @@ Channel::Channel()
 	flags = 0;
 	service_id = 0;
 	memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
-}
-
-void Channel::add_event(const Dvb::SI::Event& event)
-{
-	gboolean found = false;
-	for (Dvb::SI::EventList::iterator i = events.begin(); i != events.end() && !found; i++)
-	{
-		Dvb::SI::Event& current_event = *i;
-		if (current_event.event_id == event.event_id)
-		{
-			found = true;
-		}
-	}
-	
-	if (!found)
-	{
-		g_debug("Event %d, %s", event.event_id, event.title.c_str());
-		events.push_back(event);
-	}
 }
 
 Channel* ChannelManager::find_channel(const Glib::ustring& name)

@@ -21,9 +21,10 @@
 #ifndef __GTK_EPG_WIDGET__
 #define __GTK_EPG_WIDGET__
 
-#include <gtkmm.h>
+#include <libgnomeuimm.h>
 #include <libglademm.h>
 #include "channel_manager.h"
+#include "data.h"
 
 class GtkEpgWidget : public Gtk::ScrolledWindow
 {
@@ -37,6 +38,7 @@ private:
 	gsize number_rows;
 	gsize number_columns;
 	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
+	Data data;
 	
 	Gtk::Table* table_epg;
 	Gtk::ScrolledWindow* scrolled_window_epg;
@@ -50,7 +52,7 @@ private:
 	Gtk::Button& attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach);
 	Gtk::Label& attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach);
 	void attach_widget(Gtk::Widget& widget, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach);
-	void create_channel_row(const Channel& channel, guint row, gboolean selected, guint epg_span_hours);
+	void create_channel_row(const Channel& channel, guint row, gboolean selected, guint start_time, guint epg_span_hours);
 
 public:
 	GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);

@@ -47,7 +47,7 @@ private:
 	GstElement*	video_sink;
 	GstElement*	audio_sink;
 
-	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
+	static GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
 	static void connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine);
 	void stop();
 		

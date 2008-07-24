@@ -22,6 +22,7 @@
 #include "config.h"
 #include "device_manager.h"
 #include "dvb_si.h"
+#include "data.h"
 
 Application* Application::current = NULL;
 
@@ -52,7 +53,7 @@ void set_default(Glib::RefPtr<Gnome::Conf::Client> client, const Glib::ustring& 
 
 Application::Application(int argc, char *argv[]) :
 	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv)
-{
+{		
 	if (current != NULL)
 	{
 		throw Exception("Application has already been initialised");
@@ -61,7 +62,7 @@ Application::Application(int argc, char *argv[]) :
 	current = this;
 	main_window = NULL;
 	engine = NULL;
-		
+
 	Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
 	set_default(client, GCONF_PATH"/epg_span_hours", 3);
 	
@@ -85,6 +86,12 @@ Application::Application(int argc, char *argv[]) :
 
 Application::~Application()
 {
+	if (main_window != NULL)
+	{
+		delete main_window;
+		main_window = NULL;
+	}
+	
 	if (engine != NULL)
 	{
 		delete engine;
@@ -110,7 +117,6 @@ Application& Application::get_current()
 
 void Application::set_source(const Glib::ustring& source)
 {
-	g_debug("set_source(\"%s\")", source.c_str());
 	if (engine != NULL)
 	{
 		g_debug("Deleting engine");
@@ -364,6 +370,7 @@ void EpgThread::run()
 {
 	TRY;
 
+	Data data;
 	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
 	ChannelManager& channel_manager = get_application().get_channel_manager();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
@@ -410,7 +417,18 @@ void EpgThread::run()
 			{
 				for( unsigned int k = 0; section.events.size() > k; k++ )
 				{
-					channel->add_event(section.events[k]);
+					Dvb::SI::Event& event = section.events[k];
+					
+					data.insert_or_ignore_epg_event
+					(
+						frequency,
+						section.service_id,
+						event.event_id,
+						event.start_time,
+						event.duration,
+						event.title,
+						event.description
+					);
 				}
 			}
 		}

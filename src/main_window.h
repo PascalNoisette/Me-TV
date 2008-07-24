@@ -55,6 +55,7 @@ private:
 	void load_devices();
 	void show_scheduled_recordings_dialog();
 
+	void on_display_channel_changed(Channel& channel);
 	bool on_timeout();
 	void on_error(const Glib::ustring& message);
 	void on_menu_item_open_clicked();

@@ -35,6 +35,8 @@ ProfileManager::~ProfileManager()
 
 void ProfileManager::unset_directory(const Glib::ustring& path)
 {
+	g_debug("Removing %s", path.c_str());
+	
 	StringList directories = client->all_dirs(path);
 	StringList::iterator directory_iterator = directories.begin();
 	while (directory_iterator != directories.end())
@@ -175,10 +177,12 @@ void ProfileManager::save()
 	
 	client->set(GCONF_PATH"/current_profile", get_current_profile().name);
 	
-	// Delete old data
+	g_debug("Deleting old profile information");
 	Glib::ustring profiles_path = GCONF_PATH"/profiles";
 	unset_directory(profiles_path);
+	client->suggest_sync();
 
+	g_debug("Saving profile information");
 	ProfileList::iterator profile_iterator = profiles.begin();
 	while (profile_iterator != profiles.end())
 	{
@@ -216,6 +220,8 @@ void ProfileManager::save()
 			
 			channel_count++;
 			channel_iterator++;
+			
+			g_debug("Saved %s", channel.name.c_str());
 		}
 		
 		profile_count++;
