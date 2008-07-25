@@ -83,7 +83,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	widget_epg->update();
 	
 	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
-	get_application().get_channel_manager().signal_display_channel_changed.connect(
+	get_application().get_profile_manager().get_current_profile().signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &MainWindow::on_display_channel_changed));
 	
 	set_keep_above();
@@ -193,10 +193,10 @@ void MainWindow::on_menu_item_channels_clicked()
 	TRY
 	gboolean done = false;
 	
-	ChannelManager& channel_manager = get_application().get_channel_manager();
+	Profile& profile = get_application().get_profile_manager().get_current_profile();
 	ChannelsDialog* channels_dialog = NULL;
 	glade->get_widget_derived("dialog_channels", channels_dialog);
-	channels_dialog->set_channels(channel_manager.get_channels());
+	channels_dialog->set_channels(profile.get_channels());
 	
 	while (!done)
 	{
@@ -214,10 +214,8 @@ void MainWindow::on_menu_item_channels_clicked()
 		else if (result == Gtk::RESPONSE_OK)
 		{
 			ChannelList channels = channels_dialog->get_channels();
-			channel_manager.clear();
-			channel_manager.add_channels(channels);
-			
-			get_application().get_profile_manager().get_current_profile().channels = channels;
+			profile.clear();
+			profile.add_channels(channels);
 			
 			widget_epg->update();
 			done = true;
@@ -426,7 +424,7 @@ void MainWindow::on_tool_button_record_clicked()
 	Gtk::ToggleToolButton* tool_button_record = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"));
 	if (tool_button_record->get_active())
 	{
-		const Channel& channel = application.get_channel_manager().get_display_channel();
+		const Channel& channel = application.get_profile_manager().get_current_profile().get_display_channel();
 		application.record("/home/michael/me-tv.xvid");
 	}
 	else

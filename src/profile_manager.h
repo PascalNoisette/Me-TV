@@ -22,15 +22,35 @@
 #define __PROFILE_MANAGER_H__
 
 #include <glibmm.h>
-#include <gconfmm.h>
+#include <glibmm/i18n.h>
+#include "data.h"
+#include "dvb_frontend.h"
+#include "exception.h"
+#include "dvb_si.h"
 #include "me-tv.h"
-#include "channel_manager.h"
+#include "channel.h"
 
 class Profile
 {
+private:
+	ChannelList channels;
+	Channel display_channel;
+	Channel* find_channel(const Glib::ustring& channel_name);
+	Data data;
+
 public:
+	Channel& get_channel(const Glib::ustring& name);
+	void set_display_channel(const Glib::ustring& channel_name);
+	void set_display_channel(Channel& channel);
+	void add_channel(Channel& channel);
+	void add_channels(ChannelList& channels);
+	void clear();
+	const ChannelList& get_channels() const;
+	const Channel& get_display_channel() const;
+	sigc::signal<void, Channel&> signal_display_channel_changed;
+	Channel* get_channel(guint frequency, guint service_id);
+		
 	Glib::ustring	name;
-	ChannelList		channels;
 };
 
 typedef std::list<Profile> ProfileList;
@@ -38,7 +58,6 @@ typedef std::list<Profile> ProfileList;
 class ProfileManager
 {
 protected:
-	Glib::RefPtr<Gnome::Conf::Client> client;
 	ProfileList profiles;
 	Profile* current_profile;
 

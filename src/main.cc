@@ -62,9 +62,9 @@ int main (int argc, char *argv[])
 		
 		gst_init(&argc, &argv);
 		
+		g_message("Me TV %s", VERSION);
 		g_debug(gst_version_string());
 
-		g_message("Me TV %s", VERSION);
 		signal_error.connect(sigc::ptr_fun(on_error));
 		
 		TRY

@@ -22,7 +22,6 @@
 #include <libglademm.h>
 #include "scan_dialog.h"
 #include "application.h"
-#include "channel_manager.h"
 #include "channels_dialog.h"
 
 ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :

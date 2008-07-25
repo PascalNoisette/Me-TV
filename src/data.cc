@@ -89,8 +89,6 @@ public:
 Data::Data()
 {
 	Glib::ustring database_path = Glib::build_filename(Glib::get_home_dir(), ".me-tv.db");
-
-	g_debug("Database: %s", database_path.c_str());
 	
 	if (sqlite3_open(database_path.c_str(), &database) != 0)
 	{
@@ -160,10 +158,10 @@ EpgEventList Data::get_epg_events(guint frequency, guint service_id,
 	
 	Glib::ustring select_command = Glib::ustring::compose
 	(
-		"SELECT * FROM EPG_EVENT WHERE FREQUENCY=%1 AND SERVICE_ID=%2 ",
-//	 	"AND (START_TIME+DURATION) > %3 AND START_TIME < %3 " \
+		"SELECT * FROM EPG_EVENT WHERE FREQUENCY=%1 AND SERVICE_ID=%2 "\
+	 	"AND (START_TIME+DURATION) > %3 AND START_TIME < %4 "\
 	 	"ORDER BY START_TIME",
-		frequency, service_id //, start_time, end_time
+		frequency, service_id , start_time, end_time
 	);
 
 	Statement statement(database, select_command);

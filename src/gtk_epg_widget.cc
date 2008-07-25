@@ -85,16 +85,16 @@ void GtkEpgWidget::update_table()
 		
 		clear();
 		
-		ChannelManager& channel_manager = get_application().get_channel_manager();
-		const Channel& display_channel = channel_manager.get_display_channel();
-		const ChannelList& channels = channel_manager.get_channels();
+		Profile& profile = get_application().get_profile_manager().get_current_profile();
+		const Channel& display_channel = profile.get_display_channel();
+		const ChannelList& channels = profile.get_channels();
 		Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
 		guint epg_span_hours = client->get_int(GCONF_PATH"/epg_span_hours");
 
 		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
 
 		Gtk::Button& button_previous = attach_button("<b>&lt;</b>", 1, 2, 0, 1);
-		guint start_time = time(NULL) + offset;
+		guint start_time = time(NULL) + offset - (10*60*60);
 		char buffer[1000];
 		struct tm tp;
 		Data data;
@@ -134,19 +134,18 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 			channel.name
 		)
 	);
-
-	g_debug("==================================================");
-	g_debug("CHANNEL_NAME: %s", channel.name.c_str());
-	g_debug("==================================================");
-	
-	EpgEventList events = data.get_epg_events(channel.frontend_parameters.frequency, channel.service_id, start_time, start_time+epg_span_hours);
+	/*
+	EpgEventList events = data.get_epg_events(channel.frontend_parameters.frequency, channel.service_id, start_time, start_time+(epg_span_hours*60*60));
+	guint start_cell = 1;
 	for (EpgEventList::iterator i = events.begin(); i != events.end(); i++)
 	{
 		EpgEvent epg_event = *i;
-		g_debug("Event: (%d, %s)", epg_event.event_id, epg_event.title.c_str());
+		guint end_cell = start_cell+1;
+		g_debug("EVENT: %s", epg_event.title.c_str());
+		attach_button(epg_event.title, start_cell, end_cell, table_row + 1, table_row + 2);
+		start_cell = end_cell;
 	}
-	
-	Gtk::Button& unknown_button = attach_button("Unknown", 1, epg_span_hours*6+2, table_row + 1, table_row + 2);
+*/
 }
 
 Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)
@@ -186,7 +185,7 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 void GtkEpgWidget::on_button_channel_name_clicked(const Glib::ustring& channel_name)
 {
 	TRY
-	get_application().get_channel_manager().set_display_channel(channel_name);
+	get_application().get_profile_manager().get_current_profile().set_display_channel(channel_name);
 	CATCH
 
 	TRY

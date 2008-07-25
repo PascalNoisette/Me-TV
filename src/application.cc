@@ -78,10 +78,9 @@ Application::Application(int argc, char *argv[]) :
 	
 	glade = Gnome::Glade::Xml::create(glade_path);
 	
-	channel_manager.signal_display_channel_changed.connect(
+	Profile& profile = profile_manager.get_current_profile();
+	profile.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));
-
-	channel_manager.add_channels(profile_manager.get_current_profile().channels);
 }
 
 Application::~Application()
@@ -372,7 +371,7 @@ void EpgThread::run()
 
 	Data data;
 	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
-	ChannelManager& channel_manager = get_application().get_channel_manager();
+	Profile& profile = get_application().get_profile_manager().get_current_profile();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 	const Dvb::Transponder* transponder = frontend.get_current_transponder();
 	EITDemuxers demuxers(demux_path);
@@ -412,7 +411,7 @@ void EpgThread::run()
 			demuxers.get_next_eit(parser, section, is_atsc);
 
 			guint service_id = section.service_id;
-			Channel* channel = channel_manager.get_channel(frequency, service_id);
+			Channel* channel = profile.get_channel(frequency, service_id);
 			if (channel != NULL)
 			{
 				for( unsigned int k = 0; section.events.size() > k; k++ )

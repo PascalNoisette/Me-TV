@@ -51,10 +51,8 @@ me_tv_SOURCES = \
 	channels_dialog.cc \
 	thread.cc \
 	main_window.cc \
-	channel_manager.h \
 	gtk_epg_widget.cc \
 	gtk_epg_widget.h \
-	channel_manager.cc \
 	profile_manager.cc \
 	me-tv-ui.h \
 	me-tv-ui.cc \
@@ -63,7 +61,8 @@ me_tv_SOURCES = \
 	meters_dialog.cc \
 	engine.cc \
 	data.h \
-	data.cc
+	data.cc \
+	channel.h
 
 me_tv_LDFLAGS = 
 

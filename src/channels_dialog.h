@@ -23,7 +23,6 @@
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
-#include "channel_manager.h"
 #include "scan_dialog.h"
 
 class ChannelsDialog : public Gtk::Dialog

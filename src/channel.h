@@ -18,14 +18,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __CHANNEL_MANGER_H__
-#define __CHANNEL_MANGER_H__
+#ifndef __CHANNEL_H__
+#define __CHANNEL_H__
 
-#include <glibmm.h>
-#include <glibmm/i18n.h>
-#include <dvb_frontend.h>
-#include "exception.h"
-#include "dvb_si.h"
+#include <linux/dvb/frontend.h>
 
 #define CHANNEL_FLAG_NONE		0
 #define CHANNEL_FLAG_DVB		1
@@ -45,29 +41,9 @@ public:
 	struct dvb_frontend_parameters frontend_parameters;
 };
 
-typedef std::list<Channel> ChannelList;
-
 bool channel_sort_by_index(const Channel& a, const Channel& b);
 bool channel_sort_by_name(const Channel& a, const Channel& b);
 
-class ChannelManager
-{
-private:
-	ChannelList channels;
-	Channel display_channel;
-	Channel* find_channel(const Glib::ustring& channel_name);
-
-public:
-	Channel& get_channel(const Glib::ustring& name);
-	void set_display_channel(const Glib::ustring& channel_name);
-	void set_display_channel(Channel& channel);
-	void add_channel(Channel& channel);
-	void add_channels(ChannelList& channels);
-	void clear();
-	const ChannelList& get_channels() const;
-	const Channel& get_display_channel() const;
-	sigc::signal<void, Channel&> signal_display_channel_changed;
-	Channel* get_channel(guint frequency, guint service_id);
-};
+typedef std::list<Channel> ChannelList;
 
 #endif

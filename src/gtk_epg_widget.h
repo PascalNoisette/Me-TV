@@ -23,8 +23,8 @@
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
-#include "channel_manager.h"
 #include "data.h"
+#include "channel.h"
 
 class GtkEpgWidget : public Gtk::ScrolledWindow
 {

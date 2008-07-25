@@ -25,7 +25,6 @@
 #include <libgnomemm.h>
 #include "device_manager.h"
 #include "profile_manager.h"
-#include "channel_manager.h"
 #include "dvb_demuxer.h"
 #include "main_window.h"
 
@@ -42,7 +41,6 @@ private:
 	static Application*				current;
 	Glib::RefPtr<Gnome::Glade::Xml>	glade;
 	ProfileManager					profile_manager;
-	ChannelManager					channel_manager;
 	DeviceManager					device_manager;
 	DemuxerList						demuxers;
 	MainWindow*						main_window;
@@ -65,8 +63,7 @@ public:
 	
 	ProfileManager&		get_profile_manager()	{ return profile_manager; }
 	DeviceManager&		get_device_manager()	{ return device_manager; }
-	ChannelManager&		get_channel_manager()	{ return channel_manager; }
-		
+
 	void set_source(const Glib::ustring& source);
 	void record(const Glib::ustring& filename);
 	void mute(gboolean state);
