@@ -60,9 +60,12 @@ me_tv_SOURCES = \
 	engine.h \
 	meters_dialog.cc \
 	engine.cc \
-	data.h \
+	profile.cc \
+	profile.h \
+	channel.h \
+	epg_event.h \
 	data.cc \
-	channel.h
+	data.h
 
 me_tv_LDFLAGS = 
 

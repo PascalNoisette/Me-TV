@@ -443,7 +443,9 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 		gsize title_length = buffer[offset++];
 		if (title_length > 0)
 		{
-			get_atsc_text (event.title, &buffer[offset++]);
+			EventText event_text;
+			get_atsc_text (event_text.title, &buffer[offset++]);
+			event.texts.push_back(event_text);
 			offset += title_length;
 		}
 		
@@ -579,46 +581,23 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 			}
 			offset += get_text(description, &event_buffer[offset]);
 			
-			if (event.description.empty())
-			{
-				event.description = description;
-			}
-
-			if (event.title.empty())
-			{
-				event.title = title;
-			}
+			EventText event_text;
+			event_text.description = description;
+			event_text.title = title;
+			event.texts.push_back(event_text);
 		}
 		break;
 
 	case SHORT_EVENT:
 		{
-			Glib::ustring language;
-			Glib::ustring title;
-			Glib::ustring description;
-			
-			language = get_lang_desc (event_buffer);
+			EventText event_text;
+
+			event_text.language = get_lang_desc (event_buffer);
 			unsigned int offset = 5;
-			offset += get_text(title, &event_buffer[offset]);
-			offset += get_text(description, &event_buffer[offset]);
-			
-			if (event.title.empty())
-			{
-				event.title = title;
-			}
-			else if (event.title != title)
-			{
-				event.title += "-" + title;
-			}
-			
-			if (event.description.empty())
-			{
-				event.description = description;
-			}
-			else if (event.description != description)
-			{
-				event.description += "-" + description;
-			}
+			offset += get_text(event_text.title, &event_buffer[offset]);
+			offset += get_text(event_text.description, &event_buffer[offset]);
+					
+			event.texts.push_back(event_text);
 		}
 		break;
 	default:

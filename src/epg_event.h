@@ -18,33 +18,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#define CHANNEL_FLAG_NONE		0
-#define CHANNEL_FLAG_DVB_T		1
+#ifndef __EPG_EVENT_H__
+#define __EPG_EVENT_H__
 
-#include <linux/dvb/frontend.h>
+#include <glibmm.h>
+#include <list>
 
-class Channel
+class EpgEventText
 {
 public:
-	Channel()
-	{
-		channel_id = -1;
-		profile_id = 0;
-		flags = 0;
-		service_id = 0;
-		memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
-	}
-
-	guint channel_id;
-	guint profile_id;
-	Glib::ustring name;
-	guint flags;
-	guint sort_order;
-	Glib::ustring mrl;
-
-	// DVB Specific
-	guint service_id;
-	struct dvb_frontend_parameters frontend_parameters;
+	guint epg_event_text_id;
+	guint epg_event_id;
+	Glib::ustring language;
+	Glib::ustring title;
+	Glib::ustring description;
 };
 
-typedef std::list<Channel> ChannelList;
+typedef std::list<EpgEventText> EpgEventTextList;
+
+class EpgEvent
+{
+public:
+	guint epg_event_id;
+	guint channel_id;
+	guint event_id;
+	guint start_time;
+	guint duration;
+	EpgEventTextList texts;
+};
+
+typedef std::list<EpgEvent> EpgEventList;
+
+#endif

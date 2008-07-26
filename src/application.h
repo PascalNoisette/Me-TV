@@ -38,21 +38,25 @@ public:
 class Application : public Gnome::Main
 {
 private:
-	static Application*				current;
-	Glib::RefPtr<Gnome::Glade::Xml>	glade;
-	ProfileManager					profile_manager;
-	DeviceManager					device_manager;
-	DemuxerList						demuxers;
-	MainWindow*						main_window;
-	Engine*							engine;
-	EpgThread						epg_thread;		
-
-	void on_display_channel_changed(Channel& channel);
+	static Application*					current;
+	Glib::RefPtr<Gnome::Glade::Xml>		glade;
+	ProfileManager						profile_manager;
+	DeviceManager						device_manager;
+	DemuxerList							demuxers;
+	MainWindow*							main_window;
+	Engine*								engine;
+	EpgThread							epg_thread;		
+	Glib::RefPtr<Gnome::Conf::Client>	client;
+		
+	void on_display_channel_changed(const Channel& channel);
 	void remove_all_demuxers();
 	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
 		guint pid, dmx_pes_type_t pid_type, const gchar* type_text);
 	Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
 	void setup_dvb(Dvb::Frontend& frontend, const Channel& channel);
+
+	void set_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
+	void set_configuration_default(const Glib::ustring& key, gint value);
 
 public:
 	Application(int argc, char *argv[]);
@@ -67,6 +71,9 @@ public:
 	void set_source(const Glib::ustring& source);
 	void record(const Glib::ustring& filename);
 	void mute(gboolean state);
+		
+	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
+	gint get_int_configuration_value(const Glib::ustring& key);
 };
 
 Application& get_application();

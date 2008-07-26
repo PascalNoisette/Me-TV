@@ -130,7 +130,7 @@ void MainWindow::on_error(const Glib::ustring& message)
 	dialog.run();
 }
 
-void MainWindow::on_display_channel_changed(Channel& channel)
+void MainWindow::on_display_channel_changed(const Channel& channel)
 {
 	Gtk::Label* label_information = dynamic_cast<Gtk::Label*>(glade->get_widget("label_information"));
 	Glib::ustring text = Glib::ustring::compose("<b>%1</b>\n<i>%2</i>\n%2", channel.name, Glib::ustring("Unknown"), Glib::ustring("Unknown"));

@@ -24,7 +24,6 @@
 #include <libgnomeuimm.h>
 #include <libglademm.h>
 #include "data.h"
-#include "channel.h"
 
 class GtkEpgWidget : public Gtk::ScrolledWindow
 {
@@ -44,7 +43,7 @@ private:
 	Gtk::ScrolledWindow* scrolled_window_epg;
 
 	void on_button_program_clicked();
-	void on_button_channel_name_clicked(const Glib::ustring& channel_name);
+	void on_button_channel_name_clicked(guint channel_id);
 		
 	void clear();
 	void update_table();

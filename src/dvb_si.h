@@ -51,6 +51,16 @@ namespace Dvb
 {
 	namespace SI
 	{
+		class EventText
+		{
+		public:
+			Glib::ustring language;
+			Glib::ustring title;
+			Glib::ustring description;
+		};
+		
+		typedef std::list<EventText> EventTextList;
+		
 		class Event
 		{
 		public:
@@ -62,8 +72,7 @@ namespace Dvb
 			guint	running_status;
 			guint	free_CA_mode;
 			
-			Glib::ustring title;
-			Glib::ustring description;
+			EventTextList texts;
 		};
 
 		typedef std::list<Event> EventList;

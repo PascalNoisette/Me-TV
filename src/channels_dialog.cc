@@ -116,7 +116,7 @@ void ChannelsDialog::add_scanned_services(std::list<ScannedService>& scanned_ser
 		channel.service_id			= scanned_service.id;
 		channel.name				= scanned_service.name;
 		channel.frontend_parameters	= scanned_service.frontend_parameters;
-		channel.flags				= CHANNEL_FLAG_DVB;
+		channel.flags				= CHANNEL_FLAG_DVB_T;
 
 		Gtk::TreeModel::iterator row_iterator = list_store->append();
 		Gtk::TreeModel::Row row		= *row_iterator;

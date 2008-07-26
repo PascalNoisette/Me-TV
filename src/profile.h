@@ -18,33 +18,38 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#define CHANNEL_FLAG_NONE		0
-#define CHANNEL_FLAG_DVB_T		1
+#ifndef __PROFILE_H__
+#define __PROFILE_H__
 
-#include <linux/dvb/frontend.h>
+#include <glibmm.h>
+#include "channel.h"
 
-class Channel
+class Profile
 {
+private:
+	ChannelList channels;
+	Channel display_channel;
+	Channel* find_channel(guint channel_id);
+
 public:
-	Channel()
-	{
-		channel_id = -1;
-		profile_id = 0;
-		flags = 0;
-		service_id = 0;
-		memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
-	}
+	Profile();
+		
+	void set_display_channel(const Channel& channel);
+	void set_display_channel(guint channel_id);
+	void add_channel(Channel& channel);
+	void add_channels(ChannelList& channels);
+	void clear();
+	ChannelList& get_channels();
+	const ChannelList& get_channels() const;
+	const Channel& get_display_channel() const;
+	sigc::signal<void, const Channel&> signal_display_channel_changed;
+	Channel& get_channel(guint channel_id);
+	Channel* find_channel(guint frequency, guint service_id);
 
-	guint channel_id;
-	guint profile_id;
-	Glib::ustring name;
-	guint flags;
-	guint sort_order;
-	Glib::ustring mrl;
-
-	// DVB Specific
-	guint service_id;
-	struct dvb_frontend_parameters frontend_parameters;
+	guint			profile_id;
+	Glib::ustring	name;
 };
 
-typedef std::list<Channel> ChannelList;
+typedef std::list<Profile> ProfileList;
+
+#endif

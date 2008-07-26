@@ -23,43 +23,19 @@
 
 #include <glibmm.h>
 #include <glibmm/i18n.h>
-#include "data.h"
 #include "dvb_frontend.h"
 #include "exception.h"
 #include "dvb_si.h"
 #include "me-tv.h"
-#include "channel.h"
-
-class Profile
-{
-private:
-	ChannelList channels;
-	Channel display_channel;
-	Channel* find_channel(const Glib::ustring& channel_name);
-	Data data;
-
-public:
-	Channel& get_channel(const Glib::ustring& name);
-	void set_display_channel(const Glib::ustring& channel_name);
-	void set_display_channel(Channel& channel);
-	void add_channel(Channel& channel);
-	void add_channels(ChannelList& channels);
-	void clear();
-	const ChannelList& get_channels() const;
-	const Channel& get_display_channel() const;
-	sigc::signal<void, Channel&> signal_display_channel_changed;
-	Channel* get_channel(guint frequency, guint service_id);
-		
-	Glib::ustring	name;
-};
-
-typedef std::list<Profile> ProfileList;
+#include "profile.h"
+#include "data.h"
 
 class ProfileManager
 {
 protected:
 	ProfileList profiles;
 	Profile* current_profile;
+	Data data;
 
 	void unset_directory(const Glib::ustring& path);
 	Profile* find_profile(const Glib::ustring& profile_name);
