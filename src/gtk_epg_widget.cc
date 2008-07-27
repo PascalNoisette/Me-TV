@@ -87,6 +87,17 @@ void GtkEpgWidget::clear()
 	}
 }
 
+Glib::ustring get_time_string(time_t t, const gchar* format)
+{
+	struct tm tp;
+	char buffer[1000];
+
+	localtime_r(&t, &tp);
+	strftime(buffer, 1000, format, &tp);
+	
+	return buffer;
+}
+
 void GtkEpgWidget::update_table()
 {
 	if (get_window())
@@ -101,22 +112,9 @@ void GtkEpgWidget::update_table()
 		guint epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
 
 		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
-		
-		struct tm tp;
 
-		time_t now = time(NULL) + timezone;
-
-		guint start_time = now + offset;
+		guint start_time = time(NULL) + timezone; + offset;
 		start_time = (start_time / 600) * 600;
-		char buffer[1000];
-		for (gint hour = 0; hour < epg_span_hours; hour++)
-		{
-			time_t t = start_time + hour*60*60;
-			localtime_r(&t, &tp);
-			strftime(buffer, 1000, "%x %H:%M", &tp);
-			Glib::ustring text = Glib::ustring::compose("<b>%1</b>", Glib::ustring(buffer));
-			attach_button(text, hour*6+1, (hour+1)*6+1, 0, 1).set_sensitive(false);
-		}
 		
 		guint row = 1;
 		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
@@ -200,10 +198,14 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 						total_number_columns += empty_columns;
 					}
 				}
-														
+				
 				if (column_count > 0)
 				{
-					Gtk::Button& button = attach_button(encode(event.get_title()), start_column + 1, end_column + 1, table_row, table_row + 1);
+					Glib::ustring time_string = get_time_string(event.start_time, "%d/%m, %H:%M");
+					time_string += get_time_string(event.start_time + event.duration, " - %H:%M");
+					Glib::ustring text = "<small>" + time_string + "</small>\n" + encode(event.get_title());
+					
+					Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
 				}
 
 				total_number_columns += column_count;

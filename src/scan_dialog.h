@@ -62,7 +62,7 @@ public:
 		
 	void run()
 	{
-		scanner.start(frontend, initial_tuning_file, 1);
+		scanner.start(frontend, initial_tuning_file, 2);
 	}
 		
 	void stop()
