@@ -97,7 +97,6 @@ void GtkEpgWidget::update_table()
 		start_time = (start_time / 600) * 600;
 		char buffer[1000];
 		struct tm tp;
-		Data data;
 		for (gint hour = 0; hour < epg_span_hours; hour++)
 		{
 			time_t t = start_time + hour*60*60;

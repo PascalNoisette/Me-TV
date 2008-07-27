@@ -20,12 +20,13 @@
 
 #include "profile.h"
 #include "exception.h"
+#include "data.h"
 
 #include <glibmm/i18n.h>
 
 Profile::Profile()
 {
-	profile_id = -1;
+	profile_id = 0;
 }
 
 Channel* Profile::find_channel(guint channel_id)
@@ -66,6 +67,7 @@ void Profile::set_display_channel(guint channel_id)
 
 void Profile::set_display_channel(const Channel& channel)
 {
+	g_debug("Setting display channel to '%s'", channel.name.c_str());
 	display_channel = channel;
 	signal_display_channel_changed(display_channel);
 }
@@ -76,7 +78,7 @@ void Profile::add_channels(ChannelList& c)
 	while (iterator != c.end())
 	{
 		Channel& channel = *iterator;
-		add_channel(channel);
+		channels.push_back(channel);
 		iterator++;
 	}
 }

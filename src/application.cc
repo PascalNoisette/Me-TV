@@ -46,6 +46,9 @@ Application::Application(int argc, char *argv[]) :
 	client = Gnome::Conf::Client::get_default_client();
 	
 	set_configuration_default("epg_span_hours", 3);
+
+	// Initialise database
+	Data data(true);
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
 	Glib::ustring glade_path = current_directory + "/me-tv.glade";
@@ -62,7 +65,7 @@ Application::Application(int argc, char *argv[]) :
 	profile_manager.load();
 	Profile& profile = profile_manager.get_current_profile();
 	profile.signal_display_channel_changed.connect(
-		sigc::mem_fun(*this, &Application::on_display_channel_changed));
+		sigc::mem_fun(*this, &Application::on_display_channel_changed));	
 }
 
 Application::~Application()
@@ -432,22 +435,26 @@ void EpgThread::run()
 			{
 				for( unsigned int k = 0; section.events.size() > k; k++ )
 				{
-					Dvb::SI::Event& event = section.events[k];
 					EpgEvent epg_event;
-					epg_event.epg_event_id = 0;
-					epg_event.channel_id = channel->channel_id;
-					epg_event.event_id = event.event_id;
-					epg_event.start_time = event.start_time;
-					epg_event.duration = event.duration;
+					Dvb::SI::Event& event	= section.events[k];
+
+					epg_event.epg_event_id	= 0;
+					epg_event.channel_id	= channel->channel_id;
+					epg_event.event_id		= event.event_id;
+					epg_event.start_time	= event.start_time;
+					epg_event.duration		= event.duration;
 					
 					for (Dvb::SI::EventTextList::iterator i = event.texts.begin(); i != event.texts.end(); i++)
 					{
 						EpgEventText epg_event_text;
-						Dvb::SI::EventText& event_text = *i;
+						const Dvb::SI::EventText& event_text = *i;
 						
-						epg_event_text.language = event_text.language;
-						epg_event_text.title = event_text.title;
-						epg_event_text.description = event_text.description;
+						epg_event_text.epg_event_text_id	= 0;
+						epg_event_text.epg_event_id			= 0;
+						epg_event_text.language				= event_text.language;
+						epg_event_text.title				= event_text.title;
+						epg_event_text.description			= event_text.description;
+						
 						epg_event.texts.push_back(epg_event_text);
 					}
 					data.insert_or_ignore_epg_event(epg_event);

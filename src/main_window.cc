@@ -217,6 +217,10 @@ void MainWindow::on_menu_item_channels_clicked()
 			profile.clear();
 			profile.add_channels(channels);
 			
+			// Must save profile/channels to get updated Channels PK IDs
+			Data data;
+			data.replace_profile(profile);
+			
 			widget_epg->update();
 			done = true;
 		}

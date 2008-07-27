@@ -28,7 +28,7 @@ class Channel
 public:
 	Channel()
 	{
-		channel_id = -1;
+		channel_id = 0;
 		profile_id = 0;
 		flags = 0;
 		service_id = 0;

@@ -37,12 +37,12 @@ private:
 	void step(sqlite3_stmt* statement);
 
 public:
-	Data();
+	Data(gboolean initialise = false);
 	~Data();
 		
 	EpgEventList get_epg_events(guint frequency, guint service_id, guint start_time, guint end_time);
-	void insert_or_ignore_epg_event(const EpgEvent& epg_event);
-	void insert_or_ignore_epg_event_text(const EpgEventText& epg_event_text);
+	void insert_or_ignore_epg_event(EpgEvent& epg_event);
+	void insert_or_ignore_epg_event_text(EpgEventText& epg_event_text);
 	
 	ProfileList get_all_profiles();
 	void replace_profile(Profile& profile);

@@ -95,7 +95,7 @@ public:
 	}
 };
 
-Data::Data()
+Data::Data(gboolean initialise)
 {
 	Glib::ustring database_path = Glib::build_filename(Glib::get_home_dir(), ".me-tv.db");
 	
@@ -104,49 +104,52 @@ Data::Data()
 		throw SQLiteException(database, _("Failed to connect to Me TV database"));
 	}
 	
-	execute_non_query(
-		"CREATE TABLE IF NOT EXISTS PROFILE ("\
-		"PROFILE_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
-		"NAME CHAR(50) NOT NULL, "\
-		"UNIQUE (NAME));");
-	
-	execute_non_query(
-		"CREATE TABLE IF NOT EXISTS CHANNEL ("\
-		"CHANNEL_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
-		"PROFILE_ID INTEGER NOT NULL, "\
-		"NAME CHAR(50) NOT NULL, "\
-		"FLAGS INTEGER NOT NULL, "\
-		"SORT_ORDER INTEGER NOT NULL, "\
-		"MRL CHAR(1024), "\
-		"SERVICE_ID INTEGER, "\
-		"FREQUENCY INTEGER, "\
-		"BANDWIDTH INTEGER, "\
-		"CODE_RATE_HP INTEGER, "\
-		"CODE_RATE_LP INTEGER, "\
-		"CONSTELLATION INTEGER, "\
-		"TRANSMISSION_MODE INTEGER, "\
-		"GUARD_INTERVAL INTEGER, "\
-		"HIERARCHY_INFORMATION INTEGER, "\
-		"INVERSION INTEGER, "\
-		"UNIQUE (NAME));");
-	
-	execute_non_query(
-		"CREATE TABLE IF NOT EXISTS EPG_EVENT ("\
-		"EPG_EVENT_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
-		"CHANNEL_ID INTEGER NOT NULL, "\
-		"EVENT_ID INTEGER NOT NULL, "\
-		"START_TIME INTEGER NOT NULL, "\
-		"DURATION INTEGER NOT NULL, "\
-		"UNIQUE (CHANNEL_ID, EVENT_ID));");
+	if (initialise)
+	{
+		execute_non_query(
+			"CREATE TABLE IF NOT EXISTS PROFILE ("\
+			"PROFILE_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
+			"NAME CHAR(50) NOT NULL, "\
+			"UNIQUE (NAME));");
+		
+		execute_non_query(
+			"CREATE TABLE IF NOT EXISTS CHANNEL ("\
+			"CHANNEL_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
+			"PROFILE_ID INTEGER NOT NULL, "\
+			"NAME CHAR(50) NOT NULL, "\
+			"FLAGS INTEGER NOT NULL, "\
+			"SORT_ORDER INTEGER NOT NULL, "\
+			"MRL CHAR(1024), "\
+			"SERVICE_ID INTEGER, "\
+			"FREQUENCY INTEGER, "\
+			"BANDWIDTH INTEGER, "\
+			"CODE_RATE_HP INTEGER, "\
+			"CODE_RATE_LP INTEGER, "\
+			"CONSTELLATION INTEGER, "\
+			"TRANSMISSION_MODE INTEGER, "\
+			"GUARD_INTERVAL INTEGER, "\
+			"HIERARCHY_INFORMATION INTEGER, "\
+			"INVERSION INTEGER, "\
+			"UNIQUE (NAME));");
+		
+		execute_non_query(
+			"CREATE TABLE IF NOT EXISTS EPG_EVENT ("\
+			"EPG_EVENT_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
+			"CHANNEL_ID INTEGER NOT NULL, "\
+			"EVENT_ID INTEGER NOT NULL, "\
+			"START_TIME INTEGER NOT NULL, "\
+			"DURATION INTEGER NOT NULL, "\
+			"UNIQUE (CHANNEL_ID, EVENT_ID));");
 
-	execute_non_query(
-		"CREATE TABLE IF NOT EXISTS EPG_EVENT_TEXT ("\
-		"EPG_EVENT_TEXT_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
-		"EPG_EVENT_ID INTEGER NOT NULL, "\
-		"LANGUAGE CHAR(3) NOT NULL, "\
-		"TITLE CHAR(100) NOT NULL, "\
-		"DESCRIPTION CHAR(200) NOT NULL, "\
-		"UNIQUE (EPG_EVENT_ID, LANGUAGE));");
+		execute_non_query(
+			"CREATE TABLE IF NOT EXISTS EPG_EVENT_TEXT ("\
+			"EPG_EVENT_TEXT_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
+			"EPG_EVENT_ID INTEGER NOT NULL, "\
+			"LANGUAGE CHAR(3) NOT NULL, "\
+			"TITLE CHAR(100) NOT NULL, "\
+			"DESCRIPTION CHAR(200) NOT NULL, "\
+			"UNIQUE (EPG_EVENT_ID, LANGUAGE));");
+	}
 }
 
 Data::~Data()
@@ -175,8 +178,13 @@ void fix_quotes(Glib::ustring& text)
 	}
 }
 
-void Data::insert_or_ignore_epg_event(const EpgEvent& epg_event)
-{	
+void Data::insert_or_ignore_epg_event(EpgEvent& epg_event)
+{
+	if (epg_event.channel_id == 0)
+	{
+		throw Exception("ASSERT: epg_event.channel_id == 0");
+	}
+
 	Glib::ustring insert_command = Glib::ustring::compose
 	(
 		"INSERT OR IGNORE INTO EPG_EVENT "\
@@ -187,20 +195,52 @@ void Data::insert_or_ignore_epg_event(const EpgEvent& epg_event)
 	
 	execute_non_query(insert_command);
 	
-	for (EpgEventTextList::const_iterator i = epg_event.texts.begin(); i != epg_event.texts.end(); i++)
+	if (epg_event.epg_event_id == 0)
 	{
-		insert_or_ignore_epg_event_text(*i);
+		epg_event.epg_event_id = sqlite3_last_insert_rowid(database);
+	}	
+	
+	if (epg_event.epg_event_id == 0)
+	{
+		Glib::ustring select_command = Glib::ustring::compose
+		(
+			"SELECT EPG_EVENT_ID FROM EPG_EVENT WHERE CHANNEL_ID = %1 AND EVENT_ID = %2",
+			epg_event.channel_id, epg_event.event_id
+		);
+		
+		Statement statement(database, select_command);
+		if (statement.step() == SQLITE_ROW)
+		{
+			epg_event.epg_event_id = statement.get_int(0);
+		}
+		
+		if (epg_event.epg_event_id == 0)
+		{
+			throw Exception("Failed to get epg_event_id");
+		}
+	}
+	
+	for (EpgEventTextList::iterator i = epg_event.texts.begin(); i != epg_event.texts.end(); i++)
+	{
+		EpgEventText& epg_event_text = *i;
+		epg_event_text.epg_event_id = epg_event.epg_event_id;
+		insert_or_ignore_epg_event_text(epg_event_text);
 	}
 }
 
-void Data::insert_or_ignore_epg_event_text(const EpgEventText& epg_event_text)
+void Data::insert_or_ignore_epg_event_text(EpgEventText& epg_event_text)
 {
+	if (epg_event_text.epg_event_id == 0)
+	{
+		throw Exception(_("Event ID was 0"));
+	}
+
 	Glib::ustring fixed_title = epg_event_text.title;
 	Glib::ustring fixed_description = epg_event_text.description;
 	
 	fix_quotes(fixed_title);
 	fix_quotes(fixed_description);
-
+		
 	Glib::ustring insert_command = Glib::ustring::compose
 	(
 		"INSERT OR IGNORE INTO EPG_EVENT_TEXT "\
@@ -210,6 +250,11 @@ void Data::insert_or_ignore_epg_event_text(const EpgEventText& epg_event_text)
 	);
 	
 	execute_non_query(insert_command);
+
+	if (epg_event_text.epg_event_text_id == 0)
+	{
+		epg_event_text.epg_event_text_id = sqlite3_last_insert_rowid(database);
+	}	
 }
 
 EpgEventList Data::get_epg_events(guint frequency, guint service_id,
@@ -226,7 +271,6 @@ EpgEventList Data::get_epg_events(guint frequency, guint service_id,
 	);
 
 	Statement statement(database, select_command);
-	
 	while (statement.step() == SQLITE_ROW)
 	{
 		EpgEvent epg_event;
@@ -272,7 +316,7 @@ void Data::replace_channel(Channel& channel)
 	 	"(CHANNEL_ID, PROFILE_ID, NAME, FLAGS, SORT_ORDER, MRL, SERVICE_ID, FREQUENCY, BANDWIDTH, CODE_RATE_HP, CODE_RATE_LP, "\
 	 	"CONSTELLATION, TRANSMISSION_MODE, GUARD_INTERVAL, HIERARCHY_INFORMATION, INVERSION) "\
 	 	"VALUES (%1, %2, '%3', %4, %5, '%6', %7, %8, ",
-	 	channel.channel_id == -1 ? "NULL" : Glib::ustring::compose("%1", channel.channel_id),
+	 	channel.channel_id == 0 ? "NULL" : Glib::ustring::compose("%1", channel.channel_id),
 	 	channel.profile_id,
 		fixed_name,
 		channel.flags,
@@ -297,9 +341,9 @@ void Data::replace_channel(Channel& channel)
 	
 	execute_non_query(insert_command + insert_command_extra);
 	
-	if (channel.channel_id == -1)
+	if (channel.channel_id == 0)
 	{
-		channel.channel_id == sqlite3_last_insert_rowid(database);
+		channel.channel_id = sqlite3_last_insert_rowid(database);
 	}
 }
 
@@ -312,15 +356,19 @@ void Data::replace_profile(Profile& profile)
 	Glib::ustring replace_command = Glib::ustring::compose
 	(
 		"REPLACE INTO PROFILE (PROFILE_ID, NAME) VALUES (%1, '%2');",
-	 	profile.profile_id == -1 ? "NULL" : Glib::ustring::compose("%1", profile.profile_id),
+	 	profile.profile_id == 0 ? "NULL" : Glib::ustring::compose("%1", profile.profile_id),
 	 	profile.name
 	);
 
 	execute_non_query(replace_command);
 	
-	if (profile.profile_id == -1)
+	if (profile.profile_id == 0)
 	{
 		profile.profile_id = sqlite3_last_insert_rowid(database);
+		if (profile.profile_id == 0)
+		{
+			throw Exception("ASSERT: profile.profile_id == 0");
+		}
 	}
 	
 	ChannelList& channels = profile.get_channels();
@@ -328,7 +376,7 @@ void Data::replace_profile(Profile& profile)
 	{
 		Channel& channel = *channel_iterator;
 		channel.profile_id = profile.profile_id;
-		replace_channel(*channel_iterator);
+		replace_channel(channel);
 	}
 }
 
