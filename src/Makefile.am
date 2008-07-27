@@ -65,7 +65,8 @@ me_tv_SOURCES = \
 	channel.h \
 	epg_event.h \
 	data.cc \
-	data.h
+	data.h \
+	epg_event.cc
 
 me_tv_LDFLAGS = 
 

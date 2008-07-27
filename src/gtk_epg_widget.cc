@@ -22,6 +22,8 @@
 #include "application.h"
 #include "data.h"
 
+#define UNKNOWN_TEXT "Unknown"
+
 GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
 	Gtk::ScrolledWindow(cobject), glade(glade)
 {
@@ -29,9 +31,6 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 
 	table_epg			= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
 	scrolled_window_epg	= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
-		
-	last_number_rows = 0;
-	last_number_columns = 0;
 }
 
 void GtkEpgWidget::set_offset(guint value)
@@ -91,8 +90,10 @@ void GtkEpgWidget::update_table()
 		guint epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
 
 		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
-
-		Gtk::Button& button_previous = attach_button("<b>&lt;</b>", 1, 2, 0, 1);
+		
+//		Gtk::Button& button_previous = attach_button("<b>&lt;</b>", 1, 2, 0, 1);
+//		button_previous.set_sensitive(offset > 0);
+		
 		guint start_time = time(NULL) + offset;
 		start_time = (start_time / 600) * 600;
 		char buffer[1000];
@@ -101,11 +102,12 @@ void GtkEpgWidget::update_table()
 		{
 			time_t t = start_time + hour*60*60;
 			localtime_r(&t, &tp);
-			strftime(buffer, 1000, "%x %T", &tp);
+			strftime(buffer, 1000, "%x %H:%M", &tp);
 			Glib::ustring text = Glib::ustring::compose("<b>%1</b>", Glib::ustring(buffer));
-			Gtk::Button& button_previous = attach_button(text, hour*6+2, (hour+1)*6+1, 0, 1);
+			attach_button(text, hour*6+1, (hour+1)*6+1, 0, 1).set_sensitive(false);
 		}
-		Gtk::Button& button_next = attach_button("<b>&gt;</b>", (epg_span_hours*6)+1, (epg_span_hours*6)+2, 0, 1);	
+//		Gtk::Button& button_next = attach_button("<b>&gt;</b>", (epg_span_hours*6)+1, (epg_span_hours*6)+2, 0, 1);	
+//		button_next.signal_clicked();
 		
 		guint row = 1;
 		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
@@ -122,7 +124,7 @@ void GtkEpgWidget::update_table()
 
 void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, gboolean selected, guint start_time, guint epg_span_hours)
 {	
-	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, table_row + 1, table_row + 2);
+	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, table_row, table_row + 1);
 	
 	channel_button.set_active(selected);
 	
@@ -134,18 +136,77 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 		)
 	);
 	
-	/*
-	EpgEventList events = data.get_epg_events(channel.frontend_parameters.frequency, channel.service_id, start_time, start_time+(epg_span_hours*60*60));
-	guint start_cell = 1;
-	for (EpgEventList::iterator i = events.begin(); i != events.end(); i++)
-	{
-		EpgEvent epg_event = *i;
-		guint end_cell = start_cell+1;
-		g_debug("EVENT: %s", epg_event.title.c_str());
-		attach_button(epg_event.title, start_cell, end_cell, table_row + 1, table_row + 2);
-		start_cell = end_cell;
+	const EpgEventList& events = data.get_epg_events(channel, start_time, start_time+(epg_span_hours*60*60));
+	guint total_number_columns = 0;
+	guint end_time = start_time + epg_span_hours*60*60;
+	guint last_event_end_time = 0;
+	guint number_columns = epg_span_hours * 6 + 1;
+	for (EpgEventList::const_iterator i = events.begin(); i != events.end(); i++)
+	{		
+		const EpgEvent& event = *i;
+					
+		guint event_start_time = event.start_time;
+		guint event_duration = event.duration;
+		guint event_end_time = event_start_time + event_duration;
+
+		if ((event_end_time > start_time && event_end_time < end_time) ||
+			(event_start_time < end_time && event_start_time > start_time) ||
+			(event_start_time < start_time && event_end_time > end_time)
+		)
+		{
+			Glib::ustring time_text;
+			
+			guint start_column = 0;
+			if (event_start_time < start_time)
+			{
+				start_column = 0;
+			}
+			else
+			{
+				start_column = (guint)round((event_start_time - start_time) / 600.0);
+			}
+			
+			guint end_column = (guint)round((event_end_time - start_time) / 600.0);
+			if (end_column > number_columns-1)
+			{
+				end_column = number_columns-1;
+			}
+			
+			guint column_count = end_column - start_column;
+			if (start_column >= total_number_columns && column_count > 0)
+			{
+				// If there's a gap, plug it
+				if (start_column > total_number_columns)
+				{
+					// If it's a small gap then just extend the event
+					if (event_start_time - last_event_end_time <= 2 * 60)
+					{
+						start_column = total_number_columns;
+						column_count = end_column - start_column;
+					}
+					else
+					{
+						guint empty_columns = start_column - total_number_columns;
+						attach_button(UNKNOWN_TEXT, total_number_columns + 1, start_column + 1, table_row, table_row + 1);
+						total_number_columns += empty_columns;
+					}
+				}
+														
+				if (column_count > 0)
+				{
+					Gtk::Button& button = attach_button(event.get_title(), start_column + 1, end_column + 1, table_row, table_row + 1);
+				}
+
+				total_number_columns += column_count;
+			}
+			last_event_end_time = event_end_time;
+		}
 	}
-	*/
+	
+	if (total_number_columns < number_columns-1)
+	{		
+		attach_button(UNKNOWN_TEXT, total_number_columns + 1, number_columns, table_row, table_row + 1);
+	}
 }
 
 Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)

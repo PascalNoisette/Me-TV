@@ -32,10 +32,6 @@ private:
 	gsize span_hours;
 	gsize span_minutes;
 	gsize span_seconds;
-	gsize last_number_rows;
-	gsize last_number_columns;
-	gsize number_rows;
-	gsize number_columns;
 	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
 	Data data;
 	

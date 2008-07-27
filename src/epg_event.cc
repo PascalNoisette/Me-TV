@@ -18,35 +18,46 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __DATA_H__
-#define __DATA_H__
-
-#include <sqlite3.h>
-#include "me-tv.h"
-#include "profile.h"
 #include "epg_event.h"
 
-class Data
+Glib::ustring EpgEvent::get_title(const Glib::ustring& language) const
 {
-private:
-	sqlite3* database;
-		
-	guint execute_non_query(const Glib::ustring& command);
-	guint execute_query(const Glib::ustring& command);
-	sqlite3_stmt* prepare(const Glib::ustring& command);
-	void step(sqlite3_stmt* statement);
+	Glib::ustring result;
 
-public:
-	Data(gboolean initialise = false);
-	~Data();
-		
-	EpgEventList get_epg_events(const Channel& channel, guint start_time, guint end_time);
-	void insert_or_ignore_epg_event(EpgEvent& epg_event);
-	void insert_or_ignore_epg_event_text(EpgEventText& epg_event_text);
+	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end(); i++)
+	{
+		EpgEventText text = *i;
+		if (result.size() == 0 || (language.size() > 0 && language == text.language))
+		{
+			result = text.title;
+		}
+	}
 	
-	ProfileList get_all_profiles();
-	void replace_profile(Profile& profile);
-	void replace_channel(Channel& channel);
-};
-
-#endif
+	if (result.size() == 0)
+	{
+		result = "Unknown";
+	}
+	
+	return result;		
+}
+	
+Glib::ustring EpgEvent::get_default_description(const Glib::ustring& language) const
+{
+	Glib::ustring result;
+	
+	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end(); i++)
+	{
+		EpgEventText text = *i;
+		if (result.size() == 0 || (language.size() > 0 && language == text.language))
+		{
+			result = text.description;
+		}
+	}
+	
+	if (result.size() == 0)
+	{
+		result = "Unknown";
+	}
+	
+	return result;		
+}

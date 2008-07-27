@@ -257,17 +257,16 @@ void Data::insert_or_ignore_epg_event_text(EpgEventText& epg_event_text)
 	}	
 }
 
-EpgEventList Data::get_epg_events(guint frequency, guint service_id,
-	guint start_time, guint end_time)
+EpgEventList Data::get_epg_events(const Channel& channel, guint start_time, guint end_time)
 {
 	EpgEventList result;
 	
 	Glib::ustring select_command = Glib::ustring::compose
 	(
-		"SELECT * FROM EPG_EVENT WHERE FREQUENCY=%1 AND SERVICE_ID=%2 "\
-	 	"AND (START_TIME+DURATION) > %3 AND START_TIME < %4 "\
+		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 "\
+	 	"AND (START_TIME+DURATION) > %2 AND START_TIME < %3 "\
 	 	"ORDER BY START_TIME;",
-		frequency, service_id , start_time, end_time
+		channel.channel_id , start_time, end_time
 	);
 
 	Statement statement(database, select_command);
@@ -279,7 +278,6 @@ EpgEventList Data::get_epg_events(guint frequency, guint service_id,
 		epg_event.event_id		= statement.get_int(2);
 		epg_event.start_time	= statement.get_int(3);
 		epg_event.duration		= statement.get_int(4);
-		result.push_back(epg_event);
 
 		Glib::ustring text_select_command = Glib::ustring::compose
 		(
@@ -288,7 +286,6 @@ EpgEventList Data::get_epg_events(guint frequency, guint service_id,
 		);
 		
 		Statement text_statement(database, text_select_command);
-
 		while (text_statement.step() == SQLITE_ROW)
 		{
 			EpgEventText epg_event_text;
@@ -299,6 +296,8 @@ EpgEventList Data::get_epg_events(guint frequency, guint service_id,
 			epg_event_text.description			= text_statement.get_text(4);
 			epg_event.texts.push_back(epg_event_text);
 		}		
+
+		result.push_back(epg_event);
 	}
 	
 	return result;
