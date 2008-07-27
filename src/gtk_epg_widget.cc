@@ -24,6 +24,17 @@
 
 #define UNKNOWN_TEXT "Unknown"
 
+Glib::ustring encode(const Glib::ustring& s)
+{
+	Glib::ustring result = s;
+	
+	replace_text(result, "&", "&amp;");
+	replace_text(result, "<", "&lt;");
+	replace_text(result, ">", "&gt;");
+
+	return result;
+}
+
 GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
 	Gtk::ScrolledWindow(cobject), glade(glade)
 {
@@ -91,13 +102,13 @@ void GtkEpgWidget::update_table()
 
 		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
 		
-//		Gtk::Button& button_previous = attach_button("<b>&lt;</b>", 1, 2, 0, 1);
-//		button_previous.set_sensitive(offset > 0);
-		
-		guint start_time = time(NULL) + offset;
+		struct tm tp;
+
+		time_t now = time(NULL) + timezone;
+
+		guint start_time = now + offset;
 		start_time = (start_time / 600) * 600;
 		char buffer[1000];
-		struct tm tp;
 		for (gint hour = 0; hour < epg_span_hours; hour++)
 		{
 			time_t t = start_time + hour*60*60;
@@ -106,8 +117,6 @@ void GtkEpgWidget::update_table()
 			Glib::ustring text = Glib::ustring::compose("<b>%1</b>", Glib::ustring(buffer));
 			attach_button(text, hour*6+1, (hour+1)*6+1, 0, 1).set_sensitive(false);
 		}
-//		Gtk::Button& button_next = attach_button("<b>&gt;</b>", (epg_span_hours*6)+1, (epg_span_hours*6)+2, 0, 1);	
-//		button_next.signal_clicked();
 		
 		guint row = 1;
 		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
@@ -194,7 +203,7 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 														
 				if (column_count > 0)
 				{
-					Gtk::Button& button = attach_button(event.get_title(), start_column + 1, end_column + 1, table_row, table_row + 1);
+					Gtk::Button& button = attach_button(encode(event.get_title()), start_column + 1, end_column + 1, table_row, table_row + 1);
 				}
 
 				total_number_columns += column_count;

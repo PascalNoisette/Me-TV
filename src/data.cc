@@ -170,12 +170,7 @@ guint Data::execute_non_query(const Glib::ustring& command)
 
 void fix_quotes(Glib::ustring& text)
 {
-	Glib::ustring::size_type position = 0;
-	while ((position = text.find("'", position)) != Glib::ustring::npos)
-	{
-		text.insert(position, "'");
-		position += 2;
-	}
+	replace_text(text, "'", "''");
 }
 
 void Data::insert_or_ignore_epg_event(EpgEvent& epg_event)

@@ -18,23 +18,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __ME_TV_H__
-#define __ME_TV_H__
+#include "me-tv.h"
 
-#include <glibmm/i18n.h>
-#include <list>
-#include <vector>
-#include <glibmm.h>
-
-#define GCONF_PATH "/apps/me-tv"
-
-typedef sigc::signal<void, const Glib::ustring&> StringSignal;
-
-StringSignal& get_signal_error();
-
-typedef std::vector<Glib::ustring> StringArray;
-typedef std::list<Glib::ustring> StringList;
-
-void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to);
-
-#endif
+void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to)
+{
+	Glib::ustring::size_type position = 0;
+	while ((position = text.find(from, position)) != Glib::ustring::npos)
+	{
+		text.replace(position, from.size(), to);
+		position += to.size();
+	}
+}
