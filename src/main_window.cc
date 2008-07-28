@@ -80,7 +80,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	load_devices();
 	show();
 
-	widget_epg->update();
+	update();
 	
 	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
 	get_application().get_profile_manager().get_current_profile().signal_display_channel_changed.connect(
@@ -132,10 +132,9 @@ void MainWindow::on_error(const Glib::ustring& message)
 
 void MainWindow::on_display_channel_changed(const Channel& channel)
 {
-	Gtk::Label* label_information = dynamic_cast<Gtk::Label*>(glade->get_widget("label_information"));
-	Glib::ustring text = Glib::ustring::compose("<b>%1</b>\n<i>%2</i>\n%2", channel.name,
-		Glib::ustring("Unknown"), Glib::ustring("Unknown"));
-	label_information->set_label(text);
+	TRY
+	update();
+	CATCH;
 }
 
 Gtk::DrawingArea& MainWindow::get_drawing_area()
@@ -203,7 +202,7 @@ void MainWindow::on_menu_item_channels_clicked()
 	{
 		gint result = channels_dialog->run();
 		channels_dialog->hide();
-		widget_epg->update();
+		update();
 		
 		// Pressed Cancel
 		if (result == Gtk::RESPONSE_CANCEL || result == Gtk::RESPONSE_DELETE_EVENT)
@@ -222,7 +221,7 @@ void MainWindow::on_menu_item_channels_clicked()
 			Data data;
 			data.replace_profile(profile);
 			
-			widget_epg->update();
+			update();
 			done = true;
 		}
 		
@@ -251,7 +250,7 @@ void MainWindow::on_menu_item_preferences_clicked()
 	glade->get_widget_derived("dialog_preferences", preferences_dialog);
 	preferences_dialog->run();
 	preferences_dialog->hide();
-	widget_epg->update();
+	update();
 	CATCH
 }
 
@@ -282,6 +281,8 @@ void MainWindow::on_menu_item_about_clicked()
 	
 bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 {
+	TRY
+		
 	if (event->button == 1)
 	{
 		if (event->type == GDK_2BUTTON_PRESS)
@@ -296,9 +297,10 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 		
 		if (show)
 		{
-			widget_epg->update();
+			update();
 		}
 	}
+	CATCH
 	
 	return true;
 }
@@ -414,8 +416,17 @@ void MainWindow::on_tool_button_record_clicked()
 	Gtk::ToggleToolButton* tool_button_record = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"));
 	if (tool_button_record->get_active())
 	{
-		const Channel& channel = application.get_profile_manager().get_current_profile().get_display_channel();
-		application.record("/home/michael/me-tv.xvid");
+		Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
+		const Channel* channel = application.get_profile_manager().get_current_profile().get_display_channel();
+		
+		if (channel == NULL)
+		{
+			throw Exception(_("No current channel"));
+		}
+		
+		Glib::ustring recording_directory = client->get_string("recoding_directory");
+		Glib::ustring path = Glib::build_filename(recording_directory, channel->get_text() + ".mpeg");
+		application.record(path);
 	}
 	else
 	{
@@ -436,4 +447,46 @@ gboolean MainWindow::get_mute_state()
 {
 	Gtk::ToggleToolButton* tool_button_mute = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"));
 	return tool_button_mute->get_active();
+}
+
+void MainWindow::update()
+{
+	const Channel* channel = get_application().get_profile_manager().get_current_profile().get_display_channel();
+	Glib::ustring window_title;
+	
+	if (channel == NULL)
+	{
+		window_title = "Me TV - It's TV for me computer";
+	}
+	else
+	{
+		Glib::ustring name = "<b>" + channel->name + "</b>";
+		window_title = "Me TV - " + channel->get_text();
+
+		Glib::ustring title = UNKNOWN_TEXT;
+		Glib::ustring description = UNKNOWN_TEXT;
+		
+		EpgEvent epg_event;
+		if (channel->get_current_epg_event(epg_event))
+		{
+			title = epg_event.get_title();
+			description = epg_event.get_description();
+
+			Glib::ustring time_string = get_time_string(epg_event.start_time - timezone, "%c");
+			time_string += get_time_string(epg_event.start_time - timezone + epg_event.duration, " - %H:%M:%S");
+			
+			name += "\n" + time_string;
+		}
+		
+		Glib::ustring text = Glib::ustring::compose("%1\n<i>%2</i>\n%3", name, title, description);
+		
+		Gtk::Label* label_information = dynamic_cast<Gtk::Label*>(glade->get_widget("label_information"));
+		if (label_information != NULL)
+		{
+			label_information->set_label(text);
+		}
+	}
+	set_title(window_title);
+
+	widget_epg->update();
 }

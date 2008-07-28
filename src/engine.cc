@@ -91,7 +91,7 @@ GStreamerEngine::GStreamerEngine()
 	
 	gst_element_link_many(source, tee, decoder, NULL);
 	gst_element_link(deinterlace, video_sink);
-	gst_element_link(volume, audio_sink);
+	gst_element_link_many(volume, audio_sink, NULL);
 
 //	GstElement* file_sink = create_element("filesink", "file_sink");
 //	g_object_set (G_OBJECT (file_sink), "location", "/home/michael/michael2.mpeg", NULL);

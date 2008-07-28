@@ -35,7 +35,6 @@ class ProfileManager
 protected:
 	ProfileList profiles;
 	Profile* current_profile;
-	Data data;
 
 	void unset_directory(const Glib::ustring& path);
 	Profile* find_profile(const Glib::ustring& profile_name);

@@ -26,7 +26,8 @@
 #include <vector>
 #include <glibmm.h>
 
-#define GCONF_PATH "/apps/me-tv"
+#define GCONF_PATH		"/apps/me-tv"
+#define UNKNOWN_TEXT	_("Unknown")
 
 typedef sigc::signal<void, const Glib::ustring&> StringSignal;
 
@@ -36,5 +37,6 @@ typedef std::vector<Glib::ustring> StringArray;
 typedef std::list<Glib::ustring> StringList;
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to);
+Glib::ustring get_time_string(time_t t, const gchar* format);
 
 #endif

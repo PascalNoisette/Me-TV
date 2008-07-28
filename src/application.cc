@@ -46,7 +46,15 @@ Application::Application(int argc, char *argv[]) :
 	client = Gnome::Conf::Client::get_default_client();
 	
 	set_configuration_default("epg_span_hours", 3);
-
+	set_configuration_default("recording_directory", Glib::get_home_dir());
+	
+	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
+	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
+	if (!file->query_exists())
+	{
+		file->make_directory();
+	}
+	
 	// Initialise database
 	Data data(true);
 	
@@ -100,7 +108,7 @@ void Application::set_configuration_default(const Glib::ustring& key, gint value
 	Gnome::Conf::Value v = client->get(path);
 	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
 	{
-		g_debug("Setting string configuration value '%s' = '%d'", path.c_str(), value);
+		g_debug("Setting int configuration value '%s' = '%d'", path.c_str(), value);
 		client->set(path, value);
 	}
 }
@@ -420,6 +428,8 @@ void EpgThread::run()
 		demuxers.add()->set_filter(EIT_PID, EIT_ID, 0);
 	}
 	
+	guint processed_event_count = 0;
+	guint processed_events[10000];
 	guint frequency = transponder->frontend_parameters.frequency;
 	while (!is_terminated())
 	{
@@ -435,29 +445,47 @@ void EpgThread::run()
 			{
 				for( unsigned int k = 0; section.events.size() > k; k++ )
 				{
-					EpgEvent epg_event;
+					gboolean found = false;
 					Dvb::SI::Event& event	= section.events[k];
 
-					epg_event.epg_event_id	= 0;
-					epg_event.channel_id	= channel->channel_id;
-					epg_event.event_id		= event.event_id;
-					epg_event.start_time	= event.start_time;
-					epg_event.duration		= event.duration;
-					
-					for (Dvb::SI::EventTextList::iterator i = event.texts.begin(); i != event.texts.end(); i++)
+					for (guint i = 0; i < processed_event_count && !found; i++)
 					{
-						EpgEventText epg_event_text;
-						const Dvb::SI::EventText& event_text = *i;
-						
-						epg_event_text.epg_event_text_id	= 0;
-						epg_event_text.epg_event_id			= 0;
-						epg_event_text.language				= event_text.language;
-						epg_event_text.title				= event_text.title;
-						epg_event_text.description			= event_text.description;
-						
-						epg_event.texts.push_back(epg_event_text);
+						if (processed_events[i] == event.event_id)
+						{
+							found = true;
+						}
 					}
-					data.insert_or_ignore_epg_event(epg_event);
+					
+					if (processed_event_count < 10000)
+					{
+						processed_events[processed_event_count++] = event.event_id;
+					}
+					
+					if (!found)
+					{
+						EpgEvent epg_event;
+
+						epg_event.epg_event_id	= 0;
+						epg_event.channel_id	= channel->channel_id;
+						epg_event.event_id		= event.event_id;
+						epg_event.start_time	= event.start_time;
+						epg_event.duration		= event.duration;
+						
+						for (Dvb::SI::EventTextList::iterator i = event.texts.begin(); i != event.texts.end(); i++)
+						{
+							EpgEventText epg_event_text;
+							const Dvb::SI::EventText& event_text = *i;
+							
+							epg_event_text.epg_event_text_id	= 0;
+							epg_event_text.epg_event_id			= 0;
+							epg_event_text.language				= event_text.language;
+							epg_event_text.title				= event_text.title;
+							epg_event_text.description			= event_text.description;
+							
+							epg_event.texts.push_back(epg_event_text);
+						}
+						data.insert_or_ignore_epg_event(epg_event);
+					}
 				}
 			}
 		}

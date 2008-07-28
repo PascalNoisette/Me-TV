@@ -46,6 +46,7 @@ private:
 	DisplayMode								display_mode;
 	Gtk::RadioButtonGroup					radio_button_group_devices;
 
+	void update();
 	void stop();
 	void fullscreen();
 	void unfullscreen();

@@ -28,7 +28,7 @@ class Profile
 {
 private:
 	ChannelList channels;
-	Channel display_channel;
+	Channel* display_channel;
 	Channel* find_channel(guint channel_id);
 
 public:
@@ -41,7 +41,7 @@ public:
 	void clear();
 	ChannelList& get_channels();
 	const ChannelList& get_channels() const;
-	const Channel& get_display_channel() const;
+	const Channel* get_display_channel() const;
 	sigc::signal<void, const Channel&> signal_display_channel_changed;
 	Channel& get_channel(guint channel_id);
 	Channel* find_channel(guint frequency, guint service_id);

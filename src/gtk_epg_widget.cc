@@ -22,8 +22,6 @@
 #include "application.h"
 #include "data.h"
 
-#define UNKNOWN_TEXT "Unknown"
-
 Glib::ustring encode(const Glib::ustring& s)
 {
 	Glib::ustring result = s;
@@ -87,17 +85,6 @@ void GtkEpgWidget::clear()
 	}
 }
 
-Glib::ustring get_time_string(time_t t, const gchar* format)
-{
-	struct tm tp;
-	char buffer[1000];
-
-	localtime_r(&t, &tp);
-	strftime(buffer, 1000, format, &tp);
-	
-	return buffer;
-}
-
 void GtkEpgWidget::update_table()
 {
 	if (get_window())
@@ -107,7 +94,7 @@ void GtkEpgWidget::update_table()
 		clear();
 		
 		Profile& profile = get_application().get_profile_manager().get_current_profile();
-		const Channel& display_channel = profile.get_display_channel();
+		const Channel* display_channel = profile.get_display_channel();
 		const ChannelList& channels = profile.get_channels();
 		guint epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
 
@@ -120,7 +107,7 @@ void GtkEpgWidget::update_table()
 		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
 			const Channel& channel = *iterator;
-			gboolean selected = channel.name == display_channel.name;
+			gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
 			create_channel_row(channel, row++, selected, start_time, epg_span_hours);
 		}
 		get_window()->thaw_updates();

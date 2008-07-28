@@ -19,6 +19,7 @@
  */
 
 #include "epg_event.h"
+#include "me-tv.h"
 
 Glib::ustring EpgEvent::get_title(const Glib::ustring& language) const
 {
@@ -35,13 +36,13 @@ Glib::ustring EpgEvent::get_title(const Glib::ustring& language) const
 	
 	if (result.size() == 0)
 	{
-		result = "Unknown";
+		result = UNKNOWN_TEXT;
 	}
 	
 	return result;		
 }
 	
-Glib::ustring EpgEvent::get_default_description(const Glib::ustring& language) const
+Glib::ustring EpgEvent::get_description(const Glib::ustring& language) const
 {
 	Glib::ustring result;
 	
@@ -56,7 +57,7 @@ Glib::ustring EpgEvent::get_default_description(const Glib::ustring& language) c
 	
 	if (result.size() == 0)
 	{
-		result = "Unknown";
+		result = UNKNOWN_TEXT;
 	}
 	
 	return result;		

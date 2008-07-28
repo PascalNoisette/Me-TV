@@ -19,6 +19,7 @@
  */
 
 #include "channel.h"
+#include "data.h"
 
 Channel::Channel()
 {
@@ -29,6 +30,23 @@ Channel::Channel()
 	memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
 }
 
-EpgEvent* Channel::get_current_event()
+gboolean Channel::get_current_epg_event(EpgEvent& epg_event) const
 {
+	Data data;
+	return data.get_current_epg_event(*this, epg_event);
 }
+
+Glib::ustring Channel::get_text() const
+{
+	Glib::ustring result = name;
+	EpgEvent epg_event;
+	
+	if (get_current_epg_event(epg_event))
+	{
+		result += " - ";
+		result += epg_event.get_title();
+	}
+	
+	return result;
+}
+

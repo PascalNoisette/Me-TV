@@ -26,6 +26,23 @@
 #include "profile.h"
 #include "epg_event.h"
 
+class Statement
+{
+private:
+	Glib::RecMutex::Lock	lock;
+	sqlite3_stmt*			statement;
+	sqlite3*				database;
+	Glib::ustring			command;
+
+public:
+	Statement(sqlite3* database, const Glib::ustring& command);
+	~Statement();
+
+	gint step();
+	gint get_int(guint column);
+	const Glib::ustring get_text(guint column);
+};
+
 class Data
 {
 private:
@@ -36,10 +53,13 @@ private:
 	sqlite3_stmt* prepare(const Glib::ustring& command);
 	void step(sqlite3_stmt* statement);
 
+	void load_epg_event(Statement& statement, EpgEvent& epg_event);
+	
 public:
 	Data(gboolean initialise = false);
 	~Data();
 		
+	gboolean get_current_epg_event(const Channel& channel, EpgEvent& epg_event);
 	EpgEventList get_epg_events(const Channel& channel, guint start_time, guint end_time);
 	void insert_or_ignore_epg_event(EpgEvent& epg_event);
 	void insert_or_ignore_epg_event_text(EpgEventText& epg_event_text);

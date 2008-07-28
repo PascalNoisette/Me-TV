@@ -32,71 +32,61 @@ public:
 		Exception(Glib::ustring::compose("%1: %2", message, Glib::ustring(sqlite3_errmsg(database)))) {}
 };
 
-class Statement
+Statement::Statement(sqlite3* database, const Glib::ustring& command) : database(database), command(command), lock(statement_mutex)
 {
-private:
-	Glib::RecMutex::Lock	lock;
-	sqlite3_stmt*			statement;
-	sqlite3*				database;
-	Glib::ustring			command;
-
-public:
-	Statement(sqlite3* database, const Glib::ustring& command) : database(database), command(command), lock(statement_mutex)
+	statement = NULL;
+	const char* remaining = NULL;
+	//g_debug("Command: %s", command.c_str());
+	
+	if (sqlite3_prepare_v2(database, command.c_str(), -1, &statement, &remaining) != 0)
 	{
-		statement = NULL;
-		const char* remaining = NULL;
-		//g_debug("Command: %s", command.c_str());
-		
-		if (sqlite3_prepare_v2(database, command.c_str(), -1, &statement, &remaining) != 0)
+		if (remaining == NULL || *remaining == 0)
 		{
-			if (remaining == NULL || *remaining == 0)
-			{
-				throw SQLiteException(database, Glib::ustring::compose("Failed to prepare statement: %1", command));
-			}
-			else
-			{
-				throw SQLiteException(database, Glib::ustring::compose(_("Failed to prepare statement: %1"), Glib::ustring(remaining)));
-			}
+			throw SQLiteException(database, Glib::ustring::compose("Failed to prepare statement: %1", command));
 		}
-		
-		if (remaining != NULL && *remaining != 0)
+		else
 		{
-			throw SQLiteException(database, Glib::ustring::compose(_("Prepare statement had remaining data: %1"), Glib::ustring(remaining)));
-		}
-		
-		if (statement == NULL)
-		{
-			throw SQLiteException(database, _("Failed to create statement"));
+			throw SQLiteException(database, Glib::ustring::compose(_("Failed to prepare statement: %1"), Glib::ustring(remaining)));
 		}
 	}
 	
-	~Statement()
+	if (remaining != NULL && *remaining != 0)
 	{
-		if (sqlite3_finalize(statement) != 0)
-		{
-			throw SQLiteException(database, _("Failed to finalise statement"));
-		}
+		throw SQLiteException(database, Glib::ustring::compose(_("Prepare statement had remaining data: %1"), Glib::ustring(remaining)));
 	}
-		
-	gint step()
+	
+	if (statement == NULL)
 	{
-		return sqlite3_step(statement);
+		throw SQLiteException(database, _("Failed to create statement"));
 	}
-		
-	gint get_int(guint column)
-	{
-		return sqlite3_column_int(statement, column);
-	}
+}
 
-	const Glib::ustring get_text(guint column)
+Statement::~Statement()
+{
+	if (sqlite3_finalize(statement) != 0)
 	{
-		return (gchar*)sqlite3_column_text(statement, column);
+		throw SQLiteException(database, _("Failed to finalise statement"));
 	}
-};
+}
+	
+gint Statement::step()
+{
+	return sqlite3_step(statement);
+}
+	
+gint Statement::get_int(guint column)
+{
+	return sqlite3_column_int(statement, column);
+}
+
+const Glib::ustring Statement::get_text(guint column)
+{
+	return (gchar*)sqlite3_column_text(statement, column);
+}
 
 Data::Data(gboolean initialise)
 {
-	Glib::ustring database_path = Glib::build_filename(Glib::get_home_dir(), ".me-tv.db");
+	Glib::ustring database_path = Glib::build_filename(Glib::get_home_dir(), ".me-tv/me-tv.db");
 	
 	if (sqlite3_open(database_path.c_str(), &database) != 0)
 	{
@@ -251,6 +241,33 @@ void Data::insert_or_ignore_epg_event_text(EpgEventText& epg_event_text)
 	}	
 }
 
+void Data::load_epg_event(Statement& statement, EpgEvent& epg_event)
+{
+	epg_event.epg_event_id	= statement.get_int(0);
+	epg_event.channel_id	= statement.get_int(1);
+	epg_event.event_id		= statement.get_int(2);
+	epg_event.start_time	= statement.get_int(3);
+	epg_event.duration		= statement.get_int(4);
+
+	Glib::ustring text_select_command = Glib::ustring::compose
+	(
+		"SELECT * FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID=%1;",
+		epg_event.epg_event_id
+	);
+	
+	Statement text_statement(database, text_select_command);
+	while (text_statement.step() == SQLITE_ROW)
+	{
+		EpgEventText epg_event_text;
+		epg_event_text.epg_event_text_id	= text_statement.get_int(0);
+		epg_event_text.epg_event_id			= text_statement.get_int(1);
+		epg_event_text.language				= text_statement.get_text(2);
+		epg_event_text.title				= text_statement.get_text(3);
+		epg_event_text.description			= text_statement.get_text(4);
+		epg_event.texts.push_back(epg_event_text);
+	}
+}
+
 EpgEventList Data::get_epg_events(const Channel& channel, guint start_time, guint end_time)
 {
 	EpgEventList result;
@@ -267,30 +284,7 @@ EpgEventList Data::get_epg_events(const Channel& channel, guint start_time, guin
 	while (statement.step() == SQLITE_ROW)
 	{
 		EpgEvent epg_event;
-		epg_event.epg_event_id	= statement.get_int(0);
-		epg_event.channel_id	= statement.get_int(1);
-		epg_event.event_id		= statement.get_int(2);
-		epg_event.start_time	= statement.get_int(3);
-		epg_event.duration		= statement.get_int(4);
-
-		Glib::ustring text_select_command = Glib::ustring::compose
-		(
-			"SELECT * FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID=%1;",
-			epg_event.epg_event_id
-		);
-		
-		Statement text_statement(database, text_select_command);
-		while (text_statement.step() == SQLITE_ROW)
-		{
-			EpgEventText epg_event_text;
-			epg_event_text.epg_event_text_id	= text_statement.get_int(0);
-			epg_event_text.epg_event_id			= text_statement.get_int(1);
-			epg_event_text.language				= text_statement.get_text(2);
-			epg_event_text.title				= text_statement.get_text(3);
-			epg_event_text.description			= text_statement.get_text(4);
-			epg_event.texts.push_back(epg_event_text);
-		}		
-
+		load_epg_event(statement, epg_event);
 		result.push_back(epg_event);
 	}
 	
@@ -418,4 +412,25 @@ ProfileList Data::get_all_profiles()
 	}
 	
 	return profiles;
+}
+
+gboolean Data::get_current_epg_event(const Channel& channel, EpgEvent& epg_event)
+{
+	gboolean result = false;
+	
+	Glib::ustring select_command = Glib::ustring::compose
+	(
+		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 "\
+	 	"AND START_TIME <= %2 AND (START_TIME + DURATION) > %2",
+		channel.channel_id, time(NULL) + timezone
+	);
+
+	Statement statement(database, select_command);
+	if (statement.step() == SQLITE_ROW)
+	{
+		load_epg_event(statement, epg_event);
+		result = true;
+	}
+	
+	return result;
 }

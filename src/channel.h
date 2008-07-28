@@ -18,6 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#ifndef __CHANNEL_H__
+#define __CHANNEL_H__
+
 #define CHANNEL_FLAG_NONE		0
 #define CHANNEL_FLAG_DVB_T		1
 
@@ -40,7 +43,10 @@ public:
 	guint service_id;
 	struct dvb_frontend_parameters frontend_parameters;
 		
-	EpgEvent* get_current_event();
+	gboolean get_current_epg_event(EpgEvent& epg_event) const;
+	Glib::ustring get_text() const;
 };
 
 typedef std::list<Channel> ChannelList;
+
+#endif

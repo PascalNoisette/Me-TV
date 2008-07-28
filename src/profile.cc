@@ -27,6 +27,7 @@
 Profile::Profile()
 {
 	profile_id = 0;
+	display_channel = NULL;
 }
 
 Channel* Profile::find_channel(guint channel_id)
@@ -68,8 +69,8 @@ void Profile::set_display_channel(guint channel_id)
 void Profile::set_display_channel(const Channel& channel)
 {
 	g_debug("Setting display channel to '%s'", channel.name.c_str());
-	display_channel = channel;
-	signal_display_channel_changed(display_channel);
+	display_channel = find_channel(channel.frontend_parameters.frequency, channel.service_id);
+	signal_display_channel_changed(*display_channel);
 }
 
 void Profile::add_channels(ChannelList& c)
@@ -98,7 +99,7 @@ ChannelList& Profile::get_channels()
 	return channels;
 }
 
-const Channel& Profile::get_display_channel() const
+const Channel* Profile::get_display_channel() const
 {
 	return display_channel;
 }

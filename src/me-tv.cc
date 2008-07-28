@@ -29,3 +29,14 @@ void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::us
 		position += to.size();
 	}
 }
+
+Glib::ustring get_time_string(time_t t, const gchar* format)
+{
+	struct tm tp;
+	char buffer[1000];
+
+	localtime_r(&t, &tp);
+	strftime(buffer, 1000, format, &tp);
+	
+	return buffer;
+}
