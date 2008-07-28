@@ -38,7 +38,7 @@ private:
 	Gtk::Table* table_epg;
 	Gtk::ScrolledWindow* scrolled_window_epg;
 
-	void on_button_program_clicked();
+	void on_button_program_clicked(guint epg_event_id);
 	void on_button_channel_name_clicked(guint channel_id);
 		
 	void clear();

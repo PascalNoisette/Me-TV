@@ -23,6 +23,8 @@
 #include "exception.h"
 #include <giomm.h>
 
+Glib::RecMutex statement_mutex;
+
 class SQLiteException : public Exception
 {
 public:
@@ -33,11 +35,15 @@ public:
 class Statement
 {
 private:
-	sqlite3_stmt* statement;
-	sqlite3* database;
+	Glib::RecMutex::Lock	lock;
+	sqlite3_stmt*			statement;
+	sqlite3*				database;
+	Glib::ustring			command;
 
-	void prepare(sqlite3* database, const Glib::ustring& command)
+public:
+	Statement(sqlite3* database, const Glib::ustring& command) : database(database), command(command), lock(statement_mutex)
 	{
+		statement = NULL;
 		const char* remaining = NULL;
 		//g_debug("Command: %s", command.c_str());
 		
@@ -62,13 +68,6 @@ private:
 		{
 			throw SQLiteException(database, _("Failed to create statement"));
 		}
-	}
-
-public:
-	Statement(sqlite3* database, const Glib::ustring& command) : database(database)
-	{
-		statement = NULL;
-		prepare(database, command);
 	}
 	
 	~Statement()

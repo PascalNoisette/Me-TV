@@ -201,11 +201,18 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 				
 				if (column_count > 0)
 				{
-					Glib::ustring time_string = get_time_string(event.start_time, "%d/%m, %H:%M");
-					time_string += get_time_string(event.start_time + event.duration, " - %H:%M");
-					Glib::ustring text = "<small>" + time_string + "</small>\n" + encode(event.get_title());
+					Glib::ustring time_string = get_time_string(event.start_time - timezone, "%d/%m, %H:%M");
+					time_string += get_time_string(event.start_time - timezone + event.duration, " - %H:%M");
+					Glib::ustring text = "<i><small>" + time_string + "</small></i>\n" + encode(event.get_title());
 					
 					Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
+					button.signal_clicked().connect(
+						sigc::bind<guint>
+						(
+							sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
+							event.epg_event_id
+						)
+					);
 				}
 
 				total_number_columns += column_count;
@@ -262,5 +269,20 @@ void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 
 	TRY
 	update_table();
+	CATCH
+}
+
+void GtkEpgWidget::on_button_program_clicked(guint epg_event_id)
+{
+	TRY
+	/*
+	Gtk::Dialog* dialog = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
+	if (dialog == NULL)
+	{
+		throw Exception("Failed to load dialog");
+	}
+	dynamic_cast<Gtk::Label*>(glade->get_widget("label_program_title"))->set_text("Text & text");
+	dialog->run();
+	*/
 	CATCH
 }

@@ -22,18 +22,12 @@
 #define CHANNEL_FLAG_DVB_T		1
 
 #include <linux/dvb/frontend.h>
+#include "epg_event.h"
 
 class Channel
 {
 public:
-	Channel()
-	{
-		channel_id = 0;
-		profile_id = 0;
-		flags = 0;
-		service_id = 0;
-		memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
-	}
+	Channel();
 
 	guint channel_id;
 	guint profile_id;
@@ -45,6 +39,8 @@ public:
 	// DVB Specific
 	guint service_id;
 	struct dvb_frontend_parameters frontend_parameters;
+		
+	EpgEvent* get_current_event();
 };
 
 typedef std::list<Channel> ChannelList;

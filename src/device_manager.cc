@@ -37,7 +37,8 @@ DeviceManager::DeviceManager()
 	
 	g_debug("Scanning DVB devices ...");
 	guint adapter_count = 0;
-	while (Gio::File::create_for_path(get_adapter_path(adapter_count))->query_exists())
+	Glib::ustring adapter_path = get_adapter_path(adapter_count);
+	while (Gio::File::create_for_path(adapter_path)->query_exists())
 	{
 		Dvb::Adapter* adapter = new Dvb::Adapter(adapter_count);
 		
@@ -55,10 +56,10 @@ DeviceManager::DeviceManager()
 				g_debug("Failed to load '%s'", frontend_path.c_str());
 			}
 			
-			frontend_path = get_frontend_path(adapter_count, frontend_count++);
+			frontend_path = get_frontend_path(adapter_count, ++frontend_count);
 		}
 
-		adapter_count++;
+		adapter_path = get_adapter_path(++adapter_count);
 	}
 	
 	if (frontends.size() > 0)

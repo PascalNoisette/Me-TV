@@ -66,6 +66,8 @@ GstElement* GStreamerEngine::create_element(const Glib::ustring& factoryname, co
 		throw Exception(Glib::ustring::compose(N_("Failed to create GStreamer element '%1'"), name));
 	}
 	
+	gst_bin_add(GST_BIN(pipeline), element);
+	
 	return element;
 }
 
@@ -77,8 +79,8 @@ GStreamerEngine::GStreamerEngine()
 	volume		= create_element("volume", "volume");
 	deinterlace	= create_element("ffdeinterlace", "deinterlace");
 	video_sink	= create_element("xvimagesink", "video_sink");
-	audio_sink	= create_element("alsasink", "audio_sink");
-	//file_sink	= create_element("filesink", "file_sink");
+	audio_sink	= create_element("gconfaudiosink", "audio_sink");
+	tee			= create_element("tee", "tee");
 
 	GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE(pipeline));
 	gst_bus_add_watch (bus, bus_call, this);
@@ -87,10 +89,13 @@ GStreamerEngine::GStreamerEngine()
 	g_signal_connect(G_OBJECT(decoder), "pad-added", G_CALLBACK(connect_dynamic_pad), this);
 	g_object_set (G_OBJECT (video_sink), "force-aspect-ratio", true, NULL);
 	
-	gst_bin_add_many(GST_BIN(pipeline), source, decoder, deinterlace, video_sink, volume, audio_sink, NULL);
-	gst_element_link(source, decoder);
-	gst_element_link_many(deinterlace, video_sink, NULL);
-	gst_element_link_many(volume, audio_sink, NULL);
+	gst_element_link_many(source, tee, decoder, NULL);
+	gst_element_link(deinterlace, video_sink);
+	gst_element_link(volume, audio_sink);
+
+//	GstElement* file_sink = create_element("filesink", "file_sink");
+//	g_object_set (G_OBJECT (file_sink), "location", "/home/michael/michael2.mpeg", NULL);
+//	gst_element_link_many(tee, file_sink, NULL);
 }
 
 GStreamerEngine::~GStreamerEngine()
@@ -118,17 +123,7 @@ void GStreamerEngine::connect_dynamic_pad (GstElement* element, GstPad* pad, GSt
 	}
 	gst_pad_link (pad, audio_sink_pad);
 	gst_object_unref (audio_sink_pad);
-	
-	// File
-	/*
-	GstPad* file_sink_pad = gst_element_get_pad (engine->file_sink, "sink");
-	if (file_sink_pad == NULL)
-	{
-		throw Exception("Failed to get file sink pad");
-	}
-	gst_pad_link (pad, file_sink_pad);
-	gst_object_unref (file_sink_pad);
-	*/
+
 }
 
 void GStreamerEngine::play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename)

@@ -29,7 +29,7 @@
 class Data
 {
 private:
-	sqlite3* database;
+	sqlite3*		database;
 		
 	guint execute_non_query(const Glib::ustring& command);
 	guint execute_query(const Glib::ustring& command);

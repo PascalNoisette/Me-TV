@@ -75,7 +75,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
 
 	last_motion_time = time(NULL);
-	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
+//	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
 	
 	load_devices();
 	show();
@@ -133,7 +133,8 @@ void MainWindow::on_error(const Glib::ustring& message)
 void MainWindow::on_display_channel_changed(const Channel& channel)
 {
 	Gtk::Label* label_information = dynamic_cast<Gtk::Label*>(glade->get_widget("label_information"));
-	Glib::ustring text = Glib::ustring::compose("<b>%1</b>\n<i>%2</i>\n%2", channel.name, Glib::ustring("Unknown"), Glib::ustring("Unknown"));
+	Glib::ustring text = Glib::ustring::compose("<b>%1</b>\n<i>%2</i>\n%2", channel.name,
+		Glib::ustring("Unknown"), Glib::ustring("Unknown"));
 	label_information->set_label(text);
 }
 
@@ -326,21 +327,6 @@ bool MainWindow::on_event_box_video_scroll_event(GdkEventScroll* event)
 	}
 	
 	return true;
-}
-
-void MainWindow::on_button_epg_previous_clicked()
-{
-	widget_epg->increment_offset(-3600);
-}
-
-void MainWindow::on_button_epg_now_clicked()
-{
-	widget_epg->set_offset(0);
-}
-
-void MainWindow::on_button_epg_next_clicked()
-{
-	widget_epg->increment_offset(3600);
 }
 
 void MainWindow::unfullscreen()

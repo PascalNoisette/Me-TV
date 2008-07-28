@@ -69,9 +69,6 @@ private:
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
 	bool on_event_box_video_motion_notify_event(GdkEventMotion* event);
 	bool on_event_box_video_scroll_event(GdkEventScroll* event);
-	void on_button_epg_previous_clicked();
-	void on_button_epg_now_clicked();
-	void on_button_epg_next_clicked();
 	void on_tool_button_record_clicked();
 	void on_tool_button_mute_clicked();
 	bool on_drawing_area_video_expose(GdkEventExpose* expose);
