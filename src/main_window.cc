@@ -46,8 +46,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 		throw Exception("Failed to load EPG widget");
 	}
 	
-	glade->connect_clicked("menu_item_open",		sigc::mem_fun(*this, &MainWindow::on_menu_item_open_clicked));
-	glade->connect_clicked("menu_item_close",		sigc::mem_fun(*this, &MainWindow::on_menu_item_close_clicked));
 	glade->connect_clicked("menu_item_quit",		sigc::mem_fun(*this, &MainWindow::on_menu_item_quit_clicked));
 	glade->connect_clicked("menu_item_meters",		sigc::mem_fun(*this, &MainWindow::on_menu_item_meters_clicked));
 	glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
@@ -75,7 +73,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
 
 	last_motion_time = time(NULL);
-//	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
+	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
 	
 	load_devices();
 	show();
@@ -146,32 +144,6 @@ Gtk::DrawingArea& MainWindow::get_drawing_area()
 	return *drawing_area_video;
 }
 
-void MainWindow::on_menu_item_open_clicked()
-{
-	TRY
-	Gtk::FileChooserDialog dialog(*this, "Open media file ...");
-	dialog.add_button(Gtk::Stock::CANCEL, -1);
-	dialog.add_button(Gtk::Stock::OPEN, 0);
-	dialog.set_default_response(0);
-	gint response = dialog.run();
-	dialog.hide();
-	
-	if (response == 0)
-	{
-		Glib::ustring filename = dialog.get_filename();
-		g_debug("Playing '%s'", filename.c_str());
-		get_application().set_source(filename);
-	}
-	CATCH
-}
-
-void MainWindow::on_menu_item_close_clicked()
-{
-	TRY
-	get_application().set_source("");
-	CATCH
-}
-	
 void MainWindow::on_menu_item_quit_clicked()
 {
 	Gnome::Main::quit();
@@ -453,6 +425,7 @@ void MainWindow::update()
 {
 	const Channel* channel = get_application().get_profile_manager().get_current_profile().get_display_channel();
 	Glib::ustring window_title;
+	Glib::ustring status_text;
 	
 	if (channel == NULL)
 	{
@@ -462,6 +435,7 @@ void MainWindow::update()
 	{
 		Glib::ustring name = "<b>" + channel->name + "</b>";
 		window_title = "Me TV - " + channel->get_text();
+		status_text = channel->get_text();
 
 		Glib::ustring title = UNKNOWN_TEXT;
 		Glib::ustring description = UNKNOWN_TEXT;
@@ -487,6 +461,7 @@ void MainWindow::update()
 		}
 	}
 	set_title(window_title);
+	app_bar->set_status(status_text);
 
 	widget_epg->update();
 }

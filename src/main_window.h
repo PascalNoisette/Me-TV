@@ -59,8 +59,6 @@ private:
 	void on_display_channel_changed(const Channel& channel);
 	bool on_timeout();
 	void on_error(const Glib::ustring& message);
-	void on_menu_item_open_clicked();
-	void on_menu_item_close_clicked();
 	void on_menu_item_quit_clicked();
 	void on_menu_item_meters_clicked();
 	void on_menu_item_channels_clicked();

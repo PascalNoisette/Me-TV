@@ -749,7 +749,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 
 				if (error != NULL)
 				{
-					Glib::ustring message = Glib::ustring::format("Failed to convert to UTF-8: %1", error->message);
+					Glib::ustring message = Glib::ustring::compose("Failed to convert to UTF-8: %1", error->message);
 					g_debug(message.c_str());
 					g_debug("Codeset: %s", codeset);
 					g_debug("Length: %d", length);

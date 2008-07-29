@@ -1859,28 +1859,6 @@ Every week</property>
                           </widget>
                         </child>
                         <child>
-                          <widget class="GtkSeparatorMenuItem" id="separatormenuitem4">
-                            <property name="visible">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="menu_item_open">
-                            <property name="visible">True</property>
-                            <property name="tooltip" translatable="yes">Open a media file</property>
-                            <property name="label" translatable="yes">gtk-open</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="menu_item_close">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">gtk-close</property>
-                            <property name="use_underline">True</property>
-                            <property name="use_stock">True</property>
-                          </widget>
-                        </child>
-                        <child>
                           <widget class="GtkSeparatorMenuItem" id="separatormenuitem5">
                             <property name="visible">True</property>
                           </widget>
@@ -2145,7 +2123,6 @@ Every week</property>
                     <property name="use_markup">True</property>
                     <property name="wrap">True</property>
                     <property name="selectable">True</property>
-                    <property name="ellipsize">PANGO_ELLIPSIZE_END</property>
                   </widget>
                 </child>
                 <child>
