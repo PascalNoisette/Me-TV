@@ -22,17 +22,6 @@
 #include "application.h"
 #include "data.h"
 
-Glib::ustring encode(const Glib::ustring& s)
-{
-	Glib::ustring result = s;
-	
-	replace_text(result, "&", "&amp;");
-	replace_text(result, "<", "&lt;");
-	replace_text(result, ">", "&gt;");
-
-	return result;
-}
-
 GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
 	Gtk::ScrolledWindow(cobject), glade(glade)
 {
@@ -190,7 +179,7 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 				{
 					Glib::ustring time_string = get_time_string(event.start_time - timezone, "%d/%m, %H:%M");
 					time_string += get_time_string(event.start_time - timezone + event.duration, " - %H:%M");
-					Glib::ustring text = "<i><small>" + time_string + "</small></i>\n" + encode(event.get_title());
+					Glib::ustring text = "<i><small>" + time_string + "</small></i>\n" + encode_xml(event.get_title());
 					
 					Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
 					button.signal_clicked().connect(

@@ -20,6 +20,7 @@
 
 #include "channel.h"
 #include "data.h"
+#include "me-tv.h"
 
 Channel::Channel()
 {
@@ -38,7 +39,7 @@ gboolean Channel::get_current_epg_event(EpgEvent& epg_event) const
 
 Glib::ustring Channel::get_text() const
 {
-	Glib::ustring result = name;
+	Glib::ustring result = encode_xml(name);
 	EpgEvent epg_event;
 	
 	if (get_current_epg_event(epg_event))

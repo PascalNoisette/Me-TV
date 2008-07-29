@@ -38,5 +38,6 @@ typedef std::list<Glib::ustring> StringList;
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to);
 Glib::ustring get_time_string(time_t t, const gchar* format);
+Glib::ustring encode_xml(const Glib::ustring& s);
 
 #endif

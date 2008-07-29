@@ -29,6 +29,7 @@ class EpgEventText
 public:
 	guint epg_event_text_id;
 	guint epg_event_id;
+	gboolean is_extended;
 	Glib::ustring language;
 	Glib::ustring title;
 	Glib::ustring description;

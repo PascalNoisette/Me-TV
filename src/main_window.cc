@@ -24,6 +24,7 @@
 #include "preferences_dialog.h"
 #include "application.h"
 #include "scan_dialog.h"
+#include "me-tv.h"
 #include <config.h>
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
@@ -433,7 +434,8 @@ void MainWindow::update()
 	}
 	else
 	{
-		Glib::ustring name = "<b>" + channel->name + "</b>";
+		Glib::ustring channel_name = encode_xml(channel->name);
+		Glib::ustring name = "<b>" + channel_name + "</b>";
 		window_title = "Me TV - " + channel->get_text();
 		status_text = channel->get_text();
 
@@ -443,8 +445,8 @@ void MainWindow::update()
 		EpgEvent epg_event;
 		if (channel->get_current_epg_event(epg_event))
 		{
-			title = epg_event.get_title();
-			description = epg_event.get_description();
+			title = encode_xml(epg_event.get_title());
+			description = encode_xml(epg_event.get_description());
 
 			Glib::ustring time_string = get_time_string(epg_event.start_time - timezone, "%c");
 			time_string += get_time_string(epg_event.start_time - timezone + epg_event.duration, " - %H:%M:%S");

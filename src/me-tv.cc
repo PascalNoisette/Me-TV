@@ -40,3 +40,14 @@ Glib::ustring get_time_string(time_t t, const gchar* format)
 	
 	return buffer;
 }
+
+Glib::ustring encode_xml(const Glib::ustring& s)
+{
+	Glib::ustring result = s;
+	
+	replace_text(result, "&", "&amp;");
+	replace_text(result, "<", "&lt;");
+	replace_text(result, ">", "&gt;");
+
+	return result;
+}

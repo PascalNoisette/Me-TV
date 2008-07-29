@@ -162,7 +162,7 @@ void fix_quotes(Glib::ustring& text)
 	replace_text(text, "'", "''");
 }
 
-void Data::insert_or_ignore_epg_event(EpgEvent& epg_event)
+void Data::replace_epg_event(EpgEvent& epg_event)
 {
 	if (epg_event.channel_id == 0)
 	{
@@ -171,7 +171,7 @@ void Data::insert_or_ignore_epg_event(EpgEvent& epg_event)
 
 	Glib::ustring insert_command = Glib::ustring::compose
 	(
-		"INSERT OR IGNORE INTO EPG_EVENT "\
+		"REPLACE INTO EPG_EVENT "\
 	 	"(CHANNEL_ID, EVENT_ID, START_TIME, DURATION) "\
 	 	"VALUES (%1, %2, %3, %4);",
 		epg_event.channel_id, epg_event.event_id, epg_event.start_time, epg_event.duration
@@ -208,12 +208,14 @@ void Data::insert_or_ignore_epg_event(EpgEvent& epg_event)
 	{
 		EpgEventText& epg_event_text = *i;
 		epg_event_text.epg_event_id = epg_event.epg_event_id;
-		insert_or_ignore_epg_event_text(epg_event_text);
+		replace_epg_event_text(epg_event_text);
 	}
 }
 
-void Data::insert_or_ignore_epg_event_text(EpgEventText& epg_event_text)
+void Data::replace_epg_event_text(EpgEventText& epg_event_text)
 {
+	Glib::ustring command;
+
 	if (epg_event_text.epg_event_id == 0)
 	{
 		throw Exception(_("Event ID was 0"));
@@ -224,16 +226,64 @@ void Data::insert_or_ignore_epg_event_text(EpgEventText& epg_event_text)
 	
 	fix_quotes(fixed_title);
 	fix_quotes(fixed_description);
-		
-	Glib::ustring insert_command = Glib::ustring::compose
-	(
-		"INSERT OR IGNORE INTO EPG_EVENT_TEXT "\
-	 	"(EPG_EVENT_ID, LANGUAGE, TITLE, DESCRIPTION) "\
-	 	"VALUES (%1, '%2', '%3', '%4');",
-		epg_event_text.epg_event_id, epg_event_text.language, fixed_title, fixed_description
-	);
+
+	guint existing_epg_event_text_id = 0;
+
+	// Make sure that statement exists before we start the next command
+	{
+		Statement statement(database, Glib::ustring::compose(
+			"SELECT EPG_EVENT_TEXT_ID FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID=%1;",
+			epg_event_text.epg_event_id));
+		if (statement.step() == SQLITE_ROW)
+		{
+			existing_epg_event_text_id = statement.get_int(0);
+		}
+	}
 	
-	execute_non_query(insert_command);
+	if (existing_epg_event_text_id != 0)
+	{
+		if (epg_event_text.is_extended)
+		{
+			command = Glib::ustring::compose
+			(
+				"UPDATE EPG_EVENT_TEXT SET DESCRIPTION = '%1' WHERE EPG_EVENT_TEXT_ID=%2;",
+				fixed_description, existing_epg_event_text_id
+			);
+		}
+		else
+		{
+			command = Glib::ustring::compose
+			(
+				"UPDATE EPG_EVENT_TEXT SET TITLE = '%1' WHERE EPG_EVENT_TEXT_ID=%2;",
+				fixed_title, existing_epg_event_text_id
+			);
+		}
+	}
+	else
+	{
+		if (epg_event_text.is_extended)
+		{
+			command = Glib::ustring::compose
+			(
+				"INSERT INTO EPG_EVENT_TEXT "\
+				"(EPG_EVENT_ID, LANGUAGE, TITLE, DESCRIPTION) "\
+				"VALUES (%1, '%2', '%3', '%4');",
+				epg_event_text.epg_event_id, epg_event_text.language, fixed_title, fixed_description
+			);
+		}
+		else
+		{
+			command = Glib::ustring::compose
+			(
+				"INSERT INTO EPG_EVENT_TEXT "\
+				"(EPG_EVENT_ID, LANGUAGE, TITLE, DESCRIPTION) "\
+				"VALUES (%1, '%2', '%3', '%4');",
+				epg_event_text.epg_event_id, epg_event_text.language, fixed_title, fixed_description
+			);
+		}
+	}
+	
+	execute_non_query(command);
 
 	if (epg_event_text.epg_event_text_id == 0)
 	{

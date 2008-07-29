@@ -71,6 +71,18 @@ GstElement* GStreamerEngine::create_element(const Glib::ustring& factoryname, co
 	return element;
 }
 
+gboolean GStreamerEngine::cb_have_data (GstPad* pad, GstBuffer* buffer, gpointer u_data)
+{
+	GStreamerEngine* engine = (GStreamerEngine*)u_data;
+	gchar* data = (gchar*) GST_BUFFER_DATA (buffer);
+	guint length = GST_BUFFER_SIZE(buffer);
+	gsize bytes_read = 0;
+	g_debug("Length: %d",length);
+	engine->channel->read(data, length, bytes_read);
+	g_debug("Read %d bytes", bytes_read);
+	return TRUE;
+}
+
 GStreamerEngine::GStreamerEngine()
 {
 	pipeline	= gst_pipeline_new("pipeline");
@@ -93,9 +105,11 @@ GStreamerEngine::GStreamerEngine()
 	gst_element_link(deinterlace, video_sink);
 	gst_element_link_many(volume, audio_sink, NULL);
 
-//	GstElement* file_sink = create_element("filesink", "file_sink");
-//	g_object_set (G_OBJECT (file_sink), "location", "/home/michael/michael2.mpeg", NULL);
-//	gst_element_link_many(tee, file_sink, NULL);
+	/*
+	GstPad* pad = gst_element_get_pad (source, "src");
+	gst_pad_add_buffer_probe (pad, G_CALLBACK (GStreamerEngine::cb_have_data), this);
+	gst_object_unref (pad);
+	*/
 }
 
 GStreamerEngine::~GStreamerEngine()
@@ -123,7 +137,6 @@ void GStreamerEngine::connect_dynamic_pad (GstElement* element, GstPad* pad, GSt
 	}
 	gst_pad_link (pad, audio_sink_pad);
 	gst_object_unref (audio_sink_pad);
-
 }
 
 void GStreamerEngine::play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename)
@@ -136,6 +149,8 @@ void GStreamerEngine::play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring
 		gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (video_sink), window_id);
 
 		g_debug("GStreamer file source: %s", filename.c_str());
+//		channel = Glib::IOChannel::create_from_file(filename, "r");
+//		channel->set_encoding("");
 		g_object_set (G_OBJECT (source), "location", filename.c_str(), NULL);
 		g_debug("Starting pipeline");
 		gst_element_set_state (pipeline, GST_STATE_PLAYING);

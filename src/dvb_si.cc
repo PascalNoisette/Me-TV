@@ -582,8 +582,11 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 			offset += get_text(description, &event_buffer[offset]);
 			
 			EventText event_text;
+			event_text.is_extended = true;
+			event_text.language = language;
 			event_text.description = description;
 			event_text.title = title;
+			
 			event.texts.push_back(event_text);
 		}
 		break;
@@ -591,7 +594,7 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 	case SHORT_EVENT:
 		{
 			EventText event_text;
-
+			event_text.is_extended = false;
 			event_text.language = get_lang_desc (event_buffer);
 			unsigned int offset = 5;
 			offset += get_text(event_text.title, &event_buffer[offset]);

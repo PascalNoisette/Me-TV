@@ -61,8 +61,8 @@ public:
 		
 	gboolean get_current_epg_event(const Channel& channel, EpgEvent& epg_event);
 	EpgEventList get_epg_events(const Channel& channel, guint start_time, guint end_time);
-	void insert_or_ignore_epg_event(EpgEvent& epg_event);
-	void insert_or_ignore_epg_event_text(EpgEventText& epg_event_text);
+	void replace_epg_event(EpgEvent& epg_event);
+	void replace_epg_event_text(EpgEventText& epg_event_text);
 	
 	ProfileList get_all_profiles();
 	void replace_profile(Profile& profile);

@@ -98,7 +98,7 @@ gint Demuxer::read(unsigned char* buffer, size_t length)
 {
 	if (!poll(5000))
 	{
-		throw TimeoutException(_("Timeout while polling for demuxer"));
+		throw TimeoutException(_("Timeout while reading"));
 	}
 
 	guint bytes_read = ::read(fd, buffer, length);
