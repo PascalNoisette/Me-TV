@@ -24,6 +24,7 @@
 #include "preferences_dialog.h"
 #include "application.h"
 #include "scan_dialog.h"
+#include "scheduled_recordings_dialog.h"
 #include "me-tv.h"
 #include <config.h>
 
@@ -362,24 +363,12 @@ bool MainWindow::on_drawing_area_video_expose(GdkEventExpose* event)
 	return false;
 }
 
-class ScheduledRecordingsDialog : public Gtk::Dialog
-{
-private:
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
-public:	
-	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
-		: Gtk::Dialog(cobject), glade(glade)
-	{
-		glade->connect_clicked("button_scheduled_recordings_close", sigc::mem_fun(*this, &ScheduledRecordingsDialog::hide));
-	}
-};
-
 void MainWindow::show_scheduled_recordings_dialog()
 {
 	ScheduledRecordingsDialog* dialog_scheduled_recordings = NULL;
 	glade->get_widget_derived("dialog_scheduled_recordings", dialog_scheduled_recordings);
-	dialog_scheduled_recordings->show_all();
 	dialog_scheduled_recordings->run();
+	dialog_scheduled_recordings->hide();
 }
 
 void MainWindow::on_tool_button_record_clicked()
