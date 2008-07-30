@@ -27,7 +27,7 @@
 ScanDialog* ScanDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	ScanDialog* scan_dialog = NULL;
-	glade->get_widget_derived("scan_dialog", scan_dialog);
+	glade->get_widget_derived("dialog_scan", scan_dialog);
 	return scan_dialog;
 }
 

@@ -27,7 +27,7 @@
 ChannelsDialog* ChannelsDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	ChannelsDialog* channels_dialog = NULL;
-	glade->get_widget_derived("channels_dialog", channels_dialog);
+	glade->get_widget_derived("dialog_channels", channels_dialog);
 	return channels_dialog;
 }
 
