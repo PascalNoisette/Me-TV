@@ -68,7 +68,9 @@ me_tv_SOURCES = \
 	data.h \
 	epg_event.cc \
 	me-tv.cc \
-	channel.cc
+	channel.cc \
+	scheduled_recording_dialog.cc \
+	scheduled_recording_dialog.h
 
 me_tv_LDFLAGS = 
 
