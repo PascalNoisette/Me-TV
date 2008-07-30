@@ -23,13 +23,19 @@
 
 #include <libglademm.h>
 #include <libgnomeuimm.h>
+#include "epg_event.h"
 
-class ScheduledRecordingDialog : Gtk::Dialog
+class ScheduledRecordingDialog : public Gtk::Dialog
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
+	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 public:
 	ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+
+	static ScheduledRecordingDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+
+	guint run(EpgEvent& epg_event);
+	guint run();
 };
 
 #endif

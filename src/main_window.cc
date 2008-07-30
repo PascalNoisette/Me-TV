@@ -93,6 +93,13 @@ MainWindow::~MainWindow()
 {
 }
 
+MainWindow* MainWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+{
+	MainWindow* main_window = NULL;
+	glade->get_widget_derived("application_window", main_window);
+	return main_window;
+}
+
 void MainWindow::load_devices()
 {
 	Gtk::MenuItem* menu_item_devices = dynamic_cast<Gtk::MenuItem*>(glade->get_widget("menu_item_devices"));
@@ -155,7 +162,7 @@ void MainWindow::on_menu_item_meters_clicked()
 {
 	TRY
 	get_application().get_device_manager().get_frontend();
-	glade->get_widget_derived("dialog_meters", meters_dialog);
+	meters_dialog = MetersDialog::create(glade);
 	meters_dialog->stop();
 	meters_dialog->start();
 	meters_dialog->show();
@@ -168,8 +175,7 @@ void MainWindow::on_menu_item_channels_clicked()
 	gboolean done = false;
 	
 	Profile& profile = get_application().get_profile_manager().get_current_profile();
-	ChannelsDialog* channels_dialog = NULL;
-	glade->get_widget_derived("dialog_channels", channels_dialog);
+	ChannelsDialog* channels_dialog = ChannelsDialog::create(glade);
 	channels_dialog->set_channels(profile.get_channels());
 	
 	while (!done)
@@ -202,8 +208,7 @@ void MainWindow::on_menu_item_channels_clicked()
 		// Pressed scan button
 		else if (result == 1)
 		{
-			ScanDialog* scan_dialog = NULL;
-			glade->get_widget_derived("dialog_scan", scan_dialog);
+			ScanDialog* scan_dialog = ScanDialog::create(glade);
 			guint scan_dialog_result = scan_dialog->run();
 			scan_dialog->hide();
 		
@@ -220,8 +225,7 @@ void MainWindow::on_menu_item_channels_clicked()
 void MainWindow::on_menu_item_preferences_clicked()
 {
 	TRY
-	PreferencesDialog* preferences_dialog = NULL;
-	glade->get_widget_derived("dialog_preferences", preferences_dialog);
+	PreferencesDialog* preferences_dialog = PreferencesDialog::create(glade);
 	preferences_dialog->run();
 	preferences_dialog->hide();
 	update();
@@ -365,10 +369,9 @@ bool MainWindow::on_drawing_area_video_expose(GdkEventExpose* event)
 
 void MainWindow::show_scheduled_recordings_dialog()
 {
-	ScheduledRecordingsDialog* dialog_scheduled_recordings = NULL;
-	glade->get_widget_derived("dialog_scheduled_recordings", dialog_scheduled_recordings);
-	dialog_scheduled_recordings->run();
-	dialog_scheduled_recordings->hide();
+	ScheduledRecordingsDialog* scheduled_recordings_dialog = ScheduledRecordingsDialog::create(glade);
+	scheduled_recordings_dialog->run();
+	scheduled_recordings_dialog->hide();
 }
 
 void MainWindow::on_tool_button_record_clicked()

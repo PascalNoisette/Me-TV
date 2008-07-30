@@ -129,7 +129,7 @@ gint Application::get_int_configuration_value(const Glib::ustring& key)
 
 void Application::run()
 {
-	glade->get_widget_derived("application_window", main_window);
+	main_window = MainWindow::create(glade);
 	Gnome::Main::run(*main_window);
 }
 

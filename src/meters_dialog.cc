@@ -21,6 +21,13 @@
 #include "meters_dialog.h"
 #include "application.h"
 
+MetersDialog* MetersDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+{
+	MetersDialog* meters_dialog = NULL;
+	glade->get_widget_derived("dialog_meters", meters_dialog);
+	return meters_dialog;
+}
+
 MetersDialog::MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
 	Gtk::Dialog(cobject), glade(glade), meters_thread(*this), frontend(get_application().get_device_manager().get_frontend())
 {

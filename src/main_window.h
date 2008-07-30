@@ -75,7 +75,9 @@ private:
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	~MainWindow();
-
+		
+	static MainWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+		
 	Gtk::DrawingArea& get_drawing_area();
 	gboolean get_mute_state();
 };

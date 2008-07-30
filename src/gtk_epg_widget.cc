@@ -21,6 +21,7 @@
 #include "gtk_epg_widget.h"
 #include "application.h"
 #include "data.h"
+#include "scheduled_recording_dialog.h"
 
 Gtk::Dialog* dialog_program_details = NULL;
 
@@ -263,8 +264,9 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 
 	if (result == 1)
 	{
-		// Record
-		throw Exception("Not implemented");
+		ScheduledRecordingDialog* scheduled_recording_dialog = ScheduledRecordingDialog::create(glade);
+		scheduled_recording_dialog->run(epg_event);
+		scheduled_recording_dialog->hide();
 	}
 	
 	CATCH

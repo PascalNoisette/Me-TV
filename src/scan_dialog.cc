@@ -24,6 +24,13 @@
 #include "me-tv.h"
 #include "application.h"
 
+ScanDialog* ScanDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+{
+	ScanDialog* scan_dialog = NULL;
+	glade->get_widget_derived("scan_dialog", scan_dialog);
+	return scan_dialog;
+}
+
 Glib::ustring ScanDialog::get_initial_tuning_dir()
 {
 	Glib::ustring path = SCAN_DIRECTORY;

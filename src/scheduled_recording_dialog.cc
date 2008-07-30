@@ -19,8 +19,31 @@
  */
 
 #include "scheduled_recording_dialog.h"
+#include "scheduled_recordings_dialog.h"
+#include "main_window.h"
+
+ScheduledRecordingDialog* ScheduledRecordingDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+{
+	ScheduledRecordingDialog* scheduled_recording_dialog = NULL;
+	glade->get_widget_derived("dialog_scheduled_recording", scheduled_recording_dialog);
+	return scheduled_recording_dialog;
+}
 
 ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
 	Gtk::Dialog(cobject), glade(glade)
 {
+}
+
+guint ScheduledRecordingDialog::run(EpgEvent& epg_event)
+{
+	MainWindow* main_window = MainWindow::create(glade);
+	set_transient_for(*main_window);
+	return Gtk::Dialog::run();
+}
+
+guint ScheduledRecordingDialog::run()
+{
+	ScheduledRecordingsDialog* scheduled_recordings_dialog = ScheduledRecordingsDialog::create(glade);
+	set_transient_for(*scheduled_recordings_dialog);
+	return Gtk::Dialog::run();
 }

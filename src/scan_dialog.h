@@ -118,6 +118,8 @@ public:
 	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	~ScanDialog();
 
+	static ScanDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+		
 	void stop_scan();
 	std::list<ScannedService> get_scanned_services();
 };

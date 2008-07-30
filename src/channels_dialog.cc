@@ -24,6 +24,13 @@
 #include "application.h"
 #include "channels_dialog.h"
 
+ChannelsDialog* ChannelsDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+{
+	ChannelsDialog* channels_dialog = NULL;
+	glade->get_widget_derived("channels_dialog", channels_dialog);
+	return channels_dialog;
+}
+
 ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
 	Gtk::Dialog(cobject), glade(glade)
 {

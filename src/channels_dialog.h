@@ -43,7 +43,7 @@ private:
 		
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;
-	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
+	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 	Gtk::TreeView* tree_view_displayed_channels;
 		
 	void on_button_scan_clicked();
@@ -52,6 +52,9 @@ private:
 		
 public:
 	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+		
+	static ChannelsDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+
 	ChannelList get_channels();
 	void set_channels(const ChannelList& channels);
 	void add_scanned_services(std::list<ScannedService>& selected_services);

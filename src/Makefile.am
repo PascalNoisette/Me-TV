@@ -72,7 +72,8 @@ me_tv_SOURCES = \
 	scheduled_recording_dialog.cc \
 	scheduled_recording_dialog.h \
 	scheduled_recordings_dialog.cc \
-	scheduled_recordings_dialog.h
+	scheduled_recordings_dialog.h \
+	preferences_dialog.cc
 
 me_tv_LDFLAGS = 
 

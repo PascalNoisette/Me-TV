@@ -18,19 +18,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __PREFERENCES_DIALOG_H__
-#define __PREFERENCES_DIALOG_H__
+#include "preferences_dialog.h"
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-
-class PreferencesDialog : public Gtk::Dialog
+PreferencesDialog* PreferencesDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
-private:
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
-public:	
-	PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
-	static PreferencesDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
-};
+}
 
-#endif
+PreferencesDialog::PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Dialog(cobject), glade(glade)
+{
+}

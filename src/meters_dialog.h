@@ -61,6 +61,8 @@ public:
 	MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	~MetersDialog();
 
+	static MetersDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+		
 	void start();
 	void stop();
 	void update_meters();
