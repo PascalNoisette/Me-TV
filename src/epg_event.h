@@ -49,6 +49,8 @@ public:
 		
 	Glib::ustring get_title(const Glib::ustring& language = "") const;
 	Glib::ustring get_description(const Glib::ustring& language = "") const;
+	Glib::ustring get_start_time_text() const;
+	Glib::ustring get_duration_text() const;
 };
 
 typedef std::list<EpgEvent> EpgEventList;

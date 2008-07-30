@@ -370,7 +370,7 @@ public:
 	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
 		: Gtk::Dialog(cobject), glade(glade)
 	{
-		glade->connect_clicked("button_scheduled_recordings_close", sigc::mem_fun(*this, &ScheduledRecordingsDialog::hide));	
+		glade->connect_clicked("button_scheduled_recordings_close", sigc::mem_fun(*this, &ScheduledRecordingsDialog::hide));
 	}
 };
 

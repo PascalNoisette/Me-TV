@@ -58,7 +58,7 @@ private:
 public:
 	Data(gboolean initialise = false);
 	~Data();
-		
+
 	gboolean get_current_epg_event(const Channel& channel, EpgEvent& epg_event);
 	EpgEventList get_epg_events(const Channel& channel, guint start_time, guint end_time);
 	void replace_epg_event(EpgEvent& epg_event);

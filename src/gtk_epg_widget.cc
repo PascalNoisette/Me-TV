@@ -129,27 +129,25 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 	guint number_columns = epg_span_hours * 6 + 1;
 	for (EpgEventList::const_iterator i = events.begin(); i != events.end(); i++)
 	{		
-		const EpgEvent& event = *i;
+		const EpgEvent& epg_event = *i;
 					
-		guint event_start_time = event.start_time;
-		guint event_duration = event.duration;
-		guint event_end_time = event_start_time + event_duration;
+		guint event_end_time = epg_event.start_time + epg_event.duration;
 
 		if ((event_end_time > start_time && event_end_time < end_time) ||
-			(event_start_time < end_time && event_start_time > start_time) ||
-			(event_start_time < start_time && event_end_time > end_time)
+			(epg_event.start_time < end_time && epg_event.start_time > start_time) ||
+			(epg_event.start_time < start_time && event_end_time > end_time)
 		)
 		{
 			Glib::ustring time_text;
 			
 			guint start_column = 0;
-			if (event_start_time < start_time)
+			if (epg_event.start_time < start_time)
 			{
 				start_column = 0;
 			}
 			else
 			{
-				start_column = (guint)round((event_start_time - start_time) / 600.0);
+				start_column = (guint)round((epg_event.start_time - start_time) / 600.0);
 			}
 			
 			guint end_column = (guint)round((event_end_time - start_time) / 600.0);
@@ -165,7 +163,7 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 				if (start_column > total_number_columns)
 				{
 					// If it's a small gap then just extend the event
-					if (event_start_time - last_event_end_time <= 2 * 60)
+					if (epg_event.start_time - last_event_end_time <= 2 * 60)
 					{
 						start_column = total_number_columns;
 						column_count = end_column - start_column;
@@ -180,16 +178,16 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 				
 				if (column_count > 0)
 				{
-					Glib::ustring time_string = get_time_string(event.start_time - timezone, "%d/%m, %H:%M");
-					time_string += get_time_string(event.start_time - timezone + event.duration, " - %H:%M");
-					Glib::ustring text = "<i><small>" + time_string + "</small></i>\n" + encode_xml(event.get_title());
+					Glib::ustring time_string = get_time_string(epg_event.start_time - timezone, "%d/%m, %H:%M");
+					time_string += get_time_string(epg_event.start_time - timezone + epg_event.duration, " - %H:%M");
+					Glib::ustring text = "<i><small>" + time_string + "</small></i>\n" + encode_xml(epg_event.get_title());
 					
 					Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
 					button.signal_clicked().connect(
-						sigc::bind<guint>
+						sigc::bind<EpgEvent>
 						(
 							sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
-							event.epg_event_id
+							epg_event
 						)
 					);
 				}
@@ -251,16 +249,23 @@ void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 	CATCH
 }
 
-void GtkEpgWidget::on_button_program_clicked(guint epg_event_id)
+void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 {
 	TRY
 	Gtk::Dialog* dialog_program_details = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
-	if (dialog_program_details == NULL)
+	
+	(dynamic_cast<Gtk::Label*>(glade->get_widget("label_program_title")))->set_label(epg_event.get_title());
+	(dynamic_cast<Gtk::Label*>(glade->get_widget("label_program_description")))->set_label(epg_event.get_description());
+	(dynamic_cast<Gtk::Label*>(glade->get_widget("label_program_start_time")))->set_label(epg_event.get_start_time_text());
+	(dynamic_cast<Gtk::Label*>(glade->get_widget("label_program_duration")))->set_label(epg_event.get_duration_text());
+	gint result = dialog_program_details->run();
+	dialog_program_details->hide();
+
+	if (result == 1)
 	{
-		throw Exception("Failed to load dialog");
+		// Record
+		throw Exception("Not implemented");
 	}
-//	dynamic_cast<Gtk::Label*>(glade->get_widget("label_program_title"))->set_text("Text & text");
-//	g_debug("Glade Application: 0x%016X", &glade);
-	dialog_program_details->run();
+	
 	CATCH
 }
