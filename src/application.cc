@@ -70,6 +70,8 @@ Application::Application(int argc, char *argv[]) :
 	
 	glade = Gnome::Glade::Xml::create(glade_path);
 	
+	g_debug("Glade Application: 0x%016X", &glade);
+	
 	profile_manager.load();
 	Profile& profile = profile_manager.get_current_profile();
 	profile.signal_display_channel_changed.connect(

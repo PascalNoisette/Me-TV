@@ -32,7 +32,7 @@ private:
 	gsize span_hours;
 	gsize span_minutes;
 	gsize span_seconds;
-	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
+	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 	Data data;
 	
 	Gtk::Table* table_epg;

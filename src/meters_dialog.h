@@ -49,7 +49,7 @@ private:
 		}
 	};
 
-	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
+	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 	Gtk::ProgressBar*	progress_bar_signal_strength;
 	Gtk::ProgressBar*	progress_bar_signal_noise;
 	MetersThread		meters_thread;

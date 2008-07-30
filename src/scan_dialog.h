@@ -76,7 +76,7 @@ public:
 class ScanDialog : public Gtk::Dialog
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
+	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
 	Gtk::ProgressBar*						progress_bar_scan;
 	Gtk::TreeView*							tree_view_scanned_channels;
 	ComboBoxText*							combo_box_select_country;

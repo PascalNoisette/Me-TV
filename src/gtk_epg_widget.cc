@@ -22,6 +22,8 @@
 #include "application.h"
 #include "data.h"
 
+Gtk::Dialog* dialog_program_details = NULL;
+
 GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
 	Gtk::ScrolledWindow(cobject), glade(glade)
 {
@@ -29,6 +31,7 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 
 	table_epg			= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
 	scrolled_window_epg	= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
+	dialog_program_details = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
 }
 
 void GtkEpgWidget::set_offset(guint value)
@@ -251,14 +254,13 @@ void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 void GtkEpgWidget::on_button_program_clicked(guint epg_event_id)
 {
 	TRY
-	/*
-	Gtk::Dialog* dialog = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
-	if (dialog == NULL)
+	Gtk::Dialog* dialog_program_details = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
+	if (dialog_program_details == NULL)
 	{
 		throw Exception("Failed to load dialog");
 	}
-	dynamic_cast<Gtk::Label*>(glade->get_widget("label_program_title"))->set_text("Text & text");
-	dialog->run();
-	*/
+//	dynamic_cast<Gtk::Label*>(glade->get_widget("label_program_title"))->set_text("Text & text");
+//	g_debug("Glade Application: 0x%016X", &glade);
+	dialog_program_details->run();
 	CATCH
 }

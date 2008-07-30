@@ -365,7 +365,7 @@ bool MainWindow::on_drawing_area_video_expose(GdkEventExpose* event)
 class ScheduledRecordingsDialog : public Gtk::Dialog
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml>& glade;
+	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 public:	
 	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
 		: Gtk::Dialog(cobject), glade(glade)

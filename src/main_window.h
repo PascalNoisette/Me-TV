@@ -34,7 +34,7 @@ typedef enum DisplayMode
 class MainWindow : public Gnome::UI::App
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml>&	glade;
+	const Glib::RefPtr<Gnome::Glade::Xml>		glade;
 	Gtk::DrawingArea*						drawing_area_video;
 	GtkEpgWidget*							widget_epg;
 	guint									last_motion_time;
