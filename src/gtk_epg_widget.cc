@@ -172,7 +172,8 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 					else
 					{
 						guint empty_columns = start_column - total_number_columns;
-						attach_button(UNKNOWN_TEXT, total_number_columns + 1, start_column + 1, table_row, table_row + 1);
+						Gtk::Button& button = attach_button(UNKNOWN_TEXT, total_number_columns + 1, start_column + 1, table_row, table_row + 1);
+						button.set_sensitive(false);
 						total_number_columns += empty_columns;
 					}
 				}
@@ -201,7 +202,8 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 	
 	if (total_number_columns < number_columns-1)
 	{		
-		attach_button(UNKNOWN_TEXT, total_number_columns + 1, number_columns, table_row, table_row + 1);
+		Gtk::Button& button = attach_button(UNKNOWN_TEXT, total_number_columns + 1, number_columns, table_row, table_row + 1);
+		button.set_sensitive(false);
 	}
 }
 
