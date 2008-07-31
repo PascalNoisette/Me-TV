@@ -154,6 +154,7 @@ void Application::set_source(const Glib::ustring& source)
 	if (!source.empty())
 	{
 		engine = new GStreamerEngine();
+		engine->mute(main_window->get_mute_state());
 		engine->play(main_window->get_drawing_area().get_window(), source);
 	}
 }

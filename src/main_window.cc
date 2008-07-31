@@ -75,6 +75,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
 
 	last_motion_time = time(NULL);
+	initialise = true;
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
 	
 	load_devices();
@@ -88,21 +89,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 		sigc::mem_fun(*this, &MainWindow::on_display_channel_changed));
 	
 	set_keep_above();
-
-	ChannelList& channels = current_profile.get_channels();
-	if (channels.size() > 0)
-	{
-		gint last_channel = get_application().get_int_configuration_value("last_channel", -1);
-		if (last_channel == -1)
-		{
-			last_channel = (*channels.begin()).channel_id;
-		}
-		current_profile.set_display_channel(last_channel);
-	}
-	else
-	{
-		show_channels_dialog();
-	}
 }
 
 MainWindow::~MainWindow()
@@ -349,6 +335,7 @@ gboolean MainWindow::is_fullscreen()
 bool MainWindow::on_timeout()
 {
 	TRY
+
 	if (time(NULL) - last_motion_time > 3 && is_cursor_visible)
 	{
 		GdkLock gdk_lock();
@@ -356,6 +343,26 @@ bool MainWindow::on_timeout()
 		is_cursor_visible = false;
 	}
 
+	if (initialise)
+	{
+		initialise = false;
+		GdkLock gdk_lock();
+		Profile& current_profile = get_application().get_profile_manager().get_current_profile();
+		ChannelList& channels = current_profile.get_channels();
+		if (channels.size() > 0)
+		{
+			gint last_channel = get_application().get_int_configuration_value("last_channel", -1);
+			if (last_channel == -1)
+			{
+				last_channel = (*channels.begin()).channel_id;
+			}
+			current_profile.set_display_channel(last_channel);
+		}
+		else
+		{
+			show_channels_dialog();
+		}
+	}
 	THREAD_CATCH
 		
 	return true;
