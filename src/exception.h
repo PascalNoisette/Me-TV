@@ -23,6 +23,7 @@
 
 #include <glibmm.h>
 #include <errno.h>
+#include <string.h>
 
 #define TRY		try {
 #define CATCH	} catch(const Glib::Exception& exception) { get_signal_error().emit(exception.what().c_str()); } \
