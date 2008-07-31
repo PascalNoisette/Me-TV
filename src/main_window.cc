@@ -80,7 +80,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	
 	load_devices();
 	show();
-
+	set_display_mode(DISPLAY_MODE_EPG);
 	update();
 	
 	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
@@ -374,17 +374,14 @@ void MainWindow::set_display_mode(DisplayMode display_mode)
 	glade->get_widget("handlebox_toolbar")->property_visible()		= (display_mode == DISPLAY_MODE_EPG);
 	glade->get_widget("scrolled_window_epg")->property_visible()	= (display_mode == DISPLAY_MODE_EPG);
 	glade->get_widget("app_bar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
-	glade->get_widget("label_information")->property_visible()		= (display_mode == DISPLAY_MODE_EPG);
 
 	Gtk::VBox* vbox_main = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main"));
-	Gtk::HBox* hbox_top = dynamic_cast<Gtk::HBox*>(glade->get_widget("hbox_top"));
-	Gtk::Widget* viewport_video_window = glade->get_widget("viewport_video_window");
-
-	gtk_box_set_child_packing((GtkBox*)hbox_top->gobj(), viewport_video_window->gobj(),
-		(display_mode != DISPLAY_MODE_EPG), (display_mode != DISPLAY_MODE_EPG), 0, GTK_PACK_END);
-
-	gtk_box_set_child_packing((GtkBox*)vbox_main->gobj(), (GtkWidget*)hbox_top->gobj(),
+	Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
+	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
+	
+	gtk_box_set_child_packing((GtkBox*)vbox_main->gobj(), (GtkWidget*)event_box_video->gobj(),
 		(display_mode != DISPLAY_MODE_EPG), (display_mode != DISPLAY_MODE_EPG), 0, GTK_PACK_START);
+	event_box_video->set_size_request(-1, 100);
 }
 
 bool MainWindow::on_drawing_area_video_expose(GdkEventExpose* event)
@@ -458,29 +455,6 @@ void MainWindow::update()
 		Glib::ustring name = "<b>" + channel_name + "</b>";
 		window_title = "Me TV - " + channel->get_text();
 		status_text = channel->get_text();
-
-		Glib::ustring title = UNKNOWN_TEXT;
-		Glib::ustring description = UNKNOWN_TEXT;
-		
-		EpgEvent epg_event;
-		if (channel->get_current_epg_event(epg_event))
-		{
-			title = encode_xml(epg_event.get_title());
-			description = encode_xml(epg_event.get_description());
-
-			Glib::ustring time_string = get_time_string(epg_event.start_time - timezone, "%c");
-			time_string += get_time_string(epg_event.start_time - timezone + epg_event.duration, " - %H:%M:%S");
-			
-			name += "\n" + time_string;
-		}
-		
-		Glib::ustring text = Glib::ustring::compose("%1\n<i>%2</i>\n%3", name, title, description);
-		
-		Gtk::Label* label_information = dynamic_cast<Gtk::Label*>(glade->get_widget("label_information"));
-		if (label_information != NULL)
-		{
-			label_information->set_label(text);
-		}
 	}
 	set_title(window_title);
 	app_bar->set_status(status_text);
