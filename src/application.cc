@@ -462,34 +462,35 @@ void EpgThread::run()
 					if (processed_event_count < 10000)
 					{
 						processed_events[processed_event_count++] = event.event_id;
-					}
 					
-					if (!found)
-					{
-						EpgEvent epg_event;
-
-						epg_event.epg_event_id	= 0;
-						epg_event.channel_id	= channel->channel_id;
-						epg_event.event_id		= event.event_id;
-						epg_event.start_time	= event.start_time;
-						epg_event.duration		= event.duration;
-						
-						for (Dvb::SI::EventTextList::iterator i = event.texts.begin(); i != event.texts.end(); i++)
+						if (!found)
 						{
-							EpgEventText epg_event_text;
-							const Dvb::SI::EventText& event_text = *i;
+							EpgEvent epg_event;
+
+							epg_event.epg_event_id	= 0;
+							epg_event.channel_id	= channel->channel_id;
+							epg_event.event_id		= event.event_id;
+							epg_event.start_time	= event.start_time;
+							epg_event.duration		= event.duration;
 							
-							epg_event_text.epg_event_text_id	= 0;
-							epg_event_text.epg_event_id			= 0;
-							epg_event_text.is_extended			= event_text.is_extended;
-							epg_event_text.language				= event_text.language;
-							epg_event_text.title				= event_text.title;
-							epg_event_text.description			= event_text.description;
+							for (Dvb::SI::EventTextList::iterator i = event.texts.begin(); i != event.texts.end(); i++)
+							{
+								EpgEventText epg_event_text;
+								const Dvb::SI::EventText& event_text = *i;
+								
+								epg_event_text.epg_event_text_id	= 0;
+								epg_event_text.epg_event_id			= 0;
+								epg_event_text.is_extended			= event_text.is_extended;
+								epg_event_text.language				= event_text.language;
+								epg_event_text.title				= event_text.title;
+								epg_event_text.description			= event_text.description;
+								
+								epg_event.texts.push_back(epg_event_text);
+							}
 							
-							epg_event.texts.push_back(epg_event_text);
+							data.replace_epg_event(epg_event);
+							get_application().update_epg_time();
 						}
-						
-						data.replace_epg_event(epg_event);
 					}
 				}
 			}
@@ -508,4 +509,14 @@ void EpgThread::run()
 	THREAD_CATCH;
 
 	g_debug(_("Exiting EPG thread"));
+}
+
+void Application::update_epg_time()
+{
+	last_epg_update_time = time(NULL);
+}
+
+guint Application::get_last_epg_update_time() const
+{
+	return last_epg_update_time;
 }

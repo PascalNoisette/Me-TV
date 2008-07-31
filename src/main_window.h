@@ -46,6 +46,7 @@ private:
 	DisplayMode								display_mode;
 	Gtk::RadioButtonGroup					radio_button_group_devices;
 	gboolean								initialise;
+	guint									last_update_time;
 
 	void update();
 	void stop();

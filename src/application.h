@@ -47,6 +47,7 @@ private:
 	Engine*								engine;
 	EpgThread							epg_thread;		
 	Glib::RefPtr<Gnome::Conf::Client>	client;
+	guint								last_epg_update_time;
 		
 	void on_display_channel_changed(const Channel& channel);
 	void remove_all_demuxers();
@@ -74,6 +75,9 @@ public:
 		
 	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
 	gint get_int_configuration_value(const Glib::ustring& key, gint default_value = 0);
+
+	void update_epg_time();
+	guint get_last_epg_update_time() const;
 };
 
 Application& get_application();

@@ -32,6 +32,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	: Gnome::UI::App(cobject), glade(glade)
 {
 	display_mode = DISPLAY_MODE_EPG;
+	last_update_time = 0;
 	
 	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
 	app_bar->get_progress()->hide();
@@ -295,7 +296,6 @@ bool MainWindow::on_event_box_video_motion_notify_event(GdkEventMotion* event)
 	last_motion_time = time(NULL);
 	glade->get_widget("event_box_video")->get_window()->set_cursor();
 	is_cursor_visible = true;
-	
 	return true;
 }
 
@@ -335,8 +335,9 @@ gboolean MainWindow::is_fullscreen()
 bool MainWindow::on_timeout()
 {
 	TRY
-
-	if (time(NULL) - last_motion_time > 3 && is_cursor_visible)
+	guint now = time(NULL);
+	
+	if (now - last_motion_time > 3 && is_cursor_visible)
 	{
 		GdkLock gdk_lock();
 		glade->get_widget("event_box_video")->get_window()->set_cursor(Gdk::Cursor(hidden_cursor));
@@ -363,6 +364,15 @@ bool MainWindow::on_timeout()
 			show_channels_dialog();
 		}
 	}
+	
+	guint application_last_update_time = get_application().get_last_epg_update_time();
+	if (application_last_update_time > last_update_time)
+	{
+		GdkLock gdk_lock();
+		update();
+		last_update_time = application_last_update_time;
+	}
+	
 	THREAD_CATCH
 		
 	return true;
