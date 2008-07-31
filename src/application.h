@@ -73,7 +73,7 @@ public:
 	void mute(gboolean state);
 		
 	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
-	gint get_int_configuration_value(const Glib::ustring& key);
+	gint get_int_configuration_value(const Glib::ustring& key, gint default_value = 0);
 };
 
 Application& get_application();

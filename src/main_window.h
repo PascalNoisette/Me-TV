@@ -80,6 +80,7 @@ public:
 		
 	Gtk::DrawingArea& get_drawing_area();
 	gboolean get_mute_state();
+	void show_channels_dialog();
 };
 
 #endif

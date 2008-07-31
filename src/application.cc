@@ -119,10 +119,11 @@ Glib::ustring Application::get_string_configuration_value(const Glib::ustring& k
 	return client->get_string(path);
 }
 
-gint Application::get_int_configuration_value(const Glib::ustring& key)
+gint Application::get_int_configuration_value(const Glib::ustring& key, gint default_value)
 {
 	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
-	return client->get_int(path);
+	Gnome::Conf::Value value = client->get(path);
+	return (value.get_type() == Gnome::Conf::VALUE_INVALID) ? default_value : client->get_int(path);
 }
 
 void Application::run()
@@ -181,6 +182,7 @@ void Application::on_display_channel_changed(const Channel& channel)
 	Dvb::Frontend& frontend = device_manager.get_frontend();
 	setup_dvb(frontend, channel);
 	set_source(frontend.get_adapter().get_dvr_path());
+	set_configuration_default("last_channel", channel.channel_id);
 	CATCH
 }
 

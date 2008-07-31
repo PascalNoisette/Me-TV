@@ -82,11 +82,27 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	update();
 	
+	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
 	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
-	get_application().get_profile_manager().get_current_profile().signal_display_channel_changed.connect(
+	current_profile.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &MainWindow::on_display_channel_changed));
 	
 	set_keep_above();
+
+	ChannelList& channels = current_profile.get_channels();
+	if (channels.size() > 0)
+	{
+		gint last_channel = get_application().get_int_configuration_value("last_channel", -1);
+		if (last_channel == -1)
+		{
+			last_channel = (*channels.begin()).channel_id;
+		}
+		current_profile.set_display_channel(last_channel);
+	}
+	else
+	{
+		show_channels_dialog();
+	}
 }
 
 MainWindow::~MainWindow()
@@ -172,6 +188,12 @@ void MainWindow::on_menu_item_meters_clicked()
 void MainWindow::on_menu_item_channels_clicked()
 {
 	TRY
+	show_channels_dialog();
+	CATCH
+}
+
+void MainWindow::show_channels_dialog()
+{
 	gboolean done = false;
 	
 	Profile& profile = get_application().get_profile_manager().get_current_profile();
@@ -219,7 +241,6 @@ void MainWindow::on_menu_item_channels_clicked()
 			}
 		}
 	}
-	CATCH
 }
 
 void MainWindow::on_menu_item_preferences_clicked()
