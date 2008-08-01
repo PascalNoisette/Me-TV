@@ -104,8 +104,6 @@ void GtkEpgWidget::update_table()
 			create_channel_row(channel, row++, selected, start_time, epg_span_hours);
 		}
 		get_window()->thaw_updates();
-		
-		show_all();
 	}
 }
 
@@ -239,6 +237,7 @@ Gtk::Label& GtkEpgWidget::attach_label(const Glib::ustring& text, guint left_att
 void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)
 {
 	table_epg->attach(widget, left_attach, right_attach, top_attach, bottom_attach, Gtk::FILL, Gtk::FILL, 0, 0);
+	widget.show();
 }
 
 void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)

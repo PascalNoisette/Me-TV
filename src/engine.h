@@ -23,9 +23,6 @@
 
 #include "me-tv.h"
 #include <libgnomeuimm.h>
-#include <gst/gstplugin.h>
-#include <gst/interfaces/xoverlay.h>
-#include <gst/video/video.h>
 
 class Engine
 {
@@ -34,33 +31,6 @@ public:
 	virtual void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& mrl) = 0;
 	virtual void record(const Glib::ustring& filename) = 0;
 	virtual void mute(gboolean state) = 0;
-};
-
-class GStreamerEngine : public Engine
-{
-private:
-	GstElement*	pipeline;
-	GstElement*	source;
-	GstElement*	decoder;
-	GstElement*	volume;
-	GstElement*	deinterlace;
-	GstElement*	video_sink;
-	GstElement*	audio_sink;
-	GstElement*	tee;
-	Glib::RefPtr<Glib::IOChannel> channel;
-
-	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
-	static void connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine);
-	static gboolean cb_have_data (GstPad* pad, GstBuffer* buffer, gpointer u_data);
-	void stop();
-		
-public:
-	GStreamerEngine();
-	~GStreamerEngine();
-
-	void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename);
-	void record(const Glib::ustring& filename);
-	void mute(gboolean state);
 };
 
 #endif

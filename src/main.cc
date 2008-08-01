@@ -23,6 +23,7 @@
 #include "me-tv.h"
 #include <glibmm.h>
 #include <glib/gprintf.h>
+#include <gst/gst.h>
 
 StringSignal signal_error;
 

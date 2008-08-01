@@ -28,6 +28,7 @@
 typedef enum
 {
 	DISPLAY_MODE_VIDEO,
+	DISPLAY_MODE_CONTROLS,
 	DISPLAY_MODE_EPG
 } DisplayMode;
 

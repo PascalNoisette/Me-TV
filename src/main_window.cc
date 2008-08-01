@@ -81,7 +81,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	
 	load_devices();
 	show();
-	set_display_mode(DISPLAY_MODE_EPG);
+	set_display_mode(display_mode);
 	update();
 	
 	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
@@ -278,12 +278,17 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 	}
 	else if (event->button == 3)
 	{
-		gboolean show = !glade->get_widget("scrolled_window_epg")->property_visible();
-		set_display_mode(show ? DISPLAY_MODE_EPG : DISPLAY_MODE_VIDEO);
-		
-		if (show)
+		if (display_mode == DISPLAY_MODE_VIDEO)
 		{
-			update();
+			set_display_mode(DISPLAY_MODE_EPG);
+		}
+		else if (display_mode == DISPLAY_MODE_EPG)
+		{
+			set_display_mode(DISPLAY_MODE_CONTROLS);
+		}
+		else
+		{
+			set_display_mode(DISPLAY_MODE_VIDEO);
 		}
 	}
 	CATCH
@@ -378,20 +383,22 @@ bool MainWindow::on_timeout()
 	return true;
 }
 
-void MainWindow::set_display_mode(DisplayMode display_mode)
+void MainWindow::set_display_mode(DisplayMode mode)
 {
-	glade->get_widget("menubar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
-	glade->get_widget("handlebox_toolbar")->property_visible()		= (display_mode == DISPLAY_MODE_EPG);
-	glade->get_widget("scrolled_window_epg")->property_visible()	= (display_mode == DISPLAY_MODE_EPG);
-	glade->get_widget("app_bar")->property_visible()				= (display_mode == DISPLAY_MODE_EPG);
+	glade->get_widget("menubar")->property_visible()				= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	glade->get_widget("handlebox_toolbar")->property_visible()		= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	glade->get_widget("app_bar")->property_visible()				= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	widget_epg->property_visible()									= (mode == DISPLAY_MODE_EPG);
 
 	Gtk::VBox* vbox_main = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main"));
 	Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	
 	gtk_box_set_child_packing((GtkBox*)vbox_main->gobj(), (GtkWidget*)event_box_video->gobj(),
-		(display_mode != DISPLAY_MODE_EPG), (display_mode != DISPLAY_MODE_EPG), 0, GTK_PACK_START);
+		(mode != DISPLAY_MODE_EPG), (mode != DISPLAY_MODE_EPG), 0, GTK_PACK_START);
 	event_box_video->set_size_request(-1, 100);
+	
+	display_mode = mode;
 }
 
 bool MainWindow::on_drawing_area_video_expose(GdkEventExpose* event)

@@ -23,6 +23,7 @@
 #include "device_manager.h"
 #include "dvb_si.h"
 #include "data.h"
+#include "gstreamer_engine.h"
 
 Application* Application::current = NULL;
 
