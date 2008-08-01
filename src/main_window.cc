@@ -27,6 +27,11 @@
 #include "scheduled_recordings_dialog.h"
 #include "me-tv.h"
 #include <config.h>
+#include <X11/Xlib.h>
+#include <X11/extensions/XTest.h>
+#include <gdk/gdkx.h>
+
+#define POKE_INTERVAL 30
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
 	: Gnome::UI::App(cobject), glade(glade)
@@ -339,16 +344,12 @@ gboolean MainWindow::is_fullscreen()
 
 bool MainWindow::on_timeout()
 {
+	static time_t last_poke_time = 0;
+
 	TRY
 	guint now = time(NULL);
 	
-	if (now - last_motion_time > 3 && is_cursor_visible)
-	{
-		GdkLock gdk_lock();
-		glade->get_widget("event_box_video")->get_window()->set_cursor(Gdk::Cursor(hidden_cursor));
-		is_cursor_visible = false;
-	}
-
+	// Async initialisation
 	if (initialise)
 	{
 		initialise = false;
@@ -370,12 +371,39 @@ bool MainWindow::on_timeout()
 		}
 	}
 	
+	// Hide the mouse
+	if (now - last_motion_time > 3 && is_cursor_visible)
+	{
+		GdkLock gdk_lock();
+		glade->get_widget("event_box_video")->get_window()->set_cursor(Gdk::Cursor(hidden_cursor));
+		is_cursor_visible = false;
+	}
+	
+	// Update EPG
 	guint application_last_update_time = get_application().get_last_epg_update_time();
 	if (application_last_update_time > last_update_time)
 	{
 		GdkLock gdk_lock();
 		update();
 		last_update_time = application_last_update_time;
+	}
+	
+	// Disable screensaver
+	if (now - last_poke_time > POKE_INTERVAL)
+	{
+		Gdk::WindowState state = get_window()->get_state();
+		gboolean is_minimised = state & Gdk::WINDOW_STATE_ICONIFIED;
+		if (is_visible() && !is_minimised)
+		{ 		
+			Display* display = GDK_DISPLAY();
+
+			KeyCode keycode = XKeysymToKeycode(display, XK_Shift_L);
+			XTestFakeKeyEvent (display, keycode, True, CurrentTime);
+			XTestFakeKeyEvent (display, keycode, False, CurrentTime);
+			XSync(display, False);
+			XFlush(display);
+		}
+		last_poke_time = now;
 	}
 	
 	THREAD_CATCH
