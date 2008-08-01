@@ -24,6 +24,7 @@
 #include "dvb_si.h"
 #include "data.h"
 #include "gstreamer_engine.h"
+#include "mplayer_engine.h"
 
 Application* Application::current = NULL;
 
@@ -48,6 +49,7 @@ Application::Application(int argc, char *argv[]) :
 	
 	set_configuration_default("epg_span_hours", 3);
 	set_configuration_default("recording_directory", Glib::get_home_dir());
+	set_configuration_default("engine_type", "gstreamer");
 	
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
@@ -79,23 +81,23 @@ Application::Application(int argc, char *argv[]) :
 
 Application::~Application()
 {
-	if (main_window != NULL)
-	{
-		delete main_window;
-		main_window = NULL;
-	}
-	
 	if (engine != NULL)
 	{
 		delete engine;
 		engine = NULL;
+	}
+
+	if (main_window != NULL)
+	{
+		delete main_window;
+		main_window = NULL;
 	}
 }
 
 void Application::set_configuration_default(const Glib::ustring& key, const Glib::ustring& value)
 {
 	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
-	Gnome::Conf::Value v = client->get(GCONF_PATH + key);
+	Gnome::Conf::Value v = client->get(path);
 	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
 	{
 		g_debug("Setting string configuration value '%s' = '%s'", key.c_str(), value.c_str());
@@ -154,7 +156,20 @@ void Application::set_source(const Glib::ustring& source)
 	
 	if (!source.empty())
 	{
-		engine = new GStreamerEngine();
+		Glib::ustring engine_type = get_string_configuration_value("engine_type");
+		if (engine_type == "gstreamer")
+		{
+			engine = new GStreamerEngine();
+		}
+		else if (engine_type == "mplayer")
+		{
+			engine = new MplayerEngine();
+		}
+		else
+		{
+			throw Exception(_("Unknown engine type"));
+		}
+		
 		engine->mute(main_window->get_mute_state());
 		engine->play(main_window->get_drawing_area().get_window(), source);
 	}

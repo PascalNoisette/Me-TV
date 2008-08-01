@@ -75,7 +75,9 @@ me_tv_SOURCES = \
 	scheduled_recordings_dialog.h \
 	preferences_dialog.cc \
 	gstreamer_engine.cc \
-	gstreamer_engine.h
+	gstreamer_engine.h \
+	mplayer_engine.cc \
+	mplayer_engine.h
 
 me_tv_LDFLAGS = 
 
