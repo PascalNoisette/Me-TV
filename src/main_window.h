@@ -25,11 +25,11 @@
 #include "meters_dialog.h"
 #include "engine.h"
 
-typedef enum DisplayMode
+typedef enum
 {
 	DISPLAY_MODE_VIDEO,
 	DISPLAY_MODE_EPG
-};
+} DisplayMode;
 
 class MainWindow : public Gnome::UI::App
 {

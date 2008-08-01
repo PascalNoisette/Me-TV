@@ -21,6 +21,7 @@
 #include "channel.h"
 #include "data.h"
 #include "me-tv.h"
+#include <string.h>
 
 Channel::Channel()
 {
