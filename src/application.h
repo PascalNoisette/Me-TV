@@ -27,6 +27,7 @@
 #include "profile_manager.h"
 #include "dvb_demuxer.h"
 #include "main_window.h"
+#include "status_icon.h"
 
 class EpgThread : public Thread
 {
@@ -44,6 +45,7 @@ private:
 	DeviceManager						device_manager;
 	DemuxerList							demuxers;
 	MainWindow*							main_window;
+	StatusIcon*							status_icon;
 	Engine*								engine;
 	EpgThread							epg_thread;		
 	Glib::RefPtr<Gnome::Conf::Client>	client;
@@ -80,6 +82,7 @@ public:
 
 	void update_epg_time();
 	guint get_last_epg_update_time() const;
+	void toggle_visibility();
 };
 
 Application& get_application();

@@ -31,19 +31,20 @@
 #include <X11/extensions/XTest.h>
 #include <gdk/gdkx.h>
 
-#define POKE_INTERVAL 30
+#define POKE_INTERVAL 	30
+#define UPDATE_INTERVAL	60
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
 	: Gnome::UI::App(cobject), glade(glade)
 {
 	display_mode = DISPLAY_MODE_EPG;
 	last_update_time = 0;
+	last_poke_time = 0;
 	
 	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
 	app_bar->get_progress()->hide();
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->set_double_buffered(false);
-//	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_video_expose));
 	
 	glade->get_widget_derived("scrolled_window_epg", widget_epg);
 	
@@ -92,11 +93,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	show();
 	set_display_mode(display_mode);
 	update();
-	
-	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
-	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
-	current_profile.signal_display_channel_changed.connect(
-		sigc::mem_fun(*this, &MainWindow::on_display_channel_changed));
 	
 	if (get_application().get_boolean_configuration_value("keep_above"))
 	{
@@ -150,13 +146,6 @@ void MainWindow::on_error(const Glib::ustring& message)
 {
 	Gtk::MessageDialog dialog(*this, message);
 	dialog.run();
-}
-
-void MainWindow::on_display_channel_changed(const Channel& channel)
-{
-	TRY
-	update();
-	CATCH;
 }
 
 Gtk::DrawingArea& MainWindow::get_drawing_area()
@@ -354,8 +343,6 @@ gboolean MainWindow::is_fullscreen()
 
 bool MainWindow::on_timeout()
 {
-	static time_t last_poke_time = 0;
-
 	TRY
 	guint now = time(NULL);
 	
@@ -391,7 +378,7 @@ bool MainWindow::on_timeout()
 	
 	// Update EPG
 	guint application_last_update_time = get_application().get_last_epg_update_time();
-	if (application_last_update_time > last_update_time)
+	if ((application_last_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 	{
 		GdkLock gdk_lock();
 		update();
@@ -437,14 +424,6 @@ void MainWindow::set_display_mode(DisplayMode mode)
 	event_box_video->set_size_request(-1, 100);
 	
 	display_mode = mode;
-}
-
-bool MainWindow::on_drawing_area_video_expose(GdkEventExpose* event)
-{
-	Glib::RefPtr<const Gdk::GC> gc = drawing_area_video->get_style()->get_fg_gc(drawing_area_video->get_state());
-	drawing_area_video->get_window()->draw_rectangle(gc, true,
-		event->area.x, event->area.y, event->area.width, event->area.height);
-	return false;
 }
 
 void MainWindow::show_scheduled_recordings_dialog()
@@ -513,4 +492,29 @@ void MainWindow::update()
 	app_bar->set_status(status_text);
 
 	widget_epg->update();
+}
+
+gboolean MainWindow::mute(gboolean mute_state)
+{
+	Gtk::ToggleToolButton* tool_button_mute = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"));
+	if (tool_button_mute->get_active() != mute_state)
+	{
+		tool_button_mute->set_active(mute_state);
+	}
+}
+
+void MainWindow::on_hide()
+{
+	get_application().mute(true);
+	Gtk::Window::on_hide();
+}
+
+void MainWindow::on_show()
+{
+	get_application().mute(false);
+	Gtk::Window::on_show();
+	if (get_application().get_boolean_configuration_value("keep_above"))
+	{
+		set_keep_above();
+	}
 }

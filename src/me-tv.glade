@@ -492,31 +492,7 @@ found in /usr/share/common-licenses/GPL file.</property>
       </widget>
     </child>
     <child>
-      <widget class="GtkImageMenuItem" id="application_menu_item_help">
-        <property name="visible">True</property>
-        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-        <property name="label" translatable="yes">gtk-help</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-      </widget>
-    </child>
-    <child>
-      <widget class="GtkImageMenuItem" id="application_menu_item_about">
-        <property name="visible">True</property>
-        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-        <property name="label" translatable="yes">gtk-about</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-      </widget>
-    </child>
-    <child>
-      <widget class="GtkSeparatorMenuItem" id="separatormenuitem2">
-        <property name="visible">True</property>
-        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-      </widget>
-    </child>
-    <child>
-      <widget class="GtkImageMenuItem" id="application_menu_item_quit">
+      <widget class="GtkImageMenuItem" id="menu_item_popup_quit">
         <property name="visible">True</property>
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
         <property name="label" translatable="yes">gtk-quit</property>
@@ -1850,14 +1826,6 @@ found in /usr/share/common-licenses/GPL file.</property>
                             <property name="use_stock">True</property>
                           </widget>
                         </child>
-                        <child>
-                          <widget class="GtkCheckMenuItem" id="menuitem_show_controls">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">Show _Controls</property>
-                            <property name="use_underline">True</property>
-                            <property name="active">True</property>
-                          </widget>
-                        </child>
                       </widget>
                     </child>
                   </widget>
@@ -1880,33 +1848,6 @@ found in /usr/share/common-licenses/GPL file.</property>
                             <property name="use_stock">True</property>
                           </widget>
                         </child>
-                        <child>
-                          <widget class="GtkSeparatorMenuItem" id="separatormenuitem3">
-                            <property name="visible">True</property>
-                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkImageMenuItem" id="menu_item_subtitles">
-                            <property name="visible">True</property>
-                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                            <property name="label" translatable="yes">_Subtitles</property>
-                            <property name="use_underline">True</property>
-                            <child>
-                              <widget class="GtkMenu" id="menu1">
-                                <property name="visible">True</property>
-                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                              </widget>
-                            </child>
-                            <child internal-child="image">
-                              <widget class="GtkImage" id="menu-item-image2">
-                                <property name="visible">True</property>
-                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                <property name="stock">gtk-select-font</property>
-                              </widget>
-                            </child>
-                          </widget>
-                        </child>
                       </widget>
                     </child>
                   </widget>
@@ -1921,18 +1862,6 @@ found in /usr/share/common-licenses/GPL file.</property>
                       <widget class="GtkMenu" id="menu_audio">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                        <child>
-                          <widget class="GtkMenuItem" id="menu_item_audio_streams">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">_Streams</property>
-                            <property name="use_underline">True</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkSeparatorMenuItem" id="separatormenuitem7">
-                            <property name="visible">True</property>
-                          </widget>
-                        </child>
                         <child>
                           <widget class="GtkCheckMenuItem" id="menu_item_mute">
                             <property name="visible">True</property>

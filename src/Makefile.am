@@ -77,7 +77,9 @@ me_tv_SOURCES = \
 	gstreamer_engine.cc \
 	gstreamer_engine.h \
 	mplayer_engine.cc \
-	mplayer_engine.h
+	mplayer_engine.h \
+	status_icon.cc \
+	status_icon.h
 
 me_tv_LDFLAGS = 
 

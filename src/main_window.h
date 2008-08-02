@@ -48,8 +48,8 @@ private:
 	Gtk::RadioButtonGroup					radio_button_group_devices;
 	gboolean								initialise;
 	guint									last_update_time;
+	guint									last_poke_time;
 
-	void update();
 	void stop();
 	void fullscreen();
 	void unfullscreen();
@@ -61,7 +61,6 @@ private:
 
 	bool on_motion_notify_event(GdkEventMotion* event);
 
-	void on_display_channel_changed(const Channel& channel);
 	bool on_timeout();
 	void on_error(const Glib::ustring& message);
 	void on_menu_item_quit_clicked();
@@ -74,8 +73,9 @@ private:
 	bool on_event_box_video_scroll_event(GdkEventScroll* event);
 	void on_tool_button_record_clicked();
 	void on_tool_button_mute_clicked();
-	bool on_drawing_area_video_expose(GdkEventExpose* expose);
 
+	void on_show();
+	void on_hide();
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	~MainWindow();
@@ -84,7 +84,9 @@ public:
 		
 	Gtk::DrawingArea& get_drawing_area();
 	gboolean get_mute_state();
+	gboolean mute(gboolean mute);
 	void show_channels_dialog();
+	void update();
 };
 
 #endif

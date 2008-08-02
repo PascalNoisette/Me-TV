@@ -474,7 +474,7 @@ gboolean Data::get_current_epg_event(const Channel& channel, EpgEvent& epg_event
 	(
 		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 "\
 	 	"AND START_TIME <= %2 AND (START_TIME + DURATION) > %2",
-		channel.channel_id, get_local_time()
+		channel.channel_id, time(NULL) + timezone
 	);
 
 	Statement statement(database, select_command);

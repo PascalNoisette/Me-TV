@@ -149,8 +149,10 @@ gint Application::get_boolean_configuration_value(const Glib::ustring& key)
 
 void Application::run()
 {
+	status_icon = new StatusIcon(glade);
 	main_window = MainWindow::create(glade);
-	Gnome::Main::run(*main_window);
+	main_window->show();
+	Gnome::Main::run();
 }
 
 Application& Application::get_current()
@@ -190,6 +192,9 @@ void Application::set_source(const Glib::ustring& source)
 		
 		engine->mute(main_window->get_mute_state());
 		engine->play(main_window->get_drawing_area().get_window(), source);
+		
+		main_window->update();
+		status_icon->update();
 	}
 }
 
@@ -205,9 +210,14 @@ void Application::record(const Glib::ustring& filename)
 
 void Application::mute(gboolean state)
 {
+	if (main_window != NULL)
+	{
+		main_window->mute(state);
+	}
+	
 	if (engine != NULL)
 	{
-		engine->mute(main_window->get_mute_state());
+		engine->mute(state);
 	}
 }
 
@@ -553,4 +563,12 @@ void Application::update_epg_time()
 guint Application::get_last_epg_update_time() const
 {
 	return last_epg_update_time;
+}
+
+void Application::toggle_visibility()
+{
+	if (main_window != NULL)
+	{
+		main_window->property_visible() = !main_window->property_visible();
+	}
 }
