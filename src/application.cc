@@ -47,9 +47,11 @@ Application::Application(int argc, char *argv[]) :
 
 	client = Gnome::Conf::Client::get_default_client();
 	
-	set_configuration_default("epg_span_hours", 3);
-	set_configuration_default("recording_directory", Glib::get_home_dir());
-	set_configuration_default("engine_type", "gstreamer");
+	set_int_configuration_default("epg_span_hours", 3);
+	set_int_configuration_default("last_channel", -1);
+	set_string_configuration_default("recording_directory", Glib::get_home_dir());
+	set_string_configuration_default("engine_type", "gstreamer");
+	set_boolean_configuration_default("keep_above", true);
 	
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
@@ -94,7 +96,7 @@ Application::~Application()
 	}
 }
 
-void Application::set_configuration_default(const Glib::ustring& key, const Glib::ustring& value)
+void Application::set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value)
 {
 	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
 	Gnome::Conf::Value v = client->get(path);
@@ -105,7 +107,7 @@ void Application::set_configuration_default(const Glib::ustring& key, const Glib
 	}
 }
 
-void Application::set_configuration_default(const Glib::ustring& key, gint value)
+void Application::set_int_configuration_default(const Glib::ustring& key, gint value)
 {
 	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
 	Gnome::Conf::Value v = client->get(path);
@@ -116,17 +118,33 @@ void Application::set_configuration_default(const Glib::ustring& key, gint value
 	}
 }
 
+void Application::set_boolean_configuration_default(const Glib::ustring& key, gboolean value)
+{
+	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
+	Gnome::Conf::Value v = client->get(path);
+	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
+	{
+		g_debug("Setting int configuration value '%s' = '%s'", path.c_str(), value ? "true" : "false");
+		client->set(path, (bool)value);
+	}
+}
+
 Glib::ustring Application::get_string_configuration_value(const Glib::ustring& key)
 {
 	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
 	return client->get_string(path);
 }
 
-gint Application::get_int_configuration_value(const Glib::ustring& key, gint default_value)
+gint Application::get_int_configuration_value(const Glib::ustring& key)
 {
 	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
-	Gnome::Conf::Value value = client->get(path);
-	return (value.get_type() == Gnome::Conf::VALUE_INVALID) ? default_value : client->get_int(path);
+	return client->get_int(path);
+}
+
+gint Application::get_boolean_configuration_value(const Glib::ustring& key)
+{
+	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
+	return client->get_bool(path);
 }
 
 void Application::run()
@@ -199,7 +217,7 @@ void Application::on_display_channel_changed(const Channel& channel)
 	Dvb::Frontend& frontend = device_manager.get_frontend();
 	setup_dvb(frontend, channel);
 	set_source(frontend.get_adapter().get_dvr_path());
-	set_configuration_default("last_channel", channel.channel_id);
+	set_int_configuration_default("last_channel", channel.channel_id);
 	CATCH
 }
 

@@ -56,8 +56,9 @@ private:
 	Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
 	void setup_dvb(Dvb::Frontend& frontend, const Channel& channel);
 
-	void set_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
-	void set_configuration_default(const Glib::ustring& key, gint value);
+	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
+	void set_int_configuration_default(const Glib::ustring& key, gint value);
+	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);
 
 public:
 	Application(int argc, char *argv[]);
@@ -74,7 +75,8 @@ public:
 	void mute(gboolean state);
 		
 	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
-	gint get_int_configuration_value(const Glib::ustring& key, gint default_value = 0);
+	gint get_int_configuration_value(const Glib::ustring& key);
+	gboolean get_boolean_configuration_value(const Glib::ustring& key);
 
 	void update_epg_time();
 	guint get_last_epg_update_time() const;

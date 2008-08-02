@@ -41,9 +41,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	
 	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
 	app_bar->get_progress()->hide();
-	glade->get_widget("event_box_video")->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
-	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video->set_double_buffered(false);
 	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_video_expose));
 	
@@ -94,7 +92,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	current_profile.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &MainWindow::on_display_channel_changed));
 	
-	set_keep_above();
+	if (get_application().get_boolean_configuration_value("keep_above"))
+	{
+		set_keep_above();
+	}
 }
 
 MainWindow::~MainWindow()
@@ -358,7 +359,7 @@ bool MainWindow::on_timeout()
 		ChannelList& channels = current_profile.get_channels();
 		if (channels.size() > 0)
 		{
-			gint last_channel = get_application().get_int_configuration_value("last_channel", -1);
+			gint last_channel = get_application().get_int_configuration_value("last_channel");
 			if (last_channel == -1)
 			{
 				last_channel = (*channels.begin()).channel_id;
@@ -413,10 +414,10 @@ bool MainWindow::on_timeout()
 
 void MainWindow::set_display_mode(DisplayMode mode)
 {
-	glade->get_widget("menubar")->property_visible()				= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
-	glade->get_widget("handlebox_toolbar")->property_visible()		= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
-	glade->get_widget("app_bar")->property_visible()				= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
-	widget_epg->property_visible()									= (mode == DISPLAY_MODE_EPG);
+	glade->get_widget("menubar")->property_visible()			= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	glade->get_widget("handlebox_toolbar")->property_visible()	= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	glade->get_widget("app_bar")->property_visible()			= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	widget_epg->property_visible()								= (mode == DISPLAY_MODE_EPG);
 
 	Gtk::VBox* vbox_main = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main"));
 	Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
@@ -431,9 +432,9 @@ void MainWindow::set_display_mode(DisplayMode mode)
 
 bool MainWindow::on_drawing_area_video_expose(GdkEventExpose* event)
 {
-	Glib::RefPtr<const Gdk::GC> gc = drawing_area_video->get_style()->get_fg_gc(drawing_area_video->get_state());
-	drawing_area_video->get_window()->draw_rectangle(gc, true,
-		event->area.x, event->area.y, event->area.width, event->area.height);
+//	Glib::RefPtr<const Gdk::GC> gc = drawing_area_video->get_style()->get_fg_gc(drawing_area_video->get_state());
+//	drawing_area_video->get_window()->draw_rectangle(gc, true,
+//		event->area.x, event->area.y, event->area.width, event->area.height);
 	return false;
 }
 
@@ -451,15 +452,13 @@ void MainWindow::on_tool_button_record_clicked()
 	Gtk::ToggleToolButton* tool_button_record = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"));
 	if (tool_button_record->get_active())
 	{
-		Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
 		const Channel* channel = application.get_profile_manager().get_current_profile().get_display_channel();
-		
 		if (channel == NULL)
 		{
 			throw Exception(_("No current channel"));
 		}
 		
-		Glib::ustring recording_directory = client->get_string("recoding_directory");
+		Glib::ustring recording_directory = application.get_string_configuration_value("recording_directory");
 		Glib::ustring path = Glib::build_filename(recording_directory, channel->get_text() + ".mpeg");
 		application.record(path);
 	}

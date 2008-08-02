@@ -121,6 +121,9 @@ void MplayerEngine::play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& 
 	parameters.add("-slave");
 	parameters.add("-softvol");
 	parameters.add("-stop-xscreensaver");
+	parameters.add("-vo");
+	parameters.add("x11");
+	parameters.add("-zoom");
 	parameters.add("-vf");
 	parameters.add("pp=fd");
 	parameters.add("-wid");
