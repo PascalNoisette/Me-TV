@@ -26,14 +26,35 @@
 
 class ScheduledRecordingsDialog : public Gtk::Dialog
 {
-private:
+private:	
+	class ModelColumns : public Gtk::TreeModel::ColumnRecord
+	{
+	public:
+		ModelColumns()
+		{
+			add(column_description);
+			add(column_channel);
+			add(column_start_time);
+			add(column_duration);
+		}
+
+		Gtk::TreeModelColumn<Glib::ustring>	column_description;
+		Gtk::TreeModelColumn<Glib::ustring>	column_channel;
+		Gtk::TreeModelColumn<Glib::ustring>	column_start_time;
+		Gtk::TreeModelColumn<Glib::ustring>	column_duration;
+	};
+	
+	ModelColumns columns;
+	Glib::RefPtr<Gtk::ListStore> list_store;
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
+	Gtk::TreeView* tree_view_scheduled_recordings;
+	void on_button_scheduled_recordings_add_clicked();
 public:	
 	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	
 	static ScheduledRecordingsDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 
-	void on_button_scheduled_recordings_add_clicked();
+	void update();
 };
 
 #endif

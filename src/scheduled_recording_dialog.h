@@ -24,19 +24,31 @@
 #include <libglademm.h>
 #include <libgnomeuimm.h>
 #include "epg_event.h"
+#include "me-tv-ui.h"
+#include "scheduled_recording.h"
 
 class ScheduledRecordingDialog : public Gtk::Dialog
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
+
+	Gnome::UI::DateEdit* date_edit_start_date;
+	Gtk::SpinButton* spinbutton_start_time_hour;
+	Gtk::SpinButton* spinbutton_start_time_minute;
+	Gtk::SpinButton* spinbutton_duration;
+	Gtk::Entry* entry_description;
+	ChannelComboBox* channel_combo_box;
+
 public:
 	ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 
 	static ScheduledRecordingDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 
-	void populate_controls();
-	guint run(EpgEvent& epg_event);
-	guint run();
+	guint run(Gtk::Window* transient_for, ScheduledRecording& scheduled_recording);
+	guint run(Gtk::Window* transient_for, EpgEvent& epg_event);
+	guint run(Gtk::Window* transient_for);
+		
+	ScheduledRecording get_scheduled_recording();
 };
 
 #endif

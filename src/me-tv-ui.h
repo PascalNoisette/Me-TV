@@ -44,6 +44,7 @@ class ChannelComboBox : public Gtk::ComboBoxText
 public:
 	ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
 	void load(const ChannelList& channels);
+	guint get_selected_channel_id();
 };
 
 class GdkLock

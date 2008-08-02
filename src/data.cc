@@ -138,6 +138,15 @@ Data::Data(gboolean initialise)
 			"TITLE CHAR(100) NOT NULL, "\
 			"DESCRIPTION CHAR(200) NOT NULL, "\
 			"UNIQUE (EPG_EVENT_ID, LANGUAGE));");
+
+		execute_non_query(
+			"CREATE TABLE IF NOT EXISTS SCHEDULED_RECORDING ("\
+			"SCHEDULED_RECORDING_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
+			"DESCRIPTION CHAR(100) NOT NULL, "\
+			"TYPE INTEGER NOT NULL, " \
+			"CHANNEL_ID INTEGER NOT NULL, " \
+			"START_TIME INTEGER NOT NULL, " \
+			"DURATION INTEGER NOT NULL);");
 	}
 }
 
@@ -486,3 +495,58 @@ gboolean Data::get_current_epg_event(const Channel& channel, EpgEvent& epg_event
 	
 	return result;
 }
+
+void Data::replace_scheduled_recording(ScheduledRecording& scheduled_recording)
+{
+	Glib::ustring fixed_description = scheduled_recording.description;
+	
+	fix_quotes(fixed_description);
+	
+	Glib::ustring replace_command = Glib::ustring::compose
+	(
+		"REPLACE INTO SCHEDULED_RECORDING " \
+	 	"(SCHEDULED_RECORDING_ID, DESCRIPTION, TYPE, CHANNEL_ID, START_TIME, DURATION) VALUES " \
+	 	"(%1, '%2', %3, %4, %5, %6);",
+	 	scheduled_recording.scheduled_recording_id == 0 ? "NULL" : Glib::ustring::compose("%1", scheduled_recording.scheduled_recording_id),
+	 	fixed_description,
+	 	scheduled_recording.type,
+	 	scheduled_recording.channel_id,
+	 	scheduled_recording.start_time,
+	 	scheduled_recording.duration
+	);
+
+	execute_non_query(replace_command);
+	
+	if (scheduled_recording.scheduled_recording_id == 0)
+	{
+		scheduled_recording.scheduled_recording_id = sqlite3_last_insert_rowid(database);
+		if (scheduled_recording.scheduled_recording_id == 0)
+		{
+			throw Exception("ASSERT: scheduled_recording.scheduled_recording_id == 0");
+		}
+	}
+}
+
+ScheduledRecordingList Data::get_scheduled_recordings()
+{
+	ScheduledRecordingList result;
+	
+	Glib::ustring select_command = "SELECT * FROM SCHEDULED_RECORDING";
+
+	Statement statement(database, select_command);
+	while (statement.step() == SQLITE_ROW)
+	{
+		ScheduledRecording scheduled_recording;
+		scheduled_recording.scheduled_recording_id	= statement.get_int(0);
+		scheduled_recording.description				= statement.get_text(1);
+		scheduled_recording.type					= statement.get_int(2);
+		scheduled_recording.channel_id				= statement.get_int(3);
+		scheduled_recording.start_time				= statement.get_int(4);
+		scheduled_recording.duration				= statement.get_int(5);
+		result.push_back(scheduled_recording);
+	}
+	
+	return result;
+}
+
+

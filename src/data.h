@@ -25,6 +25,7 @@
 #include "me-tv.h"
 #include "profile.h"
 #include "epg_event.h"
+#include "scheduled_recording.h"
 
 class Statement
 {
@@ -60,6 +61,7 @@ public:
 	~Data();
 
 	gboolean get_current_epg_event(const Channel& channel, EpgEvent& epg_event);
+	ScheduledRecordingList get_epg_events();
 	EpgEventList get_epg_events(const Channel& channel, guint start_time, guint end_time);
 	void replace_epg_event(EpgEvent& epg_event);
 	void replace_epg_event_text(EpgEventText& epg_event_text);
@@ -68,6 +70,9 @@ public:
 	ProfileList get_all_profiles();
 	void replace_profile(Profile& profile);
 	void replace_channel(Channel& channel);
+		
+	void replace_scheduled_recording(ScheduledRecording& scheduled_recording);
+	ScheduledRecordingList get_scheduled_recordings();
 };
 
 #endif

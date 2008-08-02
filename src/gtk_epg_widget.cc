@@ -260,7 +260,7 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 	if (result == 1)
 	{
 		ScheduledRecordingDialog* scheduled_recording_dialog = ScheduledRecordingDialog::create(glade);
-		scheduled_recording_dialog->run(epg_event);
+		scheduled_recording_dialog->run(MainWindow::create(glade), epg_event);
 		scheduled_recording_dialog->hide();
 	}
 	

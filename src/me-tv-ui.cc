@@ -50,6 +50,11 @@ void ChannelComboBox::load(const ChannelList& channels)
 	set_active(0);
 }
 
+guint ChannelComboBox::get_selected_channel_id()
+{
+	return 1;
+}
+
 GdkLock::GdkLock()
 {
 	gdk_threads_enter();

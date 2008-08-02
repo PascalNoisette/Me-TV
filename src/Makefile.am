@@ -79,7 +79,9 @@ me_tv_SOURCES = \
 	mplayer_engine.cc \
 	mplayer_engine.h \
 	status_icon.cc \
-	status_icon.h
+	status_icon.h \
+	scheduled_recording.h \
+	scheduled_recording.cc
 
 me_tv_LDFLAGS = 
 
