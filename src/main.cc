@@ -34,12 +34,8 @@ StringSignal& get_signal_error()
 
 void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
-	gchar buffer[100];
-	struct tm now;
-	time_t t = time(NULL);
-	localtime_r(&t, &now);
-	strftime(buffer, 100, "%x %T", &now);
-	g_printf("%s: %s\n", buffer, message);
+	Glib::ustring time_text = get_time_text(get_local_time(), "%x %T");
+	g_printf("%s: %s\n", time_text.c_str(), message);
 }
 
 void on_error(const Glib::ustring& message)
@@ -51,6 +47,8 @@ int main (int argc, char *argv[])
 {	
 	try
 	{
+		tzset();
+		
 		if (!Glib::thread_supported())
 		{
 			Glib::thread_init();

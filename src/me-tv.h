@@ -37,7 +37,10 @@ typedef std::vector<Glib::ustring> StringArray;
 typedef std::list<Glib::ustring> StringList;
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to);
-Glib::ustring get_time_string(time_t t, const gchar* format);
+Glib::ustring get_time_text(time_t t, const gchar* format);
 Glib::ustring encode_xml(const Glib::ustring& s);
+
+guint get_local_time();
+guint convert_to_local_time(guint gmt);
 
 #endif

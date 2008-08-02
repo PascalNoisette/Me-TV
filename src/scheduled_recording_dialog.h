@@ -34,6 +34,7 @@ public:
 
 	static ScheduledRecordingDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 
+	void populate_controls();
 	guint run(EpgEvent& epg_event);
 	guint run();
 };

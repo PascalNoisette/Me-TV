@@ -34,26 +34,20 @@ ComboBoxEntryText::ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr
 {
 }
 
-ComboBoxFrontend::ComboBoxFrontend(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
-	: Gtk::ComboBoxText(cobject), device_manager(get_application().get_device_manager())
+ChannelComboBox::ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
+	: Gtk::ComboBoxText(cobject)
 {
-	const FrontendList& frontends = device_manager.get_frontends();
-	paths.resize(frontends.size());
-	gint index = 0;
-	for (FrontendList::const_iterator iterator = frontends.begin(); iterator != frontends.end(); iterator++)
-	{
-		Dvb::Frontend* frontend = *iterator;
-		append_text(frontend->get_frontend_info().name);
-		paths[index++] = frontend->get_path();
-	}
-		
-	set_active(0);
 }
 
-Dvb::Frontend& ComboBoxFrontend::get_selected_frontend()
+void ChannelComboBox::load(const ChannelList& channels)
 {
-	Glib::ustring path = paths[get_active()];
-	return device_manager.get_frontend_by_path(path);
+	clear();
+	for (ChannelList::const_iterator i = channels.begin(); i != channels.end(); i++)
+	{
+		const Channel& channel = *i;
+		append_text(channel.name);
+	}
+	set_active(0);
 }
 
 GdkLock::GdkLock()

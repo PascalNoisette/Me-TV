@@ -43,7 +43,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	app_bar->get_progress()->hide();
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->set_double_buffered(false);
-	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_video_expose));
+//	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_video_expose));
 	
 	glade->get_widget_derived("scrolled_window_epg", widget_epg);
 	
@@ -64,10 +64,16 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("tool_button_mute", sigc::mem_fun(*this, &MainWindow::on_tool_button_mute_clicked));	
 	glade->connect_clicked("tool_button_scheduled_recordings", sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
 	
+	signal_motion_notify_event().connect(sigc::mem_fun(*this, &MainWindow::on_motion_notify_event));
+
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
-	event_box_video->signal_motion_notify_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_motion_notify_event));
 	event_box_video->signal_scroll_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_scroll_event));
+
+	event_box_video->modify_fg(Gtk::STATE_NORMAL, Gdk::Color("black"));
+	drawing_area_video->modify_fg(Gtk::STATE_NORMAL, Gdk::Color("black"));
+	event_box_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
+	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 
 	Gtk::AboutDialog* dialog_about = (Gtk::AboutDialog*)glade->get_widget("dialog_about");
 	dialog_about->set_version(VERSION);
@@ -302,11 +308,14 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 	return true;
 }
 
-bool MainWindow::on_event_box_video_motion_notify_event(GdkEventMotion* event)
+bool MainWindow::on_motion_notify_event(GdkEventMotion* event)
 {
 	last_motion_time = time(NULL);
-	glade->get_widget("event_box_video")->get_window()->set_cursor();
-	is_cursor_visible = true;
+	if (!is_cursor_visible)
+	{
+		glade->get_widget("event_box_video")->get_window()->set_cursor();
+		is_cursor_visible = true;
+	}
 	return true;
 }
 
@@ -432,9 +441,9 @@ void MainWindow::set_display_mode(DisplayMode mode)
 
 bool MainWindow::on_drawing_area_video_expose(GdkEventExpose* event)
 {
-//	Glib::RefPtr<const Gdk::GC> gc = drawing_area_video->get_style()->get_fg_gc(drawing_area_video->get_state());
-//	drawing_area_video->get_window()->draw_rectangle(gc, true,
-//		event->area.x, event->area.y, event->area.width, event->area.height);
+	Glib::RefPtr<const Gdk::GC> gc = drawing_area_video->get_style()->get_fg_gc(drawing_area_video->get_state());
+	drawing_area_video->get_window()->draw_rectangle(gc, true,
+		event->area.x, event->area.y, event->area.width, event->area.height);
 	return false;
 }
 

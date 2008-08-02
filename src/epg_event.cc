@@ -60,12 +60,12 @@ Glib::ustring EpgEvent::get_description(const Glib::ustring& language) const
 		result = UNKNOWN_TEXT;
 	}
 	
-	return result;		
+	return result;
 }
 
 Glib::ustring EpgEvent::get_start_time_text() const
 {
-	return get_time_string(start_time, "%c");
+	return get_time_text(convert_to_local_time(convert_to_local_time(start_time)), "%c");
 }
 
 Glib::ustring EpgEvent::get_duration_text() const

@@ -23,8 +23,9 @@
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
+#include "me-tv.h"
 #include "dvb_frontend.h"
-#include "device_manager.h"
+#include "channel.h"
 
 class ComboBoxText : public Gtk::ComboBoxText
 {
@@ -38,14 +39,11 @@ public:
 	ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
 };
 
-class ComboBoxFrontend : public Gtk::ComboBoxText
+class ChannelComboBox : public Gtk::ComboBoxText
 {
-private:
-	DeviceManager& device_manager;
-	StringArray paths;
 public:
-	ComboBoxFrontend(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
-	Dvb::Frontend& get_selected_frontend();
+	ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
+	void load(const ChannelList& channels);
 };
 
 class GdkLock

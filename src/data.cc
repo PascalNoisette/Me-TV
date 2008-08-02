@@ -324,9 +324,11 @@ EpgEventList Data::get_epg_events(const Channel& channel, guint start_time, guin
 	
 	Glib::ustring select_command = Glib::ustring::compose
 	(
-		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 "\
-	 	"AND (START_TIME+DURATION) > %2 AND START_TIME < %3 "\
-	 	"ORDER BY START_TIME;",
+		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 AND ("\
+	 	"(START_TIME > %2 AND START_TIME < %3) OR "\
+	 	"((START_TIME+DURATION) > %2 AND (START_TIME+DURATION) < %3) OR "\
+	 	"(START_TIME < %2 AND (START_TIME+DURATION) > %3)"\
+	 	") ORDER BY START_TIME;",
 		channel.channel_id , start_time, end_time
 	);
 
@@ -472,7 +474,7 @@ gboolean Data::get_current_epg_event(const Channel& channel, EpgEvent& epg_event
 	(
 		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 "\
 	 	"AND START_TIME <= %2 AND (START_TIME + DURATION) > %2",
-		channel.channel_id, time(NULL) + timezone
+		channel.channel_id, get_local_time()
 	);
 
 	Statement statement(database, select_command);

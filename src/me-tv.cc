@@ -19,6 +19,7 @@
  */
 
 #include "me-tv.h"
+#include "exception.h"
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to)
 {
@@ -30,13 +31,16 @@ void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::us
 	}
 }
 
-Glib::ustring get_time_string(time_t t, const gchar* format)
+Glib::ustring get_time_text(time_t t, const gchar* format)
 {
 	struct tm tp;
-	char buffer[1000];
+	char buffer[100];
 
-	localtime_r(&t, &tp);
-	strftime(buffer, 1000, format, &tp);
+	if (gmtime_r(&t, &tp) == NULL)
+	{
+		throw Exception("Failed to get time");
+	}
+	strftime(buffer, 100, format, &tp);
 	
 	return buffer;
 }
@@ -50,4 +54,14 @@ Glib::ustring encode_xml(const Glib::ustring& s)
 	replace_text(result, ">", "&gt;");
 
 	return result;
+}
+
+guint get_local_time()
+{
+	return convert_to_local_time(time(NULL));
+}
+
+guint convert_to_local_time(guint gmt)
+{
+	return gmt - timezone;
 }
