@@ -55,6 +55,7 @@ private:
 	void step(sqlite3_stmt* statement);
 
 	void load_epg_event(Statement& statement, EpgEvent& epg_event);
+	void load_scheduled_recording(Statement& statement, ScheduledRecording& scheduled_recording);
 	
 public:
 	Data(gboolean initialise = false);
@@ -73,6 +74,8 @@ public:
 		
 	void replace_scheduled_recording(ScheduledRecording& scheduled_recording);
 	ScheduledRecordingList get_scheduled_recordings();
+	void delete_scheduled_recording(guint scheduled_recording_id);
+	gboolean get_scheduled_recording(guint scheduled_recording_id, ScheduledRecording& scheduled_recording);
 };
 
 #endif

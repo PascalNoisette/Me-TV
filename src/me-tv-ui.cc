@@ -35,24 +35,30 @@ ComboBoxEntryText::ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr
 }
 
 ChannelComboBox::ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
-	: Gtk::ComboBoxText(cobject)
+	: Gtk::ComboBox(cobject)
 {
+	list_store = Gtk::ListStore::create(columns);
 }
 
 void ChannelComboBox::load(const ChannelList& channels)
 {
-	clear();
+	list_store->clear();
 	for (ChannelList::const_iterator i = channels.begin(); i != channels.end(); i++)
 	{
 		const Channel& channel = *i;
-		append_text(channel.name);
+		Gtk::TreeModel::Row row = *list_store->append();
+		row[columns.column_id] = channel.channel_id;
+		row[columns.column_name] = channel.name;
 	}
+	set_model(list_store);
+	pack_start(columns.column_name);
 	set_active(0);
 }
 
 guint ChannelComboBox::get_selected_channel_id()
 {
-	return 1;
+	Gtk::TreeModel::Row row = *get_active();
+	return row[columns.column_id];
 }
 
 GdkLock::GdkLock()

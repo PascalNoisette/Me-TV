@@ -537,16 +537,45 @@ ScheduledRecordingList Data::get_scheduled_recordings()
 	while (statement.step() == SQLITE_ROW)
 	{
 		ScheduledRecording scheduled_recording;
-		scheduled_recording.scheduled_recording_id	= statement.get_int(0);
-		scheduled_recording.description				= statement.get_text(1);
-		scheduled_recording.type					= statement.get_int(2);
-		scheduled_recording.channel_id				= statement.get_int(3);
-		scheduled_recording.start_time				= statement.get_int(4);
-		scheduled_recording.duration				= statement.get_int(5);
+		load_scheduled_recording(statement, scheduled_recording);
 		result.push_back(scheduled_recording);
 	}
 	
 	return result;
 }
 
+void Data::delete_scheduled_recording(guint scheduled_recording_id)
+{
+	Glib::ustring command = Glib::ustring::compose(
+		"DELETE FROM SCHEDULED_RECORDING WHERE SCHEDULED_RECORDING_ID=%1",
+		scheduled_recording_id);
+	execute_non_query(command);
+}
 
+void Data::load_scheduled_recording(Statement& statement, ScheduledRecording& scheduled_recording)
+{
+	scheduled_recording.scheduled_recording_id	= statement.get_int(0);
+	scheduled_recording.description				= statement.get_text(1);
+	scheduled_recording.type					= statement.get_int(2);
+	scheduled_recording.channel_id				= statement.get_int(3);
+	scheduled_recording.start_time				= statement.get_int(4);
+	scheduled_recording.duration				= statement.get_int(5);
+}
+
+gboolean Data::get_scheduled_recording(guint scheduled_recording_id, ScheduledRecording& scheduled_recording)
+{
+	gboolean result = false;
+	Glib::ustring select_command = Glib::ustring::compose(
+		"SELECT * FROM SCHEDULED_RECORDING WHERE SCHEDULED_RECORDING_ID=%1",
+		scheduled_recording_id
+	);
+	
+	Statement statement(database, select_command);
+	if (statement.step() == SQLITE_ROW)
+	{
+		load_scheduled_recording(statement, scheduled_recording);
+		result = true;
+	}
+	
+	return result;
+}

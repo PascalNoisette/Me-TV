@@ -32,12 +32,14 @@ private:
 	public:
 		ModelColumns()
 		{
+			add(column_scheduled_recording_id);
 			add(column_description);
 			add(column_channel);
 			add(column_start_time);
 			add(column_duration);
 		}
 
+		Gtk::TreeModelColumn<guint>			column_scheduled_recording_id;
 		Gtk::TreeModelColumn<Glib::ustring>	column_description;
 		Gtk::TreeModelColumn<Glib::ustring>	column_channel;
 		Gtk::TreeModelColumn<Glib::ustring>	column_start_time;
@@ -48,7 +50,11 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 	Gtk::TreeView* tree_view_scheduled_recordings;
+		
 	void on_button_scheduled_recordings_add_clicked();
+	void on_button_scheduled_recordings_delete_clicked();
+	void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
+
 public:	
 	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	

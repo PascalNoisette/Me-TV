@@ -39,8 +39,25 @@ public:
 	ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
 };
 
-class ChannelComboBox : public Gtk::ComboBoxText
+class ChannelComboBox : public Gtk::ComboBox
 {
+private:
+	class ModelColumns : public Gtk::TreeModel::ColumnRecord
+	{
+	public:
+		ModelColumns()
+		{
+			add(column_id);
+			add(column_name);
+		}
+
+		Gtk::TreeModelColumn<guint>			column_id;
+		Gtk::TreeModelColumn<Glib::ustring>	column_name;
+	};
+	
+	ModelColumns columns;
+	Glib::RefPtr<Gtk::ListStore> list_store;
+		
 public:
 	ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
 	void load(const ChannelList& channels);
