@@ -173,9 +173,9 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 			{
 				guint converted_start_time = convert_to_local_time(convert_to_local_time(epg_event.start_time));
 				
-				Glib::ustring time_text = get_time_text(converted_start_time, "%H:%M");
+				Glib::ustring time_text = get_time_text(converted_start_time, "%A, %B %d\n%H:%M");
 				time_text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M");
-				Glib::ustring text = "<i><small>" + time_text + "</small></i>\n" + encode_xml(epg_event.get_title());
+				Glib::ustring text = encode_xml(epg_event.get_title());
 				
 				Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
 				button.signal_clicked().connect(
@@ -185,6 +185,7 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 						epg_event
 					)
 				);
+				button.set_tooltip_text(time_text);
 			}
 
 			total_number_columns += column_count;

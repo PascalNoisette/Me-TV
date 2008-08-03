@@ -38,14 +38,6 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 	glade->connect_clicked("button_remove_selected_channels",		sigc::mem_fun(*this, &ChannelsDialog::on_button_button_remove_selected_channels_clicked));
 	glade->connect_clicked("button_select_all_displayed_channels",	sigc::mem_fun(*this, &ChannelsDialog::on_button_select_all_displayed_channels_clicked));
 	
-	ProfileManager& profile_manager = Application::get_current().get_profile_manager();
-	Profile& profile = profile_manager.get_current_profile();
-	
-	ComboBoxEntryText* combo_box_entry_text_profile = NULL;
-	glade->get_widget_derived("combo_box_entry_profile", combo_box_entry_text_profile);
-	combo_box_entry_text_profile->append_text(profile.name);
-	combo_box_entry_text_profile->set_active_text(profile.name);
-
 	tree_view_displayed_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_displayed_channels"));
 	
 	list_store = Gtk::ListStore::create(columns);
