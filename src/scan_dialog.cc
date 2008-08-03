@@ -27,7 +27,7 @@
 ScanDialog* ScanDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	ScanDialog* scan_dialog = NULL;
-	glade->get_widget_derived("dialog_scan", scan_dialog);
+	glade->get_widget_derived("dialog_scan_wizard", scan_dialog);
 	return scan_dialog;
 }
 
@@ -55,16 +55,21 @@ bool compare_countries (const Country& a, const Country& b)
 ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Dialog(cobject), glade(glade)
 {
 	scan_thread = NULL;
+	response = 0;
 
-	glade->connect_clicked("button_start_scan", sigc::mem_fun(*this, &ScanDialog::on_button_start_scan_clicked));
+	notebook_scan_wizard = dynamic_cast<Gtk::Notebook*>(glade->get_widget("notebook_scan_wizard"));
+	label_scan_information = dynamic_cast<Gtk::Label*>(glade->get_widget("label_scan_information"));
+	glade->connect_clicked("button_scan_wizard_add", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_add_clicked));
+	glade->connect_clicked("button_scan_wizard_next", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_next_clicked));
+	glade->connect_clicked("button_scan_wizard_cancel", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_cancel_clicked));
 
+	notebook_scan_wizard->set_show_tabs(false);
+		
 	Glib::ustring device_name = get_application().get_device_manager().get_frontend().get_frontend_info().name;
 	dynamic_cast<Gtk::Label*>(glade->get_widget("label_scan_device"))->set_label(device_name);
 		
 	progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
 	tree_view_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_scanned_channels"));
-	
-	progress_bar_scan->hide();
 	
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_scanned_channels->set_model(list_store);
@@ -123,6 +128,16 @@ ScanDialog::~ScanDialog()
 	stop_scan();
 }
 
+gint ScanDialog::run()
+{
+	glade->get_widget("button_scan_wizard_add")->hide();
+	glade->get_widget("button_scan_wizard_next")->show();
+	notebook_scan_wizard->set_current_page(0);
+	response = Gtk::RESPONSE_NONE;
+	Gnome::Main::run(*this);
+	return response;
+}
+
 void ScanDialog::on_hide()
 {
 	stop_scan();
@@ -153,11 +168,19 @@ void ScanDialog::stop_scan()
 	}
 }
 
-void ScanDialog::on_button_start_scan_clicked()
-{		
+void ScanDialog::on_button_scan_wizard_cancel_clicked()
+{
+	response = Gtk::RESPONSE_CANCEL;
+	hide();
+}
+
+void ScanDialog::on_button_scan_wizard_next_clicked()
+{
 	stop_scan();
-	
-	progress_bar_scan->show();
+
+	glade->get_widget("button_scan_wizard_next")->hide();
+	notebook_scan_wizard->next_page();
+
 	list_store->clear();
 
 	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
@@ -190,8 +213,15 @@ void ScanDialog::on_button_start_scan_clicked()
 		Dvb::Scanner& scanner = scan_thread->get_scanner();
 		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
 		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
+		get_application().set_source();
 		scan_thread->start();
 	}
+}
+
+void ScanDialog::on_button_scan_wizard_add_clicked()
+{
+	response = Gtk::RESPONSE_OK;
+	hide();
 }
 
 void ScanDialog::on_signal_service(struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name)
@@ -203,6 +233,9 @@ void ScanDialog::on_signal_service(struct dvb_frontend_parameters& frontend_para
 	row[columns.column_name] = name;
 	row[columns.column_frontend_parameters] = frontend_parameters;
 	tree_view_scanned_channels->get_selection()->select(row);
+	
+	static guint channel_count = 0;
+	label_scan_information->set_text(Glib::ustring::compose("Found %1 channels", ++channel_count));
 }
 	
 void ScanDialog::on_signal_progress(guint step, gsize total)
@@ -210,9 +243,14 @@ void ScanDialog::on_signal_progress(guint step, gsize total)
 	GdkLock gdk_lock;
 	gdouble fraction = total == 0 ? 0 : step/(gdouble)total;
 	progress_bar_scan->set_fraction(fraction);
+	if (step == total)
+	{
+		glade->get_widget("button_scan_wizard_add")->show();
+		notebook_scan_wizard->next_page();
+	}
 }
 
-std::list<ScannedService> ScanDialog::get_scanned_services()
+ScannedServiceList ScanDialog::get_scanned_services()
 {
 	std::list<ScannedService> result;
 	std::list<Gtk::TreeModel::Path> selected_services = tree_view_scanned_channels->get_selection()->get_selected_rows();		
@@ -264,4 +302,3 @@ Country* ScanDialog::find_country(const Glib::ustring& country_name)
 	
 	return result;
 }
-

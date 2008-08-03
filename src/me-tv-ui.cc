@@ -42,6 +42,9 @@ ChannelComboBox::ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gno
 
 void ChannelComboBox::load(const ChannelList& channels)
 {
+	clear();
+	set_model(list_store);
+	pack_start(columns.column_name);
 	list_store->clear();
 	for (ChannelList::const_iterator i = channels.begin(); i != channels.end(); i++)
 	{
@@ -50,8 +53,6 @@ void ChannelComboBox::load(const ChannelList& channels)
 		row[columns.column_id] = channel.channel_id;
 		row[columns.column_name] = channel.name;
 	}
-	set_model(list_store);
-	pack_start(columns.column_name);
 	set_active(0);
 }
 

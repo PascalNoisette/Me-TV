@@ -30,6 +30,11 @@ Thread::Thread(const Glib::ustring& name)
 	g_debug("Thread '%s' created", name.c_str());
 }
 
+Thread::~Thread()
+{
+	join(true);
+}
+
 void Thread::start()
 {
 	Glib::RecMutex::Lock lock(mutex);

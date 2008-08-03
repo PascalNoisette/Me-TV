@@ -18,30 +18,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __THREAD_H__
-#define __THREAD_H__
+#ifndef __EPG_THREAD_H__
+#define __EPG_THREAD_H__
 
-#include <glibmm.h>
-#include "exception.h"
+#include "thread.h"
 
-class Thread
+class EpgThread : public Thread
 {
-private:
-	gboolean				terminated;
-	Glib::Thread*			thread;
-	Glib::StaticRecMutex	mutex;
-	Glib::ustring			name;
 public:
-	Thread(const Glib::ustring& name);
-	virtual ~Thread();
-
-	virtual void run() = 0;
-	
-	void start();
-	void on_run();
-	void join(gboolean set_terminate = false);
-	void terminate();
-	gboolean is_terminated();
+	EpgThread() : Thread("EPG Thread") {}
+	void run();
 };
 
 #endif

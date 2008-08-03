@@ -179,52 +179,26 @@ void MainWindow::on_menu_item_channels_clicked()
 
 void MainWindow::show_channels_dialog()
 {
-	gboolean done = false;
-	
 	Profile& profile = get_application().get_profile_manager().get_current_profile();
 	ChannelsDialog* channels_dialog = ChannelsDialog::create(glade);
 	channels_dialog->set_channels(profile.get_channels());
 	
-	while (!done)
+	gint result = channels_dialog->run();
+	channels_dialog->hide();
+	update();
+	
+	// Pressed OK
+	if (result == Gtk::RESPONSE_OK)
 	{
-		gint result = channels_dialog->run();
-		channels_dialog->hide();
+		ChannelList channels = channels_dialog->get_channels();
+		profile.clear();
+		profile.add_channels(channels);
+		
+		// Must save profile/channels to get updated Channels PK IDs
+		Data data;
+		data.replace_profile(profile);
+		
 		update();
-		
-		// Pressed Cancel
-		if (result == Gtk::RESPONSE_CANCEL || result == Gtk::RESPONSE_DELETE_EVENT)
-		{
-			done = true;
-		}
-
-		// Pressed OK
-		else if (result == Gtk::RESPONSE_OK)
-		{
-			ChannelList channels = channels_dialog->get_channels();
-			profile.clear();
-			profile.add_channels(channels);
-			
-			// Must save profile/channels to get updated Channels PK IDs
-			Data data;
-			data.replace_profile(profile);
-			
-			update();
-			done = true;
-		}
-		
-		// Pressed scan button
-		else if (result == 1)
-		{
-			ScanDialog* scan_dialog = ScanDialog::create(glade);
-			guint scan_dialog_result = scan_dialog->run();
-			scan_dialog->hide();
-		
-			if (scan_dialog_result == Gtk::RESPONSE_OK)
-			{
-				std::list<ScannedService> scanned_services = scan_dialog->get_scanned_services();
-				channels_dialog->add_scanned_services(scanned_services);
-			}
-		}
 	}
 }
 

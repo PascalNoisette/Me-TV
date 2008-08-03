@@ -40,6 +40,8 @@ public:
 	struct dvb_frontend_parameters frontend_parameters;
 };
 
+typedef std::list<ScannedService> ScannedServiceList;
+
 class Country
 {
 public:
@@ -77,12 +79,15 @@ class ScanDialog : public Gtk::Dialog
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
+	Gtk::Notebook*							notebook_scan_wizard;
+	Gtk::Label*								label_scan_information;
 	Gtk::ProgressBar*						progress_bar_scan;
 	Gtk::TreeView*							tree_view_scanned_channels;
 	ComboBoxText*							combo_box_select_country;
 	ComboBoxText*							combo_box_select_region;
 	ScanThread*								scan_thread;
 	CountryList								countries;
+	gint									response;
 
 	class ModelColumns : public Gtk::TreeModelColumnRecord
 	{
@@ -108,20 +113,22 @@ private:
 
 	void on_file_chooser_button_select_file_to_scan_clicked();
 	void on_combo_box_select_country_changed();
-	void on_button_scan_wizard_ok_clicked();
-	void on_button_start_scan_clicked();
+	void on_button_scan_wizard_next_clicked();
+	void on_button_scan_wizard_cancel_clicked();
+	void on_button_scan_wizard_add_clicked();
 	void on_signal_service(struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name);
 	void on_signal_progress(guint step, gsize total);
 	void on_hide();	
+	void stop_scan();
 
 public:
 	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	~ScanDialog();
 
 	static ScanDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
-		
-	void stop_scan();
-	std::list<ScannedService> get_scanned_services();
+	gint run();
+	
+	ScannedServiceList get_scanned_services();
 };
 
 #endif

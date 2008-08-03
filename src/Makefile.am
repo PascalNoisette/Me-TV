@@ -81,7 +81,9 @@ me_tv_SOURCES = \
 	status_icon.cc \
 	status_icon.h \
 	scheduled_recording.h \
-	scheduled_recording.cc
+	scheduled_recording.cc \
+	epg_thread.cc \
+	epg_thread.h
 
 me_tv_LDFLAGS = 
 

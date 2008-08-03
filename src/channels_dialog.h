@@ -57,7 +57,6 @@ public:
 
 	ChannelList get_channels();
 	void set_channels(const ChannelList& channels);
-	void add_scanned_services(std::list<ScannedService>& selected_services);
 };
 
 #endif

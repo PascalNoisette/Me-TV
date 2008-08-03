@@ -28,13 +28,7 @@
 #include "dvb_demuxer.h"
 #include "main_window.h"
 #include "status_icon.h"
-
-class EpgThread : public Thread
-{
-public:
-	EpgThread() : Thread("EPG Thread") {}
-	void run();
-};
+#include "epg_thread.h"
 
 class Application : public Gnome::Main
 {
@@ -47,10 +41,11 @@ private:
 	MainWindow*							main_window;
 	StatusIcon*							status_icon;
 	Engine*								engine;
-	EpgThread							epg_thread;		
+	EpgThread*							epg_thread;		
 	Glib::RefPtr<Gnome::Conf::Client>	client;
 	guint								last_epg_update_time;
 		
+	void stop_engine();
 	void on_display_channel_changed(const Channel& channel);
 	void remove_all_demuxers();
 	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
@@ -74,7 +69,7 @@ public:
 	DeviceManager&		get_device_manager()	{ return device_manager; }
 
 	void update_ui();
-	void set_source(const Glib::ustring& source);
+	void set_source(const Glib::ustring& source = "");
 	void record(const Glib::ustring& filename);
 	void mute(gboolean state);
 		
@@ -86,6 +81,8 @@ public:
 	void set_int_configuration_value(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_value(const Glib::ustring& key, gboolean value);
 	
+	void start_epg_thread();
+	void stop_epg_thread();
 	void update_epg_time();
 	guint get_last_epg_update_time() const;
 	void toggle_visibility();
