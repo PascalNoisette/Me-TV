@@ -130,6 +130,9 @@ ScanDialog::~ScanDialog()
 
 gint ScanDialog::run()
 {
+	channel_count = 0;
+	update_channel_count();
+	progress_bar_scan->set_fraction(0);
 	glade->get_widget("button_scan_wizard_add")->hide();
 	glade->get_widget("button_scan_wizard_next")->show();
 	notebook_scan_wizard->set_current_page(0);
@@ -233,11 +236,15 @@ void ScanDialog::on_signal_service(struct dvb_frontend_parameters& frontend_para
 	row[columns.column_name] = name;
 	row[columns.column_frontend_parameters] = frontend_parameters;
 	tree_view_scanned_channels->get_selection()->select(row);
-	
-	static guint channel_count = 0;
+
+	update_channel_count();
+}
+
+void ScanDialog::update_channel_count()
+{
 	label_scan_information->set_text(Glib::ustring::compose("Found %1 channels", ++channel_count));
 }
-	
+
 void ScanDialog::on_signal_progress(guint step, gsize total)
 {
 	GdkLock gdk_lock;

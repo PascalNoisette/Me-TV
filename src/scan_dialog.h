@@ -88,6 +88,7 @@ private:
 	ScanThread*								scan_thread;
 	CountryList								countries;
 	gint									response;
+	guint									channel_count;
 
 	class ModelColumns : public Gtk::TreeModelColumnRecord
 	{
@@ -120,6 +121,7 @@ private:
 	void on_signal_progress(guint step, gsize total);
 	void on_hide();	
 	void stop_scan();
+	void update_channel_count();
 
 public:
 	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
