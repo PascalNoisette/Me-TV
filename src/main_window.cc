@@ -420,11 +420,11 @@ void MainWindow::on_tool_button_record_clicked()
 		
 		Glib::ustring recording_directory = application.get_string_configuration_value("recording_directory");
 		Glib::ustring path = Glib::build_filename(recording_directory, channel->get_text() + ".mpeg");
-		application.record(path);
+		application.get_stream_thread().record(path);
 	}
 	else
 	{
-		get_application().record("");
+		application.get_stream_thread().stop_record();
 	}
 	CATCH
 }

@@ -29,7 +29,6 @@ class Engine
 public:
 	virtual ~Engine() {};
 	virtual void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& mrl) = 0;
-	virtual void record(const Glib::ustring& filename) = 0;
 	virtual void mute(gboolean state) = 0;
 };
 

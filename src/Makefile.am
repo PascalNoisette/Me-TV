@@ -21,6 +21,8 @@ bin_PROGRAMS = me-tv
 me_tv_SOURCES = \
 	main.cc\
 	../config.h \
+	stream_thread.cc \
+	stream_thread.h \
 	application.h \
 	main_window.h \
 	channels_dialog.h \

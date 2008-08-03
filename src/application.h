@@ -25,10 +25,9 @@
 #include <libgnomemm.h>
 #include "device_manager.h"
 #include "profile_manager.h"
-#include "dvb_demuxer.h"
 #include "main_window.h"
 #include "status_icon.h"
-#include "epg_thread.h"
+#include "stream_thread.h"
 
 class Application : public Gnome::Main
 {
@@ -37,22 +36,14 @@ private:
 	Glib::RefPtr<Gnome::Glade::Xml>		glade;
 	ProfileManager						profile_manager;
 	DeviceManager						device_manager;
-	DemuxerList							demuxers;
 	MainWindow*							main_window;
 	StatusIcon*							status_icon;
-	Engine*								engine;
-	EpgThread*							epg_thread;		
+	StreamThread*						stream_thread;
 	Glib::RefPtr<Gnome::Conf::Client>	client;
 	guint								last_epg_update_time;
 		
-	void stop_engine();
 	void on_display_channel_changed(const Channel& channel);
-	void remove_all_demuxers();
-	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
-		guint pid, dmx_pes_type_t pid_type, const gchar* type_text);
-	Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
-	void setup_dvb(Dvb::Frontend& frontend, const Channel& channel);
-
+		
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);
@@ -68,9 +59,11 @@ public:
 	ProfileManager&		get_profile_manager()	{ return profile_manager; }
 	DeviceManager&		get_device_manager()	{ return device_manager; }
 
+	StreamThread& get_stream_thread();
+	void stop_stream_thread();
+	void set_source(const Channel& channel);
+		
 	void update_ui();
-	void set_source(const Glib::ustring& source = "");
-	void record(const Glib::ustring& filename);
 	void mute(gboolean state);
 		
 	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
@@ -81,11 +74,11 @@ public:
 	void set_int_configuration_value(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_value(const Glib::ustring& key, gboolean value);
 	
-	void start_epg_thread();
-	void stop_epg_thread();
 	void update_epg_time();
 	guint get_last_epg_update_time() const;
 	void toggle_visibility();
+		
+	MainWindow& get_main_window();
 };
 
 Application& get_application();

@@ -216,7 +216,7 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		Dvb::Scanner& scanner = scan_thread->get_scanner();
 		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
 		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
-		get_application().set_source();
+		get_application().stop_stream_thread();
 		scan_thread->start();
 	}
 }

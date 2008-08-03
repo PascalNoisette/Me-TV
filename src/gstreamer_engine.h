@@ -37,11 +37,9 @@ private:
 	GstElement*	video_sink;
 	GstElement*	audio_sink;
 	GstElement*	tee;
-	Glib::RefPtr<Glib::IOChannel> channel;
 
 	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
 	static void connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine);
-	static gboolean cb_have_data (GstPad* pad, GstBuffer* buffer, gpointer u_data);
 	void stop();
 		
 public:
@@ -49,7 +47,6 @@ public:
 	~GStreamerEngine();
 
 	void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename);
-	void record(const Glib::ustring& filename);
 	void mute(gboolean state);
 };
 
