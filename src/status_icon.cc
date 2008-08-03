@@ -29,6 +29,7 @@ StatusIcon::StatusIcon(Glib::RefPtr<Gnome::Glade::Xml>& glade) : glade(glade)
 	popup_menu = dynamic_cast<Gtk::Menu*>(glade->get_widget("menu_application_popup"));
 	status_icon->signal_activate().connect(sigc::mem_fun(*this, &StatusIcon::on_activate));
 	status_icon->signal_popup_menu().connect(sigc::mem_fun(*this, &StatusIcon::on_popup_menu));
+	glade->connect_clicked("application_menu_item_me_tv", sigc::mem_fun(*this, &StatusIcon::on_menu_item_me_tv_clicked));
 	glade->connect_clicked("menu_item_popup_quit", sigc::mem_fun(*this, &StatusIcon::on_menu_item_popup_quit_clicked));
 }
 
@@ -40,6 +41,11 @@ void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
 void StatusIcon::on_menu_item_popup_quit_clicked()
 {
 	gtk_main_quit();
+}
+
+void StatusIcon::on_menu_item_me_tv_clicked()
+{
+	get_application().toggle_visibility();
 }
 
 void StatusIcon::on_activate()

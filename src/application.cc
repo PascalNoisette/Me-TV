@@ -52,6 +52,8 @@ Application::Application(int argc, char *argv[]) :
 	set_string_configuration_default("recording_directory", Glib::get_home_dir());
 	set_string_configuration_default("engine_type", "gstreamer");
 	set_boolean_configuration_default("keep_above", true);
+	set_int_configuration_default("record_extra_before", 5);
+	set_int_configuration_default("record_extra_after", 10);
 	
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
@@ -96,9 +98,14 @@ Application::~Application()
 	}
 }
 
+Glib::ustring Application::get_configuration_path(const Glib::ustring& key)
+{
+	return Glib::ustring::compose(GCONF_PATH"/%1", key);
+}
+
 void Application::set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value)
 {
-	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
+	Glib::ustring path = get_configuration_path(key);
 	Gnome::Conf::Value v = client->get(path);
 	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
 	{
@@ -109,7 +116,7 @@ void Application::set_string_configuration_default(const Glib::ustring& key, con
 
 void Application::set_int_configuration_default(const Glib::ustring& key, gint value)
 {
-	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
+	Glib::ustring path = get_configuration_path(key);
 	Gnome::Conf::Value v = client->get(path);
 	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
 	{
@@ -120,7 +127,7 @@ void Application::set_int_configuration_default(const Glib::ustring& key, gint v
 
 void Application::set_boolean_configuration_default(const Glib::ustring& key, gboolean value)
 {
-	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
+	Glib::ustring path = get_configuration_path(key);
 	Gnome::Conf::Value v = client->get(path);
 	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
 	{
@@ -131,20 +138,32 @@ void Application::set_boolean_configuration_default(const Glib::ustring& key, gb
 
 Glib::ustring Application::get_string_configuration_value(const Glib::ustring& key)
 {
-	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
-	return client->get_string(path);
+	return client->get_string(get_configuration_path(key));
 }
 
 gint Application::get_int_configuration_value(const Glib::ustring& key)
 {
-	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
-	return client->get_int(path);
+	return client->get_int(get_configuration_path(key));
 }
 
 gint Application::get_boolean_configuration_value(const Glib::ustring& key)
 {
-	Glib::ustring path = Glib::ustring::compose(GCONF_PATH"/%1", key);
-	return client->get_bool(path);
+	return client->get_bool(get_configuration_path(key));
+}
+
+void Application::set_string_configuration_value(const Glib::ustring& key, const Glib::ustring& value)
+{
+	client->set(get_configuration_path(key), value);
+}
+
+void Application::set_int_configuration_value(const Glib::ustring& key, gint value)
+{
+	client->set(get_configuration_path(key), (gint)value);
+}
+
+void Application::set_boolean_configuration_value(const Glib::ustring& key, gboolean value)
+{
+	client->set(get_configuration_path(key), (bool)value);
 }
 
 void Application::run()
@@ -192,10 +211,15 @@ void Application::set_source(const Glib::ustring& source)
 		
 		engine->mute(main_window->get_mute_state());
 		engine->play(main_window->get_drawing_area().get_window(), source);
-		
-		main_window->update();
-		status_icon->update();
+
+		update_ui();
 	}
+}
+
+void Application::update_ui()
+{
+	main_window->update();
+	status_icon->update();
 }
 
 void Application::record(const Glib::ustring& filename)

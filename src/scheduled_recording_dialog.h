@@ -32,9 +32,7 @@ class ScheduledRecordingDialog : public Gtk::Dialog
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 
-	Gnome::UI::DateEdit* date_edit_start_date;
-	Gtk::SpinButton* spinbutton_start_time_hour;
-	Gtk::SpinButton* spinbutton_start_time_minute;
+	Gnome::UI::DateEdit* date_edit_start_time;
 	Gtk::SpinButton* spinbutton_duration;
 	Gtk::Entry* entry_description;
 	ChannelComboBox* channel_combo_box;
@@ -46,7 +44,7 @@ public:
 
 	guint run(Gtk::Window* transient_for, ScheduledRecording& scheduled_recording);
 	guint run(Gtk::Window* transient_for, EpgEvent& epg_event);
-	guint run(Gtk::Window* transient_for);
+	guint run(Gtk::Window* transient_for, gboolean populate_default = true);
 		
 	ScheduledRecording get_scheduled_recording();
 };

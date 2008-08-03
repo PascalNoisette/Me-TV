@@ -93,11 +93,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	show();
 	set_display_mode(display_mode);
 	update();
-	
-	if (get_application().get_boolean_configuration_value("keep_above"))
-	{
-		set_keep_above();
-	}
+
+	set_keep_above(get_application().get_boolean_configuration_value("keep_above"));
 }
 
 MainWindow::~MainWindow()

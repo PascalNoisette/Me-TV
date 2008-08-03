@@ -32,9 +32,10 @@ private:
 	Gtk::Menu*						popup_menu;
 		
 	void on_popup_menu(guint button, guint32 activate_time);
+	void on_menu_item_me_tv_clicked();
 	void on_menu_item_popup_quit_clicked();
 	void on_activate();
-		
+
 public:
 	StatusIcon(Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	void update();

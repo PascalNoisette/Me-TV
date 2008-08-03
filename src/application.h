@@ -61,7 +61,8 @@ private:
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);
-
+	
+	Glib::ustring get_configuration_path(const Glib::ustring& key);
 public:
 	Application(int argc, char *argv[]);
 	~Application();
@@ -72,6 +73,7 @@ public:
 	ProfileManager&		get_profile_manager()	{ return profile_manager; }
 	DeviceManager&		get_device_manager()	{ return device_manager; }
 
+	void update_ui();
 	void set_source(const Glib::ustring& source);
 	void record(const Glib::ustring& filename);
 	void mute(gboolean state);
@@ -80,6 +82,10 @@ public:
 	gint get_int_configuration_value(const Glib::ustring& key);
 	gboolean get_boolean_configuration_value(const Glib::ustring& key);
 
+	void set_string_configuration_value(const Glib::ustring& key, const Glib::ustring& value);
+	void set_int_configuration_value(const Glib::ustring& key, gint value);
+	void set_boolean_configuration_value(const Glib::ustring& key, gboolean value);
+	
 	void update_epg_time();
 	guint get_last_epg_update_time() const;
 	void toggle_visibility();
