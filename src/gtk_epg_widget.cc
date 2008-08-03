@@ -33,6 +33,12 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 	table_epg			= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
 	scrolled_window_epg	= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
 	dialog_program_details = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
+	
+	epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
+	glade->connect_clicked("button_epg_now",
+		sigc::bind<gint>(sigc::mem_fun(*this, &GtkEpgWidget::set_offset), 0));
+	glade->connect_clicked("button_epg_previous", sigc::mem_fun(*this, &GtkEpgWidget::previous));
+	glade->connect_clicked("button_epg_next", sigc::mem_fun(*this, &GtkEpgWidget::next));
 }
 
 void GtkEpgWidget::set_offset(guint value)
@@ -47,9 +53,14 @@ void GtkEpgWidget::set_offset(guint value)
 	update();
 }
 
-void GtkEpgWidget::increment_offset(gint value)
+void GtkEpgWidget::previous()
 {
-	set_offset(offset + value);
+	set_offset(offset - (epg_span_hours*60*60));
+}
+
+void GtkEpgWidget::next()
+{
+	set_offset(offset + (epg_span_hours*60*60));
 }
 
 void GtkEpgWidget::update()
@@ -86,10 +97,14 @@ void GtkEpgWidget::update_table()
 		
 		clear();
 		
+		epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
+		
+		glade->get_widget("button_epg_previous")->set_sensitive(offset > 0);
+		glade->get_widget("button_epg_now")->set_sensitive(offset > 0);
+			
 		Profile& profile = get_application().get_profile_manager().get_current_profile();
 		const Channel* display_channel = profile.get_display_channel();
 		const ChannelList& channels = profile.get_channels();
-		guint epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
 
 		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
 
@@ -112,7 +127,6 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, table_row, table_row + 1);
 	
 	channel_button.set_active(selected);
-	
 	channel_button.signal_clicked().connect(
 		sigc::bind<guint>
 		(
@@ -171,10 +185,6 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 			
 			if (column_count > 0)
 			{
-				guint converted_start_time = convert_to_local_time(convert_to_local_time(epg_event.start_time));
-				
-				Glib::ustring time_text = get_time_text(converted_start_time, "%A, %B %d\n%H:%M");
-				time_text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M");
 				Glib::ustring text = encode_xml(epg_event.get_title());
 				
 				Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
@@ -185,6 +195,10 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 						epg_event
 					)
 				);
+
+				guint converted_start_time = convert_to_local_time(convert_to_local_time(epg_event.start_time));
+				Glib::ustring time_text = get_time_text(converted_start_time, "%A, %B %d\n%H:%M");
+				time_text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M");
 				button.set_tooltip_text(time_text);
 			}
 

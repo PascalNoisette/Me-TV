@@ -34,10 +34,14 @@ private:
 	gsize span_seconds;
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 	Data data;
+	guint epg_span_hours;
 	
 	Gtk::Table* table_epg;
 	Gtk::ScrolledWindow* scrolled_window_epg;
-
+	
+	void previous();
+	void next();
+		
 	void on_button_program_clicked(EpgEvent& epg_event);
 	void on_button_channel_name_clicked(guint channel_id);
 		

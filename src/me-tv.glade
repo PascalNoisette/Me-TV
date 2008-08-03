@@ -1325,6 +1325,48 @@ found in /usr/share/common-licenses/GPL file.</property>
               </packing>
             </child>
             <child>
+              <widget class="GtkHBox" id="hbox_epg">
+                <property name="visible">True</property>
+                <child>
+                  <widget class="GtkButton" id="button_epg_previous">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="label" translatable="yes">&lt; Previous</property>
+                    <property name="response_id">0</property>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_epg_now">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="label" translatable="yes">What's on now</property>
+                    <property name="response_id">0</property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_epg_next">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="label" translatable="yes">Next &gt;</property>
+                    <property name="response_id">0</property>
+                  </widget>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkScrolledWindow" id="scrolled_window_epg">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1352,7 +1394,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                 </child>
               </widget>
               <packing>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </widget>
