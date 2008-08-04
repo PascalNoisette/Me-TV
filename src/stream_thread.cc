@@ -138,7 +138,7 @@ void StreamThread::run()
 	gsize bytes_written;
 	while (!is_terminated())
 	{
-		Glib::RecMutex::Lock lock(mutex);
+		//Glib::RecMutex::Lock lock(mutex);
 		if (!is_terminated())
 		{
 			// Insert PAT/PMT every second
