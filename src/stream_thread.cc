@@ -61,8 +61,17 @@ StreamThread::StreamThread(const Channel& channel) :
 		throw Exception(_("Unknown engine type"));
 	}
 	
+	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
 	fifo_path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-	fifo_path = Glib::build_filename(fifo_path, "me-tv.fifo");
+	fifo_path = Glib::build_filename(fifo_path, filename);
+	
+	if (!Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
+	{
+		if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
+		{
+			throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
+		}
+	}
 }
 
 StreamThread::~StreamThread()

@@ -122,6 +122,10 @@ void EpgThread::run()
 	Profile& profile = get_application().get_profile_manager().get_current_profile();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 	const Dvb::Transponder* transponder = frontend.get_current_transponder();
+	if (transponder == NULL)
+	{
+		throw Exception("No current tranponder");
+	}
 	EITDemuxers demuxers(demux_path);
 	Dvb::SI::SectionParser parser;
 	Dvb::SI::MasterGuideTable master_guide_table;

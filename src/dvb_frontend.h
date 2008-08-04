@@ -47,10 +47,11 @@ namespace Dvb
 	{
 	private:
 		Glib::ustring path;
+		guint index;
 	public:
-		Adapter(guint adapter)
+		Adapter(guint index) : index(index)
 		{
-			path = Glib::ustring::compose("/dev/dvb/adapter%1", adapter);
+			path = Glib::ustring::compose("/dev/dvb/adapter%1", index);
 		}
 
 		Glib::ustring get_frontend_path(guint frontend) const
@@ -65,6 +66,8 @@ namespace Dvb
 		{
 			Gio::File::create_for_path(get_frontend_path(frontend))->query_exists();
 		}
+			
+		guint get_index() const { return index; }
 	};
 	
 	class Frontend
