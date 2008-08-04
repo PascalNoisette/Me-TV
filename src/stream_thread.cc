@@ -75,8 +75,11 @@ StreamThread::StreamThread(const Channel& channel) :
 }
 
 StreamThread::~StreamThread()
-{
+{	
+	join(true);
+	Glib::RecMutex::Lock lock(mutex);
 	stop_epg_thread();
+	remove_all_demuxers();
 	stop_engine();
 }
 
@@ -98,9 +101,9 @@ void StreamThread::mute(gboolean mute_state)
 void StreamThread::write(gchar* buffer, gsize length)
 {
 	gsize bytes_written = 0;
-	output_channel->write(buffer, length, bytes_written);
-	
+
 	Glib::RecMutex::Lock lock(mutex);
+	output_channel->write(buffer, length, bytes_written);	
 	if (recording_channel)
 	{
 		recording_channel->write(buffer, length, bytes_written);
@@ -116,14 +119,18 @@ void StreamThread::run()
 	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
 	setup_dvb(frontend, channel);
 	
-	build_pat(pat);
-	build_pmt(pmt);
-
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
-	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
+	g_debug("About to open to FIFO for reading ...");
+	input_channel = Glib::IOChannel::create_from_file(input_path, "r");
+	g_debug("FIFO opened for reading");
+	g_debug("About to open to FIFO for writing ...");
 	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
+	g_debug("FIFO opened for writing");
 	input_channel->set_encoding("");
 	output_channel->set_encoding("");
+
+	build_pat(pat);
+	build_pmt(pmt);
 	
 	guint last_insert_time = 0;
 	
@@ -131,18 +138,31 @@ void StreamThread::run()
 	gsize bytes_written;
 	while (!is_terminated())
 	{
-		// Insert PAT/PMT every second
-		time_t now = time(NULL);
-		if (now - last_insert_time > 1)
+		Glib::RecMutex::Lock lock(mutex);
+		if (!is_terminated())
 		{
-			write(pat, TS_PACKET_SIZE);
-			write(pmt, TS_PACKET_SIZE);
-			last_insert_time = now;
+			// Insert PAT/PMT every second
+			time_t now = time(NULL);
+			if (now - last_insert_time > 1)
+			{
+				write(pat, TS_PACKET_SIZE);
+				write(pmt, TS_PACKET_SIZE);
+				last_insert_time = now;
+			}
+			
+			input_channel->read(buffer, TS_PACKET_SIZE * 10, bytes_read);
+			write(buffer, bytes_read);
 		}
-		
-		input_channel->read(buffer, TS_PACKET_SIZE * 10, bytes_read);
-		write(buffer, bytes_read);
 	}
+	g_debug("StreamThread loop exited");
+	
+	Glib::RecMutex::Lock lock(mutex);
+	g_debug("About to clear input channel ...");
+	input_channel.clear();
+	g_debug("Input channel cleared");
+	g_debug("About to clear output channel ...");
+	output_channel.clear();
+	g_debug("Output channel cleared");
 }
 
 void StreamThread::record(const Glib::ustring& filename)
@@ -155,6 +175,7 @@ void StreamThread::record(const Glib::ustring& filename)
 	
 	recording_channel = Glib::IOChannel::create_from_file(filename, "w");
 	recording_channel->set_encoding("");
+	g_debug("Recording channel opened");
 }
 
 void StreamThread::stop_record()
@@ -166,6 +187,7 @@ void StreamThread::stop_record()
 	}
 	
 	recording_channel.clear();
+	g_debug("Recording channel cleared");
 }
 
 gboolean StreamThread::is_recording()
@@ -464,17 +486,9 @@ void StreamThread::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	
 	remove_all_demuxers();
 	
-	const Dvb::Transponder* current_transponder = frontend.get_current_transponder();
-	if (current_transponder == NULL || current_transponder->frontend_parameters.frequency != channel.frontend_parameters.frequency)
-	{
-		Dvb::Transponder transponder;
-		transponder.frontend_parameters = channel.frontend_parameters;
-		frontend.tune_to(transponder);
-	}
-	else
-	{
-		g_debug("Frontend already tuned to '%d'", channel.frontend_parameters.frequency);
-	}
+	Dvb::Transponder transponder;
+	transponder.frontend_parameters = channel.frontend_parameters;
+	frontend.tune_to(transponder);
 	
 	Dvb::Demuxer demuxer_pat(demux_path);
 	demuxer_pat.set_filter(PAT_PID, PAT_ID);
@@ -550,10 +564,12 @@ void StreamThread::stop_engine()
 		delete engine;
 		engine = NULL;
 	}
+	g_debug("Engine stopped");
 }
 
 void StreamThread::start_epg_thread()
 {
+	Glib::RecMutex::Lock lock(mutex);
 	stop_epg_thread();
 	epg_thread = new EpgThread();
 	epg_thread->start();
@@ -562,8 +578,11 @@ void StreamThread::start_epg_thread()
 
 void StreamThread::stop_epg_thread()
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	if (epg_thread != NULL)
 	{
+		g_debug("Stopping EPG thread");
 		delete epg_thread;
 		epg_thread = NULL;
 		g_debug("EPG thread stopped");

@@ -50,6 +50,7 @@ class StreamThread : public Thread
 {
 private:
 	const Channel&					channel;
+	Glib::RefPtr<Glib::IOChannel>	input_channel;
 	Glib::RefPtr<Glib::IOChannel>	output_channel;
 	Glib::RefPtr<Glib::IOChannel>	recording_channel;
 	DemuxerList						demuxers;

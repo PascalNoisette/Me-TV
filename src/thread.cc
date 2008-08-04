@@ -67,6 +67,7 @@ void Thread::join(gboolean set_terminate)
 			if (set_terminate)
 			{
 				terminated = true;
+				g_debug("Thread '%s' marked for termination", name.c_str());
 			}
 			
 			do_join = true;
@@ -90,6 +91,7 @@ void Thread::terminate()
 {
 	Glib::RecMutex::Lock lock(mutex);
 	terminated = true;
+	g_debug("Thread '%s' marked for termination", name.c_str());
 }
 	
 gboolean Thread::is_terminated()

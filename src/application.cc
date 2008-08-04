@@ -81,6 +81,7 @@ Application::Application(int argc, char *argv[]) :
 
 Application::~Application()
 {
+	stop_stream_thread();
 	if (main_window != NULL)
 	{
 		delete main_window;
