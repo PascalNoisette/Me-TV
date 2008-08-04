@@ -215,7 +215,7 @@ void Application::on_display_channel_changed(const Channel& channel)
 {
 	TRY
 	set_source(channel);
-	set_int_configuration_default("last_channel", channel.channel_id);
+	set_int_configuration_value("last_channel", channel.channel_id);
 	CATCH
 }
 
