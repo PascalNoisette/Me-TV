@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" >
+<article lang="en">
+    <articleinfo>
+        <title>Me TV User Manual</title>
+        <copyright>
+            <year>2007</year>
+            <year>2008</year>
+            <holder>Michael Lamothe</holder>
+        </copyright>
+        <publisher>
+            <publishername>Michael Lamothe</publishername>
+        </publisher>
+        <legalnotice>
+            <title>Legal Notice</title>
+            <para>This file is part of <application>Me TV</application>. </para>
+            <para><application>Me TV</application> is free software: you can redistribute it and/or
+                modify it under the terms of the GNU General Public License as published by the Free
+                Software Foundation, either version 3 of the License, or (at your option) any later
+                version. </para>
+            <para><application>Me TV</application> is distributed in the hope that it will be
+                useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+                MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
+                License for more details. </para>
+            <para>You should have received a copy of the GNU General Public License along with
+                    <application>Me TV</application>. If not, see <ulink
+                    url="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</ulink>.</para>
+        </legalnotice>
+        <author>
+            <firstname>Michael</firstname>
+            <surname>Lamothe</surname>
+        </author>
+    </articleinfo>
+    <sect1>
+        <title>Introduction</title>
+        <para><application>Me TV</application> is a digital television (DVB) viewer for GNOME.
+                <application>Me TV</application> was developed for the modern digital lounge room
+            with a PC for a media centre that is capable of normal PC tasks (web surfing, word
+            processing and watching TV). It is not designed to be a full-blown media centre, such as
+                <application>MythTV</application>, but will integrate well with an existing GNOME
+            desktop.</para>
+    </sect1>
+    <sect1>
+        <title>Why <application>Me TV</application>?</title>
+        <para>The name <application>Me TV</application> comes from Australian slang for "My TV".
+            Hence, "it's TV for me computer" is Australian slang for "it's TV for my computer". The
+            pattern can be followed for all instances of "My", such as "Me dog", "Me ute" and of
+            course "Me beer".</para>
+    </sect1>
+    <sect1>
+        <title>Features</title>
+        <para> The following list contains the significant features of <application>Me
+            TV</application>: <itemizedlist>
+                <listitem>
+                    <para>GTK/GNOME interface</para>
+                </listitem>
+                <listitem>
+                    <para>Completely mouse driven</para>
+                </listitem>
+                <listitem>
+                    <para>Runs in system tray (see <link linkend="notification_icon">Notification
+                            Icon</link>)</para>
+                </listitem>
+                <listitem>
+                    <para>Current and future program information (see <link linkend="epg_window">EPG
+                            Window</link>)</para>
+                </listitem>
+                <listitem>
+                    <para>Instant Record</para>
+                </listitem>
+                <listitem>
+                    <para>Once off, daily or weekly scheduled recordings (see <link
+                            linkend="scheduled_recording">Scheduled Recordings</link>)</para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="program_search">Program search</link>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Auto channel scan (see <link linkend="channel_scan_window">Channel Scan
+                            window</link>)</para>
+                </listitem>
+                <listitem>
+                    <para>Auto PID selection</para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="audio_select">Audio select</link>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="network_broadcast">Network broadcast</link>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Subtitles</para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="dual_language">Dual language</link>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>DVB-T, DVB-C, DVB-S and ATSC support</para>
+                </listitem>
+                <listitem>
+                    <para>Double-click fullscreen</para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="auto_surf">Auto surf</link>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="keyboard_shortcuts">Keyboard shortcuts</link>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Very simple installation and set up</para>
+                </listitem>
+            </itemizedlist>
+        </para>
+    </sect1>
+    <sect1 id="channel_scan_window">
+        <title>Channel Scan Window</title>
+        <para>To use <application>Me TV</application> you need to have a channels file that lists
+            the channels that you want Me TV to use. <application>Me TV</application> has a built-in
+            scanner that allows you to automatically tune the stations available to you.</para>
+        <para>When <application>Me TV</application> starts it will detect if you have a channels
+            file (<filename>~/.me-tv/channels.conf</filename>). If a channel file does not exist
+            then <application>Me TV</application> will ask if you would like to have one created. If
+            you choose to create a channels file then <application>Me TV</application> will open the
+            Channel Scan window asking you to select a region. If there is no region in the list
+            that matches your region then you might have some luck with a region that is close to
+            you. Double click a region (or select the region and click the
+            <guibutton>Next</guibutton> button) to tell <application>Me TV</application> to begin
+            the scan. During the scan, <application>Me TV</application> will show its progress in
+            the text window, this process can take several minutes. When the scan completes the
+            Channel Scan window will close automatically and <application>Me TV</application> will
+            start.</para>
+        <para>Digital television (DVB) allows television networks to supply many channels with the
+            same (or similar) content so it's unlikely that you want Me TV to display all of them.
+            To remove channels from <application>Me TV</application>, edit the
+                <filename>~/.me-tv/channels.conf</filename> file and remove the channels that you
+            don't want. If you would like <application>Me TV</application> to rescan channels then
+            simply delete the <filename>~/.me-tv/channels.conf</filename> file and restart
+                <application>Me TV</application>.</para>
+    </sect1>
+    <sect1 id="main_window">
+        <title>Main Window</title>
+        <para><application>Me TV</application>'s main window contains the main menu, the controls to
+            drive <application>Me TV</application> (toolbar), video window, the EPG window, the
+            program search bar and the status bar.</para>
+        <sect2 id="main_menu">
+            <title>Main Menu</title>
+            <para>Many of the features of <application>Me TV</application> can be accessed through
+                the main menu.</para>
+            <sect3>
+                <title>File</title>
+                <para>
+                    <itemizedlist>
+                        <listitem>
+                            <para><guimenuitem>Quit</guimenuitem> exits <application>Me
+                                TV</application>. If you are recording or you have a scheduled
+                                recording then <application>Me TV</application> will confirm that
+                                you want to exit. If you exit <application>Me TV</application> then
+                                it will not be able to record a scheduled program. </para>
+                        </listitem>
+                    </itemizedlist>
+                </para>
+            </sect3>
+            <sect3>
+                <title>View</title>
+                <para>
+                    <itemizedlist>
+                        <listitem>
+                            <para><guimenuitem>Fullscreen</guimenuitem> toggles fullscreen
+                            mode</para>
+                        </listitem>
+                        <listitem>
+                            <para><guimenuitem>Preferences</guimenuitem> shows the <link
+                                    linkend="preferences_window">Preferences window</link>. </para>
+                        </listitem>
+                        <listitem>
+                            <para><guimenuitem>Electronic Program Guide</guimenuitem> toggles the
+                                display of the <link linkend="epg_window">EPG window</link>.</para>
+                        </listitem>
+                        <listitem>
+                            <para><guimenuitem>Program Search</guimenuitem> enables the <link
+                                    linkend="program_search_bar">Program search bar</link> below the
+                                    <link linkend="epg_window">EPG window</link> allowing the user
+                                to search for programs in the EPG.</para>
+                        </listitem>
+                        <listitem>
+                            <para><guimenuitem>Subtitles</guimenuitem> displays a list of detected
+                                subtitle streams for the channel.</para>
+                        </listitem>
+                    </itemizedlist>
+                </para>
+            </sect3>
+            <sect3>
+                <title>Audio</title>
+                <para>
+                    <itemizedlist>
+                        <listitem>
+                            <para><guimenuitem>Streams</guimenuitem> displays a list of detected
+                                audio streams for the channel.</para>
+                        </listitem>
+                        <listitem>
+                            <para><guimenuitem>Mute</guimenuitem> toggles the audio. This will not
+                                affect the audio in a recording or broadcast stream. </para>
+                        </listitem>
+                        <listitem>
+                            <para><guimenuitem>Dual Language</guimenuitem> the sub menu of this item
+                                allows the user to select only the left or right audio channel to
+                                come out both speakers. This is useful for people whose television
+                                networks send the streams in two languages, one down the left and
+                                the other down the right. (see <link linkend="dual_language">Dual
+                                    language</link>)</para>
+                        </listitem>
+                    </itemizedlist>
+                </para>
+            </sect3>
+            <sect3>
+                <title>Help</title>
+                <itemizedlist>
+                    <listitem>
+                        <para><guimenuitem>Contents</guimenuitem> displays this user guide. </para>
+                    </listitem>
+                    <listitem>
+                        <para><guimenuitem>About</guimenuitem> shows the <link
+                                linkend="about_window">About window</link>.</para>
+                    </listitem>
+                </itemizedlist>
+            </sect3>
+        </sect2>
+        <sect2 id="toolbar">
+            <title>Toolbar</title>
+            <itemizedlist>
+                <listitem>
+                    <para><guibutton>Record</guibutton> toggles recording.</para>
+                </listitem>
+                <listitem>
+                    <para><guibutton>Mute</guibutton> toggles audio output. This will not affect the
+                        audio in a recording or broadcast stream.</para>
+                </listitem>
+                <listitem>
+                    <para><guibutton>Broadcast</guibutton> toggles <link linkend="network_broadcast"
+                            >Network broadcast</link>.</para>
+                </listitem>
+                <listitem>
+                    <para><guibutton>Auto Surf</guibutton> toggles <link linkend="auto_surf">Auto
+                            surf</link>.</para>
+                </listitem>
+                <listitem>
+                    <para><guibutton>Schedule</guibutton> opens the <link
+                            linkend="scheduled_recordings_window">Scheduled recordings
+                        window</link>.</para>
+                </listitem>
+                <listitem>
+                    <para><guibutton>Hide Controls</guibutton> hides all controls on the <link
+                            linkend="main_window"/> giving the <link linkend="video_window">Video
+                            window</link> the maximum amount screen real estate available in the
+                        Main window. Simply right click the Video Window to leave this mode.</para>
+                </listitem>
+            </itemizedlist>
+        </sect2>
+        <sect2 id="video_window">
+            <title>Video Window</title>
+            <para>You can double click on video window to toggle fullscreen mode. Upon entering
+                fullscreen mode, all controls will be hidden. Right click on the video window to
+                toggle the display of the controls in <application>Me TV</application>.</para>
+        </sect2>
+        <sect2 id="epg_window">
+            <title>EPG Window</title>
+            <para>The EPG (Electronic Program Guide) displays current and future program information
+                sent from the television network. The EPG window is also used to change channels. It
+                can be quickly accessed by right clicking on the video window.</para>
+            <para>Click on a program to see the <link linkend="program_details_window">Program
+                    details window</link> for that program or to schedule a recording for that
+                program.</para>
+        </sect2>
+        <sect2 id="program_search_bar">
+            <title>Program Search Bar</title>
+            <para>The search bar is used to search for programs in the EPG. By default, the bar is
+                not visible, use <keycombo>
+                    <keysym>Ctrl+F</keysym>
+                </keycombo> to activate the program search bar.</para>
+            <para>For more information see the <link linkend="program_search">Program search</link>
+                feature.</para>
+        </sect2>
+        <sect2 id="status_bar">
+            <title>Status Bar</title>
+            <para>The status bar is used to let you know the status of Me TV. When viewing a channel
+                it will display the channel name and current program title, if known. When
+                recording, the status bar will display the filename of the file being recorded
+            to.</para>
+        </sect2>
+    </sect1>
+    <sect1 id="notification_icon">
+        <title>The Notification Icon</title>
+        <para>The <application>Me TV</application> notification icon is displayed in any
+            notification area applet in the GNOME panel while <application>Me TV</application> is
+            running. Left clicking on the icon will cause <application>Me TV</application> to mute
+            and hide but it remains running. Recordings and scheduled recordings will continue to
+            record when <application>Me TV</application> is in this state.</para>
+    </sect1>
+    <sect1 id="program_details_window">
+        <title>Program Details Window</title>
+        <para>This window is displayed when a user clicks on a program in the <link
+                linkend="epg_window">EPG window</link>. It displays a few details about the program
+            and gives the user the option of scheduling the program for recording via the
+                <guibutton>Record</guibutton> button. Clicking the <guibutton>Record</guibutton>
+            button will open the <link linkend="scheduled_recording_window">Scheduled recording
+                window</link>.</para>
+    </sect1>
+    <sect1 id="scheduled_recordings_window">
+        <title>Scheduled Recordings Window</title>
+        <para>The scheduled recordings window can be used to add and remove scheduled recordings
+            from <application>Me TV</application>. Click the <guibutton>Add</guibutton> button to
+            add an scheduled recording or select a scheduled recording from the list and click the
+                <guibutton>Remove</guibutton> button.</para>
+        <para>When a program is scheduled, <application>Me TV</application> will run in the system
+            tray and wait for the program to start.</para>
+    </sect1>
+    <sect1 id="scheduled_recording_window">
+        <title>Scheduled Recording Window</title>
+        <para>Not to be confused with the Scheduled Recording<emphasis>s</emphasis> window, this
+            window allows you to set the values for a scheduled recording.<itemizedlist>
+                <listitem>
+                    <para><guilabel>Title</guilabel> is the title of the program, if available.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Description</guilabel> is the description of the program, if
+                        available. </para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Start Time</guilabel> is the time that the program is scheduled
+                        to start. </para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Duration</guilabel> is the duration of the program. </para>
+                </listitem>
+            </itemizedlist></para>
+        <para>Clicking the <guibutton>OK</guibutton> button will open the <link
+                linkend="scheduled_recordings_window">Scheduled recordings window</link> with the
+            newly scheduled recording in the list of scheduled recordings.</para>
+        <para>When a program is scheduled, <application>Me TV</application> will run in the system
+            tray and wait for the program to start.</para>
+    </sect1>
+    <sect1 id="preferences_window">
+        <title>Preferences Window</title>
+        <para>The Preferences window can be used to configure <application>Me TV</application>.<itemizedlist>
+                <listitem>
+                    <para><guilabel>Recording directory</guilabel> is the directory where
+                            <application>Me TV</application> will save its recorded files.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Record extra before</guilabel> is the default number of minutes
+                        that will be added to the start of the recording.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Record extra after</guilabel> is the default number of minutes
+                        that will be added to the end of the recording.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Recording type</guilabel> is used to specify the video format of
+                            <application>Me TV</application>'s recorded files. The MPEG TS format is
+                        best for storing multiple audio streams and subtitles. When using MPEG PS
+                            <application>Me TV</application> will not be able to record subtitles
+                        however you might find that this format is supported by more players.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>EPG span hours</guilabel> is the number of hours that the <link
+                            linkend="epg_window">EPG window</link> will span on one page.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Broadcast port</guilabel> is the network port used when
+                        broadcasting over the network.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>EPG encoding</guilabel> is used to specify how to process text
+                        elements from the DVB stream. The DVB stream will, in most cases, tell
+                            <application>Me TV</application> which encoding it is using however some
+                        countries, like the Czech Republic, use a different encoding for the EPG
+                        information. If you are having difficulties displaying non-English
+                        characters then changing this setting may help.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Video driver</guilabel> specifies the xine video output driver
+                        to use. Sometimes the xine engine is unable to display video output properly
+                        because of the users video setup. Changing this setting may help with this
+                        issue.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Deinterlace type</guilabel> is used to specify type of
+                        deinterlacing. You may find that changing this setting improves the video
+                        depending on your setup.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Start minimised in tray</guilabel> tells <application>Me
+                        TV</application> to startup in the notification area when it starts. This
+                        setting can be useful if you get <application>Me TV</application> to start
+                        automatically when you log in.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Always on top</guilabel> tells <application>Me TV</application>
+                        to stay on top of other windows on the desktop.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>Fullscreen workaround</guilabel> addresses an issue on some
+                            <application>Compiz</application> setups that won't let you show a popup
+                        window on top of another window that is in fullscreen mode. This setting
+                        will temporarily take you out of fullscreen while viewing a popup window and
+                        then return you to fullscreen mode after closing the popup window.</para>
+                </listitem>
+                <listitem>
+                    <para><guilabel>PID workaround</guilabel> has been implemented because there has
+                        been a report of the PID auto-detection not selecting the right PID. This is
+                        a temporary workaround in-case the issue arises again on someone's computer
+                        after release. This feature may be removed in the next release of
+                            <application>Me TV</application> (currently 0.5.10).</para>
+                </listitem>
+            </itemizedlist></para>
+    </sect1>
+    <sect1 id="about_window">
+        <title>About Window</title>
+        <para>The About window shows legal information, contributors and further information about
+                <application>Me TV</application>.</para>
+    </sect1>
+    <sect1 id="features">
+        <title>Features Explained</title>
+        <para>This is a brief explanation of some of the features of <application>Me
+            TV</application>.</para>
+        <sect2 id="keyboard_shortcuts">
+            <title>Keyboard Shortcuts</title>
+            <para>Many of the features of <application>Me TV</application> can be accessed using the
+                keyboard. The following list of keys (uppercase or lowercase) can be used on the
+                    <link linkend="main_window">Main window</link>.<itemizedlist>
+                    <listitem>
+                        <para><keysym>A</keysym> toggles <link linkend="auto_surf">Auto
+                        surf</link>.</para>
+                    </listitem>
+                    <listitem>
+                        <para><keysym>B</keysym> toggles <link linkend="network_broadcast">Network
+                                broadcast</link></para>
+                    </listitem>
+                    <listitem>
+                        <para><keysym>E</keysym> toggles the visibility of the <link
+                                linkend="epg_window">EPG window</link></para>
+                    </listitem>
+                    <listitem>
+                        <para><keysym>F</keysym> toggles fullscreen</para>
+                    </listitem>
+                    <listitem>
+                        <para><keysym>Ctrl+F</keysym> shows the <link linkend="program_search_bar"
+                                >Program search bar</link> under the <link linkend="epg_window">EPG
+                                window</link></para>
+                    </listitem>
+                    <listitem>
+                        <para><keysym>H</keysym> hides all the controls</para>
+                    </listitem>
+                    <listitem>
+                        <para><keysym>M</keysym> toggles mute</para>
+                    </listitem>
+                    <listitem>
+                        <para><keysym>R</keysym> toggles recording</para>
+                    </listitem>
+                </itemizedlist></para>
+        </sect2>
+        <sect2 id="scheduled_recording">
+            <title>Scheduled Recording</title>
+            <para><application>Me TV</application> is able to schedule future programs to be
+                recorded. When a program is due to be recorded, <application>Me TV</application>
+                will change to the channel and start recording. If a future program is scheduled
+                then when you close the Main Window, <application>Me TV</application> will continue
+                to run in the notification area of the GNOME panel.</para>
+            <para> There are several types of scheduled recordings:<itemizedlist>
+                    <listitem>
+                        <para>Once Off</para>
+                    </listitem>
+                    <listitem>
+                        <para>Every Day (not including weekends)</para>
+                    </listitem>
+                    <listitem>
+                        <para>Every Day (including weekends)</para>
+                    </listitem>
+                    <listitem>
+                        <para>Every Week</para>
+                    </listitem>
+                </itemizedlist></para>
+            <para>If a "Once Off" recording is scheduled then once the recording is complete,
+                    <application>Me TV</application> will delete the scheduled recording program.
+            </para>
+        </sect2>
+        <sect2 id="program_search">
+            <title>Program Search</title>
+            <para><application>Me TV</application> allows you to search the EPG for programs. You
+                can do this using the <link linkend="program_search_bar">Program search bar</link>.</para>
+            <para>The Program search bar is displayed below the <link linkend="epg_window">EPG
+                    window</link> but, by default it is hidden. You can activate the Program search
+                bar using <keycombo>
+                    <keysym>Ctrl+F</keysym>
+                </keycombo>.</para>
+            <para>You only need to enter part of the program title to search. For example, if you
+                enter "Thomas", Me TV will search the entire EPG for any program with "Thomas" in
+                the title. If a program is found it will be displayed in the EPG highlighted in
+                yellow.</para>
+        </sect2>
+        <sect2 id="audio_select">
+            <title>Audio Select</title>
+            <para>Some stations transmit television in multiple audio languages. <application>Me
+                TV</application> allows you to select different audio languages from the
+                    <guimenuitem>Audio/Streams</guimenuitem> menu item. <application>Me
+                TV</application> will remember (until you log out) which audio stream you selected
+                the next time you select the channel.</para>
+        </sect2>
+        <sect2 id="auto_surf">
+            <title>Auto Surf</title>
+            <para>Auto surf tells <application>Me TV</application> to traverse through every channel
+                in the <link linkend="epg_window">EPG window</link>. This gives <application>Me
+                TV</application> the chance to update EPG information for all channels. This feature
+                can be useful because some stations only supply EPG programs a few shows in advance
+                so if you haven't used that channel in a few hours then there will be no EPG
+                information for that channel.</para>
+        </sect2>
+        <sect2 id="dual_language">
+            <title>Dual Language</title>
+            <para>Some television networks transmit television programs in multiple languages by
+                sending different languages down the left and right channels of the audio stream.
+                Dual language allows you to play either the left or right audio channel through both
+                speakers. Dual language is available through the <guimenuitem>Audio/Dual
+                Language</guimenuitem> menu item.</para>
+        </sect2>
+        <sect2 id="network_broadcast">
+            <title>Network Broadcast</title>
+            <para>The network broadcast feature allows users to broadcast their television stream
+                over a network making it possible for other computers to receive television. Digital
+                television uses a lot of data so this feature is not recommended for networks that
+                are slower than 100 Mbit/s. There are many players that can be used for a client including:<itemizedlist>
+                    <listitem>
+                        <para>
+                            <application>xine</application>
+                            <command>xine udp://224.0.1.2:2005</command>
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>
+                            <application>mplayer</application>
+                            <command>mplayer udp://224.0.1.2:2005</command>
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>
+                            <application>VLC</application>
+                            <command>vlc udp://@224.0.1.2:2005</command>
+                        </para>
+                    </listitem>
+                </itemizedlist>
+            </para>
+        </sect2>
+    </sect1>
+    <sect1 id="feedback">
+        <title>Feedback</title>
+        <para>If you have comments about this manual or Me TV then please email me at
+                <email>michael.lamothe@gmail.com</email>. Bugs and new features are welcome at the
+                <ulink url="https://launchpad.net/me-tv">project website</ulink>.</para>
+    </sect1>
+</article>
