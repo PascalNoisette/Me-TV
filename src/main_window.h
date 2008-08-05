@@ -65,6 +65,7 @@ private:
 	void on_error(const Glib::ustring& message);
 	void on_menu_item_quit_clicked();
 	void on_menu_item_meters_clicked();
+	void on_menu_item_schedule_clicked();
 	void on_menu_item_channels_clicked();
 	void on_menu_item_preferences_clicked();
 	void on_menu_item_fullscreen_clicked();
@@ -74,6 +75,7 @@ private:
 	bool on_event_box_video_scroll_event(GdkEventScroll* event);
 	void on_tool_button_record_clicked();
 	void on_tool_button_mute_clicked();
+	void on_tool_button_broadcast_clicked();
 
 	void on_show();
 	void on_hide();
@@ -83,9 +85,11 @@ public:
 		
 	static MainWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 		
-	Gtk::DrawingArea& get_drawing_area();
-	gboolean get_mute_state();
+	gboolean is_broadcasting();
+	gboolean is_muted();
 	gboolean mute(gboolean mute);
+
+	Gtk::DrawingArea& get_drawing_area();
 	void show_channels_dialog();
 	void update();
 };

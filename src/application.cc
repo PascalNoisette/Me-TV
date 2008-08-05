@@ -50,6 +50,8 @@ Application::Application(int argc, char *argv[]) :
 	set_boolean_configuration_default("keep_above", true);
 	set_int_configuration_default("record_extra_before", 5);
 	set_int_configuration_default("record_extra_after", 10);
+	set_string_configuration_default("broadcast_address", "192.168.0.255");
+	set_int_configuration_default("broadcast_port", 2005);
 	
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);

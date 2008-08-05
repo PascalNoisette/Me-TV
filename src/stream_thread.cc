@@ -36,6 +36,7 @@ StreamThread::StreamThread(const Channel& channel) :
 
 	engine = NULL;
 	epg_thread = NULL;
+	socket = NULL;
 	
 	for(gint i = 0 ; i < 256 ; i++ )
 	{
@@ -88,7 +89,11 @@ void StreamThread::start()
 	Thread::start();
 
 	Application& application = get_application();
-	engine->mute(application.get_main_window().get_mute_state());
+	engine->mute(application.get_main_window().is_muted());
+	if (application.get_main_window().is_broadcasting())
+	{
+		broadcast();
+	}
 	engine->play(application.get_main_window().get_drawing_area().get_window(), fifo_path);
 	start_epg_thread();
 }
@@ -108,6 +113,14 @@ void StreamThread::write(gchar* buffer, gsize length)
 	{
 		recording_channel->write(buffer, length, bytes_written);
 	}
+	if (socket != NULL)
+	{
+		if (gnet_udp_socket_send(socket, buffer, length, NULL) != 0)
+		{
+			g_message(_("Failed to send to UDP socket"));
+			stop_broadcast();
+		}
+	}
 }
 
 void StreamThread::run()
@@ -120,7 +133,7 @@ void StreamThread::run()
 	
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 	g_debug("About to open to FIFO for reading ...");
-	input_channel = Glib::IOChannel::create_from_file(input_path, "r");
+	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
 	g_debug("FIFO opened for reading");
 	g_debug("About to open to FIFO for writing ...");
 	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
@@ -137,21 +150,17 @@ void StreamThread::run()
 	gsize bytes_written;
 	while (!is_terminated())
 	{
-		//Glib::RecMutex::Lock lock(mutex);
-		if (!is_terminated())
+		// Insert PAT/PMT every second
+		time_t now = time(NULL);
+		if (now - last_insert_time > 1)
 		{
-			// Insert PAT/PMT every second
-			time_t now = time(NULL);
-			if (now - last_insert_time > 1)
-			{
-				write(pat, TS_PACKET_SIZE);
-				write(pmt, TS_PACKET_SIZE);
-				last_insert_time = now;
-			}
-			
-			input_channel->read(buffer, TS_PACKET_SIZE * 10, bytes_read);
-			write(buffer, bytes_read);
+			write(pat, TS_PACKET_SIZE);
+			write(pmt, TS_PACKET_SIZE);
+			last_insert_time = now;
 		}
+		
+		input_channel->read(buffer, TS_PACKET_SIZE * 10, bytes_read);
+		write(buffer, bytes_read);
 	}
 	g_debug("StreamThread loop exited");
 	
@@ -586,4 +595,53 @@ void StreamThread::stop_epg_thread()
 		epg_thread = NULL;
 		g_debug("EPG thread stopped");
 	}
+}
+
+gboolean StreamThread::is_broadcasting()
+{
+	Glib::RecMutex::Lock lock(mutex);
+	return socket != NULL;
+}
+
+void StreamThread::broadcast()
+{
+	Glib::RecMutex::Lock lock(mutex);
+	if (socket != NULL)
+	{
+		throw Exception(_("Already broadcasting"));
+	}
+	
+	Application& application = get_application();
+	Glib::ustring address = application.get_string_configuration_value("broadcast_address");
+	guint port = application.get_int_configuration_value("broadcast_port");
+	
+	g_debug("Creating internet address for '%s:%d'", address.c_str(), port);
+	
+	inet_address = gnet_inetaddr_new(address.c_str(), port);
+	if (inet_address == NULL)
+	{
+		throw Exception("Failed to create internet address");
+	}
+
+	socket = gnet_udp_socket_new_full(inet_address, port);
+	if (socket == NULL)
+	{
+		throw Exception("Failed to create socket");
+	}
+	
+	g_debug("Broadcasting started");
+}
+
+void StreamThread::stop_broadcast()
+{
+	Glib::RecMutex::Lock lock(mutex);
+	if (socket == NULL)
+	{
+		throw Exception(_("Not broadcasting"));
+	}
+	gnet_udp_socket_delete(socket);
+	socket = NULL;
+	gnet_inetaddr_delete(inet_address);
+	inet_address = NULL;
+	g_debug("Broadcasting stopped");
 }

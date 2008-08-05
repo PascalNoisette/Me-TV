@@ -73,16 +73,16 @@ GstElement* GStreamerEngine::create_element(const Glib::ustring& factoryname, co
 
 GStreamerEngine::GStreamerEngine()
 {
-	pipeline	= gst_pipeline_new("pipeline");
-	source		= create_element("filesrc", "source");
+	pipeline		= gst_pipeline_new("pipeline");
+	source			= create_element("filesrc", "source");
 	GstElement* q1	= create_element("queue", "q1");
-	decoder		= create_element("decodebin2", "decoder");
-	volume		= create_element("volume", "volume");
-	deinterlace	= create_element("ffdeinterlace", "deinterlace");
+	decoder			= create_element("decodebin2", "decoder");
+	volume			= create_element("volume", "volume");
+	deinterlace		= create_element("ffdeinterlace", "deinterlace");
 	GstElement* q2	= create_element("queue", "q2");
-	video_sink	= create_element("xvimagesink", "video_sink");
+	video_sink		= create_element("xvimagesink", "video_sink");
 	GstElement* q3	= create_element("queue", "q3");
-	audio_sink	= create_element("gconfaudiosink", "audio_sink");
+	audio_sink		= create_element("gconfaudiosink", "audio_sink");
 
 	GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE(pipeline));
 	gst_bus_add_watch (bus, bus_call, this);
@@ -130,10 +130,10 @@ void GStreamerEngine::play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring
 	if (!filename.empty())
 	{
 		int window_id = GDK_WINDOW_XID(window->gobj());
-		gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (video_sink), window_id);
+		gst_x_overlay_set_xwindow_id (GST_X_OVERLAY(video_sink), window_id);
 
 		g_debug("GStreamer file source: %s", filename.c_str());
-		g_object_set (G_OBJECT (source), "location", filename.c_str(), NULL);
+		g_object_set (G_OBJECT(source), "location", filename.c_str(), NULL);
 		g_debug("Starting pipeline");
 		gst_element_set_state (pipeline, GST_STATE_PLAYING);
 	}

@@ -28,6 +28,7 @@
 #include "epg_thread.h"
 #include "channel.h"
 #include "dvb_si.h"
+#include <gnet.h>
 
 class Stream
 {
@@ -50,7 +51,6 @@ class StreamThread : public Thread
 {
 private:
 	const Channel&					channel;
-	Glib::RefPtr<Glib::IOChannel>	input_channel;
 	Glib::RefPtr<Glib::IOChannel>	output_channel;
 	Glib::RefPtr<Glib::IOChannel>	recording_channel;
 	DemuxerList						demuxers;
@@ -62,7 +62,9 @@ private:
 	Stream							stream;
 	guint							pmt_pid;
 	Glib::ustring					fifo_path;
-	
+	GUdpSocket*						socket;
+	GInetAddr*						inet_address;
+			
 	void run();
 	gboolean is_pid_used(guint pid);
 	void build_pat(gchar* buffer);
@@ -90,6 +92,10 @@ public:
 	void record(const Glib::ustring& filename);
 	void stop_record();
 		
+	gboolean is_broadcasting();
+	void broadcast();
+	void stop_broadcast();
+
 	void mute(gboolean mute_state);
 };
 

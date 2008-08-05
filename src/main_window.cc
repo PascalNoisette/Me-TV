@@ -61,13 +61,14 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
 	glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 	glade->connect_clicked("menu_item_fullscreen",	sigc::mem_fun(*this, &MainWindow::on_menu_item_fullscreen_clicked));	
-	glade->connect_clicked("menu_item_scheduled_recordings",	sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
+	glade->connect_clicked("menu_item_schedule",	sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
 	glade->connect_clicked("menu_item_help_contents",			sigc::mem_fun(*this, &MainWindow::on_menu_item_help_contents_clicked));	
 	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
 
 	glade->connect_clicked("tool_button_record", sigc::mem_fun(*this, &MainWindow::on_tool_button_record_clicked));	
 	glade->connect_clicked("tool_button_mute", sigc::mem_fun(*this, &MainWindow::on_tool_button_mute_clicked));	
-	glade->connect_clicked("tool_button_scheduled_recordings", sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
+	glade->connect_clicked("tool_button_schedule", sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
+	glade->connect_clicked("tool_button_broadcast", sigc::mem_fun(*this, &MainWindow::on_tool_button_broadcast_clicked));	
 	
 	signal_motion_notify_event().connect(sigc::mem_fun(*this, &MainWindow::on_motion_notify_event));
 
@@ -463,14 +464,36 @@ void MainWindow::on_tool_button_mute_clicked()
 {
 	TRY
 	Gtk::ToggleToolButton* tool_button_mute = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"));
-	get_application().mute(tool_button_mute->get_active());
+	get_application().get_stream_thread().mute(tool_button_mute->get_active());
 	CATCH
 }
 
-gboolean MainWindow::get_mute_state()
+void MainWindow::on_tool_button_broadcast_clicked()
+{
+	TRY
+	Gtk::ToggleToolButton* tool_button_broadcast = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_broadcast"));
+	if (tool_button_broadcast->get_active())
+	{
+		get_application().get_stream_thread().broadcast();
+	}
+	else
+	{
+		get_application().get_stream_thread().stop_broadcast();
+	}
+
+	CATCH
+}
+
+gboolean MainWindow::is_muted()
 {
 	Gtk::ToggleToolButton* tool_button_mute = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"));
 	return tool_button_mute->get_active();
+}
+
+gboolean MainWindow::is_broadcasting()
+{
+	Gtk::ToggleToolButton* tool_button_broadcast = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_broadcast"));
+	return tool_button_broadcast->get_active();
 }
 
 void MainWindow::update()
