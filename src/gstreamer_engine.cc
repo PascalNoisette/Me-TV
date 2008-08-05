@@ -75,12 +75,14 @@ GStreamerEngine::GStreamerEngine()
 {
 	pipeline	= gst_pipeline_new("pipeline");
 	source		= create_element("filesrc", "source");
+	GstElement* q1	= create_element("queue", "q1");
 	decoder		= create_element("decodebin2", "decoder");
 	volume		= create_element("volume", "volume");
 	deinterlace	= create_element("ffdeinterlace", "deinterlace");
+	GstElement* q2	= create_element("queue", "q2");
 	video_sink	= create_element("xvimagesink", "video_sink");
+	GstElement* q3	= create_element("queue", "q3");
 	audio_sink	= create_element("gconfaudiosink", "audio_sink");
-	tee			= create_element("tee", "tee");
 
 	GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE(pipeline));
 	gst_bus_add_watch (bus, bus_call, this);
@@ -89,9 +91,9 @@ GStreamerEngine::GStreamerEngine()
 	g_signal_connect(G_OBJECT(decoder), "pad-added", G_CALLBACK(connect_dynamic_pad), this);
 	g_object_set (G_OBJECT (video_sink), "force-aspect-ratio", true, NULL);
 	
-	gst_element_link_many(source, tee, decoder, NULL);
-	gst_element_link(deinterlace, video_sink);
-	gst_element_link_many(volume, audio_sink, NULL);
+	gst_element_link_many(source, q1, decoder, NULL);
+	gst_element_link_many(deinterlace, q2, video_sink, NULL);
+	gst_element_link_many(volume, q3, audio_sink, NULL);
 }
 
 GStreamerEngine::~GStreamerEngine()
