@@ -21,6 +21,13 @@
 #include "me-tv.h"
 #include "exception.h"
 
+StringSignal signal_error;
+
+StringSignal& get_signal_error()
+{
+	return signal_error;
+}
+
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to)
 {
 	Glib::ustring::size_type position = 0;

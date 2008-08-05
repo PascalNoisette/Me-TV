@@ -34,7 +34,6 @@ ScanDialog* ScanDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 Glib::ustring ScanDialog::get_initial_tuning_dir()
 {
 	Glib::ustring path = SCAN_DIRECTORY;
-	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
 	switch(frontend.get_frontend_info().type)
 	{
 	case FE_OFDM:   path += "/dvb-t";       break;
@@ -52,7 +51,8 @@ bool compare_countries (const Country& a, const Country& b)
 	return a.name < b.name;
 }
 
-ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Dialog(cobject), glade(glade)
+ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
+	Gtk::Dialog(cobject), glade(glade), frontend(get_application().get_device_manager().get_frontend())
 {
 	scan_thread = NULL;
 	response = 0;
@@ -65,7 +65,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	notebook_scan_wizard->set_show_tabs(false);
 		
-	Glib::ustring device_name = get_application().get_device_manager().get_frontend().get_frontend_info().name;
+	Glib::ustring device_name = frontend.get_frontend_info().name;
 	dynamic_cast<Gtk::Label*>(glade->get_widget("label_scan_device"))->set_label(device_name);
 		
 	progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
@@ -186,8 +186,6 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 
 	list_store->clear();
 
-	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
-
 	Glib::ustring initial_tuning_file;
 	
 	Gtk::RadioButton* radio_button_scan_by_location = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_by_location"));
@@ -237,12 +235,13 @@ void ScanDialog::on_signal_service(struct dvb_frontend_parameters& frontend_para
 	row[columns.column_frontend_parameters] = frontend_parameters;
 	tree_view_scanned_channels->get_selection()->select(row);
 
+	channel_count++;
 	update_channel_count();
 }
 
 void ScanDialog::update_channel_count()
 {
-	label_scan_information->set_text(Glib::ustring::compose("Found %1 channels", ++channel_count));
+	label_scan_information->set_text(Glib::ustring::compose("Found %1 channels", channel_count));
 }
 
 void ScanDialog::on_signal_progress(guint step, gsize total)

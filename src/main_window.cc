@@ -30,6 +30,7 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
 #include <gdk/gdkx.h>
+#include <libgnome/libgnome.h>
 
 #define POKE_INTERVAL 	30
 #define UPDATE_INTERVAL	60
@@ -40,6 +41,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	display_mode = DISPLAY_MODE_EPG;
 	last_update_time = 0;
 	last_poke_time = 0;
+	
+	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
 	
 	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
 	app_bar->get_progress()->hide();
@@ -59,6 +62,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 	glade->connect_clicked("menu_item_fullscreen",	sigc::mem_fun(*this, &MainWindow::on_menu_item_fullscreen_clicked));	
 	glade->connect_clicked("menu_item_scheduled_recordings",	sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
+	glade->connect_clicked("menu_item_help_contents",			sigc::mem_fun(*this, &MainWindow::on_menu_item_help_contents_clicked));	
 	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
 
 	glade->connect_clicked("tool_button_record", sigc::mem_fun(*this, &MainWindow::on_tool_button_record_clicked));	
@@ -95,6 +99,13 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	update();
 
 	set_keep_above(get_application().get_boolean_configuration_value("keep_above"));
+
+	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
+	ChannelList& channels = current_profile.get_channels();
+	if (channels.size() == 0)
+	{
+		show_channels_dialog();
+	}
 }
 
 MainWindow::~MainWindow()
@@ -141,7 +152,7 @@ void MainWindow::load_devices()
 
 void MainWindow::on_error(const Glib::ustring& message)
 {
-	Gtk::MessageDialog dialog(*this, message);
+	Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
 	dialog.run();
 }
 
@@ -162,7 +173,10 @@ void MainWindow::on_menu_item_quit_clicked()
 void MainWindow::on_menu_item_meters_clicked()
 {
 	TRY
+	
+	// Check that there is a device
 	get_application().get_device_manager().get_frontend();
+	
 	meters_dialog = MetersDialog::create(glade);
 	meters_dialog->stop();
 	meters_dialog->start();
@@ -180,17 +194,17 @@ void MainWindow::on_menu_item_channels_clicked()
 void MainWindow::show_channels_dialog()
 {
 	Profile& profile = get_application().get_profile_manager().get_current_profile();
-	ChannelsDialog* channels_dialog = ChannelsDialog::create(glade);
-	channels_dialog->set_channels(profile.get_channels());
+	ChannelsDialog& channels_dialog = ChannelsDialog::create(glade);
+	channels_dialog.set_channels(profile.get_channels());
 	
-	gint result = channels_dialog->run();
-	channels_dialog->hide();
+	gint result = channels_dialog.run();
+	channels_dialog.hide();
 	update();
 	
 	// Pressed OK
 	if (result == Gtk::RESPONSE_OK)
 	{
-		ChannelList channels = channels_dialog->get_channels();
+		ChannelList channels = channels_dialog.get_channels();
 		profile.clear();
 		profile.add_channels(channels);
 		
@@ -229,12 +243,32 @@ void MainWindow::toggle_fullscreen()
 	}
 }
 
+void MainWindow::on_menu_item_help_contents_clicked()
+{
+	TRY
+	GError* error = NULL;
+	if (!gnome_help_display("me-tv", NULL, &error))
+	{
+		if (error == NULL)
+		{
+			throw Exception(_("Failed to launch help"));
+		}
+		else
+		{
+			throw Exception(Glib::ustring::compose(_("Failed to launch help: %1"), error->message));
+		}
+	}
+	CATCH
+}
+
 void MainWindow::on_menu_item_about_clicked()
 {
+	TRY
 	Gtk::Dialog* about_dialog = NULL;
 	glade->get_widget("dialog_about", about_dialog);
 	about_dialog->run();
 	about_dialog->hide();
+	CATCH
 }
 	
 bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
@@ -331,11 +365,7 @@ bool MainWindow::on_timeout()
 			{
 				last_channel = (*channels.begin()).channel_id;
 			}
-			current_profile.set_display_channel(last_channel);
-		}
-		else
-		{
-			show_channels_dialog();
+			//current_profile.set_display_channel(last_channel);
 		}
 	}
 	

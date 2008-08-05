@@ -90,7 +90,7 @@ Dvb::Frontend& DeviceManager::get_frontend()
 {
 	if (frontend == NULL)
 	{
-		throw Exception("No frontend available");
+		throw Exception(_("No frontend available"));
 	}
 	
 	return *frontend;
@@ -111,7 +111,7 @@ Dvb::Frontend& DeviceManager::get_frontend_by_path(const Glib::ustring& path)
 	
 	if (result == NULL)
 	{
-		throw Exception("Failed to get frontend by path");
+		throw Exception(_("Failed to get frontend by path"));
 	}
 	
 	return *result;

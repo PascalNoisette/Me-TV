@@ -68,6 +68,7 @@ private:
 	void on_menu_item_channels_clicked();
 	void on_menu_item_preferences_clicked();
 	void on_menu_item_fullscreen_clicked();
+	void on_menu_item_help_contents_clicked();
 	void on_menu_item_about_clicked();
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
 	bool on_event_box_video_scroll_event(GdkEventScroll* event);

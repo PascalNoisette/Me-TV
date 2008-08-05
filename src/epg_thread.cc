@@ -63,7 +63,7 @@ public:
 	{
 		if (eit_demuxers == NULL)
 		{
-			throw Exception("No demuxers");
+			throw Exception(_("No demuxers"));
 		}
 		
 		Dvb::Demuxer* selected_eit_demuxer = NULL;
@@ -83,7 +83,7 @@ public:
 		guint result = ::poll(fds, demuxer_count, 5000);
 		if (result < 0)
 		{
-			throw SystemException ("Failed to poll EIT demuxers");
+			throw SystemException (_("Failed to poll EIT demuxers"));
 		}
 		
 		eit_demuxer = eit_demuxers;
@@ -99,7 +99,7 @@ public:
 
 		if (selected_eit_demuxer == NULL)
 		{
-			throw Exception("Failed to get an EIT demuxer with events");
+			throw Exception(_("Failed to get an EIT demuxer with events"));
 		}
 		
 		if (is_atsc)
@@ -124,7 +124,7 @@ void EpgThread::run()
 	const Dvb::Transponder* transponder = frontend.get_current_transponder();
 	if (transponder == NULL)
 	{
-		throw Exception("No current tranponder");
+		throw Exception(_("No current tranponder"));
 	}
 	EITDemuxers demuxers(demux_path);
 	Dvb::SI::SectionParser parser;

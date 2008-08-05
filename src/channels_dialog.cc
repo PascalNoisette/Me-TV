@@ -24,11 +24,11 @@
 #include "application.h"
 #include "channels_dialog.h"
 
-ChannelsDialog* ChannelsDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+ChannelsDialog& ChannelsDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	ChannelsDialog* channels_dialog = NULL;
 	glade->get_widget_derived("dialog_channels", channels_dialog);
-	return channels_dialog;
+	return *channels_dialog;
 }
 
 ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
@@ -46,6 +46,8 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 	
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_displayed_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
+	
+	//signal_show().connect(sigc::mem_fun(*this, &ChannelsDialog::show_scan_dialog));
 }
 
 void ChannelsDialog::on_button_select_all_displayed_channels_clicked()
@@ -53,7 +55,7 @@ void ChannelsDialog::on_button_select_all_displayed_channels_clicked()
 	tree_view_displayed_channels->get_selection()->select_all();
 }
 
-void ChannelsDialog::on_button_scan_clicked()
+void ChannelsDialog::show_scan_dialog()
 {
 	ScanDialog* scan_dialog = ScanDialog::create(glade);
 	gint scan_dialog_result = scan_dialog->run();
@@ -81,6 +83,11 @@ void ChannelsDialog::on_button_scan_clicked()
 			iterator++;			
 		}
 	}
+}
+
+void ChannelsDialog::on_button_scan_clicked()
+{
+	show_scan_dialog();
 }
 
 void ChannelsDialog::on_button_button_remove_selected_channels_clicked()
@@ -126,5 +133,15 @@ void ChannelsDialog::set_channels(const ChannelList& channels)
 		row[columns.column_channel]	= channel;
 		
 		iterator++;			
+	}
+}
+
+void ChannelsDialog::on_show()
+{
+	Gtk::Dialog::on_show();
+	ChannelList& channels = get_application().get_profile_manager().get_current_profile().get_channels();
+	if (channels.size() == 0)
+	{
+		show_scan_dialog();
 	}
 }

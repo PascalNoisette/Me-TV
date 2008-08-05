@@ -116,7 +116,6 @@ void StreamThread::run()
 	gchar pat[TS_PACKET_SIZE];
 	gchar pmt[TS_PACKET_SIZE];
 	
-	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
 	setup_dvb(frontend, channel);
 	
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();

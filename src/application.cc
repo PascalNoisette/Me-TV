@@ -159,10 +159,13 @@ void Application::set_boolean_configuration_value(const Glib::ustring& key, gboo
 
 void Application::run()
 {
+	TRY
+	GdkLock gdk_lock;
 	status_icon = new StatusIcon(glade);
 	main_window = MainWindow::create(glade);
 	main_window->show();
 	Gnome::Main::run();
+	CATCH
 }
 
 Application& Application::get_current()

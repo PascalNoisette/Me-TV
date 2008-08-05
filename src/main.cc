@@ -25,13 +25,6 @@
 #include <glib/gprintf.h>
 #include <gst/gst.h>
 
-StringSignal signal_error;
-
-StringSignal& get_signal_error()
-{
-	return signal_error;
-}
-
 void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
 	Glib::ustring time_text = get_time_text(get_local_time(), "%x %T");
@@ -64,7 +57,7 @@ int main (int argc, char *argv[])
 		g_message("Me TV %s", VERSION);
 		g_debug(gst_version_string());
 
-		signal_error.connect(sigc::ptr_fun(on_error));
+		get_signal_error().connect(sigc::ptr_fun(on_error));
 		
 		TRY
 		Application application(argc, argv);

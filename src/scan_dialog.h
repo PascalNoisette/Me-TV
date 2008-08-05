@@ -89,6 +89,8 @@ private:
 	CountryList								countries;
 	gint									response;
 	guint									channel_count;
+	Dvb::Frontend&							frontend;
+
 
 	class ModelColumns : public Gtk::TreeModelColumnRecord
 	{
