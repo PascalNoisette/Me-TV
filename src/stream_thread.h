@@ -65,6 +65,10 @@ private:
 	GUdpSocket*						socket;
 	GInetAddr*						inet_address;
 			
+	void on_record_state_changed(gboolean record_state);
+	void on_mute_state_changed(gboolean mute_state);
+	void on_broadcast_state_changed(gboolean broadcast_state);
+
 	void run();
 	gboolean is_pid_used(guint pid);
 	void build_pat(gchar* buffer);
@@ -81,22 +85,16 @@ private:
 	void start_epg_thread();
 	void stop_epg_thread();
 	void stop_engine();
-
+		
 public:
 	StreamThread(const Channel& channel);
 	~StreamThread();
 
 	void start();
+	Engine& get_engine();
 
 	gboolean is_recording();
-	void record(const Glib::ustring& filename);
-	void stop_record();
-		
 	gboolean is_broadcasting();
-	void broadcast();
-	void stop_broadcast();
-
-	void mute(gboolean mute_state);
 };
 
 #endif

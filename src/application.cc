@@ -203,19 +203,6 @@ void Application::update_ui()
 	status_icon->update();
 }
 
-void Application::mute(gboolean state)
-{
-	if (main_window != NULL)
-	{
-		main_window->mute(state);
-	}
-	
-	if (stream_thread != NULL)
-	{
-		stream_thread->mute(state);
-	}
-}
-
 void Application::on_display_channel_changed(const Channel& channel)
 {
 	TRY

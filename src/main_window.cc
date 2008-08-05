@@ -56,14 +56,17 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 		throw Exception("Failed to load EPG widget");
 	}
 	
-	glade->connect_clicked("menu_item_quit",		sigc::mem_fun(*this, &MainWindow::on_menu_item_quit_clicked));
-	glade->connect_clicked("menu_item_meters",		sigc::mem_fun(*this, &MainWindow::on_menu_item_meters_clicked));
-	glade->connect_clicked("menu_item_channels",	sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
-	glade->connect_clicked("menu_item_preferences",	sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
-	glade->connect_clicked("menu_item_fullscreen",	sigc::mem_fun(*this, &MainWindow::on_menu_item_fullscreen_clicked));	
-	glade->connect_clicked("menu_item_schedule",	sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
-	glade->connect_clicked("menu_item_help_contents",			sigc::mem_fun(*this, &MainWindow::on_menu_item_help_contents_clicked));	
-	glade->connect_clicked("menu_item_about",		sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
+	glade->connect_clicked("menu_item_record",			sigc::mem_fun(*this, &MainWindow::on_menu_item_record_clicked));
+	glade->connect_clicked("menu_item_broadcast",		sigc::mem_fun(*this, &MainWindow::on_menu_item_broadcast_clicked));
+	glade->connect_clicked("menu_item_quit",			sigc::mem_fun(*this, &MainWindow::on_menu_item_quit_clicked));
+	glade->connect_clicked("menu_item_meters",			sigc::mem_fun(*this, &MainWindow::on_menu_item_meters_clicked));
+	glade->connect_clicked("menu_item_channels",		sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
+	glade->connect_clicked("menu_item_preferences",		sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
+	glade->connect_clicked("menu_item_fullscreen",		sigc::mem_fun(*this, &MainWindow::on_menu_item_fullscreen_clicked));	
+	glade->connect_clicked("menu_item_schedule",		sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
+	glade->connect_clicked("menu_item_mute",			sigc::mem_fun(*this, &MainWindow::on_menu_item_mute_clicked));	
+	glade->connect_clicked("menu_item_help_contents",	sigc::mem_fun(*this, &MainWindow::on_menu_item_help_contents_clicked));	
+	glade->connect_clicked("menu_item_about",			sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
 
 	glade->connect_clicked("tool_button_record", sigc::mem_fun(*this, &MainWindow::on_tool_button_record_clicked));	
 	glade->connect_clicked("tool_button_mute", sigc::mem_fun(*this, &MainWindow::on_tool_button_mute_clicked));	
@@ -99,7 +102,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	set_display_mode(display_mode);
 	update();
 
-	set_keep_above(get_application().get_boolean_configuration_value("keep_above"));
+	Application& application = get_application();
+	set_keep_above(application.get_boolean_configuration_value("keep_above"));
 
 	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
 	ChannelList& channels = current_profile.get_channels();
@@ -107,6 +111,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	{
 		show_channels_dialog();
 	}
+	
+	application.signal_record_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_record_state_changed));
+	application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_mute_state_changed));
+	application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_broadcast_state_changed));
+	
+	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_expose_event));
 }
 
 MainWindow::~MainWindow()
@@ -133,7 +143,7 @@ void MainWindow::load_devices()
 	const FrontendList& frontends = get_application().get_device_manager().get_frontends();
 	if (frontends.size() == 0)
 	{
-		Gtk::MenuItem* menu_item = new Gtk::MenuItem("No DVB Devices");
+		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("No DVB Devices"));
 		menu->append(*menu_item);
 	}
 	else
@@ -166,9 +176,37 @@ Gtk::DrawingArea& MainWindow::get_drawing_area()
 	return *drawing_area_video;
 }
 
+bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
+{
+	TRY
+	drawing_area_video->get_window()->draw_rectangle(
+		drawing_area_video->get_style()->get_bg_gc(Gtk::STATE_NORMAL),
+		true, event->area.x, event->area.y, event->area.width, event->area.height);
+	CATCH
+	return true;
+}
+
+void MainWindow::on_menu_item_record_clicked()
+{
+	TRY
+	get_application().signal_record_state_changed(
+		dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_record"))->get_active());
+	CATCH
+}
+
+void MainWindow::on_menu_item_broadcast_clicked()
+{
+	TRY
+	get_application().signal_broadcast_state_changed(
+		dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_broadcast"))->get_active());
+	CATCH
+}
+
 void MainWindow::on_menu_item_quit_clicked()
 {
+	TRY
 	Gnome::Main::quit();
+	CATCH
 }
 	
 void MainWindow::on_menu_item_meters_clicked()
@@ -229,7 +267,17 @@ void MainWindow::on_menu_item_preferences_clicked()
 
 void MainWindow::on_menu_item_fullscreen_clicked()
 {
+	TRY
 	toggle_fullscreen();
+	CATCH
+}
+
+void MainWindow::on_menu_item_mute_clicked()
+{
+	TRY
+	get_application().signal_mute_state_changed(
+		dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_mute"))->get_active());
+	CATCH
 }
 
 void MainWindow::toggle_fullscreen()
@@ -366,7 +414,7 @@ bool MainWindow::on_timeout()
 			{
 				last_channel = (*channels.begin()).channel_id;
 			}
-			//current_profile.set_display_channel(last_channel);
+			current_profile.set_display_channel(last_channel);
 		}
 	}
 	
@@ -390,6 +438,7 @@ bool MainWindow::on_timeout()
 	// Disable screensaver
 	if (now - last_poke_time > POKE_INTERVAL)
 	{
+		GdkLock gdk_lock();
 		Gdk::WindowState state = get_window()->get_state();
 		gboolean is_minimised = state & Gdk::WINDOW_STATE_ICONIFIED;
 		if (is_visible() && !is_minimised)
@@ -439,61 +488,40 @@ void MainWindow::show_scheduled_recordings_dialog()
 void MainWindow::on_tool_button_record_clicked()
 {
 	TRY
-	Application& application = get_application();
-	Gtk::ToggleToolButton* tool_button_record = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"));
-	if (tool_button_record->get_active())
-	{
-		const Channel* channel = application.get_profile_manager().get_current_profile().get_display_channel();
-		if (channel == NULL)
-		{
-			throw Exception(_("No current channel"));
-		}
-		
-		Glib::ustring recording_directory = application.get_string_configuration_value("recording_directory");
-		Glib::ustring path = Glib::build_filename(recording_directory, channel->get_text() + ".mpeg");
-		application.get_stream_thread().record(path);
-	}
-	else
-	{
-		application.get_stream_thread().stop_record();
-	}
+	get_application().signal_record_state_changed(
+		dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"))->get_active());
 	CATCH
 }
 
 void MainWindow::on_tool_button_mute_clicked()
 {
 	TRY
-	Gtk::ToggleToolButton* tool_button_mute = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"));
-	get_application().get_stream_thread().mute(tool_button_mute->get_active());
+	get_application().signal_mute_state_changed(
+		dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"))->get_active());
 	CATCH
 }
 
 void MainWindow::on_tool_button_broadcast_clicked()
 {
 	TRY
-	Gtk::ToggleToolButton* tool_button_broadcast = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_broadcast"));
-	if (tool_button_broadcast->get_active())
-	{
-		get_application().get_stream_thread().broadcast();
-	}
-	else
-	{
-		get_application().get_stream_thread().stop_broadcast();
-	}
-
+	get_application().signal_broadcast_state_changed(
+		dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_broadcast"))->get_active());
 	CATCH
+}
+
+gboolean MainWindow::is_recording()
+{
+	return dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"))->get_active();
 }
 
 gboolean MainWindow::is_muted()
 {
-	Gtk::ToggleToolButton* tool_button_mute = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"));
-	return tool_button_mute->get_active();
+	return dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"))->get_active();
 }
 
 gboolean MainWindow::is_broadcasting()
 {
-	Gtk::ToggleToolButton* tool_button_broadcast = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_broadcast"));
-	return tool_button_broadcast->get_active();
+	return dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_broadcast"))->get_active();
 }
 
 void MainWindow::update()
@@ -513,30 +541,61 @@ void MainWindow::update()
 		window_title = "Me TV - " + channel->get_text();
 		status_text = channel->get_text();
 	}
+	
+	if (is_recording())
+	{
+		status_text += " [Recording]";
+		window_title += " [Recording]";
+	}
+
 	set_title(window_title);
 	app_bar->set_status(status_text);
 
 	widget_epg->update();
 }
 
-gboolean MainWindow::mute(gboolean mute_state)
+void MainWindow::set_state(const Glib::ustring& name, gboolean state)
 {
-	Gtk::ToggleToolButton* tool_button_mute = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"));
-	if (tool_button_mute->get_active() != mute_state)
+	Glib::ustring tool_button_name = "tool_button_" + name;
+	Gtk::ToggleToolButton* tool_button = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget(tool_button_name));
+	if (tool_button->get_active() != state)
 	{
-		tool_button_mute->set_active(mute_state);
+		tool_button->set_active(state);
 	}
+
+	Glib::ustring menu_item_name = "menu_item_" + name;
+	Gtk::CheckMenuItem* menu_item = dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget(menu_item_name));
+	if (menu_item->get_active() != state)
+	{
+		menu_item->set_active(state);
+	}
+	update();
+}
+
+void MainWindow::on_record_state_changed(gboolean record_state)
+{
+	set_state("record", record_state);
+}
+
+void MainWindow::on_mute_state_changed(gboolean mute_state)
+{
+	set_state("mute", mute_state);
+}
+
+void MainWindow::on_broadcast_state_changed(gboolean broadcast_state)
+{
+	set_state("broadcast", broadcast_state);
 }
 
 void MainWindow::on_hide()
 {
-	get_application().mute(true);
+	get_application().signal_mute_state_changed(true);
 	Gtk::Window::on_hide();
 }
 
 void MainWindow::on_show()
 {
-	get_application().mute(false);
+	get_application().signal_mute_state_changed(false);
 	Gtk::Window::on_show();
 	if (get_application().get_boolean_configuration_value("keep_above"))
 	{

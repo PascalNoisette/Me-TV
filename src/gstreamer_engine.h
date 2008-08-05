@@ -36,18 +36,17 @@ private:
 	GstElement*	deinterlace;
 	GstElement*	video_sink;
 	GstElement*	audio_sink;
-	GstElement*	tee;
 
 	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
 	static void connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine);
 	void stop();
 		
+	void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename);
+	void mute(gboolean state);
+
 public:
 	GStreamerEngine();
 	~GStreamerEngine();
-
-	void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename);
-	void mute(gboolean state);
 };
 
 #endif

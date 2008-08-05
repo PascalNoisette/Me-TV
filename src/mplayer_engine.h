@@ -28,13 +28,13 @@ class MplayerEngine : public Engine
 private:
 	gint pid;
 	gint standard_input;
-public:
-	MplayerEngine();
-	~MplayerEngine();
 
 	void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& mrl);
 	void record(const Glib::ustring& filename);
 	void mute(gboolean state);
+public:
+	MplayerEngine();
+	~MplayerEngine();
 };
 
 #endif

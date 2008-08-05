@@ -73,6 +73,11 @@ StreamThread::StreamThread(const Channel& channel) :
 			throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
 		}
 	}
+
+	Application& application = get_application();
+	application.signal_record_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_record_state_changed));
+	application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_mute_state_changed));
+	application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_broadcast_state_changed));
 }
 
 StreamThread::~StreamThread()
@@ -89,18 +94,90 @@ void StreamThread::start()
 	Thread::start();
 
 	Application& application = get_application();
-	engine->mute(application.get_main_window().is_muted());
+	if (application.get_main_window().is_muted())
+	{
+		on_mute_state_changed(true);
+	}
 	if (application.get_main_window().is_broadcasting())
 	{
-		broadcast();
+		on_broadcast_state_changed(true);
 	}
 	engine->play(application.get_main_window().get_drawing_area().get_window(), fifo_path);
 	start_epg_thread();
 }
 
-void StreamThread::mute(gboolean mute_state)
+void StreamThread::on_mute_state_changed(gboolean mute_state)
 {
 	engine->mute(mute_state);
+}
+
+Engine& StreamThread::get_engine()
+{
+	if (engine == NULL)
+	{
+		throw Exception(_("Engine has not been created"));
+	}
+	
+	return *engine;
+}
+
+void StreamThread::on_record_state_changed(gboolean record_state)
+{
+	Glib::RecMutex::Lock lock(mutex);
+	if (record_state && !recording_channel)
+	{		
+		Application& application = get_application();
+		const Channel* channel = application.get_profile_manager().get_current_profile().get_display_channel();
+		if (channel == NULL)
+		{
+			throw Exception(_("There's no channel to record"));
+		}
+		Glib::ustring recording_directory = application.get_string_configuration_value("recording_directory");
+		Glib::ustring path = Glib::build_filename(recording_directory, channel->get_text() + ".mpeg");
+
+		recording_channel = Glib::IOChannel::create_from_file(path, "w");
+		recording_channel->set_encoding("");
+		g_debug("Recording channel opened");
+	}
+	else if (!record_state && recording_channel)
+	{
+		recording_channel.clear();
+		g_debug("Recording channel cleared");
+	}
+}
+
+void StreamThread::on_broadcast_state_changed(gboolean broadcast_state)
+{
+	Glib::RecMutex::Lock lock(mutex);
+	if (broadcast_state && socket == NULL)
+	{
+		Application& application = get_application();
+		Glib::ustring address = application.get_string_configuration_value("broadcast_address");
+		guint port = application.get_int_configuration_value("broadcast_port");
+		
+		g_debug("Creating internet address for '%s:%d'", address.c_str(), port);
+		
+		inet_address = gnet_inetaddr_new(address.c_str(), port);
+		if (inet_address == NULL)
+		{
+			throw Exception(_("Failed to create internet address"));
+		}
+
+		socket = gnet_udp_socket_new_full(inet_address, port);
+		if (socket == NULL)
+		{
+			throw Exception(_("Failed to create socket"));
+		}
+		g_debug("Broadcasting started");
+	}
+	else if (!broadcast_state && socket != NULL)
+	{
+		gnet_udp_socket_delete(socket);
+		socket = NULL;
+		gnet_inetaddr_delete(inet_address);
+		inet_address = NULL;
+		g_debug("Broadcasting stopped");
+	}
 }
 
 void StreamThread::write(gchar* buffer, gsize length)
@@ -115,10 +192,9 @@ void StreamThread::write(gchar* buffer, gsize length)
 	}
 	if (socket != NULL)
 	{
-		if (gnet_udp_socket_send(socket, buffer, length, NULL) != 0)
+		if (gnet_udp_socket_send(socket, buffer, length, inet_address) != 0)
 		{
 			g_message(_("Failed to send to UDP socket"));
-			stop_broadcast();
 		}
 	}
 }
@@ -171,31 +247,6 @@ void StreamThread::run()
 	g_debug("About to clear output channel ...");
 	output_channel.clear();
 	g_debug("Output channel cleared");
-}
-
-void StreamThread::record(const Glib::ustring& filename)
-{
-	Glib::RecMutex::Lock lock(mutex);
-	if (recording_channel)
-	{
-		throw Exception("Already recording");
-	}
-	
-	recording_channel = Glib::IOChannel::create_from_file(filename, "w");
-	recording_channel->set_encoding("");
-	g_debug("Recording channel opened");
-}
-
-void StreamThread::stop_record()
-{
-	Glib::RecMutex::Lock lock(mutex);
-	if (!recording_channel)
-	{
-		throw Exception("Not recording");
-	}
-	
-	recording_channel.clear();
-	g_debug("Recording channel cleared");
 }
 
 gboolean StreamThread::is_recording()
@@ -601,47 +652,4 @@ gboolean StreamThread::is_broadcasting()
 {
 	Glib::RecMutex::Lock lock(mutex);
 	return socket != NULL;
-}
-
-void StreamThread::broadcast()
-{
-	Glib::RecMutex::Lock lock(mutex);
-	if (socket != NULL)
-	{
-		throw Exception(_("Already broadcasting"));
-	}
-	
-	Application& application = get_application();
-	Glib::ustring address = application.get_string_configuration_value("broadcast_address");
-	guint port = application.get_int_configuration_value("broadcast_port");
-	
-	g_debug("Creating internet address for '%s:%d'", address.c_str(), port);
-	
-	inet_address = gnet_inetaddr_new(address.c_str(), port);
-	if (inet_address == NULL)
-	{
-		throw Exception("Failed to create internet address");
-	}
-
-	socket = gnet_udp_socket_new_full(inet_address, port);
-	if (socket == NULL)
-	{
-		throw Exception("Failed to create socket");
-	}
-	
-	g_debug("Broadcasting started");
-}
-
-void StreamThread::stop_broadcast()
-{
-	Glib::RecMutex::Lock lock(mutex);
-	if (socket == NULL)
-	{
-		throw Exception(_("Not broadcasting"));
-	}
-	gnet_udp_socket_delete(socket);
-	socket = NULL;
-	gnet_inetaddr_delete(inet_address);
-	inet_address = NULL;
-	g_debug("Broadcasting stopped");
 }

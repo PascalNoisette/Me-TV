@@ -58,17 +58,21 @@ private:
 	void set_display_mode(DisplayMode display_mode);
 	void load_devices();
 	void show_scheduled_recordings_dialog();
-
+	void set_state(const Glib::ustring& name, gboolean state);
+		
 	bool on_motion_notify_event(GdkEventMotion* event);
-
+	bool on_drawing_area_expose_event(GdkEventExpose* event);
 	bool on_timeout();
 	void on_error(const Glib::ustring& message);
+	void on_menu_item_record_clicked();
+	void on_menu_item_broadcast_clicked();
 	void on_menu_item_quit_clicked();
 	void on_menu_item_meters_clicked();
 	void on_menu_item_schedule_clicked();
 	void on_menu_item_channels_clicked();
 	void on_menu_item_preferences_clicked();
 	void on_menu_item_fullscreen_clicked();
+	void on_menu_item_mute_clicked();
 	void on_menu_item_help_contents_clicked();
 	void on_menu_item_about_clicked();
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
@@ -76,6 +80,9 @@ private:
 	void on_tool_button_record_clicked();
 	void on_tool_button_mute_clicked();
 	void on_tool_button_broadcast_clicked();
+	void on_record_state_changed(gboolean record_state);
+	void on_mute_state_changed(gboolean mute_state);
+	void on_broadcast_state_changed(gboolean broadcast_state);
 
 	void on_show();
 	void on_hide();
@@ -85,9 +92,9 @@ public:
 		
 	static MainWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 		
+	gboolean is_recording();
 	gboolean is_broadcasting();
 	gboolean is_muted();
-	gboolean mute(gboolean mute);
 
 	Gtk::DrawingArea& get_drawing_area();
 	void show_channels_dialog();
