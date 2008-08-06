@@ -111,7 +111,19 @@ void GtkEpgWidget::update_table()
 		guint start_time = time(NULL) + timezone + offset;
 		start_time = (start_time / 600) * 600;
 		
-		guint row = 1;
+		guint row = 0;
+		gboolean show_epg_header = get_application().get_boolean_configuration_value("show_epg_header");
+		if (show_epg_header)
+		{
+			for (guint hour = 0; hour < epg_span_hours; hour++)
+			{
+				guint hour_time = start_time + (hour * 60 * 60);
+				Glib::ustring hour_time_text = get_time_text(hour_time, "%A, %B %d - %H:%M");
+				Gtk::Button& button = attach_button(hour_time_text, hour*6 + 1, (hour+1)*6 + 1, 0, 1, Gtk::FILL | Gtk::EXPAND);
+				button.set_sensitive(false);
+			}
+			row++;
+		}
 		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
 			const Channel& channel = *iterator;
@@ -125,6 +137,7 @@ void GtkEpgWidget::update_table()
 void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, gboolean selected, guint start_time, guint epg_span_hours)
 {	
 	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, table_row, table_row + 1);
+	gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
 	
 	channel_button.set_active(selected);
 	channel_button.signal_clicked().connect(
@@ -185,7 +198,15 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 			
 			if (column_count > 0)
 			{
-				Glib::ustring text = encode_xml(epg_event.get_title());
+				guint converted_start_time = convert_to_local_time(convert_to_local_time(epg_event.start_time));
+
+				Glib::ustring text;
+				if (show_epg_time)
+				{
+					text = get_time_text(converted_start_time, "<b>%H:%M");
+					text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
+				}
+				text += encode_xml(epg_event.get_title());
 				
 				Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
 				button.signal_clicked().connect(
@@ -196,10 +217,10 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 					)
 				);
 
-				guint converted_start_time = convert_to_local_time(convert_to_local_time(epg_event.start_time));
-				Glib::ustring time_text = get_time_text(converted_start_time, "%A, %B %d\n%H:%M");
-				time_text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M");
-				button.set_tooltip_text(time_text);
+				Glib::ustring tooltip_text = get_time_text(converted_start_time, "%A, %B %d\n%H:%M");
+				tooltip_text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M");
+
+				button.set_tooltip_text(tooltip_text);
 			}
 
 			total_number_columns += column_count;
@@ -214,38 +235,38 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 	}
 }
 
-Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)
+Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
 {
 	Gtk::ToggleButton* button = new Gtk::ToggleButton(text);
-	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach);
+	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach, attach_options);
 	button->set_alignment(0, 0.5);
 	Gtk::Label* label = dynamic_cast<Gtk::Label*>(button->get_child());
 	label->set_use_markup(true);
 	return *button;
 }
 
-Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)
+Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
 {
 	Gtk::Button* button = new Gtk::Button(text);
-	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach);
+	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach, attach_options);
 	button->set_alignment(0, 0.5);
 	Gtk::Label* label = dynamic_cast<Gtk::Label*>(button->get_child());
 	label->set_use_markup(true);
 	return *button;
 }
 
-Gtk::Label& GtkEpgWidget::attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)
+Gtk::Label& GtkEpgWidget::attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
 {
 	Gtk::Label* label = new Gtk::Label(text.c_str());
-	attach_widget(*label, left_attach, right_attach, top_attach, bottom_attach);
+	attach_widget(*label, left_attach, right_attach, top_attach, bottom_attach, attach_options);
 	label->set_justify(Gtk::JUSTIFY_LEFT);
 	label->set_use_markup(true);
 	return *label;
 }
 
-void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach)
+void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
 {
-	table_epg->attach(widget, left_attach, right_attach, top_attach, bottom_attach, Gtk::FILL, Gtk::FILL, 0, 0);
+	table_epg->attach(widget, left_attach, right_attach, top_attach, bottom_attach, attach_options, Gtk::FILL, 0, 0);
 	widget.show();
 }
 

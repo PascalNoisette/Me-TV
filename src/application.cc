@@ -52,6 +52,8 @@ Application::Application(int argc, char *argv[]) :
 	set_int_configuration_default("record_extra_after", 10);
 	set_string_configuration_default("broadcast_address", "192.168.0.255");
 	set_int_configuration_default("broadcast_port", 2005);
+	set_boolean_configuration_default("show_epg_header", true);
+	set_boolean_configuration_default("show_epg_time", true);
 	
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
@@ -162,7 +164,7 @@ void Application::set_boolean_configuration_value(const Glib::ustring& key, gboo
 void Application::run()
 {
 	TRY
-	//GdkLock gdk_lock;
+	GdkLock gdk_lock;
 	status_icon = new StatusIcon(glade);
 	main_window = MainWindow::create(glade);
 	main_window->show();
@@ -174,7 +176,7 @@ Application& Application::get_current()
 {
 	if (current == NULL)
 	{
-		throw Exception("Application has not been initialised");
+		throw Exception(_("Application has not been initialised"));
 	}
 	
 	return *current;

@@ -353,9 +353,9 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 
 bool MainWindow::on_motion_notify_event(GdkEventMotion* event)
 {
+	last_motion_time = time(NULL);
 	if (!is_cursor_visible)
 	{
-		last_motion_time = time(NULL);
 		glade->get_widget("event_box_video")->get_window()->set_cursor();
 		is_cursor_visible = true;
 	}
@@ -404,7 +404,7 @@ bool MainWindow::on_timeout()
 	if (initialise)
 	{
 		initialise = false;
-		GdkLock gdk_lock();
+		GdkLock gdk_lock;
 		Profile& current_profile = get_application().get_profile_manager().get_current_profile();
 		ChannelList& channels = current_profile.get_channels();
 		if (channels.size() > 0)
@@ -421,7 +421,7 @@ bool MainWindow::on_timeout()
 	// Hide the mouse
 	if (now - last_motion_time > 3 && is_cursor_visible)
 	{
-		GdkLock gdk_lock();
+		GdkLock gdk_lock;
 		glade->get_widget("event_box_video")->get_window()->set_cursor(Gdk::Cursor(hidden_cursor));
 		is_cursor_visible = false;
 	}
@@ -430,7 +430,7 @@ bool MainWindow::on_timeout()
 	guint application_last_update_time = get_application().get_last_epg_update_time();
 	if ((application_last_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 	{
-		GdkLock gdk_lock();
+		GdkLock gdk_lock;
 		update();
 		last_update_time = application_last_update_time;
 	}
@@ -438,7 +438,7 @@ bool MainWindow::on_timeout()
 	// Disable screensaver
 	if (now - last_poke_time > POKE_INTERVAL)
 	{
-		GdkLock gdk_lock();
+		GdkLock gdk_lock;
 		Gdk::WindowState state = get_window()->get_state();
 		gboolean is_minimised = state & Gdk::WINDOW_STATE_ICONIFIED;
 		if (is_visible() && !is_minimised)
@@ -464,8 +464,7 @@ void MainWindow::set_display_mode(DisplayMode mode)
 	glade->get_widget("menubar")->property_visible()			= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
 	glade->get_widget("handlebox_toolbar")->property_visible()	= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
 	glade->get_widget("app_bar")->property_visible()			= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
-	glade->get_widget("hbox_epg")->property_visible()			= (mode == DISPLAY_MODE_EPG);
-	widget_epg->property_visible()								= (mode == DISPLAY_MODE_EPG);
+	glade->get_widget("vbox_epg")->property_visible()			= (mode == DISPLAY_MODE_EPG);
 
 	Gtk::VBox* vbox_main = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main"));
 	Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
@@ -473,7 +472,6 @@ void MainWindow::set_display_mode(DisplayMode mode)
 	
 	gtk_box_set_child_packing((GtkBox*)vbox_main->gobj(), (GtkWidget*)event_box_video->gobj(),
 		(mode != DISPLAY_MODE_EPG), (mode != DISPLAY_MODE_EPG), 0, GTK_PACK_START);
-	event_box_video->set_size_request(-1, 100);
 	
 	display_mode = mode;
 }
