@@ -68,10 +68,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_help_contents",	sigc::mem_fun(*this, &MainWindow::on_menu_item_help_contents_clicked));	
 	glade->connect_clicked("menu_item_about",			sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
 
-	glade->connect_clicked("tool_button_record", sigc::mem_fun(*this, &MainWindow::on_tool_button_record_clicked));	
-	glade->connect_clicked("tool_button_mute", sigc::mem_fun(*this, &MainWindow::on_tool_button_mute_clicked));	
-	glade->connect_clicked("tool_button_schedule", sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
-	glade->connect_clicked("tool_button_broadcast", sigc::mem_fun(*this, &MainWindow::on_tool_button_broadcast_clicked));	
+	glade->connect_clicked("tool_button_record",		sigc::mem_fun(*this, &MainWindow::on_tool_button_record_clicked));	
+	glade->connect_clicked("tool_button_mute",			sigc::mem_fun(*this, &MainWindow::on_tool_button_mute_clicked));	
+	glade->connect_clicked("tool_button_schedule",		sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
+	glade->connect_clicked("tool_button_broadcast",		sigc::mem_fun(*this, &MainWindow::on_tool_button_broadcast_clicked));	
 	
 	signal_motion_notify_event().connect(sigc::mem_fun(*this, &MainWindow::on_motion_notify_event));
 
@@ -353,9 +353,9 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 
 bool MainWindow::on_motion_notify_event(GdkEventMotion* event)
 {
-	last_motion_time = time(NULL);
 	if (!is_cursor_visible)
 	{
+		last_motion_time = time(NULL);
 		glade->get_widget("event_box_video")->get_window()->set_cursor();
 		is_cursor_visible = true;
 	}

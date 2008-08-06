@@ -29,7 +29,6 @@ class Profile
 private:
 	ChannelList channels;
 	Channel* display_channel;
-	Channel* find_channel(guint channel_id);
 
 public:
 	Profile();
@@ -45,6 +44,7 @@ public:
 	sigc::signal<void, const Channel&> signal_display_channel_changed;
 	Channel& get_channel(guint channel_id);
 	Channel* find_channel(guint frequency, guint service_id);
+	Channel* find_channel(guint channel_id);
 
 	guint			profile_id;
 	Glib::ustring	name;

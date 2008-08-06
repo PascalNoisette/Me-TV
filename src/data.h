@@ -71,6 +71,7 @@ public:
 	ProfileList get_all_profiles();
 	void replace_profile(Profile& profile);
 	void replace_channel(Channel& channel);
+	void delete_channel(guint channel_id);
 		
 	void replace_scheduled_recording(ScheduledRecording& scheduled_recording);
 	ScheduledRecordingList get_scheduled_recordings();

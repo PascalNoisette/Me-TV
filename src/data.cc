@@ -42,7 +42,7 @@ Statement::Statement(sqlite3* database, const Glib::ustring& command) : database
 	{
 		if (remaining == NULL || *remaining == 0)
 		{
-			throw SQLiteException(database, Glib::ustring::compose("Failed to prepare statement: %1", command));
+			throw SQLiteException(database, Glib::ustring::compose(_("Failed to prepare statement: %1"), command));
 		}
 		else
 		{
@@ -419,6 +419,18 @@ void Data::replace_profile(Profile& profile)
 		}
 	}
 	
+	// First, remove channels
+	Statement statement(database,
+		Glib::ustring::compose("SELECT CHANNEL_ID FROM CHANNEL WHERE PROFILE_ID=%1;", profile.profile_id));
+	while (statement.step() == SQLITE_ROW)
+	{
+		gint channel_id = statement.get_int(0);
+		if (profile.find_channel(channel_id) == NULL)
+		{
+			delete_channel(channel_id);
+		}
+	}
+
 	ChannelList& channels = profile.get_channels();
 	for (ChannelList::iterator channel_iterator = channels.begin(); channel_iterator != channels.end(); channel_iterator++)
 	{
@@ -566,7 +578,7 @@ gboolean Data::get_scheduled_recording(guint scheduled_recording_id, ScheduledRe
 {
 	gboolean result = false;
 	Glib::ustring select_command = Glib::ustring::compose(
-		"SELECT * FROM SCHEDULED_RECORDING WHERE SCHEDULED_RECORDING_ID=%1",
+		"SELECT * FROM SCHEDULED_RECORDING WHERE SCHEDULED_RECORDING_ID=%1;",
 		scheduled_recording_id
 	);
 	
@@ -578,4 +590,18 @@ gboolean Data::get_scheduled_recording(guint scheduled_recording_id, ScheduledRe
 	}
 	
 	return result;
+}
+
+void Data::delete_channel(guint channel_id)
+{
+	execute_non_query(Glib::ustring::compose(
+		"DELETE FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID IN "\
+		"(SELECT EPG_EVENT_ID FROM EPG_EVENT WHERE CHANNEL_ID=%1);",
+		channel_id));
+	execute_non_query(Glib::ustring::compose(
+		"DELETE FROM EPG_EVENT WHERE CHANNEL_ID=%1;",
+		channel_id));
+	execute_non_query(Glib::ustring::compose(
+		"DELETE FROM CHANNEL WHERE CHANNEL_ID=%1;",
+		channel_id));
 }
