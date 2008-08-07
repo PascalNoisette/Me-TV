@@ -37,7 +37,7 @@ Demuxer::Demuxer(const Glib::ustring& device_path)
 	}
 
 	pfd[0].fd = fd;
-	pfd[0].events = POLLPRI;
+	pfd[0].events = POLLOUT | POLLPRI;
 }
 
 Demuxer::~Demuxer()
@@ -129,7 +129,7 @@ gboolean Demuxer::poll(guint timeout)
 	
 	if (result == -1)
 	{
-		throw SystemException ("Failed to poll");
+		throw SystemException (_("Failed to poll"));
 	}
 	
 	return result > 0;

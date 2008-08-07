@@ -53,7 +53,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	
 	if (widget_epg == NULL)
 	{
-		throw Exception("Failed to load EPG widget");
+		throw Exception(_("Failed to load EPG widget"));
 	}
 	
 	glade->connect_clicked("menu_item_record",			sigc::mem_fun(*this, &MainWindow::on_menu_item_record_clicked));
@@ -115,8 +115,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	application.signal_record_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_record_state_changed));
 	application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_mute_state_changed));
 	application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_broadcast_state_changed));
-	
-	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_expose_event));
 }
 
 MainWindow::~MainWindow()

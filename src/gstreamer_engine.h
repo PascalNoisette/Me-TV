@@ -41,7 +41,7 @@ private:
 	static void connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine);
 	void stop();
 		
-	void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename);
+	void play(Gtk::Widget& widget, const Glib::ustring& filename);
 	void mute(gboolean state);
 
 public:

@@ -123,13 +123,13 @@ void GStreamerEngine::connect_dynamic_pad (GstElement* element, GstPad* pad, GSt
 	gst_object_unref (audio_sink_pad);
 }
 
-void GStreamerEngine::play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& filename)
+void GStreamerEngine::play(Gtk::Widget& widget, const Glib::ustring& filename)
 {
 	stop();
 
 	if (!filename.empty())
 	{
-		int window_id = GDK_WINDOW_XID(window->gobj());
+		int window_id = GDK_WINDOW_XID(widget.get_window()->gobj());
 		gst_x_overlay_set_xwindow_id (GST_X_OVERLAY(video_sink), window_id);
 
 		g_debug("GStreamer file source: %s", filename.c_str());

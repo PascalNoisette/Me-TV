@@ -22,7 +22,7 @@
 #include "application.h"
 #include "device_manager.h"
 #include "gstreamer_engine.h"
-#include "mplayer_engine.h"
+#include "xine_engine.h"
 #include <glibmm.h>
 
 #define TS_PACKET_SIZE 188
@@ -53,9 +53,9 @@ StreamThread::StreamThread(const Channel& channel) :
 	{
 		engine = new GStreamerEngine();
 	}
-	else if (engine_type == "mplayer")
+	else if (engine_type == "xine")
 	{
-		engine = new MplayerEngine();
+		engine = new XineEngine();
 	}
 	else
 	{
@@ -81,9 +81,9 @@ StreamThread::StreamThread(const Channel& channel) :
 }
 
 StreamThread::~StreamThread()
-{	
-	join(true);
+{
 	Glib::RecMutex::Lock lock(mutex);
+	join(true);
 	stop_epg_thread();
 	remove_all_demuxers();
 	stop_engine();
@@ -102,7 +102,7 @@ void StreamThread::start()
 	{
 		on_broadcast_state_changed(true);
 	}
-	engine->play(application.get_main_window().get_drawing_area().get_window(), fifo_path);
+	engine->play(application.get_main_window().get_drawing_area(), fifo_path);
 	start_epg_thread();
 }
 
@@ -184,7 +184,6 @@ void StreamThread::write(gchar* buffer, gsize length)
 {
 	gsize bytes_written = 0;
 
-	Glib::RecMutex::Lock lock(mutex);
 	output_channel->write(buffer, length, bytes_written);	
 	if (recording_channel)
 	{
@@ -216,16 +215,23 @@ void StreamThread::run()
 	g_debug("FIFO opened for writing");
 	input_channel->set_encoding("");
 	output_channel->set_encoding("");
+	output_channel->set_flags(output_channel->get_flags() | Glib::IO_FLAG_NONBLOCK);
 
 	build_pat(pat);
 	build_pmt(pmt);
 	
-	guint last_insert_time = 0;
-	
+	struct pollfd pfd[1];
+	pfd[0].fd = g_io_channel_unix_get_fd(input_channel->gobj());
+	pfd[0].events = POLLOUT | POLLPRI;
+		
+	guint last_insert_time = 0;	
 	gsize bytes_read;
 	gsize bytes_written;
+	
 	while (!is_terminated())
 	{
+		Glib::RecMutex::Lock lock(mutex);
+		
 		// Insert PAT/PMT every second
 		time_t now = time(NULL);
 		if (now - last_insert_time > 1)
@@ -235,7 +241,12 @@ void StreamThread::run()
 			last_insert_time = now;
 		}
 		
+		if (poll(pfd, 1, 5000) == -1)
+		{
+			throw Exception(_("Failed to poll for data"));
+		}
 		input_channel->read(buffer, TS_PACKET_SIZE * 10, bytes_read);
+		
 		write(buffer, bytes_read);
 	}
 	g_debug("StreamThread loop exited");

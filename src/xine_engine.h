@@ -17,24 +17,39 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
+ 
+#ifndef __XINE_ENGINE_H__
+#define __XINE_ENGINE_H__
 
-#ifndef __MPLAYER_ENGINE_H__
-#define __MPLAYER_ENGINE_H__
-
+#include <xine.h>
 #include "engine.h"
 
-class MplayerEngine : public Engine
+class XineEngine : public Engine
 {
 private:
-	gint pid;
-	gint standard_input;
-
-	void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& mrl);
-	void record(const Glib::ustring& filename);
+	xine_t*						xine;
+	xine_stream_t*				stream;
+	xine_video_port_t*			video_port;
+	xine_audio_port_t*			audio_port;
+	gint						width, height;
+	double						pixel_aspect;
+	gboolean					mute_state;
+	Glib::StaticRecMutex		mutex;
+	
+	static void dest_size_cb ( void *data,
+		int video_width, int video_height, double video_pixel_aspect,
+		int *dest_width, int *dest_height, double *dest_pixel_aspect );
+	static void frame_output_cb ( void *data,
+		int video_width, int video_height, double video_pixel_aspect, int *dest_x, int *dest_y,
+		int *dest_width, int *dest_height, double *dest_pixel_aspect, int *win_x, int *win_y );
+	
+	void play(Gtk::Widget& widget, const Glib::ustring& mrl);
 	void mute(gboolean state);
+	bool on_drawing_area_configure_event(GdkEventConfigure* event);
+	
 public:
-	MplayerEngine();
-	~MplayerEngine();
+	XineEngine();
+	~XineEngine();
 };
 
 #endif

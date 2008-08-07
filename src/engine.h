@@ -28,7 +28,7 @@ class Engine
 {
 public:
 	virtual ~Engine() {};
-	virtual void play(Glib::RefPtr<Gdk::Window> window, const Glib::ustring& mrl) = 0;
+	virtual void play(Gtk::Widget& widget, const Glib::ustring& mrl) = 0;
 	virtual void mute(gboolean state) = 0;
 };
 

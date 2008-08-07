@@ -78,14 +78,14 @@ me_tv_SOURCES = \
 	preferences_dialog.cc \
 	gstreamer_engine.cc \
 	gstreamer_engine.h \
-	mplayer_engine.cc \
-	mplayer_engine.h \
 	status_icon.cc \
 	status_icon.h \
 	scheduled_recording.h \
 	scheduled_recording.cc \
 	epg_thread.cc \
-	epg_thread.h
+	epg_thread.h \
+	xine_engine.cc \
+	xine_engine.h
 
 me_tv_LDFLAGS = 
 

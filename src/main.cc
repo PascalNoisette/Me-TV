@@ -24,6 +24,7 @@
 #include <glibmm.h>
 #include <glib/gprintf.h>
 #include <gst/gst.h>
+#include <X11/Xlib.h>
 
 void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
@@ -40,6 +41,7 @@ int main (int argc, char *argv[])
 {	
 	try
 	{
+		XInitThreads();
 		tzset();
 		
 		if (!Glib::thread_supported())
