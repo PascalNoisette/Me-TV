@@ -46,7 +46,9 @@ class SystemException : public Exception
 private:
 	Glib::ustring create_message(const Glib::ustring& message)
 	{
-		return Glib::ustring::compose("%1: %2", message, strerror(errno));
+		char buffer[1000];
+		strerror_r(errno, buffer, 1000);
+		return Glib::ustring::compose("%1: %2", message, Glib::ustring(buffer));
 	}
 
 public:

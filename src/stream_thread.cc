@@ -82,17 +82,15 @@ StreamThread::StreamThread(const Channel& channel) :
 
 StreamThread::~StreamThread()
 {
-	Glib::RecMutex::Lock lock(mutex);
 	join(true);
-	stop_epg_thread();
-	remove_all_demuxers();
-	stop_engine();
 }
 
 void StreamThread::start()
 {
+	g_debug("Starting stream thread");
 	Thread::start();
 
+	Glib::RecMutex::Lock lock(mutex);
 	Application& application = get_application();
 	if (application.get_main_window().is_muted())
 	{
@@ -102,8 +100,9 @@ void StreamThread::start()
 	{
 		on_broadcast_state_changed(true);
 	}
+	g_debug("Telling engine to start playing");
 	engine->play(application.get_main_window().get_drawing_area(), fifo_path);
-	start_epg_thread();
+	g_debug("Enging playing");
 }
 
 void StreamThread::on_mute_state_changed(gboolean mute_state)
@@ -189,6 +188,7 @@ void StreamThread::write(gchar* buffer, gsize length)
 	{
 		recording_channel->write(buffer, length, bytes_written);
 	}
+	
 	if (socket != NULL)
 	{
 		if (gnet_udp_socket_send(socket, buffer, length, inet_address) != 0)
@@ -205,7 +205,8 @@ void StreamThread::run()
 	gchar pmt[TS_PACKET_SIZE];
 	
 	setup_dvb(frontend, channel);
-	
+	start_epg_thread();
+
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 	g_debug("About to open to FIFO for reading ...");
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
@@ -215,7 +216,6 @@ void StreamThread::run()
 	g_debug("FIFO opened for writing");
 	input_channel->set_encoding("");
 	output_channel->set_encoding("");
-	output_channel->set_flags(output_channel->get_flags() | Glib::IO_FLAG_NONBLOCK);
 
 	build_pat(pat);
 	build_pmt(pmt);
@@ -230,7 +230,7 @@ void StreamThread::run()
 	
 	while (!is_terminated())
 	{
-		Glib::RecMutex::Lock lock(mutex);
+		//Glib::RecMutex::Lock lock(mutex);
 		
 		// Insert PAT/PMT every second
 		time_t now = time(NULL);
@@ -251,13 +251,20 @@ void StreamThread::run()
 	}
 	g_debug("StreamThread loop exited");
 	
+	stop_epg_thread();
+	remove_all_demuxers();
+
 	Glib::RecMutex::Lock lock(mutex);
 	g_debug("About to clear input channel ...");
+	input_channel->close();
 	input_channel.clear();
 	g_debug("Input channel cleared");
+	output_channel->close();
 	g_debug("About to clear output channel ...");
 	output_channel.clear();
 	g_debug("Output channel cleared");
+
+	stop_engine();
 }
 
 gboolean StreamThread::is_recording()
@@ -521,6 +528,8 @@ void StreamThread::build_pmt(gchar* buffer)
 
 void StreamThread::remove_all_demuxers()
 {
+	Glib::RecMutex::Lock lock(mutex);
+	g_debug("Removing demuxers");
 	while (demuxers.size() > 0)
 	{
 		Dvb::Demuxer* demuxer = demuxers.front();
@@ -533,15 +542,17 @@ void StreamThread::remove_all_demuxers()
 Dvb::Demuxer& StreamThread::add_pes_demuxer(const Glib::ustring& demux_path,
 	guint pid, dmx_pes_type_t pid_type, const gchar* type_text)
 {	
+	Glib::RecMutex::Lock lock(mutex);
 	Dvb::Demuxer* demuxer = new Dvb::Demuxer(demux_path);
 	demuxers.push_back(demuxer);
-	g_debug(_("Setting %s PID filter to %d (0x%X)"), type_text, pid, pid);
+	g_debug("Setting %s PID filter to %d (0x%X)", type_text, pid, pid);
 	demuxer->set_pes_filter(pid, pid_type);
 	return *demuxer;
 }
 
 Dvb::Demuxer& StreamThread::add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id)
 {	
+	Glib::RecMutex::Lock lock(mutex);
 	Dvb::Demuxer* demuxer = new Dvb::Demuxer(demux_path);
 	demuxers.push_back(demuxer);
 	demuxer->set_filter(pid, id);
@@ -550,6 +561,8 @@ Dvb::Demuxer& StreamThread::add_section_demuxer(const Glib::ustring& demux_path,
 
 void StreamThread::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	g_debug("Setting up DVB");
 	stop_epg_thread();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
