@@ -110,10 +110,11 @@ StreamThread::~StreamThread()
 
 void StreamThread::start()
 {
+	setup_dvb(frontend, channel);
+
 	g_debug("Starting stream thread");
 	Thread::start();
 
-	setup_dvb(frontend, channel);
 	start_epg_thread();
 
 	Lock lock(mutex, "StreamThread::start()");
@@ -251,6 +252,7 @@ void StreamThread::run()
 	gsize bytes_read;
 	gsize bytes_written;
 	
+	TRY
 	while (!is_terminated())
 	{
 		// Insert PAT/PMT every second
@@ -275,6 +277,7 @@ void StreamThread::run()
 		write(buffer, bytes_read);
 		//g_debug("Data written");
 	}
+	THREAD_CATCH
 	g_debug("StreamThread loop exited");
 	
 	stop_epg_thread();
