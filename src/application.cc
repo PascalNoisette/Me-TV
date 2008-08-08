@@ -57,7 +57,8 @@ Application::Application(int argc, char *argv[]) :
 	set_string_configuration_default("xine.video_driver", "auto");
 	set_string_configuration_default("xine.audio_driver", "auto");
 	set_string_configuration_default("xine.deinterlace_type", "default");
-	
+	set_string_configuration_default("preferred_language", "");
+		
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
 	if (!file->query_exists())
@@ -200,6 +201,12 @@ void Application::set_source(const Channel& channel)
 	stream_thread = new StreamThread(channel);
 	stream_thread->start();
 	update_ui();
+}
+
+void Application::on_signal_configuration_changed()
+{
+	update_ui();
+	preferred_language = get_string_configuration_value("preferred_language");	
 }
 
 void Application::update_ui()

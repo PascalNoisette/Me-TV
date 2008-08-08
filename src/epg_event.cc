@@ -20,15 +20,17 @@
 
 #include "epg_event.h"
 #include "me-tv.h"
+#include "application.h"
 
-Glib::ustring EpgEvent::get_title(const Glib::ustring& language) const
+Glib::ustring EpgEvent::get_title() const
 {
 	Glib::ustring result;
-
+	const Glib::ustring& preferred_language = get_application().get_preferred_language();
+	
 	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end(); i++)
 	{
 		EpgEventText text = *i;
-		if (result.size() == 0 || (language.size() > 0 && language == text.language))
+		if (result.size() == 0 || (preferred_language.size() > 0 && preferred_language == text.language))
 		{
 			result = text.title;
 		}
@@ -42,14 +44,15 @@ Glib::ustring EpgEvent::get_title(const Glib::ustring& language) const
 	return result;		
 }
 	
-Glib::ustring EpgEvent::get_description(const Glib::ustring& language) const
+Glib::ustring EpgEvent::get_description() const
 {
 	Glib::ustring result;
+	const Glib::ustring& preferred_language = get_application().get_preferred_language();
 	
 	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end(); i++)
 	{
 		EpgEventText text = *i;
-		if (result.size() == 0 || (language.size() > 0 && language == text.language))
+		if (result.size() == 0 || (preferred_language.size() > 0 && preferred_language == text.language))
 		{
 			result = text.description;
 		}

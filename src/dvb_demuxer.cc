@@ -37,7 +37,7 @@ Demuxer::Demuxer(const Glib::ustring& device_path)
 	}
 
 	pfd[0].fd = fd;
-	pfd[0].events = POLLOUT | POLLPRI;
+	pfd[0].events = POLLIN | POLLOUT | POLLPRI;
 }
 
 Demuxer::~Demuxer()

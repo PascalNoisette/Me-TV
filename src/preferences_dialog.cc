@@ -45,6 +45,7 @@ void PreferencesDialog::run()
 	Gtk::CheckButton* check_button_keep_above = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_keep_above"));
 	Gtk::CheckButton* check_button_show_epg_header = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_show_epg_header"));
 	Gtk::CheckButton* check_button_show_epg_time = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_show_epg_time"));
+	Gtk::Entry* entry_preferred_language = dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_preferred_language"));
 	
 	file_chooser_button_recording_directory->set_filename(application.get_string_configuration_value("recording_directory"));
 	spin_button_record_extra_before->set_value(application.get_int_configuration_value("record_extra_before"));
@@ -55,6 +56,7 @@ void PreferencesDialog::run()
 	check_button_keep_above->set_active(application.get_boolean_configuration_value("keep_above"));
 	check_button_show_epg_header->set_active(application.get_boolean_configuration_value("show_epg_header"));
 	check_button_show_epg_time->set_active(application.get_boolean_configuration_value("show_epg_time"));
+	entry_preferred_language->set_text(application.get_string_configuration_value("preferred_language"));
 	
 	int response = Dialog::run();
 	if (response == Gtk::RESPONSE_OK)
@@ -68,7 +70,8 @@ void PreferencesDialog::run()
 		application.set_boolean_configuration_value("keep_above", check_button_keep_above->get_active());
 		application.set_boolean_configuration_value("show_epg_header", check_button_show_epg_header->get_active());
 		application.set_boolean_configuration_value("show_epg_time", check_button_show_epg_time->get_active());
-		
-		get_application().update_ui();
+		application.set_string_configuration_value("preferred_language", entry_preferred_language->get_text());
+	
+		get_application().signal_configuration_changed();
 	}
 }

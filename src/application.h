@@ -29,7 +29,7 @@
 #include "status_icon.h"
 #include "stream_thread.h"
 
-typedef sigc::signal<void, gboolean> BooleanStateSignal;
+typedef sigc::signal<void, gboolean> BooleanStateChangedSignal;
 
 class Application : public Gnome::Main
 {
@@ -43,6 +43,7 @@ private:
 	StreamThread*						stream_thread;
 	Glib::RefPtr<Gnome::Conf::Client>	client;
 	guint								last_epg_update_time;
+	Glib::ustring						preferred_language;
 			
 	void on_display_channel_changed(const Channel& channel);
 		
@@ -63,8 +64,9 @@ public:
 
 	StreamThread& get_stream_thread();
 	void stop_stream_thread();
-	void set_source(const Channel& channel);
-		
+	void set_source(const Channel& channel);		
+
+	void on_signal_configuration_changed();
 	void update_ui();
 		
 	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
@@ -79,9 +81,12 @@ public:
 	guint get_last_epg_update_time() const;
 	void toggle_visibility();
 	
-	BooleanStateSignal		signal_record_state_changed;
-	BooleanStateSignal		signal_mute_state_changed;
-	BooleanStateSignal		signal_broadcast_state_changed;
+	BooleanStateChangedSignal	signal_record_state_changed;
+	BooleanStateChangedSignal	signal_mute_state_changed;
+	BooleanStateChangedSignal	signal_broadcast_state_changed;
+	sigc::signal<void>			signal_configuration_changed;
+		
+	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 
 	MainWindow& get_main_window();
 };
