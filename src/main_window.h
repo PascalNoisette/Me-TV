@@ -62,6 +62,7 @@ private:
 		
 	bool on_motion_notify_event(GdkEventMotion* event);
 	bool on_drawing_area_expose_event(GdkEventExpose* event);
+	static gboolean on_timeout(gpointer data);
 	bool on_timeout();
 	void on_error(const Glib::ustring& message);
 	void on_menu_item_record_clicked();

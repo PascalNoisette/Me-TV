@@ -95,7 +95,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	last_motion_time = time(NULL);
 	initialise = true;
-	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
+	gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
+	//Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
 	
 	load_devices();
 	show();
@@ -393,6 +394,12 @@ gboolean MainWindow::is_fullscreen()
 	return get_window()->get_state() & Gdk::WINDOW_STATE_FULLSCREEN;
 }
 
+gboolean MainWindow::on_timeout(gpointer data)
+{
+	MainWindow* main_window = (MainWindow*)data;
+	return main_window->on_timeout();
+}
+
 bool MainWindow::on_timeout()
 {
 	TRY
@@ -402,7 +409,6 @@ bool MainWindow::on_timeout()
 	if (initialise)
 	{
 		initialise = false;
-		GdkLock gdk_lock;
 		Profile& current_profile = get_application().get_profile_manager().get_current_profile();
 		ChannelList& channels = current_profile.get_channels();
 		if (channels.size() > 0)
@@ -419,7 +425,6 @@ bool MainWindow::on_timeout()
 	// Hide the mouse
 	if (now - last_motion_time > 3 && is_cursor_visible)
 	{
-		GdkLock gdk_lock;
 		glade->get_widget("event_box_video")->get_window()->set_cursor(Gdk::Cursor(hidden_cursor));
 		is_cursor_visible = false;
 	}
@@ -428,7 +433,6 @@ bool MainWindow::on_timeout()
 	guint application_last_update_time = get_application().get_last_epg_update_time();
 	if ((application_last_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 	{
-		GdkLock gdk_lock;
 		update();
 		last_update_time = application_last_update_time;
 	}
@@ -436,7 +440,6 @@ bool MainWindow::on_timeout()
 	// Disable screensaver
 	if (now - last_poke_time > POKE_INTERVAL)
 	{
-		GdkLock gdk_lock;
 		Gdk::WindowState state = get_window()->get_state();
 		gboolean is_minimised = state & Gdk::WINDOW_STATE_ICONIFIED;
 		if (is_visible() && !is_minimised)
