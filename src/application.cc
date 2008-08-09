@@ -200,6 +200,7 @@ void Application::set_source(const Channel& channel)
 	stop_stream_thread();
 	stream_thread = new StreamThread(channel);
 	stream_thread->start();
+	stream_thread->start_engine();
 	update_ui();
 }
 
@@ -231,14 +232,6 @@ void Application::update_epg_time()
 guint Application::get_last_epg_update_time() const
 {
 	return last_epg_update_time;
-}
-
-void Application::toggle_visibility()
-{
-	if (main_window != NULL)
-	{
-		main_window->property_visible() = !main_window->property_visible();
-	}
 }
 
 StreamThread& Application::get_stream_thread()

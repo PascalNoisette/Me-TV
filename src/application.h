@@ -79,7 +79,6 @@ public:
 	
 	void update_epg_time();
 	guint get_last_epg_update_time() const;
-	void toggle_visibility();
 	
 	BooleanStateChangedSignal	signal_record_state_changed;
 	BooleanStateChangedSignal	signal_mute_state_changed;

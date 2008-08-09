@@ -55,6 +55,7 @@ StreamThread::StreamThread(const Channel& channel) :
 	frontend(get_application().get_device_manager().get_frontend()),
 	channel(channel)
 {
+	g_debug("Creating StreamThread");
 	g_static_rec_mutex_init(mutex.gobj());
 
 	engine = NULL;
@@ -71,6 +72,56 @@ StreamThread::StreamThread(const Channel& channel) :
 		CRC32[i] = k;
 	}
 	
+	Application& application = get_application();
+	application.signal_record_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_record_state_changed));
+	application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_mute_state_changed));
+	application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_broadcast_state_changed));
+	application.get_main_window().signal_show().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_show));
+	application.get_main_window().signal_hide().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_hide));
+
+	g_debug("StreamThread created");
+}
+
+StreamThread::~StreamThread()
+{
+	g_debug("Destroying StreamThread");
+	join(true);
+	g_debug("StreamThread destroyed");
+}
+
+void StreamThread::start()
+{
+	setup_dvb(frontend, channel);
+
+	g_debug("Starting stream thread");
+	Thread::start();
+
+	start_epg_thread();
+
+	Lock lock(mutex, "StreamThread::start()");
+	Application& application = get_application();
+	if (application.get_main_window().is_muted())
+	{
+		on_mute_state_changed(true);
+	}
+	if (application.get_main_window().is_broadcasting())
+	{
+		on_broadcast_state_changed(true);
+	}
+}
+
+void EngineThread::run()
+{
+	g_debug("Telling engine to start playing");
+	engine->play(get_application().get_main_window().get_drawing_area(), fifo_path);
+	g_debug("Enging playing");
+}
+
+void StreamThread::start_engine()
+{
+	stop_engine();
+	
+	g_debug("Starting engine");
 	Glib::ustring engine_type = get_application().get_string_configuration_value("engine_type");
 	if (engine_type == "gstreamer")
 	{
@@ -97,44 +148,30 @@ StreamThread::StreamThread(const Channel& channel) :
 		}
 	}
 
-	Application& application = get_application();
-	application.signal_record_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_record_state_changed));
-	application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_mute_state_changed));
-	application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_broadcast_state_changed));
+	EngineThread engine_thread(engine, fifo_path);
+	engine_thread.start();
+	
+	Lock lock(mutex, "StreamThread::start_engine()");
+	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
+	output_channel->set_encoding("");
 }
 
-StreamThread::~StreamThread()
+void StreamThread::on_main_window_show()
 {
-	join(true);
+	start_engine();
 }
 
-void StreamThread::start()
+void StreamThread::on_main_window_hide()
 {
-	setup_dvb(frontend, channel);
-
-	g_debug("Starting stream thread");
-	Thread::start();
-
-	start_epg_thread();
-
-	Lock lock(mutex, "StreamThread::start()");
-	Application& application = get_application();
-	if (application.get_main_window().is_muted())
-	{
-		on_mute_state_changed(true);
-	}
-	if (application.get_main_window().is_broadcasting())
-	{
-		on_broadcast_state_changed(true);
-	}
-	g_debug("Telling engine to start playing");
-	engine->play(application.get_main_window().get_drawing_area(), fifo_path);
-	g_debug("Enging playing");
+	stop_engine();
 }
 
 void StreamThread::on_mute_state_changed(gboolean mute_state)
 {
-	engine->mute(mute_state);
+	if (engine != NULL)
+	{
+		engine->mute(mute_state);
+	}
 }
 
 Engine& StreamThread::get_engine()
@@ -143,7 +180,6 @@ Engine& StreamThread::get_engine()
 	{
 		throw Exception(_("Engine has not been created"));
 	}
-	
 	return *engine;
 }
 
@@ -210,7 +246,11 @@ void StreamThread::write(gchar* buffer, gsize length)
 {
 	gsize bytes_written = 0;
 
-	output_channel->write(buffer, length, bytes_written);	
+	if (output_channel)
+	{
+		output_channel->write(buffer, length, bytes_written);
+	}
+	
 	if (recording_channel)
 	{
 		recording_channel->write(buffer, length, bytes_written);
@@ -232,14 +272,8 @@ void StreamThread::run()
 	gchar pmt[TS_PACKET_SIZE];
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
-	g_debug("About to open to FIFO for reading ...");
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
-	g_debug("FIFO opened for reading");
-	g_debug("About to open to FIFO for writing ...");
-	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
-	g_debug("FIFO opened for writing");
 	input_channel->set_encoding("");
-	output_channel->set_encoding("");
 
 	build_pat(pat);
 	build_pmt(pmt);
@@ -269,13 +303,8 @@ void StreamThread::run()
 			throw Exception(_("Failed to poll for data"));
 		}
 		
-		//g_debug("Reading data ...");
 		input_channel->read(buffer, TS_PACKET_SIZE * 10, bytes_read);
-		//g_debug("Data read");
-		
-		//g_debug("Writing data ...");
 		write(buffer, bytes_read);
-		//g_debug("Data written");
 	}
 	THREAD_CATCH
 	g_debug("StreamThread loop exited");
@@ -288,11 +317,6 @@ void StreamThread::run()
 	g_debug("About to clear input channel ...");
 	input_channel->close();
 	input_channel.clear();
-	g_debug("Input channel cleared");
-	output_channel->close();
-	g_debug("About to clear output channel ...");
-	output_channel.clear();
-	g_debug("Output channel cleared");
 
 	stop_engine();
 }
@@ -669,10 +693,14 @@ void StreamThread::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 }
 
 void StreamThread::stop_engine()
-{
+{	
 	if (engine != NULL)
 	{
 		g_debug("Stopping engine");
+
+		output_channel->close();
+		output_channel.clear();
+
 		delete engine;
 		engine = NULL;
 	}

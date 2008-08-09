@@ -588,16 +588,19 @@ void MainWindow::on_broadcast_state_changed(gboolean broadcast_state)
 
 void MainWindow::on_hide()
 {
-	get_application().signal_mute_state_changed(true);
 	Gtk::Window::on_hide();
 }
 
 void MainWindow::on_show()
 {
-	get_application().signal_mute_state_changed(false);
 	Gtk::Window::on_show();
 	if (get_application().get_boolean_configuration_value("keep_above"))
 	{
 		set_keep_above();
 	}
+}
+
+void MainWindow::toggle_visibility()
+{
+	property_visible() = !property_visible();
 }

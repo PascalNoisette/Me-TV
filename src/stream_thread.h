@@ -47,6 +47,17 @@ public:
 	std::vector<Dvb::SI::TeletextStream>	teletext_streams;
 };
 
+class EngineThread : public Thread
+{
+private:
+	Engine*			engine;
+	Glib::ustring	fifo_path;
+public:
+	EngineThread(Engine* engine, const Glib::ustring& fifo_path) :
+		Thread("Engine"), engine(engine), fifo_path(fifo_path) {}
+	void run();
+};
+
 class StreamThread : public Thread
 {
 private:
@@ -58,6 +69,7 @@ private:
 	Glib::StaticRecMutex			mutex;
 	Dvb::Frontend&					frontend;
 	Engine*							engine;
+	EngineThread*					engine_thread;
 	EpgThread*						epg_thread;
 	Stream							stream;
 	guint							pmt_pid;
@@ -68,6 +80,8 @@ private:
 	void on_record_state_changed(gboolean record_state);
 	void on_mute_state_changed(gboolean mute_state);
 	void on_broadcast_state_changed(gboolean broadcast_state);
+	void on_main_window_show();
+	void on_main_window_hide();
 
 	void run();
 	gboolean is_pid_used(guint pid);
@@ -84,13 +98,14 @@ private:
 
 	void start_epg_thread();
 	void stop_epg_thread();
-	void stop_engine();
 		
 public:
 	StreamThread(const Channel& channel);
 	~StreamThread();
 
 	void start();
+	void start_engine();
+	void stop_engine();
 	Engine& get_engine();
 
 	gboolean is_recording();

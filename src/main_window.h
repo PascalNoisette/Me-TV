@@ -97,6 +97,7 @@ public:
 	gboolean is_broadcasting();
 	gboolean is_muted();
 
+	void toggle_visibility();
 	Gtk::DrawingArea& get_drawing_area();
 	void show_channels_dialog();
 	void update();

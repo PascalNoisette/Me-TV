@@ -45,12 +45,12 @@ void StatusIcon::on_menu_item_popup_quit_clicked()
 
 void StatusIcon::on_menu_item_me_tv_clicked()
 {
-	get_application().toggle_visibility();
+	get_application().get_main_window().toggle_visibility();
 }
 
 void StatusIcon::on_activate()
 {
-	get_application().toggle_visibility();
+	get_application().get_main_window().toggle_visibility();
 }
 
 void StatusIcon::update()

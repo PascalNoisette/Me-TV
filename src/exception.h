@@ -24,6 +24,7 @@
 #include <glibmm.h>
 #include <errno.h>
 #include <string.h>
+#include "me-tv.h"
 
 #define TRY		try {
 #define CATCH	} catch(const Glib::Exception& exception) { get_signal_error().emit(exception.what().c_str()); } \
@@ -46,9 +47,13 @@ class SystemException : public Exception
 private:
 	Glib::ustring create_message(const Glib::ustring& message)
 	{
+		Glib::ustring detail = _("Failed to get error message");
 		char buffer[1000];
-		strerror_r(errno, buffer, 1000);
-		return Glib::ustring::compose("%1: %2", message, Glib::ustring(buffer));
+		if (strerror_r(errno, buffer, 1000) == 0)
+		{
+			detail = Glib::ustring(buffer);
+		}
+		return Glib::ustring::compose("%1: %2", message, detail);
 	}
 
 public:
