@@ -182,11 +182,11 @@ void EpgThread::run()
 					}
 					
 					if (processed_event_count < 10000)
-					{
-						processed_events[processed_event_count++] = event.event_id;
-					
+					{					
 						if (!found)
 						{
+							processed_events[processed_event_count++] = event.event_id;
+
 							EpgEvent epg_event;
 
 							epg_event.epg_event_id	= 0;
