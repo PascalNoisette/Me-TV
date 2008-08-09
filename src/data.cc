@@ -36,7 +36,7 @@ Statement::Statement(sqlite3* database, const Glib::ustring& command) : database
 {
 	statement = NULL;
 	const char* remaining = NULL;
-	g_debug("Command: %s", command.c_str());
+	//g_debug("Command: %s", command.c_str());
 	
 	if (sqlite3_prepare_v2(database, command.c_str(), -1, &statement, &remaining) != 0)
 	{

@@ -64,7 +64,7 @@ guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_ev
 	}
 	
 	entry_description->set_text(epg_event.get_title());
-	date_edit_start_time->set_time(epg_event.start_time);
+	date_edit_start_time->set_time(convert_to_local_time(epg_event.start_time));
 	spinbutton_duration->set_value(epg_event.duration/60);
 	return run(transient_for, false);
 }
