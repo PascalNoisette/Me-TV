@@ -90,6 +90,9 @@ GStreamerEngine::GStreamerEngine()
 	
 	g_signal_connect(G_OBJECT(decoder), "pad-added", G_CALLBACK(connect_dynamic_pad), this);
 	g_object_set (G_OBJECT (video_sink), "force-aspect-ratio", true, NULL);
+	g_object_set (G_OBJECT (q1), "max-size-time", 2000000, NULL);
+	g_object_set (G_OBJECT (q2), "max-size-time", 2000000, NULL);
+	g_object_set (G_OBJECT (q3), "max-size-time", 2000000, NULL);
 	
 	gst_element_link_many(source, q1, decoder, NULL);
 	gst_element_link_many(deinterlace, q2, video_sink, NULL);

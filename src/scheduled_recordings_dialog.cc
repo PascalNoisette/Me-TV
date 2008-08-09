@@ -106,3 +106,9 @@ void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& pat
 	update();
 	CATCH
 }
+
+void ScheduledRecordingsDialog::on_show()
+{
+	update();
+	Widget::on_show();
+}

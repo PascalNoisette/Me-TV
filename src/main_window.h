@@ -81,7 +81,7 @@ private:
 	void on_tool_button_record_clicked();
 	void on_tool_button_mute_clicked();
 	void on_tool_button_broadcast_clicked();
-	void on_record_state_changed(gboolean record_state);
+	void on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual);
 	void on_mute_state_changed(gboolean mute_state);
 	void on_broadcast_state_changed(gboolean broadcast_state);
 

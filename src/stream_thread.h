@@ -76,8 +76,9 @@ private:
 	Glib::ustring					fifo_path;
 	GUdpSocket*						socket;
 	GInetAddr*						inet_address;
-			
-	void on_record_state_changed(gboolean record_state);
+	gboolean						manual_recording;
+
+	void on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual);
 	void on_mute_state_changed(gboolean mute_state);
 	void on_broadcast_state_changed(gboolean broadcast_state);
 	void on_main_window_show();
@@ -108,6 +109,7 @@ public:
 	void stop_engine();
 	Engine& get_engine();
 
+	gboolean is_manual_recording();
 	gboolean is_recording();
 	gboolean is_broadcasting();
 };

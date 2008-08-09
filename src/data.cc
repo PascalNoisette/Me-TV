@@ -605,3 +605,10 @@ void Data::delete_channel(guint channel_id)
 		"DELETE FROM CHANNEL WHERE CHANNEL_ID=%1;",
 		channel_id));
 }
+
+void Data::delete_old_sceduled_recordings()
+{
+	execute_non_query(Glib::ustring::compose(
+		"DELETE FROM SCHEDULED_RECORDING WHERE (START_TIME+DURATION)<%1;",
+		time(NULL)));
+}

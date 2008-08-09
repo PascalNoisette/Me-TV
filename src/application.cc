@@ -172,6 +172,7 @@ void Application::run()
 	status_icon = new StatusIcon(glade);
 	main_window = MainWindow::create(glade);
 	main_window->show();
+	gdk_threads_add_timeout(10000, &Application::on_timeout, this);
 	Gnome::Main::run();
 	CATCH
 }
@@ -252,4 +253,116 @@ MainWindow& Application::get_main_window()
 	}
 	
 	return *main_window;
+}
+
+gboolean Application::on_timeout(gpointer data)
+{
+	return ((Application*)data)->on_timeout();
+}
+
+gboolean Application::on_timeout()
+{
+	Profile& profile = profile_manager.get_current_profile();
+	gboolean got_recording = false;
+	
+	Data data;
+	data.delete_old_sceduled_recordings();
+	ScheduledRecordingList scheduled_recording_list = data.get_scheduled_recordings();
+	guint now = time(NULL);
+	g_debug("");
+	g_debug("======================================================================");
+	g_debug("Now: %d", now);
+	g_debug("======================================================================");
+	g_debug("#ID | Start Time | Duration | Record | Channel    | Description");
+	g_debug("======================================================================");
+	for (ScheduledRecordingList::iterator i = scheduled_recording_list.begin(); i != scheduled_recording_list.end(); i++)
+	{
+		ScheduledRecording& scheduled_recording = *i;
+		gboolean record = scheduled_recording.is_in(now);
+		g_debug("%3d | %d | %8d | %s | %10s | %s",
+			scheduled_recording.scheduled_recording_id,
+			scheduled_recording.start_time,
+			scheduled_recording.duration,
+			record ? "true  " : "false ",
+			profile.get_channel(scheduled_recording.channel_id).name.c_str(),
+			scheduled_recording.description.c_str());
+		
+		if (record)
+		{
+			if (got_recording)
+			{
+				g_debug("Conflict!");
+			}
+			else
+			{
+				got_recording = true;
+				
+				const Channel* channel = profile.get_display_channel();
+				if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
+				{
+					g_debug("Already tuned to correct channel");
+				}
+				else
+				{
+					g_debug("Recording stopped by scheduled recording");
+					signal_record_state_changed(false, "", false);
+					
+					g_debug("Changing channel for scheduled recording");
+					profile.set_display_channel(scheduled_recording.channel_id);
+				}
+				
+				if (!stream_thread->is_recording())
+				{
+					Glib::ustring filename = make_recording_filename(scheduled_recording.description);
+					signal_record_state_changed(true, filename, false);
+				}
+			}
+		}
+	}
+	
+	if (stream_thread->is_recording() && !got_recording && !stream_thread->is_manual_recording())
+	{
+		g_debug("Record stopped by scheduled recording");
+		signal_record_state_changed(false, "", false);
+	}
+	
+	g_debug("");
+
+	return true;
+}
+
+Glib::ustring Application::make_recording_filename(const Glib::ustring& description)
+{
+	const Channel* channel = profile_manager.get_current_profile().get_display_channel();
+		
+	if (channel == NULL)
+	{
+		throw Exception(_("No channel to make recording filename"));
+	}
+	
+	Glib::ustring start_time = get_time_text(get_local_time(), "%c");
+	g_debug("Starting recording due to scheduled recording");
+	Glib::ustring filename;
+
+	if (description.size() == 0)
+	{
+		filename = Glib::ustring::compose
+		(
+			"%1 - %2.mpeg",
+			channel->get_text(),
+			start_time
+		);
+	}
+	else
+	{
+		filename = Glib::ustring::compose
+		(
+			"%1 - %2 - %3.mpeg",
+			channel->name,
+			description,
+			start_time
+		);
+	}
+	
+	return Glib::build_filename(get_string_configuration_value("recording_directory"), filename);
 }

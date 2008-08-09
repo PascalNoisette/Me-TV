@@ -61,6 +61,7 @@ StreamThread::StreamThread(const Channel& channel) :
 	engine = NULL;
 	epg_thread = NULL;
 	socket = NULL;
+	manual_recording = false;
 	
 	for(gint i = 0 ; i < 256 ; i++ )
 	{
@@ -183,26 +184,21 @@ Engine& StreamThread::get_engine()
 	return *engine;
 }
 
-void StreamThread::on_record_state_changed(gboolean record_state)
+void StreamThread::on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual)
 {
 	Lock lock(mutex, "StreamThread::on_record_state_changed()");
 	if (record_state && !recording_channel)
 	{		
-		Application& application = get_application();
-		const Channel* channel = application.get_profile_manager().get_current_profile().get_display_channel();
-		if (channel == NULL)
-		{
-			throw Exception(_("There's no channel to record"));
-		}
-		Glib::ustring recording_directory = application.get_string_configuration_value("recording_directory");
-		Glib::ustring path = Glib::build_filename(recording_directory, channel->get_text() + ".mpeg");
-
-		recording_channel = Glib::IOChannel::create_from_file(path, "w");
+		recording_channel = Glib::IOChannel::create_from_file(filename, "w");
 		recording_channel->set_encoding("");
 		g_debug("Recording channel opened");
+
+		manual_recording = manual;
 	}
 	else if (!record_state && recording_channel)
 	{
+		manual_recording = false;
+		
 		recording_channel.clear();
 		g_debug("Recording channel cleared");
 	}
@@ -325,6 +321,12 @@ gboolean StreamThread::is_recording()
 {
 	Lock lock(mutex, "StreamThread::is_recording()");
 	return recording_channel;
+}
+
+gboolean StreamThread::is_manual_recording()
+{
+	Lock lock(mutex, "StreamThread::is_manual_recording()");
+	return recording_channel && manual_recording;
 }
 
 void StreamThread::calculate_crc(guchar *p_begin, guchar *p_end)

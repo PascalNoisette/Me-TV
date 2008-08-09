@@ -46,3 +46,8 @@ Glib::ustring ScheduledRecording::get_duration_text() const
 	
 	return result;
 }
+
+gboolean ScheduledRecording::is_in(guint at)
+{
+	return start_time <= at && start_time+duration > at;
+}

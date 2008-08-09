@@ -188,8 +188,11 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
 void MainWindow::on_menu_item_record_clicked()
 {
 	TRY
-	get_application().signal_record_state_changed(
-		dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_record"))->get_active());
+	Application& application = get_application();
+	application.signal_record_state_changed(
+		dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_record"))->get_active(),
+		application.make_recording_filename(),
+		true);
 	CATCH
 }
 
@@ -487,8 +490,11 @@ void MainWindow::show_scheduled_recordings_dialog()
 void MainWindow::on_tool_button_record_clicked()
 {
 	TRY
-	get_application().signal_record_state_changed(
-		dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"))->get_active());
+	Application& application = get_application();
+	application.signal_record_state_changed(
+		dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"))->get_active(),
+		application.make_recording_filename(),
+		true);
 	CATCH
 }
 
@@ -571,7 +577,7 @@ void MainWindow::set_state(const Glib::ustring& name, gboolean state)
 	update();
 }
 
-void MainWindow::on_record_state_changed(gboolean record_state)
+void MainWindow::on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual)
 {
 	set_state("record", record_state);
 }

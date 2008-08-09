@@ -30,6 +30,7 @@
 #include "stream_thread.h"
 
 typedef sigc::signal<void, gboolean> BooleanStateChangedSignal;
+typedef sigc::signal<void, gboolean, const Glib::ustring&, gboolean> RecordingStateChangedSignal;
 
 class Application : public Gnome::Main
 {
@@ -52,6 +53,10 @@ private:
 	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);
 	
 	Glib::ustring get_configuration_path(const Glib::ustring& key);
+		
+	static gboolean on_timeout(gpointer data);
+	gboolean on_timeout();
+			
 public:
 	Application(int argc, char *argv[]);
 	~Application();
@@ -80,13 +85,14 @@ public:
 	void update_epg_time();
 	guint get_last_epg_update_time() const;
 	
-	BooleanStateChangedSignal	signal_record_state_changed;
-	BooleanStateChangedSignal	signal_mute_state_changed;
+	RecordingStateChangedSignal	signal_record_state_changed;
 	BooleanStateChangedSignal	signal_broadcast_state_changed;
+	BooleanStateChangedSignal	signal_mute_state_changed;
 	sigc::signal<void>			signal_configuration_changed;
 		
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
-
+	Glib::ustring make_recording_filename(const Glib::ustring& description = "");
+		
 	MainWindow& get_main_window();
 };
 

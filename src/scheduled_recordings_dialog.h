@@ -54,6 +54,8 @@ private:
 	void on_button_scheduled_recordings_add_clicked();
 	void on_button_scheduled_recordings_delete_clicked();
 	void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
+		
+	void on_show();
 
 public:	
 	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
