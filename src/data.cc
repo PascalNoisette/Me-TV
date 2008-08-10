@@ -147,6 +147,8 @@ Data::Data(gboolean initialise)
 			"CHANNEL_ID INTEGER NOT NULL, " \
 			"START_TIME INTEGER NOT NULL, " \
 			"DURATION INTEGER NOT NULL);");
+		
+		delete_old_sceduled_recordings();
 	}
 }
 

@@ -21,7 +21,7 @@
 #include "thread.h"
 #include "me-tv-ui.h"
 
-Thread::Thread(const Glib::ustring& name)
+Thread::Thread(const Glib::ustring& name, gboolean join_on_destroy) : join_on_destroy(join_on_destroy)
 {
 	g_static_rec_mutex_init(mutex.gobj());
 	terminated = true;
@@ -32,7 +32,10 @@ Thread::Thread(const Glib::ustring& name)
 
 Thread::~Thread()
 {
-	join(true);
+	if (join_on_destroy)
+	{
+		join(true);
+	}
 }
 
 void Thread::start()

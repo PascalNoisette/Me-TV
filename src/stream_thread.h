@@ -28,6 +28,7 @@
 #include "epg_thread.h"
 #include "channel.h"
 #include "dvb_si.h"
+#include "me-tv-ui.h"
 #include <gnet.h>
 
 class Stream
@@ -47,17 +48,6 @@ public:
 	std::vector<Dvb::SI::TeletextStream>	teletext_streams;
 };
 
-class EngineThread : public Thread
-{
-private:
-	Engine*			engine;
-	Glib::ustring	fifo_path;
-public:
-	EngineThread(Engine* engine, const Glib::ustring& fifo_path) :
-		Thread("Engine"), engine(engine), fifo_path(fifo_path) {}
-	void run();
-};
-
 class StreamThread : public Thread
 {
 private:
@@ -69,7 +59,6 @@ private:
 	Glib::StaticRecMutex			mutex;
 	Dvb::Frontend&					frontend;
 	Engine*							engine;
-	EngineThread*					engine_thread;
 	EpgThread*						epg_thread;
 	Stream							stream;
 	guint							pmt_pid;
@@ -77,7 +66,7 @@ private:
 	GUdpSocket*						socket;
 	GInetAddr*						inet_address;
 	gboolean						manual_recording;
-
+			
 	void on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual);
 	void on_mute_state_changed(gboolean mute_state);
 	void on_broadcast_state_changed(gboolean broadcast_state);

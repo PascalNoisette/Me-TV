@@ -31,8 +31,9 @@ private:
 	Glib::Thread*			thread;
 	Glib::StaticRecMutex	mutex;
 	Glib::ustring			name;
+	gboolean				join_on_destroy;
 public:
-	Thread(const Glib::ustring& name);
+	Thread(const Glib::ustring& name, gboolean join_on_destroy = true);
 	virtual ~Thread();
 
 	virtual void run() = 0;

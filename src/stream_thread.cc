@@ -34,7 +34,7 @@ private:
 		
 	Glib::StaticRecMutex& log(Glib::StaticRecMutex& mutex, const Glib::ustring& name)
 	{
-		g_debug("Trying to lock '%s'", name.c_str());
+		g_debug("'%s' trying to lock", name.c_str());
 		return mutex;
 	}
 public:
@@ -48,6 +48,27 @@ public:
 	{
 		g_debug("'%s' released lock", name.c_str());
 	}
+};
+
+class OutputChannelOpenThread : public Thread
+{
+private:
+	Glib::RefPtr<Glib::IOChannel>&	output_channel;
+	const Glib::ustring&			fifo_path;
+	Glib::StaticRecMutex&			mutex;
+		
+	void run()
+	{
+		Lock lock(mutex, "OutputChannelOpenThread");
+		output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
+		output_channel->set_encoding("");
+		g_debug("Output channel created");
+	}
+public:
+	OutputChannelOpenThread(Glib::RefPtr<Glib::IOChannel>& output_channel,
+		const Glib::ustring& fifo_path, Glib::StaticRecMutex& mutex)
+		: Thread("OutputChannelOpen"), output_channel(output_channel), fifo_path(fifo_path), mutex(mutex) {}
+	~OutputChannelOpenThread() {};
 };
 
 StreamThread::StreamThread(const Channel& channel) :
@@ -87,6 +108,7 @@ StreamThread::~StreamThread()
 {
 	g_debug("Destroying StreamThread");
 	join(true);
+	stop_engine();
 	g_debug("StreamThread destroyed");
 }
 
@@ -105,17 +127,11 @@ void StreamThread::start()
 	{
 		on_mute_state_changed(true);
 	}
+	
 	if (application.get_main_window().is_broadcasting())
 	{
 		on_broadcast_state_changed(true);
 	}
-}
-
-void EngineThread::run()
-{
-	g_debug("Telling engine to start playing");
-	engine->play(get_application().get_main_window().get_drawing_area(), fifo_path);
-	g_debug("Enging playing");
 }
 
 void StreamThread::start_engine()
@@ -149,12 +165,37 @@ void StreamThread::start_engine()
 		}
 	}
 
-	EngineThread engine_thread(engine, fifo_path);
-	engine_thread.start();
+	OutputChannelOpenThread output_channel_open_thread(output_channel, fifo_path, mutex);
+	output_channel_open_thread.start();
+
+	g_debug("Telling engine to start playing");
+	engine->play(get_application().get_main_window().get_drawing_area(), fifo_path);
+	g_debug("Engine playing");
+}
+
+void StreamThread::stop_engine()
+{
+	g_debug("Stopping engine");
+
+	{
+		Lock lock(mutex, "StreamThread::stop_engine()");
+		if (output_channel)
+		{
+			g_debug("Closing output channel");
+			output_channel->close();
+			output_channel.clear();
+			g_debug("Output channel closed");
+		}
+	}
 	
-	Lock lock(mutex, "StreamThread::start_engine()");
-	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
-	output_channel->set_encoding("");
+	if (engine != NULL)
+	{
+		g_debug("Stopping engine");
+
+		delete engine;
+		engine = NULL;
+	}
+	g_debug("Engine stopped");
 }
 
 void StreamThread::on_main_window_show()
@@ -310,11 +351,19 @@ void StreamThread::run()
 
 	Lock lock(mutex, "StreamThread::run() - exit");
 
-	g_debug("About to clear input channel ...");
+	g_debug("About to close input channel ...");
 	input_channel->close();
 	input_channel.clear();
-
-	stop_engine();
+	g_debug("Input channel closed");
+/*
+	if (output_channel)
+	{
+		g_debug("Closing output channel");
+		output_channel->close();
+		output_channel.clear();
+		g_debug("Output channel closed");
+	}
+*/
 }
 
 gboolean StreamThread::is_recording()
@@ -692,21 +741,6 @@ void StreamThread::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	}
 
 	g_debug("Finished setting up DVB");
-}
-
-void StreamThread::stop_engine()
-{	
-	if (engine != NULL)
-	{
-		g_debug("Stopping engine");
-
-		output_channel->close();
-		output_channel.clear();
-
-		delete engine;
-		engine = NULL;
-	}
-	g_debug("Engine stopped");
 }
 
 void StreamThread::start_epg_thread()

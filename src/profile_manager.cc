@@ -22,9 +22,34 @@
 #include "me-tv.h"
 #include "application.h"
 
+void ProfileManager::unset_directory(const Glib::ustring& path)
+{
+	g_debug("Removing %s", path.c_str());
+	
+	Glib::RefPtr<Gnome::Conf::Client> client = Gnome::Conf::Client::get_default_client();
+	StringList directories = client->all_dirs(path);
+	StringList::iterator directory_iterator = directories.begin();
+	while (directory_iterator != directories.end())
+	{
+		unset_directory(*directory_iterator);
+		directory_iterator++;
+	}
+	
+	std::list<Gnome::Conf::Entry> entries = client->all_entries(path);
+	std::list<Gnome::Conf::Entry>::const_iterator entry_iterator = entries.begin();
+	while (entry_iterator != entries.end())
+	{
+		const Glib::ustring& key = (*entry_iterator).get_key();
+		client->unset(key);
+		entry_iterator++;
+	}
+	client->clear_cache();
+}
+
 ProfileManager::ProfileManager()
 {
 	current_profile = NULL;
+	unset_directory("/apps/me-tv/profiles");
 }
 
 ProfileManager::~ProfileManager()
