@@ -26,10 +26,13 @@
 
 class Engine
 {
+private:
 public:
 	virtual ~Engine() {};
-	virtual void play(Gtk::Widget& widget, const Glib::ustring& mrl) = 0;
+	virtual void play(int window_id, const Glib::ustring& mrl) = 0;
+	virtual void stop() = 0;
 	virtual void mute(gboolean state) = 0;
+	virtual void expose() = 0;
 };
 
 #endif

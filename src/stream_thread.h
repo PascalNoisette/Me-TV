@@ -66,6 +66,7 @@ private:
 	GUdpSocket*						socket;
 	GInetAddr*						inet_address;
 	gboolean						manual_recording;
+	gboolean						broadcast_failure_message;
 			
 	void on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual);
 	void on_mute_state_changed(gboolean mute_state);

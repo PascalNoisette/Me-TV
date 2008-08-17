@@ -22,8 +22,8 @@
 #include "application.h"
 #include "device_manager.h"
 #include "gstreamer_engine.h"
-#include "xine_engine.h"
 #include <glibmm.h>
+#include <gdk/gdkx.h>
 
 #define TS_PACKET_SIZE 188
 
@@ -34,41 +34,54 @@ private:
 		
 	Glib::StaticRecMutex& log(Glib::StaticRecMutex& mutex, const Glib::ustring& name)
 	{
-		g_debug("'%s' trying to lock", name.c_str());
+		//g_debug("'%s' trying to lock", name.c_str());
 		return mutex;
 	}
 public:
 	Lock(Glib::StaticRecMutex& mutex, const Glib::ustring& name) :
 		Glib::RecMutex::Lock(log(mutex, name)), name(name)
 	{
-		g_debug("'%s' acquired lock", name.c_str());
+		//g_debug("'%s' acquired lock", name.c_str());
 	}
 	
 	~Lock()
 	{
-		g_debug("'%s' released lock", name.c_str());
+		//g_debug("'%s' released lock", name.c_str());
 	}
 };
 
-class OutputChannelOpenThread : public Thread
+class EngineStartThread : public Thread
 {
 private:
-	Glib::RefPtr<Glib::IOChannel>&	output_channel;
-	const Glib::ustring&			fifo_path;
-	Glib::StaticRecMutex&			mutex;
+	int						window_id;
+	const Glib::ustring&	fifo_path;
+	Engine*					engine;
 		
 	void run()
 	{
-		Lock lock(mutex, "OutputChannelOpenThread");
-		output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
-		output_channel->set_encoding("");
-		g_debug("Output channel created");
+		g_debug("Telling engine to start playing");
+		engine->play(window_id, fifo_path);
+		g_debug("Engine playing");
+	}
+
+public:
+	EngineStartThread(Engine* engine, int window_id, const Glib::ustring& fifo_path)
+		: Thread("Engine start thread"), engine(engine), window_id(window_id), fifo_path(fifo_path) {}
+};
+
+class StopEngineThread : public Thread
+{
+private:
+	Engine*	engine;
+	
+	void run()
+	{
+		g_debug("Stopping engine");
+		engine->stop();
+		g_debug("Engine stopped");
 	}
 public:
-	OutputChannelOpenThread(Glib::RefPtr<Glib::IOChannel>& output_channel,
-		const Glib::ustring& fifo_path, Glib::StaticRecMutex& mutex)
-		: Thread("OutputChannelOpen"), output_channel(output_channel), fifo_path(fifo_path), mutex(mutex) {}
-	~OutputChannelOpenThread() {};
+	StopEngineThread(Engine* engine) : Thread("Stop engine"), engine(engine) {}
 };
 
 StreamThread::StreamThread(const Channel& channel) :
@@ -83,6 +96,7 @@ StreamThread::StreamThread(const Channel& channel) :
 	epg_thread = NULL;
 	socket = NULL;
 	manual_recording = false;
+	broadcast_failure_message = true;
 	
 	for(gint i = 0 ; i < 256 ; i++ )
 	{
@@ -118,9 +132,7 @@ void StreamThread::start()
 
 	g_debug("Starting stream thread");
 	Thread::start();
-
-	start_epg_thread();
-
+	
 	Lock lock(mutex, "StreamThread::start()");
 	Application& application = get_application();
 	if (application.get_main_window().is_muted())
@@ -132,25 +144,31 @@ void StreamThread::start()
 	{
 		on_broadcast_state_changed(true);
 	}
+
+	start_epg_thread();
 }
 
 void StreamThread::start_engine()
 {
-	stop_engine();
-	
-	g_debug("Starting engine");
-	Glib::ustring engine_type = get_application().get_string_configuration_value("engine_type");
-	if (engine_type == "gstreamer")
+	Application& application = get_application();
 	{
-		engine = new GStreamerEngine();
-	}
-	else if (engine_type == "xine")
-	{
-		engine = new XineEngine();
-	}
-	else
-	{
-		throw Exception(_("Unknown engine type"));
+		Lock lock(mutex, __PRETTY_FUNCTION__);
+		if (engine != NULL)
+		{
+			throw Exception("Failed to start_engine: Engine has already been started");
+		}
+			
+		g_debug("Starting engine");
+		Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
+		if (engine_type == "gstreamer")
+		{
+			engine = new GStreamerEngine();
+		}
+		else
+		{
+			throw Exception(_("Unknown engine type"));
+		}
+		g_debug("%s engine created", engine_type.c_str());
 	}
 	
 	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
@@ -165,37 +183,36 @@ void StreamThread::start_engine()
 		}
 	}
 
-	OutputChannelOpenThread output_channel_open_thread(output_channel, fifo_path, mutex);
-	output_channel_open_thread.start();
+	if (engine != NULL)
+	{
+		int window_id = GDK_WINDOW_XID(application.get_main_window().get_drawing_area().get_window()->gobj());
 
-	g_debug("Telling engine to start playing");
-	engine->play(get_application().get_main_window().get_drawing_area(), fifo_path);
-	g_debug("Engine playing");
+		EngineStartThread engine_start_thread(engine, window_id, fifo_path);
+		engine_start_thread.start();
+
+		Lock lock(mutex, "Output channel open");
+		output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
+		output_channel->set_encoding("");
+		g_debug("Output channel created");
+	}
 }
 
 void StreamThread::stop_engine()
 {
-	g_debug("Stopping engine");
-
-	{
-		Lock lock(mutex, "StreamThread::stop_engine()");
-		if (output_channel)
-		{
-			g_debug("Closing output channel");
-			output_channel->close();
-			output_channel.clear();
-			g_debug("Output channel closed");
-		}
-	}
-	
 	if (engine != NULL)
 	{
 		g_debug("Stopping engine");
 
+		StopEngineThread stop_engine_close_thread(engine);
+		stop_engine_close_thread.start();
+
+		Lock lock(mutex, "Output channel close");
+		output_channel->close();
+		output_channel.reset();
+
 		delete engine;
 		engine = NULL;
 	}
-	g_debug("Engine stopped");
 }
 
 void StreamThread::on_main_window_show()
@@ -297,7 +314,11 @@ void StreamThread::write(gchar* buffer, gsize length)
 	{
 		if (gnet_udp_socket_send(socket, buffer, length, inet_address) != 0)
 		{
-			g_message(_("Failed to send to UDP socket"));
+			if (broadcast_failure_message)
+			{
+				g_message(_("Failed to send to UDP socket"));
+			}
+			broadcast_failure_message = false;
 		}
 	}
 }
@@ -314,10 +335,6 @@ void StreamThread::run()
 
 	build_pat(pat);
 	build_pmt(pmt);
-	
-	struct pollfd pfd[1];
-	pfd[0].fd = g_io_channel_unix_get_fd(input_channel->gobj());
-	pfd[0].events = POLLIN | POLLOUT | POLLPRI;
 		
 	guint last_insert_time = 0;	
 	gsize bytes_read;
@@ -326,20 +343,23 @@ void StreamThread::run()
 	TRY
 	while (!is_terminated())
 	{
+		//Lock lock(mutex, "Loop");
+
 		// Insert PAT/PMT every second
 		time_t now = time(NULL);
 		if (now - last_insert_time > 1)
 		{
+			g_debug("Writing PAT/PMT");
 			write(pat, TS_PACKET_SIZE);
 			write(pmt, TS_PACKET_SIZE);
 			last_insert_time = now;
+			
+			if (engine != NULL)
+			{
+				engine->expose();
+			}
 		}
-		
-		if (poll(pfd, 1, 5000) == -1)
-		{
-			throw Exception(_("Failed to poll for data"));
-		}
-		
+				
 		input_channel->read(buffer, TS_PACKET_SIZE * 10, bytes_read);
 		write(buffer, bytes_read);
 	}
@@ -352,18 +372,9 @@ void StreamThread::run()
 	Lock lock(mutex, "StreamThread::run() - exit");
 
 	g_debug("About to close input channel ...");
-	input_channel->close();
+	input_channel->close(true);
 	input_channel.clear();
 	g_debug("Input channel closed");
-/*
-	if (output_channel)
-	{
-		g_debug("Closing output channel");
-		output_channel->close();
-		output_channel.clear();
-		g_debug("Output channel closed");
-	}
-*/
 }
 
 gboolean StreamThread::is_recording()

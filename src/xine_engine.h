@@ -43,7 +43,7 @@ private:
 		int video_width, int video_height, double video_pixel_aspect, int *dest_x, int *dest_y,
 		int *dest_width, int *dest_height, double *dest_pixel_aspect, int *win_x, int *win_y );
 	
-	void play(Gtk::Widget& widget, const Glib::ustring& mrl);
+	void play(int window_id, const Glib::ustring& mrl);
 	void mute(gboolean state);
 	bool on_drawing_area_configure_event(GdkEventConfigure* event);
 	

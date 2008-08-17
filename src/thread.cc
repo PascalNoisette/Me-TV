@@ -21,10 +21,12 @@
 #include "thread.h"
 #include "me-tv-ui.h"
 
-Thread::Thread(const Glib::ustring& name, gboolean join_on_destroy) : join_on_destroy(join_on_destroy)
+Thread::Thread(const Glib::ustring& name, gboolean join_on_destroy)
+: join_on_destroy(join_on_destroy)
 {
 	g_static_rec_mutex_init(mutex.gobj());
 	terminated = true;
+	started = false;
 	thread = NULL;
 	this->name = name;
 	g_debug("Thread '%s' created", name.c_str());
@@ -47,13 +49,21 @@ void Thread::start()
 	}
 	
 	terminated = false;
+	started = false;
 	thread = Glib::Thread::create(sigc::mem_fun(*this, &Thread::on_run), true);
 	g_debug("Thread '%s' started", name.c_str());
+	
+	while (!started)
+	{
+		g_debug("Waiting for '%s' to start", name.c_str());
+		usleep(1000);
+	}
 }
 	
 void Thread::on_run()
 {		
 	TRY
+	started = true;
 	run();
 	g_debug("Thread '%s' exited", name.c_str());
 	THREAD_CATCH

@@ -43,4 +43,7 @@ Glib::ustring encode_xml(const Glib::ustring& s);
 guint get_local_time();
 guint convert_to_local_time(guint gmt);
 
+void on_error(const Glib::ustring& message);
+void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data);
+
 #endif

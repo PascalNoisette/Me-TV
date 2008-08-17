@@ -315,6 +315,7 @@ gboolean Application::on_timeout()
 					
 					if (!stream_thread->is_recording())
 					{
+						g_debug("Starting recording due to scheduled recording");
 						Glib::ustring filename = make_recording_filename(scheduled_recording.description);
 						signal_record_state_changed(true, filename, false);
 					}
@@ -344,7 +345,6 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	}
 	
 	Glib::ustring start_time = get_time_text(get_local_time(), "%c");
-	g_debug("Starting recording due to scheduled recording");
 	Glib::ustring filename;
 
 	if (description.size() == 0)

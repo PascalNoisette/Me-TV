@@ -27,7 +27,6 @@
 #include <math.h>
 #include <string.h>
 #include <X11/Xlib.h>
-#include <gdk/gdkx.h>
 
 class XineException : public Exception
 {
@@ -137,14 +136,14 @@ void XineEngine::mute(gboolean state)
 	}
 }
 
-void XineEngine::play(Gtk::Widget& widget, const Glib::ustring& mrl)
+void XineEngine::play(int window_id, const Glib::ustring& mrl)
 {
 	x11_visual_t	vis;
 	int				screen;
 	double			res_h, res_v;
 
-	widget.signal_configure_event().connect(
-		sigc::mem_fun(*this, &XineEngine::on_drawing_area_configure_event));
+//	widget.signal_configure_event().connect(
+//		sigc::mem_fun(*this, &XineEngine::on_drawing_area_configure_event));
 		
 	Application& application = Application::get_current();
 
@@ -166,7 +165,7 @@ void XineEngine::play(Gtk::Widget& widget, const Glib::ustring& mrl)
 
 		config_file->write(".version:2\n");
 		config_file->write(Glib::ustring::compose("engine.buffers.audio_num_buffers:%1\n", 50));
-		config_file->write(Glib::ustring::compose("engine.buffers.video_num_buffers:%n", 1000));
+		config_file->write(Glib::ustring::compose("engine.buffers.video_num_buffers:%1\n", 1000));
 		
 		config_file->close();
 	}
@@ -185,8 +184,6 @@ void XineEngine::play(Gtk::Widget& widget, const Glib::ustring& mrl)
 	{
 		pixel_aspect = 1.0;
 	}
-	
-	gint window_id = GDK_WINDOW_XID(widget.get_window()->gobj());
 	
 	width	= 320;
 	height	= 200;
@@ -293,7 +290,7 @@ void XineEngine::play(Gtk::Widget& widget, const Glib::ustring& mrl)
 	}
 	g_debug("Xine engine playing");
 
-	widget.get_window()->get_size(width, height);
+//	widget.get_window()->get_size(width, height);
 }
 
 bool XineEngine::on_drawing_area_configure_event(GdkEventConfigure* event)

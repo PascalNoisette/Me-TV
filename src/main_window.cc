@@ -110,6 +110,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	ChannelList& channels = current_profile.get_channels();
 	if (channels.size() == 0)
 	{
+                // Confirm that there is a device
+                get_application().get_device_manager().get_frontend();
+
 		show_channels_dialog();
 	}
 	

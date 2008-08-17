@@ -87,7 +87,9 @@ void ChannelsDialog::show_scan_dialog()
 
 void ChannelsDialog::on_button_scan_clicked()
 {
+        TRY
 	show_scan_dialog();
+        CATCH
 }
 
 void ChannelsDialog::on_button_button_remove_selected_channels_clicked()

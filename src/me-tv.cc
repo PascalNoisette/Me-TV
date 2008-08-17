@@ -20,6 +20,7 @@
 
 #include "me-tv.h"
 #include "exception.h"
+#include <glib/gprintf.h>
 
 StringSignal signal_error;
 
@@ -71,4 +72,15 @@ guint get_local_time()
 guint convert_to_local_time(guint gmt)
 {
 	return gmt - timezone;
+}
+
+void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
+{
+	Glib::ustring time_text = get_time_text(get_local_time(), "%x %T");
+	g_printf("%s: %s\n", time_text.c_str(), message);
+}
+
+void on_error(const Glib::ustring& message)
+{
+	g_message(message.c_str());
 }

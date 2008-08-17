@@ -32,6 +32,7 @@ private:
 	Glib::StaticRecMutex	mutex;
 	Glib::ustring			name;
 	gboolean				join_on_destroy;
+	gboolean				started;
 public:
 	Thread(const Glib::ustring& name, gboolean join_on_destroy = true);
 	virtual ~Thread();
