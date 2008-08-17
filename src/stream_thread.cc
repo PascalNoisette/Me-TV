@@ -349,7 +349,6 @@ void StreamThread::run()
 		time_t now = time(NULL);
 		if (now - last_insert_time > 1)
 		{
-			g_debug("Writing PAT/PMT");
 			write(pat, TS_PACKET_SIZE);
 			write(pmt, TS_PACKET_SIZE);
 			last_insert_time = now;
