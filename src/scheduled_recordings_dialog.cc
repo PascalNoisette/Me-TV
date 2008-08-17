@@ -59,13 +59,16 @@ void ScheduledRecordingsDialog::on_button_scheduled_recordings_add_clicked()
 void ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked()
 {
 	TRY
-	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scheduled_recordings->get_selection();
-	Gtk::TreeModel::Row row = *(selection->get_selected());
+	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scheduled_recordings->get_selection();	
+	if (selection->count_selected_rows() > 0)
+	{
+		Gtk::TreeModel::Row row = *(selection->get_selected());
 
-	Data data;
-	guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
-	data.delete_scheduled_recording(scheduled_recording_id);
-	update();
+		Data data;
+		guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
+		data.delete_scheduled_recording(scheduled_recording_id);
+		update();
+	}
 	CATCH
 }
 
