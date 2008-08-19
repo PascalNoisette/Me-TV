@@ -40,7 +40,8 @@ Application::Application(int argc, char *argv[]) :
 	current = this;
 	main_window = NULL;
 	stream_thread = NULL;
-
+	update_epg_time();
+	
 	client = Gnome::Conf::Client::get_default_client();
 	
 	set_int_configuration_default("epg_span_hours", 3);
