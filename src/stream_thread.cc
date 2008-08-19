@@ -121,8 +121,10 @@ StreamThread::StreamThread(const Channel& channel) :
 StreamThread::~StreamThread()
 {
 	g_debug("Destroying StreamThread");
+	stop_epg_thread();
 	join(true);
 	stop_engine();
+	remove_all_demuxers();
 	g_debug("StreamThread destroyed");
 }
 
@@ -207,7 +209,7 @@ void StreamThread::stop_engine()
 		stop_engine_close_thread.start();
 
 		Lock lock(mutex, "Output channel close");
-		output_channel->close();
+		output_channel->close(true);
 		output_channel.reset();
 
 		delete engine;
@@ -261,7 +263,8 @@ void StreamThread::on_record_state_changed(gboolean record_state, const Glib::us
 	{
 		manual_recording = false;
 		
-		recording_channel.clear();
+		recording_channel->close(true);
+		recording_channel.reset();
 		g_debug("Recording channel cleared");
 	}
 }
@@ -340,7 +343,7 @@ void StreamThread::run()
 	build_pat(pat);
 	build_pmt(pmt);
 		
-	guint last_insert_time = 0;	
+	guint last_insert_time = 0;
 	gsize bytes_read;
 	gsize bytes_written;
 	
@@ -369,14 +372,11 @@ void StreamThread::run()
 	THREAD_CATCH
 	g_debug("StreamThread loop exited");
 	
-	stop_epg_thread();
-	remove_all_demuxers();
-
 	Lock lock(mutex, "StreamThread::run() - exit");
 
 	g_debug("About to close input channel ...");
 	input_channel->close(true);
-	input_channel.clear();
+	input_channel.reset();
 	g_debug("Input channel closed");
 }
 

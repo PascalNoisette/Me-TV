@@ -36,6 +36,7 @@ private:
 	Gtk::SpinButton* spinbutton_duration;
 	Gtk::Entry* entry_description;
 	ChannelComboBox* channel_combo_box;
+	guint scheduled_recording_id;
 
 public:
 	ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);

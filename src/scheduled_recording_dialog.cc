@@ -34,6 +34,7 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 	Gtk::Dialog(cobject), glade(glade)
 {
 	channel_combo_box = NULL;
+	scheduled_recording_id = 0;
 	const Profile& profile = get_application().get_profile_manager().get_current_profile();
 	
 	date_edit_start_time = dynamic_cast<Gnome::UI::DateEdit*>(glade->get_widget("date_edit_start_time"));
@@ -50,6 +51,7 @@ guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, ScheduledRecordi
 		set_transient_for(*transient_for);
 	}
 	
+	scheduled_recording_id = scheduled_recording.scheduled_recording_id;
 	entry_description->set_text(scheduled_recording.description);
 	date_edit_start_time->set_time(scheduled_recording.start_time);
 	spinbutton_duration->set_value(scheduled_recording.duration/60);
@@ -98,7 +100,7 @@ guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populat
 ScheduledRecording ScheduledRecordingDialog::get_scheduled_recording()
 {
 	ScheduledRecording scheduled_recording;
-	scheduled_recording.scheduled_recording_id = 0;
+	scheduled_recording.scheduled_recording_id = scheduled_recording_id;
 	scheduled_recording.description = entry_description->get_text();
 	scheduled_recording.type = 0;
 	scheduled_recording.channel_id = channel_combo_box->get_selected_channel_id();
