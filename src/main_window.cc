@@ -461,7 +461,7 @@ bool MainWindow::on_timeout()
 		last_poke_time = now;
 	}
 	
-	THREAD_CATCH
+	CATCH
 		
 	return true;
 }

@@ -30,7 +30,6 @@ class GStreamerEngine : public Engine
 {
 private:
 	GstElement*	pipeline;
-	GstElement*	deinterlace;
 	GstElement*	video_sink;
 
 	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);

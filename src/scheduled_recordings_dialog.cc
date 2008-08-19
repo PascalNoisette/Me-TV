@@ -83,11 +83,11 @@ void ScheduledRecordingsDialog::update()
 	{
 		ScheduledRecording& scheduled_recording = *i;
 		Gtk::TreeModel::Row row = *(list_store->append());
-		row[columns.column_scheduled_recording_id] = scheduled_recording.scheduled_recording_id;
-		row[columns.column_description] = scheduled_recording.description;
-		row[columns.column_channel] = current_profile.get_channel(scheduled_recording.channel_id).name;
-		row[columns.column_start_time] = scheduled_recording.get_start_time_text();
-		row[columns.column_duration] = scheduled_recording.get_duration_text();
+		row[columns.column_scheduled_recording_id]	= scheduled_recording.scheduled_recording_id;
+		row[columns.column_description]				= scheduled_recording.description;
+		row[columns.column_channel]					= current_profile.get_channel(scheduled_recording.channel_id).name;
+		row[columns.column_start_time]				= scheduled_recording.get_start_time_text();
+		row[columns.column_duration]				= scheduled_recording.get_duration_text();
 	}
 }
 

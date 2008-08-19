@@ -20,6 +20,7 @@
 
 #include "gstreamer_engine.h"
 #include "exception.h"
+#include "application.h"
 
 static gboolean bus_call (GstBus* bus, GstMessage* message, gpointer data)
 {
@@ -70,19 +71,18 @@ GstElement* GStreamerEngine::create_element(const Glib::ustring& factoryname, co
 
 GStreamerEngine::GStreamerEngine()
 {
+	Glib::ustring configured_video_sink = get_application().get_string_configuration_value("video_sink");
+	
 	pipeline	= create_element("playbin", "playbin");
-	deinterlace	= create_element("ffdeinterlace", "deinterlace");
-	video_sink	= create_element("ximagesink", "video_sink");
+	video_sink	= create_element(configured_video_sink.c_str(), "video_sink");
 	
 	GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE(pipeline));
 	gst_bus_add_watch (bus, bus_call, this);
 	gst_object_unref (bus);
 	
-	g_object_set (G_OBJECT (video_sink), "force-aspect-ratio", true, NULL);
-	g_object_set (G_OBJECT (pipeline), "video_sink", video_sink, NULL);
-	g_object_set (G_OBJECT (pipeline), "async-handling", true, NULL);
-
-	//gst_element_link_many(pipeline, deinterlace, video_sink, NULL);
+	g_object_set(G_OBJECT(video_sink), "force-aspect-ratio", true, NULL);
+	g_object_set(G_OBJECT(pipeline), "video_sink", video_sink, NULL);
+	g_object_set(G_OBJECT(pipeline), "volume", (double)10, NULL);
 }
 
 GStreamerEngine::~GStreamerEngine()
@@ -115,7 +115,7 @@ void GStreamerEngine::stop()
 
 void GStreamerEngine::mute(gboolean state)
 {
-	g_object_set(G_OBJECT(pipeline), "volume", state ? 0 : 100, NULL);
+	g_object_set(G_OBJECT(pipeline), "volume", (double)(state ? 0 : 10), NULL);
 }
 
 void GStreamerEngine::expose()

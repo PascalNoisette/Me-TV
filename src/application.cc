@@ -58,7 +58,8 @@ Application::Application(int argc, char *argv[]) :
 	set_string_configuration_default("xine.audio_driver", "auto");
 	set_string_configuration_default("xine.deinterlace_type", "default");
 	set_string_configuration_default("preferred_language", "");
-		
+	set_string_configuration_default("video_sink", "ximagesink");
+	
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
 	if (!file->query_exists())
@@ -207,8 +208,10 @@ void Application::set_source(const Channel& channel)
 
 void Application::on_signal_configuration_changed()
 {
+	TRY
 	update_ui();
 	preferred_language = get_string_configuration_value("preferred_language");	
+	CATCH
 }
 
 void Application::update_ui()
@@ -262,6 +265,8 @@ gboolean Application::on_timeout(gpointer data)
 
 gboolean Application::on_timeout()
 {
+	TRY
+		
 	Profile& profile = profile_manager.get_current_profile();
 	gboolean got_recording = false;
 	
@@ -331,6 +336,7 @@ gboolean Application::on_timeout()
 		
 		g_debug("");
 	}
+	CATCH
 	
 	return true;
 }

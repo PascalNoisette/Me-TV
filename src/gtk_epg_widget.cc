@@ -198,7 +198,7 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 			
 			if (column_count > 0)
 			{
-				guint converted_start_time = convert_to_local_time(convert_to_local_time(epg_event.start_time));
+				guint converted_start_time = convert_to_local_time(epg_event.start_time);
 
 				Glib::ustring text;
 				if (show_epg_time)

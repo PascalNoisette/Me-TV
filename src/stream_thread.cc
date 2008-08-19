@@ -155,7 +155,7 @@ void StreamThread::start_engine()
 		Lock lock(mutex, __PRETTY_FUNCTION__);
 		if (engine != NULL)
 		{
-			throw Exception("Failed to start_engine: Engine has already been started");
+			throw Exception("Failed to start engine: Engine has already been started");
 		}
 			
 		g_debug("Starting engine");
@@ -217,12 +217,16 @@ void StreamThread::stop_engine()
 
 void StreamThread::on_main_window_show()
 {
+	TRY
 	start_engine();
+	CATCH
 }
 
 void StreamThread::on_main_window_hide()
 {
+	TRY
 	stop_engine();
+	CATCH
 }
 
 void StreamThread::on_mute_state_changed(gboolean mute_state)
