@@ -68,7 +68,7 @@ void Profile::set_display_channel(guint channel_id)
 
 void Profile::set_display_channel(const Channel& channel)
 {
-	g_debug("Setting display channel to '%s' (%d)", channel.name.c_str(), channel.channel_id);
+	g_message("Setting display channel to '%s' (%d)", channel.name.c_str(), channel.channel_id);
 	display_channel = find_channel(channel.frontend_parameters.frequency, channel.service_id);
 	signal_display_channel_changed(*display_channel);
 }

@@ -22,6 +22,8 @@
 #include "application.h"
 #include "device_manager.h"
 #include "gstreamer_engine.h"
+#include "xine_engine.h"
+#include "mplayer_engine.h"
 #include <glibmm.h>
 #include <gdk/gdkx.h>
 
@@ -34,39 +36,38 @@ private:
 		
 	Glib::StaticRecMutex& log(Glib::StaticRecMutex& mutex, const Glib::ustring& name)
 	{
-		//g_debug("'%s' trying to lock", name.c_str());
+		g_debug("'%s' trying to lock", name.c_str());
 		return mutex;
 	}
 public:
 	Lock(Glib::StaticRecMutex& mutex, const Glib::ustring& name) :
 		Glib::RecMutex::Lock(log(mutex, name)), name(name)
 	{
-		//g_debug("'%s' acquired lock", name.c_str());
+		g_debug("'%s' acquired lock", name.c_str());
 	}
 	
 	~Lock()
 	{
-		//g_debug("'%s' released lock", name.c_str());
+		g_debug("'%s' released lock", name.c_str());
 	}
 };
 
 class EngineStartThread : public Thread
 {
 private:
-	int						window_id;
 	const Glib::ustring&	fifo_path;
 	Engine*					engine;
 		
 	void run()
 	{
 		g_debug("Telling engine to start playing");
-		engine->play(window_id, fifo_path);
+		engine->play(fifo_path);
 		g_debug("Engine playing");
 	}
 
 public:
-	EngineStartThread(Engine* engine, int window_id, const Glib::ustring& fifo_path)
-		: Thread("Engine start thread"), engine(engine), window_id(window_id), fifo_path(fifo_path) {}
+	EngineStartThread(Engine* engine, const Glib::ustring& fifo_path)
+		: Thread("Engine start thread"), engine(engine), fifo_path(fifo_path) {}
 };
 
 class StopEngineThread : public Thread
@@ -76,9 +77,9 @@ private:
 	
 	void run()
 	{
-		g_debug("Stopping engine");
+		g_debug("Stopping engine in thread");
 		engine->stop();
-		g_debug("Engine stopped");
+		g_debug("Engine stopped in thread");
 	}
 public:
 	StopEngineThread(Engine* engine) : Thread("Stop engine"), engine(engine) {}
@@ -97,6 +98,7 @@ StreamThread::StreamThread(const Channel& channel) :
 	socket = NULL;
 	manual_recording = false;
 	broadcast_failure_message = true;
+	output_fd = -1;
 	
 	for(gint i = 0 ; i < 256 ; i++ )
 	{
@@ -112,20 +114,46 @@ StreamThread::StreamThread(const Channel& channel) :
 	application.signal_record_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_record_state_changed));
 	application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_mute_state_changed));
 	application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_broadcast_state_changed));
-	application.get_main_window().signal_show().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_show));
-	application.get_main_window().signal_hide().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_hide));
+	
+	MainWindow& main_window = application.get_main_window();
+	show_connection = main_window.signal_show().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_show));
+	hide_connection = main_window.signal_hide().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_hide));
+
+	timeout_source = gdk_threads_add_timeout(500, &StreamThread::on_timeout, this);
 
 	g_debug("StreamThread created");
+	g_debug("Engine checkpoint 4: 0x%08X 0x%08X 0x%08X", this, engine, mutex.gobj());
 }
 
 StreamThread::~StreamThread()
 {
+	g_debug("Engine checkpoint 5: 0x%08X 0x%08X 0x%08X", this, engine, mutex.gobj());
 	g_debug("Destroying StreamThread");
+	show_connection.disconnect();
+	hide_connection.disconnect();
+	g_source_remove(timeout_source);
 	stop_epg_thread();
 	join(true);
 	stop_engine();
 	remove_all_demuxers();
 	g_debug("StreamThread destroyed");
+}
+
+gboolean StreamThread::on_timeout(gpointer data)
+{
+	StreamThread* stream_thread = (StreamThread*)data;
+	stream_thread->on_timeout();
+	return TRUE;
+}
+
+void StreamThread::on_timeout()
+{
+	Lock lock(mutex, "Engine expose");
+	g_debug("Engine checkpoint 3: 0x%08X 0x%08X 0x%08X", this, engine, mutex.gobj());
+	if (engine != NULL)
+	{
+		engine->expose();
+	}
 }
 
 void StreamThread::start()
@@ -160,17 +188,30 @@ void StreamThread::start_engine()
 			throw Exception("Failed to start engine: Engine has already been started");
 		}
 			
-		g_debug("Starting engine");
+		int window_id = GDK_WINDOW_XID(application.get_main_window().get_drawing_area().get_window()->gobj());
+
+		g_debug("Creating engine");
 		Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
 		if (engine_type == "gstreamer")
 		{
-			engine = new GStreamerEngine();
+			engine = new GStreamerEngine(window_id);
+		}
+		else if (engine_type == "xine")
+		{
+			engine = new XineEngine(window_id);
+			g_debug("Engine created: 0x%08X", engine);
+		}
+		else if (engine_type == "mplayer")
+		{
+			engine = new XineEngine(window_id);
+			g_debug("Engine created: 0x%08X", engine);
 		}
 		else
 		{
 			throw Exception(_("Unknown engine type"));
 		}
 		g_debug("%s engine created", engine_type.c_str());
+		g_debug("Engine checkpoint 1: 0x%08X", engine);
 	}
 	
 	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
@@ -187,31 +228,40 @@ void StreamThread::start_engine()
 
 	if (engine != NULL)
 	{
-		int window_id = GDK_WINDOW_XID(application.get_main_window().get_drawing_area().get_window()->gobj());
-
-		EngineStartThread engine_start_thread(engine, window_id, fifo_path);
+		EngineStartThread engine_start_thread(engine, fifo_path);
 		engine_start_thread.start();
 
-		Lock lock(mutex, "Output channel open");
-		output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
-		output_channel->set_encoding("");
-		g_debug("Output channel created");
+		Lock lock(mutex, "Output FD open");
+		g_debug("Opening '%s'", fifo_path.c_str());
+		output_fd = open(fifo_path.c_str(), O_WRONLY, 0);
+		
+		if (output_fd == -1)
+		{
+			throw SystemException("Failed to create FIFO output");
+		}
+		g_debug("Output FD created");
 	}
+	g_debug("Engine checkpoint 2: 0x%08X", engine);
 }
 
 void StreamThread::stop_engine()
 {
+	Lock lock(mutex, "Output FD close");
 	if (engine != NULL)
 	{
-		g_debug("Stopping engine");
+		g_debug("Stopping engine: 0x%08X", engine);
+		
+		StopEngineThread stop_engine_thread(engine);
+		stop_engine_thread.start();
 
-		StopEngineThread stop_engine_close_thread(engine);
-		stop_engine_close_thread.start();
+		if (output_fd != -1)
+		{
+			close(output_fd);
+			output_fd = -1;
+		}
 
-		Lock lock(mutex, "Output channel close");
-		output_channel->close(true);
-		output_channel.reset();
-
+		stop_engine_thread.join(true);
+		
 		delete engine;
 		engine = NULL;
 	}
@@ -220,14 +270,18 @@ void StreamThread::stop_engine()
 void StreamThread::on_main_window_show()
 {
 	TRY
+	g_debug("Starting on_main_window_show()");
 	start_engine();
+	g_debug("Exiting on_main_window_show()");
 	CATCH
 }
 
 void StreamThread::on_main_window_hide()
 {
 	TRY
+	g_debug("Starting on_main_window_hide()");
 	stop_engine();
+	g_debug("Exiting on_main_window_hide()");
 	CATCH
 }
 
@@ -307,9 +361,9 @@ void StreamThread::write(gchar* buffer, gsize length)
 {
 	gsize bytes_written = 0;
 
-	if (output_channel)
+	if (output_fd != -1)
 	{
-		output_channel->write(buffer, length, bytes_written);
+		::write(output_fd, buffer, length);
 	}
 	
 	if (recording_channel)
@@ -356,14 +410,12 @@ void StreamThread::run()
 		time_t now = time(NULL);
 		if (now - last_insert_time > 1)
 		{
+			g_debug("Writing PAT/PMT header");
+			g_debug("Engine reference: 0x%08X", engine);
+			
 			write(pat, TS_PACKET_SIZE);
 			write(pmt, TS_PACKET_SIZE);
 			last_insert_time = now;
-			
-			if (engine != NULL)
-			{
-				engine->expose();
-			}
 		}
 				
 		input_channel->read(buffer, TS_PACKET_SIZE * 10, bytes_read);

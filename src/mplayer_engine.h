@@ -18,31 +18,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __GSTREAMER_ENGINE_H__
-#define __GSTREAMER_ENGINE_H__
+#ifndef __MPLAYER_ENGINE_H__
+#define __MPLAYER_ENGINE_H__
 
 #include "engine.h"
-#include <gst/gstplugin.h>
-#include <gst/interfaces/xoverlay.h>
-#include <gst/video/video.h>
 
-class GStreamerEngine : public Engine
+class MplayerEngine : public Engine
 {
 private:
-	GstElement*	pipeline;
-	GstElement*	video_sink;
+	gint pid;
+	gint standard_input;
+	gint window_id;
 
-	static void connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine);
-	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
-		
-	void play(const Glib::ustring& filename);
+	void play(const Glib::ustring& mrl);
 	void stop();
 	void mute(gboolean state);
-	void expose();
-
 public:
-	GStreamerEngine(int window_id);
-	~GStreamerEngine();
+	MplayerEngine(int window_id);
+	~MplayerEngine();
 };
 
 #endif

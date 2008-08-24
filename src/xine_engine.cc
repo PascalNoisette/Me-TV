@@ -87,7 +87,7 @@ void XineEngine::frame_output_cb ( void *data,
 	*dest_height       = engine->height;
 }
 
-XineEngine::XineEngine()
+XineEngine::XineEngine(int window_id) : Engine()
 {
 	g_static_rec_mutex_init(mutex.gobj());
 	xine				= NULL;
@@ -95,49 +95,7 @@ XineEngine::XineEngine()
 	video_port			= NULL;
 	audio_port			= NULL;
 	mute_state			= false;
-}
 
-XineEngine::~XineEngine()
-{
-	if (stream != NULL)
-	{
-		xine_stop(stream);
-		xine_close(stream);
-		xine_dispose(stream);
-		stream = NULL;
-	}
-	
-	if (xine != NULL)
-	{
-		if ( audio_port != NULL )
-		{
-			xine_close_audio_driver ( xine, audio_port );
-		}
-		audio_port = NULL;
-		
-		if ( video_port != NULL )
-		{
-			xine_close_video_driver ( xine, video_port );
-		}
-		video_port = NULL;
-
-		xine_exit ( xine );
-	
-		xine = NULL;
-	}
-}
-
-void XineEngine::mute(gboolean state)
-{
-	mute_state = state;
-	if (stream != NULL)
-	{
-		xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, state ? 0 : 100);
-	}
-}
-
-void XineEngine::play(int window_id, const Glib::ustring& mrl)
-{
 	x11_visual_t	vis;
 	int				screen;
 	double			res_h, res_v;
@@ -274,7 +232,49 @@ void XineEngine::play(int window_id, const Glib::ustring& mrl)
 			throw Exception(Glib::ustring::compose(_("Unknown deinterlace_type: '%1'"), deinterlace_type));
 		}
 	}
+}
+
+XineEngine::~XineEngine()
+{
+	if (stream != NULL)
+	{
+		xine_stop(stream);
+		xine_close(stream);
+		xine_dispose(stream);
+		stream = NULL;
+	}
 	
+	if (xine != NULL)
+	{
+		if ( audio_port != NULL )
+		{
+			xine_close_audio_driver ( xine, audio_port );
+		}
+		audio_port = NULL;
+		
+		if ( video_port != NULL )
+		{
+			xine_close_video_driver ( xine, video_port );
+		}
+		video_port = NULL;
+
+		xine_exit ( xine );
+	
+		xine = NULL;
+	}
+}
+
+void XineEngine::mute(gboolean state)
+{
+	mute_state = state;
+	if (stream != NULL)
+	{
+		xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, state ? 0 : 100);
+	}
+}
+
+void XineEngine::play(const Glib::ustring& mrl)
+{	
 	Glib::ustring path = "fifo://" + mrl;
 	
 	g_debug("About to open MRL '%s' ...", path.c_str());
@@ -293,9 +293,17 @@ void XineEngine::play(int window_id, const Glib::ustring& mrl)
 //	widget.get_window()->get_size(width, height);
 }
 
+void XineEngine::stop()
+{
+}
+
 bool XineEngine::on_drawing_area_configure_event(GdkEventConfigure* event)
 {
 	Glib::RecMutex::Lock lock(mutex);
 	width = event->width;
 	height = event->height;
+}
+
+void XineEngine::expose()
+{
 }

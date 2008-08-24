@@ -32,7 +32,7 @@
 #include <gdk/gdkx.h>
 #include <libgnome/libgnome.h>
 
-#define POKE_INTERVAL 	30
+#define POKE_INTERVAL 		30
 #define UPDATE_INTERVAL	60
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
@@ -95,8 +95,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	last_motion_time = time(NULL);
 	initialise = true;
-	gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
-	//Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &MainWindow::on_timeout), 1);
+	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
 	
 	load_devices();
 	show();
@@ -110,8 +109,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	ChannelList& channels = current_profile.get_channels();
 	if (channels.size() == 0)
 	{
-                // Confirm that there is a device
-                get_application().get_device_manager().get_frontend();
+		// Confirm that there is a device
+		get_application().get_device_manager().get_frontend();
 
 		show_channels_dialog();
 	}
@@ -123,6 +122,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 MainWindow::~MainWindow()
 {
+	g_source_remove(timeout_source);
 }
 
 MainWindow* MainWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
@@ -403,10 +403,11 @@ gboolean MainWindow::is_fullscreen()
 gboolean MainWindow::on_timeout(gpointer data)
 {
 	MainWindow* main_window = (MainWindow*)data;
-	return main_window->on_timeout();
+	main_window->on_timeout();
+	return true;
 }
 
-bool MainWindow::on_timeout()
+void MainWindow::on_timeout()
 {
 	TRY
 	guint now = time(NULL);
@@ -437,7 +438,7 @@ bool MainWindow::on_timeout()
 	
 	// Update EPG
 	guint application_last_update_time = get_application().get_last_epg_update_time();
-	if ((application_last_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
+	if (((application_last_update_time-2) > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 	{
 		update();
 		last_update_time = application_last_update_time;
@@ -462,8 +463,6 @@ bool MainWindow::on_timeout()
 	}
 	
 	CATCH
-		
-	return true;
 }
 
 void MainWindow::set_display_mode(DisplayMode mode)

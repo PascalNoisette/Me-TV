@@ -29,6 +29,8 @@
 #define GCONF_PATH		"/apps/me-tv"
 #define UNKNOWN_TEXT	_("Unknown")
 
+extern gboolean verbose_logging;
+
 typedef sigc::signal<void, const Glib::ustring&> StringSignal;
 
 StringSignal& get_signal_error();

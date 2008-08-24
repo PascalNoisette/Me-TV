@@ -69,20 +69,21 @@ GstElement* GStreamerEngine::create_element(const Glib::ustring& factoryname, co
 	return element;
 }
 
-GStreamerEngine::GStreamerEngine()
+GStreamerEngine::GStreamerEngine(int window_id)
 {
-	Glib::ustring configured_video_sink = get_application().get_string_configuration_value("video_sink");
+	Glib::ustring video_sink_spec = get_application().get_string_configuration_value("video_sink");
 	
-	pipeline	= create_element("playbin", "playbin");
-	video_sink	= create_element(configured_video_sink.c_str(), "video_sink");
-	
+	pipeline	= create_element("playbin", "pipeline");
+	video_sink	= create_element(video_sink_spec.c_str(), "video_sink");
+
 	GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE(pipeline));
 	gst_bus_add_watch (bus, bus_call, this);
 	gst_object_unref (bus);
-	
-	g_object_set(G_OBJECT(video_sink), "force-aspect-ratio", true, NULL);
-	g_object_set(G_OBJECT(pipeline), "video_sink", video_sink, NULL);
-	g_object_set(G_OBJECT(pipeline), "volume", (double)10, NULL);
+
+	g_object_set (G_OBJECT (pipeline), "video-sink", video_sink, NULL);
+	g_object_set (G_OBJECT (video_sink), "force-aspect-ratio", true, NULL);
+
+	gst_x_overlay_set_xwindow_id (GST_X_OVERLAY(video_sink), window_id);
 }
 
 GStreamerEngine::~GStreamerEngine()
@@ -91,14 +92,12 @@ GStreamerEngine::~GStreamerEngine()
 	gst_object_unref(GST_OBJECT(pipeline));
 }
 
-void GStreamerEngine::play(int window_id, const Glib::ustring& filename)
+void GStreamerEngine::play(const Glib::ustring& filename)
 {
 	stop();
 
 	if (!filename.empty())
 	{
-		gst_x_overlay_set_xwindow_id (GST_X_OVERLAY(video_sink), window_id);
-
 		Glib::ustring uri = "file://" + filename;
 		g_debug("GStreamer URI: %s", uri.c_str());
 		g_object_set (G_OBJECT(pipeline), "uri", uri.c_str(), NULL);
@@ -111,11 +110,12 @@ void GStreamerEngine::stop()
 {
 	g_debug("Stopping pipeline");
 	gst_element_set_state (pipeline, GST_STATE_NULL);
+	g_debug("Pipeline stopped");
 }
 
 void GStreamerEngine::mute(gboolean state)
 {
-	g_object_set(G_OBJECT(pipeline), "volume", (double)(state ? 0 : 10), NULL);
+	g_object_set(G_OBJECT(pipeline), "volume", (gdouble)(state ? 0 : 10), NULL);
 }
 
 void GStreamerEngine::expose()

@@ -41,10 +41,12 @@ private:
 	DeviceManager						device_manager;
 	MainWindow*							main_window;
 	StatusIcon*							status_icon;
-	StreamThread*						stream_thread;
 	Glib::RefPtr<Gnome::Conf::Client>	client;
 	guint								last_epg_update_time;
 	Glib::ustring						preferred_language;
+	StreamThread*						stream_thread;
+	Glib::StaticRecMutex				mutex;
+	guint								timeout_source;
 			
 	void on_display_channel_changed(const Channel& channel);
 		

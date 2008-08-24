@@ -22,6 +22,7 @@
 #include "exception.h"
 #include <glib/gprintf.h>
 
+gboolean verbose_logging;
 StringSignal signal_error;
 
 StringSignal& get_signal_error()
@@ -60,6 +61,7 @@ Glib::ustring encode_xml(const Glib::ustring& s)
 	replace_text(result, "&", "&amp;");
 	replace_text(result, "<", "&lt;");
 	replace_text(result, ">", "&gt;");
+	replace_text(result, "'", "&quot;");
 
 	return result;
 }
@@ -76,8 +78,11 @@ guint convert_to_local_time(guint gmt)
 
 void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
-	Glib::ustring time_text = get_time_text(get_local_time(), "%x %T");
-	g_printf("%s: %s\n", time_text.c_str(), message);
+	if (log_level != G_LOG_LEVEL_DEBUG || verbose_logging)
+	{
+		Glib::ustring time_text = get_time_text(get_local_time(), "%x %T");
+		g_printf("%s: %s\n", time_text.c_str(), message);
+	}
 }
 
 void on_error(const Glib::ustring& message)

@@ -35,6 +35,7 @@ private:
 	double						pixel_aspect;
 	gboolean					mute_state;
 	Glib::StaticRecMutex		mutex;
+	int							window_id;
 	
 	static void dest_size_cb ( void *data,
 		int video_width, int video_height, double video_pixel_aspect,
@@ -43,12 +44,14 @@ private:
 		int video_width, int video_height, double video_pixel_aspect, int *dest_x, int *dest_y,
 		int *dest_width, int *dest_height, double *dest_pixel_aspect, int *win_x, int *win_y );
 	
-	void play(int window_id, const Glib::ustring& mrl);
+	void play(const Glib::ustring& mrl);
+	void stop();
 	void mute(gboolean state);
 	bool on_drawing_area_configure_event(GdkEventConfigure* event);
+	void expose();
 	
 public:
-	XineEngine();
+	XineEngine(int window_id);
 	~XineEngine();
 };
 

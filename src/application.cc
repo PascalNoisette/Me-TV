@@ -37,6 +37,8 @@ Application::Application(int argc, char *argv[]) :
 		throw Exception("Application has already been initialised");
 	}
 	
+	g_static_rec_mutex_init(mutex.gobj());
+
 	current = this;
 	main_window = NULL;
 	stream_thread = NULL;
@@ -87,10 +89,13 @@ Application::Application(int argc, char *argv[]) :
 	Profile& profile = profile_manager.get_current_profile();
 	profile.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));	
+
+	timeout_source = gdk_threads_add_timeout(10000, &Application::on_timeout, this);
 }
 
 Application::~Application()
 {
+	g_source_remove(timeout_source);
 	stop_stream_thread();
 	if (main_window != NULL)
 	{
@@ -174,7 +179,6 @@ void Application::run()
 	status_icon = new StatusIcon(glade);
 	main_window = MainWindow::create(glade);
 	main_window->show();
-	gdk_threads_add_timeout(10000, &Application::on_timeout, this);
 	Gnome::Main::run();
 	CATCH
 }
@@ -191,6 +195,7 @@ Application& Application::get_current()
 
 void Application::stop_stream_thread()
 {	
+	Glib::RecMutex::Lock lock(mutex);
 	if (stream_thread != NULL)
 	{
 		delete stream_thread;
@@ -200,6 +205,7 @@ void Application::stop_stream_thread()
 
 void Application::set_source(const Channel& channel)
 {
+	Glib::RecMutex::Lock lock(mutex);
 	stop_stream_thread();
 	stream_thread = new StreamThread(channel);	
 	stream_thread->start();
@@ -237,16 +243,6 @@ void Application::update_epg_time()
 guint Application::get_last_epg_update_time() const
 {
 	return last_epg_update_time;
-}
-
-StreamThread& Application::get_stream_thread()
-{
-	if (stream_thread == NULL)
-	{
-		throw Exception("Stream thread has not been created");
-	}
-	
-	return *stream_thread;
 }
 
 MainWindow& Application::get_main_window()

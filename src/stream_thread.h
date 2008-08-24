@@ -52,7 +52,6 @@ class StreamThread : public Thread
 {
 private:
 	const Channel&					channel;
-	Glib::RefPtr<Glib::IOChannel>	output_channel;
 	Glib::RefPtr<Glib::IOChannel>	recording_channel;
 	DemuxerList						demuxers;
 	gint							CRC32[256];
@@ -67,7 +66,11 @@ private:
 	GInetAddr*						inet_address;
 	gboolean						manual_recording;
 	gboolean						broadcast_failure_message;
-			
+	gint							output_fd;
+	guint							timeout_source;
+	sigc::connection				show_connection;
+	sigc::connection				hide_connection;
+
 	void on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual);
 	void on_mute_state_changed(gboolean mute_state);
 	void on_broadcast_state_changed(gboolean broadcast_state);
@@ -80,6 +83,9 @@ private:
 	void build_pmt(gchar* buffer);
 	void calculate_crc(guchar *p_begin, guchar *p_end);
 	void write(gchar* buffer, gsize length);
+
+	static gboolean on_timeout(gpointer data);
+	void on_timeout();
 
 	void remove_all_demuxers();
 	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,

@@ -45,19 +45,9 @@ public:
 class SystemException : public Exception
 {
 private:
-	Glib::ustring create_message(const Glib::ustring& message)
-	{
-		Glib::ustring detail = _("Failed to get error message");
-		char buffer[1000];
-		if (strerror_r(errno, buffer, 1000) == 0)
-		{
-			detail = Glib::ustring(buffer);
-		}
-		return Glib::ustring::compose("%1: %2", message, detail);
-	}
-
+	Glib::ustring create_message(gint error_number, const Glib::ustring& message);
 public:
-	SystemException(const Glib::ustring& m) : Exception(create_message(m)) {}
+	SystemException(const Glib::ustring& m) : Exception(create_message(errno, m)) {}
 };
 
 class TimeoutException : public Exception

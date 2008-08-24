@@ -83,7 +83,12 @@ me_tv_SOURCES = \
 	scheduled_recording.h \
 	scheduled_recording.cc \
 	epg_thread.cc \
-	epg_thread.h 
+	epg_thread.h \
+	xine_engine.cc \
+	xine_engine.h \
+	mplayer_engine.cc \
+	mplayer_engine.h \
+	exception.cc
 
 me_tv_LDFLAGS = 
 

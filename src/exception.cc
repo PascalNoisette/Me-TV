@@ -18,31 +18,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __GSTREAMER_ENGINE_H__
-#define __GSTREAMER_ENGINE_H__
+#include "exception.h"
 
-#include "engine.h"
-#include <gst/gstplugin.h>
-#include <gst/interfaces/xoverlay.h>
-#include <gst/video/video.h>
+#define BUFFER_SIZE 2000
 
-class GStreamerEngine : public Engine
+Glib::ustring SystemException::create_message(gint error_number, const Glib::ustring& message)
 {
-private:
-	GstElement*	pipeline;
-	GstElement*	video_sink;
-
-	static void connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine);
-	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
-		
-	void play(const Glib::ustring& filename);
-	void stop();
-	void mute(gboolean state);
-	void expose();
-
-public:
-	GStreamerEngine(int window_id);
-	~GStreamerEngine();
-};
-
-#endif
+	Glib::ustring detail = _("Failed to get error message");
+	
+	detail = strerror(error_number);
+	/*
+	char buffer[BUFFER_SIZE];
+	if (strerror_r(error_number, buffer, BUFFER_SIZE) == 0)
+	{
+		detail = Glib::ustring(buffer);
+	}
+	else
+	{
+		detail = Glib::ustring::compose("Code %1", errno);
+	}
+	return Glib::ustring::compose("%1: %2", message, detail);
+	*/
+	
+	return detail;
+}

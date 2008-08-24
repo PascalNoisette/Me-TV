@@ -45,6 +45,11 @@ int main (int argc, char *argv[])
 		
 		gst_init(&argc, &argv);
 		
+		if (argc > 1 && argv[1] == Glib::ustring("--verbose"))
+		{
+			verbose_logging = true;
+		}
+		
 		g_message("Me TV %s", VERSION);
 		g_debug(gst_version_string());
 
@@ -59,7 +64,7 @@ int main (int argc, char *argv[])
 	{
 		g_error(error.what().c_str());
 	}
-	g_debug("Me TV terminated normally");
+	g_message("Me TV terminated normally");
 	
 	return 0;
 }

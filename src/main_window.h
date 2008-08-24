@@ -49,6 +49,7 @@ private:
 	gboolean								initialise;
 	guint									last_update_time;
 	guint									last_poke_time;
+	guint									timeout_source;
 
 	void stop();
 	void fullscreen();
@@ -63,7 +64,7 @@ private:
 	bool on_motion_notify_event(GdkEventMotion* event);
 	bool on_drawing_area_expose_event(GdkEventExpose* event);
 	static gboolean on_timeout(gpointer data);
-	bool on_timeout();
+	void on_timeout();
 	void on_error(const Glib::ustring& message);
 	void on_menu_item_record_clicked();
 	void on_menu_item_broadcast_clicked();
