@@ -78,7 +78,6 @@ private:
 	void on_menu_item_help_contents_clicked();
 	void on_menu_item_about_clicked();
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
-	bool on_event_box_video_scroll_event(GdkEventScroll* event);
 	void on_tool_button_record_clicked();
 	void on_tool_button_mute_clicked();
 	void on_tool_button_broadcast_clicked();

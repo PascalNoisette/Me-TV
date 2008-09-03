@@ -33,7 +33,7 @@
 #include <libgnome/libgnome.h>
 
 #define POKE_INTERVAL 		30
-#define UPDATE_INTERVAL	60
+#define UPDATE_INTERVAL		60
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
 	: Gnome::UI::App(cobject), glade(glade)
@@ -41,6 +41,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	display_mode = DISPLAY_MODE_EPG;
 	last_update_time = 0;
 	last_poke_time = 0;
+	timeout_source = -1;
 	
 	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
 	
@@ -77,7 +78,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
-	event_box_video->signal_scroll_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_scroll_event));
 
 	event_box_video->modify_fg(Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video->modify_fg(Gtk::STATE_NORMAL, Gdk::Color("black"));
@@ -122,7 +122,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 MainWindow::~MainWindow()
 {
-	g_source_remove(timeout_source);
+	if (timeout_source != -1)
+	{
+		g_source_remove(timeout_source);
+	}
 }
 
 MainWindow* MainWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
@@ -185,6 +188,7 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
 		drawing_area_video->get_style()->get_bg_gc(Gtk::STATE_NORMAL),
 		true, event->area.x, event->area.y, event->area.width, event->area.height);
 	CATCH
+	g_debug("*** Michael");
 	return true;
 }
 
@@ -367,23 +371,6 @@ bool MainWindow::on_motion_notify_event(GdkEventMotion* event)
 	return true;
 }
 
-bool MainWindow::on_event_box_video_scroll_event(GdkEventScroll* event)
-{
-	switch(event->direction)
-	{
-	case GDK_SCROLL_UP:
-		{
-		}
-		break;
-	case GDK_SCROLL_DOWN:
-		{
-		}
-		break;
-	}
-	
-	return true;
-}
-
 void MainWindow::unfullscreen()
 {
 	Gtk::Window::unfullscreen();
@@ -471,14 +458,7 @@ void MainWindow::set_display_mode(DisplayMode mode)
 	glade->get_widget("handlebox_toolbar")->property_visible()	= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
 	glade->get_widget("app_bar")->property_visible()			= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
 	glade->get_widget("vbox_epg")->property_visible()			= (mode == DISPLAY_MODE_EPG);
-
-	Gtk::VBox* vbox_main = dynamic_cast<Gtk::VBox*>(glade->get_widget("vbox_main"));
-	Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
-	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
-	
-	gtk_box_set_child_packing((GtkBox*)vbox_main->gobj(), (GtkWidget*)event_box_video->gobj(),
-		(mode != DISPLAY_MODE_EPG), (mode != DISPLAY_MODE_EPG), 0, GTK_PACK_START);
-	
+		
 	display_mode = mode;
 }
 
@@ -600,7 +580,7 @@ void MainWindow::on_hide()
 }
 
 void MainWindow::on_show()
-{
+{	
 	Gtk::Window::on_show();
 	if (get_application().get_boolean_configuration_value("keep_above"))
 	{

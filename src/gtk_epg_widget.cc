@@ -85,6 +85,7 @@ void GtkEpgWidget::clear()
 	{
 		Gtk::Widget* first = *iterator;
 		table_epg->remove(*first);
+		delete first;
 		iterator++;
 	}
 }

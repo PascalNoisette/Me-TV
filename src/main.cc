@@ -23,7 +23,6 @@
 #include "me-tv.h"
 #include <glibmm.h>
 #include <glib/gprintf.h>
-#include <gst/gst.h>
 #include <X11/Xlib.h>
 
 int main (int argc, char *argv[])
@@ -42,16 +41,13 @@ int main (int argc, char *argv[])
 		g_log_set_handler(G_LOG_DOMAIN,
 			(GLogLevelFlags)(G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION),
 			log_handler, NULL);
-		
-		gst_init(&argc, &argv);
-		
+				
 		if (argc > 1 && argv[1] == Glib::ustring("--verbose"))
 		{
 			verbose_logging = true;
 		}
 		
 		g_message("Me TV %s", VERSION);
-		g_debug(gst_version_string());
 
 		get_signal_error().connect(sigc::ptr_fun(on_error));
 		

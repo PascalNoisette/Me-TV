@@ -27,6 +27,7 @@
 #include <math.h>
 #include <string.h>
 #include <X11/Xlib.h>
+#include <gdk/gdkx.h>
 
 class XineException : public Exception
 {
@@ -87,7 +88,7 @@ void XineEngine::frame_output_cb ( void *data,
 	*dest_height       = engine->height;
 }
 
-XineEngine::XineEngine(int window_id) : Engine()
+XineEngine::XineEngine(int window_id) : Engine(), window_id(window_id)
 {
 	g_static_rec_mutex_init(mutex.gobj());
 	xine				= NULL;
@@ -99,9 +100,6 @@ XineEngine::XineEngine(int window_id) : Engine()
 	x11_visual_t	vis;
 	int				screen;
 	double			res_h, res_v;
-
-//	widget.signal_configure_event().connect(
-//		sigc::mem_fun(*this, &XineEngine::on_drawing_area_configure_event));
 		
 	Application& application = Application::get_current();
 
@@ -156,7 +154,7 @@ XineEngine::XineEngine(int window_id) : Engine()
 		vis.user_data         = this;
 
 		video_port = xine_open_video_driver ( xine, video_driver.c_str(),
-										  XINE_VISUAL_TYPE_X11, ( void * ) &vis );
+										  XINE_VISUAL_TYPE_X11, (void *) &vis );
 		if ( video_port == NULL )
 		{
 			throw Exception(_("Failed to initialise video driver"));
@@ -236,13 +234,7 @@ XineEngine::XineEngine(int window_id) : Engine()
 
 XineEngine::~XineEngine()
 {
-	if (stream != NULL)
-	{
-		xine_stop(stream);
-		xine_close(stream);
-		xine_dispose(stream);
-		stream = NULL;
-	}
+	stop();
 	
 	if (xine != NULL)
 	{
@@ -289,21 +281,38 @@ void XineEngine::play(const Glib::ustring& mrl)
 		throw XineException (stream, _("Failed to play video stream."));
 	}
 	g_debug("Xine engine playing");
-
-//	widget.get_window()->get_size(width, height);
 }
 
 void XineEngine::stop()
 {
-}
-
-bool XineEngine::on_drawing_area_configure_event(GdkEventConfigure* event)
-{
-	Glib::RecMutex::Lock lock(mutex);
-	width = event->width;
-	height = event->height;
+	if (stream != NULL)
+	{
+		xine_stop(stream);
+		xine_close(stream);
+		xine_dispose(stream);
+		stream = NULL;
+	}
 }
 
 void XineEngine::expose()
 {
+	if (video_port != NULL)
+	{
+		XExposeEvent expose_event;
+		memset(&expose_event, 0, sizeof(XExposeEvent));
+		expose_event.x = 0;
+		expose_event.y = 0;
+		expose_event.width = width;
+		expose_event.height = height;
+		expose_event.display = XOpenDisplay(NULL);
+		expose_event.window = window_id;
+		xine_port_send_gui_data (video_port, XINE_GUI_SEND_EXPOSE_EVENT, &expose_event);
+	}
+}
+
+void XineEngine::set_size(gint w, gint h)
+{
+	Glib::RecMutex::Lock lock(mutex);
+	width = w;
+	height = h;
 }

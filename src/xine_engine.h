@@ -43,11 +43,11 @@ private:
 	static void frame_output_cb ( void *data,
 		int video_width, int video_height, double video_pixel_aspect, int *dest_x, int *dest_y,
 		int *dest_width, int *dest_height, double *dest_pixel_aspect, int *win_x, int *win_y );
+	void set_size(gint width, gint height);
 	
 	void play(const Glib::ustring& mrl);
 	void stop();
 	void mute(gboolean state);
-	bool on_drawing_area_configure_event(GdkEventConfigure* event);
 	void expose();
 	
 public:

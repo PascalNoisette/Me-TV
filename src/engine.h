@@ -33,6 +33,7 @@ public:
 	virtual void stop() = 0;
 	virtual void mute(gboolean state) = 0;
 	virtual void expose() = 0;
+	virtual void set_size(gint width, gint height) = 0;
 };
 
 #endif

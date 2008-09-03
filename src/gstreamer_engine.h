@@ -30,10 +30,15 @@ class GStreamerEngine : public Engine
 {
 private:
 	GstElement*	pipeline;
+	GstElement*	source;
+	GstElement*	decoder;
+	GstElement*	volume;
+	GstElement*	deinterlace;
 	GstElement*	video_sink;
+	GstElement*	audio_sink;
 
-	static void connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine);
 	GstElement* create_element(const Glib::ustring& factoryname, const Glib::ustring& name);
+	static void connect_dynamic_pad (GstElement* element, GstPad* pad, GStreamerEngine* engine);
 		
 	void play(const Glib::ustring& filename);
 	void stop();

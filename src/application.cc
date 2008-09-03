@@ -43,13 +43,14 @@ Application::Application(int argc, char *argv[]) :
 	main_window = NULL;
 	stream_thread = NULL;
 	update_epg_time();
-	
+	timeout_source = -1;
+
 	client = Gnome::Conf::Client::get_default_client();
 	
 	set_int_configuration_default("epg_span_hours", 3);
 	set_int_configuration_default("last_channel", -1);
 	set_string_configuration_default("recording_directory", Glib::get_home_dir());
-	set_string_configuration_default("engine_type", "gstreamer");
+	set_string_configuration_default("engine_type", "xine");
 	set_boolean_configuration_default("keep_above", true);
 	set_int_configuration_default("record_extra_before", 5);
 	set_int_configuration_default("record_extra_after", 10);
@@ -59,9 +60,8 @@ Application::Application(int argc, char *argv[]) :
 	set_boolean_configuration_default("show_epg_time", true);
 	set_string_configuration_default("xine.video_driver", "auto");
 	set_string_configuration_default("xine.audio_driver", "auto");
-	set_string_configuration_default("xine.deinterlace_type", "default");
+	set_string_configuration_default("xine.deinterlace_type", "tvtime");
 	set_string_configuration_default("preferred_language", "");
-	set_string_configuration_default("video_sink", "ximagesink");
 	
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
@@ -95,7 +95,10 @@ Application::Application(int argc, char *argv[]) :
 
 Application::~Application()
 {
-	g_source_remove(timeout_source);
+	if (timeout_source == -1)
+	{
+		g_source_remove(timeout_source);
+	}
 	stop_stream_thread();
 	if (main_window != NULL)
 	{
@@ -179,6 +182,20 @@ void Application::run()
 	status_icon = new StatusIcon(glade);
 	main_window = MainWindow::create(glade);
 	main_window->show();
+	
+	Profile& current_profile = get_profile_manager().get_current_profile();
+	ChannelList& channels = current_profile.get_channels();		
+	channels = current_profile.get_channels();
+	if (channels.size() > 0)
+	{
+		gint last_channel = get_application().get_int_configuration_value("last_channel");
+		if (last_channel == -1)
+		{
+			last_channel = (*channels.begin()).channel_id;
+		}
+		current_profile.set_display_channel(last_channel);
+	}
+	
 	Gnome::Main::run();
 	CATCH
 }

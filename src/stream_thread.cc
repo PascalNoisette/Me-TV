@@ -21,7 +21,6 @@
 #include "stream_thread.h"
 #include "application.h"
 #include "device_manager.h"
-#include "gstreamer_engine.h"
 #include "xine_engine.h"
 #include "mplayer_engine.h"
 #include <glibmm.h>
@@ -99,6 +98,7 @@ StreamThread::StreamThread(const Channel& channel) :
 	manual_recording = false;
 	broadcast_failure_message = true;
 	output_fd = -1;
+	timeout_source = -1;
 	
 	for(gint i = 0 ; i < 256 ; i++ )
 	{
@@ -122,16 +122,17 @@ StreamThread::StreamThread(const Channel& channel) :
 	timeout_source = gdk_threads_add_timeout(500, &StreamThread::on_timeout, this);
 
 	g_debug("StreamThread created");
-	g_debug("Engine checkpoint 4: 0x%08X 0x%08X 0x%08X", this, engine, mutex.gobj());
 }
 
 StreamThread::~StreamThread()
 {
-	g_debug("Engine checkpoint 5: 0x%08X 0x%08X 0x%08X", this, engine, mutex.gobj());
 	g_debug("Destroying StreamThread");
 	show_connection.disconnect();
 	hide_connection.disconnect();
-	g_source_remove(timeout_source);
+	if (timeout_source != -1)
+	{
+		g_source_remove(timeout_source);
+	}
 	stop_epg_thread();
 	join(true);
 	stop_engine();
@@ -149,10 +150,14 @@ gboolean StreamThread::on_timeout(gpointer data)
 void StreamThread::on_timeout()
 {
 	Lock lock(mutex, "Engine expose");
-	g_debug("Engine checkpoint 3: 0x%08X 0x%08X 0x%08X", this, engine, mutex.gobj());
 	if (engine != NULL)
 	{
-		engine->expose();
+		gint width = -1, height = -1;
+		Gtk::DrawingArea& drawing_area_video = get_application().get_main_window().get_drawing_area();
+		Glib::RefPtr<Gdk::Window> window = drawing_area_video.get_window();
+		window->get_size(width, height);
+		engine->set_size(width, height);
+//		engine->expose();
 	}
 }
 
@@ -192,11 +197,7 @@ void StreamThread::start_engine()
 
 		g_debug("Creating engine");
 		Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
-		if (engine_type == "gstreamer")
-		{
-			engine = new GStreamerEngine(window_id);
-		}
-		else if (engine_type == "xine")
+		if (engine_type == "xine")
 		{
 			engine = new XineEngine(window_id);
 			g_debug("Engine created: 0x%08X", engine);
@@ -211,7 +212,6 @@ void StreamThread::start_engine()
 			throw Exception(_("Unknown engine type"));
 		}
 		g_debug("%s engine created", engine_type.c_str());
-		g_debug("Engine checkpoint 1: 0x%08X", engine);
 	}
 	
 	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
@@ -241,7 +241,6 @@ void StreamThread::start_engine()
 		}
 		g_debug("Output FD created");
 	}
-	g_debug("Engine checkpoint 2: 0x%08X", engine);
 }
 
 void StreamThread::stop_engine()
@@ -404,14 +403,11 @@ void StreamThread::run()
 	TRY
 	while (!is_terminated())
 	{
-		//Lock lock(mutex, "Loop");
-
 		// Insert PAT/PMT every second
 		time_t now = time(NULL);
 		if (now - last_insert_time > 1)
 		{
 			g_debug("Writing PAT/PMT header");
-			g_debug("Engine reference: 0x%08X", engine);
 			
 			write(pat, TS_PACKET_SIZE);
 			write(pmt, TS_PACKET_SIZE);
