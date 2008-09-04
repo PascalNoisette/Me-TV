@@ -157,7 +157,7 @@ void StreamThread::on_timeout()
 		Glib::RefPtr<Gdk::Window> window = drawing_area_video.get_window();
 		window->get_size(width, height);
 		engine->set_size(width, height);
-//		engine->expose();
+		engine->expose();
 	}
 }
 
