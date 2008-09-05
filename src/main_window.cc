@@ -188,7 +188,6 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
 		drawing_area_video->get_style()->get_bg_gc(Gtk::STATE_NORMAL),
 		true, event->area.x, event->area.y, event->area.width, event->area.height);
 	CATCH
-	g_debug("*** Michael");
 	return true;
 }
 

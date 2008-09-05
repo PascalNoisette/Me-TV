@@ -304,7 +304,7 @@ void XineEngine::expose()
 		expose_event.y = 0;
 		expose_event.width = width;
 		expose_event.height = height;
-		expose_event.display = XOpenDisplay(NULL);
+		expose_event.display = GDK_DISPLAY();
 		expose_event.window = window_id;
 		xine_port_send_gui_data (video_port, XINE_GUI_SEND_EXPOSE_EVENT, &expose_event);
 	}

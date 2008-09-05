@@ -182,7 +182,7 @@ void EpgThread::run()
 					}
 					
 					if (processed_event_count < 10000)
-					{					
+					{
 						if (!found)
 						{
 							processed_events[processed_event_count++] = event.event_id;
@@ -212,6 +212,8 @@ void EpgThread::run()
 							
 							data.replace_epg_event(epg_event);
 							get_application().update_epg_time();
+
+							g_debug("EPG event %d added", event.event_id);
 						}
 					}
 				}
