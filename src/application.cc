@@ -389,3 +389,15 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	
 	return Glib::build_filename(get_string_configuration_value("recording_directory"), filename);
 }
+
+gboolean Application::is_recording()
+{
+	gboolean result = false;
+
+	if (stream_thread != NULL)
+	{
+		result = stream_thread->is_recording();
+	}
+	
+	return result;
+}

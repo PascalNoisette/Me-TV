@@ -76,6 +76,8 @@ public:
 	void on_signal_configuration_changed();
 	void update_ui();
 		
+	gboolean is_recording();
+		
 	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
 	gint get_int_configuration_value(const Glib::ustring& key);
 	gboolean get_boolean_configuration_value(const Glib::ustring& key);

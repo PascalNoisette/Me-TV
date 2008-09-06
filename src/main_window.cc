@@ -94,7 +94,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
 
 	last_motion_time = time(NULL);
-	initialise = true;
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
 	
 	load_devices();
@@ -397,23 +396,6 @@ void MainWindow::on_timeout()
 {
 	TRY
 	guint now = time(NULL);
-	
-	// Async initialisation
-	if (initialise)
-	{
-		initialise = false;
-		Profile& current_profile = get_application().get_profile_manager().get_current_profile();
-		ChannelList& channels = current_profile.get_channels();
-		if (channels.size() > 0)
-		{
-			gint last_channel = get_application().get_int_configuration_value("last_channel");
-			if (last_channel == -1)
-			{
-				last_channel = (*channels.begin()).channel_id;
-			}
-			current_profile.set_display_channel(last_channel);
-		}
-	}
 	
 	// Hide the mouse
 	if (now - last_motion_time > 3 && is_cursor_visible)

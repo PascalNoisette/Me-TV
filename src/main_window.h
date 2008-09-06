@@ -46,7 +46,6 @@ private:
 	Gnome::UI::AppBar*						app_bar;
 	DisplayMode								display_mode;
 	Gtk::RadioButtonGroup					radio_button_group_devices;
-	gboolean								initialise;
 	guint									last_update_time;
 	guint									last_poke_time;
 	guint									timeout_source;

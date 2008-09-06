@@ -3,6 +3,17 @@
 
 SUBDIRS = src po
 
+desktopdir = $(datadir)/applications
+desktop_DATA = me-tv.desktop
+
+pixmapsdir = $(datadir)/pixmaps
+pixmaps_DATA = \
+        src/me-tv.xpm \
+        src/me-tv-recording.xpm
+
+helpdir = $(datadir)/gnome/help/me-tv/C
+help_DATA = help/C/me-tv.xml
+
 me_tvdocdir = ${prefix}/doc/me-tv
 me_tvdoc_DATA = \
 	README\

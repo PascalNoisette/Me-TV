@@ -35,6 +35,7 @@ private:
 	void on_menu_item_me_tv_clicked();
 	void on_menu_item_popup_quit_clicked();
 	void on_activate();
+	void on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual);
 
 public:
 	StatusIcon(Glib::RefPtr<Gnome::Glade::Xml>& glade);
