@@ -59,7 +59,6 @@ void StatusIcon::on_activate()
 
 void StatusIcon::update()
 {
-	Application& application = get_application();
 	const Channel* channel = get_application().get_profile_manager().get_current_profile().get_display_channel();
 	Glib::ustring title = UNKNOWN_TEXT;
 	

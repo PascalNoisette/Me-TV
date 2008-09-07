@@ -98,6 +98,7 @@ StreamThread::StreamThread(const Channel& channel) :
 	manual_recording = false;
 	broadcast_failure_message = true;
 	output_fd = -1;
+	recording_fd = -1;
 	timeout_source = -1;
 	
 	for(gint i = 0 ; i < 256 ; i++ )
@@ -304,21 +305,25 @@ Engine& StreamThread::get_engine()
 void StreamThread::on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual)
 {
 	Lock lock(mutex, "StreamThread::on_record_state_changed()");
-	if (record_state && !recording_channel)
-	{		
-		recording_channel = Glib::IOChannel::create_from_file(filename, "w");
-		recording_channel->set_encoding("");
-		g_debug("Recording channel opened");
+	if (record_state && recording_fd == -1)
+	{
+		mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+		recording_fd = open(filename.c_str(), O_CREAT | O_WRONLY, mode);
+		if (recording_fd == -1)
+		{
+			throw SystemException("Failed to open recording file");
+		}
+		g_debug("Recording file opened");
 
 		manual_recording = manual;
 	}
-	else if (!record_state && recording_channel)
+	else if (!record_state && recording_fd != -1)
 	{
 		manual_recording = false;
 		
-		recording_channel->close(true);
-		recording_channel.reset();
-		g_debug("Recording channel cleared");
+		close(recording_fd);
+		recording_fd = -1;
+		g_debug("Recording file cleared");
 	}
 }
 
@@ -358,16 +363,14 @@ void StreamThread::on_broadcast_state_changed(gboolean broadcast_state)
 
 void StreamThread::write(gchar* buffer, gsize length)
 {
-	gsize bytes_written = 0;
-
 	if (output_fd != -1)
 	{
 		::write(output_fd, buffer, length);
 	}
 	
-	if (recording_channel)
+	if (recording_fd != -1)
 	{
-		recording_channel->write(buffer, length, bytes_written);
+		::write(recording_fd, buffer, length);
 	}
 	
 	if (socket != NULL)
@@ -431,13 +434,13 @@ void StreamThread::run()
 gboolean StreamThread::is_recording()
 {
 	Lock lock(mutex, "StreamThread::is_recording()");
-	return recording_channel;
+	return recording_fd != -1;
 }
 
 gboolean StreamThread::is_manual_recording()
 {
 	Lock lock(mutex, "StreamThread::is_manual_recording()");
-	return recording_channel && manual_recording;
+	return recording_fd != -1 && manual_recording;
 }
 
 void StreamThread::calculate_crc(guchar *p_begin, guchar *p_end)

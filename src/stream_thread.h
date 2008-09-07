@@ -51,25 +51,25 @@ public:
 class StreamThread : public Thread
 {
 private:
-	const Channel&					channel;
-	Glib::RefPtr<Glib::IOChannel>	recording_channel;
-	DemuxerList						demuxers;
-	gint							CRC32[256];
-	Glib::StaticRecMutex			mutex;
-	Dvb::Frontend&					frontend;
-	Engine*							engine;
-	EpgThread*						epg_thread;
-	Stream							stream;
-	guint							pmt_pid;
-	Glib::ustring					fifo_path;
-	GUdpSocket*						socket;
-	GInetAddr*						inet_address;
-	gboolean						manual_recording;
-	gboolean						broadcast_failure_message;
-	gint							output_fd;
-	guint							timeout_source;
-	sigc::connection				show_connection;
-	sigc::connection				hide_connection;
+	const Channel&			channel;
+	DemuxerList				demuxers;
+	gint					CRC32[256];
+	Glib::StaticRecMutex	mutex;
+	Dvb::Frontend&			frontend;
+	Engine*					engine;
+	EpgThread*				epg_thread;
+	Stream					stream;
+	guint					pmt_pid;
+	Glib::ustring			fifo_path;
+	GUdpSocket*				socket;
+	GInetAddr*				inet_address;
+	gboolean				manual_recording;
+	gboolean				broadcast_failure_message;
+	gint					output_fd;
+	gint					recording_fd;
+	guint					timeout_source;
+	sigc::connection		show_connection;
+	sigc::connection		hide_connection;
 
 	void on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual);
 	void on_mute_state_changed(gboolean mute_state);
