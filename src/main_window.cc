@@ -609,10 +609,12 @@ bool MainWindow::on_key_press_event(GdkEventKey* event)
 		
 		case GDK_minus:
 		case KEY_CHANNELUP:
+			get_application().get_profile_manager().get_current_profile().previous_channel();
 			break;
 			
 		case GDK_plus:
 		case KEY_CHANNELDOWN:
+			get_application().get_profile_manager().get_current_profile().next_channel();
 			break;
 
 		default:

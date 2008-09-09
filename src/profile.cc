@@ -170,3 +170,76 @@ void Profile::set_channels(ChannelList& channels)
 		}
 	}
 }
+
+void Profile::next_channel()
+{
+	if (channels.size() == 0)
+	{
+		throw Exception("No channels");
+	}
+	else if (display_channel == NULL)
+	{
+		set_display_channel(*(channels.begin()));
+	}
+	else
+	{
+		gboolean done = false;
+		
+		ChannelList::iterator iterator = channels.begin();
+		while (iterator != channels.end() && !done)
+		{
+			Channel& channel = *iterator;
+			if (channel.frontend_parameters.frequency == display_channel->frontend_parameters.frequency && channel.service_id == display_channel->service_id)
+			{
+				iterator++;
+				if (iterator != channels.end())
+				{
+					set_display_channel(*iterator);
+				}
+				done = true;
+			}
+			else
+			{
+				iterator++;
+			}			
+		}
+	}
+}
+
+void Profile::previous_channel()
+{
+	if (channels.size() == 0)
+	{
+		throw Exception("No channels");
+	}
+	else if (display_channel == NULL)
+	{
+		ChannelList::iterator iterator = channels.end();
+		iterator--;
+		set_display_channel(*iterator);
+	}
+	else
+	{
+		gboolean done = false;
+		
+		ChannelList::iterator iterator = channels.begin();
+		ChannelList::iterator previous_iterator = iterator;
+		while (iterator != channels.end() && !done)
+		{
+			Channel& channel = *iterator;
+			if (channel.frontend_parameters.frequency == display_channel->frontend_parameters.frequency && channel.service_id == display_channel->service_id)
+			{
+				if (previous_iterator != iterator)
+				{
+					set_display_channel(*previous_iterator);
+				}
+				done = true;
+			}
+			else
+			{
+				previous_iterator = iterator;
+				iterator++;
+			}
+		}
+	}
+}

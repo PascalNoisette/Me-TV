@@ -33,6 +33,8 @@ private:
 public:
 	Profile();
 		
+	void next_channel();
+	void previous_channel();
 	void set_display_channel(const Channel& channel);
 	void set_display_channel(guint channel_id);
 	void add_channel(Channel& channel);
