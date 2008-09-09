@@ -224,9 +224,16 @@ void Application::set_source(const Channel& channel)
 {
 	Glib::RecMutex::Lock lock(mutex);
 	stop_stream_thread();
-	stream_thread = new StreamThread(channel);	
-	stream_thread->start();
-	stream_thread->start_engine();
+	stream_thread = new StreamThread(channel);
+	try
+	{
+		stream_thread->start();
+	}
+	catch(const Glib::Exception& exception)
+	{
+		stop_stream_thread();
+		get_signal_error().emit(exception.what().c_str());
+	}
 	update_ui();
 }
 

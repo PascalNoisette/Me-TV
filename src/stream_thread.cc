@@ -171,7 +171,8 @@ void StreamThread::start()
 	
 	Lock lock(mutex, "StreamThread::start()");
 	Application& application = get_application();
-	if (application.get_main_window().is_muted())
+	MainWindow& main_window = application.get_main_window();
+	if (main_window.is_muted())
 	{
 		on_mute_state_changed(true);
 	}
@@ -179,6 +180,16 @@ void StreamThread::start()
 	if (application.get_main_window().is_broadcasting())
 	{
 		on_broadcast_state_changed(true);
+	}
+	
+	if (main_window.property_visible())
+	{
+		g_debug("Main window visible, starting engine");
+		start_engine();
+	}
+	else
+	{
+		g_debug("Main window not visible, not starting engine");
 	}
 
 	start_epg_thread();
