@@ -65,6 +65,7 @@ private:
 	static gboolean on_timeout(gpointer data);
 	void on_timeout();
 	void on_error(const Glib::ustring& message);
+	bool on_key_press_event(GdkEventKey* event);
 	void on_menu_item_record_clicked();
 	void on_menu_item_broadcast_clicked();
 	void on_menu_item_quit_clicked();
@@ -86,6 +87,9 @@ private:
 
 	void on_show();
 	void on_hide();
+	
+	void set_next_display_mode();
+		
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	~MainWindow();

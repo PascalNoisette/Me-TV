@@ -31,6 +31,7 @@
 #include <X11/extensions/XTest.h>
 #include <gdk/gdkx.h>
 #include <libgnome/libgnome.h>
+#include <linux/input.h>
 
 #define POKE_INTERVAL 		30
 #define UPDATE_INTERVAL		60
@@ -324,7 +325,23 @@ void MainWindow::on_menu_item_about_clicked()
 	about_dialog->hide();
 	CATCH
 }
-	
+
+void MainWindow::set_next_display_mode()
+{
+	if (display_mode == DISPLAY_MODE_VIDEO)
+	{
+		set_display_mode(DISPLAY_MODE_EPG);
+	}
+	else if (display_mode == DISPLAY_MODE_EPG)
+	{
+		set_display_mode(DISPLAY_MODE_CONTROLS);
+	}
+	else
+	{
+		set_display_mode(DISPLAY_MODE_VIDEO);
+	}
+}
+
 bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 {
 	TRY
@@ -338,18 +355,7 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 	}
 	else if (event->button == 3)
 	{
-		if (display_mode == DISPLAY_MODE_VIDEO)
-		{
-			set_display_mode(DISPLAY_MODE_EPG);
-		}
-		else if (display_mode == DISPLAY_MODE_EPG)
-		{
-			set_display_mode(DISPLAY_MODE_CONTROLS);
-		}
-		else
-		{
-			set_display_mode(DISPLAY_MODE_VIDEO);
-		}
+		set_next_display_mode();
 	}
 	CATCH
 	
@@ -453,7 +459,7 @@ void MainWindow::on_tool_button_record_clicked()
 	TRY
 	Application& application = get_application();
 	application.signal_record_state_changed(
-		dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"))->get_active(),
+		is_recording(),
 		application.make_recording_filename(),
 		true);
 	CATCH
@@ -462,16 +468,14 @@ void MainWindow::on_tool_button_record_clicked()
 void MainWindow::on_tool_button_mute_clicked()
 {
 	TRY
-	get_application().signal_mute_state_changed(
-		dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"))->get_active());
+	get_application().signal_mute_state_changed(is_muted());
 	CATCH
 }
 
 void MainWindow::on_tool_button_broadcast_clicked()
 {
 	TRY
-	get_application().signal_broadcast_state_changed(
-		dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_broadcast"))->get_active());
+	get_application().signal_broadcast_state_changed(is_broadcasting());
 	CATCH
 }
 
@@ -570,4 +574,51 @@ void MainWindow::on_show()
 void MainWindow::toggle_visibility()
 {
 	property_visible() = !property_visible();
+}
+
+bool MainWindow::on_key_press_event(GdkEventKey* event)
+{
+	bool result = true;
+	
+	switch(event->keyval)
+	{
+		case KEY_EPG:
+		case KEY_MODE:
+		case GDK_e:
+		case GDK_E:
+			set_next_display_mode();
+			break;
+			
+		case GDK_f:
+		case GDK_F:
+			toggle_fullscreen();
+			break;
+
+		case GDK_m:
+		case GDK_M:
+		case KEY_MUTE:
+			get_application().signal_mute_state_changed(!is_muted());
+			break;
+
+		case GDK_r:
+		case GDK_R:
+		case KEY_RECORD:
+			get_application().signal_record_state_changed(
+				!is_recording(), get_application().make_recording_filename(), false);
+			break;
+		
+		case GDK_minus:
+		case KEY_CHANNELUP:
+			break;
+			
+		case GDK_plus:
+		case KEY_CHANNELDOWN:
+			break;
+
+		default:
+			result = false;
+			break;
+	}
+	
+	return result;
 }
