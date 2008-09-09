@@ -61,7 +61,8 @@ Glib::ustring encode_xml(const Glib::ustring& s)
 	replace_text(result, "&", "&amp;");
 	replace_text(result, "<", "&lt;");
 	replace_text(result, ">", "&gt;");
-	replace_text(result, "'", "&quot;");
+	replace_text(result, "'", "&apos;");
+	replace_text(result, "\"", "&quot;");
 
 	return result;
 }

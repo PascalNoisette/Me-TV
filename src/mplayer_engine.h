@@ -33,6 +33,8 @@ private:
 	void play(const Glib::ustring& mrl);
 	void stop();
 	void mute(gboolean state);
+	void expose() {};
+	void set_size(gint width, gint height) {};
 public:
 	MplayerEngine(int window_id);
 	~MplayerEngine();

@@ -251,12 +251,10 @@ void MainWindow::show_channels_dialog()
 	if (result == Gtk::RESPONSE_OK)
 	{
 		ChannelList channels = channels_dialog.get_channels();
-		profile.clear();
-		profile.add_channels(channels);
+		profile.set_channels(channels);
 		
 		// Must save profile/channels to get updated Channels PK IDs
-		Data data;
-		data.replace_profile(profile);
+		profile.save();
 		
 		update();
 	}
@@ -409,7 +407,7 @@ void MainWindow::on_timeout()
 	if (((application_last_update_time-2) > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 	{
 		update();
-		last_update_time = application_last_update_time;
+		last_update_time = now;
 	}
 	
 	// Disable screensaver

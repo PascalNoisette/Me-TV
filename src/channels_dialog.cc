@@ -36,7 +36,6 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 {
 	glade->connect_clicked("button_scan",							sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
 	glade->connect_clicked("button_remove_selected_channels",		sigc::mem_fun(*this, &ChannelsDialog::on_button_button_remove_selected_channels_clicked));
-	glade->connect_clicked("button_select_all_displayed_channels",	sigc::mem_fun(*this, &ChannelsDialog::on_button_select_all_displayed_channels_clicked));
 	
 	tree_view_displayed_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_displayed_channels"));
 	
@@ -46,13 +45,6 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 	
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_displayed_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
-	
-	//signal_show().connect(sigc::mem_fun(*this, &ChannelsDialog::show_scan_dialog));
-}
-
-void ChannelsDialog::on_button_select_all_displayed_channels_clicked()
-{
-	tree_view_displayed_channels->get_selection()->select_all();
 }
 
 void ChannelsDialog::show_scan_dialog()
@@ -87,9 +79,9 @@ void ChannelsDialog::show_scan_dialog()
 
 void ChannelsDialog::on_button_scan_clicked()
 {
-        TRY
+	TRY
 	show_scan_dialog();
-        CATCH
+	CATCH
 }
 
 void ChannelsDialog::on_button_button_remove_selected_channels_clicked()
@@ -111,10 +103,13 @@ ChannelList ChannelsDialog::get_channels()
 	Glib::RefPtr<Gtk::TreeModel> model = tree_view_displayed_channels->get_model();
 	Gtk::TreeModel::Children children = model->children();
 	Gtk::TreeIter iterator = children.begin();
+	guint sort_order = 0;
 	while (iterator != children.end())
 	{
 		Gtk::TreeModel::Row row(*iterator);
-		result.push_back(row.get_value(columns.column_channel));
+		Channel channel = row.get_value(columns.column_channel);
+		channel.sort_order = sort_order++;
+		result.push_back(channel);
 		iterator++;
 	}
 	return result;

@@ -454,7 +454,7 @@ ProfileList Data::get_all_profiles()
 		profile.name		= statement.get_text(1);
 		
 		Statement channel_statement(database,
-			Glib::ustring::compose("SELECT * FROM CHANNEL WHERE PROFILE_ID = %1", profile.profile_id));
+			Glib::ustring::compose("SELECT * FROM CHANNEL WHERE PROFILE_ID = %1 ORDER BY SORT_ORDER", profile.profile_id));
 		while (channel_statement.step() == SQLITE_ROW)
 		{
 			Channel channel;

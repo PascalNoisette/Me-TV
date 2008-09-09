@@ -980,138 +980,44 @@ swe</property>
         <property name="visible">True</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkHBox" id="hbox4">
+          <widget class="GtkVBox" id="vbox5">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkVBox" id="vbox5">
+              <widget class="GtkScrolledWindow" id="scrolledwindow_displayed_channels">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="border_width">2</property>
+                <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
                 <child>
-                  <widget class="GtkScrolledWindow" id="scrolledwindow_displayed_channels">
+                  <widget class="GtkTreeView" id="tree_view_displayed_channels">
+                    <property name="height_request">200</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="border_width">2</property>
-                    <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                    <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                    <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
-                    <child>
-                      <widget class="GtkTreeView" id="tree_view_displayed_channels">
-                        <property name="height_request">200</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip" translatable="yes">Select a channel to move up or down</property>
-                        <property name="headers_clickable">True</property>
-                      </widget>
-                    </child>
+                    <property name="tooltip" translatable="yes">Drag channels to reorder</property>
+                    <property name="headers_clickable">True</property>
+                    <property name="reorderable">True</property>
+                    <property name="rules_hint">True</property>
+                    <property name="search_column">0</property>
                   </widget>
-                </child>
-                <child>
-                  <widget class="GtkHBox" id="hbox21">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkButton" id="button_remove_selected_channels">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="tooltip" translatable="yes">Removes selected channels</property>
-                        <property name="label" translatable="yes">gtk-remove</property>
-                        <property name="use_stock">True</property>
-                        <property name="response_id">0</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="padding">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkButton" id="button_select_all_displayed_channels">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="tooltip" translatable="yes">Selects all Channels</property>
-                        <property name="label" translatable="yes">gtk-select-all</property>
-                        <property name="use_stock">True</property>
-                        <property name="response_id">0</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="padding">2</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkButton" id="button_scan">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="response_id">0</property>
-                        <child>
-                          <widget class="GtkLabel" id="label9">
-                            <property name="height_request">22</property>
-                            <property name="visible">True</property>
-                            <property name="tooltip" translatable="yes">Opens scan dialogue</property>
-                            <property name="label" translatable="yes">Scan Channels</property>
-                          </widget>
-                        </child>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="padding">3</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
               </widget>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox2">
+              <widget class="GtkButton" id="button_remove_selected_channels">
                 <property name="visible">True</property>
-                <child>
-                  <widget class="GtkVBox" id="vbox6">
-                    <property name="visible">True</property>
-                    <property name="homogeneous">True</property>
-                    <child>
-                      <widget class="GtkButton" id="button_move_highlighted_channel_up">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="label" translatable="yes">gtk-go-up</property>
-                        <property name="use_stock">True</property>
-                        <property name="image_position">GTK_POS_TOP</property>
-                        <property name="response_id">0</property>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkButton" id="button_move_highlighted_channel_down">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="label" translatable="yes">gtk-go-down</property>
-                        <property name="use_stock">True</property>
-                        <property name="image_position">GTK_POS_BOTTOM</property>
-                        <property name="response_id">0</property>
-                      </widget>
-                      <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="fill">False</property>
-                    <property name="padding">2</property>
-                  </packing>
-                </child>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip" translatable="yes">Removes selected channels</property>
+                <property name="label" translatable="yes">gtk-remove</property>
+                <property name="use_stock">True</property>
+                <property name="response_id">0</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="padding">2</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -1125,6 +1031,16 @@ swe</property>
             <property name="visible">True</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
+              <widget class="GtkButton" id="button_scan">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">_Scan</property>
+                <property name="use_underline">True</property>
+                <property name="response_id">0</property>
+              </widget>
+            </child>
+            <child>
               <widget class="GtkButton" id="button_channels_close">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1133,6 +1049,9 @@ swe</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-6</property>
               </widget>
+              <packing>
+                <property name="position">1</property>
+              </packing>
             </child>
             <child>
               <widget class="GtkButton" id="button_channels_ok">
@@ -1144,7 +1063,7 @@ swe</property>
                 <property name="response_id">-5</property>
               </widget>
               <packing>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </widget>

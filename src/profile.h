@@ -37,7 +37,9 @@ public:
 	void set_display_channel(guint channel_id);
 	void add_channel(Channel& channel);
 	void add_channels(ChannelList& channels);
+	void set_channels(ChannelList& channels);
 	void clear();
+	void save();
 	ChannelList& get_channels();
 	const ChannelList& get_channels() const;
 	const Channel* get_display_channel() const;

@@ -201,12 +201,10 @@ void StreamThread::start_engine()
 		if (engine_type == "xine")
 		{
 			engine = new XineEngine(window_id);
-			g_debug("Engine created: 0x%08X", engine);
 		}
 		else if (engine_type == "mplayer")
 		{
-			engine = new XineEngine(window_id);
-			g_debug("Engine created: 0x%08X", engine);
+			engine = new MplayerEngine(window_id);
 		}
 		else
 		{
