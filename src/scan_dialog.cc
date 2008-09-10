@@ -33,7 +33,21 @@ ScanDialog* ScanDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 
 Glib::ustring ScanDialog::get_initial_tuning_dir()
 {
-	Glib::ustring path = SCAN_DIRECTORY;
+	Glib::ustring path;
+	
+	if (Gio::File::create_for_path(SCAN_DIRECTORY)->query_exists())
+	{
+		path = SCAN_DIRECTORY;
+	}
+	else if (Gio::File::create_for_path(ALTERNATE_SCAN_DIRECTORY)->query_exists())
+	{
+		path = ALTERNATE_SCAN_DIRECTORY;
+	}
+	else
+	{
+		throw Exception(_("Failed to find initial tuning directory, try installing the dvb-utils or dvb-apps package"));
+	}
+	
 	switch(frontend.get_frontend_info().type)
 	{
 	case FE_OFDM:   path += "/dvb-t";       break;

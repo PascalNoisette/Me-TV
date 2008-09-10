@@ -32,6 +32,10 @@
 #define SCAN_DIRECTORY "/usr/share/dvb"
 #endif
 
+#ifndef ALTERNATE_SCAN_DIRECTORY
+#define ALTERNATE_SCAN_DIRECTORY "/usr/share/doc/dvb-utils/examples/scan"
+#endif
+
 class ScannedService
 {
 public:
