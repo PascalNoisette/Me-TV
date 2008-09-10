@@ -120,8 +120,6 @@ StreamThread::StreamThread(const Channel& channel) :
 	show_connection = main_window.signal_show().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_show));
 	hide_connection = main_window.signal_hide().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_hide));
 
-	timeout_source = gdk_threads_add_timeout(500, &StreamThread::on_timeout, this);
-
 	g_debug("StreamThread created");
 }
 
@@ -130,10 +128,6 @@ StreamThread::~StreamThread()
 	g_debug("Destroying StreamThread");
 	show_connection.disconnect();
 	hide_connection.disconnect();
-	if (timeout_source != -1)
-	{
-		g_source_remove(timeout_source);
-	}
 	stop_epg_thread();
 	join(true);
 	stop_engine();
@@ -153,11 +147,6 @@ void StreamThread::on_timeout()
 	Lock lock(mutex, "Engine expose");
 	if (engine != NULL)
 	{
-		gint width = -1, height = -1;
-		Gtk::DrawingArea& drawing_area_video = get_application().get_main_window().get_drawing_area();
-		Glib::RefPtr<Gdk::Window> window = drawing_area_video.get_window();
-		window->get_size(width, height);
-		engine->set_size(width, height);
 		engine->expose();
 	}
 }
@@ -198,6 +187,7 @@ void StreamThread::start()
 void StreamThread::start_engine()
 {
 	Application& application = get_application();
+	Gtk::DrawingArea& drawing_area_video = application.get_main_window().get_drawing_area();
 	{
 		Lock lock(mutex, __PRETTY_FUNCTION__);
 		if (engine != NULL)
@@ -205,7 +195,7 @@ void StreamThread::start_engine()
 			throw Exception("Failed to start engine: Engine has already been started");
 		}
 			
-		int window_id = GDK_WINDOW_XID(application.get_main_window().get_drawing_area().get_window()->gobj());
+		int window_id = GDK_WINDOW_XID(drawing_area_video.get_window()->gobj());
 
 		g_debug("Creating engine");
 		Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
@@ -238,6 +228,13 @@ void StreamThread::start_engine()
 
 	if (engine != NULL)
 	{
+		gint width, height;
+		drawing_area_video.get_window()->get_size(width, height);
+		engine->set_size(width, height);
+
+		connection_configure = drawing_area_video.signal_configure_event().connect(
+			sigc::mem_fun(*this, &StreamThread::on_drawing_area_configure_event));
+
 		EngineStartThread engine_start_thread(engine, fifo_path);
 		engine_start_thread.start();
 
@@ -251,6 +248,8 @@ void StreamThread::start_engine()
 		}
 		g_debug("Output FD created");
 	}
+
+	timeout_source = gdk_threads_add_timeout(1000, &StreamThread::on_timeout, this);
 }
 
 void StreamThread::stop_engine()
@@ -258,7 +257,7 @@ void StreamThread::stop_engine()
 	Lock lock(mutex, "Output FD close");
 	if (engine != NULL)
 	{
-		g_debug("Stopping engine: 0x%08X", engine);
+		connection_configure.disconnect();
 		
 		StopEngineThread stop_engine_thread(engine);
 		stop_engine_thread.start();
@@ -273,6 +272,11 @@ void StreamThread::stop_engine()
 		
 		delete engine;
 		engine = NULL;
+	}
+
+	if (timeout_source != -1)
+	{
+		g_source_remove(timeout_source);
 	}
 }
 
@@ -844,4 +848,13 @@ gboolean StreamThread::is_broadcasting()
 {
 	Lock lock(mutex, "StreamThread::is_broadcasting()");
 	return socket != NULL;
+}
+
+bool StreamThread::on_drawing_area_configure_event(GdkEventConfigure* event)
+{
+	Lock lock(mutex, "StreamThread::on_drawing_area_configure_event()");
+	if (engine != NULL)
+	{
+		engine->set_size(event->width, event->height);
+	}
 }

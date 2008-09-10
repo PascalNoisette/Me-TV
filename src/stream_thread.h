@@ -70,7 +70,9 @@ private:
 	guint					timeout_source;
 	sigc::connection		show_connection;
 	sigc::connection		hide_connection;
+	sigc::connection		connection_configure;
 
+	bool on_drawing_area_configure_event(GdkEventConfigure* event);
 	void on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual);
 	void on_mute_state_changed(gboolean mute_state);
 	void on_broadcast_state_changed(gboolean broadcast_state);
