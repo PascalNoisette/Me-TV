@@ -41,6 +41,7 @@ class ScannedService
 public:
 	guint id;
 	Glib::ustring name;
+	guint flags;
 	struct dvb_frontend_parameters frontend_parameters;
 };
 
@@ -64,11 +65,11 @@ public:
 				
 public:
 	ScanThread(Dvb::Frontend& frontend, const Glib::ustring& file) :
-		Thread("Scan"), frontend(frontend), initial_tuning_file(file) {}
+		Thread("Scan"), frontend(frontend), initial_tuning_file(file), scanner(2) {}
 		
 	void run()
 	{
-		scanner.start(frontend, initial_tuning_file, 2);
+		scanner.start(frontend, initial_tuning_file);
 	}
 		
 	void stop()

@@ -30,13 +30,17 @@ namespace Dvb
 	class Scanner
 	{
 	private:
-		guint convert_string_to_value(const StringTable* table, const gchar* text);
-		void process_terrestrial_line(Frontend& frontend, const Glib::ustring& line, guint wait_timeout);
+		gint wait_timeout;
 		gboolean terminated;
-	public:
-		Scanner();
 			
-		void start(Frontend& frontend, const Glib::ustring& region_file_path, guint wait_timeout);
+		void tune_to(Frontend& frontend, Transponder& transponder);
+		guint convert_string_to_value(const StringTable* table, const gchar* text);
+		void process_terrestrial_line(Frontend& frontend, const Glib::ustring& line);
+		void process_cable_line(Frontend& frontend, const Glib::ustring& line);
+	public:
+		Scanner(guint wait_timeout);
+			
+		void start(Frontend& frontend, const Glib::ustring& region_file_path);
 		void terminate();
 			
 		sigc::signal<void, struct dvb_frontend_parameters&, guint, const Glib::ustring&> signal_service;

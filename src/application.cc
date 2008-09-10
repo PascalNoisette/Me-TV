@@ -189,6 +189,11 @@ void Application::run()
 	if (channels.size() > 0)
 	{
 		gint last_channel = get_application().get_int_configuration_value("last_channel");
+		if (current_profile.find_channel(last_channel) == NULL)
+		{
+			g_debug("Last channel '%d' not found", last_channel);
+			last_channel = -1;
+		}
 		if (last_channel == -1)
 		{
 			last_channel = (*channels.begin()).channel_id;

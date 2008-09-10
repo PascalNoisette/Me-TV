@@ -24,7 +24,7 @@
 
 using namespace Dvb;
 
-struct StringTable bandwidth_table[] =
+struct StringTable Dvb::bandwidth_table[] =
 {
 	{ "8MHz", BANDWIDTH_8_MHZ },
 	{ "7MHz", BANDWIDTH_7_MHZ },
@@ -33,7 +33,7 @@ struct StringTable bandwidth_table[] =
 	{ NULL, 0 }
 };
 
-struct StringTable fec_table[] =
+struct StringTable Dvb::fec_table[] =
 {
 	{ "NONE", FEC_NONE },
 	{ "1/2",  FEC_1_2 },
@@ -48,7 +48,7 @@ struct StringTable fec_table[] =
 	{ NULL, 0 }
 };
 
-struct StringTable qam_table[] =
+struct StringTable Dvb::modulation_table[] =
 {
 	{ "QPSK",   QPSK },
 	{ "QAM16",  QAM_16 },
@@ -62,7 +62,7 @@ struct StringTable qam_table[] =
 	{ NULL, 0 }
 };
 
-struct StringTable modulation_table[] =
+struct StringTable Dvb::transmit_mode_table[] =
 {
 	{ "2k",   TRANSMISSION_MODE_2K },
 	{ "8k",   TRANSMISSION_MODE_8K },
@@ -70,7 +70,7 @@ struct StringTable modulation_table[] =
 	{ NULL, 0 }
 };
 
-struct StringTable guard_table[] =
+struct StringTable Dvb::guard_table[] =
 {
 	{ "1/32", GUARD_INTERVAL_1_32 },
 	{ "1/16", GUARD_INTERVAL_1_16 },
@@ -80,7 +80,7 @@ struct StringTable guard_table[] =
 	{ NULL, 0 }
 };
 
-struct StringTable hierarchy_table[] =
+struct StringTable Dvb::hierarchy_table[] =
 {
 	{ "NONE", HIERARCHY_NONE },
 	{ "1",    HIERARCHY_1 },
@@ -90,21 +90,13 @@ struct StringTable hierarchy_table[] =
 	{ NULL, 0 }
 };
 
-struct StringTable inversion_table[] =
+struct StringTable Dvb::inversion_table[] =
 {
 	{ "INVERSION_OFF",	INVERSION_OFF },
 	{ "INVERSION_ON",	INVERSION_ON },
 	{ "INVERSION_AUTO",	INVERSION_AUTO },
 	{ NULL, 0 }
 };
-
-struct StringTable* Frontend::get_bandwidth_table()		{ return bandwidth_table; }
-struct StringTable* Frontend::get_fec_table()			{ return fec_table; }
-struct StringTable* Frontend::get_qam_table()			{ return qam_table; }
-struct StringTable* Frontend::get_modulation_table()	{ return modulation_table; }
-struct StringTable* Frontend::get_guard_table()			{ return guard_table; }
-struct StringTable* Frontend::get_hierarchy_table()		{ return hierarchy_table; }
-struct StringTable* Frontend::get_inversion_table()		{ return inversion_table; }
 
 Frontend::Frontend(const Adapter& adapter, guint frontend_index) : adapter(adapter)
 {

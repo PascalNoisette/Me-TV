@@ -32,11 +32,106 @@ public:
 		Exception(Glib::ustring::compose("%1: %2", message, Glib::ustring(sqlite3_errmsg(database)))) {}
 };
 
+typedef enum
+{
+	PARAMETER_TYPE_NULL,
+	PARAMETER_TYPE_STRING,
+	PARAMETER_TYPE_INTEGER
+} ParameterType;
+
+class Parameter
+{
+public:
+	Parameter(const Glib::ustring& name) :
+		name(name), parameter_type(PARAMETER_TYPE_NULL) {}
+	Parameter(const Glib::ustring& name, const Glib::ustring& value) :
+		name(name), string_value(value), parameter_type(PARAMETER_TYPE_STRING) {}
+	Parameter(const Glib::ustring& name, gint value) :
+		name(name), int_value(value), parameter_type(PARAMETER_TYPE_INTEGER) {}
+		
+	ParameterType parameter_type;
+	Glib::ustring name;
+	guint int_value;
+	Glib::ustring string_value;
+};
+
+class ParameterList : public std::list<Parameter>
+{
+public:
+	Glib::ustring get_names()
+	{
+		gboolean first = true;
+		Glib::ustring result;
+		for (std::list<Parameter>::iterator i = begin(); i != end(); i++)
+		{
+			if (!first)
+			{
+				result += ", ";
+			}
+			else
+			{
+				first = false;
+			}
+
+			result += (*i).name;
+		}
+		return result;
+	}
+
+	Glib::ustring get_values()
+	{
+		gboolean first = true;
+		Glib::ustring result;
+
+		for (std::list<Parameter>::iterator i = begin(); i != end(); i++)
+		{
+			if (!first)
+			{
+				result += ", ";
+			}
+			else
+			{
+				first = false;
+			}
+
+			Parameter& parameter = *i;
+			if (parameter.parameter_type == PARAMETER_TYPE_NULL)
+			{
+				result += "NULL";
+			}
+			else if (parameter.parameter_type == PARAMETER_TYPE_INTEGER)
+			{
+				result += Glib::ustring::compose("%1", parameter.int_value);
+			}
+			else if (parameter.parameter_type == PARAMETER_TYPE_STRING)
+			{
+				result += Glib::ustring::compose("\"%1\"", parameter.string_value);
+			}
+		}
+		return result;
+	}
+		
+	void add(const Glib::ustring& name, const Glib::ustring& value)
+	{
+		push_back(Parameter(name, value));
+	}
+
+	void add(const Glib::ustring& name, gint value)
+	{
+		push_back(Parameter(name, value));
+	}
+
+	void add(const Glib::ustring& name)
+	{
+		push_back(Parameter(name));
+	}
+};
+
 Statement::Statement(sqlite3* database, const Glib::ustring& command) : database(database), command(command), lock(statement_mutex)
 {
 	statement = NULL;
 	const char* remaining = NULL;
-	//g_debug("Command: %s", command.c_str());
+	g_debug("Command: %s", command.c_str());
 	
 	if (sqlite3_prepare_v2(database, command.c_str(), -1, &statement, &remaining) != 0)
 	{
@@ -111,6 +206,8 @@ Data::Data(gboolean initialise)
 			"MRL CHAR(1024), "\
 			"SERVICE_ID INTEGER, "\
 			"FREQUENCY INTEGER, "\
+			"INVERSION INTEGER, "\
+						  
 			"BANDWIDTH INTEGER, "\
 			"CODE_RATE_HP INTEGER, "\
 			"CODE_RATE_LP INTEGER, "\
@@ -118,7 +215,11 @@ Data::Data(gboolean initialise)
 			"TRANSMISSION_MODE INTEGER, "\
 			"GUARD_INTERVAL INTEGER, "\
 			"HIERARCHY_INFORMATION INTEGER, "\
-			"INVERSION INTEGER, "\
+						  
+			"SYMBOL_RATE INTEGER, "\
+			"FEC_INNER INTEGER, "\
+			"MODULATION INTEGER, "\
+
 			"UNIQUE (NAME));");
 		
 		execute_non_query(
@@ -356,40 +457,57 @@ EpgEventList Data::get_epg_events(const Channel& channel, guint start_time, guin
 
 void Data::replace_channel(Channel& channel)
 {
-	Glib::ustring fixed_name = channel.name;
+	ParameterList parameters;
 	
+	Glib::ustring fixed_name = channel.name;
 	fix_quotes(fixed_name);
+
+	// General
+	if (channel.channel_id == 0)
+	{
+		parameters.add("CHANNEL_ID");
+	}
+	else
+	{
+		parameters.add("CHANNEL_ID", channel.channel_id);
+	}
+	parameters.add("PROFILE_ID",	channel.profile_id);
+	parameters.add("NAME",			fixed_name);
+	parameters.add("FLAGS",			channel.flags);
+	parameters.add("SORT_ORDER",	channel.sort_order);
+	parameters.add("MRL",			channel.mrl);
+	parameters.add("SERVICE_ID",	channel.service_id);
+	parameters.add("FREQUENCY",		(guint)channel.frontend_parameters.frequency);
+	parameters.add("INVERSION",		(guint)channel.frontend_parameters.inversion);
+
+	if (channel.flags & CHANNEL_FLAG_DVB_T)
+	{
+		parameters.add("BANDWIDTH",				(guint)channel.frontend_parameters.u.ofdm.bandwidth);
+		parameters.add("CODE_RATE_HP",			(guint)channel.frontend_parameters.u.ofdm.code_rate_HP);
+		parameters.add("CODE_RATE_LP",			(guint)channel.frontend_parameters.u.ofdm.code_rate_LP);
+		parameters.add("CONSTELLATION",			(guint)channel.frontend_parameters.u.ofdm.constellation);
+		parameters.add("TRANSMISSION_MODE", 	(guint)channel.frontend_parameters.u.ofdm.transmission_mode);
+		parameters.add("GUARD_INTERVAL",		(guint)channel.frontend_parameters.u.ofdm.guard_interval);
+		parameters.add("HIERARCHY_INFORMATION", (guint)channel.frontend_parameters.u.ofdm.hierarchy_information);
+	}
+	else if (channel.flags & CHANNEL_FLAG_DVB_C)
+	{
+		parameters.add("SYMBOL_RATE",	(guint)channel.frontend_parameters.u.qam.symbol_rate);
+		parameters.add("FEC_INNER",		(guint)channel.frontend_parameters.u.qam.fec_inner);
+		parameters.add("MODULATION",	(guint)channel.frontend_parameters.u.qam.modulation);
+	}
+	else
+	{
+		throw Exception("Invalid channel flag");
+	}
 	
 	Glib::ustring insert_command = Glib::ustring::compose
 	(
-		"REPLACE INTO CHANNEL "\
-	 	"(CHANNEL_ID, PROFILE_ID, NAME, FLAGS, SORT_ORDER, MRL, SERVICE_ID, FREQUENCY, BANDWIDTH, CODE_RATE_HP, CODE_RATE_LP, "\
-	 	"CONSTELLATION, TRANSMISSION_MODE, GUARD_INTERVAL, HIERARCHY_INFORMATION, INVERSION) "\
-	 	"VALUES (%1, %2, '%3', %4, %5, '%6', %7, %8, ",
-	 	channel.channel_id == 0 ? "NULL" : Glib::ustring::compose("%1", channel.channel_id),
-	 	channel.profile_id,
-		fixed_name,
-		channel.flags,
-		channel.sort_order,
-		channel.mrl,
-		channel.service_id,
-		(guint)channel.frontend_parameters.frequency
+		"REPLACE INTO CHANNEL (%1) VALUES (%2);",
+		parameters.get_names(), parameters.get_values()
 	);
 
-	Glib::ustring insert_command_extra = Glib::ustring::compose
-	(
-		"%1, %2, %3, %4, %5, %6, %7, %8);",
-		(guint)channel.frontend_parameters.u.ofdm.bandwidth,
-		(guint)channel.frontend_parameters.u.ofdm.code_rate_HP,
-		(guint)channel.frontend_parameters.u.ofdm.code_rate_LP,
-		(guint)channel.frontend_parameters.u.ofdm.constellation,
-		(guint)channel.frontend_parameters.u.ofdm.transmission_mode,
-		(guint)channel.frontend_parameters.u.ofdm.guard_interval,
-		(guint)channel.frontend_parameters.u.ofdm.hierarchy_information,
-		(guint)channel.frontend_parameters.inversion
-	);
-	
-	execute_non_query(insert_command + insert_command_extra);
+	execute_non_query(insert_command);
 	
 	if (channel.channel_id == 0)
 	{
@@ -399,15 +517,25 @@ void Data::replace_channel(Channel& channel)
 
 void Data::replace_profile(Profile& profile)
 {
+	ParameterList parameters;
 	Glib::ustring fixed_name = profile.name;
 	
 	fix_quotes(fixed_name);
 	
+	if (profile.profile_id == 0)
+	{
+		parameters.add("PROFILE_ID");
+	}
+	else
+	{
+		parameters.add("PROFILE_ID", profile.profile_id);
+	}
+	parameters.add("NAME", profile.name);
+	
 	Glib::ustring replace_command = Glib::ustring::compose
 	(
-		"REPLACE INTO PROFILE (PROFILE_ID, NAME) VALUES (%1, '%2');",
-	 	profile.profile_id == 0 ? "NULL" : Glib::ustring::compose("%1", profile.profile_id),
-	 	profile.name
+		"REPLACE INTO PROFILE (%1) VALUES (%2);",
+		parameters.get_names(), parameters.get_values()
 	);
 
 	execute_non_query(replace_command);
@@ -466,15 +594,26 @@ ProfileList Data::get_all_profiles()
 			channel.sort_order			= channel_statement.get_int(4);
 			channel.mrl					= channel_statement.get_text(5);
 			channel.service_id			= channel_statement.get_int(6);
+			
 			channel.frontend_parameters.frequency						= channel_statement.get_int(7);
-			channel.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth_t)channel_statement.get_int(8);
-			channel.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate_t)channel_statement.get_int(9);
-			channel.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate_t)channel_statement.get_int(10);
-			channel.frontend_parameters.u.ofdm.constellation			= (fe_modulation_t)channel_statement.get_int(11);
-			channel.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode_t)channel_statement.get_int(12);
-			channel.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval_t)channel_statement.get_int(13);
-			channel.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy_t)channel_statement.get_int(14);
-			channel.frontend_parameters.inversion						= (fe_spectral_inversion_t)channel_statement.get_int(15);
+			channel.frontend_parameters.inversion						= (fe_spectral_inversion_t)channel_statement.get_int(8);
+
+			if (channel.flags & CHANNEL_FLAG_DVB_T)
+			{
+				channel.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth_t)channel_statement.get_int(9);
+				channel.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate_t)channel_statement.get_int(10);
+				channel.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate_t)channel_statement.get_int(11);
+				channel.frontend_parameters.u.ofdm.constellation			= (fe_modulation_t)channel_statement.get_int(12);
+				channel.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode_t)channel_statement.get_int(13);
+				channel.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval_t)channel_statement.get_int(14);
+				channel.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy_t)channel_statement.get_int(15);
+			}
+			else if (channel.flags & CHANNEL_FLAG_DVB_C)
+			{
+				channel.frontend_parameters.u.qam.symbol_rate	= channel_statement.get_int(16);
+				channel.frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)channel_statement.get_int(17);
+				channel.frontend_parameters.u.qam.modulation	= (fe_modulation_t)channel_statement.get_int(18);
+			}
 			
 			profile.add_channel(channel);
 			

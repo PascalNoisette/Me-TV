@@ -281,6 +281,22 @@ ScannedServiceList ScanDialog::get_scanned_services()
 		ScannedService service;
 		service.id = row.get_value(columns.column_id);
 		service.name = row.get_value(columns.column_name);
+
+		switch(frontend.get_frontend_info().type)
+		{
+			case FE_OFDM:
+				service.flags = CHANNEL_FLAG_DVB_T;
+				break;
+				
+			case FE_QAM:
+				service.flags = CHANNEL_FLAG_DVB_C;
+				break;
+				
+			default:
+				throw Exception("Invalid frontend type");
+				break;
+		}
+		
 		service.frontend_parameters = row.get_value(columns.column_frontend_parameters);
 		result.push_back(service);
 

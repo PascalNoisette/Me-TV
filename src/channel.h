@@ -22,7 +22,8 @@
 #define __CHANNEL_H__
 
 #define CHANNEL_FLAG_NONE		0
-#define CHANNEL_FLAG_DVB_T		1
+#define CHANNEL_FLAG_DVB_T		0x01
+#define CHANNEL_FLAG_DVB_C		0x10
 
 #include <linux/dvb/frontend.h>
 #include "epg_event.h"

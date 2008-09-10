@@ -65,7 +65,7 @@ void ChannelsDialog::show_scan_dialog()
 			channel.service_id			= scanned_service.id;
 			channel.name				= scanned_service.name;
 			channel.frontend_parameters	= scanned_service.frontend_parameters;
-			channel.flags				= CHANNEL_FLAG_DVB_T;
+			channel.flags				= scanned_service.flags;
 
 			Gtk::TreeModel::iterator row_iterator = list_store->append();
 			Gtk::TreeModel::Row row		= *row_iterator;

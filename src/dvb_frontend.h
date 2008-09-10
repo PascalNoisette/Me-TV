@@ -43,6 +43,14 @@ namespace Dvb
 		guint		value;
 	};
 	
+	extern struct StringTable bandwidth_table[];
+	extern struct StringTable fec_table[];
+	extern struct StringTable transmit_mode_table[];
+	extern struct StringTable guard_table[];
+	extern struct StringTable hierarchy_table[];
+	extern struct StringTable inversion_table[];	
+	extern struct StringTable modulation_table[];
+	
 	class Adapter
 	{
 	private:
@@ -93,14 +101,6 @@ namespace Dvb
 		int get_fd() const { return fd; }
 		const Adapter& get_adapter() const { return adapter; }
 		Glib::ustring get_path() const { return adapter.get_frontend_path(frontend); }
-			
-		static struct StringTable* get_bandwidth_table();
-		static struct StringTable* get_fec_table();
-		static struct StringTable* get_qam_table();
-		static struct StringTable* get_modulation_table();
-		static struct StringTable* get_guard_table();
-		static struct StringTable* get_hierarchy_table();
-		static struct StringTable* get_inversion_table();
 
 		static guint convert_string_to_value(const StringTable* table, const Glib::ustring& text);
 		static Glib::ustring convert_value_to_string(const StringTable* table, guint value);
