@@ -169,7 +169,7 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	guint size = lines.size();
 	guint count = 0;
 	
-	for (StringList::iterator iterator = lines.begin(); iterator != lines.end(); iterator++)
+	for (StringList::iterator iterator = lines.begin(); iterator != lines.end() && !terminated; iterator++)
 	{
 		Glib::ustring line = *iterator;		
 
@@ -191,15 +191,23 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 			}
 		}
 		
-		signal_progress(++count, size);
+		if (!terminated)
+		{
+			signal_progress(++count, size);
+		}
 	}
+	g_debug("Scanner loop exited");
 
-	signal_progress(size, size);
+	if (!terminated)
+	{
+		signal_progress(size, size);
+	}
 	
 	g_debug("Scanner finished");
 }
 
 void Scanner::terminate()
 {
+	g_debug("Scanner marked for termination");
 	terminated = true;
 }

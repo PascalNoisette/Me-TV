@@ -179,6 +179,7 @@ void ScanDialog::stop_scan()
 	if (scan_thread != NULL)
 	{
 		g_debug("Stopping scan");
+		scan_thread->stop();
 		scan_thread->join(true);
 		delete scan_thread;
 		scan_thread = NULL;
