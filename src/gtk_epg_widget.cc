@@ -220,13 +220,10 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 					)
 				);
 
-				//if (!show_epg_time)
-				{
-					Glib::ustring tooltip_text = get_time_text(converted_start_time, "%A, %B %d\n%H:%M");
-					tooltip_text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M");
+				Glib::ustring tooltip_text = get_time_text(converted_start_time, "%A, %B %d\n%H:%M");
+				tooltip_text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M");
 
-					button.set_tooltip_text(tooltip_text);
-				}
+				button.set_tooltip_text(tooltip_text);
 			}
 
 			total_number_columns += column_count;

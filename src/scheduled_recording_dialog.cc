@@ -65,9 +65,13 @@ guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_ev
 		set_transient_for(*transient_for);
 	}
 	
+	Application& application = get_application();
+	guint before = application.get_int_configuration_value("record_extra_before");
+	guint after = application.get_int_configuration_value("record_extra_after");
+	
 	entry_description->set_text(epg_event.get_title());
-	date_edit_start_time->set_time(convert_to_local_time(epg_event.start_time));
-	spinbutton_duration->set_value(epg_event.duration/60);
+	date_edit_start_time->set_time(convert_to_local_time(epg_event.start_time) - (before * 60));
+	spinbutton_duration->set_value((epg_event.duration/60) + before + after);
 	return run(transient_for, false);
 }
 

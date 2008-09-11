@@ -106,6 +106,7 @@ public:
 	void start_engine();
 	void stop_engine();
 	Engine& get_engine();
+	gboolean is_engine_running();
 
 	gboolean is_manual_recording();
 	gboolean is_recording();

@@ -51,6 +51,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->set_double_buffered(false);
 	
+	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_expose_event));
+	
 	glade->get_widget_derived("scrolled_window_epg", widget_epg);
 	
 	if (widget_epg == NULL)
@@ -184,11 +186,15 @@ Gtk::DrawingArea& MainWindow::get_drawing_area()
 bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
 {
 	TRY
-	drawing_area_video->get_window()->draw_rectangle(
-		drawing_area_video->get_style()->get_bg_gc(Gtk::STATE_NORMAL),
-		true, event->area.x, event->area.y, event->area.width, event->area.height);
+	// Hack to check if we need/want to expose
+	if (get_application().need_manual_expose())
+	{
+		drawing_area_video->get_window()->draw_rectangle(
+			drawing_area_video->get_style()->get_bg_gc(Gtk::STATE_NORMAL),
+			true, event->area.x, event->area.y, event->area.width, event->area.height);
+	}
 	CATCH
-	return true;
+	return false;
 }
 
 void MainWindow::on_menu_item_record_clicked()
@@ -345,7 +351,6 @@ void MainWindow::set_next_display_mode()
 bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
 {
 	TRY
-		
 	if (event->button == 1)
 	{
 		if (event->type == GDK_2BUTTON_PRESS)

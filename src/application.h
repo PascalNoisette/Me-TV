@@ -77,6 +77,7 @@ public:
 	void update_ui();
 		
 	gboolean is_recording();
+	gboolean need_manual_expose();
 		
 	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
 	gint get_int_configuration_value(const Glib::ustring& key);

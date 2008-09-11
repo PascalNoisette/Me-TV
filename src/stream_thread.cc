@@ -858,3 +858,9 @@ bool StreamThread::on_drawing_area_configure_event(GdkEventConfigure* event)
 		engine->set_size(event->width, event->height);
 	}
 }
+
+gboolean StreamThread::is_engine_running()
+{
+	Lock lock(mutex, "StreamThread::is_engine_running()");
+	return (engine != NULL);
+}

@@ -334,6 +334,17 @@ gboolean Application::on_timeout()
 					if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
 					{
 						g_debug("Already tuned to correct channel");
+						
+						if (stream_thread->is_recording())
+						{
+							g_debug("Already recording");
+						}
+						else
+						{
+							g_debug("Starting recording due to scheduled recording");
+							Glib::ustring filename = make_recording_filename(scheduled_recording.description);
+							signal_record_state_changed(true, filename, false);
+						}
 					}
 					else
 					{
@@ -342,10 +353,7 @@ gboolean Application::on_timeout()
 						
 						g_debug("Changing channel for scheduled recording");
 						profile.set_display_channel(scheduled_recording.channel_id);
-					}
-					
-					if (!stream_thread->is_recording())
-					{
+
 						g_debug("Starting recording due to scheduled recording");
 						Glib::ustring filename = make_recording_filename(scheduled_recording.description);
 						signal_record_state_changed(true, filename, false);
@@ -359,8 +367,6 @@ gboolean Application::on_timeout()
 			g_debug("Record stopped by scheduled recording");
 			signal_record_state_changed(false, "", false);
 		}
-		
-		g_debug("");
 	}
 	CATCH
 	
@@ -412,4 +418,9 @@ gboolean Application::is_recording()
 	}
 	
 	return result;
+}
+
+gboolean Application::need_manual_expose()
+{
+	return stream_thread == NULL || !stream_thread->is_engine_running();
 }
