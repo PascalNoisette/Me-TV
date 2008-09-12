@@ -20,7 +20,7 @@
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
-#include "scan_dialog.h"
+#include "scan_window.h"
 #include "application.h"
 #include "channels_dialog.h"
 
@@ -47,40 +47,17 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
 }
 
-void ChannelsDialog::show_scan_dialog()
+void ChannelsDialog::show_scan_window()
 {
-	ScanDialog* scan_dialog = ScanDialog::create(glade);
-	gint scan_dialog_result = scan_dialog->run();
-	scan_dialog->hide();
-	if (scan_dialog_result == Gtk::RESPONSE_OK)
-	{
-		ScannedServiceList scanned_services = scan_dialog->get_scanned_services();
-		
-		std::list<ScannedService>::iterator iterator = scanned_services.begin();
-		while (iterator != scanned_services.end())
-		{
-			ScannedService& scanned_service = *iterator;
-
-			Channel channel;
-			channel.service_id			= scanned_service.id;
-			channel.name				= scanned_service.name;
-			channel.frontend_parameters	= scanned_service.frontend_parameters;
-			channel.flags				= scanned_service.flags;
-
-			Gtk::TreeModel::iterator row_iterator = list_store->append();
-			Gtk::TreeModel::Row row		= *row_iterator;
-			row[columns.column_name]	= channel.name;
-			row[columns.column_channel]	= channel;
-			
-			iterator++;			
-		}
-	}
+	ScanWindow* scan_window = ScanWindow::create(glade);
+	scan_window->show();
+	Gnome::Main::run(*scan_window);
 }
 
 void ChannelsDialog::on_button_scan_clicked()
 {
 	TRY
-	show_scan_dialog();
+	show_scan_window();
 	CATCH
 }
 
@@ -139,6 +116,6 @@ void ChannelsDialog::on_show()
 	ChannelList& channels = get_application().get_profile_manager().get_current_profile().get_channels();
 	if (channels.size() == 0)
 	{
-		show_scan_dialog();
+		show_scan_window();
 	}
 }

@@ -35,19 +35,19 @@ private:
 		
 	Glib::StaticRecMutex& log(Glib::StaticRecMutex& mutex, const Glib::ustring& name)
 	{
-		g_debug("'%s' trying to lock", name.c_str());
+//		g_debug("'%s' trying to lock", name.c_str());
 		return mutex;
 	}
 public:
 	Lock(Glib::StaticRecMutex& mutex, const Glib::ustring& name) :
 		Glib::RecMutex::Lock(log(mutex, name)), name(name)
 	{
-		g_debug("'%s' acquired lock", name.c_str());
+//		g_debug("'%s' acquired lock", name.c_str());
 	}
 	
 	~Lock()
 	{
-		g_debug("'%s' released lock", name.c_str());
+//		g_debug("'%s' released lock", name.c_str());
 	}
 };
 

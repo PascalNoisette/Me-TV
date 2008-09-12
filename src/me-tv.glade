@@ -980,7 +980,7 @@ swe</property>
         <property name="visible">True</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkVBox" id="vbox5">
+          <widget class="GtkHBox" id="hbox2">
             <property name="visible">True</property>
             <child>
               <widget class="GtkScrolledWindow" id="scrolledwindow_displayed_channels">
@@ -992,6 +992,7 @@ swe</property>
                 <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
                 <child>
                   <widget class="GtkTreeView" id="tree_view_displayed_channels">
+                    <property name="width_request">200</property>
                     <property name="height_request">200</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -1005,19 +1006,43 @@ swe</property>
               </widget>
             </child>
             <child>
-              <widget class="GtkButton" id="button_remove_selected_channels">
+              <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip" translatable="yes">Removes selected channels</property>
-                <property name="label" translatable="yes">gtk-remove</property>
-                <property name="use_stock">True</property>
-                <property name="response_id">0</property>
+                <child>
+                  <widget class="GtkButton" id="button_scan">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="label" translatable="yes">gtk-add</property>
+                    <property name="use_stock">True</property>
+                    <property name="response_id">0</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_remove_selected_channels">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip" translatable="yes">Removes selected channels</property>
+                    <property name="label" translatable="yes">gtk-remove</property>
+                    <property name="use_stock">True</property>
+                    <property name="response_id">0</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">2</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </widget>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="padding">2</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -1031,16 +1056,6 @@ swe</property>
             <property name="visible">True</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
-              <widget class="GtkButton" id="button_scan">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="label" translatable="yes">_Scan</property>
-                <property name="use_underline">True</property>
-                <property name="response_id">0</property>
-              </widget>
-            </child>
-            <child>
               <widget class="GtkButton" id="button_channels_close">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1049,9 +1064,6 @@ swe</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-6</property>
               </widget>
-              <packing>
-                <property name="position">1</property>
-              </packing>
             </child>
             <child>
               <widget class="GtkButton" id="button_channels_ok">
@@ -1063,7 +1075,7 @@ swe</property>
                 <property name="response_id">-5</property>
               </widget>
               <packing>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </widget>
@@ -1554,20 +1566,17 @@ swe</property>
       </packing>
     </child>
   </widget>
-  <widget class="GtkDialog" id="dialog_scan_wizard">
-    <property name="border_width">5</property>
+  <widget class="GtkWindow" id="window_scan_wizard">
+    <property name="border_width">4</property>
     <property name="title" translatable="yes">Me TV - Scan Wizard</property>
-    <property name="resizable">False</property>
     <property name="modal">True</property>
-    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
-    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="skip_taskbar_hint">True</property>
+    <property name="skip_pager_hint">True</property>
     <property name="transient_for">dialog_channels</property>
-    <property name="has_separator">False</property>
-    <child internal-child="vbox">
-      <widget class="GtkVBox" id="dialog-vbox12">
+    <child>
+      <widget class="GtkVBox" id="vbox_scan">
         <property name="visible">True</property>
-        <property name="spacing">2</property>
+        <property name="spacing">5</property>
         <child>
           <widget class="GtkNotebook" id="notebook_scan_wizard">
             <property name="visible">True</property>
@@ -1584,24 +1593,82 @@ swe</property>
                   <placeholder/>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label_scan_device">
+                  <widget class="GtkFileChooserButton" id="file_chooser_button_select_file_to_scan">
                     <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">Device Text</property>
+                    <property name="tooltip" translatable="yes">Select a region file to scan</property>
+                    <property name="title" translatable="yes">Select a file</property>
                   </widget>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="top_attach">4</property>
+                    <property name="bottom_attach">5</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label_select_device">
+                  <widget class="GtkTable" id="table2">
                     <property name="visible">True</property>
-                    <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Device: </property>
+                    <property name="n_rows">2</property>
+                    <property name="n_columns">2</property>
+                    <child>
+                      <widget class="GtkComboBox" id="combo_box_select_region">
+                        <property name="visible">True</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_select_region">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Select your region: </property>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkComboBox" id="combo_box_select_country">
+                        <property name="visible">True</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label5">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Select your country: </property>
+                      </widget>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="y_options"></property>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkRadioButton" id="radio_button_scan_by_location">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="label" translatable="yes">By location</property>
+                    <property name="response_id">0</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">True</property>
+                  </widget>
+                  <packing>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
                   </packing>
                 </child>
                 <child>
@@ -1622,82 +1689,24 @@ swe</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkRadioButton" id="radio_button_scan_by_location">
+                  <widget class="GtkLabel" id="label_select_device">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="label" translatable="yes">By location</property>
-                    <property name="response_id">0</property>
-                    <property name="active">True</property>
-                    <property name="draw_indicator">True</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Device: </property>
                   </widget>
                   <packing>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
+                    <property name="y_options"></property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkTable" id="table2">
+                  <widget class="GtkLabel" id="label_scan_device">
                     <property name="visible">True</property>
-                    <property name="n_rows">2</property>
-                    <property name="n_columns">2</property>
-                    <child>
-                      <widget class="GtkLabel" id="label5">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Select your country: </property>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkComboBox" id="combo_box_select_country">
-                        <property name="visible">True</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_select_region">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Select your region: </property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkComboBox" id="combo_box_select_region">
-                        <property name="visible">True</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">Device Text</property>
                   </widget>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkFileChooserButton" id="file_chooser_button_select_file_to_scan">
-                    <property name="visible">True</property>
-                    <property name="tooltip" translatable="yes">Select a region file to scan</property>
-                    <property name="title" translatable="yes">Select a file</property>
-                  </widget>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">4</property>
-                    <property name="bottom_attach">5</property>
                   </packing>
                 </child>
               </widget>
@@ -1805,13 +1814,11 @@ swe</property>
               </packing>
             </child>
           </widget>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
-        <child internal-child="action_area">
-          <widget class="GtkHButtonBox" id="dialog-action_area12">
+        <child>
+          <widget class="GtkHButtonBox" id="hbuttonbox_buttons">
             <property name="visible">True</property>
+            <property name="spacing">10</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
               <widget class="GtkButton" id="button_scan_wizard_cancel">
@@ -1852,7 +1859,8 @@ swe</property>
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="pack_type">GTK_PACK_END</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </widget>

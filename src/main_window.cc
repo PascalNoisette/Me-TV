@@ -23,7 +23,6 @@
 #include "meters_dialog.h"
 #include "preferences_dialog.h"
 #include "application.h"
-#include "scan_dialog.h"
 #include "scheduled_recordings_dialog.h"
 #include "me-tv.h"
 #include <config.h>

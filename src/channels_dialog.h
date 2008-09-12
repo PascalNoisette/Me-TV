@@ -23,7 +23,6 @@
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
-#include "scan_dialog.h"
 
 class ChannelsDialog : public Gtk::Dialog
 {
@@ -45,7 +44,7 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 	Gtk::TreeView* tree_view_displayed_channels;
-	void show_scan_dialog();
+	void show_scan_window();
 	
 	void on_show();
 	void on_button_scan_clicked();

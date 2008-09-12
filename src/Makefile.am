@@ -27,7 +27,6 @@ me_tv_SOURCES = \
 	main_window.h \
 	channels_dialog.h \
 	preferences_dialog.h \
-	scan_dialog.h \
 	exception.h \
 	thread.h \
 	application.cc \
@@ -49,7 +48,6 @@ me_tv_SOURCES = \
 	device_manager.h \
 	me-tv.h \
 	meters_dialog.h \
-	scan_dialog.cc \
 	channels_dialog.cc \
 	thread.cc \
 	main_window.cc \
@@ -86,7 +84,9 @@ me_tv_SOURCES = \
 	xine_engine.h \
 	mplayer_engine.cc \
 	mplayer_engine.h \
-	exception.cc
+	exception.cc \
+	scan_window.cc \
+	scan_window.h
 
 me_tv_LDFLAGS = 
 
