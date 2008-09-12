@@ -49,6 +49,7 @@ private:
 	void stop();
 	void mute(gboolean state);
 	void expose();
+	void set_audio_channel(guint channel);
 	
 public:
 	XineEngine(int window_id);

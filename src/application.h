@@ -69,7 +69,7 @@ public:
 	ProfileManager&		get_profile_manager()	{ return profile_manager; }
 	DeviceManager&		get_device_manager()	{ return device_manager; }
 
-	StreamThread& get_stream_thread();
+	StreamThread* get_stream_thread();
 	void stop_stream_thread();
 	void set_source(const Channel& channel);		
 

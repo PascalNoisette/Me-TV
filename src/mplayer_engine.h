@@ -35,6 +35,8 @@ private:
 	void mute(gboolean state);
 	void expose() {};
 	void set_size(gint width, gint height) {};
+	void set_audio_channel(guint channel) {};
+
 public:
 	MplayerEngine(int window_id);
 	~MplayerEngine();

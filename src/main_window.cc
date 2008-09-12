@@ -119,6 +119,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	application.signal_record_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_record_state_changed));
 	application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_mute_state_changed));
 	application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_broadcast_state_changed));
+
+	Gtk::MenuItem* menu_item_audio_streams = dynamic_cast<Gtk::MenuItem*>(glade->get_widget("menu_item_audio_streams"));
+	menu_item_audio_streams->set_submenu(audio_streams_menu);
+	menu_item_audio_streams->hide();
 }
 
 MainWindow::~MainWindow()
@@ -500,7 +504,8 @@ gboolean MainWindow::is_broadcasting()
 
 void MainWindow::update()
 {
-	const Channel* channel = get_application().get_profile_manager().get_current_profile().get_display_channel();
+	Application& application = get_application();
+	const Channel* channel = application.get_profile_manager().get_current_profile().get_display_channel();
 	Glib::ustring window_title;
 	Glib::ustring status_text;
 	
@@ -526,6 +531,31 @@ void MainWindow::update()
 	app_bar->set_status(status_text);
 
 	widget_epg->update();
+/*	
+	Gtk::Menu_Helpers::MenuList& items = audio_streams_menu.items();
+	items.erase(items.begin(), items.end());
+	StreamThread* stream_thread = application.get_stream_thread();
+	if (stream_thread != NULL)
+	{
+		const Stream& stream = stream_thread->get_stream();
+		std::vector<Dvb::SI::AudioStream> audio_streams = stream.audio_streams;
+		gint count = 0;
+		
+		g_debug("Audio streams: %d", audio_streams.size());
+		for (std::vector<Dvb::SI::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
+		{
+			Dvb::SI::AudioStream audio_stream = *i;		
+			Glib::ustring text = Glib::ustring::compose("%1: %2", ++count, audio_stream.language);
+			if (audio_stream.is_ac3)
+			{
+				text += " (AC3)";
+			}
+			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
+			menu_item->show_all();
+			audio_streams_menu.items().push_back(*menu_item);
+		}
+	}
+*/
 }
 
 void MainWindow::set_state(const Glib::ustring& name, gboolean state)

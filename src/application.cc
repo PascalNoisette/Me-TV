@@ -424,3 +424,8 @@ gboolean Application::need_manual_expose()
 {
 	return stream_thread == NULL || !stream_thread->is_engine_running();
 }
+
+StreamThread* Application::get_stream_thread()
+{
+	return stream_thread;
+}

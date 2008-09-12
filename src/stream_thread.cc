@@ -864,3 +864,8 @@ gboolean StreamThread::is_engine_running()
 	Lock lock(mutex, "StreamThread::is_engine_running()");
 	return (engine != NULL);
 }
+
+const Stream& StreamThread::get_stream() const
+{
+	return stream;
+}

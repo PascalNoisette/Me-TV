@@ -49,6 +49,8 @@ private:
 	guint									last_update_time;
 	guint									last_poke_time;
 	guint									timeout_source;
+	Gtk::Menu								audio_streams_menu;
+	Gtk::RadioMenuItem::Group				audio_streams_menu_group;
 
 	void stop();
 	void fullscreen();

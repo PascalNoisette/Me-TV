@@ -316,3 +316,9 @@ void XineEngine::set_size(gint w, gint h)
 	width = w;
 	height = h;
 }
+
+void XineEngine::set_audio_channel(guint channel)
+{
+	g_debug("XineEngine::set_audio_channel(%d)", channel);
+	xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
+}
