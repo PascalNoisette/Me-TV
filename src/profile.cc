@@ -95,6 +95,7 @@ void Profile::add_channels(ChannelList& c)
 void Profile::add_channel(Channel& channel)
 {
 	channels.push_back(channel);
+	g_debug("Channel '%s' added to profile", channel.name.c_str());
 }
 	
 const ChannelList& Profile::get_channels() const
@@ -141,8 +142,10 @@ void Profile::save()
 	g_debug("'%s' profile saved", name.c_str());
 }
 
-void Profile::set_channels(ChannelList& channels)
+void Profile::set_channels(ChannelList& new_channels)
 {
+	g_debug("Setting channels");
+	
 	guint display_channel_frequency = 0;
 	guint display_channel_service_id = 0;
 
@@ -154,7 +157,7 @@ void Profile::set_channels(ChannelList& channels)
 	}
 	
 	clear();
-	add_channels(channels);
+	add_channels(new_channels);
 
 	if (display_channel_frequency != 0)
 	{
@@ -169,6 +172,7 @@ void Profile::set_channels(ChannelList& channels)
 			set_display_channel(*channel);
 		}
 	}
+	g_debug("Finished setting channels");
 }
 
 void Profile::next_channel()

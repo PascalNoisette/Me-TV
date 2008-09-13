@@ -249,25 +249,10 @@ void MainWindow::on_menu_item_channels_clicked()
 
 void MainWindow::show_channels_dialog()
 {
-	Profile& profile = get_application().get_profile_manager().get_current_profile();
-	ChannelsDialog& channels_dialog = ChannelsDialog::create(glade);
-	channels_dialog.set_channels(profile.get_channels());
-	
-	gint result = channels_dialog.run();
+	ChannelsDialog& channels_dialog = ChannelsDialog::create(glade);	
+	channels_dialog.run();
 	channels_dialog.hide();
 	update();
-	
-	// Pressed OK
-	if (result == Gtk::RESPONSE_OK)
-	{
-		ChannelList channels = channels_dialog.get_channels();
-		profile.set_channels(channels);
-		
-		// Must save profile/channels to get updated Channels PK IDs
-		profile.save();
-		
-		update();
-	}
 }
 
 void MainWindow::on_menu_item_preferences_clicked()

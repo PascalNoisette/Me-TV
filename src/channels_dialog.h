@@ -45,18 +45,19 @@ private:
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 	Gtk::TreeView* tree_view_displayed_channels;
 	void show_scan_window();
+
+	ChannelList get_channels();
+	void set_channels(const ChannelList& channels);
+	void update_channels();
 	
 	void on_show();
 	void on_button_scan_clicked();
 	void on_button_button_remove_selected_channels_clicked();
-		
+
 public:
 	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 		
 	static ChannelsDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
-
-	ChannelList get_channels();
-	void set_channels(const ChannelList& channels);
 };
 
 #endif

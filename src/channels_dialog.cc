@@ -52,6 +52,7 @@ void ChannelsDialog::show_scan_window()
 	ScanWindow* scan_window = ScanWindow::create(glade);
 	scan_window->show();
 	Gnome::Main::run(*scan_window);
+	update_channels();
 }
 
 void ChannelsDialog::on_button_scan_clicked()
@@ -92,6 +93,12 @@ ChannelList ChannelsDialog::get_channels()
 	return result;
 }
 
+void ChannelsDialog::update_channels()
+{
+	Profile& profile = get_application().get_profile_manager().get_current_profile();
+	set_channels(profile.get_channels());
+}
+
 void ChannelsDialog::set_channels(const ChannelList& channels)
 {
 	list_store->clear();
@@ -112,6 +119,7 @@ void ChannelsDialog::set_channels(const ChannelList& channels)
 
 void ChannelsDialog::on_show()
 {
+	update_channels();
 	Gtk::Dialog::on_show();
 	ChannelList& channels = get_application().get_profile_manager().get_current_profile().get_channels();
 	if (channels.size() == 0)

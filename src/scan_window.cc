@@ -262,7 +262,6 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 		}
 		
 		current_profile.add_channel(channel);
-		g_debug("Channel '%s' added to profile", channel.name.c_str());
 		
 		iterator++;
 	}
