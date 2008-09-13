@@ -26,7 +26,6 @@
 #include "dvb_frontend.h"
 #include "exception.h"
 #include "me-tv.h"
-#include "scheduler.h"
 
 typedef enum
 {
@@ -35,14 +34,6 @@ typedef enum
 	USAGE_TYPE_VIEWING,
 	USAGE_TYPE_EPG_UPDATE
 } UsageType;
-
-class FrontendEvent : public Event
-{
-private:
-	UsageType usage_type;
-public:
-	FrontendEvent(UsageType usage_type, Event event) : Event(event), usage_type(usage_type) {}
-};
 
 typedef std::list<Dvb::Frontend*> FrontendList;
 
