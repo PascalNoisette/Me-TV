@@ -24,6 +24,8 @@ me_tvdoc_DATA = \
 	NEWS
 
 EXTRA_DIST = $(me_tvdoc_DATA) \
+	$(desktop_DATA) \
+	$(pixmaps_DATA) \
 	intltool-update.in \
 	intltool-merge.in \
 	intltool-extract.in
