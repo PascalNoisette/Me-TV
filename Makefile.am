@@ -23,9 +23,12 @@ me_tvdoc_DATA = \
 	INSTALL\
 	NEWS
 
-EXTRA_DIST = $(me_tvdoc_DATA)
+EXTRA_DIST = $(me_tvdoc_DATA) \
+	intltool_update.in \
+	intltool_merge.in \
+	intltool_extract.in
 
-# Copy all the spec files. Of cource, only one is actually used.
+# Copy all the spec files. Of course, only one is actually used.
 dist-hook:
 	for specfile in *.spec; do \
 		if test -f $$specfile; then \
