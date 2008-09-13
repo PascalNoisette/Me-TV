@@ -1,18 +1,4 @@
-2007-12-28  Johannes Schmid,,,  <jhs@idefix>
+2008-09-14  Michael Lamothe <michael.lamothe@gmail.com>
 
-	reviewed by: <delete if not using a buddy>
-
-	* project.anjuta:
-
-2007-12-23  Johannes Schmid,,,  <jhs@idefix>
-
-	reviewed by: <delete if not using a buddy>
-
-	* src/Makefile.am.tpl:
-
-2007-12-23  Johannes Schmid,,,  <jhs@idefix>
-
-	reviewed by: <delete if not using a buddy>
-
-	* src/Makefile.am.tpl:
-
+	* Me TV 0.6, initial version
+	* Complete code rewrite in C++ using C++ libraries

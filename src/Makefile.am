@@ -88,7 +88,8 @@ me_tv_SOURCES = \
 	scan_window.cc \
 	scan_window.h
 
-me_tv_LDFLAGS = 
+me_tv_LDFLAGS = `getconf LFS_LDFLAGS` \
+        `getconf LFS64_LDFLAGS`
 
 me_tv_LDADD = $(ME_TV_LIBS)
 
