@@ -24,9 +24,9 @@ me_tvdoc_DATA = \
 	NEWS
 
 EXTRA_DIST = $(me_tvdoc_DATA) \
-	intltool_update.in \
-	intltool_merge.in \
-	intltool_extract.in
+	intltool-update.in \
+	intltool-merge.in \
+	intltool-extract.in
 
 # Copy all the spec files. Of course, only one is actually used.
 dist-hook:
