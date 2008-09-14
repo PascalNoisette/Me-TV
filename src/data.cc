@@ -653,8 +653,28 @@ void Data::replace_scheduled_recording(ScheduledRecording& scheduled_recording)
 {
 	Glib::ustring fixed_description = scheduled_recording.description;
 	
-	fix_quotes(fixed_description);
+	Glib::ustring select_command = Glib::ustring::compose
+	(
+		"SELECT * FROM SCHEDULED_RECORDING WHERE "\
+		"(START_TIME > %1 AND START_TIME < %2) OR "\
+		"(START_TIME+DURATION > %1 AND START_TIME+DURATION < %2) OR "\
+		"(START_TIME < %1 AND START_TIME+DURATION > %2)",
+		scheduled_recording.start_time, scheduled_recording.start_time + scheduled_recording.duration
+	);
+
+	Statement statement(database, select_command);
+	if (statement.step() == SQLITE_ROW)
+	{
+		Glib::ustring message = Glib::ustring::compose
+		(
+			_("Failed to save scheduled recording because it conflicts with another scheduled recording called '%1'"),
+			statement.get_text(1)
+		);
+		throw Exception(message);
+	}	
 	
+	fix_quotes(fixed_description);
+
 	Glib::ustring replace_command = Glib::ustring::compose
 	(
 		"REPLACE INTO SCHEDULED_RECORDING " \

@@ -112,9 +112,9 @@ StreamThread::StreamThread(const Channel& channel) :
 	}
 	
 	Application& application = get_application();
-	application.signal_record_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_record_state_changed));
-	application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_mute_state_changed));
-	application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_broadcast_state_changed));
+	record_connection = application.signal_record_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_record_state_changed));
+	mute_connection = application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_mute_state_changed));
+	broadcast_connection = application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_broadcast_state_changed));
 	
 	MainWindow& main_window = application.get_main_window();
 	show_connection = main_window.signal_show().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_show));
@@ -126,6 +126,9 @@ StreamThread::StreamThread(const Channel& channel) :
 StreamThread::~StreamThread()
 {
 	g_debug("Destroying StreamThread");
+	record_connection.disconnect();
+	mute_connection.disconnect();
+	broadcast_connection.disconnect();
 	show_connection.disconnect();
 	hide_connection.disconnect();
 	stop_epg_thread();
@@ -187,7 +190,8 @@ void StreamThread::start()
 void StreamThread::start_engine()
 {
 	Application& application = get_application();
-	Gtk::DrawingArea& drawing_area_video = application.get_main_window().get_drawing_area();
+	MainWindow& main_window = application.get_main_window();
+	Gtk::DrawingArea& drawing_area_video = main_window.get_drawing_area();
 	{
 		Lock lock(mutex, __PRETTY_FUNCTION__);
 		if (engine != NULL)
@@ -231,6 +235,7 @@ void StreamThread::start_engine()
 		gint width, height;
 		drawing_area_video.get_window()->get_size(width, height);
 		engine->set_size(width, height);
+		engine->mute(main_window.is_muted());
 
 		connection_configure = drawing_area_video.signal_configure_event().connect(
 			sigc::mem_fun(*this, &StreamThread::on_drawing_area_configure_event));

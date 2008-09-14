@@ -90,6 +90,7 @@ guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populat
 	}
 	
 	guint response = Gtk::Dialog::run();
+	hide();
 	
 	if (response == Gtk::RESPONSE_OK)
 	{

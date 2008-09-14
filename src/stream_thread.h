@@ -68,6 +68,9 @@ private:
 	gint					output_fd;
 	gint					recording_fd;
 	guint					timeout_source;
+	sigc::connection		record_connection;
+	sigc::connection		mute_connection;
+	sigc::connection		broadcast_connection;
 	sigc::connection		show_connection;
 	sigc::connection		hide_connection;
 	sigc::connection		connection_configure;
