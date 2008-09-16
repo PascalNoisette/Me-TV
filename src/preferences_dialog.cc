@@ -72,6 +72,6 @@ void PreferencesDialog::run()
 		application.set_boolean_configuration_value("show_epg_time", check_button_show_epg_time->get_active());
 		application.set_string_configuration_value("preferred_language", entry_preferred_language->get_text());
 	
-		get_application().signal_configuration_changed();
+		get_application().update();
 	}
 }

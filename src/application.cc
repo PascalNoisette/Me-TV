@@ -44,6 +44,10 @@ Application::Application(int argc, char *argv[]) :
 	stream_thread = NULL;
 	update_epg_time();
 	timeout_source = -1;
+	scheduled_recording_id = 0;
+	record_state = false;
+	mute_state = false;
+	broadcast_state = false;
 
 	client = Gnome::Conf::Client::get_default_client();
 	
@@ -184,7 +188,11 @@ void Application::run()
 	main_window->show();
 	
 	Profile& current_profile = get_profile_manager().get_current_profile();
-	ChannelList& channels = current_profile.get_channels();		
+	ChannelList& channels = current_profile.get_channels();
+	if (channels.size() == 0)
+	{
+		main_window->show_channels_dialog();
+	}
 	channels = current_profile.get_channels();
 	if (channels.size() > 0)
 	{
@@ -228,30 +236,27 @@ void Application::stop_stream_thread()
 void Application::set_source(const Channel& channel)
 {
 	Glib::RecMutex::Lock lock(mutex);
+	main_window->stop_engine();
 	stop_stream_thread();
 	stream_thread = new StreamThread(channel);
 	try
 	{
 		stream_thread->start();
+		main_window->start_engine();
 	}
 	catch(const Glib::Exception& exception)
 	{
+		main_window->stop_engine();
 		stop_stream_thread();
 		get_signal_error().emit(exception.what().c_str());
 	}
-	update_ui();
+	update();
 }
 
-void Application::on_signal_configuration_changed()
+void Application::update()
 {
-	TRY
-	update_ui();
 	preferred_language = get_string_configuration_value("preferred_language");	
-	CATCH
-}
 
-void Application::update_ui()
-{
 	main_window->update();
 	status_icon->update();
 }
@@ -335,7 +340,7 @@ gboolean Application::on_timeout()
 					{
 						g_debug("Already tuned to correct channel");
 						
-						if (stream_thread->is_recording())
+						if (record_state)
 						{
 							g_debug("Already recording");
 						}
@@ -343,31 +348,32 @@ gboolean Application::on_timeout()
 						{
 							g_debug("Starting recording due to scheduled recording");
 							Glib::ustring filename = make_recording_filename(scheduled_recording.description);
-							signal_record_state_changed(true, filename, false);
+							start_recording(filename, false);
 						}
 					}
 					else
 					{
 						g_debug("Recording stopped by scheduled recording");
-						signal_record_state_changed(false, "", false);
+						stop_recording();
 						
 						g_debug("Changing channel for scheduled recording");
 						profile.set_display_channel(scheduled_recording.channel_id);
 
 						g_debug("Starting recording due to scheduled recording");
 						Glib::ustring filename = make_recording_filename(scheduled_recording.description);
-						signal_record_state_changed(true, filename, false);
+						start_recording(filename, false);
 					}
 				}
 			}
 		}
-		
-		if (stream_thread != NULL && stream_thread->is_recording() && !got_recording && !stream_thread->is_manual_recording())
-		{
-			g_debug("Record stopped by scheduled recording");
-			signal_record_state_changed(false, "", false);
-		}
 	}
+
+	if (stream_thread != NULL && record_state && !got_recording && scheduled_recording_id != 0)
+	{
+		g_debug("Record stopped by scheduled recording");
+		stop_recording();
+	}
+
 	CATCH
 	
 	return true;
@@ -408,24 +414,95 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	return Glib::build_filename(get_string_configuration_value("recording_directory"), filename);
 }
 
-gboolean Application::is_recording()
-{
-	gboolean result = false;
-
-	if (stream_thread != NULL)
-	{
-		result = stream_thread->is_recording();
-	}
-	
-	return result;
-}
-
-gboolean Application::need_manual_expose()
-{
-	return stream_thread == NULL || !stream_thread->is_engine_running();
-}
-
 StreamThread* Application::get_stream_thread()
 {
 	return stream_thread;
+}
+
+gboolean Application::is_recording()
+{
+	return record_state;
+}
+
+void Application::start_recording(const Glib::ustring& filename, guint id)
+{
+	if (stream_thread == NULL)
+	{
+		throw Exception(_("Stream thread has not been created"));
+	}
+	
+	stream_thread->start_recording(filename);
+	scheduled_recording_id = id;
+	record_state = true;
+	update();
+	
+	g_debug("Recording started");
+}
+
+void Application::stop_recording()
+{
+	stream_thread->stop_recording();
+	scheduled_recording_id = 0;
+	record_state = false;
+	update();
+	g_debug("Recording stopped");
+}
+
+void Application::toggle_recording()
+{
+	if (record_state)
+	{
+		if (scheduled_recording_id != 0)
+		{
+			Glib::ustring message = _("You are trying to stop a scheduled recording.  Would you like Me TV to delete the scheduled recording?");
+			Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_YES_NO, true);
+			if (dialog.run() == Gtk::RESPONSE_YES)
+			{
+				Data data;
+				data.delete_scheduled_recording(scheduled_recording_id);
+			}
+		}
+		
+		stop_recording();
+	}
+	else
+	{
+		start_recording(make_recording_filename());
+	}
+}
+
+void Application::toggle_mute()
+{
+	mute_state != mute_state;
+	update();
+}
+
+void Application::toggle_broadcast()
+{
+	broadcast_state != broadcast_state;
+	if (stream_thread != NULL)
+	{
+		if (broadcast_state)
+		{
+			stream_thread->start_broadcasting();
+		}
+		else
+		{
+			stream_thread->stop_broadcasting();
+		}
+	}
+	update();
+}
+
+void Application::connect_output(gint fd)
+{
+	if (stream_thread != NULL)
+	{
+		stream_thread->connect_output(fd);
+	}
+}
+
+gboolean Application::is_muted()
+{
+	return mute_state;
 }

@@ -29,9 +29,6 @@
 #include "status_icon.h"
 #include "stream_thread.h"
 
-typedef sigc::signal<void, gboolean> BooleanStateChangedSignal;
-typedef sigc::signal<void, gboolean, const Glib::ustring&, gboolean> RecordingStateChangedSignal;
-
 class Application : public Gnome::Main
 {
 private:
@@ -47,9 +44,13 @@ private:
 	StreamThread*						stream_thread;
 	Glib::StaticRecMutex				mutex;
 	guint								timeout_source;
+	gboolean							record_state;
+	gboolean							mute_state;
+	gboolean							broadcast_state;
+	guint								scheduled_recording_id;
 			
 	void on_display_channel_changed(const Channel& channel);
-		
+
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);
@@ -58,7 +59,9 @@ private:
 		
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
-			
+
+	gboolean is_engine_running();
+
 public:
 	Application(int argc, char *argv[]);
 	~Application();
@@ -73,11 +76,8 @@ public:
 	void stop_stream_thread();
 	void set_source(const Channel& channel);		
 
-	void on_signal_configuration_changed();
-	void update_ui();
-		
-	gboolean is_recording();
-	gboolean need_manual_expose();
+	void update();
+	void connect_output(gint fd);
 		
 	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
 	gint get_int_configuration_value(const Glib::ustring& key);
@@ -90,10 +90,16 @@ public:
 	void update_epg_time();
 	guint get_last_epg_update_time() const;
 	
-	RecordingStateChangedSignal	signal_record_state_changed;
-	BooleanStateChangedSignal	signal_broadcast_state_changed;
-	BooleanStateChangedSignal	signal_mute_state_changed;
-	sigc::signal<void>			signal_configuration_changed;
+	sigc::signal<void> signal_configuration_changed;
+
+	gboolean is_recording();
+	void start_recording(const Glib::ustring& filename, guint scheduled_recording_id = 0);
+	void stop_recording();
+	void toggle_recording();
+	
+	gboolean is_muted();
+	void toggle_mute();
+	void toggle_broadcast();
 		
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 	Glib::ustring make_recording_filename(const Glib::ustring& description = "");

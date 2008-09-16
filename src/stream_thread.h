@@ -63,20 +63,12 @@ private:
 	Glib::ustring			fifo_path;
 	GUdpSocket*				socket;
 	GInetAddr*				inet_address;
-	gboolean				manual_recording;
 	gboolean				broadcast_failure_message;
 	gint					output_fd;
 	gint					recording_fd;
 	guint					timeout_source;
-	sigc::connection		record_connection;
-	sigc::connection		mute_connection;
-	sigc::connection		broadcast_connection;
-	sigc::connection		show_connection;
-	sigc::connection		hide_connection;
-	sigc::connection		connection_configure;
 
 	bool on_drawing_area_configure_event(GdkEventConfigure* event);
-	void on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual);
 	void on_mute_state_changed(gboolean mute_state);
 	void on_broadcast_state_changed(gboolean broadcast_state);
 	void on_main_window_show();
@@ -106,15 +98,15 @@ public:
 	~StreamThread();
 
 	void start();
-	void start_engine();
-	void stop_engine();
-	Engine& get_engine();
 	const Stream& get_stream() const;
-	gboolean is_engine_running();
 
-	gboolean is_manual_recording();
-	gboolean is_recording();
-	gboolean is_broadcasting();
+	void start_recording(const Glib::ustring& filename);
+	void stop_recording();
+	
+	void start_broadcasting();
+	void stop_broadcasting();
+
+	void connect_output(gint fd);
 };
 
 #endif

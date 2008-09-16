@@ -56,6 +56,19 @@ void ChannelComboBox::load(const ChannelList& channels)
 	set_active(0);
 }
 
+void ChannelComboBox::set_selected_channel_id(guint channel_id)
+{
+	Gtk::TreeNodeChildren children = get_model()->children();
+	for (Gtk::TreeNodeChildren::iterator i = children.begin(); i != children.end(); i++)
+	{
+		Gtk::TreeModel::Row row = *i;
+		if (row[columns.column_id] == channel_id)
+		{
+			set_active(i);
+		}
+	}
+}
+
 guint ChannelComboBox::get_selected_channel_id()
 {
 	Gtk::TreeModel::Row row = *get_active();

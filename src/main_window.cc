@@ -25,12 +25,14 @@
 #include "application.h"
 #include "scheduled_recordings_dialog.h"
 #include "me-tv.h"
+#include "xine_engine.h"
+#include "mplayer_engine.h"
 #include <config.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
-#include <gdk/gdkx.h>
 #include <libgnome/libgnome.h>
 #include <linux/input.h>
+#include <gdk/gdkx.h>
 
 #define POKE_INTERVAL 		30
 #define UPDATE_INTERVAL		60
@@ -42,6 +44,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	last_update_time = 0;
 	last_poke_time = 0;
 	timeout_source = -1;
+	engine = NULL;
+	output_fd = -1;
 	
 	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
 	
@@ -49,7 +53,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	app_bar->get_progress()->hide();
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->set_double_buffered(false);
-	
 	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_expose_event));
 	
 	glade->get_widget_derived("scrolled_window_epg", widget_epg);
@@ -81,10 +84,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
 
-	event_box_video->modify_fg(Gtk::STATE_NORMAL, Gdk::Color("black"));
-	drawing_area_video->modify_fg(Gtk::STATE_NORMAL, Gdk::Color("black"));
-	event_box_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
-	drawing_area_video->modify_bg(Gtk::STATE_NORMAL, Gdk::Color("black"));
+	event_box_video->modify_fg(		Gtk::STATE_NORMAL, Gdk::Color("black"));
+	drawing_area_video->modify_fg(	Gtk::STATE_NORMAL, Gdk::Color("black"));
+	event_box_video->modify_bg(		Gtk::STATE_NORMAL, Gdk::Color("black"));
+	drawing_area_video->modify_bg(	Gtk::STATE_NORMAL, Gdk::Color("black"));
 
 	Gtk::AboutDialog* dialog_about = (Gtk::AboutDialog*)glade->get_widget("dialog_about");
 	dialog_about->set_version(VERSION);
@@ -99,26 +102,11 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
 	
 	load_devices();
-	show();
 	set_display_mode(display_mode);
 	update();
 
 	Application& application = get_application();
 	set_keep_above(application.get_boolean_configuration_value("keep_above"));
-
-	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
-	ChannelList& channels = current_profile.get_channels();
-	if (channels.size() == 0)
-	{
-		// Confirm that there is a device
-		get_application().get_device_manager().get_frontend();
-
-		show_channels_dialog();
-	}
-	
-	application.signal_record_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_record_state_changed));
-	application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_mute_state_changed));
-	application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &MainWindow::on_broadcast_state_changed));
 
 	Gtk::MenuItem* menu_item_audio_streams = dynamic_cast<Gtk::MenuItem*>(glade->get_widget("menu_item_audio_streams"));
 	menu_item_audio_streams->set_submenu(audio_streams_menu);
@@ -177,45 +165,17 @@ void MainWindow::on_error(const Glib::ustring& message)
 	dialog.run();
 }
 
-Gtk::DrawingArea& MainWindow::get_drawing_area()
-{
-	if (drawing_area_video == NULL)
-	{
-		throw Exception(_("The video drawing area has not been created"));
-	}
-	return *drawing_area_video;
-}
-
-bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
-{
-	TRY
-	// Hack to check if we need/want to expose
-	if (get_application().need_manual_expose())
-	{
-		drawing_area_video->get_window()->draw_rectangle(
-			drawing_area_video->get_style()->get_bg_gc(Gtk::STATE_NORMAL),
-			true, event->area.x, event->area.y, event->area.width, event->area.height);
-	}
-	CATCH
-	return false;
-}
-
 void MainWindow::on_menu_item_record_clicked()
 {
 	TRY
-	Application& application = get_application();
-	application.signal_record_state_changed(
-		dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_record"))->get_active(),
-		application.make_recording_filename(),
-		true);
+	get_application().toggle_recording();
 	CATCH
 }
 
 void MainWindow::on_menu_item_broadcast_clicked()
 {
 	TRY
-	get_application().signal_broadcast_state_changed(
-		dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_broadcast"))->get_active());
+	get_application().toggle_broadcast();
 	CATCH
 }
 
@@ -275,8 +235,7 @@ void MainWindow::on_menu_item_fullscreen_clicked()
 void MainWindow::on_menu_item_mute_clicked()
 {
 	TRY
-	get_application().signal_mute_state_changed(
-		dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_mute"))->get_active());
+	get_application().toggle_mute();
 	CATCH
 }
 
@@ -450,25 +409,21 @@ void MainWindow::show_scheduled_recordings_dialog()
 void MainWindow::on_tool_button_record_clicked()
 {
 	TRY
-	Application& application = get_application();
-	application.signal_record_state_changed(
-		is_recording(),
-		application.make_recording_filename(),
-		true);
+	get_application().toggle_recording();
 	CATCH
 }
 
 void MainWindow::on_tool_button_mute_clicked()
 {
 	TRY
-	get_application().signal_mute_state_changed(is_muted());
+	get_application().toggle_mute();
 	CATCH
 }
 
 void MainWindow::on_tool_button_broadcast_clicked()
 {
 	TRY
-	get_application().signal_broadcast_state_changed(is_broadcasting());
+	get_application().toggle_broadcast();
 	CATCH
 }
 
@@ -516,6 +471,7 @@ void MainWindow::update()
 	app_bar->set_status(status_text);
 
 	widget_epg->update();
+	
 /*	
 	Gtk::Menu_Helpers::MenuList& items = audio_streams_menu.items();
 	items.erase(items.begin(), items.end());
@@ -561,33 +517,26 @@ void MainWindow::set_state(const Glib::ustring& name, gboolean state)
 	update();
 }
 
-void MainWindow::on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual)
+void MainWindow::on_show()
 {
-	set_state("record", record_state);
-}
+	Gtk::Window::on_show();
 
-void MainWindow::on_mute_state_changed(gboolean mute_state)
-{
-	set_state("mute", mute_state);
-}
-
-void MainWindow::on_broadcast_state_changed(gboolean broadcast_state)
-{
-	set_state("broadcast", broadcast_state);
+	TRY
+	start_engine();
+	if (get_application().get_boolean_configuration_value("keep_above"))
+	{
+		set_keep_above();
+	}
+	CATCH
 }
 
 void MainWindow::on_hide()
 {
 	Gtk::Window::on_hide();
-}
 
-void MainWindow::on_show()
-{	
-	Gtk::Window::on_show();
-	if (get_application().get_boolean_configuration_value("keep_above"))
-	{
-		set_keep_above();
-	}
+	TRY
+	stop_engine();
+	CATCH
 }
 
 void MainWindow::toggle_visibility()
@@ -616,14 +565,13 @@ bool MainWindow::on_key_press_event(GdkEventKey* event)
 		case GDK_m:
 		case GDK_M:
 		case KEY_MUTE:
-			get_application().signal_mute_state_changed(!is_muted());
+			get_application().toggle_mute();
 			break;
 
 		case GDK_r:
 		case GDK_R:
 		case KEY_RECORD:
-			get_application().signal_record_state_changed(
-				!is_recording(), get_application().make_recording_filename(), false);
+			get_application().toggle_recording();
 			break;
 		
 		case GDK_minus:
@@ -642,4 +590,162 @@ bool MainWindow::on_key_press_event(GdkEventKey* event)
 	}
 	
 	return result;
+}
+
+bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
+{
+	TRY
+	if (engine == NULL)
+	{
+		drawing_area_video->get_window()->draw_rectangle(
+			drawing_area_video->get_style()->get_bg_gc(Gtk::STATE_NORMAL),
+			true, event->area.x, event->area.y, event->area.width, event->area.height);
+	}
+	else
+	{
+		engine->set_size(event->area.width, event->area.height);
+		engine->expose();
+	}
+	CATCH
+
+	return false;
+}
+
+class EngineStartThread : public Thread
+{
+private:
+	const Glib::ustring&	fifo_path;
+	Engine*					engine;
+		
+	void run()
+	{
+		g_debug("Telling engine to start playing");
+		engine->play(fifo_path);
+		g_debug("Engine playing");
+	}
+
+public:
+	EngineStartThread(Engine* engine, const Glib::ustring& fifo_path)
+		: Thread("Engine start thread"), engine(engine), fifo_path(fifo_path) {}
+};
+
+class StopEngineThread : public Thread
+{
+private:
+	Engine*	engine;
+	
+	void run()
+	{
+		g_debug("Stopping engine in thread");
+		engine->stop();
+		g_debug("Engine stopped in thread");
+	}
+public:
+	StopEngineThread(Engine* engine) : Thread("Stop engine"), engine(engine) {}
+};
+
+void MainWindow::start_engine()
+{
+	StreamThread* stream_thread = get_application().get_stream_thread();
+	if (property_visible() && stream_thread != NULL)
+	{
+		g_debug("Starting engine");
+
+		Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
+		if (engine != NULL)
+		{
+			throw Exception(_("Failed to start engine: Engine has already been started"));
+		}
+		
+		Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
+		int window_id = GDK_WINDOW_XID(drawing_area_video->get_window()->gobj());
+
+		if (window_id == 0)
+		{
+			throw Exception(_("Window ID was 0"));
+		}
+		
+		g_debug("Creating engine");
+		Glib::ustring engine_type = get_application().get_string_configuration_value("engine_type");
+		if (engine_type == "xine")
+		{
+			engine = new XineEngine(window_id);
+		}
+		else if (engine_type == "mplayer")
+		{
+			engine = new MplayerEngine(window_id);
+		}
+		else
+		{
+			throw Exception(_("Unknown engine type"));
+		}
+		g_debug("%s engine created", engine_type.c_str());
+		
+		Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
+		Glib::ustring fifo_path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
+		fifo_path = Glib::build_filename(fifo_path, filename);
+		
+		if (!Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
+		{
+			if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
+			{
+				throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
+			}
+		}
+
+		if (engine != NULL)
+		{
+			gint width, height;
+			drawing_area_video->get_window()->get_size(width, height);
+			engine->set_size(width, height);
+			engine->mute(get_application().is_muted());
+
+			EngineStartThread engine_start_thread(engine, fifo_path);
+			engine_start_thread.start();
+			
+			g_debug("Opening '%s'", fifo_path.c_str());
+			output_fd = open(fifo_path.c_str(), O_WRONLY, 0);
+			
+			if (output_fd == -1)
+			{
+				throw SystemException(_("Failed to create FIFO output"));
+			}
+
+			stream_thread->connect_output(output_fd);
+			
+			g_debug("Output FD created");
+		}
+
+		g_debug("Engine started");
+	}
+}
+
+void MainWindow::stop_engine()
+{
+	g_debug("Stopping engine");
+
+	if (engine != NULL)
+	{
+		StopEngineThread stop_engine_thread(engine);
+		stop_engine_thread.start();
+
+		get_application().connect_output(-1);
+		if (output_fd != -1)
+		{
+			close(output_fd);
+			output_fd = -1;
+		}
+
+		stop_engine_thread.join(true);
+		
+		delete engine;
+		engine = NULL;
+	}
+
+	if (timeout_source != -1)
+	{
+		g_source_remove(timeout_source);
+	}
+
+	g_debug("Engine stopped");
 }

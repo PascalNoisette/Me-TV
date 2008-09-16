@@ -51,6 +51,7 @@ guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, ScheduledRecordi
 		set_transient_for(*transient_for);
 	}
 	
+	channel_combo_box->set_selected_channel_id(scheduled_recording.channel_id);
 	scheduled_recording_id = scheduled_recording.scheduled_recording_id;
 	entry_description->set_text(scheduled_recording.description);
 	date_edit_start_time->set_time(scheduled_recording.start_time);
@@ -68,7 +69,8 @@ guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_ev
 	Application& application = get_application();
 	guint before = application.get_int_configuration_value("record_extra_before");
 	guint after = application.get_int_configuration_value("record_extra_after");
-	
+
+	channel_combo_box->set_selected_channel_id(epg_event.channel_id);
 	entry_description->set_text(epg_event.get_title());
 	date_edit_start_time->set_time(convert_to_local_time(epg_event.start_time) - (before * 60));
 	spinbutton_duration->set_value((epg_event.duration/60) + before + after);

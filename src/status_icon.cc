@@ -31,10 +31,6 @@ StatusIcon::StatusIcon(Glib::RefPtr<Gnome::Glade::Xml>& glade) : glade(glade)
 	status_icon->signal_popup_menu().connect(sigc::mem_fun(*this, &StatusIcon::on_popup_menu));
 	glade->connect_clicked("application_menu_item_me_tv", sigc::mem_fun(*this, &StatusIcon::on_menu_item_me_tv_clicked));
 	glade->connect_clicked("menu_item_popup_quit", sigc::mem_fun(*this, &StatusIcon::on_menu_item_popup_quit_clicked));
-
-	Application& application = get_application();
-	
-	application.signal_record_state_changed.connect(sigc::mem_fun(*this, &StatusIcon::on_record_state_changed));
 }
 
 void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
@@ -68,11 +64,8 @@ void StatusIcon::update()
 	}
 	
 	status_icon->set_tooltip(title);
-}
 
-void StatusIcon::on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual)
-{
-	if (record_state)
+	if (get_application().is_recording())
 	{
 		status_icon->set("me-tv-recording");
 	}
@@ -80,6 +73,4 @@ void StatusIcon::on_record_state_changed(gboolean record_state, const Glib::ustr
 	{
 		status_icon->set("me-tv");
 	}
-
-	update();
 }

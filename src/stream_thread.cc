@@ -21,10 +21,7 @@
 #include "stream_thread.h"
 #include "application.h"
 #include "device_manager.h"
-#include "xine_engine.h"
-#include "mplayer_engine.h"
 #include <glibmm.h>
-#include <gdk/gdkx.h>
 
 #define TS_PACKET_SIZE 188
 
@@ -51,39 +48,6 @@ public:
 	}
 };
 
-class EngineStartThread : public Thread
-{
-private:
-	const Glib::ustring&	fifo_path;
-	Engine*					engine;
-		
-	void run()
-	{
-		g_debug("Telling engine to start playing");
-		engine->play(fifo_path);
-		g_debug("Engine playing");
-	}
-
-public:
-	EngineStartThread(Engine* engine, const Glib::ustring& fifo_path)
-		: Thread("Engine start thread"), engine(engine), fifo_path(fifo_path) {}
-};
-
-class StopEngineThread : public Thread
-{
-private:
-	Engine*	engine;
-	
-	void run()
-	{
-		g_debug("Stopping engine in thread");
-		engine->stop();
-		g_debug("Engine stopped in thread");
-	}
-public:
-	StopEngineThread(Engine* engine) : Thread("Stop engine"), engine(engine) {}
-};
-
 StreamThread::StreamThread(const Channel& channel) :
 	Thread("Stream"),
 	frontend(get_application().get_device_manager().get_frontend()),
@@ -92,10 +56,8 @@ StreamThread::StreamThread(const Channel& channel) :
 	g_debug("Creating StreamThread");
 	g_static_rec_mutex_init(mutex.gobj());
 
-	engine = NULL;
 	epg_thread = NULL;
 	socket = NULL;
-	manual_recording = false;
 	broadcast_failure_message = true;
 	output_fd = -1;
 	recording_fd = -1;
@@ -110,15 +72,6 @@ StreamThread::StreamThread(const Channel& channel) :
 		}
 		CRC32[i] = k;
 	}
-	
-	Application& application = get_application();
-	record_connection = application.signal_record_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_record_state_changed));
-	mute_connection = application.signal_mute_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_mute_state_changed));
-	broadcast_connection = application.signal_broadcast_state_changed.connect(sigc::mem_fun(*this, &StreamThread::on_broadcast_state_changed));
-	
-	MainWindow& main_window = application.get_main_window();
-	show_connection = main_window.signal_show().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_show));
-	hide_connection = main_window.signal_hide().connect(sigc::mem_fun(*this, &StreamThread::on_main_window_hide));
 
 	g_debug("StreamThread created");
 }
@@ -126,14 +79,8 @@ StreamThread::StreamThread(const Channel& channel) :
 StreamThread::~StreamThread()
 {
 	g_debug("Destroying StreamThread");
-	record_connection.disconnect();
-	mute_connection.disconnect();
-	broadcast_connection.disconnect();
-	show_connection.disconnect();
-	hide_connection.disconnect();
 	stop_epg_thread();
 	join(true);
-	stop_engine();
 	remove_all_demuxers();
 	g_debug("StreamThread destroyed");
 }
@@ -157,226 +104,9 @@ void StreamThread::on_timeout()
 void StreamThread::start()
 {
 	setup_dvb(frontend, channel);
-
 	g_debug("Starting stream thread");
-	Thread::start();
-	
-	Lock lock(mutex, "StreamThread::start()");
-	Application& application = get_application();
-	MainWindow& main_window = application.get_main_window();
-	if (main_window.is_muted())
-	{
-		on_mute_state_changed(true);
-	}
-	
-	if (application.get_main_window().is_broadcasting())
-	{
-		on_broadcast_state_changed(true);
-	}
-	
-	if (main_window.property_visible())
-	{
-		g_debug("Main window visible, starting engine");
-		start_engine();
-	}
-	else
-	{
-		g_debug("Main window not visible, not starting engine");
-	}
-
+	Thread::start();	
 	start_epg_thread();
-}
-
-void StreamThread::start_engine()
-{
-	Application& application = get_application();
-	MainWindow& main_window = application.get_main_window();
-	Gtk::DrawingArea& drawing_area_video = main_window.get_drawing_area();
-	{
-		Lock lock(mutex, __PRETTY_FUNCTION__);
-		if (engine != NULL)
-		{
-			throw Exception("Failed to start engine: Engine has already been started");
-		}
-			
-		int window_id = GDK_WINDOW_XID(drawing_area_video.get_window()->gobj());
-
-		g_debug("Creating engine");
-		Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
-		if (engine_type == "xine")
-		{
-			engine = new XineEngine(window_id);
-		}
-		else if (engine_type == "mplayer")
-		{
-			engine = new MplayerEngine(window_id);
-		}
-		else
-		{
-			throw Exception(_("Unknown engine type"));
-		}
-		g_debug("%s engine created", engine_type.c_str());
-	}
-	
-	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
-	fifo_path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-	fifo_path = Glib::build_filename(fifo_path, filename);
-	
-	if (!Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
-	{
-		if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
-		{
-			throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
-		}
-	}
-
-	if (engine != NULL)
-	{
-		gint width, height;
-		drawing_area_video.get_window()->get_size(width, height);
-		engine->set_size(width, height);
-		engine->mute(main_window.is_muted());
-
-		connection_configure = drawing_area_video.signal_configure_event().connect(
-			sigc::mem_fun(*this, &StreamThread::on_drawing_area_configure_event));
-
-		EngineStartThread engine_start_thread(engine, fifo_path);
-		engine_start_thread.start();
-
-		Lock lock(mutex, "Output FD open");
-		g_debug("Opening '%s'", fifo_path.c_str());
-		output_fd = open(fifo_path.c_str(), O_WRONLY, 0);
-		
-		if (output_fd == -1)
-		{
-			throw SystemException("Failed to create FIFO output");
-		}
-		g_debug("Output FD created");
-	}
-
-	timeout_source = gdk_threads_add_timeout(1000, &StreamThread::on_timeout, this);
-}
-
-void StreamThread::stop_engine()
-{
-	Lock lock(mutex, "Output FD close");
-	if (engine != NULL)
-	{
-		connection_configure.disconnect();
-		
-		StopEngineThread stop_engine_thread(engine);
-		stop_engine_thread.start();
-
-		if (output_fd != -1)
-		{
-			close(output_fd);
-			output_fd = -1;
-		}
-
-		stop_engine_thread.join(true);
-		
-		delete engine;
-		engine = NULL;
-	}
-
-	if (timeout_source != -1)
-	{
-		g_source_remove(timeout_source);
-	}
-}
-
-void StreamThread::on_main_window_show()
-{
-	TRY
-	g_debug("Starting on_main_window_show()");
-	start_engine();
-	g_debug("Exiting on_main_window_show()");
-	CATCH
-}
-
-void StreamThread::on_main_window_hide()
-{
-	TRY
-	g_debug("Starting on_main_window_hide()");
-	stop_engine();
-	g_debug("Exiting on_main_window_hide()");
-	CATCH
-}
-
-void StreamThread::on_mute_state_changed(gboolean mute_state)
-{
-	if (engine != NULL)
-	{
-		engine->mute(mute_state);
-	}
-}
-
-Engine& StreamThread::get_engine()
-{
-	if (engine == NULL)
-	{
-		throw Exception(_("Engine has not been created"));
-	}
-	return *engine;
-}
-
-void StreamThread::on_record_state_changed(gboolean record_state, const Glib::ustring& filename, gboolean manual)
-{
-	Lock lock(mutex, "StreamThread::on_record_state_changed()");
-	if (record_state && recording_fd == -1)
-	{
-		mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-		recording_fd = open(filename.c_str(), O_CREAT | O_WRONLY, mode);
-		if (recording_fd == -1)
-		{
-			throw SystemException("Failed to open recording file");
-		}
-		g_debug("Recording file opened");
-
-		manual_recording = manual;
-	}
-	else if (!record_state && recording_fd != -1)
-	{
-		manual_recording = false;
-		
-		close(recording_fd);
-		recording_fd = -1;
-		g_debug("Recording file cleared");
-	}
-}
-
-void StreamThread::on_broadcast_state_changed(gboolean broadcast_state)
-{
-	Lock lock(mutex, "StreamThread::on_broadcast_state_changed()");
-	if (broadcast_state && socket == NULL)
-	{
-		Application& application = get_application();
-		Glib::ustring address = application.get_string_configuration_value("broadcast_address");
-		guint port = application.get_int_configuration_value("broadcast_port");
-		
-		g_debug("Creating internet address for '%s:%d'", address.c_str(), port);
-		
-		inet_address = gnet_inetaddr_new(address.c_str(), port);
-		if (inet_address == NULL)
-		{
-			throw Exception(_("Failed to create internet address"));
-		}
-
-		socket = gnet_udp_socket_new_full(inet_address, port);
-		if (socket == NULL)
-		{
-			throw Exception(_("Failed to create socket"));
-		}
-		g_debug("Broadcasting started");
-	}
-	else if (!broadcast_state && socket != NULL)
-	{
-		gnet_udp_socket_delete(socket);
-		socket = NULL;
-		gnet_inetaddr_delete(inet_address);
-		inet_address = NULL;
-		g_debug("Broadcasting stopped");
-	}
 }
 
 void StreamThread::write(gchar* buffer, gsize length)
@@ -447,18 +177,6 @@ void StreamThread::run()
 	input_channel->close(true);
 	input_channel.reset();
 	g_debug("Input channel closed");
-}
-
-gboolean StreamThread::is_recording()
-{
-	Lock lock(mutex, "StreamThread::is_recording()");
-	return recording_fd != -1;
-}
-
-gboolean StreamThread::is_manual_recording()
-{
-	Lock lock(mutex, "StreamThread::is_manual_recording()");
-	return recording_fd != -1 && manual_recording;
 }
 
 void StreamThread::calculate_crc(guchar *p_begin, guchar *p_end)
@@ -849,12 +567,6 @@ void StreamThread::stop_epg_thread()
 	}
 }
 
-gboolean StreamThread::is_broadcasting()
-{
-	Lock lock(mutex, "StreamThread::is_broadcasting()");
-	return socket != NULL;
-}
-
 bool StreamThread::on_drawing_area_configure_event(GdkEventConfigure* event)
 {
 	Lock lock(mutex, "StreamThread::on_drawing_area_configure_event()");
@@ -864,13 +576,77 @@ bool StreamThread::on_drawing_area_configure_event(GdkEventConfigure* event)
 	}
 }
 
-gboolean StreamThread::is_engine_running()
-{
-	Lock lock(mutex, "StreamThread::is_engine_running()");
-	return (engine != NULL);
-}
-
 const Stream& StreamThread::get_stream() const
 {
 	return stream;
+}
+
+void StreamThread::start_recording(const Glib::ustring& filename)
+{
+	Lock lock(mutex, "StreamThread::start_recording()");
+	if (recording_fd == -1)
+	{
+		mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+		recording_fd = open(filename.c_str(), O_CREAT | O_WRONLY, mode);
+		if (recording_fd == -1)
+		{
+			throw SystemException("Failed to open recording file");
+		}
+		g_debug("Recording file '%s' opened", filename.c_str());
+	}
+}
+
+void StreamThread::stop_recording()
+{
+	Lock lock(mutex, "StreamThread::stop_recording()");
+	if (recording_fd != -1)
+	{
+		close(recording_fd);
+		recording_fd = -1;
+		g_debug("Recording file cleared");
+	}
+}
+
+void StreamThread::start_broadcasting()
+{
+	Lock lock(mutex, "StreamThread::start_broadcasting()");
+	if (socket == NULL)
+	{
+		Application& application = get_application();
+		Glib::ustring address = application.get_string_configuration_value("broadcast_address");
+		guint port = application.get_int_configuration_value("broadcast_port");
+		
+		g_debug("Creating internet address for '%s:%d'", address.c_str(), port);
+		
+		inet_address = gnet_inetaddr_new(address.c_str(), port);
+		if (inet_address == NULL)
+		{
+			throw Exception(_("Failed to create internet address"));
+		}
+
+		socket = gnet_udp_socket_new_full(inet_address, port);
+		if (socket == NULL)
+		{
+			throw Exception(_("Failed to create socket"));
+		}
+		g_debug("Broadcasting started");
+	}
+}
+
+void StreamThread::stop_broadcasting()
+{
+	Lock lock(mutex, "StreamThread::stop_broadcasting()");
+	if (socket != NULL)
+	{
+		gnet_udp_socket_delete(socket);
+		socket = NULL;
+		gnet_inetaddr_delete(inet_address);
+		inet_address = NULL;
+		g_debug("Broadcasting stopped");
+	}
+}
+
+void StreamThread::connect_output(gint fd)
+{
+	output_fd = fd;
 }
