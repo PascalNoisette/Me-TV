@@ -761,11 +761,6 @@ void MainWindow::stop_engine()
 		engine = NULL;
 	}
 
-	if (timeout_source != -1)
-	{
-		g_source_remove(timeout_source);
-	}
-
 	g_debug("Engine stopped");
 }
 
