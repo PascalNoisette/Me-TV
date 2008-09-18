@@ -567,15 +567,6 @@ void StreamThread::stop_epg_thread()
 	}
 }
 
-bool StreamThread::on_drawing_area_configure_event(GdkEventConfigure* event)
-{
-	Lock lock(mutex, "StreamThread::on_drawing_area_configure_event()");
-	if (engine != NULL)
-	{
-		engine->set_size(event->width, event->height);
-	}
-}
-
 const Stream& StreamThread::get_stream() const
 {
 	return stream;
@@ -590,7 +581,7 @@ void StreamThread::start_recording(const Glib::ustring& filename)
 		recording_fd = open(filename.c_str(), O_CREAT | O_WRONLY, mode);
 		if (recording_fd == -1)
 		{
-			throw SystemException("Failed to open recording file");
+			throw SystemException(_("Failed to open recording file"));
 		}
 		g_debug("Recording file '%s' opened", filename.c_str());
 	}

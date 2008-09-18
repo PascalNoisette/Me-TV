@@ -40,12 +40,15 @@
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
 	: Gnome::UI::App(cobject), glade(glade)
 {
-	display_mode = DISPLAY_MODE_EPG;
-	last_update_time = 0;
-	last_poke_time = 0;
-	timeout_source = -1;
-	engine = NULL;
-	output_fd = -1;
+	g_static_rec_mutex_init(mutex.gobj());
+
+	display_mode		= DISPLAY_MODE_EPG;
+	last_update_time	= 0;
+	last_poke_time		= 0;
+	timeout_source		= -1;
+	engine				= NULL;
+	output_fd			= -1;
+	mute_state			= false;
 	
 	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
 	
@@ -213,6 +216,12 @@ void MainWindow::show_channels_dialog()
 	channels_dialog.run();
 	channels_dialog.hide();
 	update();
+
+	Glib::RecMutex::Lock lock(mutex);
+	if (engine == NULL)
+	{
+		start_engine();
+	}
 }
 
 void MainWindow::on_menu_item_preferences_clicked()
@@ -235,7 +244,8 @@ void MainWindow::on_menu_item_fullscreen_clicked()
 void MainWindow::on_menu_item_mute_clicked()
 {
 	TRY
-	get_application().toggle_mute();
+	gboolean mute = dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_mute"))->get_active();
+	set_mute_state(mute);
 	CATCH
 }
 
@@ -416,7 +426,8 @@ void MainWindow::on_tool_button_record_clicked()
 void MainWindow::on_tool_button_mute_clicked()
 {
 	TRY
-	get_application().toggle_mute();
+	gboolean mute = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"))->get_active();
+	set_mute_state(mute);
 	CATCH
 }
 
@@ -471,7 +482,7 @@ void MainWindow::update()
 	app_bar->set_status(status_text);
 
 	widget_epg->update();
-	
+		
 /*	
 	Gtk::Menu_Helpers::MenuList& items = audio_streams_menu.items();
 	items.erase(items.begin(), items.end());
@@ -565,7 +576,7 @@ bool MainWindow::on_key_press_event(GdkEventKey* event)
 		case GDK_m:
 		case GDK_M:
 		case KEY_MUTE:
-			get_application().toggle_mute();
+			toggle_mute();
 			break;
 
 		case GDK_r:
@@ -595,6 +606,7 @@ bool MainWindow::on_key_press_event(GdkEventKey* event)
 bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
 {
 	TRY
+	Glib::RecMutex::Lock lock(mutex);
 	if (engine == NULL)
 	{
 		drawing_area_video->get_window()->draw_rectangle(
@@ -646,6 +658,8 @@ public:
 
 void MainWindow::start_engine()
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	StreamThread* stream_thread = get_application().get_stream_thread();
 	if (property_visible() && stream_thread != NULL)
 	{
@@ -698,7 +712,7 @@ void MainWindow::start_engine()
 			gint width, height;
 			drawing_area_video->get_window()->get_size(width, height);
 			engine->set_size(width, height);
-			engine->mute(get_application().is_muted());
+			engine->mute(mute_state);
 
 			EngineStartThread engine_start_thread(engine, fifo_path);
 			engine_start_thread.start();
@@ -723,6 +737,7 @@ void MainWindow::start_engine()
 void MainWindow::stop_engine()
 {
 	g_debug("Stopping engine");
+	Glib::RecMutex::Lock lock(mutex);
 
 	if (engine != NULL)
 	{
@@ -748,4 +763,29 @@ void MainWindow::stop_engine()
 	}
 
 	g_debug("Engine stopped");
+}
+
+void MainWindow::toggle_mute()
+{
+	set_mute_state(mute_state ? false : true);
+}
+
+void MainWindow::set_mute_state(gboolean state)
+{
+	if (mute_state != state)
+	{
+		mute_state = state;
+		g_message("Setting mute to %s", mute_state ? "true" : "false");	
+		set_state("mute", mute_state);
+
+		{
+			Glib::RecMutex::Lock lock(mutex);
+			if (engine != NULL)
+			{
+				engine->mute(mute_state);
+			}
+		}
+
+		update();
+	}
 }

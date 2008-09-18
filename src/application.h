@@ -45,7 +45,6 @@ private:
 	Glib::StaticRecMutex				mutex;
 	guint								timeout_source;
 	gboolean							record_state;
-	gboolean							mute_state;
 	gboolean							broadcast_state;
 	guint								scheduled_recording_id;
 			
@@ -97,8 +96,6 @@ public:
 	void stop_recording();
 	void toggle_recording();
 	
-	gboolean is_muted();
-	void toggle_mute();
 	void toggle_broadcast();
 		
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }

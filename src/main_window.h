@@ -53,12 +53,16 @@ private:
 	Gtk::RadioMenuItem::Group				audio_streams_menu_group;
 	Engine*									engine;
 	gint									output_fd;
+	Glib::StaticRecMutex					mutex;
+	gboolean								mute_state;
 
 	void stop();
 	void fullscreen();
 	void unfullscreen();
 	gboolean is_fullscreen();
 	void toggle_fullscreen();
+	void toggle_mute();
+	void set_mute_state(gboolean mute_state);
 	void set_display_mode(DisplayMode display_mode);
 	void load_devices();
 	void show_scheduled_recordings_dialog();

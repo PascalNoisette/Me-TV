@@ -46,7 +46,6 @@ Application::Application(int argc, char *argv[]) :
 	timeout_source = -1;
 	scheduled_recording_id = 0;
 	record_state = false;
-	mute_state = false;
 	broadcast_state = false;
 
 	client = Gnome::Conf::Client::get_default_client();
@@ -471,12 +470,6 @@ void Application::toggle_recording()
 	}
 }
 
-void Application::toggle_mute()
-{
-	mute_state != mute_state;
-	update();
-}
-
 void Application::toggle_broadcast()
 {
 	broadcast_state != broadcast_state;
@@ -500,9 +493,4 @@ void Application::connect_output(gint fd)
 	{
 		stream_thread->connect_output(fd);
 	}
-}
-
-gboolean Application::is_muted()
-{
-	return mute_state;
 }

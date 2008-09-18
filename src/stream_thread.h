@@ -68,12 +68,6 @@ private:
 	gint					recording_fd;
 	guint					timeout_source;
 
-	bool on_drawing_area_configure_event(GdkEventConfigure* event);
-	void on_mute_state_changed(gboolean mute_state);
-	void on_broadcast_state_changed(gboolean broadcast_state);
-	void on_main_window_show();
-	void on_main_window_hide();
-
 	void run();
 	gboolean is_pid_used(guint pid);
 	void build_pat(gchar* buffer);
