@@ -59,8 +59,6 @@ private:
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
 
-	gboolean is_engine_running();
-
 public:
 	Application(int argc, char *argv[]);
 	~Application();
@@ -71,6 +69,7 @@ public:
 	ProfileManager&		get_profile_manager()	{ return profile_manager; }
 	DeviceManager&		get_device_manager()	{ return device_manager; }
 
+	Glib::StaticRecMutex& get_mutex();
 	StreamThread* get_stream_thread();
 	void stop_stream_thread();
 	void set_source(const Channel& channel);		
@@ -92,10 +91,13 @@ public:
 	sigc::signal<void> signal_configuration_changed;
 
 	gboolean is_recording();
-	void start_recording(const Glib::ustring& filename, guint scheduled_recording_id = 0);
+	void start_recording(const Glib::ustring& filename = "", guint scheduled_recording_id = 0);
 	void stop_recording();
 	void toggle_recording();
+	void set_record_state(gboolean state);
 	
+	gboolean is_broadcasting();
+	void set_broadcast_state(gboolean state);
 	void toggle_broadcast();
 		
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }

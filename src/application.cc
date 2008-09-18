@@ -339,7 +339,7 @@ gboolean Application::on_timeout()
 					{
 						g_debug("Already tuned to correct channel");
 						
-						if (record_state)
+						if (record_state == true)
 						{
 							g_debug("Already recording");
 						}
@@ -367,7 +367,8 @@ gboolean Application::on_timeout()
 		}
 	}
 
-	if (stream_thread != NULL && record_state && !got_recording && scheduled_recording_id != 0)
+	Glib::RecMutex::Lock lock(mutex);
+	if (stream_thread != NULL && record_state == true && !got_recording && scheduled_recording_id != 0)
 	{
 		g_debug("Record stopped by scheduled recording");
 		stop_recording();
@@ -423,33 +424,51 @@ gboolean Application::is_recording()
 	return record_state;
 }
 
+void Application::set_record_state(gboolean state)
+{
+	if (record_state != state)
+	{
+		if (state == false)
+		{			
+			stop_recording();
+		}
+		else
+		{
+			start_recording();
+		}
+	}
+}
+
 void Application::start_recording(const Glib::ustring& filename, guint id)
 {
-	if (stream_thread == NULL)
+	if (record_state == false)
 	{
-		throw Exception(_("Stream thread has not been created"));
+		Glib::RecMutex::Lock lock(mutex);
+		
+		if (stream_thread == NULL)
+		{
+			throw Exception(_("Stream thread has not been created"));
+		}
+		
+		Glib::ustring recording_filename = filename;
+
+		if (recording_filename.size() == 0)
+		{
+			recording_filename = make_recording_filename();
+		}
+		
+		stream_thread->start_recording(recording_filename);
+		scheduled_recording_id = id;
+		record_state = true;
+		update();
+		
+		g_debug("Recording started");
 	}
-	
-	stream_thread->start_recording(filename);
-	scheduled_recording_id = id;
-	record_state = true;
-	update();
-	
-	g_debug("Recording started");
 }
 
 void Application::stop_recording()
 {
-	stream_thread->stop_recording();
-	scheduled_recording_id = 0;
-	record_state = false;
-	update();
-	g_debug("Recording stopped");
-}
-
-void Application::toggle_recording()
-{
-	if (record_state)
+	if (record_state == true)
 	{
 		if (scheduled_recording_id != 0)
 		{
@@ -461,36 +480,63 @@ void Application::toggle_recording()
 				data.delete_scheduled_recording(scheduled_recording_id);
 			}
 		}
-		
-		stop_recording();
+
+		Glib::RecMutex::Lock lock(mutex);
+		stream_thread->stop_recording();
+		scheduled_recording_id = 0;
+		record_state = false;
+		update();
+		g_debug("Recording stopped");
 	}
-	else
-	{
-		start_recording(make_recording_filename());
-	}
+}
+
+void Application::toggle_recording()
+{
+	set_record_state(!record_state);
 }
 
 void Application::toggle_broadcast()
 {
-	broadcast_state != broadcast_state;
-	if (stream_thread != NULL)
+	set_broadcast_state(!broadcast_state);
+}
+
+gboolean Application::is_broadcasting()
+{
+	return broadcast_state;
+}
+
+void Application::set_broadcast_state(gboolean state)
+{
+	if (broadcast_state != state)
 	{
-		if (broadcast_state)
+		broadcast_state = state;
+		
+		Glib::RecMutex::Lock lock(mutex);
+		if (stream_thread != NULL)
 		{
-			stream_thread->start_broadcasting();
+			if (broadcast_state)
+			{
+				stream_thread->start_broadcasting();
+			}
+			else
+			{
+				stream_thread->stop_broadcasting();
+			}
 		}
-		else
-		{
-			stream_thread->stop_broadcasting();
-		}
+		update();
 	}
-	update();
 }
 
 void Application::connect_output(gint fd)
 {
+	Glib::RecMutex::Lock lock(mutex);
 	if (stream_thread != NULL)
 	{
 		stream_thread->connect_output(fd);
 	}
+}
+
+Glib::StaticRecMutex& Application::get_mutex()
+{
+	return mutex;
 }

@@ -101,10 +101,6 @@ public:
 		
 	static MainWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 		
-	gboolean is_recording();
-	gboolean is_broadcasting();
-	gboolean is_muted();
-
 	void show_channels_dialog();
 	void toggle_visibility();
 	void update();

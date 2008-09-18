@@ -171,14 +171,16 @@ void MainWindow::on_error(const Glib::ustring& message)
 void MainWindow::on_menu_item_record_clicked()
 {
 	TRY
-	get_application().toggle_recording();
+	gboolean record = dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_record"))->get_active();
+	get_application().set_record_state(record);
 	CATCH
 }
 
 void MainWindow::on_menu_item_broadcast_clicked()
 {
 	TRY
-	get_application().toggle_broadcast();
+	gboolean broadcast = dynamic_cast<Gtk::CheckMenuItem*>(glade->get_widget("menu_item_broadcast"))->get_active();
+	get_application().set_broadcast_state(broadcast);
 	CATCH
 }
 
@@ -419,7 +421,8 @@ void MainWindow::show_scheduled_recordings_dialog()
 void MainWindow::on_tool_button_record_clicked()
 {
 	TRY
-	get_application().toggle_recording();
+	gboolean record = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"))->get_active();
+	get_application().set_record_state(record);
 	CATCH
 }
 
@@ -434,23 +437,9 @@ void MainWindow::on_tool_button_mute_clicked()
 void MainWindow::on_tool_button_broadcast_clicked()
 {
 	TRY
-	get_application().toggle_broadcast();
+	gboolean broadcast = dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_broadcast"))->get_active();
+	get_application().set_broadcast_state(broadcast);
 	CATCH
-}
-
-gboolean MainWindow::is_recording()
-{
-	return dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_record"))->get_active();
-}
-
-gboolean MainWindow::is_muted()
-{
-	return dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_mute"))->get_active();
-}
-
-gboolean MainWindow::is_broadcasting()
-{
-	return dynamic_cast<Gtk::ToggleToolButton*>(glade->get_widget("tool_button_broadcast"))->get_active();
 }
 
 void MainWindow::update()
@@ -460,6 +449,9 @@ void MainWindow::update()
 	Glib::ustring window_title;
 	Glib::ustring status_text;
 	
+	set_state("record", application.is_recording());
+	set_state("broadcast", application.is_broadcasting());
+
 	if (channel == NULL)
 	{
 		window_title = "Me TV - It's TV for me computer";
@@ -472,7 +464,7 @@ void MainWindow::update()
 		status_text = channel->get_text();
 	}
 	
-	if (is_recording())
+	if (application.is_recording())
 	{
 		status_text += " [Recording]";
 		window_title += " [Recording]";
@@ -482,10 +474,12 @@ void MainWindow::update()
 	app_bar->set_status(status_text);
 
 	widget_epg->update();
-		
+			
 /*	
 	Gtk::Menu_Helpers::MenuList& items = audio_streams_menu.items();
 	items.erase(items.begin(), items.end());
+	
+	// Not MT safe!
 	StreamThread* stream_thread = application.get_stream_thread();
 	if (stream_thread != NULL)
 	{
@@ -525,7 +519,6 @@ void MainWindow::set_state(const Glib::ustring& name, gboolean state)
 	{
 		menu_item->set_active(state);
 	}
-	update();
 }
 
 void MainWindow::on_show()
@@ -660,12 +653,16 @@ void MainWindow::start_engine()
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-	StreamThread* stream_thread = get_application().get_stream_thread();
+	// Acquire stream thread lock
+	Application& application = get_application();
+	Glib::RecMutex::Lock application_lock(application.get_mutex());
+	
+	StreamThread* stream_thread = application.get_stream_thread();
 	if (property_visible() && stream_thread != NULL)
 	{
 		g_debug("Starting engine");
 
-		Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
+		Dvb::Frontend& frontend = application.get_device_manager().get_frontend();
 		if (engine != NULL)
 		{
 			throw Exception(_("Failed to start engine: Engine has already been started"));
@@ -680,7 +677,7 @@ void MainWindow::start_engine()
 		}
 		
 		g_debug("Creating engine");
-		Glib::ustring engine_type = get_application().get_string_configuration_value("engine_type");
+		Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
 		if (engine_type == "xine")
 		{
 			engine = new XineEngine(window_id);
@@ -767,7 +764,7 @@ void MainWindow::stop_engine()
 
 void MainWindow::toggle_mute()
 {
-	set_mute_state(mute_state ? false : true);
+	set_mute_state(!mute_state);
 }
 
 void MainWindow::set_mute_state(gboolean state)
