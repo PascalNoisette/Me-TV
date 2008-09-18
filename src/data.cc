@@ -555,10 +555,7 @@ void Data::replace_profile(Profile& profile)
 	while (statement.step() == SQLITE_ROW)
 	{
 		gint channel_id = statement.get_int(0);
-		if (profile.find_channel(channel_id) == NULL)
-		{
-			delete_channel(channel_id);
-		}
+		delete_channel(channel_id);
 	}
 
 	ChannelList& channels = profile.get_channels();

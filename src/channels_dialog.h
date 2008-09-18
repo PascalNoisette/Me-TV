@@ -46,7 +46,6 @@ private:
 	Gtk::TreeView* tree_view_displayed_channels;
 	void show_scan_window();
 
-	ChannelList get_channels();
 	void set_channels(const ChannelList& channels);
 	void update_channels();
 	
@@ -57,6 +56,8 @@ private:
 public:
 	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 		
+	ChannelList get_channels();
+
 	static ChannelsDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 };
 

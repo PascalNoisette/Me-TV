@@ -215,8 +215,15 @@ void MainWindow::on_menu_item_channels_clicked()
 void MainWindow::show_channels_dialog()
 {
 	ChannelsDialog& channels_dialog = ChannelsDialog::create(glade);	
-	channels_dialog.run();
+	gint dialog_result = channels_dialog.run();
 	channels_dialog.hide();
+	if (dialog_result == Gtk::RESPONSE_OK)
+	{
+		Profile& current_profile = get_application().get_profile_manager().get_current_profile();
+		ChannelList channels = channels_dialog.get_channels();
+		current_profile.set_channels(channels);
+		current_profile.save();
+	}
 	update();
 
 	Glib::RecMutex::Lock lock(mutex);
