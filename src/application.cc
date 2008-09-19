@@ -348,11 +348,13 @@ gboolean Application::on_timeout()
 						{
 							g_debug("Starting recording due to scheduled recording");
 							Glib::ustring filename = make_recording_filename(scheduled_recording.description);
-							start_recording(filename, false);
+							start_recording(filename, scheduled_recording.scheduled_recording_id);
 						}
 					}
 					else
 					{
+						scheduled_recording_id = 0;
+						
 						g_debug("Recording stopped by scheduled recording");
 						stop_recording();
 						
@@ -361,7 +363,7 @@ gboolean Application::on_timeout()
 
 						g_debug("Starting recording due to scheduled recording");
 						Glib::ustring filename = make_recording_filename(scheduled_recording.description);
-						start_recording(filename, false);
+						start_recording(filename, scheduled_recording.scheduled_recording_id);
 					}
 				}
 			}
@@ -371,6 +373,8 @@ gboolean Application::on_timeout()
 	Glib::RecMutex::Lock lock(mutex);
 	if (stream_thread != NULL && record_state == true && !got_recording && scheduled_recording_id != 0)
 	{
+		scheduled_recording_id = 0;
+ 
 		g_debug("Record stopped by scheduled recording");
 		stop_recording();
 	}
