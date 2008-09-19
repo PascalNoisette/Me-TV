@@ -141,6 +141,7 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 {	
 	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, table_row, table_row + 1);
 	gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
+	gboolean show_epg_tooltips = get_application().get_boolean_configuration_value("show_epg_tooltips");
 	
 	channel_button.set_active(selected);
 	channel_button.signal_clicked().connect(
@@ -220,10 +221,12 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 					)
 				);
 
-				Glib::ustring tooltip_text = get_time_text(converted_start_time, "%A, %B %d\n%H:%M");
-				tooltip_text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M");
-
-				button.set_tooltip_text(tooltip_text);
+				if (show_epg_tooltips)
+				{
+					Glib::ustring tooltip_text = get_time_text(converted_start_time, "%A, %B %d\n%H:%M");
+					tooltip_text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M");
+					button.set_tooltip_text(tooltip_text);
+				}
 			}
 
 			total_number_columns += column_count;

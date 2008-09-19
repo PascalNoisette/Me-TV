@@ -61,6 +61,7 @@ Application::Application(int argc, char *argv[]) :
 	set_int_configuration_default("broadcast_port", 2005);
 	set_boolean_configuration_default("show_epg_header", true);
 	set_boolean_configuration_default("show_epg_time", true);
+	set_boolean_configuration_default("show_epg_tooltips", false);
 	set_string_configuration_default("xine.video_driver", "auto");
 	set_string_configuration_default("xine.audio_driver", "auto");
 	set_string_configuration_default("xine.deinterlace_type", "tvtime");
