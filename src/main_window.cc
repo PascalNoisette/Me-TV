@@ -557,14 +557,13 @@ void MainWindow::toggle_visibility()
 
 bool MainWindow::on_key_press_event(GdkEventKey* event)
 {
-	bool result = true;
+	gboolean result = true;
 	
 	switch(event->keyval)
 	{
-		case KEY_EPG:
-		case KEY_MODE:
 		case GDK_e:
 		case GDK_E:
+		case GDK_Mode_switch:
 			set_next_display_mode();
 			break;
 			
@@ -575,23 +574,21 @@ bool MainWindow::on_key_press_event(GdkEventKey* event)
 
 		case GDK_m:
 		case GDK_M:
-		case KEY_MUTE:
 			toggle_mute();
 			break;
 
 		case GDK_r:
 		case GDK_R:
-		case KEY_RECORD:
 			get_application().toggle_recording();
 			break;
 		
+		case GDK_Up:
 		case GDK_minus:
-		case KEY_CHANNELUP:
 			get_application().get_profile_manager().get_current_profile().previous_channel();
 			break;
 			
 		case GDK_plus:
-		case KEY_CHANNELDOWN:
+		case GDK_Down:
 			get_application().get_profile_manager().get_current_profile().next_channel();
 			break;
 
