@@ -21,7 +21,8 @@ me_tvdoc_DATA = \
 	INSTALL\
 	NEWS
 
-EXTRA_DIST = $(me_tvdoc_DATA) \
+EXTRA_DIST = me-tv.1 \
+	$(me_tvdoc_DATA) \
 	$(desktop_DATA) \
 	$(pixmaps_DATA) \
 	intltool-update.in \
