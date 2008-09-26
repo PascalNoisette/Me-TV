@@ -94,6 +94,10 @@ void Profile::add_channels(ChannelList& c)
 
 void Profile::add_channel(Channel& channel)
 {
+	if (channels.size() >= 100)
+	{
+		throw Exception(_("Failed to add channel: You cannot have more than 100 channels"));
+	}
 	channels.push_back(channel);
 	g_debug("Channel '%s' added to profile", channel.name.c_str());
 }
