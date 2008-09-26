@@ -119,11 +119,14 @@ void ChannelsDialog::set_channels(const ChannelList& channels)
 
 void ChannelsDialog::on_show()
 {
-	update_channels();
 	Gtk::Dialog::on_show();
+
+	TRY
+	update_channels();
 	ChannelList& channels = get_application().get_profile_manager().get_current_profile().get_channels();
 	if (channels.size() == 0)
 	{
 		show_scan_window();
 	}
+	CATCH
 }
