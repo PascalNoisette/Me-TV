@@ -8,6 +8,7 @@ desktop_DATA = me-tv.desktop
 
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA = \
+	me-tv.png \
         src/me-tv.xpm \
         src/me-tv-recording.xpm
 
