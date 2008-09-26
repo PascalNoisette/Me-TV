@@ -117,6 +117,7 @@ Dvb::SI::Event::Event()
 
 SectionParser::SectionParser()
 {
+	text_encoding = get_application().get_string_configuration_value("text_encoding");
 }
 
 gsize SectionParser::read_section(Demuxer& demuxer)
@@ -637,9 +638,9 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 		// Skip over length byte
 		index++;
 
-		if (epg_encoding != "auto")
+		if (text_encoding != "auto")
 		{
-			codeset = epg_encoding.c_str();
+			codeset = text_encoding.c_str();
 		}
 		else // Determine codeset from stream
 		{			
@@ -698,7 +699,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 		
 		s = "";
 
-		if (epg_encoding == "iso6937")
+		if (text_encoding == "iso6937")
 		{
 			s = convert_iso6937(text_buffer + index, length);
 		}

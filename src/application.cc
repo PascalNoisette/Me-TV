@@ -66,6 +66,7 @@ Application::Application(int argc, char *argv[]) :
 	set_string_configuration_default("xine.audio_driver", "auto");
 	set_string_configuration_default("xine.deinterlace_type", "tvtime");
 	set_string_configuration_default("preferred_language", "");
+	set_string_configuration_default("text_encoding", "auto");
 	
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);

@@ -180,8 +180,8 @@ XineEngine::XineEngine(int window_id) : Engine(), window_id(window_id)
 
 	if (video_port != NULL)
 	{
-		xine_gui_send_vo_data ( stream, XINE_GUI_SEND_DRAWABLE_CHANGED, ( void * ) window_id );
-		xine_gui_send_vo_data ( stream, XINE_GUI_SEND_VIDEOWIN_VISIBLE, ( void * ) 1 );
+		//xine_gui_send_vo_data ( stream, XINE_GUI_SEND_DRAWABLE_CHANGED, ( void * ) window_id );
+		//xine_gui_send_vo_data ( stream, XINE_GUI_SEND_VIDEOWIN_VISIBLE, ( void * ) 1 );
 
 		// Set up deinterlacing
 		Glib::ustring deinterlace_type = application.get_string_configuration_value("xine.deinterlace_type");

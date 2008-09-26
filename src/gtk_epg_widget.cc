@@ -111,7 +111,7 @@ void GtkEpgWidget::update_table()
 
 		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
 
-		guint start_time = time(NULL) + timezone + offset;
+		guint start_time = time(NULL);
 		start_time = (start_time / 600) * 600;
 		
 		guint row = 0;
@@ -127,6 +127,8 @@ void GtkEpgWidget::update_table()
 			}
 			row++;
 		}
+		
+		start_time += timezone + offset;
 		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
 			const Channel& channel = *iterator;

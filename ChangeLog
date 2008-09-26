@@ -1,7 +1,10 @@
-2008-09-20  Michael Lamothe <michael.lamothe@gmail.com>
+2008-09-26  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.6.3
 	* Fixed keycodes for GDK input
+	* Fixed time in EPG header
+	* Fixed 2 GB recording limit by adding O_LARGEFILE to open() (LP: #272766)
+	* Fixed crash on start up (LP: #259911)
 
 2008-09-19  Michael Lamothe <michael.lamothe@gmail.com>
 

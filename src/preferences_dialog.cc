@@ -44,6 +44,7 @@ void PreferencesDialog::run()
 	Gtk::SpinButton* spin_button_broadcast_port = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spin_button_broadcast_port"));
 	Gtk::Entry* entry_preferred_language = dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_preferred_language"));
 	Gtk::Entry* entry_xine_video_driver = dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_xine_video_driver"));
+	Gtk::Entry* entry_text_encoding = dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_text_encoding"));
 	Gtk::CheckButton* check_button_keep_above = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_keep_above"));
 	Gtk::CheckButton* check_button_show_epg_header = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_show_epg_header"));
 	Gtk::CheckButton* check_button_show_epg_time = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_show_epg_time"));
@@ -57,6 +58,7 @@ void PreferencesDialog::run()
 	spin_button_broadcast_port->set_value(application.get_int_configuration_value("broadcast_port"));
 	entry_preferred_language->set_text(application.get_string_configuration_value("preferred_language"));
 	entry_xine_video_driver->set_text(application.get_string_configuration_value("xine.video_driver"));
+	entry_text_encoding->set_text(application.get_string_configuration_value("text_encoding"));
 	check_button_keep_above->set_active(application.get_boolean_configuration_value("keep_above"));
 	check_button_show_epg_header->set_active(application.get_boolean_configuration_value("show_epg_header"));
 	check_button_show_epg_time->set_active(application.get_boolean_configuration_value("show_epg_time"));
@@ -72,6 +74,7 @@ void PreferencesDialog::run()
 		application.set_int_configuration_value("broadcast_port", spin_button_broadcast_port->get_value());
 		application.set_string_configuration_value("preferred_language", entry_preferred_language->get_text());
 		application.set_string_configuration_value("xine.video_driver", entry_xine_video_driver->get_text());
+		application.set_string_configuration_value("text_encoding", entry_text_encoding->get_text());
 		application.set_boolean_configuration_value("keep_above", check_button_keep_above->get_active());
 		application.set_boolean_configuration_value("show_epg_header", check_button_show_epg_header->get_active());
 		application.set_boolean_configuration_value("show_epg_time", check_button_show_epg_time->get_active());

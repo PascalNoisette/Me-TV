@@ -228,7 +228,7 @@ namespace Dvb
 		{
 		private:
 			guchar buffer[DVB_SECTION_BUFFER_SIZE];
-			Glib::ustring epg_encoding;
+			Glib::ustring text_encoding;
 				
 			Glib::ustring get_lang_desc(const guchar* buffer);
 			gboolean find_descriptor(uint8_t tag, const unsigned char *buf, int descriptors_loop_len,
