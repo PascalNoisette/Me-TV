@@ -43,7 +43,7 @@ Application::Application(int argc, char *argv[]) :
 	main_window = NULL;
 	stream_thread = NULL;
 	update_epg_time();
-	timeout_source = -1;
+	timeout_source = 0;
 	scheduled_recording_id = 0;
 	record_state = false;
 	broadcast_state = false;
@@ -100,7 +100,7 @@ Application::Application(int argc, char *argv[]) :
 
 Application::~Application()
 {
-	if (timeout_source == -1)
+	if (timeout_source == 0)
 	{
 		g_source_remove(timeout_source);
 	}
@@ -308,7 +308,7 @@ gboolean Application::on_timeout()
 	if (scheduled_recording_list.size() > 0)
 	{
 		guint now = time(NULL);
-		g_debug("");
+		g_debug(" ");
 		g_debug("======================================================================");
 		g_debug("Now: %d", now);
 		g_debug("======================================================================");

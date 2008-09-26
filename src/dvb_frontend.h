@@ -70,11 +70,6 @@ namespace Dvb
 		Glib::ustring get_demux_path() const { return path + "/demux0"; }
 		Glib::ustring get_dvr_path() const { return path + "/dvr0"; }
 			
-		gboolean frontend_exists(guint frontend)
-		{
-			Gio::File::create_for_path(get_frontend_path(frontend))->query_exists();
-		}
-			
 		guint get_index() const { return index; }
 	};
 	

@@ -49,10 +49,10 @@ public:
 	Parameter(const Glib::ustring& name, gint value) :
 		name(name), int_value(value), parameter_type(PARAMETER_TYPE_INTEGER) {}
 		
-	ParameterType parameter_type;
 	Glib::ustring name;
 	guint int_value;
 	Glib::ustring string_value;
+	ParameterType parameter_type;
 };
 
 class ParameterList : public std::list<Parameter>
@@ -127,7 +127,7 @@ public:
 	}
 };
 
-Statement::Statement(sqlite3* database, const Glib::ustring& command) : database(database), command(command), lock(statement_mutex)
+Statement::Statement(sqlite3* database, const Glib::ustring& command) : lock(statement_mutex), database(database), command(command)
 {
 	statement = NULL;
 	const char* remaining = NULL;

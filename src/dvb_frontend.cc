@@ -250,9 +250,9 @@ const struct dvb_frontend_info& Frontend::get_frontend_info() const
 void Frontend::wait_lock(guint wait_seconds)
 {
 	fe_status_t	status;
-	time_t		start_time = time(NULL);
-
-	while ((start_time + wait_seconds) > time(NULL))
+	guint		start_time = time(NULL);
+	
+	while ((start_time + wait_seconds) > (guint)time(NULL))
 	{
 		if (!ioctl(fd, FE_READ_STATUS, &status))
 		{

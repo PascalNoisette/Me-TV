@@ -101,7 +101,7 @@ gint Demuxer::read(unsigned char* buffer, size_t length)
 		throw TimeoutException(_("Timeout while reading"));
 	}
 
-	guint bytes_read = ::read(fd, buffer, length);
+	gint bytes_read = ::read(fd, buffer, length);
 	if (bytes_read == -1)
 	{
 		throw SystemException(_("Failed to read data from demuxer"));
@@ -125,7 +125,7 @@ int Demuxer::get_fd() const
 
 gboolean Demuxer::poll(guint timeout)
 {
-	guint result = ::poll(pfd, 1, timeout);
+	gint result = ::poll(pfd, 1, timeout);
 	
 	if (result == -1)
 	{

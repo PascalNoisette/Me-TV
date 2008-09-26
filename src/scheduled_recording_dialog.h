@@ -43,9 +43,9 @@ public:
 
 	static ScheduledRecordingDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 
-	guint run(Gtk::Window* transient_for, ScheduledRecording& scheduled_recording);
-	guint run(Gtk::Window* transient_for, EpgEvent& epg_event);
-	guint run(Gtk::Window* transient_for, gboolean populate_default = true);
+	gint run(Gtk::Window* transient_for, ScheduledRecording& scheduled_recording);
+	gint run(Gtk::Window* transient_for, EpgEvent& epg_event);
+	gint run(Gtk::Window* transient_for, gboolean populate_default = true);
 		
 	ScheduledRecording get_scheduled_recording();
 };

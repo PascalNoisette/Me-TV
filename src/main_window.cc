@@ -45,7 +45,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	display_mode		= DISPLAY_MODE_EPG;
 	last_update_time	= 0;
 	last_poke_time		= 0;
-	timeout_source		= -1;
+	timeout_source		= 0;
 	engine				= NULL;
 	output_fd			= -1;
 	mute_state			= false;
@@ -118,7 +118,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 MainWindow::~MainWindow()
 {
-	if (timeout_source != -1)
+	if (timeout_source != 0)
 	{
 		g_source_remove(timeout_source);
 	}
@@ -623,9 +623,9 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
 class EngineStartThread : public Thread
 {
 private:
-	const Glib::ustring&	fifo_path;
 	Engine*					engine;
-		
+	const Glib::ustring&	fifo_path;
+
 	void run()
 	{
 		g_debug("Telling engine to start playing");

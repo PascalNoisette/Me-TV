@@ -44,7 +44,7 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 	spinbutton_duration = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spinbutton_duration"));
 }
 
-guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, ScheduledRecording& scheduled_recording)
+gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, ScheduledRecording& scheduled_recording)
 {
 	if (transient_for != NULL)
 	{
@@ -59,7 +59,7 @@ guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, ScheduledRecordi
 	return run(transient_for, false);
 }
 
-guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_event)
+gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_event)
 {
 	if (transient_for != NULL)
 	{
@@ -77,7 +77,7 @@ guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_ev
 	return run(transient_for, false);
 }
 
-guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate_default)
+gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate_default)
 {
 	if (transient_for != NULL)
 	{
@@ -91,7 +91,7 @@ guint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populat
 		spinbutton_duration->set_value(30);
 	}
 	
-	guint response = Gtk::Dialog::run();
+	gint response = Gtk::Dialog::run();
 	hide();
 	
 	if (response == Gtk::RESPONSE_OK)

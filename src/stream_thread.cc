@@ -50,8 +50,8 @@ public:
 
 StreamThread::StreamThread(const Channel& channel) :
 	Thread("Stream"),
-	frontend(get_application().get_device_manager().get_frontend()),
-	channel(channel)
+	channel(channel),
+	frontend(get_application().get_device_manager().get_frontend())
 {
 	g_debug("Creating StreamThread");
 	g_static_rec_mutex_init(mutex.gobj());
@@ -65,8 +65,8 @@ StreamThread::StreamThread(const Channel& channel) :
 	
 	for(gint i = 0 ; i < 256 ; i++ )
 	{
-		gint k = 0;
-		for (gint j = (i << 24) | 0x800000 ; j != 0x80000000 ; j <<= 1)
+		guint k = 0;
+		for (guint j = (i << 24) | 0x800000 ; j != 0x80000000 ; j <<= 1)
 		{
 			k = (k << 1) ^ (((k ^ j) & 0x80000000) ? 0x04c11db7 : 0);
 		}
@@ -149,7 +149,6 @@ void StreamThread::run()
 		
 	guint last_insert_time = 0;
 	gsize bytes_read;
-	gsize bytes_written;
 	
 	TRY
 	while (!is_terminated())
@@ -326,7 +325,7 @@ void StreamThread::build_pmt(gchar* buffer)
 	off = 0x1e;
 	
 	// Audio streams
-	for (gint index = 0; index < stream.audio_streams.size(); index++)
+	for (guint index = 0; index < stream.audio_streams.size(); index++)
 	{
 		Dvb::SI::AudioStream audio_stream = stream.audio_streams[index];
 		
@@ -365,7 +364,7 @@ void StreamThread::build_pmt(gchar* buffer)
 	}
 	
 	// Subtitle streams
-	for (gint index = 0; index < stream.subtitle_streams.size(); index++)
+	for (guint index = 0; index < stream.subtitle_streams.size(); index++)
 	{
 		Dvb::SI::SubtitleStream subtitle_stream = stream.subtitle_streams[index];
 		
@@ -391,7 +390,7 @@ void StreamThread::build_pmt(gchar* buffer)
 	}
 	
 	// TeleText streams
-	for (gint index = 0; index < stream.teletext_streams.size(); index++)
+	for (guint index = 0; index < stream.teletext_streams.size(); index++)
 	{
 		Dvb::SI::TeletextStream teletext_stream = stream.teletext_streams[index];
 						

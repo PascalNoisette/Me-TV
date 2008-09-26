@@ -402,7 +402,7 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 
 void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table)
 {
-	gsize section_length = read_section(demuxer);
+	read_section(demuxer);
 	guint offset = 9;
 	guint tables_defined = get_bits(&buffer[offset], 0, 16);
 	offset += 2;
@@ -422,7 +422,7 @@ void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table)
 
 void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& section)
 {
-	gsize section_length = read_section(demuxer);
+	read_section(demuxer);
 	guint offset = 3;
 
 	section.service_id = get_bits(&buffer[offset], 0, 16);
@@ -430,7 +430,7 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 	offset += 6;
 	guint num_events_in_section = buffer[offset++];
 	
-	for (int i = 0; i < num_events_in_section; i++)
+	for (guint i = 0; i < num_events_in_section; i++)
 	{
 		Event event;
 
@@ -498,7 +498,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 		guint event_dur_min =  ((duration >> 12)&0xf)*10+((duration >>  8)&0xf);
 		guint event_dur_sec =  ((duration >>  4)&0xf)*10+((duration      )&0xf);
 
-		event.duration = (event_dur_hour*60 + event_dur_min) * 60;
+		event.duration = (event_dur_hour*60 + event_dur_min) * 60 + event_dur_sec;
 		
 		guint event_start_day = 0;
 		guint event_start_month = 0;
@@ -523,6 +523,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 
 			memset(&t, 0, sizeof(struct tm));
 
+			t.tm_sec	= event_start_sec;
 			t.tm_min	= event_start_min;
 			t.tm_hour	= event_start_hour;
 			t.tm_mday	= event_start_day;
@@ -711,7 +712,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 				{
 					u_char ch = text_buffer[index];
 
-					if (codeset == "UTF-16BE")
+					if (strcmp(codeset, "UTF-16BE") == 0)
 					{
 						text[text_index++] = ch;
 					}
