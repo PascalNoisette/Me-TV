@@ -111,24 +111,23 @@ void GtkEpgWidget::update_table()
 
 		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
 
-		guint start_time = time(NULL);
+		guint start_time = time(NULL) + timezone;
 		start_time = (start_time / 600) * 600;
 		
 		guint row = 0;
 		gboolean show_epg_header = get_application().get_boolean_configuration_value("show_epg_header");
 		if (show_epg_header)
 		{
+			guint converted_start_time = convert_to_local_time(start_time);
 			for (guint hour = 0; hour < epg_span_hours; hour++)
 			{
-				guint hour_time = start_time + (hour * 60 * 60);
+				guint hour_time = converted_start_time + (hour * 60 * 60);
 				Glib::ustring hour_time_text = get_time_text(hour_time, "%A, %B %d - %H:%M");
 				Gtk::Button& button = attach_button(hour_time_text, hour*6 + 1, (hour+1)*6 + 1, 0, 1, Gtk::FILL | Gtk::EXPAND);
 				button.set_sensitive(false);
 			}
 			row++;
 		}
-		
-		start_time += timezone + offset;
 		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
 			const Channel& channel = *iterator;
