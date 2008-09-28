@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 ## Created by Anjuta
 
-SUBDIRS = src po
+SUBDIRS = src
 
 desktopdir = $(datadir)/applications
 desktop_DATA = me-tv.desktop
@@ -12,17 +12,12 @@ pixmaps_DATA = \
         src/me-tv.xpm \
         src/me-tv-recording.xpm
 
-me_tvdocdir = ${prefix}/doc/me-tv
-me_tvdoc_DATA = \
+EXTRA_DIST = me-tv.1 \
 	README\
-	COPYING\
 	AUTHORS\
 	ChangeLog\
 	INSTALL\
-	NEWS
-
-EXTRA_DIST = me-tv.1 \
-	$(me_tvdoc_DATA) \
+	NEWS \
 	$(desktop_DATA) \
 	$(pixmaps_DATA) \
 	intltool-update.in \
