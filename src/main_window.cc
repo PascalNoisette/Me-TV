@@ -461,7 +461,7 @@ void MainWindow::update()
 
 	if (channel == NULL)
 	{
-		window_title = "Me TV - It's TV for me computer";
+		window_title = _("Me TV - It's TV for me computer");
 	}
 	else
 	{
@@ -473,8 +473,8 @@ void MainWindow::update()
 	
 	if (application.is_recording())
 	{
-		status_text += " [Recording]";
-		window_title += " [Recording]";
+		status_text += _(" [Recording]");
+		window_title += _(" [Recording]");
 	}
 
 	set_title(window_title);

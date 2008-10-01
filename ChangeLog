@@ -1,8 +1,9 @@
-2008-09-29  Michael Lamothe <michael.lamothe@gmail.com>
+2008-01-10  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.6.5
 	* Readded translation support
 	* Added Czech translation
+	* Several translation fixes from Luboš Staněk
 	* TODO - Funny resize issue
 	* TODO - Audio streams
 

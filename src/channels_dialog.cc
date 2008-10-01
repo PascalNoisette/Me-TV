@@ -41,7 +41,7 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 	
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_displayed_channels->set_model(list_store);
-	tree_view_displayed_channels->append_column("Channel Name", columns.column_name);
+	tree_view_displayed_channels->append_column(_("Channel Name"), columns.column_name);
 	
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_displayed_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);

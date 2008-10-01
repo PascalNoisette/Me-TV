@@ -66,7 +66,7 @@ void ProfileManager::load()
 	if (profiles.size() == 0)
 	{
 		current_profile = new Profile();
-		current_profile->name = "Default";
+		current_profile->name = _("Default");
 		profiles.push_back(*current_profile);
 
 		save();

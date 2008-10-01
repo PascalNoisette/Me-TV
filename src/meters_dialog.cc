@@ -68,8 +68,8 @@ void MetersDialog::update_meters()
 void MetersDialog::set_meters(gdouble strength, gdouble snr)
 {
 	gdouble bits16 = 65535;
-	Glib::ustring signal_strength_text = Glib::ustring::compose("Signal Strength (%1%%)", (guint)((strength/bits16)*100));
-	Glib::ustring signal_noise_text = Glib::ustring::compose("S/N Ratio (%1%%)", (guint)((snr/bits16)*100));
+	Glib::ustring signal_strength_text = Glib::ustring::compose(_("Signal Strength (%1%%)"), (guint)((strength/bits16)*100));
+	Glib::ustring signal_noise_text = Glib::ustring::compose(_("S/N Ratio (%1%%)"), (guint)((snr/bits16)*100));
 	progress_bar_signal_strength->set_text(signal_strength_text);
 	progress_bar_signal_strength->set_fraction(strength/bits16);
 	progress_bar_signal_noise->set_text(signal_noise_text);

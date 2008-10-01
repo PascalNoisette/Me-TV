@@ -45,7 +45,7 @@ void Thread::start()
 	Glib::RecMutex::Lock lock(mutex);
 	if (thread != NULL)
 	{
-		throw Exception("'" + name + "' thread has already been started");
+		throw Exception("'" + name + "'" + _(" thread has already been started"));
 	}
 	
 	terminated = false;

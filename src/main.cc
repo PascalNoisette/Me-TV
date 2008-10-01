@@ -32,6 +32,12 @@ int main (int argc, char *argv[])
 		XInitThreads();
 		tzset();
 		
+#ifdef ENABLE_NLS
+		bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+		bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+		textdomain (GETTEXT_PACKAGE);
+#endif
+
 		if (!Glib::thread_supported())
 		{
 			Glib::thread_init();

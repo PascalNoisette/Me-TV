@@ -539,7 +539,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 
 			if (offset > end_descriptor_offset)
 			{
-				throw Exception("ASSERT: offset > end_descriptor_offset");
+				throw Exception(_("ASSERT: offset > end_descriptor_offset"));
 			}
 
 			section.events.push_back( event );
@@ -550,7 +550,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 	
 	if (offset > section_length)
 	{
-		throw Exception("ASSERT: offset > end_section_offset");
+		throw Exception(_("ASSERT: offset > end_section_offset"));
 	}
 }
 
@@ -754,7 +754,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 
 				if (error != NULL)
 				{
-					Glib::ustring message = Glib::ustring::compose("Failed to convert to UTF-8: %1", error->message);
+					Glib::ustring message = Glib::ustring::compose(_("Failed to convert to UTF-8: %1"), error->message);
 					g_debug(message.c_str());
 					g_debug("Codeset: %s", codeset);
 					g_debug("Length: %d", length);

@@ -127,7 +127,7 @@ void StreamThread::write(gchar* buffer, gsize length)
 		{
 			if (broadcast_failure_message)
 			{
-				g_message(_("Failed to send to UDP socket"));
+				g_message("Failed to send to UDP socket");
 			}
 			broadcast_failure_message = false;
 		}

@@ -73,7 +73,7 @@ void Profile::set_display_channel(const Channel& channel)
 	display_channel = find_channel(channel.frontend_parameters.frequency, channel.service_id);
 	if (display_channel == NULL)
 	{
-		throw Exception("Failed to set display channel: channel not found");
+		throw Exception(_("Failed to set display channel: channel not found"));
 	}
 	else
 	{
@@ -183,7 +183,7 @@ void Profile::next_channel()
 {
 	if (channels.size() == 0)
 	{
-		throw Exception("No channels");
+		throw Exception(_("No channels"));
 	}
 	else if (display_channel == NULL)
 	{
@@ -218,7 +218,7 @@ void Profile::previous_channel()
 {
 	if (channels.size() == 0)
 	{
-		throw Exception("No channels");
+		throw Exception(_("No channels"));
 	}
 	else if (display_channel == NULL)
 	{

@@ -86,7 +86,7 @@ ScanWindow::ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_scanned_channels->set_model(list_store);
-	tree_view_scanned_channels->append_column("Service Name", columns.column_name);
+	tree_view_scanned_channels->append_column(_("Service Name"), columns.column_name);
 	
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scanned_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
@@ -257,7 +257,7 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 				break;
 				
 			default:
-				throw Exception("Invalid frontend type");
+				throw Exception(_("Invalid frontend type"));
 				break;
 		}
 		
@@ -286,7 +286,7 @@ void ScanWindow::on_signal_service(struct dvb_frontend_parameters& frontend_para
 
 void ScanWindow::update_channel_count()
 {
-	label_scan_information->set_text(Glib::ustring::compose("Found %1 channels", channel_count));
+	label_scan_information->set_text(Glib::ustring::compose(ngettext("Found 1 channel", "Found %1 channels", channel_count), channel_count));
 }
 
 void ScanWindow::on_signal_progress(guint step, gsize total)

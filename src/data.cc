@@ -278,7 +278,7 @@ void Data::replace_epg_event(EpgEvent& epg_event)
 {
 	if (epg_event.channel_id == 0)
 	{
-		throw Exception("ASSERT: epg_event.channel_id == 0");
+		throw Exception(_("ASSERT: epg_event.channel_id == 0"));
 	}
 
 	Glib::ustring insert_command = Glib::ustring::compose
@@ -312,7 +312,7 @@ void Data::replace_epg_event(EpgEvent& epg_event)
 		
 		if (epg_event.epg_event_id == 0)
 		{
-			throw Exception("Failed to get epg_event_id");
+			throw Exception(_("Failed to get epg_event_id"));
 		}
 	}
 	
@@ -498,7 +498,7 @@ void Data::replace_channel(Channel& channel)
 	}
 	else
 	{
-		throw Exception("Invalid channel flag");
+		throw Exception(_("Invalid channel flag"));
 	}
 	
 	Glib::ustring insert_command = Glib::ustring::compose
@@ -698,7 +698,7 @@ void Data::replace_scheduled_recording(ScheduledRecording& scheduled_recording)
 		scheduled_recording.scheduled_recording_id = sqlite3_last_insert_rowid(database);
 		if (scheduled_recording.scheduled_recording_id == 0)
 		{
-			throw Exception("ASSERT: scheduled_recording.scheduled_recording_id == 0");
+			throw Exception(_("ASSERT: scheduled_recording.scheduled_recording_id == 0"));
 		}
 	}
 }

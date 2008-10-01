@@ -78,7 +78,7 @@ Glib::ustring EpgEvent::get_duration_text() const
 	guint minutes = (duration % (60*60)) / 60;
 	if (hours > 0)
 	{
-		result = Glib::ustring::compose("%1 hours", hours);
+		result = Glib::ustring::compose(ngettext("1 hour", "%1 hours", hours), hours);
 	}
 	if (hours > 0 && minutes > 0)
 	{
@@ -86,7 +86,7 @@ Glib::ustring EpgEvent::get_duration_text() const
 	}
 	if (minutes > 0)
 	{
-		result += Glib::ustring::compose("%1 minutes", minutes);
+		result += Glib::ustring::compose(ngettext("1 minute", "%1 minutes", minutes), minutes);
 	}
 	
 	return result;

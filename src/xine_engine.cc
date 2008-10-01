@@ -173,7 +173,7 @@ XineEngine::XineEngine(int window_id) : Engine(), window_id(window_id)
 	
 	if (stream == NULL)
 	{
-		throw XineException(stream, "Failed to create stream");
+		throw XineException(stream, _("Failed to create stream"));
 	}
 
 	mute(mute_state);

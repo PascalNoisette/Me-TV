@@ -47,7 +47,7 @@ Glib::ustring get_time_text(time_t t, const gchar* format)
 
 	if (localtime_r(&t, &tp) == NULL)
 	{
-		throw Exception("Failed to get time");
+		throw Exception(_("Failed to get time"));
 	}
 	strftime(buffer, 100, format, &tp);
 	

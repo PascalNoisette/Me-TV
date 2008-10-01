@@ -34,7 +34,7 @@ Application::Application(int argc, char *argv[]) :
 {		
 	if (current != NULL)
 	{
-		throw Exception("Application has already been initialised");
+		throw Exception(_("Application has already been initialised"));
 	}
 	
 	g_static_rec_mutex_init(mutex.gobj());
@@ -284,7 +284,7 @@ MainWindow& Application::get_main_window()
 {
 	if (main_window == NULL)
 	{
-		throw Exception("Main window has not been created");
+		throw Exception(_("Main window has not been created"));
 	}
 	
 	return *main_window;

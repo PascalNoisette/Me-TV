@@ -53,7 +53,7 @@ public:
 	{
 		if (index >= count)
 		{
-			throw Exception("Index out of bounds");
+			throw Exception(_("Index out of bounds"));
 		}
 		return parts[index];
 	}
@@ -187,7 +187,7 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 			}
 			else
 			{
-				throw Exception("Me TV cannot process a line in the initial tuning file");
+				throw Exception(_("Me TV cannot process a line in the initial tuning file"));
 			}
 		}
 		

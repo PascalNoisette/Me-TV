@@ -39,10 +39,10 @@ ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, co
 	tree_view_scheduled_recordings->signal_row_activated().connect(sigc::mem_fun(*this, &ScheduledRecordingsDialog::on_row_activated));
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_scheduled_recordings->set_model(list_store);
-	tree_view_scheduled_recordings->append_column("Description", columns.column_description);
-	tree_view_scheduled_recordings->append_column("Channel", columns.column_channel);
-	tree_view_scheduled_recordings->append_column("Start Time", columns.column_start_time);
-	tree_view_scheduled_recordings->append_column("Duration", columns.column_duration);
+	tree_view_scheduled_recordings->append_column(_("Description"), columns.column_description);
+	tree_view_scheduled_recordings->append_column(_("Channel"), columns.column_channel);
+	tree_view_scheduled_recordings->append_column(_("Start Time"), columns.column_start_time);
+	tree_view_scheduled_recordings->append_column(_("Duration"), columns.column_duration);
 	update();
 }
 
@@ -101,7 +101,7 @@ void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& pat
 	ScheduledRecording scheduled_recording;
 	if (!data.get_scheduled_recording(scheduled_recording_id, scheduled_recording))
 	{
-		throw Exception("Failed to get scheduled recording");
+		throw Exception(_("Failed to get scheduled recording"));
 	}
 	ScheduledRecordingDialog* scheduled_recording_dialog = ScheduledRecordingDialog::create(glade);
 	scheduled_recording_dialog->run(this, scheduled_recording);
