@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(me-tv, 0.6.4, https://launchpad.net/me-tv)
+AC_INIT(me-tv, 0.6.5, https://launchpad.net/me-tv)
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)
@@ -22,7 +22,7 @@ GETTEXT_PACKAGE=me-tv
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 AM_GLIB_GNU_GETTEXT
-#IT_PROG_INTLTOOL([0.35.0])
+IT_PROG_INTLTOOL([0.35.0])
 
 
 
@@ -73,4 +73,5 @@ AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
 AC_OUTPUT([
 Makefile
 src/Makefile
+po/Makefile.in
 ])

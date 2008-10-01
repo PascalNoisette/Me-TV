@@ -1,3 +1,22 @@
 # List of source files containing translatable strings.
 
-src/main.c
+[encoding: UTF-8]
+
+me-tv.desktop.in
+src/application.cc
+src/data.cc
+src/device_manager.cc
+src/dvb_demuxer.cc
+src/dvb_frontend.cc
+src/dvb_si.cc
+src/dvb_transponder.cc
+src/epg_thread.cc
+src/exception.cc
+src/main_window.cc
+src/me-tv.h
+src/me-tv.glade
+src/profile.cc
+src/profile_manager.cc
+src/scan_window.cc
+src/stream_thread.cc
+src/xine_engine.cc

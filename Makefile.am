@@ -1,10 +1,13 @@
 ## Process this file with automake to produce Makefile.in
 ## Created by Anjuta
 
-SUBDIRS = src
+SUBDIRS = src po
 
 desktopdir = $(datadir)/applications
-desktop_DATA = me-tv.desktop
+desktop_in_files = me-tv.desktop.in
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+
+@INTLTOOL_DESKTOP_RULE@
 
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA = \
@@ -18,7 +21,7 @@ EXTRA_DIST = me-tv.1 \
 	ChangeLog\
 	INSTALL\
 	NEWS \
-	$(desktop_DATA) \
+	$(desktop_in_files) \
 	$(pixmaps_DATA) \
 	intltool-update.in \
 	intltool-merge.in \
@@ -32,3 +35,6 @@ dist-hook:
 		fi \
 	done
 
+CLEANFILES = $(desktop_DATA)
+
+DISTCLEANFILES = intltool-extract intltool-merge intltool-update
