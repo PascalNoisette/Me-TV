@@ -430,7 +430,7 @@ found in /usr/share/common-licenses/GPL file.</property>
       <widget class="GtkImageMenuItem" id="menu_item_popup_quit">
         <property name="visible">True</property>
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-        <property name="label" translatable="yes">gtk-quit</property>
+        <property name="label">gtk-quit</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
       </widget>
@@ -491,7 +491,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="label" translatable="yes">gtk-add</property>
+                    <property name="label">gtk-add</property>
                     <property name="use_stock">True</property>
                     <property name="response_id">1</property>
                   </widget>
@@ -506,7 +506,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="label" translatable="yes">gtk-delete</property>
+                    <property name="label">gtk-delete</property>
                     <property name="use_stock">True</property>
                     <property name="response_id">0</property>
                   </widget>
@@ -539,7 +539,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
               </widget>
@@ -1044,7 +1044,7 @@ none</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-6</property>
               </widget>
@@ -1055,7 +1055,7 @@ none</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                <property name="label" translatable="yes">gtk-ok</property>
+                <property name="label">gtk-ok</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-5</property>
               </widget>
@@ -1122,7 +1122,7 @@ none</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="label" translatable="yes">gtk-add</property>
+                    <property name="label">gtk-add</property>
                     <property name="use_stock">True</property>
                     <property name="response_id">0</property>
                   </widget>
@@ -1137,7 +1137,7 @@ none</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip" translatable="yes">Removes selected channels</property>
-                    <property name="label" translatable="yes">gtk-remove</property>
+                    <property name="label">gtk-remove</property>
                     <property name="use_stock">True</property>
                     <property name="response_id">0</property>
                   </widget>
@@ -1169,7 +1169,7 @@ none</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-6</property>
               </widget>
@@ -1179,7 +1179,7 @@ none</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-ok</property>
+                <property name="label">gtk-ok</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-5</property>
               </widget>
@@ -1262,7 +1262,7 @@ none</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
               </widget>
@@ -1338,7 +1338,7 @@ none</property>
                           <widget class="GtkImageMenuItem" id="menu_item_quit">
                             <property name="visible">True</property>
                             <property name="tooltip" translatable="yes">Quit Me TV</property>
-                            <property name="label" translatable="yes">gtk-quit</property>
+                            <property name="label">gtk-quit</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
                             <accelerator key="F4" modifiers="GDK_MOD1_MASK" signal="activate"/>
@@ -1383,7 +1383,7 @@ none</property>
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <property name="tooltip" translatable="yes">Show preferences dialog</property>
-                            <property name="label" translatable="yes">gtk-preferences</property>
+                            <property name="label">gtk-preferences</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
                           </widget>
@@ -1405,7 +1405,7 @@ none</property>
                           <widget class="GtkImageMenuItem" id="menu_item_fullscreen">
                             <property name="visible">True</property>
                             <property name="tooltip" translatable="yes">Toggle fullscreen mode</property>
-                            <property name="label" translatable="yes">gtk-fullscreen</property>
+                            <property name="label">gtk-fullscreen</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
                           </widget>
@@ -1457,7 +1457,7 @@ none</property>
                           <widget class="GtkImageMenuItem" id="menu_item_about">
                             <property name="visible">True</property>
                             <property name="tooltip" translatable="yes">Show the About dialog</property>
-                            <property name="label" translatable="yes">gtk-about</property>
+                            <property name="label">gtk-about</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
                           </widget>
@@ -1924,7 +1924,7 @@ none</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
               </widget>
@@ -1934,7 +1934,7 @@ none</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-media-next</property>
+                <property name="label">gtk-media-next</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
               </widget>
@@ -1947,7 +1947,7 @@ none</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-add</property>
+                <property name="label">gtk-add</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
               </widget>

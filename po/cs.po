@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: me-tv 0.6.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-01 15:05+0200\n"
-"PO-Revision-Date: 2008-10-01 11:42+0100\n"
+"POT-Creation-Date: 2008-10-02 14:01+0200\n"
+"PO-Revision-Date: 2008-10-02 14:02+0200\n"
 "Last-Translator: Luboš Staněk <lubek@users.sourceforge.net>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -43,11 +43,11 @@ msgstr "Hlavní okno nebylo vytvořeno"
 
 #: ../src/application.cc:394
 msgid "No channel to make recording filename"
-msgstr ""
+msgstr "Žádný kanál pro vytvoření názvu souboru záznamu"
 
 #: ../src/application.cc:456
 msgid "Stream thread has not been created"
-msgstr ""
+msgstr "Vlákno proudu nebylo vytvořeno"
 
 #: ../src/application.cc:481
 msgid ""
@@ -57,23 +57,23 @@ msgstr ""
 
 #: ../src/data.cc:140 ../src/data.cc:144
 msgid "Failed to prepare statement: %1"
-msgstr ""
+msgstr "Selhala příprava příkazu: %1"
 
 #: ../src/data.cc:150
 msgid "Prepare statement had remaining data: %1"
-msgstr ""
+msgstr "Při přípravě přikazu zbyla data: %1"
 
 #: ../src/data.cc:155
 msgid "Failed to create statement"
-msgstr ""
+msgstr "Selhalo vytvoření příkazu"
 
 #: ../src/data.cc:163
 msgid "Failed to finalise statement"
-msgstr ""
+msgstr "Selhalo dokončení příkazu"
 
 #: ../src/data.cc:188
 msgid "Failed to connect to Me TV database"
-msgstr ""
+msgstr "Selhalo připojení k databázi Me TV"
 
 #: ../src/data.cc:281
 msgid "ASSERT: epg_event.channel_id == 0"
@@ -96,6 +96,8 @@ msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'"
 msgstr ""
+"Selhalo uložení plánovaného záznamu, protože koliduje s jiným plánovaným "
+"záznamem nazvaným '%1'"
 
 #: ../src/data.cc:701
 msgid "ASSERT: scheduled_recording.scheduled_recording_id == 0"
@@ -151,11 +153,11 @@ msgstr "Selhalo zjištění informací tuneru"
 
 #: ../src/dvb_frontend.cc:148
 msgid "Failed to find a value for '%1'"
-msgstr ""
+msgstr "Selhalo nalezení hodnoty pro '%1'"
 
 #: ../src/dvb_frontend.cc:173
 msgid "Failed to find a text value for '%1'"
-msgstr ""
+msgstr "Selhalo nalezení textové hodnoty pro '%1'"
 
 #: ../src/dvb_frontend.cc:193
 msgid "Failed to tune device"
@@ -207,7 +209,7 @@ msgstr ""
 
 #: ../src/dvb_scanner.cc:190
 msgid "Me TV cannot process a line in the initial tuning file"
-msgstr ""
+msgstr "Me TV nemůže zpracovat řádku v počátečním ladícím souboru"
 
 #: ../src/dvb_si.cc:129
 msgid "Failed to read header"
@@ -239,7 +241,7 @@ msgstr "Selhal převod do UTF-8"
 
 #: ../src/dvb_transponder.cc:51
 msgid "Failed to find service with service ID %1"
-msgstr ""
+msgstr "Selhalo nalezení služby s ID %1"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording.cc:36
 msgid "1 hour"
@@ -269,11 +271,11 @@ msgstr ""
 
 #: ../src/epg_thread.cc:127
 msgid "No current tranponder"
-msgstr ""
+msgstr "Žádný aktuální transpondér"
 
 #: ../src/epg_thread.cc:235
 msgid "Exiting EPG thread"
-msgstr ""
+msgstr "Ukončuji vlákno EPG"
 
 #: ../src/exception.cc:27
 msgid "Failed to get error message"
@@ -399,7 +401,7 @@ msgstr "Kanál:"
 
 #: ../src/me-tv.glade.h:18
 msgid "Click here to adjust channel atributes"
-msgstr ""
+msgstr "Po kliknutí můžete upravovat vlastnosti kanálu"
 
 #: ../src/me-tv.glade.h:19
 msgid "Copyright © Michael Lamothe <michael.lamothe@gmail.com>"
@@ -525,11 +527,11 @@ msgstr "Me TV - Průvodce laděním"
 
 #: ../src/me-tv.glade.h:47
 msgid "Me TV - Scheduled Recording"
-msgstr "Me TV - Plánování záznamu"
+msgstr "Me TV - Plánovaný záznam"
 
 #: ../src/me-tv.glade.h:48
 msgid "Me TV - Scheduled Recordings"
-msgstr "Me TV - Plánování záznamu"
+msgstr "Me TV - Plánování záznamů"
 
 #: ../src/me-tv.glade.h:49
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
@@ -557,7 +559,7 @@ msgstr "Popis není dostupný."
 
 #: ../src/me-tv.glade.h:55
 msgid "No title available"
-msgstr ""
+msgstr "Název není dostupný"
 
 #: ../src/me-tv.glade.h:56
 msgid "Preferred language:"
@@ -581,7 +583,7 @@ msgstr "Adresář pro nahrávání: "
 
 #: ../src/me-tv.glade.h:61
 msgid "Removes selected channels"
-msgstr ""
+msgstr "Odstraní vybrané kanály"
 
 #: ../src/me-tv.glade.h:62
 msgid "S/N Ratio"
@@ -605,7 +607,8 @@ msgstr "Plán"
 
 #: ../src/me-tv.glade.h:67
 msgid "See https://launchpad.net/me-tv"
-msgstr "Aktivní překladatelé:\n"
+msgstr ""
+"Aktivní překladatelé:\n"
 "Luboš Staněk <lubek@users.sourceforge.net>, 2008\n"
 "\n"
 "Přispěli:\n"
@@ -737,7 +740,7 @@ msgstr "_Záznam"
 
 #: ../src/me-tv.glade.h:100
 msgid "_Scheduled Recordings"
-msgstr "_Plán záznamu"
+msgstr "_Plánování záznamů"
 
 #: ../src/me-tv.glade.h:101
 msgid "_Video"
@@ -763,50 +766,6 @@ msgid ""
 "none"
 msgstr ""
 
-#: ../src/me-tv.glade.h:111
-msgid "gtk-about"
-msgstr "gtk-about"
-
-#: ../src/me-tv.glade.h:112
-msgid "gtk-add"
-msgstr "gtk-add"
-
-#: ../src/me-tv.glade.h:113
-msgid "gtk-cancel"
-msgstr "gtk-cancel"
-
-#: ../src/me-tv.glade.h:114
-msgid "gtk-close"
-msgstr "gtk-close"
-
-#: ../src/me-tv.glade.h:115
-msgid "gtk-delete"
-msgstr "gtk-delete"
-
-#: ../src/me-tv.glade.h:116
-msgid "gtk-fullscreen"
-msgstr "gtk-fullscreen"
-
-#: ../src/me-tv.glade.h:117
-msgid "gtk-media-next"
-msgstr "gtk-media-next"
-
-#: ../src/me-tv.glade.h:118
-msgid "gtk-ok"
-msgstr "gtk-ok"
-
-#: ../src/me-tv.glade.h:119
-msgid "gtk-preferences"
-msgstr "gtk-preferences"
-
-#: ../src/me-tv.glade.h:120
-msgid "gtk-quit"
-msgstr "gtk-quit"
-
-#: ../src/me-tv.glade.h:121
-msgid "gtk-remove"
-msgstr "gtk-remove"
-
 #: ../src/profile.cc:59
 msgid "Channel '%1' not found"
 msgstr "Kanál '%1' nebyl nalezen"
@@ -817,7 +776,7 @@ msgstr ""
 
 #: ../src/profile.cc:99
 msgid "Failed to add channel: You cannot have more than 100 channels"
-msgstr ""
+msgstr "Selhalo přidání kanálu: Nemůžete mít více než 100 kanálů"
 
 #: ../src/profile.cc:186 ../src/profile.cc:221
 msgid "No channels"
@@ -890,7 +849,7 @@ msgstr ""
 
 #: ../src/stream_thread.cc:583
 msgid "Failed to open recording file"
-msgstr ""
+msgstr "Selhalo otevření souboru záznamu"
 
 #: ../src/stream_thread.cc:614
 msgid "Failed to create internet address"
@@ -902,7 +861,7 @@ msgstr "Selhalo vytvoření soketu"
 
 #: ../src/thread.cc:48
 msgid " thread has already been started"
-msgstr ""
+msgstr " vlákno již bylo spuštěno"
 
 #: ../src/xine_engine.cc:42
 msgid "No error"
@@ -910,7 +869,7 @@ msgstr "Žádná chyba"
 
 #: ../src/xine_engine.cc:43
 msgid "No input plugin"
-msgstr ""
+msgstr "Žádný vstupní plugin"
 
 #: ../src/xine_engine.cc:44
 msgid "No demux plugin"

@@ -7,10 +7,13 @@ glade_DATA = me-tv.glade \
 	me-tv.xpm
 
 AM_CPPFLAGS = \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	$(ME_TV_CFLAGS) \
+	$(SQLITE_CFLAGS) \
+	$(WARN_CXXFLAGS) \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	$(ME_TV_CFLAGS)
+	-DPACKAGE_SRC_DIR=\""$(srcdir)"\"
 
 AM_CFLAGS =\
 	 -Wall\
@@ -92,6 +95,8 @@ me_tv_LDFLAGS = -Wl,--as-needed \
 	`getconf LFS_LDFLAGS` \
         `getconf LFS64_LDFLAGS`
 
-me_tv_LDADD = $(ME_TV_LIBS)
+me_tv_LDADD = \
+	$(ME_TV_LIBS) \
+	$(SQLITE_LIBS)
 
 EXTRA_DIST = $(glade_DATA)
