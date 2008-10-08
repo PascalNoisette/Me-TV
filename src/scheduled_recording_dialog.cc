@@ -72,7 +72,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_eve
 
 	channel_combo_box->set_selected_channel_id(epg_event.channel_id);
 	entry_description->set_text(epg_event.get_title());
-	date_edit_start_time->set_time(convert_to_local_time(epg_event.start_time) - (before * 60));
+	date_edit_start_time->set_time(convert_to_utc_time(epg_event.start_time) - (before * 60));
 	spinbutton_duration->set_value((epg_event.duration/60) + before + after);
 	return run(transient_for, false);
 }

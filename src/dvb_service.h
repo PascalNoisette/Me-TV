@@ -22,6 +22,7 @@
 #define __DVB_SERVICE_H__
 
 #include <glibmm.h>
+#include <list>
 
 namespace Dvb
 {

@@ -21,6 +21,7 @@
 #include "stream_thread.h"
 #include "application.h"
 #include "device_manager.h"
+#include "dvb_transponder.h"
 #include <glibmm.h>
 
 #define TS_PACKET_SIZE 188
@@ -473,9 +474,7 @@ void StreamThread::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
 	
 	remove_all_demuxers();
 	
-	Dvb::Transponder transponder;
-	transponder.frontend_parameters = channel.frontend_parameters;
-	frontend.tune_to(transponder);
+	frontend.tune_to(channel.frontend_parameters);
 	
 	Dvb::Demuxer demuxer_pat(demux_path);
 	demuxer_pat.set_filter(PAT_PID, PAT_ID);

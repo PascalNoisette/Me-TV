@@ -574,29 +574,29 @@ ProfileList Data::get_all_profiles()
 {
 	ProfileList profiles;
 
-	Statement statement(database, "SELECT * FROM PROFILE");
+	Statement statement(database, "SELECT * FROM PROFILE ORDER BY PROFILE_ID");
 	while (statement.step() == SQLITE_ROW)
 	{
 		Profile profile;
 		profile.profile_id	= statement.get_int(0);
 		profile.name		= statement.get_text(1);
-		
+
 		Statement channel_statement(database,
 			Glib::ustring::compose("SELECT * FROM CHANNEL WHERE PROFILE_ID = %1 ORDER BY SORT_ORDER", profile.profile_id));
 		while (channel_statement.step() == SQLITE_ROW)
 		{
 			Channel channel;
 			
-			channel.channel_id			= channel_statement.get_int(0);
-			channel.profile_id			= channel_statement.get_int(1);
-			channel.name				= channel_statement.get_text(2);
-			channel.flags				= channel_statement.get_int(3);
-			channel.sort_order			= channel_statement.get_int(4);
-			channel.mrl					= channel_statement.get_text(5);
-			channel.service_id			= channel_statement.get_int(6);
-			
-			channel.frontend_parameters.frequency						= channel_statement.get_int(7);
-			channel.frontend_parameters.inversion						= (fe_spectral_inversion_t)channel_statement.get_int(8);
+			channel.channel_id	= channel_statement.get_int(0);
+			channel.profile_id	= channel_statement.get_int(1);
+			channel.name		= channel_statement.get_text(2);
+			channel.flags		= channel_statement.get_int(3);
+			channel.sort_order	= channel_statement.get_int(4);
+			channel.mrl			= channel_statement.get_text(5);
+			channel.service_id	= channel_statement.get_int(6);
+
+			channel.frontend_parameters.frequency	= channel_statement.get_int(7);
+			channel.frontend_parameters.inversion	= (fe_spectral_inversion_t)channel_statement.get_int(8);
 
 			if (channel.flags & CHANNEL_FLAG_DVB_T)
 			{
@@ -614,7 +614,6 @@ ProfileList Data::get_all_profiles()
 				channel.frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)channel_statement.get_int(17);
 				channel.frontend_parameters.u.qam.modulation	= (fe_modulation_t)channel_statement.get_int(18);
 			}
-			
 			profile.add_channel(channel);
 			
 			g_debug("Loaded channel: %s", channel.name.c_str());
@@ -636,7 +635,7 @@ gboolean Data::get_current_epg_event(const Channel& channel, EpgEvent& epg_event
 	(
 		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 "\
 	 	"AND START_TIME <= %2 AND (START_TIME + DURATION) > %2",
-		channel.channel_id, time(NULL) + timezone
+		channel.channel_id, convert_to_local_time(time(NULL))
 	);
 
 	Statement statement(database, select_command);
@@ -707,7 +706,7 @@ ScheduledRecordingList Data::get_scheduled_recordings()
 {
 	ScheduledRecordingList result;
 	
-	Glib::ustring select_command = "SELECT * FROM SCHEDULED_RECORDING";
+	Glib::ustring select_command = "SELECT * FROM SCHEDULED_RECORDING ORDER BY START_TIME";
 
 	Statement statement(database, select_command);
 	while (statement.step() == SQLITE_ROW)

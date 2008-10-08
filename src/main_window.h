@@ -50,7 +50,6 @@ private:
 	guint									last_poke_time;
 	guint									timeout_source;
 	Gtk::Menu								audio_streams_menu;
-	Gtk::RadioMenuItem::Group				audio_streams_menu_group;
 	Engine*									engine;
 	gint									output_fd;
 	Glib::StaticRecMutex					mutex;
@@ -89,6 +88,7 @@ private:
 	void on_tool_button_record_clicked();
 	void on_tool_button_mute_clicked();
 	void on_tool_button_broadcast_clicked();
+	void on_menu_item_audio_stream_activate(guint audio_stream_index);
 
 	void on_show();
 	void on_hide();

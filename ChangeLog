@@ -1,11 +1,16 @@
-2008-01-10  Michael Lamothe <michael.lamothe@gmail.com>
+2008-10-01  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.6.5
 	* Readded translation support
 	* Added Czech translation
 	* Several translation fixes from Luboš Staněk
-	* TODO - Funny resize issue
-	* TODO - Audio streams
+	* Fixed resize issue on expose
+	* Added support for multiple audio streams
+	* Made scheduled recording sort in chronological order
+	* Fixed issue with log/recording filename being 1 day out
+	* Fixed mouse hiding in menu/controls
+	* Several changes to the time calculations 
+	* Added proper command line argument handling
 
 2008-09-28  Michael Lamothe <michael.lamothe@gmail.com>
 

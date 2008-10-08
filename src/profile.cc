@@ -70,7 +70,7 @@ void Profile::set_display_channel(guint channel_id)
 void Profile::set_display_channel(const Channel& channel)
 {
 	g_message("Setting display channel to '%s' (%d)", channel.name.c_str(), channel.channel_id);
-	display_channel = find_channel(channel.frontend_parameters.frequency, channel.service_id);
+	display_channel = find_channel(channel.channel_id);
 	if (display_channel == NULL)
 	{
 		throw Exception(_("Failed to set display channel: channel not found"));
@@ -101,7 +101,7 @@ void Profile::add_channel(Channel& channel)
 	channels.push_back(channel);
 	g_debug("Channel '%s' added to profile", channel.name.c_str());
 }
-	
+
 const ChannelList& Profile::get_channels() const
 {
 	return channels;
@@ -130,7 +130,7 @@ Channel* Profile::find_channel(guint frequency, guint service_id)
 	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end() && result == NULL; iterator++)
 	{
 		Channel& channel = *iterator;
-		if (channel.frontend_parameters.frequency == frequency && channel.service_id == service_id)
+		if (channel.get_transponder_frequency() == frequency && channel.service_id == service_id)
 		{
 			result = &channel;
 		}
@@ -155,7 +155,7 @@ void Profile::set_channels(ChannelList& new_channels)
 
 	if (display_channel != NULL)
 	{
-		display_channel_frequency = display_channel->frontend_parameters.frequency;
+		display_channel_frequency = display_channel->get_transponder_frequency();
 		display_channel_service_id = display_channel->service_id;
 		display_channel = NULL; // Will be destroyed by clear, so flag it
 	}
@@ -197,7 +197,7 @@ void Profile::next_channel()
 		while (iterator != channels.end() && !done)
 		{
 			Channel& channel = *iterator;
-			if (channel.frontend_parameters.frequency == display_channel->frontend_parameters.frequency && channel.service_id == display_channel->service_id)
+			if (channel.get_transponder_frequency() == display_channel->get_transponder_frequency() && channel.service_id == display_channel->service_id)
 			{
 				iterator++;
 				if (iterator != channels.end())
@@ -235,7 +235,7 @@ void Profile::previous_channel()
 		while (iterator != channels.end() && !done)
 		{
 			Channel& channel = *iterator;
-			if (channel.frontend_parameters.frequency == display_channel->frontend_parameters.frequency && channel.service_id == display_channel->service_id)
+			if (channel.get_transponder_frequency() == display_channel->get_transponder_frequency() && channel.service_id == display_channel->service_id)
 			{
 				if (previous_iterator != iterator)
 				{

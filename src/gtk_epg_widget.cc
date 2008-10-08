@@ -30,9 +30,9 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 {
 	offset = 0;
 
-	table_epg			= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
-	scrolled_window_epg	= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
-	dialog_program_details = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
+	table_epg				= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
+	scrolled_window_epg		= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
+	dialog_program_details	= dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
 	
 	epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
 	glade->connect_clicked("button_epg_now",
@@ -111,23 +111,23 @@ void GtkEpgWidget::update_table()
 
 		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
 
-		guint start_time = time(NULL) + timezone;
+		guint start_time = time(NULL) + offset;
 		start_time = (start_time / 600) * 600;
 		
 		guint row = 0;
 		gboolean show_epg_header = get_application().get_boolean_configuration_value("show_epg_header");
 		if (show_epg_header)
 		{
-			guint converted_start_time = convert_to_local_time(start_time);
 			for (guint hour = 0; hour < epg_span_hours; hour++)
 			{
-				guint hour_time = converted_start_time + (hour * 60 * 60);
-				Glib::ustring hour_time_text = get_time_text(hour_time, "%A, %B %d - %H:%M");
+				guint hour_time = start_time + (hour * 60 * 60);
+				Glib::ustring hour_time_text = get_local_time_text(hour_time, "%c");
 				Gtk::Button& button = attach_button(hour_time_text, hour*6 + 1, (hour+1)*6 + 1, 0, 1, Gtk::FILL | Gtk::EXPAND);
 				button.set_sensitive(false);
 			}
 			row++;
 		}
+		start_time += timezone;
 		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
 			const Channel& channel = *iterator;
@@ -203,13 +203,13 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 			
 			if (column_count > 0)
 			{
-				guint converted_start_time = convert_to_local_time(epg_event.start_time);
+				guint converted_start_time = convert_to_utc_time (epg_event.start_time);
 
 				Glib::ustring text;
 				if (show_epg_time)
 				{
-					text = get_time_text(converted_start_time, "<b>%H:%M");
-					text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
+					text = get_local_time_text(converted_start_time, "<b>%H:%M");
+					text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
 				}
 				text += encode_xml(epg_event.get_title());
 				
@@ -224,8 +224,8 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 
 				if (show_epg_tooltips)
 				{
-					Glib::ustring tooltip_text = get_time_text(converted_start_time, "%A, %B %d\n%H:%M");
-					tooltip_text += get_time_text(converted_start_time + epg_event.duration, " - %H:%M");
+					Glib::ustring tooltip_text = get_local_time_text(converted_start_time, "%A, %B %d\n%H:%M");
+					tooltip_text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M");
 					button.set_tooltip_text(tooltip_text);
 				}
 			}

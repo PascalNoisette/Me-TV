@@ -80,7 +80,7 @@ void Scanner::tune_to(Frontend& frontend, Transponder& transponder)
 		Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 		Demuxer demuxer_sds(demux_path);
 		
-		frontend.tune_to(transponder, wait_timeout);		
+		frontend.tune_to(transponder.frontend_parameters, wait_timeout);		
 		demuxer_sds.set_filter(SDT_PID, SDT_ID);
 		parser.parse_sds(demuxer_sds, sds);
 		

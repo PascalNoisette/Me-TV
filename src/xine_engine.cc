@@ -180,8 +180,8 @@ XineEngine::XineEngine(int window_id) : Engine(), window_id(window_id)
 
 	if (video_port != NULL)
 	{
-		xine_port_send_gui_data ( video_port, XINE_GUI_SEND_DRAWABLE_CHANGED, ( void * ) window_id );
-		xine_port_send_gui_data ( video_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, ( void * ) 1 );
+		//xine_port_send_gui_data ( video_port, XINE_GUI_SEND_DRAWABLE_CHANGED, ( void * ) window_id );
+		//xine_port_send_gui_data ( video_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, ( void * ) 1 );
 
 		// Set up deinterlacing
 		Glib::ustring deinterlace_type = application.get_string_configuration_value("xine.deinterlace_type");
@@ -315,6 +315,7 @@ void XineEngine::set_size(gint w, gint h)
 	Glib::RecMutex::Lock lock(mutex);
 	width = w;
 	height = h;
+	g_debug("XineEngine::set_size(%d, %d)", width, height);
 }
 
 void XineEngine::set_audio_channel(guint channel)

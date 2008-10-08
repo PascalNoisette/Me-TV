@@ -60,7 +60,7 @@ private:
 	gboolean on_timeout();
 
 public:
-	Application(int argc, char *argv[]);
+	Application(int argc, char *argv[], Glib::OptionContext& option_context);
 	~Application();
 		
 	void run();

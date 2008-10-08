@@ -23,7 +23,7 @@
 
 Glib::ustring ScheduledRecording::get_start_time_text() const
 {
-	return get_time_text(start_time, "%c");
+	return get_local_time_text(start_time, "%c");
 }
 
 Glib::ustring ScheduledRecording::get_duration_text() const

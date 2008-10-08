@@ -29,9 +29,9 @@ Application& get_application()
 	return Application::get_current();
 }
 
-Application::Application(int argc, char *argv[]) :
-	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv)
-{		
+Application::Application(int argc, char *argv[], Glib::OptionContext& option_context) :
+	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context)
+{
 	if (current != NULL)
 	{
 		throw Exception(_("Application has already been initialised"));
@@ -96,6 +96,9 @@ Application::Application(int argc, char *argv[]) :
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));	
 
 	timeout_source = gdk_threads_add_timeout(10000, &Application::on_timeout, this);
+
+	g_debug("Timezone: %d", timezone);
+	g_debug("Daylight: %d", daylight);
 }
 
 Application::~Application()
@@ -394,7 +397,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		throw Exception(_("No channel to make recording filename"));
 	}
 	
-	Glib::ustring start_time = get_time_text(get_local_time(), "%c");
+	Glib::ustring start_time = get_local_time_text("%c");
 	Glib::ustring filename;
 
 	if (description.size() == 0)

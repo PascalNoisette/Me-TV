@@ -121,11 +121,6 @@ void EpgThread::run()
 	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
 	Profile& profile = get_application().get_profile_manager().get_current_profile();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
-	const Dvb::Transponder* transponder = frontend.get_current_transponder();
-	if (transponder == NULL)
-	{
-		throw Exception(_("No current tranponder"));
-	}
 	EITDemuxers demuxers(demux_path);
 	Dvb::SI::SectionParser parser;
 	Dvb::SI::MasterGuideTable master_guide_table;
@@ -155,7 +150,7 @@ void EpgThread::run()
 	
 	guint processed_event_count = 0;
 	guint processed_events[10000];
-	guint frequency = transponder->frontend_parameters.frequency;
+	guint frequency = frontend.get_frontend_parameters().frequency;
 	while (!is_terminated())
 	{
 		try

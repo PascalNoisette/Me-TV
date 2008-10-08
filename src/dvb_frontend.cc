@@ -101,7 +101,7 @@ struct StringTable Dvb::inversion_table[] =
 Frontend::Frontend(const Adapter& adapter, guint frontend_index) : adapter(adapter)
 {
 	fd = -1;
-	current_transponder = NULL;
+	memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
 	frontend = frontend_index;
 
 	Glib::ustring path = adapter.get_frontend_path(frontend);
@@ -176,19 +176,14 @@ Glib::ustring Frontend::convert_value_to_string(const StringTable* table, guint 
 	return current->text;
 }
 
-void Frontend::tune_to (const Transponder& transponder, guint wait_seconds)
+void Frontend::tune_to (const struct dvb_frontend_parameters& parameters, guint wait_seconds)
 {
 	struct dvb_frontend_event ev;
-	
-	if (frontend_info.type == FE_QPSK)
-	{
-		diseqc(transponder);
-	}
 
 	// Discard stale events
 	while (ioctl(fd, FE_GET_EVENT, &ev) != -1);
 
-	if ( ioctl ( fd, FE_SET_FRONTEND, &(transponder.frontend_parameters) ) < 0 )
+	if ( ioctl ( fd, FE_SET_FRONTEND, &(parameters) ) < 0 )
 	{
 		throw SystemException(_("Failed to tune device"));
 	}
@@ -197,7 +192,7 @@ void Frontend::tune_to (const Transponder& transponder, guint wait_seconds)
 	wait_lock(wait_seconds);
 	g_message(_("Got signal lock"));
 	
-	current_transponder = &transponder;
+	frontend_parameters = parameters;
 }
 
 void Frontend::diseqc(const Transponder& transponder)
@@ -289,4 +284,9 @@ guint Frontend::get_snr()
 		throw SystemException(_("Failed to get signal to noise ratio"));
 	}
 	return result;
+}
+
+const struct dvb_frontend_parameters& Frontend::get_frontend_parameters() const
+{
+	return frontend_parameters;
 }

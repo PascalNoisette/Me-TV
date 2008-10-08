@@ -39,11 +39,12 @@ typedef std::vector<Glib::ustring> StringArray;
 typedef std::list<Glib::ustring> StringList;
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to);
-Glib::ustring get_time_text(time_t t, const gchar* format);
+Glib::ustring get_local_time_text(const gchar* format);
+Glib::ustring get_local_time_text(time_t t, const gchar* format);
 Glib::ustring encode_xml(const Glib::ustring& s);
 
-guint get_local_time();
-guint convert_to_local_time(guint gmt);
+guint convert_to_local_time(guint utc);
+guint convert_to_utc_time(guint local_time);
 
 void on_error(const Glib::ustring& message);
 void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data);

@@ -40,7 +40,12 @@ void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::us
 	}
 }
 
-Glib::ustring get_time_text(time_t t, const gchar* format)
+Glib::ustring get_local_time_text(const gchar* format)
+{
+	return get_local_time_text(time(NULL), format);
+}
+
+Glib::ustring get_local_time_text(time_t t, const gchar* format)
 {
 	struct tm tp;
 	char buffer[100];
@@ -67,21 +72,21 @@ Glib::ustring encode_xml(const Glib::ustring& s)
 	return result;
 }
 
-guint get_local_time()
+guint convert_to_local_time(guint utc)
 {
-	return convert_to_local_time(time(NULL));
+	return utc + timezone;
 }
 
-guint convert_to_local_time(guint gmt)
+guint convert_to_utc_time(guint local_time)
 {
-	return gmt - timezone;
+	return local_time - timezone;
 }
 
 void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
 	if (log_level != G_LOG_LEVEL_DEBUG || verbose_logging)
 	{
-		Glib::ustring time_text = get_time_text(get_local_time(), "%x %T");
+		Glib::ustring time_text = get_local_time_text("%x %T");
 		g_printf("%s: %s\n", time_text.c_str(), message);
 	}
 }

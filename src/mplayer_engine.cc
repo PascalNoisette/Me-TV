@@ -20,6 +20,7 @@
 
 #include "mplayer_engine.h"
 #include "exception.h"
+#include "application.h"
 #include <gdk/gdkx.h>
 #include <sys/wait.h>
 
@@ -169,4 +170,8 @@ void MplayerEngine::mute(gboolean state)
 		g_debug(state ? "Muting" : "Unmuting");
 		::write(standard_input, "m\n", 2);
 	}
+}
+
+void MplayerEngine::expose()
+{
 }

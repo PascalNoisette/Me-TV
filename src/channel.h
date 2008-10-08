@@ -27,6 +27,7 @@
 
 #include <linux/dvb/frontend.h>
 #include "epg_event.h"
+#include "dvb_transponder.h"
 
 class Channel
 {
@@ -40,12 +41,13 @@ public:
 	guint sort_order;
 	Glib::ustring mrl;
 
+	gboolean get_current_epg_event(EpgEvent& epg_event) const;
+	Glib::ustring get_text() const;
+
 	// DVB Specific
 	guint service_id;
 	struct dvb_frontend_parameters frontend_parameters;
-		
-	gboolean get_current_epg_event(EpgEvent& epg_event) const;
-	Glib::ustring get_text() const;
+	guint get_transponder_frequency();
 };
 
 typedef std::list<Channel> ChannelList;

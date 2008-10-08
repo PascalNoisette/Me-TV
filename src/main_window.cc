@@ -113,7 +113,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	Gtk::MenuItem* menu_item_audio_streams = dynamic_cast<Gtk::MenuItem*>(glade->get_widget("menu_item_audio_streams"));
 	menu_item_audio_streams->set_submenu(audio_streams_menu);
-	menu_item_audio_streams->hide();
 }
 
 MainWindow::~MainWindow()
@@ -449,6 +448,17 @@ void MainWindow::on_tool_button_broadcast_clicked()
 	CATCH
 }
 
+void MainWindow::on_menu_item_audio_stream_activate(guint audio_stream_index)
+{
+	Glib::RecMutex::Lock lock(mutex);
+
+	g_debug("MainWindow::on_menu_item_audio_stream_activate(%d)", audio_stream_index);
+	if (engine != NULL)
+	{
+		engine->set_audio_channel(audio_stream_index);
+	}
+}
+
 void MainWindow::update()
 {
 	Application& application = get_application();
@@ -481,24 +491,27 @@ void MainWindow::update()
 	app_bar->set_status(status_text);
 
 	widget_epg->update();
-			
-/*	
+
 	Gtk::Menu_Helpers::MenuList& items = audio_streams_menu.items();
 	items.erase(items.begin(), items.end());
+
+	Gtk::RadioMenuItem::Group audio_streams_menu_group;
 	
-	// Not MT safe!
+	// Acquire stream thread lock
+	Glib::RecMutex::Lock application_lock(application.get_mutex());
+
 	StreamThread* stream_thread = application.get_stream_thread();
 	if (stream_thread != NULL)
 	{
 		const Stream& stream = stream_thread->get_stream();
 		std::vector<Dvb::SI::AudioStream> audio_streams = stream.audio_streams;
-		gint count = 0;
+		guint count = 0;
 		
 		g_debug("Audio streams: %d", audio_streams.size());
 		for (std::vector<Dvb::SI::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
 		{
-			Dvb::SI::AudioStream audio_stream = *i;		
-			Glib::ustring text = Glib::ustring::compose("%1: %2", ++count, audio_stream.language);
+			Dvb::SI::AudioStream audio_stream = *i;
+			Glib::ustring text = Glib::ustring::compose("%1: %2", count, audio_stream.language);
 			if (audio_stream.is_ac3)
 			{
 				text += " (AC3)";
@@ -506,9 +519,18 @@ void MainWindow::update()
 			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
 			menu_item->show_all();
 			audio_streams_menu.items().push_back(*menu_item);
+
+			menu_item->signal_activate().connect(
+				sigc::bind<guint>
+				(
+					sigc::mem_fun(*this, &MainWindow::on_menu_item_audio_stream_activate),
+					count
+				)
+			);
+
+			count++;
 		}
 	}
-*/
 }
 
 void MainWindow::set_state(const Glib::ustring& name, gboolean state)
@@ -531,7 +553,7 @@ void MainWindow::set_state(const Glib::ustring& name, gboolean state)
 void MainWindow::on_show()
 {
 	Gtk::Window::on_show();
-
+	Gdk::Window::process_all_updates();
 	TRY
 	start_engine();
 	if (get_application().get_boolean_configuration_value("keep_above"))
@@ -612,7 +634,9 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
 	}
 	else
 	{
-		engine->set_size(event->area.width, event->area.height);
+		gint width = 1, height = 1;
+		drawing_area_video->get_window()->get_size(width, height);
+		engine->set_size(width, height);
 		engine->expose();
 	}
 	CATCH

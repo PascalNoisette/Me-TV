@@ -52,3 +52,8 @@ Glib::ustring Channel::get_text() const
 	return result;
 }
 
+guint Channel::get_transponder_frequency()
+{
+	return frontend_parameters.frequency;
+}
+
