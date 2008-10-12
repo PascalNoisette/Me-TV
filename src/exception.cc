@@ -20,25 +20,20 @@
 
 #include "exception.h"
 
-#define BUFFER_SIZE 2000
+Exception::Exception(const Glib::ustring& exception_message) : message(exception_message)
+{
+	g_debug("Exception: %s", message.c_str());
+}
 
-Glib::ustring SystemException::create_message(gint error_number, const Glib::ustring& message)
+Glib::ustring SystemException::create_message(gint error_number, const Glib::ustring& exception_message)
 {
 	Glib::ustring detail = _("Failed to get error message");
 	
-	detail = strerror(error_number);
-	/*
-	char buffer[BUFFER_SIZE];
-	if (strerror_r(error_number, buffer, BUFFER_SIZE) == 0)
+	char* system_error_message = strerror(error_number);
+	if (system_error_message != NULL)
 	{
-		detail = Glib::ustring(buffer);
+		detail = system_error_message;
 	}
-	else
-	{
-		detail = Glib::ustring::compose("Code %1", errno);
-	}
-	return Glib::ustring::compose("%1: %2", message, detail);
-	*/
 	
-	return detail;
+	return Glib::ustring::compose("%1: %2", exception_message, detail);
 }

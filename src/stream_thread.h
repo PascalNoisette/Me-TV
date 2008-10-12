@@ -34,13 +34,9 @@
 class Stream
 {
 public:
-	void clear()
-	{
-		video_streams.clear();
-		audio_streams.clear();
-		subtitle_streams.clear();
-		teletext_streams.clear();
-	}
+	~Stream();
+
+	void clear();
 	
 	std::vector<Dvb::SI::VideoStream>		video_streams;
 	std::vector<Dvb::SI::AudioStream>		audio_streams;
@@ -82,7 +78,7 @@ private:
 	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
 		guint pid, dmx_pes_type_t pid_type, const gchar* type_text);
 	Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
-	void setup_dvb(Dvb::Frontend& frontend, const Channel& channel);
+	void setup_dvb();
 
 	void start_epg_thread();
 	void stop_epg_thread();

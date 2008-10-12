@@ -26,32 +26,29 @@
 
 #define TS_PACKET_SIZE 188
 
+Stream::~Stream()
+{
+}
+
+void Stream::clear()
+{
+	video_streams.clear();
+	audio_streams.clear();
+	subtitle_streams.clear();
+	teletext_streams.clear();
+}
+
 class Lock : public Glib::RecMutex::Lock
 {
-private:
-	Glib::ustring name;
-		
-	Glib::StaticRecMutex& log(Glib::StaticRecMutex& mutex, const Glib::ustring& name)
-	{
-//		g_debug("'%s' trying to lock", name.c_str());
-		return mutex;
-	}
 public:
 	Lock(Glib::StaticRecMutex& mutex, const Glib::ustring& name) :
-		Glib::RecMutex::Lock(log(mutex, name)), name(name)
-	{
-//		g_debug("'%s' acquired lock", name.c_str());
-	}
-	
-	~Lock()
-	{
-//		g_debug("'%s' released lock", name.c_str());
-	}
+		Glib::RecMutex::Lock(mutex) {}
+	~Lock() {}
 };
 
-StreamThread::StreamThread(const Channel& channel) :
+StreamThread::StreamThread(const Channel& active_channel) :
 	Thread("Stream"),
-	channel(channel),
+	channel(active_channel),
 	frontend(get_application().get_device_manager().get_frontend())
 {
 	g_debug("Creating StreamThread");
@@ -104,7 +101,7 @@ void StreamThread::on_timeout()
 
 void StreamThread::start()
 {
-	setup_dvb(frontend, channel);
+	setup_dvb();
 	g_debug("Starting stream thread");
 	Thread::start();	
 	start_epg_thread();
@@ -465,7 +462,7 @@ Dvb::Demuxer& StreamThread::add_section_demuxer(const Glib::ustring& demux_path,
 	return *demuxer;
 }
 
-void StreamThread::setup_dvb(Dvb::Frontend& frontend, const Channel& channel)
+void StreamThread::setup_dvb()
 {
 	Lock lock(mutex, "StreamThread::setup_dvb()");
 	

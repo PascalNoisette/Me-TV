@@ -57,7 +57,7 @@ namespace Dvb
 		Glib::ustring path;
 		guint index;
 	public:
-		Adapter(guint index) : index(index)
+		Adapter(guint adapter_index) : index(adapter_index)
 		{
 			path = Glib::ustring::compose("/dev/dvb/adapter%1", index);
 		}

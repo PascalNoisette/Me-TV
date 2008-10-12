@@ -32,57 +32,48 @@
 
 int main (int argc, char *argv[])
 {	
-	try
-	{
-		XInitThreads();
-		
+	XInitThreads();
+	
 #ifdef ENABLE_NLS
-		bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
-		bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-		textdomain (GETTEXT_PACKAGE);
+	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
 #endif
 
-		if (!Glib::thread_supported())
-		{
-			Glib::thread_init();
-		}
-		gdk_threads_init();
-
-		g_log_set_handler(G_LOG_DOMAIN,
-			(GLogLevelFlags)(G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION),
-			log_handler, NULL);
-		
-		get_signal_error().connect(sigc::ptr_fun(on_error));
-
-		gtk_init(&argc, &argv); // Required to set locale information
-		g_message("Me TV %s", VERSION);
-
-		TRY
-		Glib::OptionEntry verbose_option_entry;
-		verbose_option_entry.set_flags(Glib::OptionEntry::FLAG_NO_ARG);
-		verbose_option_entry.set_long_name("verbose");
-		verbose_option_entry.set_short_name('v');
-		verbose_option_entry.set_description(_("Enable verbose messages"));
-
-		Glib::OptionGroup option_group("me-tv", "", _("Show Me TV help options"));
-		option_group.add_entry(verbose_option_entry, verbose_logging);
-
-		Glib::OptionContext option_context;
-		option_context.set_summary(ME_TV_SUMMARY);
-		option_context.set_description(ME_TV_DESCRIPTION);
-		option_context.set_main_group(option_group);
-
-		option_context.parse(argc, argv);
-
-		Application application(argc, argv, option_context);
-		application.run();
-		CATCH
-	}
-	catch(const Glib::Error& error)
+	if (!Glib::thread_supported())
 	{
-		g_error(error.what().c_str());
+		Glib::thread_init();
 	}
-	g_message("Me TV terminated normally");
+	gdk_threads_init();
+
+	g_printf("Me TV %s\n", VERSION);
+
+	g_log_set_handler(G_LOG_DOMAIN,
+		(GLogLevelFlags)(G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION),
+		log_handler, NULL);
+	
+	get_signal_error().connect(sigc::ptr_fun(on_error));
+
+	Glib::OptionEntry verbose_option_entry;
+	verbose_option_entry.set_flags(Glib::OptionEntry::FLAG_NO_ARG);
+	verbose_option_entry.set_long_name("verbose");
+	verbose_option_entry.set_short_name('v');
+	verbose_option_entry.set_description(_("Enable verbose messages"));
+
+	Glib::OptionGroup option_group("me-tv", "", _("Show Me TV help options"));
+	option_group.add_entry(verbose_option_entry, verbose_logging);
+
+	Glib::OptionContext option_context;
+	option_context.set_summary(ME_TV_SUMMARY);
+	option_context.set_description(ME_TV_DESCRIPTION);
+	option_context.set_main_group(option_group);
+
+	TRY
+	Application application(argc, argv, option_context);
+	application.run();
+	CATCH
+
+	g_message("Me TV terminated");
 	
 	return 0;
 }

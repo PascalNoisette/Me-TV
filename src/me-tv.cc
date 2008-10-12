@@ -22,7 +22,7 @@
 #include "exception.h"
 #include <glib/gprintf.h>
 
-gboolean verbose_logging;
+bool verbose_logging;
 StringSignal signal_error;
 
 StringSignal& get_signal_error()

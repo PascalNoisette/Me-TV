@@ -39,7 +39,7 @@ class Exception : public Glib::Exception
 protected:
 	Glib::ustring message;
 public:
-	Exception(const Glib::ustring& message) : message(message) { g_debug("Exception: %s", message.c_str()); }
+	Exception(const Glib::ustring& exception_message);
 	~Exception() throw() {}
 	Glib::ustring what() const { return message; }
 };

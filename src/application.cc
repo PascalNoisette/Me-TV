@@ -96,9 +96,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));	
 
 	timeout_source = gdk_threads_add_timeout(10000, &Application::on_timeout, this);
-
-	g_debug("Timezone: %d", timezone);
-	g_debug("Daylight: %d", daylight);
 }
 
 Application::~Application()

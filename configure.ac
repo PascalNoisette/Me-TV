@@ -1,7 +1,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([Me TV], [0.6.5], [https://launchpad.net/me-tv], me-tv)
+AC_INIT([Me TV], [0.7.0], [https://launchpad.net/me-tv], me-tv)
+AC_COPYRIGHT([Michael Lamothe <michael.lamothe@gmail.com>])
 AC_CONFIG_SRCDIR([src/main.cc])
 AM_INIT_AUTOMAKE([1.9 foreign])
 AC_GNU_SOURCE
@@ -43,7 +44,6 @@ AC_ARG_ENABLE(more-warnings,
 AC_MSG_CHECKING([what more warning flags to pass to the C compiler])
 if test x"$enable_more_warnings" != xno ; then
 	more_options=" \
--Waggregate-return \
 -Wcast-align \
 -Wcast-qual \
 -Wcomment \
@@ -56,7 +56,6 @@ if test x"$enable_more_warnings" != xno ; then
 -Wpointer-arith \
 -Wreturn-type \
 -Wsequence-point \
--Wshadow \
 -Wstrict-aliasing \
 -Wstrict-aliasing=2 \
 -Wswitch-default \
@@ -145,15 +144,7 @@ AC_SUBST(LIBXINE_REQUIRED)
 PKG_CHECK_MODULES(SQLITE, [sqlite3 >= $SQLITE_REQUIRED])
 
 PKG_CHECK_MODULES(ME_TV, [
-libgnomemm-2.6 >= $LIBGNOMEMM_REQUIRED
-libgnomeuimm-2.6 >= $LIBGNOMEUI_REQUIRED
-giomm-2.4 >= $GIOMM_REQUIRED
-gthread-2.0 >= $GTHREAD_REQUIRED
-gconfmm-2.6 >= $GCONF_REQUIRED
-xtst >= $LIBXTST_REQUIRED
-gnet-2.0 >= $GNET_REQUIRED
-libxine >= $LIBXINE_REQUIRED
-])
+libgnomemm-2.6 >= $LIBGNOMEMM_REQUIRED libgnomeuimm-2.6 >= $LIBGNOMEUI_REQUIRED giomm-2.4 >= $GIOMM_REQUIRED gthread-2.0 >= $GTHREAD_REQUIRED gconfmm-2.6 >= $GCONF_REQUIRED xtst >= $LIBXTST_REQUIRED gnet-2.0 >= $GNET_REQUIRED])
 AC_SUBST(ME_TV_CFLAGS)
 AC_SUBST(ME_TV_LIBS)
 
@@ -207,7 +198,7 @@ Configure summary:
 	Source code location .......: ${srcdir}
 	Compiler ...................: ${CC}
 	Compiler flags .............: ${CFLAGS}
-	Enable compile warnings ....: ${enable_compile_warnings}
+	Enable compile warnings ....: ${enable_cxx_warnings}
 	Enable more warnings .......: ${enable_more_warnings}
 	Extra Compiler Warnings ....: ${WARN_CXXFLAGS}
 	Debug support ..............: ${enable_debug}

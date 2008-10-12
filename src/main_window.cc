@@ -26,7 +26,6 @@
 #include "scheduled_recordings_dialog.h"
 #include "me-tv.h"
 #include "xine_engine.h"
-#include "mplayer_engine.h"
 #include <config.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
@@ -37,8 +36,8 @@
 #define POKE_INTERVAL 		30
 #define UPDATE_INTERVAL		60
 
-MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade)
-	: Gnome::UI::App(cobject), glade(glade)
+MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)
+	: Gnome::UI::App(cobject), glade(glade_xml)
 {
 	g_static_rec_mutex_init(mutex.gobj());
 
@@ -117,6 +116,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 MainWindow::~MainWindow()
 {
+	stop_engine();
 	if (timeout_source != 0)
 	{
 		g_source_remove(timeout_source);
@@ -313,26 +313,26 @@ void MainWindow::set_next_display_mode()
 	}
 }
 
-bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event)
+bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event_button)
 {
 	TRY
-	if (event->button == 1)
+	if (event_button->button == 1)
 	{
-		if (event->type == GDK_2BUTTON_PRESS)
+		if (event_button->type == GDK_2BUTTON_PRESS)
 		{
 			toggle_fullscreen();
 		}
 	}
-	else if (event->button == 3)
+	else if (event_button->button == 3)
 	{
 		set_next_display_mode();
 	}
 	CATCH
 	
-	return true;
+	return false;
 }
 
-bool MainWindow::on_motion_notify_event(GdkEventMotion* event)
+bool MainWindow::on_motion_notify_event(GdkEventMotion* event_motion)
 {
 	last_motion_time = time(NULL);
 	if (!is_cursor_visible)
@@ -554,12 +554,16 @@ void MainWindow::on_show()
 {
 	Gtk::Window::on_show();
 	Gdk::Window::process_all_updates();
+
 	TRY
 	start_engine();
 	if (get_application().get_boolean_configuration_value("keep_above"))
 	{
 		set_keep_above();
 	}
+	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
+	event_box_video->resize_children();
+
 	CATCH
 }
 
@@ -577,11 +581,11 @@ void MainWindow::toggle_visibility()
 	property_visible() = !property_visible();
 }
 
-bool MainWindow::on_key_press_event(GdkEventKey* event)
+bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 {
 	gboolean result = true;
 	
-	switch(event->keyval)
+	switch(event_key->keyval)
 	{
 		case GDK_e:
 		case GDK_E:
@@ -622,15 +626,16 @@ bool MainWindow::on_key_press_event(GdkEventKey* event)
 	return result;
 }
 
-bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
+bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event_expose)
 {
 	TRY
 	Glib::RecMutex::Lock lock(mutex);
 	if (engine == NULL)
 	{
 		drawing_area_video->get_window()->draw_rectangle(
-			drawing_area_video->get_style()->get_bg_gc(Gtk::STATE_NORMAL),
-			true, event->area.x, event->area.y, event->area.width, event->area.height);
+			drawing_area_video->get_style()->get_bg_gc(Gtk::STATE_NORMAL), true,
+			event_expose->area.x, event_expose->area.y,
+			event_expose->area.width, event_expose->area.height);
 	}
 	else
 	{
@@ -643,39 +648,6 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event)
 
 	return false;
 }
-
-class EngineStartThread : public Thread
-{
-private:
-	Engine*					engine;
-	const Glib::ustring&	fifo_path;
-
-	void run()
-	{
-		g_debug("Telling engine to start playing");
-		engine->play(fifo_path);
-		g_debug("Engine playing");
-	}
-
-public:
-	EngineStartThread(Engine* engine, const Glib::ustring& fifo_path)
-		: Thread("Engine start thread"), engine(engine), fifo_path(fifo_path) {}
-};
-
-class StopEngineThread : public Thread
-{
-private:
-	Engine*	engine;
-	
-	void run()
-	{
-		g_debug("Stopping engine in thread");
-		engine->stop();
-		g_debug("Engine stopped in thread");
-	}
-public:
-	StopEngineThread(Engine* engine) : Thread("Stop engine"), engine(engine) {}
-};
 
 void MainWindow::start_engine()
 {
@@ -696,7 +668,6 @@ void MainWindow::start_engine()
 			throw Exception(_("Failed to start engine: Engine has already been started"));
 		}
 		
-		Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 		int window_id = GDK_WINDOW_XID(drawing_area_video->get_window()->gobj());
 
 		if (window_id == 0)
@@ -709,10 +680,6 @@ void MainWindow::start_engine()
 		if (engine_type == "xine")
 		{
 			engine = new XineEngine(window_id);
-		}
-		else if (engine_type == "mplayer")
-		{
-			engine = new MplayerEngine(window_id);
 		}
 		else
 		{
@@ -734,14 +701,9 @@ void MainWindow::start_engine()
 
 		if (engine != NULL)
 		{
-			gint width, height;
-			drawing_area_video->get_window()->get_size(width, height);
-			engine->set_size(width, height);
 			engine->mute(mute_state);
+			engine->play(fifo_path);
 
-			EngineStartThread engine_start_thread(engine, fifo_path);
-			engine_start_thread.start();
-			
 			g_debug("Opening '%s'", fifo_path.c_str());
 			output_fd = open(fifo_path.c_str(), O_WRONLY, 0);
 			
@@ -766,9 +728,6 @@ void MainWindow::stop_engine()
 
 	if (engine != NULL)
 	{
-		StopEngineThread stop_engine_thread(engine);
-		stop_engine_thread.start();
-
 		get_application().connect_output(-1);
 		if (output_fd != -1)
 		{
@@ -776,8 +735,8 @@ void MainWindow::stop_engine()
 			output_fd = -1;
 		}
 
-		stop_engine_thread.join(true);
-		
+		engine->stop();
+
 		delete engine;
 		engine = NULL;
 	}

@@ -66,7 +66,7 @@ public:
 	gsize get_count() const { return count; }
 };
 
-Scanner::Scanner(guint wait_timeout) : wait_timeout(wait_timeout)
+Scanner::Scanner(guint timeout) : wait_timeout(timeout)
 {
 	terminated = false;
 }
@@ -171,19 +171,19 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	
 	for (StringList::iterator iterator = lines.begin(); iterator != lines.end() && !terminated; iterator++)
 	{
-		Glib::ustring line = *iterator;		
+		Glib::ustring process_line = *iterator;
 
-		if (!line.empty())
+		if (!process_line.empty())
 		{
-			g_debug("Processing line: '%s'", line.c_str());
+			g_debug("Processing line: '%s'", process_line.c_str());
 
-			if (Glib::str_has_prefix(line, "T "))
+			if (Glib::str_has_prefix(process_line, "T "))
 			{
-				process_terrestrial_line(frontend, line);
+				process_terrestrial_line(frontend, process_line);
 			}
-			else if (Glib::str_has_prefix(line, "C "))
+			else if (Glib::str_has_prefix(process_line, "C "))
 			{
-				process_cable_line(frontend, line);
+				process_cable_line(frontend, process_line);
 			}
 			else
 			{

@@ -21,7 +21,7 @@
 #ifndef __ME_TV_H__
 #define __ME_TV_H__
 
-#include <glibmm/i18n.h>
+#include <libgnome/libgnome.h>
 #include <list>
 #include <vector>
 #include <glibmm.h>
@@ -29,7 +29,7 @@
 #define GCONF_PATH		"/apps/me-tv"
 #define UNKNOWN_TEXT	_("Unknown")
 
-extern gboolean verbose_logging;
+extern bool verbose_logging;
 
 typedef sigc::signal<void, const Glib::ustring&> StringSignal;
 

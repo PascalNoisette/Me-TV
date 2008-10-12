@@ -736,6 +736,7 @@ int atsc_text_segment_decode(struct atsc_text_string_segment *segment,
 		return huffman_decode(buf, segment->number_bytes,
 				      destbuf, destbufsize, destbufpos,
 				      program_description_hufftree);
+	default: break;
 	}
 
 	return -1;

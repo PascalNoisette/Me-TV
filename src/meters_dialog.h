@@ -37,7 +37,7 @@ private:
 	private:
 		MetersDialog& meters_dialog;
 	public:
-		MetersThread(MetersDialog& meters_dialog) : Thread("Meters"), meters_dialog(meters_dialog) {}
+		MetersThread(MetersDialog& dialog) : Thread("Meters"), meters_dialog(dialog) {}
 
 		void run()
 		{

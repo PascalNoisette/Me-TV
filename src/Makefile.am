@@ -85,8 +85,6 @@ me_tv_SOURCES = \
 	epg_thread.h \
 	xine_engine.cc \
 	xine_engine.h \
-	mplayer_engine.cc \
-	mplayer_engine.h \
 	exception.cc \
 	scan_window.cc \
 	scan_window.h

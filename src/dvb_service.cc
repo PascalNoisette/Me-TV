@@ -23,7 +23,7 @@
 
 using namespace Dvb;
 
-Service::Service(const Transponder& transponder) : transponder(transponder)
+Service::Service(const Transponder& service_transponder) : transponder(service_transponder)
 {
 	id = 0;
 }

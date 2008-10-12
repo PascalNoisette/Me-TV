@@ -17,40 +17,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
+
 #ifndef __XINE_ENGINE_H__
 #define __XINE_ENGINE_H__
 
-#include <xine.h>
 #include "engine.h"
 
 class XineEngine : public Engine
 {
 private:
-	xine_t*						xine;
-	xine_stream_t*				stream;
-	xine_video_port_t*			video_port;
-	xine_audio_port_t*			audio_port;
-	gint						width, height;
-	double						pixel_aspect;
-	gboolean					mute_state;
-	Glib::StaticRecMutex		mutex;
-	int							window_id;
-	
-	static void dest_size_cb ( void *data,
-		int video_width, int video_height, double video_pixel_aspect,
-		int *dest_width, int *dest_height, double *dest_pixel_aspect );
-	static void frame_output_cb ( void *data,
-		int video_width, int video_height, double video_pixel_aspect, int *dest_x, int *dest_y,
-		int *dest_width, int *dest_height, double *dest_pixel_aspect, int *win_x, int *win_y );
-	void set_size(gint width, gint height);
-	
+	gint pid;
+	gint window_id;
+	gint standard_input;
+
 	void play(const Glib::ustring& mrl);
 	void stop();
 	void mute(gboolean state);
 	void expose();
-	void set_audio_channel(guint channel);
-	
+	void set_size(gint width, gint height) {};
+	void set_audio_channel(guint channel) {};
+	void write(const Glib::ustring& text);
+
 public:
 	XineEngine(int window_id);
 	~XineEngine();

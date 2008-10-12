@@ -33,15 +33,15 @@ ScanWindow* ScanWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 
 Glib::ustring ScanWindow::get_initial_tuning_dir()
 {
-	Glib::ustring path;
+	Glib::ustring result;
 	
 	if (Gio::File::create_for_path(SCAN_DIRECTORY)->query_exists())
 	{
-		path = SCAN_DIRECTORY;
+		result = SCAN_DIRECTORY;
 	}
 	else if (Gio::File::create_for_path(ALTERNATE_SCAN_DIRECTORY)->query_exists())
 	{
-		path = ALTERNATE_SCAN_DIRECTORY;
+		result = ALTERNATE_SCAN_DIRECTORY;
 	}
 	else
 	{
@@ -50,14 +50,14 @@ Glib::ustring ScanWindow::get_initial_tuning_dir()
 	
 	switch(frontend.get_frontend_info().type)
 	{
-	case FE_OFDM:   path += "/dvb-t";       break;
-	case FE_QAM:    path += "/dvb-c";       break;
-	case FE_QPSK:   path += "/dvb-s";       break;
-	case FE_ATSC:   path += "/atsc";        break;
+	case FE_OFDM:   result += "/dvb-t";       break;
+	case FE_QAM:    result += "/dvb-c";       break;
+	case FE_QPSK:   result += "/dvb-s";       break;
+	case FE_ATSC:   result += "/atsc";        break;
 	default:		throw Exception(_("Unknown frontend type"));
 	}
 
-	return path;
+	return result;
 }
 
 bool compare_countries (const Country& a, const Country& b)
@@ -65,8 +65,8 @@ bool compare_countries (const Country& a, const Country& b)
 	return a.name < b.name;
 }
 
-ScanWindow::ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
-	Gtk::Window(cobject), glade(glade), frontend(get_application().get_device_manager().get_frontend())
+ScanWindow::ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
+	Gtk::Window(cobject), glade(glade_xml), frontend(get_application().get_device_manager().get_frontend())
 {
 	scan_thread = NULL;
 
