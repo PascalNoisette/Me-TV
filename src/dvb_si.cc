@@ -254,11 +254,11 @@ gboolean SectionParser::find_descriptor(uint8_t tag, const unsigned char *buf, i
 	return false;
 }
 
-Glib::ustring SectionParser::get_lang_desc(const guchar* buffer)
+Glib::ustring SectionParser::get_lang_desc(const guchar* b)
 {
 	char c[4];
 	Glib::ustring s;
-	memset( mempcpy( c, buffer+2, 3 ), 0, 1 );
+	memset( mempcpy( c, b+2, 3 ), 0, 1 );
 	s = c;
 	return s;
 }
@@ -368,7 +368,7 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 					stream.pid = elementary_pid;
 					stream.is_ac3 = true;
 
-					const guchar* desc = NULL;
+					desc = NULL;
 					if (find_descriptor(0x0A, buffer + offset + 5, descriptor_length, &desc, NULL))
 					{
 						stream.language = get_lang_desc (desc);
@@ -384,7 +384,7 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 				stream.pid = elementary_pid;
 				stream.is_ac3 = true;
 			
-				const guchar* desc = NULL;
+				desc = NULL;
 				if (find_descriptor(0x0A, buffer + offset + 5, descriptor_length, &desc, NULL))
 				{
 					stream.language = get_lang_desc (desc);
@@ -612,7 +612,7 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 	return descriptor_length;
 }
 
-guint SectionParser::get_bits(const guchar *buffer, guint bitpos, gsize bitcount)
+guint SectionParser::get_bits(const guchar* b, guint bitpos, gsize bitcount)
 {
 	gsize i;
 	gsize val = 0;
@@ -620,7 +620,7 @@ guint SectionParser::get_bits(const guchar *buffer, guint bitpos, gsize bitcount
 	for (i = bitpos; i < bitcount + bitpos; i++)
 	{
 		val = val << 1;
-		val = val + ((buffer[i >> 3] & (0x80 >> (i & 7))) ? 1 : 0);
+		val = val + ((b[i >> 3] & (0x80 >> (i & 7))) ? 1 : 0);
 	}
 	return val;
 }
@@ -690,8 +690,10 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 						case 0x0D: codeset = "ISO-8859-13"; break;
 						case 0x0E: codeset = "ISO-8859-14"; break;
 						case 0x0F: codeset = "ISO-8859-15"; break;
+						default: break;
 						}
 					}
+					default: break;
 				}
 				
 				index++;

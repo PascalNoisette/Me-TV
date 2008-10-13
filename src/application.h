@@ -85,6 +85,7 @@ public:
 	void set_int_configuration_value(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_value(const Glib::ustring& key, gboolean value);
 	
+	Glib::RefPtr<Gnome::Glade::Xml> get_glade() { return glade; }
 	void update_epg_time();
 	guint get_last_epg_update_time() const;
 	
@@ -99,10 +100,10 @@ public:
 	gboolean is_broadcasting();
 	void set_broadcast_state(gboolean state);
 	void toggle_broadcast();
-		
+	
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 	Glib::ustring make_recording_filename(const Glib::ustring& description = "");
-		
+	
 	MainWindow& get_main_window();
 };
 

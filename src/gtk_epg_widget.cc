@@ -25,8 +25,8 @@
 
 Gtk::Dialog* dialog_program_details = NULL;
 
-GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
-	Gtk::ScrolledWindow(cobject), glade(glade)
+GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
+	Gtk::ScrolledWindow(cobject), glade(glade_xml)
 {
 	offset = 0;
 

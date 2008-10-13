@@ -38,17 +38,27 @@ XineEngine::~XineEngine()
 
 void XineEngine::play(const Glib::ustring& mrl)
 {
+	Application& application = get_application();
+
 	StringList argv;
 	argv.push_back("/usr/bin/xine");
 	argv.push_back("--no-splash");
 	argv.push_back("--no-logo");
 	argv.push_back("-D");
 	argv.push_back("-A");
-	argv.push_back("oss");
+	argv.push_back(application.get_string_configuration_value("xine.audio_driver"));
 	argv.push_back("-V");
-	argv.push_back("xshm");
+	argv.push_back(application.get_string_configuration_value("xine.video_driver"));
 	argv.push_back("--no-mouse");
 	argv.push_back("--stdctl");
+
+	// Initialwindow size hack
+	gint width, height;
+	Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(application.get_glade()->get_widget("drawing_area_video"));
+	drawing_area_video->get_window()->get_size(width, height);
+	argv.push_back("--geometry");
+	argv.push_back(Glib::ustring::compose("%1x%2", width, height));
+
 	argv.push_back("--wid");
 	argv.push_back(Glib::ustring::compose("%1", window_id));
 	argv.push_back(Glib::ustring::compose("fifo://%1", mrl));
@@ -75,10 +85,10 @@ void XineEngine::stop()
 		g_debug("Quitting Xine");
 		if (standard_input != -1)
 		{
-			write("q");
+			write("quit\n");
 			standard_input = -1;
 		}
-		waitpid(pid, NULL, 0);
+		::waitpid(pid, NULL, 0);
 		g_spawn_close_pid(pid);
 		pid = -1;
 		g_debug("Xine has quit");
@@ -88,6 +98,7 @@ void XineEngine::stop()
 void XineEngine::mute(gboolean state)
 {
 	g_debug(state ? "Muting" : "Unmuting");
+	write("mute\n");
 }
 
 void XineEngine::expose()

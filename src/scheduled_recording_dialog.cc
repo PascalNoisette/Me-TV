@@ -30,8 +30,8 @@ ScheduledRecordingDialog* ScheduledRecordingDialog::create(Glib::RefPtr<Gnome::G
 	return scheduled_recording_dialog;
 }
 
-ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
-	Gtk::Dialog(cobject), glade(glade)
+ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
+	Gtk::Dialog(cobject), glade(glade_xml)
 {
 	channel_combo_box = NULL;
 	scheduled_recording_id = 0;
@@ -91,17 +91,17 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 		spinbutton_duration->set_value(30);
 	}
 	
-	gint response = Gtk::Dialog::run();
+	gint dialog_response = Gtk::Dialog::run();
 	hide();
 	
-	if (response == Gtk::RESPONSE_OK)
+	if (dialog_response == Gtk::RESPONSE_OK)
 	{
 		Data data;
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
 		data.replace_scheduled_recording(scheduled_recording);
 	}
 	
-	return response;
+	return dialog_response;
 }
 
 ScheduledRecording ScheduledRecordingDialog::get_scheduled_recording()

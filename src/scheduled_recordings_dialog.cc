@@ -30,8 +30,8 @@ ScheduledRecordingsDialog* ScheduledRecordingsDialog::create(Glib::RefPtr<Gnome:
 	return scheduled_recordings_dialog;
 }
 
-ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
-	Gtk::Dialog(cobject), glade(glade)
+ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
+	Gtk::Dialog(cobject), glade(glade_xml)
 {
 	glade->connect_clicked("button_scheduled_recordings_add", sigc::mem_fun(*this, &ScheduledRecordingsDialog::on_button_scheduled_recordings_add_clicked));
 	glade->connect_clicked("button_scheduled_recordings_delete", sigc::mem_fun(*this, &ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked));
@@ -91,7 +91,7 @@ void ScheduledRecordingsDialog::update()
 	}
 }
 
-void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column)
+void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column)
 {
 	TRY
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scheduled_recordings->get_selection();

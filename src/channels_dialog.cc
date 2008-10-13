@@ -31,8 +31,8 @@ ChannelsDialog& ChannelsDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 	return *channels_dialog;
 }
 
-ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) :
-	Gtk::Dialog(cobject), glade(glade)
+ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
+	Gtk::Dialog(cobject), glade(glade_xml)
 {
 	glade->connect_clicked("button_scan",							sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
 	glade->connect_clicked("button_remove_selected_channels",		sigc::mem_fun(*this, &ChannelsDialog::on_button_button_remove_selected_channels_clicked));
