@@ -573,7 +573,7 @@ void StreamThread::start_recording(const Glib::ustring& filename)
 	if (recording_fd == -1)
 	{
 		mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-		recording_fd = open(filename.c_str(), O_CREAT | O_WRONLY | O_LARGEFILE, mode);
+		recording_fd = open(filename.c_str(), O_CREAT | O_WRONLY | O_LARGEFILE | O_NONBLOCK, mode);
 		if (recording_fd == -1)
 		{
 			throw SystemException(_("Failed to open recording file"));

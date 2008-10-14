@@ -23,8 +23,6 @@
 #include "data.h"
 #include "scheduled_recording_dialog.h"
 
-Gtk::Dialog* dialog_program_details = NULL;
-
 GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
 	Gtk::ScrolledWindow(cobject), glade(glade_xml)
 {
@@ -32,7 +30,6 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 
 	table_epg				= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
 	scrolled_window_epg		= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
-	dialog_program_details	= dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
 	
 	epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
 	glade->connect_clicked("button_epg_now",
@@ -132,13 +129,13 @@ void GtkEpgWidget::update_table()
 		{
 			const Channel& channel = *iterator;
 			gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
-			create_channel_row(channel, row++, selected, start_time, epg_span_hours);
+			create_channel_row(channel, row++, selected, start_time);
 		}
 		get_window()->thaw_updates();
 	}
 }
 
-void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, gboolean selected, guint start_time, guint epg_span_hours)
+void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, gboolean selected, guint start_time)
 {	
 	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, table_row, table_row + 1);
 	gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");

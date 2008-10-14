@@ -28,7 +28,8 @@ PreferencesDialog* PreferencesDialog::create(Glib::RefPtr<Gnome::Glade::Xml> gla
 	return preferences_dialog;
 }
 
-PreferencesDialog::PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade) : Gtk::Dialog(cobject), glade(glade)
+PreferencesDialog::PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)
+	: Gtk::Dialog(cobject), glade(glade_xml)
 {
 }
 

@@ -52,7 +52,7 @@ void XineEngine::play(const Glib::ustring& mrl)
 	argv.push_back("--no-mouse");
 	argv.push_back("--stdctl");
 
-	// Initialwindow size hack
+	// Initial window size hack
 	gint width, height;
 	Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(application.get_glade()->get_widget("drawing_area_video"));
 	drawing_area_video->get_window()->get_size(width, height);

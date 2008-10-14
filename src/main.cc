@@ -55,23 +55,24 @@ int main (int argc, char *argv[])
 	get_signal_error().connect(sigc::ptr_fun(on_error));
 
 	Glib::OptionEntry verbose_option_entry;
-	verbose_option_entry.set_flags(Glib::OptionEntry::FLAG_NO_ARG);
 	verbose_option_entry.set_long_name("verbose");
 	verbose_option_entry.set_short_name('v');
 	verbose_option_entry.set_description(_("Enable verbose messages"));
 
-	Glib::OptionGroup option_group("me-tv", "", _("Show Me TV help options"));
+	Glib::OptionGroup option_group(PACKAGE_NAME, "", _("Show Me TV help options"));
 	option_group.add_entry(verbose_option_entry, verbose_logging);
 
-	Glib::OptionContext option_context;
-	option_context.set_summary(ME_TV_SUMMARY);
-	option_context.set_description(ME_TV_DESCRIPTION);
-	option_context.set_main_group(option_group);
+	Glib::OptionContext* option_context = new Glib::OptionContext();
+	option_context->set_summary(ME_TV_SUMMARY);
+	option_context->set_description(ME_TV_DESCRIPTION);
+	option_context->set_main_group(option_group);
 
 	TRY
-	Application application(argc, argv, option_context);
+	Application application(argc, argv, *option_context);
 	application.run();
 	CATCH
+
+	//delete option_context;
 
 	g_message("Me TV terminated");
 	

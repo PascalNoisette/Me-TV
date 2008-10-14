@@ -41,6 +41,8 @@ public:
 		delete_all();
 	}
 		
+	void get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInformationSection& section, gboolean is_atsc);
+	
 	Dvb::Demuxer* add()
 	{
 		Dvb::Demuxer* demuxer = new Dvb::Demuxer(demuxer_path);
@@ -58,60 +60,60 @@ public:
 		}
 		demuxer_count = 0;
 	}
-
-	void get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInformationSection& section, gboolean is_atsc)
-	{
-		if (eit_demuxers == NULL)
-		{
-			throw Exception(_("No demuxers"));
-		}
-		
-		Dvb::Demuxer* selected_eit_demuxer = NULL;
-		
-		struct pollfd fds[demuxer_count];
-		guint count = 0;
-		
-		GSList* eit_demuxer = eit_demuxers;
-		while (eit_demuxer != NULL)
-		{				
-			fds[count].fd = ((Dvb::Demuxer*)eit_demuxer->data)->get_fd();
-			fds[count].events = POLLIN;
-			count++;
-			eit_demuxer = g_slist_next(eit_demuxer);
-		}
-
-		guint result = ::poll(fds, demuxer_count, 5000);
-		if (result < 0)
-		{
-			throw SystemException (_("Failed to poll EIT demuxers"));
-		}
-		
-		eit_demuxer = eit_demuxers;
-		while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
-		{
-			Dvb::Demuxer* current = (Dvb::Demuxer*)eit_demuxer->data;
-			if (current->poll(1))
-			{
-				selected_eit_demuxer = current;
-			}
-			eit_demuxer = g_slist_next(eit_demuxer);				
-		}
-
-		if (selected_eit_demuxer == NULL)
-		{
-			throw Exception(_("Failed to get an EIT demuxer with events"));
-		}
-		
-		if (is_atsc)
-		{
-			parser.parse_psip_eis(*selected_eit_demuxer, section);
-		}
-		else
-		{
-			parser.parse_eis(*selected_eit_demuxer, section);
-		}
-	}
 };
+
+void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInformationSection& section, gboolean is_atsc)
+{
+	if (eit_demuxers == NULL)
+	{
+		throw Exception(_("No demuxers"));
+	}
+	
+	Dvb::Demuxer* selected_eit_demuxer = NULL;
+	
+	struct pollfd fds[demuxer_count];
+	guint count = 0;
+	
+	GSList* eit_demuxer = eit_demuxers;
+	while (eit_demuxer != NULL)
+	{				
+		fds[count].fd = ((Dvb::Demuxer*)eit_demuxer->data)->get_fd();
+		fds[count].events = POLLIN;
+		count++;
+		eit_demuxer = g_slist_next(eit_demuxer);
+	}
+
+	guint result = ::poll(fds, demuxer_count, 5000);
+	if (result < 0)
+	{
+		throw SystemException (_("Failed to poll EIT demuxers"));
+	}
+	
+	eit_demuxer = eit_demuxers;
+	while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
+	{
+		Dvb::Demuxer* current = (Dvb::Demuxer*)eit_demuxer->data;
+		if (current->poll(1))
+		{
+			selected_eit_demuxer = current;
+		}
+		eit_demuxer = g_slist_next(eit_demuxer);				
+	}
+
+	if (selected_eit_demuxer == NULL)
+	{
+		throw Exception(_("Failed to get an EIT demuxer with events"));
+	}
+	
+	if (is_atsc)
+	{
+		parser.parse_psip_eis(*selected_eit_demuxer, section);
+	}
+	else
+	{
+		parser.parse_eis(*selected_eit_demuxer, section);
+	}
+}
 
 void EpgThread::run()
 {
