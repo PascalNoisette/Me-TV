@@ -71,6 +71,8 @@ void XineEngine::play(const Glib::ustring& mrl)
 		&standard_input,
 		NULL,
 		NULL);
+
+	g_debug("Spawned xine on pid %d", pid);
 }
 
 void XineEngine::write(const Glib::ustring& text)

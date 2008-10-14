@@ -121,6 +121,7 @@ MainWindow::~MainWindow()
 	{
 		g_source_remove(timeout_source);
 	}
+	usleep(100000);
 }
 
 MainWindow* MainWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
