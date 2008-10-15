@@ -44,6 +44,7 @@ void XineEngine::play(const Glib::ustring& mrl)
 	argv.push_back("/usr/bin/xine");
 	argv.push_back("--no-splash");
 	argv.push_back("--no-logo");
+	argv.push_back("--no-gui");
 	argv.push_back("-D");
 	argv.push_back("-A");
 	argv.push_back(application.get_string_configuration_value("xine.audio_driver"));
