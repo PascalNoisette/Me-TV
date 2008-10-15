@@ -121,7 +121,6 @@ MainWindow::~MainWindow()
 	{
 		g_source_remove(timeout_source);
 	}
-	usleep(100000);
 }
 
 MainWindow* MainWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
@@ -570,11 +569,11 @@ void MainWindow::on_show()
 
 void MainWindow::on_hide()
 {
-	Gtk::Window::on_hide();
-
 	TRY
 	stop_engine();
 	CATCH
+
+	Gtk::Window::on_hide();
 }
 
 void MainWindow::toggle_visibility()
@@ -637,13 +636,6 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event_expose)
 			drawing_area_video->get_style()->get_bg_gc(Gtk::STATE_NORMAL), true,
 			event_expose->area.x, event_expose->area.y,
 			event_expose->area.width, event_expose->area.height);
-	}
-	else
-	{
-		gint width = 1, height = 1;
-		drawing_area_video->get_window()->get_size(width, height);
-		engine->set_size(width, height);
-		engine->expose();
 	}
 	CATCH
 

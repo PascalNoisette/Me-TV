@@ -48,6 +48,8 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	record_state = false;
 	broadcast_state = false;
 
+	signal_quit().connect(sigc::mem_fun(this, &Application::on_quit));
+
 	client = Gnome::Conf::Client::get_default_client();
 	
 	set_int_configuration_default("epg_span_hours", 3);
@@ -545,4 +547,16 @@ void Application::connect_output(gint fd)
 Glib::StaticRecMutex& Application::get_mutex()
 {
 	return mutex;
+}
+
+bool Application::on_quit()
+{
+	if (main_window != NULL)
+	{
+		main_window->stop_engine();
+		
+		// This is a hack to stop xine crashing because the main window closes
+		usleep(500000);
+	}
+	return true;
 }

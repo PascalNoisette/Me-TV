@@ -25,9 +25,9 @@ Glib::ustring DeviceManager::get_adapter_path(guint adapter)
 	return Glib::ustring::compose("/dev/dvb/adapter%1", adapter);
 }
 
-Glib::ustring DeviceManager::get_frontend_path(guint adapter, guint frontend)
+Glib::ustring DeviceManager::get_frontend_path(guint adapter, guint frontend_index)
 {
-	return Glib::ustring::compose("/dev/dvb/adapter%1/frontend%2", adapter, frontend);
+	return Glib::ustring::compose("/dev/dvb/adapter%1/frontend%2", adapter, frontend_index);
 }
 	
 DeviceManager::DeviceManager()
@@ -49,7 +49,14 @@ DeviceManager::DeviceManager()
 			try
 			{
 				Dvb::Frontend* current = new Dvb::Frontend(*adapter, frontend_count);
-				frontends.push_back(current);
+				if (!is_frontend_supported(*current))
+				{
+					g_debug("Frontend not supported");
+				}
+				else
+				{
+					frontends.push_back(current);
+				}
 			}
 			catch(...)
 			{
@@ -73,7 +80,7 @@ DeviceManager::DeviceManager()
 	}
 	else
 	{
-		g_debug("No frontend devices found");
+		throw Exception(_("No frontend available"));
 	}
 }
 
@@ -86,13 +93,22 @@ DeviceManager::~DeviceManager()
 	}
 }
 
-Dvb::Frontend& DeviceManager::get_frontend()
+gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend)
 {
-	if (frontend == NULL)
+	gboolean result = false;
+
+	switch(test_frontend.get_frontend_type())
 	{
-		throw Exception(_("No frontend available"));
+	case FE_OFDM: result = true; break;	// DVB-T
+	case FE_QAM: result = true; break;	// DVB-C
+	default: result = false; break;
 	}
-	
+
+	return result;
+}
+
+Dvb::Frontend& DeviceManager::get_frontend()
+{	
 	return *frontend;
 }
 
@@ -102,10 +118,10 @@ Dvb::Frontend& DeviceManager::get_frontend_by_path(const Glib::ustring& path)
 	
 	for (FrontendList::iterator iterator = frontends.begin(); iterator != frontends.end(); iterator++)
 	{
-		Dvb::Frontend* frontend = *iterator;
-		if (frontend->get_path() == path)
+		Dvb::Frontend* current_frontend = *iterator;
+		if (current_frontend->get_path() == path)
 		{
-			result = frontend;
+			result = current_frontend;
 		}
 	}
 	

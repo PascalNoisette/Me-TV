@@ -59,7 +59,6 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	broadcast_failure_message = true;
 	output_fd = -1;
 	recording_fd = -1;
-	timeout_source = -1;
 	
 	for(gint i = 0 ; i < 256 ; i++ )
 	{
@@ -81,22 +80,6 @@ StreamThread::~StreamThread()
 	join(true);
 	remove_all_demuxers();
 	g_debug("StreamThread destroyed");
-}
-
-gboolean StreamThread::on_timeout(gpointer data)
-{
-	StreamThread* stream_thread = (StreamThread*)data;
-	stream_thread->on_timeout();
-	return TRUE;
-}
-
-void StreamThread::on_timeout()
-{
-	Lock lock(mutex, "Engine expose");
-	if (engine != NULL)
-	{
-		engine->expose();
-	}
 }
 
 void StreamThread::start()

@@ -40,7 +40,7 @@ void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
 
 void StatusIcon::on_menu_item_popup_quit_clicked()
 {
-	gtk_main_quit();
+	Gnome::Main::quit();
 }
 
 void StatusIcon::on_menu_item_me_tv_clicked()

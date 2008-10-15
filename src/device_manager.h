@@ -44,6 +44,7 @@ private:
 	Glib::ustring get_frontend_path(guint adapter, guint frontend);
 	FrontendList frontends;		
 	Dvb::Frontend* frontend;
+	gboolean is_frontend_supported(const Dvb::Frontend& frontend);
 
 public:
 	DeviceManager();

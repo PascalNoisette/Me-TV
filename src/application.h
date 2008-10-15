@@ -47,6 +47,7 @@ private:
 	gboolean							record_state;
 	gboolean							broadcast_state;
 	guint								scheduled_recording_id;
+	bool								on_quit();
 			
 	void on_display_channel_changed(const Channel& channel);
 

@@ -77,6 +77,7 @@ void XineEngine::play(const Glib::ustring& mrl)
 
 void XineEngine::write(const Glib::ustring& text)
 {
+	g_debug("Writing '%s' (%d)", text.c_str(), text.length());
 	::write(standard_input, text.c_str(), text.length());
 }
 
@@ -103,6 +104,3 @@ void XineEngine::mute(gboolean state)
 	write("mute\n");
 }
 
-void XineEngine::expose()
-{
-}

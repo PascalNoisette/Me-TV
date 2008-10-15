@@ -62,7 +62,6 @@ private:
 	gboolean				broadcast_failure_message;
 	gint					output_fd;
 	gint					recording_fd;
-	guint					timeout_source;
 
 	void run();
 	gboolean is_pid_used(guint pid);
