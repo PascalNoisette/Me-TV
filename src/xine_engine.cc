@@ -45,13 +45,13 @@ void XineEngine::play(const Glib::ustring& mrl)
 	argv.push_back("--no-splash");
 	argv.push_back("--no-logo");
 	argv.push_back("--no-gui");
+	argv.push_back("--no-mouse");
+	argv.push_back("--stdctl");
 	argv.push_back("-D");
 	argv.push_back("-A");
 	argv.push_back(application.get_string_configuration_value("xine.audio_driver"));
 	argv.push_back("-V");
 	argv.push_back(application.get_string_configuration_value("xine.video_driver"));
-	argv.push_back("--no-mouse");
-	argv.push_back("--stdctl");
 
 	// Initial window size hack
 	gint width, height;
