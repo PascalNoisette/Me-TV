@@ -15,6 +15,7 @@ src/epg_event.cc
 src/epg_thread.cc
 src/exception.cc
 src/channels_dialog.cc
+src/main.cc
 src/main_window.cc
 src/meters_dialog.cc
 src/me-tv.cc

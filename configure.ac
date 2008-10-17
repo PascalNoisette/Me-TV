@@ -44,6 +44,7 @@ AC_ARG_ENABLE(more-warnings,
 AC_MSG_CHECKING([what more warning flags to pass to the C compiler])
 if test x"$enable_more_warnings" != xno ; then
 	more_options=" \
+-Wextra \
 -Wcast-align \
 -Wcast-qual \
 -Wcomment \
