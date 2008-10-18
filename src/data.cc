@@ -28,8 +28,8 @@ Glib::RecMutex statement_mutex;
 class SQLiteException : public Exception
 {
 public:
-	SQLiteException(sqlite3* database, const Glib::ustring& message) :
-		Exception(Glib::ustring::compose("%1: %2", message, Glib::ustring(sqlite3_errmsg(database)))) {}
+	SQLiteException(sqlite3* database, const Glib::ustring& exception_message) :
+		Exception(Glib::ustring::compose("%1: %2", exception_message, Glib::ustring(sqlite3_errmsg(database)))) {}
 };
 
 typedef enum
@@ -42,92 +42,99 @@ typedef enum
 class Parameter
 {
 public:
-	Parameter(const Glib::ustring& name) :
-		name(name), parameter_type(PARAMETER_TYPE_NULL) {}
-	Parameter(const Glib::ustring& name, const Glib::ustring& value) :
-		name(name), string_value(value), parameter_type(PARAMETER_TYPE_STRING) {}
-	Parameter(const Glib::ustring& name, gint value) :
-		name(name), int_value(value), parameter_type(PARAMETER_TYPE_INTEGER) {}
+	Parameter(const Glib::ustring& parameter_name) :
+		name(parameter_name), parameter_type(PARAMETER_TYPE_NULL) {}
+	Parameter(const Glib::ustring& parameter_name, const Glib::ustring& value) :
+		name(parameter_name), string_value(value), parameter_type(PARAMETER_TYPE_STRING) {}
+	Parameter(const Glib::ustring& parameter_name, gint value) :
+		name(parameter_name), int_value(value), parameter_type(PARAMETER_TYPE_INTEGER) {}
 		
-	Glib::ustring name;
-	guint int_value;
-	Glib::ustring string_value;
-	ParameterType parameter_type;
+	Glib::ustring	name;
+	guint			int_value;
+	Glib::ustring	string_value;
+	ParameterType	parameter_type;
 };
 
 class ParameterList : public std::list<Parameter>
 {
 public:
-	Glib::ustring get_names()
-	{
-		gboolean first = true;
-		Glib::ustring result;
-		for (std::list<Parameter>::iterator i = begin(); i != end(); i++)
-		{
-			if (!first)
-			{
-				result += ", ";
-			}
-			else
-			{
-				first = false;
-			}
-
-			result += (*i).name;
-		}
-		return result;
-	}
-
-	Glib::ustring get_values()
-	{
-		gboolean first = true;
-		Glib::ustring result;
-
-		for (std::list<Parameter>::iterator i = begin(); i != end(); i++)
-		{
-			if (!first)
-			{
-				result += ", ";
-			}
-			else
-			{
-				first = false;
-			}
-
-			Parameter& parameter = *i;
-			if (parameter.parameter_type == PARAMETER_TYPE_NULL)
-			{
-				result += "NULL";
-			}
-			else if (parameter.parameter_type == PARAMETER_TYPE_INTEGER)
-			{
-				result += Glib::ustring::compose("%1", parameter.int_value);
-			}
-			else if (parameter.parameter_type == PARAMETER_TYPE_STRING)
-			{
-				result += Glib::ustring::compose("\"%1\"", parameter.string_value);
-			}
-		}
-		return result;
-	}
-		
-	void add(const Glib::ustring& name, const Glib::ustring& value)
-	{
-		push_back(Parameter(name, value));
-	}
-
-	void add(const Glib::ustring& name, gint value)
-	{
-		push_back(Parameter(name, value));
-	}
-
-	void add(const Glib::ustring& name)
-	{
-		push_back(Parameter(name));
-	}
+	Glib::ustring get_names();
+	Glib::ustring get_values();
+	void add(const Glib::ustring& name, const Glib::ustring& value);
+	void add(const Glib::ustring& name, gint value);
+	void add(const Glib::ustring& name);
 };
 
-Statement::Statement(sqlite3* database, const Glib::ustring& command) : lock(statement_mutex), database(database), command(command)
+Glib::ustring ParameterList::get_names()
+{
+	gboolean first = true;
+	Glib::ustring result;
+	for (std::list<Parameter>::iterator i = begin(); i != end(); i++)
+	{
+		if (!first)
+		{
+			result += ", ";
+		}
+		else
+		{
+			first = false;
+		}
+
+		result += (*i).name;
+	}
+	return result;
+}
+
+Glib::ustring ParameterList::get_values()
+{
+	gboolean first = true;
+	Glib::ustring result;
+
+	for (std::list<Parameter>::iterator i = begin(); i != end(); i++)
+	{
+		if (!first)
+		{
+			result += ", ";
+		}
+		else
+		{
+			first = false;
+		}
+
+		Parameter& parameter = *i;
+		if (parameter.parameter_type == PARAMETER_TYPE_NULL)
+		{
+			result += "NULL";
+		}
+		else if (parameter.parameter_type == PARAMETER_TYPE_INTEGER)
+		{
+			result += Glib::ustring::compose("%1", parameter.int_value);
+		}
+		else if (parameter.parameter_type == PARAMETER_TYPE_STRING)
+		{
+			result += Glib::ustring::compose("\"%1\"", parameter.string_value);
+		}
+	}
+	return result;
+}
+
+void ParameterList::add(const Glib::ustring& name, const Glib::ustring& value)
+{
+	push_back(Parameter(name, value));
+}
+
+void ParameterList::add(const Glib::ustring& name, gint value)
+{
+	push_back(Parameter(name, value));
+}
+
+void ParameterList::add(const Glib::ustring& name)
+{
+	push_back(Parameter(name));
+}
+
+Statement::Statement(sqlite3* statement_database, const Glib::ustring& statement_command) :
+	lock(statement_mutex), database(statement_database), command(statement_command)
 {
 	statement = NULL;
 	const char* remaining = NULL;

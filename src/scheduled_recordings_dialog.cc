@@ -39,7 +39,7 @@ ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, co
 	tree_view_scheduled_recordings->signal_row_activated().connect(sigc::mem_fun(*this, &ScheduledRecordingsDialog::on_row_activated));
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_scheduled_recordings->set_model(list_store);
-	tree_view_scheduled_recordings->append_column(_("Description"), columns.column_description);
+ 	tree_view_scheduled_recordings->append_column(_("Description"), columns.column_description);
 	tree_view_scheduled_recordings->append_column(_("Channel"), columns.column_channel);
 	tree_view_scheduled_recordings->append_column(_("Start Time"), columns.column_start_time);
 	tree_view_scheduled_recordings->append_column(_("Duration"), columns.column_duration);

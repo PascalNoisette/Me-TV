@@ -1,40 +1,27 @@
 .pc
-.TH "ME TV" 1 "2008-09-26" "0.6.3" "Me TV Manual"
+.TH "ME TV" 1 "2008-10-18" "0.7.1" "Me TV Manual"
 
 .SH NAME
 me-tv \- a digital television (DVB) viewer for GNOME
 
 .SH SYNOPSIS
-.B me-tv
+.B me-tv [--verbose]
 
 .SH DESCRIPTION
-Me TV was developed for the modern digital lounge room with a PC for a media centre that is capable
-of normal PC tasks (web surfing, word processing and watching TV). It is not designed to be a
-full-blown media centre such as MythTV but will integrate well with an existing GNOME desktop.
+Me TV is a GNOME desktop application for watching digital television services that
+use the DVB standard.  Me TV works with DVB-T and DVB-C cards that have kernel driver support.
+Me TV uses the xine video player to render its output onto its video window.  Me TV reads the Electronic Program
+Guide (EPG) data that is transmitted over the air to populate a built-in program guide which can be used
+for scheduling recordings.
 
-.SH FEATURES
-Me TV's features currently include:
+Me TV has a built-in scanner which requires an initial scan file.
 
-  * GTK/GNOME interface
-  * Completely mouse driven
-  * Runs in system tray          
-  * Current and future program information
-  * Instant Record
-  * Scheduled recordings
-  * Auto channel scan
-  * Auto PID selection                
-  * Audio select
-  * Network broadcast
-  * DVB-T, DVB-C support
-  * Double-click fullscreen
-  * Keyboard shortcuts
-  * Very simple installation and set up
+.SH OPTIONS
+
+	--verbose	Show verbose output
 
 .SH AUTHOR
 Michael Lamothe (2008) <michael.lamothe@gmail.com>.
-
-.SH BUGS
-Please report bugs to <https://launchpad.net/me-tv>.
 
 .SH COPYRIGHT
 Copyright (C) 2008 Michael Lamothe <michael.lamothe@gmail.com>.

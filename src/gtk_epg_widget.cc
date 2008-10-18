@@ -39,14 +39,14 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 }
 
 void GtkEpgWidget::set_offset(guint value)
-{
-	if (value < 0)
-	{
-		value = 0;
-	}
-	
+{	
 	offset = value;
 	
+	if (offset < 0)
+	{
+		offset = 0;
+	}
+
 	update();
 }
 

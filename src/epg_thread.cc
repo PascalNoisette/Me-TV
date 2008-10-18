@@ -83,7 +83,7 @@ void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInf
 		eit_demuxer = g_slist_next(eit_demuxer);
 	}
 
-	guint result = ::poll(fds, demuxer_count, 5000);
+	gint result = ::poll(fds, demuxer_count, 5000);
 	if (result < 0)
 	{
 		throw SystemException (_("Failed to poll EIT demuxers"));

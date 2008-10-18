@@ -1,6 +1,11 @@
-2008-10-01  Michael Lamothe <michael.lamothe@gmail.com>
+2008-10-19  Michael Lamothe <michael.lamothe@gmail.com>
 
-	* 0.6.5
+	* 0.7.1
+	* Removed more compiler warnings
+
+2008-10-18  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.0
 	* Readded translation support
 	* Added Czech translation
 	* Several translation fixes from Luboš Staněk
@@ -11,6 +16,7 @@
 	* Fixed mouse hiding in menu/controls
 	* Several changes to the time calculations 
 	* Added proper command line argument handling
+	* Removed libxine dependency in favour of spawned xine process
 
 2008-09-28  Michael Lamothe <michael.lamothe@gmail.com>
 

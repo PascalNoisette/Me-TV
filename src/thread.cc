@@ -21,14 +21,14 @@
 #include "thread.h"
 #include "me-tv-ui.h"
 
-Thread::Thread(const Glib::ustring& name, gboolean join_on_destroy)
-: join_on_destroy(join_on_destroy)
+Thread::Thread(const Glib::ustring& thread_name, gboolean join_thread_on_destroy)
+	: join_on_destroy(join_thread_on_destroy)
 {
 	g_static_rec_mutex_init(mutex.gobj());
 	terminated = true;
 	started = false;
 	thread = NULL;
-	this->name = name;
+	name = thread_name;
 	g_debug("Thread '%s' created", name.c_str());
 }
 
