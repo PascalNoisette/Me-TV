@@ -30,6 +30,7 @@
 #define UNKNOWN_TEXT	_("Unknown")
 
 extern bool verbose_logging;
+extern bool maintenance_mode;
 
 typedef sigc::signal<void, const Glib::ustring&> StringSignal;
 

@@ -59,8 +59,14 @@ int main (int argc, char *argv[])
 	verbose_option_entry.set_short_name('v');
 	verbose_option_entry.set_description(_("Enable verbose messages"));
 
+	Glib::OptionEntry maintenance_option_entry;
+	maintenance_option_entry.set_long_name("maintenance-mode");
+	maintenance_option_entry.set_short_name('m');
+	maintenance_option_entry.set_description(_("Enable maintenance mode"));
+
 	Glib::OptionGroup option_group(PACKAGE_NAME, "", _("Show Me TV help options"));
 	option_group.add_entry(verbose_option_entry, verbose_logging);
+	option_group.add_entry(maintenance_option_entry, maintenance_mode);
 
 	Glib::OptionContext* option_context = new Glib::OptionContext();
 	option_context->set_summary(ME_TV_SUMMARY);

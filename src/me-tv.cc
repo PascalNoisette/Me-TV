@@ -23,6 +23,7 @@
 #include <glib/gprintf.h>
 
 bool verbose_logging;
+bool maintenance_mode;
 StringSignal signal_error;
 
 StringSignal& get_signal_error()

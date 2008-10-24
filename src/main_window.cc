@@ -232,13 +232,18 @@ void MainWindow::show_channels_dialog()
 	}
 }
 
-void MainWindow::on_menu_item_preferences_clicked()
+void MainWindow::show_preferences_dialog()
 {
-	TRY
 	PreferencesDialog* preferences_dialog = PreferencesDialog::create(glade);
 	preferences_dialog->run();
 	preferences_dialog->hide();
 	update();
+}
+
+void MainWindow::on_menu_item_preferences_clicked()
+{
+	TRY
+	show_preferences_dialog();
 	CATCH
 }
 

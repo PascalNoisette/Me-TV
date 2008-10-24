@@ -102,6 +102,7 @@ public:
 	static MainWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 		
 	void show_channels_dialog();
+	void show_preferences_dialog();
 	void toggle_visibility();
 	void update();
 

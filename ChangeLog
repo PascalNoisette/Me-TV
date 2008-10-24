@@ -1,7 +1,10 @@
-2008-10-19  Michael Lamothe <michael.lamothe@gmail.com>
+2008-10-25  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.1
 	* Removed more compiler warnings
+	* Added --maintenance-mode (-m) to application
+	* Added xine audio driver option in preferences dialog
+	* Added 24 hour workaround for GnomeDateEdit
 
 2008-10-18  Michael Lamothe <michael.lamothe@gmail.com>
 

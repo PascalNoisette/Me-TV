@@ -64,12 +64,13 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_boolean_configuration_default("show_epg_header", true);
 	set_boolean_configuration_default("show_epg_time", true);
 	set_boolean_configuration_default("show_epg_tooltips", false);
-	set_string_configuration_default("xine.video_driver", "auto");
-	set_string_configuration_default("xine.audio_driver", "auto");
+	set_string_configuration_default("xine.video_driver", "xshm");
+	set_string_configuration_default("xine.audio_driver", "alsa");
 	set_string_configuration_default("xine.deinterlace_type", "tvtime");
 	set_string_configuration_default("preferred_language", "");
 	set_string_configuration_default("text_encoding", "auto");
-	
+	set_boolean_configuration_default("use_24_hour_workaround", true);
+
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
 	if (!file->query_exists())
@@ -190,6 +191,11 @@ void Application::run()
 	main_window = MainWindow::create(glade);
 	main_window->show();
 	
+	if (maintenance_mode)
+	{
+		main_window->show_preferences_dialog();
+	}
+
 	Profile& current_profile = get_profile_manager().get_current_profile();
 	ChannelList& channels = current_profile.get_channels();
 	if (channels.size() == 0)

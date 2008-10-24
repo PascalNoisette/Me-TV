@@ -42,6 +42,11 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 	glade->get_widget_derived("combo_box_channel", channel_combo_box);
 	channel_combo_box->load(profile.get_channels());
 	spinbutton_duration = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spinbutton_duration"));
+
+	if (get_application().get_boolean_configuration_value("use_24_hour_workaround"))
+	{
+		date_edit_start_time->set_flags(date_edit_start_time->get_flags() | Gnome::UI::DATE_EDIT_24_HR);
+	}
 }
 
 gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, ScheduledRecording& scheduled_recording)
