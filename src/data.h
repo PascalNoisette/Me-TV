@@ -62,7 +62,6 @@ public:
 	~Data();
 
 	gboolean get_current_epg_event(const Channel& channel, EpgEvent& epg_event);
-	ScheduledRecordingList get_epg_events();
 	EpgEventList get_epg_events(const Channel& channel, guint start_time, guint end_time);
 	void replace_epg_event(EpgEvent& epg_event);
 	void replace_epg_event_text(EpgEventText& epg_event_text);

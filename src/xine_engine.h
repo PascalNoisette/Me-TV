@@ -29,6 +29,7 @@ private:
 	gint pid;
 	gint window_id;
 	gint standard_input;
+	gboolean mute_state;
 
 	void play(const Glib::ustring& mrl);
 	void stop();

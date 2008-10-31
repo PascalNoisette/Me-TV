@@ -29,6 +29,7 @@ XineEngine::XineEngine(int display_window_id) : window_id(display_window_id)
 {
 	pid = -1;
 	standard_input = -1;
+	mute_state = false;
 }
 
 XineEngine::~XineEngine()
@@ -73,6 +74,9 @@ void XineEngine::play(const Glib::ustring& mrl)
 		NULL,
 		NULL);
 
+	mute_state = false;
+	mute(mute_state);
+										  
 	g_debug("Spawned xine on pid %d", pid);
 }
 
@@ -101,7 +105,11 @@ void XineEngine::stop()
 
 void XineEngine::mute(gboolean state)
 {
-	g_debug(state ? "Muting" : "Unmuting");
-	write("mute\n");
+	if (state != mute_state)
+	{
+		g_debug(state ? "Muting" : "Unmuting");
+		write("mute\n");
+		mute_state = state;
+	}
 }
 
