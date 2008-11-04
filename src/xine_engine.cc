@@ -29,6 +29,7 @@ XineEngine::XineEngine(int display_window_id) : window_id(display_window_id)
 {
 	pid = -1;
 	standard_input = -1;
+	mute_state = false;
 }
 
 XineEngine::~XineEngine()
@@ -41,7 +42,7 @@ void XineEngine::play(const Glib::ustring& mrl)
 	Application& application = get_application();
 
 	StringList argv;
-	argv.push_back("/usr/bin/xine");
+	argv.push_back("xine");
 	argv.push_back("--no-splash");
 	argv.push_back("--no-logo");
 	argv.push_back("--no-gui");
@@ -66,7 +67,7 @@ void XineEngine::play(const Glib::ustring& mrl)
 
 	Glib::spawn_async_with_pipes("/tmp",
 		argv,
-		Glib::SpawnFlags(0),
+		Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_DO_NOT_REAP_CHILD,
 		sigc::slot< void >(),
 		&pid,
 		&standard_input,
@@ -74,6 +75,8 @@ void XineEngine::play(const Glib::ustring& mrl)
 		NULL);
 
 	g_debug("Spawned xine on pid %d", pid);
+
+	mute(mute_state);
 }
 
 void XineEngine::write(const Glib::ustring& text)
@@ -99,9 +102,25 @@ void XineEngine::stop()
 	}
 }
 
+gboolean XineEngine::is_running()
+{
+	int result = -1;
+	
+	if (pid != -1)
+	{
+		result = ::waitpid(pid, NULL, WNOHANG | __WALL);
+	}
+	
+	return result == 0;
+}
+
 void XineEngine::mute(gboolean state)
 {
-	g_debug(state ? "Muting" : "Unmuting");
-	write("mute\n");
+	if (state != mute_state)
+	{
+		g_debug(state ? "Muting" : "Unmuting");
+		write("mute\n");
+		mute_state = state;
+	}
 }
 

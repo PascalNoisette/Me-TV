@@ -541,15 +541,6 @@ void Application::set_broadcast_state(gboolean state)
 	}
 }
 
-void Application::connect_output(gint fd)
-{
-	Glib::RecMutex::Lock lock(mutex);
-	if (stream_thread != NULL)
-	{
-		stream_thread->connect_output(fd);
-	}
-}
-
 Glib::StaticRecMutex& Application::get_mutex()
 {
 	return mutex;
@@ -560,9 +551,6 @@ bool Application::on_quit()
 	if (main_window != NULL)
 	{
 		main_window->stop_engine();
-		
-		// This is a hack to stop xine crashing because the main window closes
-		usleep(500000);
 	}
 	return true;
 }

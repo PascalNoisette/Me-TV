@@ -76,7 +76,6 @@ public:
 	void set_source(const Channel& channel);		
 
 	void update();
-	void connect_output(gint fd);
 		
 	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
 	gint get_int_configuration_value(const Glib::ustring& key);

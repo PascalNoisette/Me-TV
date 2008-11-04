@@ -29,6 +29,7 @@ private:
 	gint pid;
 	gint window_id;
 	gint standard_input;
+	gboolean mute_state;
 
 	void play(const Glib::ustring& mrl);
 	void stop();
@@ -37,6 +38,7 @@ private:
 	void set_size(gint width, gint height) {};
 	void set_audio_channel(guint channel) {};
 	void write(const Glib::ustring& text);
+	gboolean is_running();
 
 public:
 	XineEngine(int window_id);

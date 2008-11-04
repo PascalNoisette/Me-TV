@@ -34,6 +34,7 @@ public:
 	virtual void mute(gboolean state) = 0;
 	virtual void set_size(gint width, gint height) = 0;
 	virtual void set_audio_channel(guint channel) = 0;
+	virtual gboolean is_running() = 0;
 };
 
 #endif

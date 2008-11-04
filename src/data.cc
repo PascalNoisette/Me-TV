@@ -173,7 +173,16 @@ Statement::~Statement()
 	
 gint Statement::step()
 {
-	return sqlite3_step(statement);
+	int result = sqlite3_step(statement);
+	
+	while (result == SQLITE_BUSY)
+	{
+		g_debug("Database busy, trying again");
+		usleep(10000);
+		result = sqlite3_step(statement);
+	}
+	
+	return result;
 }
 	
 gint Statement::get_int(guint column)
@@ -272,8 +281,7 @@ Data::~Data()
 guint Data::execute_non_query(const Glib::ustring& command)
 {
 	Statement statement(database, command);
-	statement.step();
-	return 0;
+	return statement.step();
 }
 
 void fix_quotes(Glib::ustring& text)

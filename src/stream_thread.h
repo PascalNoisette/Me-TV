@@ -49,6 +49,7 @@ class StreamThread : public Thread
 private:
 	const Channel&			channel;
 	DemuxerList				demuxers;
+	Glib::ustring			fifo_path;
 	gint					CRC32[256];
 	Glib::StaticRecMutex	mutex;
 	Dvb::Frontend&			frontend;
@@ -56,12 +57,11 @@ private:
 	EpgThread*				epg_thread;
 	Stream					stream;
 	guint					pmt_pid;
-	Glib::ustring			fifo_path;
 	GUdpSocket*				socket;
 	GInetAddr*				inet_address;
 	gboolean				broadcast_failure_message;
-	gint					output_fd;
 	gint					recording_fd;
+	Glib::RefPtr<Glib::IOChannel> output_channel;
 
 	void run();
 	gboolean is_pid_used(guint pid);
@@ -95,7 +95,7 @@ public:
 	void start_broadcasting();
 	void stop_broadcasting();
 
-	void connect_output(gint fd);
+	const Glib::ustring& get_fifo_path() const;
 };
 
 #endif

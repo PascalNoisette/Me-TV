@@ -1,3 +1,11 @@
+2008-11-05  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.2
+	* Writes to FIFO are now non blocking so a xine crash will not lock up the application
+	* Fixed issue with mute not restoring its state
+	* Fixed issue with child xine process not reaping
+	* Put in a retry mechanism for database locks so that concurrent versions can work together
+
 2008-10-25  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.1

@@ -78,7 +78,7 @@ void Demuxer::set_filter(ushort pid, ushort table_id, ushort mask)
 	parameters.timeout = 0;
 	parameters.filter.filter[0] = table_id;
 	parameters.filter.mask[0] = mask;
-	parameters.flags = DMX_IMMEDIATE_START;
+	parameters.flags = DMX_IMMEDIATE_START | DMX_CHECK_CRC;
 
 	if (ioctl(fd, DMX_SET_FILTER, &parameters) < 0)
 	{

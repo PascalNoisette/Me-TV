@@ -391,6 +391,12 @@ void MainWindow::on_timeout()
 		last_update_time = now;
 	}
 	
+	// Check on engine
+	if (engine != NULL && !engine->is_running())
+	{
+		stop_engine();
+	}
+	
 	// Disable screensaver
 	if (now - last_poke_time > POKE_INTERVAL)
 	{
@@ -634,7 +640,6 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event_expose)
 {
 	TRY
-	Glib::RecMutex::Lock lock(mutex);
 	if (engine == NULL)
 	{
 		drawing_area_video->get_window()->draw_rectangle(
@@ -651,16 +656,12 @@ void MainWindow::start_engine()
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-	// Acquire stream thread lock
 	Application& application = get_application();
-	Glib::RecMutex::Lock application_lock(application.get_mutex());
-	
 	StreamThread* stream_thread = application.get_stream_thread();
 	if (property_visible() && stream_thread != NULL)
 	{
 		g_debug("Starting engine");
 
-		Dvb::Frontend& frontend = application.get_device_manager().get_frontend();
 		if (engine != NULL)
 		{
 			throw Exception(_("Failed to start engine: Engine has already been started"));
@@ -685,32 +686,10 @@ void MainWindow::start_engine()
 		}
 		g_debug("%s engine created", engine_type.c_str());
 		
-		Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
-		Glib::ustring fifo_path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-		fifo_path = Glib::build_filename(fifo_path, filename);
-		
-		if (!Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
-		{
-			if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
-			{
-				throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
-			}
-		}
-
 		if (engine != NULL)
 		{
 			engine->mute(mute_state);
-			engine->play(fifo_path);
-
-			g_debug("Opening '%s'", fifo_path.c_str());
-			output_fd = open(fifo_path.c_str(), O_WRONLY, 0);
-			
-			if (output_fd == -1)
-			{
-				throw SystemException(_("Failed to create FIFO output"));
-			}
-
-			stream_thread->connect_output(output_fd);
+			engine->play(stream_thread->get_fifo_path());
 			
 			g_debug("Output FD created");
 		}
@@ -722,19 +701,11 @@ void MainWindow::start_engine()
 void MainWindow::stop_engine()
 {
 	g_debug("Stopping engine");
-	Glib::RecMutex::Lock lock(mutex);
 
+	Glib::RecMutex::Lock lock(mutex);
 	if (engine != NULL)
 	{
-		get_application().connect_output(-1);
-		if (output_fd != -1)
-		{
-			close(output_fd);
-			output_fd = -1;
-		}
-
 		engine->stop();
-
 		delete engine;
 		engine = NULL;
 	}
