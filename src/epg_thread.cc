@@ -151,7 +151,7 @@ void EpgThread::run()
 	}
 	
 	guint processed_event_count = 0;
-	guint processed_events[10000];
+	guint processed_events[10000];	
 	guint frequency = frontend.get_frontend_parameters().frequency;
 	while (!is_terminated())
 	{

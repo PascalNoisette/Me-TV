@@ -40,6 +40,7 @@ DeviceManager::DeviceManager()
 	Glib::ustring adapter_path = get_adapter_path(adapter_count);
 	while (Gio::File::create_for_path(adapter_path)->query_exists())
 	{
+		// TODO: This leaks
 		Dvb::Adapter* adapter = new Dvb::Adapter(adapter_count);
 		
 		guint frontend_count = 0;

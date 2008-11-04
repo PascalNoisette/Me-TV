@@ -74,6 +74,9 @@ void XineEngine::play(const Glib::ustring& mrl)
 		NULL,
 		NULL);
 
+	mute_state = false;
+	mute(mute_state);
+										  
 	g_debug("Spawned xine on pid %d", pid);
 
 	mute(mute_state);
