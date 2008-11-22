@@ -593,14 +593,16 @@ void StreamThread::start_recording(const Glib::ustring& filename)
 	Lock lock(mutex, "StreamThread::start_recording()");
 	if (!output_channel)
 	{
-		mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-		recording_fd = open(filename.c_str(), O_CREAT | O_WRONLY | O_LARGEFILE | O_NONBLOCK, mode);
-		if (recording_fd == -1)
-		{
-			throw SystemException(_("Failed to open recording file"));
-		}
-		g_debug("Recording file '%s' opened", filename.c_str());
+		throw Exception(_("Failed to record, output channel not open"));
 	}
+	
+	mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+	recording_fd = open(filename.c_str(), O_CREAT | O_WRONLY | O_LARGEFILE | O_NONBLOCK, mode);
+	if (recording_fd == -1)
+	{
+		throw SystemException(_("Failed to open recording file"));
+	}
+	g_debug("Recording file '%s' opened", filename.c_str());
 }
 
 void StreamThread::stop_recording()

@@ -1,5 +1,11 @@
 2008-11-05  Michael Lamothe <michael.lamothe@gmail.com>
 
+	* 0.7.3
+	* Fixed recording logic switch
+	* Fixed meters dialog without border
+
+2008-11-05  Michael Lamothe <michael.lamothe@gmail.com>
+
 	* 0.7.2
 	* Writes to FIFO are now non blocking so a xine crash will not lock up the application
 	* Fixed issue with mute not restoring its state
