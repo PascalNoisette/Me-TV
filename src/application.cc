@@ -64,7 +64,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_boolean_configuration_default("show_epg_header", true);
 	set_boolean_configuration_default("show_epg_time", true);
 	set_boolean_configuration_default("show_epg_tooltips", false);
-	set_string_configuration_default("xine.video_driver", "xshm");
+	set_string_configuration_default("xine.video_driver", "xv");
 	set_string_configuration_default("xine.audio_driver", "alsa");
 	set_string_configuration_default("xine.deinterlace_type", "tvtime");
 	set_string_configuration_default("preferred_language", "");

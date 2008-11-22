@@ -99,7 +99,7 @@ void XineEngine::stop()
 			standard_input = -1;
 		}
 		kill(pid, SIGHUP);
-		//::waitpid(pid, NULL, 0);
+		::waitpid(pid, NULL, 0);
 		g_spawn_close_pid(pid);
 		pid = -1;
 		g_debug("Xine has quit");
