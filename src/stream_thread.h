@@ -60,8 +60,8 @@ private:
 	GUdpSocket*				socket;
 	GInetAddr*				inet_address;
 	gboolean				broadcast_failure_message;
-	gint					recording_fd;
 	Glib::RefPtr<Glib::IOChannel> output_channel;
+	Glib::RefPtr<Glib::IOChannel> recording_channel;
 
 	void run();
 	gboolean is_pid_used(guint pid);

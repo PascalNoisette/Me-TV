@@ -57,7 +57,6 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	epg_thread = NULL;
 	socket = NULL;
 	broadcast_failure_message = true;
-	recording_fd = -1;
 	
 	for(gint i = 0 ; i < 256 ; i++ )
 	{
@@ -72,19 +71,6 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
 	Glib::ustring working_directory = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	fifo_path = Glib::build_filename(working_directory, filename);
-
-	if (!Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
-	{
-		if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
-		{
-			throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
-		}
-	}
-
-	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
-	output_channel->set_encoding("");
-	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
-	output_channel->set_buffer_size(TS_PACKET_SIZE * 100);
 
 	g_debug("StreamThread created");
 }
@@ -127,9 +113,10 @@ void StreamThread::write(gchar* buffer, gsize length)
 		}
 	}
 		
-	if (recording_fd != -1)
+	if (recording_channel)
 	{
-		::write(recording_fd, buffer, length);
+		gsize bytes_written = 0;
+		recording_channel->write(buffer, length, bytes_written);
 	}
 	
 	if (socket != NULL)
@@ -155,6 +142,19 @@ void StreamThread::run()
 	gchar buffer[TS_PACKET_SIZE * 10];
 	gchar pat[TS_PACKET_SIZE];
 	gchar pmt[TS_PACKET_SIZE];
+
+	if (!Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
+	{
+		if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
+		{
+			throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
+		}
+	}
+
+	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
+	output_channel->set_encoding("");
+	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
+	output_channel->set_buffer_size(TS_PACKET_SIZE * 100);
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
@@ -591,28 +591,29 @@ const Stream& StreamThread::get_stream() const
 void StreamThread::start_recording(const Glib::ustring& filename)
 {
 	Lock lock(mutex, "StreamThread::start_recording()");
-	if (!output_channel)
+	if (recording_channel)
 	{
-		throw Exception(_("Failed to record, output channel not open"));
+		g_debug("Already recording!");
 	}
-	
-	mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-	recording_fd = open(filename.c_str(), O_CREAT | O_WRONLY | O_LARGEFILE | O_NONBLOCK, mode);
-	if (recording_fd == -1)
+	else
 	{
-		throw SystemException(_("Failed to open recording file"));
+		g_debug("Creating new recording channel (%s)", filename.c_str());
+		Glib::RefPtr<Glib::IOChannel> channel = Glib::IOChannel::create_from_file(filename, "w");
+		channel->set_encoding("");
+		channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
+		channel->set_buffer_size(TS_PACKET_SIZE * 100);
+		recording_channel = channel;
+		g_debug("New recording channel created");
 	}
-	g_debug("Recording file '%s' opened", filename.c_str());
 }
 
 void StreamThread::stop_recording()
 {
 	Lock lock(mutex, "StreamThread::stop_recording()");
-	if (recording_fd != -1)
+	if (recording_channel)
 	{
-		close(recording_fd);
-		recording_fd = -1;
-		g_debug("Recording file cleared");
+		recording_channel.reset();
+		g_debug("Recording channel cleared");
 	}
 }
 
