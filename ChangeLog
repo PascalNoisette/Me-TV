@@ -1,3 +1,8 @@
+2008-11-30  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.5
+	* Changed recording mechanism to use an IOChannel for better buffering
+
 2008-11-25  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.4
