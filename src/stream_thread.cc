@@ -72,6 +72,28 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	Glib::ustring working_directory = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	fifo_path = Glib::build_filename(working_directory, filename);
 
+	if (!Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
+	{
+		if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
+		{
+			throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
+		}
+	}
+
+	// Fudge the channel open
+	int fd = open(fifo_path.c_str(), O_RDONLY | O_NONBLOCK);
+	if (fd == -1)
+	{
+		throw SystemException(Glib::ustring::compose(_("Failed to open FIFO for reading '%1'"), fifo_path));
+	}
+	
+	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
+	output_channel->set_encoding("");
+	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
+	output_channel->set_buffer_size(TS_PACKET_SIZE * 100);
+
+	close(fd);
+
 	g_debug("StreamThread created");
 }
 
@@ -142,19 +164,6 @@ void StreamThread::run()
 	gchar buffer[TS_PACKET_SIZE * 10];
 	gchar pat[TS_PACKET_SIZE];
 	gchar pmt[TS_PACKET_SIZE];
-
-	if (!Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
-	{
-		if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
-		{
-			throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
-		}
-	}
-
-	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
-	output_channel->set_encoding("");
-	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
-	output_channel->set_buffer_size(TS_PACKET_SIZE * 100);
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");

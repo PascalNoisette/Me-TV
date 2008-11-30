@@ -251,11 +251,20 @@ void Application::set_source(const Channel& channel)
 	try
 	{
 		stream_thread->start();
-		main_window->start_engine();
+
+		try
+		{
+			main_window->start_engine();
+		}
+		catch(const Glib::Exception& exception)
+		{
+			main_window->stop_engine();
+			get_signal_error().emit(exception.what().c_str());
+		}
+		
 	}
 	catch(const Glib::Exception& exception)
 	{
-		main_window->stop_engine();
 		stop_stream_thread();
 		get_signal_error().emit(exception.what().c_str());
 	}
