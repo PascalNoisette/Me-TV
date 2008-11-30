@@ -2,6 +2,8 @@
 
 	* 0.7.5
 	* Changed recording mechanism to use an IOChannel for better buffering
+	* Opening streamer in main thread to avoid locking
+	* Now reports if xine binary is not available
 
 2008-11-25  Michael Lamothe <michael.lamothe@gmail.com>
 
