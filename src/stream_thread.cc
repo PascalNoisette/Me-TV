@@ -72,12 +72,14 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	Glib::ustring working_directory = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	fifo_path = Glib::build_filename(working_directory, filename);
 
-	if (!Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
+	if (Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
 	{
-		if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
-		{
-			throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
-		}
+		unlink(fifo_path.c_str());
+	}
+
+	if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
+	{
+		throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
 	}
 
 	// Fudge the channel open

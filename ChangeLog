@@ -1,3 +1,8 @@
+2008-12-04  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.6
+	* Removing FIFO on every request so that stalled xine processes don't interfere with new xine requests
+
 2008-11-30  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.5
