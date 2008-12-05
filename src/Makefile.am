@@ -87,7 +87,9 @@ me_tv_SOURCES = \
 	xine_engine.h \
 	exception.cc \
 	scan_window.cc \
-	scan_window.h
+	scan_window.h \
+	string_splitter.cc \
+	string_splitter.h
 
 me_tv_LDFLAGS = -Wl,--as-needed \
 	`getconf LFS_LDFLAGS` \

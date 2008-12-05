@@ -24,47 +24,9 @@
 #include "dvb_scanner.h"
 #include "dvb_demuxer.h"
 #include "dvb_frontend.h"
+#include "string_splitter.h"
 
 using namespace Dvb;
-
-class StringSplitter
-{
-private:
-	gchar** parts;
-	gsize	count;
-public:
-	StringSplitter(const Glib::ustring& text, const char* deliminator, gsize max_length)
-	{
-		parts = g_strsplit(text.c_str(), deliminator, max_length);
-		count = 0;
-		gchar** iterator = parts;
-		while (*iterator++ != NULL && count < max_length)
-		{
-			count++;
-		}
-	}
-		
-	~StringSplitter()
-	{
-		g_strfreev(parts);
-	}
-
-	const gchar* get_value(guint index)
-	{
-		if (index >= count)
-		{
-			throw Exception(_("Index out of bounds"));
-		}
-		return parts[index];
-	}
-
-	gint get_int_value(guint index)
-	{
-		return atoi(get_value(index));
-	}
-	
-	gsize get_count() const { return count; }
-};
 
 Scanner::Scanner(guint timeout) : wait_timeout(timeout)
 {

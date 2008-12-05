@@ -23,6 +23,7 @@
 #include "thread.h"
 #include "me-tv.h"
 #include "application.h"
+#include "string_splitter.h"
 
 ScanWindow* ScanWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
@@ -34,29 +35,44 @@ ScanWindow* ScanWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 Glib::ustring ScanWindow::get_initial_tuning_dir()
 {
 	Glib::ustring result;
+	gboolean done = false;
+	int i = 0;
 	
-	if (Gio::File::create_for_path(SCAN_DIRECTORY)->query_exists())
-	{
-		result = SCAN_DIRECTORY;
-	}
-	else if (Gio::File::create_for_path(ALTERNATE_SCAN_DIRECTORY)->query_exists())
-	{
-		result = ALTERNATE_SCAN_DIRECTORY;
-	}
-	else
-	{
-		throw Exception(_("Failed to find initial tuning directory, try installing the dvb-utils or dvb-apps package"));
-	}
-	
-	switch(frontend.get_frontend_info().type)
-	{
-	case FE_OFDM:   result += "/dvb-t";       break;
-	case FE_QAM:    result += "/dvb-c";       break;
-	case FE_QPSK:   result += "/dvb-s";       break;
-	case FE_ATSC:   result += "/atsc";        break;
-	default:		throw Exception(_("Unknown frontend type"));
-	}
+	StringSplitter splitter(SCAN_DIRECTORIES, ":", 100);
 
+	while (!done)
+	{
+		if (i >= splitter.get_count())
+		{
+			done = true;
+		}
+		else
+		{
+			Glib::ustring scan_directory = splitter.get_value(i);
+			
+			g_debug("Checking '%s'", result.c_str());
+		
+			if (Gio::File::create_for_path(result)->query_exists())
+			{
+				done = true;
+				result = scan_directory;
+
+				switch(frontend.get_frontend_info().type)
+				{
+				case FE_OFDM:   result += "/dvb-t";       break;
+				case FE_QAM:    result += "/dvb-c";       break;
+				case FE_QPSK:   result += "/dvb-s";       break;
+				case FE_ATSC:   result += "/atsc";        break;
+				default:		throw Exception(_("Unknown frontend type"));
+				}
+
+				g_debug("Found '%s'", result.c_str());
+			}
+
+			i++;
+		}
+	}
+	
 	return result;
 }
 
@@ -97,42 +113,45 @@ ScanWindow::ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	combo_box_select_region = NULL;
 	glade->get_widget_derived("combo_box_select_region", combo_box_select_region);
 	
-	Glib::ustring scan_directory_path = get_initial_tuning_dir();
+	scan_directory_path = get_initial_tuning_dir();
 
-	Glib::RefPtr<Gio::File> scan_directory = Gio::File::create_for_path(scan_directory_path);
-	g_debug("Scanning directory: %s", scan_directory_path.c_str());
-			
-	// This is a hack because I can't get scan_directory->enumerate_children() to work
-	GFileEnumerator* children = g_file_enumerate_children(scan_directory->gobj(),
-		"*", G_FILE_QUERY_INFO_NONE, NULL, NULL);
-	if (children != NULL)
+	if (scan_directory_path.size() > 0)
 	{
-		GFileInfo* file_info = g_file_enumerator_next_file(children, NULL, NULL);
-		while (file_info != NULL)
+		Glib::RefPtr<Gio::File> scan_directory = Gio::File::create_for_path(scan_directory_path);
+		g_debug("Scanning directory: %s", scan_directory_path.c_str());
+			
+		// This is a hack because I can't get scan_directory->enumerate_children() to work
+		GFileEnumerator* children = g_file_enumerate_children(scan_directory->gobj(),
+			"*", G_FILE_QUERY_INFO_NONE, NULL, NULL);
+		if (children != NULL)
 		{
-			Glib::ustring name = g_file_info_get_name(file_info);
-			if (name.substr(2,1) == "-")
+			GFileInfo* file_info = g_file_enumerator_next_file(children, NULL, NULL);
+			while (file_info != NULL)
 			{
-				Glib::ustring country_name = name.substr(0,2);
-				Glib::ustring region_name = name.substr(3);
-				Country& country = get_country(country_name);
-				country.regions.push_back(region_name);
+				Glib::ustring name = g_file_info_get_name(file_info);
+				if (name.substr(2,1) == "-")
+				{
+					Glib::ustring country_name = name.substr(0,2);
+					Glib::ustring region_name = name.substr(3);
+					Country& country = get_country(country_name);
+					country.regions.push_back(region_name);
+				}
+				file_info = g_file_enumerator_next_file(children, NULL, NULL);
 			}
-			file_info = g_file_enumerator_next_file(children, NULL, NULL);
-		}
 
-		// Populate controls
-		countries.sort(compare_countries);
-		CountryList::iterator country_iterator = countries.begin();
-		while (country_iterator != countries.end())
-		{
-			Country& country = *country_iterator;
-			country.regions.sort();
-			combo_box_select_country->append_text(country.name);
-			country_iterator++;
+			// Populate controls
+			countries.sort(compare_countries);
+			CountryList::iterator country_iterator = countries.begin();
+			while (country_iterator != countries.end())
+			{
+				Country& country = *country_iterator;
+				country.regions.sort();
+				combo_box_select_country->append_text(country.name);
+				country_iterator++;
+			}
+			combo_box_select_country->signal_changed().connect(sigc::mem_fun(*this, &ScanWindow::on_combo_box_select_country_changed));
+			combo_box_select_country->set_active(0);
 		}
-		combo_box_select_country->signal_changed().connect(sigc::mem_fun(*this, &ScanWindow::on_combo_box_select_country_changed));
-		combo_box_select_country->set_active(0);
 	}
 }
 
@@ -204,8 +223,7 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 	{
 		Glib::ustring country_name = combo_box_select_country->get_active_text();
 		Glib::ustring region_name = combo_box_select_region->get_active_text();
-		Glib::ustring initial_tuning_dir = get_initial_tuning_dir();
-		initial_tuning_file = initial_tuning_dir + "/" + country_name + "-" + region_name;
+		initial_tuning_file = scan_directory_path + "/" + country_name + "-" + region_name;
 	}
 	else
 	{

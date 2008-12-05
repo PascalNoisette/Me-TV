@@ -28,12 +28,8 @@
 #include "thread.h"
 #include "me-tv-ui.h"
 
-#ifndef SCAN_DIRECTORY
-#define SCAN_DIRECTORY "/usr/share/dvb"
-#endif
-
-#ifndef ALTERNATE_SCAN_DIRECTORY
-#define ALTERNATE_SCAN_DIRECTORY "/usr/share/doc/dvb-utils/examples/scan"
+#ifndef SCAN_DIRECTORIES
+#define SCAN_DIRECTORIES "/usr/share/dvb:/usr/share/doc/dvb-utils/examples/scan:/usr/share/dvb-apps"
 #endif
 
 class Country
@@ -83,6 +79,7 @@ private:
 	CountryList								countries;
 	guint									channel_count;
 	Dvb::Frontend&							frontend;
+	Glib::ustring							scan_directory_path;
 
 	class ModelColumns : public Gtk::TreeModelColumnRecord
 	{
