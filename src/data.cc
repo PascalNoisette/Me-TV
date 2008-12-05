@@ -633,6 +633,10 @@ ProfileList Data::get_all_profiles()
 				channel.frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)channel_statement.get_int(17);
 				channel.frontend_parameters.u.qam.modulation	= (fe_modulation_t)channel_statement.get_int(18);
 			}
+			else if (channel.flags & CHANNEL_FLAG_ATSC)
+			{
+				channel.frontend_parameters.u.vsb.modulation	= (fe_modulation_t)channel_statement.get_int(18);
+			}
 			profile.add_channel(channel);
 			
 			g_debug("Loaded channel: %s", channel.name.c_str());

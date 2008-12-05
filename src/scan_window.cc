@@ -256,6 +256,10 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 				channel.flags = CHANNEL_FLAG_DVB_C;
 				break;
 				
+			case FE_ATSC:
+				channel.flags = CHANNEL_FLAG_ATSC;
+				break;
+
 			default:
 				throw Exception(_("Invalid frontend type"));
 				break;
