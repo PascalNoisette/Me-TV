@@ -122,6 +122,22 @@ void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& 
 	tune_to(frontend, transponder);
 }
 
+void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
+{
+	struct dvb_frontend_parameters frontend_parameters;
+
+	StringSplitter splitter(line, " ", 100);
+	
+	frontend_parameters.frequency			= splitter.get_int_value(1);
+	frontend_parameters.inversion			= INVERSION_AUTO;
+	frontend_parameters.u.vsb.modulation	= (fe_modulation_t)Frontend::convert_string_to_value(modulation_table,	splitter.get_value(4));
+
+	Transponder transponder;
+	transponder.frontend_parameters = frontend_parameters;
+	
+	tune_to(frontend, transponder);
+}
+
 void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)
 {
 	struct dvb_frontend_parameters frontend_parameters;
@@ -184,6 +200,10 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 			else if (Glib::str_has_prefix(process_line, "C "))
 			{
 				process_cable_line(frontend, process_line);
+			}
+			else if (Glib::str_has_prefix(process_line, "A "))
+			{
+				process_atsc_line(frontend, process_line);
 			}
 			else
 			{

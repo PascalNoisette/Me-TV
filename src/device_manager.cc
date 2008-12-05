@@ -102,6 +102,7 @@ gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend
 	{
 	case FE_OFDM: result = true; break;	// DVB-T
 	case FE_QAM: result = true; break;	// DVB-C
+	case FE_ATSC: result = true; break;
 	default: result = false; break;
 	}
 

@@ -511,6 +511,10 @@ void Data::replace_channel(Channel& channel)
 		parameters.add("FEC_INNER",		(guint)channel.frontend_parameters.u.qam.fec_inner);
 		parameters.add("MODULATION",	(guint)channel.frontend_parameters.u.qam.modulation);
 	}
+	else if (channel.flags & CHANNEL_FLAG_ATSC)
+	{
+		parameters.add("MODULATION", (guint)channel.frontend_parameters.u.vsb.modulation);
+	}
 	else
 	{
 		throw Exception(_("Invalid channel flag"));

@@ -35,8 +35,10 @@ namespace Dvb
 			
 		void tune_to(Frontend& frontend, Transponder& transponder);
 		guint convert_string_to_value(const StringTable* table, const gchar* text);
+
 		void process_terrestrial_line(Frontend& frontend, const Glib::ustring& line);
 		void process_cable_line(Frontend& frontend, const Glib::ustring& line);
+		void process_atsc_line(Frontend& frontend, const Glib::ustring& line);
 	public:
 		Scanner(guint wait_timeout);
 			
