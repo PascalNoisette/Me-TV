@@ -130,7 +130,7 @@ void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
 	
 	frontend_parameters.frequency			= splitter.get_int_value(1);
 	frontend_parameters.inversion			= INVERSION_AUTO;
-	frontend_parameters.u.vsb.modulation	= (fe_modulation_t)Frontend::convert_string_to_value(modulation_table,	splitter.get_value(4));
+	frontend_parameters.u.vsb.modulation	= (fe_modulation_t)Frontend::convert_string_to_value(modulation_table,	splitter.get_value(2));
 
 	Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;
