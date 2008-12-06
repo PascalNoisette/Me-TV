@@ -1,0 +1,895 @@
+# Swedish translation for me-tv
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the me-tv package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: me-tv\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-11-30 01:04+1100\n"
+"PO-Revision-Date: 2008-12-05 23:55+0000\n"
+"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
+"Language-Team: Swedish <sv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2008-12-06 04:12+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../me-tv.desktop.in.h:1
+msgid "A digital television (DVB) viewer for GNOME"
+msgstr "En digital-TV-visare (DVB) för GNOME."
+
+#: ../me-tv.desktop.in.h:2
+msgid "Digital Television"
+msgstr "Digital-tv"
+
+#: ../src/application.cc:37
+msgid "Application has already been initialised"
+msgstr "Programmet har redan initierats"
+
+#: ../src/application.cc:229
+msgid "Application has not been initialised"
+msgstr "Programmet har inte initierats ännu"
+
+#: ../src/application.cc:295
+msgid "Main window has not been created"
+msgstr "Huvudfönstret har inte skapats ännu"
+
+#: ../src/application.cc:402
+msgid "No channel to make recording filename"
+msgstr "Ingen kanal för att skapa inspelningens filnamn"
+
+#: ../src/application.cc:464
+msgid "Stream thread has not been created"
+msgstr "Strömmens tråd har inte skapats ännu"
+
+#: ../src/application.cc:489
+msgid ""
+"You are trying to stop a scheduled recording.  Would you like Me TV to "
+"delete the scheduled recording?"
+msgstr ""
+"Du försöker att stoppa en schemalagd inspelning. Vill du att Me TV ska ta "
+"bort den schemalagda inspelningen?"
+
+#: ../src/data.cc:147 ../src/data.cc:151
+msgid "Failed to prepare statement: %1"
+msgstr "Det gick inte att förbereda uttrycket: %1"
+
+#: ../src/data.cc:157
+msgid "Prepare statement had remaining data: %1"
+msgstr "Det förberedda uttrycket hade återstående data: %1"
+
+#: ../src/data.cc:162
+msgid "Failed to create statement"
+msgstr "Det gick inte att skapa uttrycket"
+
+#: ../src/data.cc:170
+msgid "Failed to finalise statement"
+msgstr "Det gick inte att slutföra uttrycket"
+
+#: ../src/data.cc:204
+msgid "Failed to connect to Me TV database"
+msgstr "Det gick inte att ansluta till Me TV-databasen"
+
+#: ../src/data.cc:296
+msgid "ASSERT: epg_event.channel_id == 0"
+msgstr "FÖRSÄKRAN: epg_event.channel_id == 0"
+
+#: ../src/data.cc:330
+msgid "Failed to get epg_event_id"
+msgstr "Kunde inte hämta epg_event_id"
+
+#: ../src/data.cc:348
+msgid "Event ID was 0"
+msgstr "Händelsens ID var 0"
+
+#: ../src/data.cc:516
+msgid "Invalid channel flag"
+msgstr "Ogiltig kanalflagga"
+
+#: ../src/data.cc:687
+msgid ""
+"Failed to save scheduled recording because it conflicts with another "
+"scheduled recording called '%1'"
+msgstr ""
+"Det gick inte att spara schemalagd inspelning därför att den står i konflikt "
+"med en annan schemalagd inspelning med namnet \"%1\""
+
+#: ../src/data.cc:715
+msgid "ASSERT: scheduled_recording.scheduled_recording_id == 0"
+msgstr "FÖRSÄKRAN: scheduled_recording.scheduled_recording_id == 0"
+
+#: ../src/device_manager.cc:84
+msgid "No frontend available"
+msgstr "Ingen framände tillgänglig"
+
+#: ../src/device_manager.cc:131
+msgid "Failed to get frontend by path"
+msgstr "Det gick inte att hämta framände efter sökväg"
+
+#: ../src/dvb_demuxer.cc:36
+msgid "Failed to open demux device"
+msgstr "Misslyckades med att öppna demux-enhet"
+
+#: ../src/dvb_demuxer.cc:67
+msgid "Failed to set PES filter"
+msgstr "Misslyckades med att ställa in PES-filter"
+
+#: ../src/dvb_demuxer.cc:85
+msgid "Failed to set section filter for demuxer"
+msgstr "Misslyckades med att ställa in ett sektionsfilter för demuxer"
+
+#: ../src/dvb_demuxer.cc:93
+msgid "Failed to set demuxer buffer size"
+msgstr "Misslyckades med att ställa in demuxerns buffertstorlek"
+
+#: ../src/dvb_demuxer.cc:101
+msgid "Timeout while reading"
+msgstr "Tidsgränsen överstegs under läsning"
+
+#: ../src/dvb_demuxer.cc:107
+msgid "Failed to read data from demuxer"
+msgstr "Misslyckades att läsa data från demuxer"
+
+#: ../src/dvb_demuxer.cc:117
+msgid "Failed to stop demuxer"
+msgstr "Misslyckades med att stoppa demuxer"
+
+#: ../src/dvb_demuxer.cc:132
+msgid "Failed to poll"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:112
+msgid "Failed to open tuner"
+msgstr "Misslyckades med att öppna mottagaren"
+
+#: ../src/dvb_frontend.cc:117
+msgid "Failed to get tuner info"
+msgstr "Misslyckades med att hämta mottagarinformation"
+
+#: ../src/dvb_frontend.cc:149
+msgid "Failed to find a value for '%1'"
+msgstr "Misslyckades att hitta ett värde för \"%1\""
+
+#: ../src/dvb_frontend.cc:174
+msgid "Failed to find a text value for '%1'"
+msgstr "Misslyckades med att hitta ett textvärde för \"%1\""
+
+#: ../src/dvb_frontend.cc:189
+msgid "Failed to tune device"
+msgstr "Misslyckades med att ställa in enheten"
+
+#: ../src/dvb_frontend.cc:192
+msgid "Waiting for signal lock ..."
+msgstr "Väntar på signallås ..."
+
+#: ../src/dvb_frontend.cc:194
+msgid "Got signal lock"
+msgstr "Signalen har låsts"
+
+#: ../src/dvb_frontend.cc:214
+msgid "Failed to set tone off"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:219
+msgid "Failed to set voltage"
+msgstr "Misslyckades med att låsa spänning"
+
+#: ../src/dvb_frontend.cc:225
+msgid "Failed to send master command"
+msgstr "Misslyckades med att skicka huvudkommando"
+
+#: ../src/dvb_frontend.cc:231
+msgid "Failed to send burst"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:237
+msgid "Failed to set tone"
+msgstr "Misslyckades med att ställa in tonen"
+
+#: ../src/dvb_frontend.cc:266
+msgid "Failed to lock to channel"
+msgstr "Misslyckades att låsa till kanal"
+
+#: ../src/dvb_frontend.cc:275
+msgid "Failed to get signal strength"
+msgstr "Misslyckades med att läsa av signalstyrkan"
+
+#: ../src/dvb_frontend.cc:285
+msgid "Failed to get signal to noise ratio"
+msgstr "Misslyckades med att ta emot signalens brusförhållande"
+
+#: ../src/dvb_scanner.cc:56
+msgid "Index out of bounds"
+msgstr "Index utanför intervallet"
+
+#: ../src/dvb_scanner.cc:190
+msgid "Me TV cannot process a line in the initial tuning file"
+msgstr "Me TV kan inte behandla en rad i den inledande kanalsökningsfilen"
+
+#: ../src/dvb_si.cc:129
+msgid "Failed to read header"
+msgstr "Det gick inte att läsa sidhuvud"
+
+#: ../src/dvb_si.cc:138
+msgid "Failed to read section"
+msgstr "Det gick inte att läsa sektionen"
+
+#: ../src/dvb_si.cc:145
+msgid "CRC32 check failed"
+msgstr "CRC32-kontroll misslyckades"
+
+#: ../src/dvb_si.cc:542
+msgid "ASSERT: offset > end_descriptor_offset"
+msgstr "FÖRSÄKRAN: offset > end_descriptor_offset"
+
+#: ../src/dvb_si.cc:553
+msgid "ASSERT: offset > end_section_offset"
+msgstr "FÖRSÄKRAN: offset > end_section_offset"
+
+#: ../src/dvb_si.cc:759
+msgid "Failed to convert to UTF-8: %1"
+msgstr "Misslyckades med att konvertera till UTF-8: %1"
+
+#: ../src/dvb_si.cc:780
+msgid "Failed to convert to UTF-8"
+msgstr "Misslyckades med att konvertera till UTF-8"
+
+#: ../src/dvb_transponder.cc:51
+msgid "Failed to find service with service ID %1"
+msgstr "Misslyckades med att hitta tjänsten med ID %1"
+
+#: ../src/epg_event.cc:82 ../src/scheduled_recording.cc:36
+msgid "1 hour"
+msgid_plural "%1 hours"
+msgstr[0] "1 timme"
+msgstr[1] "%1 timmar"
+
+#: ../src/epg_event.cc:90 ../src/scheduled_recording.cc:44
+msgid "1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] "1 minut"
+msgstr[1] "%1 minuter"
+
+#: ../src/epg_thread.cc:69
+msgid "No demuxers"
+msgstr "Inga demuxrar"
+
+#: ../src/epg_thread.cc:89
+msgid "Failed to poll EIT demuxers"
+msgstr "Det gick inte att hämta ETI-demuxrar"
+
+#: ../src/epg_thread.cc:105
+msgid "Failed to get an EIT demuxer with events"
+msgstr "Misslyckades med att få en ETI-demuxer med händelser"
+
+#: ../src/epg_thread.cc:232
+msgid "Exiting EPG thread"
+msgstr "Avslutar EPG-tråd"
+
+#: ../src/exception.cc:30
+msgid "Failed to get error message"
+msgstr "Misslyckades med att ta emot felmeddelande"
+
+#: ../src/channels_dialog.cc:44
+msgid "Channel Name"
+msgstr "Kanalnamn"
+
+#: ../src/main.cc:28
+msgid "Me TV is a digital television viewer for the GNOME desktop"
+msgstr "Me TV är en digital-tv-visare för GNOME-skrivbordet"
+
+#: ../src/main.cc:29
+msgid ""
+"Me TV was developed for the modern digital lounge room with a PC for a media "
+"centre that is capable of normal PC tasks (web surfing, word processing and "
+"watching TV). It is not designed to be a full-blown media centre such as "
+"MythTV but will integrate well with an existing GNOME desktop.\n"
+msgstr ""
+"Me TV har utvecklats för det moderna digitala tv-rummet som har en dator med "
+"ett mediacenter som klarar av vanliga PC-uppgifter (webbsurfande, "
+"ordbehandling och TV-tittande). Avsikten är inte att vara ett fullt "
+"utvecklat mediacenter såsom MythTV men kommer dock väl att integrera med ett "
+"befintligt GNOME-skrivbord.\n"
+
+#: ../src/main.cc:60
+msgid "Enable verbose messages"
+msgstr "Aktivera informativa meddelanden"
+
+#: ../src/main.cc:65
+msgid "Enable maintenance mode"
+msgstr "Aktivera underhållsläge"
+
+#: ../src/main.cc:67
+msgid "Show Me TV help options"
+msgstr "Visa Me TV:s hjälpflaggor"
+
+#: ../src/main_window.cc:64
+msgid "Failed to load EPG widget"
+msgstr "Kunde inte läsa in EPG-widget"
+
+#: ../src/main_window.cc:146
+msgid "No DVB Devices"
+msgstr "Inga DVB-enheter"
+
+#: ../src/main_window.cc:285
+msgid "Failed to launch help"
+msgstr "Misslyckades med att starta hjälp"
+
+#: ../src/main_window.cc:289
+msgid "Failed to launch help: %1"
+msgstr "Misslyckades med att starta hjälp: %1"
+
+#: ../src/main_window.cc:485
+msgid "Me TV - It's TV for me computer"
+msgstr "MeTV - Det är TV för min dator"
+
+#: ../src/main_window.cc:497 ../src/main_window.cc:498
+msgid " [Recording]"
+msgstr " [Spelar in]"
+
+#: ../src/main_window.cc:667
+msgid "Failed to start engine: Engine has already been started"
+msgstr "Misslyckades med att starta motor: Motorn har redan startats"
+
+#: ../src/main_window.cc:674
+msgid "Window ID was 0"
+msgstr "Fönster-ID var 0"
+
+#: ../src/main_window.cc:685
+msgid "Unknown engine type"
+msgstr "Okänt motortyp"
+
+#: ../src/meters_dialog.cc:71
+msgid "Signal Strength (%1%%)"
+msgstr "Signalstyrka (%1%%)"
+
+#: ../src/meters_dialog.cc:72
+msgid "S/N Ratio (%1%%)"
+msgstr "S/N-förhållande (%1%%)"
+
+#: ../src/me-tv.cc:56
+msgid "Failed to get time"
+msgstr "Misslyckades med att hämta tid"
+
+#: ../src/me-tv.h:30 ../src/me-tv.glade.h:90
+msgid "Unknown"
+msgstr "Okänd"
+
+#: ../src/me-tv.glade.h:1
+msgid ""
+"\n"
+"eng\n"
+"esp\n"
+"fin\n"
+"fre\n"
+"swe"
+msgstr ""
+"\n"
+"eng\n"
+"esp\n"
+"fin\n"
+"fre\n"
+"swe"
+
+#: ../src/me-tv.glade.h:7
+msgid " hours"
+msgstr " timmar"
+
+#: ../src/me-tv.glade.h:8
+msgid " minutes"
+msgstr " minuter"
+
+#: ../src/me-tv.glade.h:9
+msgid "192.168.0.255"
+msgstr "192.168.0.255"
+
+#: ../src/me-tv.glade.h:10
+msgid "< Previous"
+msgstr "< Föregående"
+
+#: ../src/me-tv.glade.h:11
+msgid "Always on top"
+msgstr "Alltid överst"
+
+#: ../src/me-tv.glade.h:12
+msgid "Broadcast"
+msgstr "Utsändning"
+
+#: ../src/me-tv.glade.h:13
+msgid "Broadcast address:"
+msgstr "Utsändningsadress:"
+
+#: ../src/me-tv.glade.h:14
+msgid "Broadcast port:"
+msgstr "Utsändningsport:"
+
+#: ../src/me-tv.glade.h:15
+msgid "By location"
+msgstr "Efter plats"
+
+#: ../src/me-tv.glade.h:16
+msgid "Channel Editor"
+msgstr "Kanalredigerare"
+
+#: ../src/me-tv.glade.h:17
+msgid "Channel:"
+msgstr "Kanal:"
+
+#: ../src/me-tv.glade.h:18
+msgid "Copyright © Michael Lamothe <michael.lamothe@gmail.com>"
+msgstr "Copyright © Michael Lamothe <michael.lamothe@gmail.com>"
+
+#: ../src/me-tv.glade.h:19
+msgid "Description:"
+msgstr "Beskrivning:"
+
+#: ../src/me-tv.glade.h:20
+msgid "Device Text"
+msgstr "Enhetstext"
+
+#: ../src/me-tv.glade.h:21
+msgid "Device: "
+msgstr "Enhet: "
+
+#: ../src/me-tv.glade.h:22
+msgid "Drag channels to reorder"
+msgstr "Dra kanaler till inspelare"
+
+#: ../src/me-tv.glade.h:23
+msgid "Duration:"
+msgstr "Speltid:"
+
+#: ../src/me-tv.glade.h:24
+msgid "EPG span: "
+msgstr "EPG-spann: "
+
+#. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
+#: ../src/me-tv.glade.h:26
+msgid ""
+"GNU General Public License:\n"
+"\n"
+"This program is free software; you can redistribute it and/or modify it "
+"under\n"
+"the terms of the GNU General Public License as published by the Free "
+"Software\n"
+"Foundation; either version 2 of the License, or (at your option) any later\n"
+"version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY\n"
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A\n"
+"PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
+"\n"
+"On Debian systems, the complete text of the GNU General Public License can "
+"be\n"
+"found in /usr/share/common-licenses/GPL file."
+msgstr ""
+"GNU General Public License:\n"
+"\n"
+"Detta program är fri programvara. Du kan distribuera det och/eller\n"
+"modifiera det under villkoren i GNU General Public License, publicerad\n"
+"av Free Software Foundation, antingen version 2 eller (om du så vill)\n"
+"någon senare version.\n"
+"\n"
+"Detta program distribueras i hopp om att det ska vara användbart,\n"
+"men UTAN NÅGON SOM HELST GARANTI, även utan underförstådd garanti\n"
+"om SÄLJBARHET eller LÄMPLIGHET FÖR NÅGOT SPECIELLT ÄNDAMÅL. Se GNU\n"
+"General Public License för ytterligare information.\n"
+"\n"
+"På Debian-system finns den fullständiga texten för GNU General Public "
+"License\n"
+"i filen /usr/share/common-licenses/GPL."
+
+#: ../src/me-tv.glade.h:39
+msgid "Me TV"
+msgstr "Me TV"
+
+#: ../src/me-tv.glade.h:40
+msgid "Me TV - About"
+msgstr "Me TV - Om"
+
+#: ../src/me-tv.glade.h:41
+msgid "Me TV - Channels Editor"
+msgstr "Me TV - Kanalredigerare"
+
+#: ../src/me-tv.glade.h:42
+msgid "Me TV - Main Window"
+msgstr "Me TV - Huvudfönster"
+
+#: ../src/me-tv.glade.h:43
+msgid "Me TV - Meters Window"
+msgstr "Me TV - Mätarfönster"
+
+#: ../src/me-tv.glade.h:44
+msgid "Me TV - Preferences Window"
+msgstr "Me TV - Inställningsfönster"
+
+#: ../src/me-tv.glade.h:45
+msgid "Me TV - Program Details"
+msgstr "Me TV - Programdetaljer"
+
+#: ../src/me-tv.glade.h:46
+msgid "Me TV - Scan Wizard"
+msgstr "Me TV - Avsökningsguide"
+
+#: ../src/me-tv.glade.h:47
+msgid "Me TV - Scheduled Recording"
+msgstr "Me TV - Schemalagd inspelning"
+
+#: ../src/me-tv.glade.h:48
+msgid "Me TV - Scheduled Recordings"
+msgstr "Me TV - Schemalagda inspelningar"
+
+#: ../src/me-tv.glade.h:49
+msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
+msgstr "Me TV är en digital-tv-visare (DVB) för GNOME"
+
+#: ../src/me-tv.glade.h:50
+msgid "Me TV project website"
+msgstr "Me TV-projektets webbplats"
+
+#: ../src/me-tv.glade.h:51
+msgid "Mute"
+msgstr "Ljud av"
+
+#: ../src/me-tv.glade.h:52
+msgid "Mute audio"
+msgstr "Inget ljud"
+
+#: ../src/me-tv.glade.h:53
+msgid "Next >"
+msgstr "Nästa >"
+
+#: ../src/me-tv.glade.h:54
+msgid "No description available."
+msgstr "Ingen beskrivning tillgänglig."
+
+#: ../src/me-tv.glade.h:55
+msgid "No title available"
+msgstr "Ingen titel tillgänglig"
+
+#: ../src/me-tv.glade.h:56
+msgid "Preferred language:"
+msgstr "Föredraget språk:"
+
+#: ../src/me-tv.glade.h:57
+msgid "Quit Me TV"
+msgstr "Avsluta Me TV"
+
+#: ../src/me-tv.glade.h:58
+msgid "Record extra after: "
+msgstr "Spela in extra efter: "
+
+#: ../src/me-tv.glade.h:59
+msgid "Record extra before: "
+msgstr "Spela in extra innan: "
+
+#: ../src/me-tv.glade.h:60
+msgid "Recording directory: "
+msgstr "Inspelningskatalog: "
+
+#: ../src/me-tv.glade.h:61
+msgid "Removes selected channels"
+msgstr "Tar bort markerade kanaler"
+
+#: ../src/me-tv.glade.h:62
+msgid "S/N Ratio"
+msgstr "S/N-förhållande"
+
+#: ../src/me-tv.glade.h:63
+msgid "Scan Progress"
+msgstr "Avsökningsförlopp"
+
+#: ../src/me-tv.glade.h:64
+msgid "Scanning"
+msgstr "Avsökning"
+
+#: ../src/me-tv.glade.h:65
+msgid "Scanning ..."
+msgstr "Söker av ..."
+
+#: ../src/me-tv.glade.h:66
+msgid "Schedule"
+msgstr "Schemalägg"
+
+#: ../src/me-tv.glade.h:67
+msgid "See https://launchpad.net/me-tv"
+msgstr "Se https://launchpad.net/me-tv"
+
+#: ../src/me-tv.glade.h:68
+msgid "Select A Recording Directory"
+msgstr "Välj en inspelningskatalog"
+
+#: ../src/me-tv.glade.h:69
+msgid "Select Channels"
+msgstr "Välj kanaler"
+
+#: ../src/me-tv.glade.h:70
+msgid "Select Scan File"
+msgstr "Välj avsökningsfil"
+
+#: ../src/me-tv.glade.h:71
+msgid "Select a file"
+msgstr "Välj en fil"
+
+#: ../src/me-tv.glade.h:72
+msgid "Select a file to scan"
+msgstr "Välj en fil att söka av"
+
+#: ../src/me-tv.glade.h:73
+msgid "Select a region file to scan"
+msgstr "Välj en regionsfil att söka av"
+
+#: ../src/me-tv.glade.h:74
+msgid "Select the channels that you want to add."
+msgstr "Välj de kanaler som du vill lägga till."
+
+#: ../src/me-tv.glade.h:75
+msgid "Select your country: "
+msgstr "Välj ditt land: "
+
+#: ../src/me-tv.glade.h:76
+msgid "Select your region: "
+msgstr "Välj din region: "
+
+#: ../src/me-tv.glade.h:77
+msgid "Show EPG header"
+msgstr "Visa EPG-huvud"
+
+#: ../src/me-tv.glade.h:78
+msgid "Show Meters"
+msgstr "Visa mätare"
+
+#: ../src/me-tv.glade.h:79
+msgid "Show preferences dialog"
+msgstr "Visa inställningsdialog"
+
+#: ../src/me-tv.glade.h:80
+msgid "Show the About dialog"
+msgstr "Visa Om-dialogrutan"
+
+#: ../src/me-tv.glade.h:81
+msgid "Show time on EPG event buttons"
+msgstr "Visa tid på EPG-händelseknappar"
+
+#: ../src/me-tv.glade.h:82
+msgid "Show tooltips for EPG event buttons"
+msgstr "Visa verktygstips för EPG-händelseknappar"
+
+#: ../src/me-tv.glade.h:83
+msgid "Signal Strength"
+msgstr "Signalstyrka"
+
+#: ../src/me-tv.glade.h:84
+msgid "Start Date:"
+msgstr "Startdatum:"
+
+#: ../src/me-tv.glade.h:85
+msgid "Start Time:"
+msgstr "Starttid:"
+
+#: ../src/me-tv.glade.h:86
+msgid "Streams"
+msgstr "Strömmar"
+
+#: ../src/me-tv.glade.h:87
+msgid "Text encoding:"
+msgstr "Textkodning:"
+
+#: ../src/me-tv.glade.h:88
+msgid "Title:"
+msgstr "Titel:"
+
+#: ../src/me-tv.glade.h:89
+msgid "Toggle fullscreen mode"
+msgstr "Växla helskärmsläge"
+
+#: ../src/me-tv.glade.h:91
+msgid "Use 24 hour workaround for GnomeDateEdit"
+msgstr "Använd 24-timmarslösningen för GnomeDateEdit"
+
+#: ../src/me-tv.glade.h:92
+msgid "What's on now"
+msgstr "Vad är det på tv nu"
+
+#: ../src/me-tv.glade.h:93
+msgid "Xine audio driver:"
+msgstr "Xine-ljuddrivrutin:"
+
+#: ../src/me-tv.glade.h:94
+msgid "Xine video driver:"
+msgstr "Xine-videodrivrutin:"
+
+#: ../src/me-tv.glade.h:95
+msgid "_Audio"
+msgstr "_Ljud"
+
+#: ../src/me-tv.glade.h:96
+msgid "_Broadcast"
+msgstr "_Utsändning"
+
+#: ../src/me-tv.glade.h:97
+msgid "_Devices"
+msgstr "_Enheter"
+
+#: ../src/me-tv.glade.h:98
+msgid "_File"
+msgstr "_Arkiv"
+
+#: ../src/me-tv.glade.h:99
+msgid "_Help"
+msgstr "_Hjälp"
+
+#: ../src/me-tv.glade.h:100
+msgid "_Mute"
+msgstr "_Tyst"
+
+#: ../src/me-tv.glade.h:101
+msgid "_Record"
+msgstr "Spela _in"
+
+#: ../src/me-tv.glade.h:102
+msgid "_Scheduled Recordings"
+msgstr "_Schemalagda inspelningar"
+
+#: ../src/me-tv.glade.h:103
+msgid "_Video"
+msgstr "Vi_deo"
+
+#: ../src/me-tv.glade.h:104
+msgid "_View"
+msgstr "_Visa"
+
+#: ../src/me-tv.glade.h:105
+msgid ""
+"auto\n"
+"alsa\n"
+"oss\n"
+"pulseaudio\n"
+"file\n"
+"null\n"
+"none"
+msgstr ""
+"auto\n"
+"alsa\n"
+"oss\n"
+"pulseaudio\n"
+"file\n"
+"null\n"
+"none"
+
+#: ../src/me-tv.glade.h:112
+msgid ""
+"auto\n"
+"iso6937"
+msgstr ""
+"auto\n"
+"iso6937"
+
+#: ../src/me-tv.glade.h:114
+msgid ""
+"auto\n"
+"xshm\n"
+"xv\n"
+"opengl\n"
+"sdl\n"
+"none"
+msgstr ""
+"auto\n"
+"xshm\n"
+"xv\n"
+"opengl\n"
+"sdl\n"
+"none"
+
+#: ../src/profile.cc:59
+msgid "Channel '%1' not found"
+msgstr "Kanalen \"%1\" hittades inte"
+
+#: ../src/profile.cc:76
+msgid "Failed to set display channel: channel not found"
+msgstr "Misslyckades med att visa kanal: kanalen hittades inte"
+
+#: ../src/profile.cc:99
+msgid "Failed to add channel: You cannot have more than 100 channels"
+msgstr ""
+"Misslyckades med att lägga till kanal: Du kan inte ha fler än 100 kanaler"
+
+#: ../src/profile.cc:186 ../src/profile.cc:221
+msgid "No channels"
+msgstr "Inga kanaler"
+
+#: ../src/profile_manager.cc:69
+msgid "Default"
+msgstr "Standard"
+
+#: ../src/profile_manager.cc:104
+msgid "Failed to find profile '%1'"
+msgstr "Misslyckades med att hitta profilen \"%1\""
+
+#: ../src/profile_manager.cc:121
+msgid "There is no current profile"
+msgstr "Det finns ingen aktuell profil"
+
+#: ../src/scan_window.cc:48
+msgid ""
+"Failed to find initial tuning directory, try installing the dvb-utils or dvb-"
+"apps package"
+msgstr ""
+"Misslyckades med att hitta den initiala mottagarkatalogen. Prova med att "
+"installera paketet dvb-utils eller dvb-apps"
+
+#: ../src/scan_window.cc:57
+msgid "Unknown frontend type"
+msgstr "Okänd framändestyp"
+
+#: ../src/scan_window.cc:89
+msgid "Service Name"
+msgstr "Tjänstenamn"
+
+#: ../src/scan_window.cc:218
+msgid "No tuning file has been selected"
+msgstr "Ingen mottagarfil har valts"
+
+#: ../src/scan_window.cc:260
+msgid "Invalid frontend type"
+msgstr "Ogiltig framändestyp"
+
+#: ../src/scan_window.cc:289
+msgid "Found 1 channel"
+msgid_plural "Found %1 channels"
+msgstr[0] "Hittade 1 kanal"
+msgstr[1] "Hittade %1 kanaler"
+
+#: ../src/scheduled_recordings_dialog.cc:42
+msgid "Description"
+msgstr "Beskrivning"
+
+#: ../src/scheduled_recordings_dialog.cc:43
+msgid "Channel"
+msgstr "Kanal"
+
+#: ../src/scheduled_recordings_dialog.cc:44
+msgid "Start Time"
+msgstr "Starttid"
+
+#: ../src/scheduled_recordings_dialog.cc:45
+msgid "Duration"
+msgstr "Speltid"
+
+#: ../src/scheduled_recordings_dialog.cc:104
+msgid "Failed to get scheduled recording"
+msgstr "Misslyckades med att hämta schemalagd inspelning"
+
+#: ../src/stream_thread.cc:80
+msgid "Failed to create FIFO '%1'"
+msgstr "Misslyckades med att skapa FIFO \"%1\""
+
+#: ../src/stream_thread.cc:521
+msgid "Failed to find PMT ID for service"
+msgstr "Misslyckades med att finna PMT ID för tjänst"
+
+#: ../src/stream_thread.cc:596
+msgid "Failed to record, output channel not open"
+msgstr "Misslyckades med att spela in, utgångskanalen är inte öppen"
+
+#: ../src/stream_thread.cc:603
+msgid "Failed to open recording file"
+msgstr "Misslyckades med att öppna inspelningsfil"
+
+#: ../src/stream_thread.cc:633
+msgid "Failed to create internet address"
+msgstr "Misslyckades med att skapa internetadress"
+
+#: ../src/stream_thread.cc:639
+msgid "Failed to create socket"
+msgstr "Det gick inte att skapa uttag"
+
+#: ../src/thread.cc:48
+msgid " thread has already been started"
+msgstr " tråden har redan startats"
