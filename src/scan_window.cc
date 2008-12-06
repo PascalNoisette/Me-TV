@@ -50,9 +50,9 @@ Glib::ustring ScanWindow::get_initial_tuning_dir()
 		{
 			Glib::ustring scan_directory = splitter.get_value(i);
 			
-			g_debug("Checking '%s'", result.c_str());
+			g_debug("Checking '%s'", scan_directory.c_str());
 		
-			if (Gio::File::create_for_path(result)->query_exists())
+			if (Gio::File::create_for_path(scan_directory)->query_exists())
 			{
 				done = true;
 				result = scan_directory;
