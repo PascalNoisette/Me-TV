@@ -1,5 +1,10 @@
 2008-12-06  Michael Lamothe <michael.lamothe@gmail.com>
 
+	* 0.7.7
+	* Added de translation
+
+2008-12-06  Michael Lamothe <michael.lamothe@gmail.com>
+
 	* 0.7.6
 	* Removing FIFO on every request so that stalled xine processes don't interfere with new xine requests
 	* Added sv translation
