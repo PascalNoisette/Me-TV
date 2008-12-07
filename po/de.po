@@ -1,0 +1,886 @@
+# German translation for me-tv
+# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# This file is distributed under the same license as the me-tv package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: me-tv\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-11-30 01:04+1100\n"
+"PO-Revision-Date: 2008-12-06 19:16+0000\n"
+"Last-Translator: Wadim Kehl <wadim.kehl@gmx.de>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2008-12-07 00:21+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../me-tv.desktop.in.h:1
+msgid "A digital television (DVB) viewer for GNOME"
+msgstr "Ein Programm für digitales Fernsehen (DVB) für GNOME"
+
+#: ../me-tv.desktop.in.h:2
+msgid "Digital Television"
+msgstr "Digitales Fernsehen"
+
+#: ../src/application.cc:37
+msgid "Application has already been initialised"
+msgstr "Die Anwendung wurde bereits initialisiert"
+
+#: ../src/application.cc:229
+msgid "Application has not been initialised"
+msgstr "Anwendung wurde nicht initialisiert"
+
+#: ../src/application.cc:295
+msgid "Main window has not been created"
+msgstr "Das Hauptfenster wurde nicht erstellt"
+
+#: ../src/application.cc:402
+msgid "No channel to make recording filename"
+msgstr ""
+
+#: ../src/application.cc:464
+msgid "Stream thread has not been created"
+msgstr "Der Streamthread wurde nicht erstellt"
+
+#: ../src/application.cc:489
+msgid ""
+"You are trying to stop a scheduled recording.  Would you like Me TV to "
+"delete the scheduled recording?"
+msgstr ""
+"Sie versuchen eine geplante Aufnahme zu stoppen. Möchten Sie, dass Me TV "
+"diese geplante Aufnahme löscht?"
+
+#: ../src/data.cc:147 ../src/data.cc:151
+msgid "Failed to prepare statement: %1"
+msgstr ""
+
+#: ../src/data.cc:157
+msgid "Prepare statement had remaining data: %1"
+msgstr ""
+
+#: ../src/data.cc:162
+msgid "Failed to create statement"
+msgstr "Fehler beim Erstellen des Statements"
+
+#: ../src/data.cc:170
+msgid "Failed to finalise statement"
+msgstr "Fehler beim Finalisieren des Statements"
+
+#: ../src/data.cc:204
+msgid "Failed to connect to Me TV database"
+msgstr "Verbindungsfehler zur Me TV - Datenbank"
+
+#: ../src/data.cc:296
+msgid "ASSERT: epg_event.channel_id == 0"
+msgstr "ASSERT: epg_event.channel_id == 0"
+
+#: ../src/data.cc:330
+msgid "Failed to get epg_event_id"
+msgstr "Konnte epg_event_id nicht erhalten"
+
+#: ../src/data.cc:348
+msgid "Event ID was 0"
+msgstr "Die Event ID war 0"
+
+#: ../src/data.cc:516
+msgid "Invalid channel flag"
+msgstr ""
+
+#: ../src/data.cc:687
+msgid ""
+"Failed to save scheduled recording because it conflicts with another "
+"scheduled recording called '%1'"
+msgstr ""
+"Fehler beim Speichern der geplanten Aufnahme aufgrund Kollision mit anderer "
+"geplanter Aufnahme namens  '%1'"
+
+#: ../src/data.cc:715
+msgid "ASSERT: scheduled_recording.scheduled_recording_id == 0"
+msgstr "ASSERT: scheduled_recording.scheduled_recording_id == 0"
+
+#: ../src/device_manager.cc:84
+msgid "No frontend available"
+msgstr "Kein Frontend verfügbar"
+
+#: ../src/device_manager.cc:131
+msgid "Failed to get frontend by path"
+msgstr "Konnte Frontend per Pfadangabe nicht erhalten"
+
+#: ../src/dvb_demuxer.cc:36
+msgid "Failed to open demux device"
+msgstr "Öffnen des Demux-Geräts fehlgeschlagen"
+
+#: ../src/dvb_demuxer.cc:67
+msgid "Failed to set PES filter"
+msgstr "Setzen des PES-Filters fehlgeschlagen"
+
+#: ../src/dvb_demuxer.cc:85
+msgid "Failed to set section filter for demuxer"
+msgstr "Setzen des Sektionsfilters für den Demuxer fehlgeschlagen"
+
+#: ../src/dvb_demuxer.cc:93
+msgid "Failed to set demuxer buffer size"
+msgstr "Setzen der Puffergröße des Demuxers fehlgeschlagen"
+
+#: ../src/dvb_demuxer.cc:101
+msgid "Timeout while reading"
+msgstr "Zeitüberschreitung beim Lesen"
+
+#: ../src/dvb_demuxer.cc:107
+msgid "Failed to read data from demuxer"
+msgstr "Lesen der Daten vom Demuxer fehlgeschlagen"
+
+#: ../src/dvb_demuxer.cc:117
+msgid "Failed to stop demuxer"
+msgstr "Beenden des Demuxers fehlgeschlagen"
+
+#: ../src/dvb_demuxer.cc:132
+msgid "Failed to poll"
+msgstr "Unfähig zu pollen"
+
+#: ../src/dvb_frontend.cc:112
+msgid "Failed to open tuner"
+msgstr "Empfänger konnte nicht geöffnet werden"
+
+#: ../src/dvb_frontend.cc:117
+msgid "Failed to get tuner info"
+msgstr "Keine Empfängerinformationen gefunden"
+
+#: ../src/dvb_frontend.cc:149
+msgid "Failed to find a value for '%1'"
+msgstr "Konnte keinen Wert finden für '%1'"
+
+#: ../src/dvb_frontend.cc:174
+msgid "Failed to find a text value for '%1'"
+msgstr "Konnten keinen textuellen Wert finden für '%1'"
+
+#: ../src/dvb_frontend.cc:189
+msgid "Failed to tune device"
+msgstr "Empfangsgerät konnte nicht eingestellt werden"
+
+#: ../src/dvb_frontend.cc:192
+msgid "Waiting for signal lock ..."
+msgstr "Auf Signalsperre warten …"
+
+#: ../src/dvb_frontend.cc:194
+msgid "Got signal lock"
+msgstr "Signalsperre erhalten"
+
+#: ../src/dvb_frontend.cc:214
+msgid "Failed to set tone off"
+msgstr "Stummschalten fehlgeschlagen"
+
+#: ../src/dvb_frontend.cc:219
+msgid "Failed to set voltage"
+msgstr "Anlegen der Spannung fehlgeschlagen"
+
+#: ../src/dvb_frontend.cc:225
+msgid "Failed to send master command"
+msgstr "Senden des Master-Befehls fehlgeschlagen"
+
+#: ../src/dvb_frontend.cc:231
+msgid "Failed to send burst"
+msgstr "Senden des Impuls fehlgeschlagen"
+
+#: ../src/dvb_frontend.cc:237
+msgid "Failed to set tone"
+msgstr "Setzen der Lautstärke fehlgeschlagen"
+
+#: ../src/dvb_frontend.cc:266
+msgid "Failed to lock to channel"
+msgstr "Sperren des Kanals fehlgeschlagen"
+
+#: ../src/dvb_frontend.cc:275
+msgid "Failed to get signal strength"
+msgstr "Konnte Signalstärke nicht ermitteln"
+
+#: ../src/dvb_frontend.cc:285
+msgid "Failed to get signal to noise ratio"
+msgstr "Konnte Rauschabstand nicht ermitteln"
+
+#: ../src/dvb_scanner.cc:56
+msgid "Index out of bounds"
+msgstr "Index ausserhalb des gültigen Bereichs"
+
+#: ../src/dvb_scanner.cc:190
+msgid "Me TV cannot process a line in the initial tuning file"
+msgstr "Me TV konnte eine Zeile in der Anfangstuningsdatei nicht verarbeiten"
+
+#: ../src/dvb_si.cc:129
+msgid "Failed to read header"
+msgstr "Auslesen des Headers fehlgeschlagen"
+
+#: ../src/dvb_si.cc:138
+msgid "Failed to read section"
+msgstr "Auslesen des Abschnitts fehlgeschlagen"
+
+#: ../src/dvb_si.cc:145
+msgid "CRC32 check failed"
+msgstr "CRC32-Prüfung fehlgeschlagen"
+
+#: ../src/dvb_si.cc:542
+msgid "ASSERT: offset > end_descriptor_offset"
+msgstr "ASSERT: offset > end_descriptor_offset"
+
+#: ../src/dvb_si.cc:553
+msgid "ASSERT: offset > end_section_offset"
+msgstr "ASSERT: offset > end_section_offset"
+
+#: ../src/dvb_si.cc:759
+msgid "Failed to convert to UTF-8: %1"
+msgstr "Konnte nicht zu UTF-8 konvertieren: %1"
+
+#: ../src/dvb_si.cc:780
+msgid "Failed to convert to UTF-8"
+msgstr "Konvertierung nach UTF-8 fehlgeschlagen"
+
+#: ../src/dvb_transponder.cc:51
+msgid "Failed to find service with service ID %1"
+msgstr "Konnte Dienst nicht ermitteln mit Dienst-ID %1"
+
+#: ../src/epg_event.cc:82 ../src/scheduled_recording.cc:36
+msgid "1 hour"
+msgid_plural "%1 hours"
+msgstr[0] "1 Stunde"
+msgstr[1] "%1 Stunden"
+
+#: ../src/epg_event.cc:90 ../src/scheduled_recording.cc:44
+msgid "1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] "1 Minute"
+msgstr[1] "%1 Minuten"
+
+#: ../src/epg_thread.cc:69
+msgid "No demuxers"
+msgstr "Keine Demuxer"
+
+#: ../src/epg_thread.cc:89
+msgid "Failed to poll EIT demuxers"
+msgstr "Fehler beim Pollen der EIT Demuxer"
+
+#: ../src/epg_thread.cc:105
+msgid "Failed to get an EIT demuxer with events"
+msgstr "Konnte keinen EIT Demuxer mit Events ermitteln"
+
+#: ../src/epg_thread.cc:232
+msgid "Exiting EPG thread"
+msgstr "EPG-Thread wird verlassen"
+
+#: ../src/exception.cc:30
+msgid "Failed to get error message"
+msgstr "Konnte keine Fehlermeldung erhalten"
+
+#: ../src/channels_dialog.cc:44
+msgid "Channel Name"
+msgstr "Kanalname"
+
+#: ../src/main.cc:28
+msgid "Me TV is a digital television viewer for the GNOME desktop"
+msgstr "Me TV ist ein Programm zum digitalen Fernsehen für den GNOME Desktop"
+
+#: ../src/main.cc:29
+msgid ""
+"Me TV was developed for the modern digital lounge room with a PC for a media "
+"centre that is capable of normal PC tasks (web surfing, word processing and "
+"watching TV). It is not designed to be a full-blown media centre such as "
+"MythTV but will integrate well with an existing GNOME desktop.\n"
+msgstr ""
+"Me TV wurde für das moderne, digitale Wohnzimmer mit einem PC als Media "
+"Center entworfen, welcher auch für normale PC-Aufgaben ( Websurfing, "
+"Textverarbeitung und Fernsehen) genutzt wird. Es wurde nicht als "
+"vollwertiges Media Center wie beispielsweise MythTV konzipiert, sondern soll "
+"sich gut in einen vorhandenen GNOME Desktop einfügen.\n"
+
+#: ../src/main.cc:60
+msgid "Enable verbose messages"
+msgstr "Aktiviere ausführliche Meldungen"
+
+#: ../src/main.cc:65
+msgid "Enable maintenance mode"
+msgstr "Aktiviere Wartungsmodus"
+
+#: ../src/main.cc:67
+msgid "Show Me TV help options"
+msgstr "Zeige Me TV Hilfeoptionen"
+
+#: ../src/main_window.cc:64
+msgid "Failed to load EPG widget"
+msgstr "Konnte EPG-Widget nicht laden"
+
+#: ../src/main_window.cc:146
+msgid "No DVB Devices"
+msgstr "Keine DVB-Geräte"
+
+#: ../src/main_window.cc:285
+msgid "Failed to launch help"
+msgstr "Konnte Hilfe nicht starten"
+
+#: ../src/main_window.cc:289
+msgid "Failed to launch help: %1"
+msgstr "Konnte Hilfe nicht starten: %1"
+
+#: ../src/main_window.cc:485
+msgid "Me TV - It's TV for me computer"
+msgstr "Me TV - It's TV for me computer"
+
+#: ../src/main_window.cc:497 ../src/main_window.cc:498
+msgid " [Recording]"
+msgstr " [Aufnahme läuft]"
+
+#: ../src/main_window.cc:667
+msgid "Failed to start engine: Engine has already been started"
+msgstr "Konnte Engine nicht starten: Engine läuft bereits"
+
+#: ../src/main_window.cc:674
+msgid "Window ID was 0"
+msgstr "Fenster-ID ist 0"
+
+#: ../src/main_window.cc:685
+msgid "Unknown engine type"
+msgstr "Unbekannter Engine-Typ"
+
+#: ../src/meters_dialog.cc:71
+msgid "Signal Strength (%1%%)"
+msgstr "Signalstärke (%1%%)"
+
+#: ../src/meters_dialog.cc:72
+msgid "S/N Ratio (%1%%)"
+msgstr "Rauschabstand (%1%%)"
+
+#: ../src/me-tv.cc:56
+msgid "Failed to get time"
+msgstr "Konnte Zeit nicht ermitteln"
+
+#: ../src/me-tv.h:30 ../src/me-tv.glade.h:90
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: ../src/me-tv.glade.h:1
+msgid ""
+"\n"
+"eng\n"
+"esp\n"
+"fin\n"
+"fre\n"
+"swe"
+msgstr ""
+
+#: ../src/me-tv.glade.h:7
+msgid " hours"
+msgstr " Stunden"
+
+#: ../src/me-tv.glade.h:8
+msgid " minutes"
+msgstr " Minuten"
+
+#: ../src/me-tv.glade.h:9
+msgid "192.168.0.255"
+msgstr "192.168.0.255"
+
+#: ../src/me-tv.glade.h:10
+msgid "< Previous"
+msgstr "< Zurück"
+
+#: ../src/me-tv.glade.h:11
+msgid "Always on top"
+msgstr "Immer im Vordergrund"
+
+#: ../src/me-tv.glade.h:12
+msgid "Broadcast"
+msgstr "Übertragung"
+
+#: ../src/me-tv.glade.h:13
+msgid "Broadcast address:"
+msgstr "Adresse der Übertragung:"
+
+#: ../src/me-tv.glade.h:14
+msgid "Broadcast port:"
+msgstr "Port der Übertragung:"
+
+#: ../src/me-tv.glade.h:15
+msgid "By location"
+msgstr ""
+
+#: ../src/me-tv.glade.h:16
+msgid "Channel Editor"
+msgstr "Sendereditor"
+
+#: ../src/me-tv.glade.h:17
+msgid "Channel:"
+msgstr "Kanal:"
+
+#: ../src/me-tv.glade.h:18
+msgid "Copyright © Michael Lamothe <michael.lamothe@gmail.com>"
+msgstr "Copyright © Michael Lamothe <michael.lamothe@gmail.com>"
+
+#: ../src/me-tv.glade.h:19
+msgid "Description:"
+msgstr "Beschreibung:"
+
+#: ../src/me-tv.glade.h:20
+msgid "Device Text"
+msgstr "Gerätetext"
+
+#: ../src/me-tv.glade.h:21
+msgid "Device: "
+msgstr "Gerät: "
+
+#: ../src/me-tv.glade.h:22
+msgid "Drag channels to reorder"
+msgstr "Sender ziehen zum Umordnen"
+
+#: ../src/me-tv.glade.h:23
+msgid "Duration:"
+msgstr "Dauer:"
+
+#: ../src/me-tv.glade.h:24
+msgid "EPG span: "
+msgstr ""
+
+#. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
+#: ../src/me-tv.glade.h:26
+msgid ""
+"GNU General Public License:\n"
+"\n"
+"This program is free software; you can redistribute it and/or modify it "
+"under\n"
+"the terms of the GNU General Public License as published by the Free "
+"Software\n"
+"Foundation; either version 2 of the License, or (at your option) any later\n"
+"version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY\n"
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A\n"
+"PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
+"\n"
+"On Debian systems, the complete text of the GNU General Public License can "
+"be\n"
+"found in /usr/share/common-licenses/GPL file."
+msgstr ""
+"Dieses Programm ist freie Software. Sie können es unter den Bedingungen der "
+"GNU General Public License, wie von der Free Software Foundation "
+"veröffentlicht, weitergeben und/oder modifizieren, entweder gemäß Version 2 "
+"der Lizenz oder (nach Ihrer Option) jeder späteren Version.\n"
+"\n"
+"Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen "
+"von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die "
+"implizite Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN "
+"BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public License.\n"
+"\n"
+"Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem "
+"Programm erhalten haben. Falls nicht, schreiben Sie an die Free Software "
+"Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA."
+
+#: ../src/me-tv.glade.h:39
+msgid "Me TV"
+msgstr "Me TV"
+
+#: ../src/me-tv.glade.h:40
+msgid "Me TV - About"
+msgstr "Informationen zu Me TV"
+
+#: ../src/me-tv.glade.h:41
+msgid "Me TV - Channels Editor"
+msgstr "Me TV - Sendereditor"
+
+#: ../src/me-tv.glade.h:42
+msgid "Me TV - Main Window"
+msgstr "Me TV - Hauptfenster"
+
+#: ../src/me-tv.glade.h:43
+msgid "Me TV - Meters Window"
+msgstr ""
+
+#: ../src/me-tv.glade.h:44
+msgid "Me TV - Preferences Window"
+msgstr ""
+
+#: ../src/me-tv.glade.h:45
+msgid "Me TV - Program Details"
+msgstr "Me TV - Programmedetails"
+
+#: ../src/me-tv.glade.h:46
+msgid "Me TV - Scan Wizard"
+msgstr ""
+
+#: ../src/me-tv.glade.h:47
+msgid "Me TV - Scheduled Recording"
+msgstr "Me TV - Geplante Aufnahme"
+
+#: ../src/me-tv.glade.h:48
+msgid "Me TV - Scheduled Recordings"
+msgstr "Me TV - Zeitgesteuerte Aufnahmen"
+
+#: ../src/me-tv.glade.h:49
+msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
+msgstr "Me TV ist eine GNOME-Anwendung für digitales Fernsehen (DVB)"
+
+#: ../src/me-tv.glade.h:50
+msgid "Me TV project website"
+msgstr "Projektseite von Me TV"
+
+#: ../src/me-tv.glade.h:51
+msgid "Mute"
+msgstr "Stumm"
+
+#: ../src/me-tv.glade.h:52
+msgid "Mute audio"
+msgstr "Audio stummschalten"
+
+#: ../src/me-tv.glade.h:53
+msgid "Next >"
+msgstr "Weiter >"
+
+#: ../src/me-tv.glade.h:54
+msgid "No description available."
+msgstr "Keine Beschreibung vorhanden."
+
+#: ../src/me-tv.glade.h:55
+msgid "No title available"
+msgstr "Kein Titel vorhanden"
+
+#: ../src/me-tv.glade.h:56
+msgid "Preferred language:"
+msgstr "Bevorzugte Sprache:"
+
+#: ../src/me-tv.glade.h:57
+msgid "Quit Me TV"
+msgstr "Me TV beenden"
+
+#: ../src/me-tv.glade.h:58
+msgid "Record extra after: "
+msgstr "Puffer nach Aufnahme "
+
+#: ../src/me-tv.glade.h:59
+msgid "Record extra before: "
+msgstr "Puffer vor Aufnahme "
+
+#: ../src/me-tv.glade.h:60
+msgid "Recording directory: "
+msgstr "Aufnahmeverzeichnis: "
+
+#: ../src/me-tv.glade.h:61
+msgid "Removes selected channels"
+msgstr "Entfernt ausgewählte Sender"
+
+#: ../src/me-tv.glade.h:62
+msgid "S/N Ratio"
+msgstr "Rauschabstand"
+
+#: ../src/me-tv.glade.h:63
+msgid "Scan Progress"
+msgstr "Suchfortschritt"
+
+#: ../src/me-tv.glade.h:64
+msgid "Scanning"
+msgstr ""
+
+#: ../src/me-tv.glade.h:65
+msgid "Scanning ..."
+msgstr "Suchvorgang läuft..."
+
+#: ../src/me-tv.glade.h:66
+msgid "Schedule"
+msgstr "Aufnahmeplanung"
+
+#: ../src/me-tv.glade.h:67
+msgid "See https://launchpad.net/me-tv"
+msgstr ""
+
+#: ../src/me-tv.glade.h:68
+msgid "Select A Recording Directory"
+msgstr "Aufnahmeordner wählen"
+
+#: ../src/me-tv.glade.h:69
+msgid "Select Channels"
+msgstr "Sender wählen"
+
+#: ../src/me-tv.glade.h:70
+msgid "Select Scan File"
+msgstr ""
+
+#: ../src/me-tv.glade.h:71
+msgid "Select a file"
+msgstr "Datei auswählen"
+
+#: ../src/me-tv.glade.h:72
+msgid "Select a file to scan"
+msgstr "Datei zum Scannen auswählen"
+
+#: ../src/me-tv.glade.h:73
+msgid "Select a region file to scan"
+msgstr "Regionsdatei zum Scannen auswählen"
+
+#: ../src/me-tv.glade.h:74
+msgid "Select the channels that you want to add."
+msgstr "Sender zum Hinzufügen auswählen."
+
+#: ../src/me-tv.glade.h:75
+msgid "Select your country: "
+msgstr "Wählen Sie ihr Land: "
+
+#: ../src/me-tv.glade.h:76
+msgid "Select your region: "
+msgstr "Wählen Sie ihre Region: "
+
+#: ../src/me-tv.glade.h:77
+msgid "Show EPG header"
+msgstr "Zeige EPG-Header"
+
+#: ../src/me-tv.glade.h:78
+msgid "Show Meters"
+msgstr ""
+
+#: ../src/me-tv.glade.h:79
+msgid "Show preferences dialog"
+msgstr "Einstellungsdialog anzeigen"
+
+#: ../src/me-tv.glade.h:80
+msgid "Show the About dialog"
+msgstr "Über Me TV"
+
+#: ../src/me-tv.glade.h:81
+msgid "Show time on EPG event buttons"
+msgstr "Zeige Zeit auf den EPG Eventbuttons"
+
+#: ../src/me-tv.glade.h:82
+msgid "Show tooltips for EPG event buttons"
+msgstr "Zeige Tooltips für die EPG Eventbuttons"
+
+#: ../src/me-tv.glade.h:83
+msgid "Signal Strength"
+msgstr "Signalstärke"
+
+#: ../src/me-tv.glade.h:84
+msgid "Start Date:"
+msgstr "Startdatum:"
+
+#: ../src/me-tv.glade.h:85
+msgid "Start Time:"
+msgstr "Startzeit:"
+
+#: ../src/me-tv.glade.h:86
+msgid "Streams"
+msgstr "Streams"
+
+#: ../src/me-tv.glade.h:87
+msgid "Text encoding:"
+msgstr "Textkodierung:"
+
+#: ../src/me-tv.glade.h:88
+msgid "Title:"
+msgstr "Titel:"
+
+#: ../src/me-tv.glade.h:89
+msgid "Toggle fullscreen mode"
+msgstr "Vollbildmodus an/aus"
+
+#: ../src/me-tv.glade.h:91
+msgid "Use 24 hour workaround for GnomeDateEdit"
+msgstr "Nutze 24-Stunden-Workaround für GnomeDateEdit"
+
+#: ../src/me-tv.glade.h:92
+msgid "What's on now"
+msgstr ""
+
+#: ../src/me-tv.glade.h:93
+msgid "Xine audio driver:"
+msgstr "Xine Audiotreiber:"
+
+#: ../src/me-tv.glade.h:94
+msgid "Xine video driver:"
+msgstr "Xine Videotreiber:"
+
+#: ../src/me-tv.glade.h:95
+msgid "_Audio"
+msgstr "_Audio"
+
+#: ../src/me-tv.glade.h:96
+msgid "_Broadcast"
+msgstr "_Übertragung"
+
+#: ../src/me-tv.glade.h:97
+msgid "_Devices"
+msgstr "_Geräte"
+
+#: ../src/me-tv.glade.h:98
+msgid "_File"
+msgstr "_Datei"
+
+#: ../src/me-tv.glade.h:99
+msgid "_Help"
+msgstr "_Hilfe"
+
+#: ../src/me-tv.glade.h:100
+msgid "_Mute"
+msgstr "_Stumm schalten"
+
+#: ../src/me-tv.glade.h:101
+msgid "_Record"
+msgstr "_Aufnahme"
+
+#: ../src/me-tv.glade.h:102
+msgid "_Scheduled Recordings"
+msgstr "_Geplante Aufnahmen"
+
+#: ../src/me-tv.glade.h:103
+msgid "_Video"
+msgstr "_Video"
+
+#: ../src/me-tv.glade.h:104
+msgid "_View"
+msgstr "_Ansicht"
+
+#: ../src/me-tv.glade.h:105
+msgid ""
+"auto\n"
+"alsa\n"
+"oss\n"
+"pulseaudio\n"
+"file\n"
+"null\n"
+"none"
+msgstr ""
+"auto\n"
+"alsa\n"
+"oss\n"
+"pulseaudio\n"
+"file\n"
+"null\n"
+"nichts"
+
+#: ../src/me-tv.glade.h:112
+msgid ""
+"auto\n"
+"iso6937"
+msgstr ""
+"auto\n"
+"iso6937"
+
+#: ../src/me-tv.glade.h:114
+msgid ""
+"auto\n"
+"xshm\n"
+"xv\n"
+"opengl\n"
+"sdl\n"
+"none"
+msgstr ""
+"auto\n"
+"xshm\n"
+"xv\n"
+"opengl\n"
+"sdl\n"
+"nichts"
+
+#: ../src/profile.cc:59
+msgid "Channel '%1' not found"
+msgstr "Sender '%1' nicht gefunden"
+
+#: ../src/profile.cc:76
+msgid "Failed to set display channel: channel not found"
+msgstr ""
+
+#: ../src/profile.cc:99
+msgid "Failed to add channel: You cannot have more than 100 channels"
+msgstr "Fehler beim Hinzufügen: Sie können nicht mehr als 100 Sender haben"
+
+#: ../src/profile.cc:186 ../src/profile.cc:221
+msgid "No channels"
+msgstr "Keine Sender"
+
+#: ../src/profile_manager.cc:69
+msgid "Default"
+msgstr "Standard"
+
+#: ../src/profile_manager.cc:104
+msgid "Failed to find profile '%1'"
+msgstr "Konnte Profil '%1' nicht finden"
+
+#: ../src/profile_manager.cc:121
+msgid "There is no current profile"
+msgstr "Es exisitiert momentan kein Profil"
+
+#: ../src/scan_window.cc:48
+msgid ""
+"Failed to find initial tuning directory, try installing the dvb-utils or dvb-"
+"apps package"
+msgstr ""
+"Konnte das Verzeichnis für das Anfangstuning nicht ermitteln. Versuchen Sie "
+"es per Installation des Pakets dvb-utils oder dvb-apps."
+
+#: ../src/scan_window.cc:57
+msgid "Unknown frontend type"
+msgstr "Unbekannter Frontend-Typ"
+
+#: ../src/scan_window.cc:89
+msgid "Service Name"
+msgstr "Dienstname"
+
+#: ../src/scan_window.cc:218
+msgid "No tuning file has been selected"
+msgstr "Keine Tuning-Datei ausgewählt"
+
+#: ../src/scan_window.cc:260
+msgid "Invalid frontend type"
+msgstr "Ungültiger Frontend-Typ"
+
+#: ../src/scan_window.cc:289
+msgid "Found 1 channel"
+msgid_plural "Found %1 channels"
+msgstr[0] "1 Sender gefunden"
+msgstr[1] "%1 Sender gefunden"
+
+#: ../src/scheduled_recordings_dialog.cc:42
+msgid "Description"
+msgstr "Beschreibung"
+
+#: ../src/scheduled_recordings_dialog.cc:43
+msgid "Channel"
+msgstr "Sender"
+
+#: ../src/scheduled_recordings_dialog.cc:44
+msgid "Start Time"
+msgstr "Startzeit"
+
+#: ../src/scheduled_recordings_dialog.cc:45
+msgid "Duration"
+msgstr "Dauer"
+
+#: ../src/scheduled_recordings_dialog.cc:104
+msgid "Failed to get scheduled recording"
+msgstr "Konnte geplante Aufnahme nicht erhalten"
+
+#: ../src/stream_thread.cc:80
+msgid "Failed to create FIFO '%1'"
+msgstr "Fehler beim Erstellen des FIFO '%1'"
+
+#: ../src/stream_thread.cc:521
+msgid "Failed to find PMT ID for service"
+msgstr "PMT ID für Kanal nicht gefunden"
+
+#: ../src/stream_thread.cc:596
+msgid "Failed to record, output channel not open"
+msgstr "Fehler beim Aufnehmen, Ausgabekanal nicht geöffnet"
+
+#: ../src/stream_thread.cc:603
+msgid "Failed to open recording file"
+msgstr "Fehler beim Öffnen der Aufnahmedatei"
+
+#: ../src/stream_thread.cc:633
+msgid "Failed to create internet address"
+msgstr "Konnte Internetadresse nicht erstellen"
+
+#: ../src/stream_thread.cc:639
+msgid "Failed to create socket"
+msgstr "Konnte Socket nicht erzeugen"
+
+#: ../src/thread.cc:48
+msgid " thread has already been started"
+msgstr " Thread wurde schon gestartet"
