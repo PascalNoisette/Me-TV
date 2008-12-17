@@ -517,6 +517,7 @@ void StreamThread::setup_dvb()
 	pmt_pid = 0;
 	
 	g_debug("Found %d associations", length);
+	g_debug("Searching for service ID %d", channel.service_id);
 	for (guint i = 0; i < length; i++)
 	{
 		Dvb::SI::ProgramAssociation program_association = pas.program_associations[i];
@@ -524,6 +525,7 @@ void StreamThread::setup_dvb()
 		if (program_association.program_number == channel.service_id)
 		{
 			pmt_pid = program_association.program_map_pid;
+			g_debug("%d: PMT ID: %d", i, pmt_pid);
 		}
 	}
 	
