@@ -597,7 +597,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <child>
                   <widget class="GtkComboBoxEntry" id="comboboxentry1">
                     <property name="visible">True</property>
-                    <property name="items" translatable="yes">auto
+                    <property name="items" translatable="no">auto
 alsa
 oss
 pulseaudio
@@ -669,7 +669,7 @@ none</property>
                 <child>
                   <widget class="GtkComboBoxEntry" id="combo_box_entry_text_encoding">
                     <property name="visible">True</property>
-                    <property name="items" translatable="yes">auto
+                    <property name="items" translatable="no">auto
 iso6937</property>
                     <child internal-child="entry">
                       <widget class="GtkEntry" id="entry_text_encoding">
@@ -765,7 +765,7 @@ iso6937</property>
                 <child>
                   <widget class="GtkComboBoxEntry" id="combo_box_entry_xine_video_driver">
                     <property name="visible">True</property>
-                    <property name="items" translatable="yes">auto
+                    <property name="items" translatable="no">auto
 xshm
 xv
 opengl
