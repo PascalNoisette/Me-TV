@@ -96,7 +96,7 @@ void Demuxer::set_buffer_size(unsigned int buffer_size)
 
 gint Demuxer::read(unsigned char* buffer, size_t length)
 {
-	if (!poll(5000))
+	if (!poll(10000))
 	{
 		throw TimeoutException(_("Timeout while reading"));
 	}
