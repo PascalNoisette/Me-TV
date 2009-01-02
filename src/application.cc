@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -50,6 +50,10 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 
 	signal_quit().connect(sigc::mem_fun(this, &Application::on_quit));
 
+	// Remove all other handlers first
+	get_signal_error().clear();
+	get_signal_error().connect(sigc::mem_fun(*this, &Application::on_error));
+
 	client = Gnome::Conf::Client::get_default_client();
 	
 	set_int_configuration_default("epg_span_hours", 3);
@@ -66,6 +70,8 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_boolean_configuration_default("show_epg_tooltips", false);
 	set_string_configuration_default("xine.video_driver", "xv");
 	set_string_configuration_default("xine.audio_driver", "alsa");
+	set_string_configuration_default("mplayer.video_driver", "xv");
+	set_string_configuration_default("mplayer.audio_driver", "alsa");
 	set_string_configuration_default("xine.deinterlace_type", "tvtime");
 	set_string_configuration_default("preferred_language", "");
 	set_string_configuration_default("text_encoding", "auto");
@@ -189,11 +195,15 @@ void Application::run()
 	GdkLock gdk_lock;
 	status_icon = new StatusIcon(glade);
 	main_window = MainWindow::create(glade);
-	main_window->show();
 	
-	if (maintenance_mode)
+	if (!minimised_mode)
 	{
-		main_window->show_preferences_dialog();
+		main_window->show();
+	
+		if (safe_mode)
+		{
+			main_window->show_preferences_dialog();
+		}
 	}
 
 	Profile& current_profile = get_profile_manager().get_current_profile();
@@ -562,4 +572,18 @@ bool Application::on_quit()
 		main_window->stop_engine();
 	}
 	return true;
+}
+
+void Application::on_error(const Glib::ustring& message)
+{
+	if (main_window != NULL)
+	{
+		Gtk::MessageDialog dialog(*main_window, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+		dialog.run();
+	}
+	else
+	{
+		Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+		dialog.run();
+	}
 }

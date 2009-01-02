@@ -1,7 +1,18 @@
-2008-12-06  Michael Lamothe <michael.lamothe@gmail.com>
+2009-01-02  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.8
+	* Fixed issue with initial scan parser
+	* Added fa translation
+
+2009-01-01  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.7
 	* Added de translation
+	* Added it translation
+	* Put in timeout for xine process to reap
+	* Fix for extent EPG events
+	* MPlayer engine is available again
+	* Added channels.conf importer
 
 2008-12-06  Michael Lamothe <michael.lamothe@gmail.com>
 

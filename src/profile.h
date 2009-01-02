@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -23,6 +23,8 @@
 
 #include <glibmm.h>
 #include "channel.h"
+
+#define MAX_CHANNELS 100
 
 class Profile
 {

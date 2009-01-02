@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -571,6 +571,8 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 			Glib::ustring language;
 			Glib::ustring title;
 			Glib::ustring description;
+			Glib::ustring temp_description;
+			Glib::ustring temp_title;
 
 			language = get_lang_desc (event_buffer);
 			unsigned int offset = 6;
@@ -578,16 +580,20 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 			offset++;
 			while (length_of_items > offset - 7)
 			{
-				offset += get_text(description, &event_buffer[offset]);			
-				offset += get_text(title, &event_buffer[offset]);
+				offset += get_text(temp_description, &event_buffer[offset]);			
+				description += temp_description;
+
+				offset += get_text(temp_title, &event_buffer[offset]);
+				title += temp_title;
 			}
-			offset += get_text(description, &event_buffer[offset]);
+			offset += get_text(temp_description, &event_buffer[offset]);
+			description += temp_description;
 			
 			EventText event_text;
 			event_text.is_extended = true;
 			event_text.language = language;
-			event_text.description = description;
-			event_text.title = title;
+			event_text.description += description;
+			event_text.title += title;
 			
 			event.texts.push_back(event_text);
 		}

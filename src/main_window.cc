@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -26,6 +26,7 @@
 #include "scheduled_recordings_dialog.h"
 #include "me-tv.h"
 #include "xine_engine.h"
+#include "mplayer_engine.h"
 #include <config.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
@@ -48,9 +49,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	engine				= NULL;
 	output_fd			= -1;
 	mute_state			= false;
-	
-	get_signal_error().connect(sigc::mem_fun(*this, &MainWindow::on_error));
-	
+		
 	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
 	app_bar->get_progress()->hide();
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
@@ -159,12 +158,6 @@ void MainWindow::load_devices()
 
 	menu_item_devices->set_submenu(*menu);
 	menu_item_devices->show_all();
-}
-
-void MainWindow::on_error(const Glib::ustring& message)
-{
-	Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
-	dialog.run();
 }
 
 void MainWindow::on_menu_item_record_clicked()
@@ -400,8 +393,8 @@ void MainWindow::on_timeout()
 	// Disable screensaver
 	if (now - last_poke_time > POKE_INTERVAL)
 	{
-		Gdk::WindowState state = get_window()->get_state();
-		gboolean is_minimised = state & Gdk::WINDOW_STATE_ICONIFIED;
+		Glib::RefPtr<Gdk::Window> window = get_window();
+		gboolean is_minimised = window == NULL || window->get_state() & Gdk::WINDOW_STATE_ICONIFIED;
 		if (is_visible() && !is_minimised)
 		{ 		
 			Display* display = GDK_DISPLAY();
@@ -679,6 +672,10 @@ void MainWindow::start_engine()
 		if (engine_type == "xine")
 		{
 			engine = new XineEngine(window_id);
+		}
+		else if (engine_type == "mplayer")
+		{
+			engine = new MplayerEngine(window_id);
 		}
 		else
 		{

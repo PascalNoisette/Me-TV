@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -59,6 +59,7 @@ private:
 		
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
+	void on_error(const Glib::ustring& message);
 
 public:
 	Application(int argc, char *argv[], Glib::OptionContext& option_context);

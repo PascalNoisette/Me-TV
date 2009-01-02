@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -23,7 +23,8 @@
 #include "thread.h"
 #include "me-tv.h"
 #include "application.h"
-#include "string_splitter.h"
+#include "channels_conf_line.h"
+#include "profile.h"
 
 ScanWindow* ScanWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
@@ -36,7 +37,7 @@ Glib::ustring ScanWindow::get_initial_tuning_dir()
 {
 	Glib::ustring result;
 	gboolean done = false;
-	int i = 0;
+	guint i = 0;
 	
 	StringSplitter splitter(SCAN_DIRECTORIES, ":", 100);
 
@@ -207,8 +208,72 @@ void ScanWindow::on_button_scan_wizard_cancel_clicked()
 	hide();
 }
 
+void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
+{
+	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
+	Glib::RefPtr<Glib::IOChannel> file = Glib::IOChannel::create_from_file(channels_conf_path, "r");
+	Glib::ustring line;
+	guint line_count = 0;
+	
+	while (file->read_line(line) == Glib::IO_STATUS_NORMAL)
+	{
+		ChannelsConfLine channels_conf_line(line);
+		guint parameter_count = channels_conf_line.get_parameter_count();
+
+		line_count++;
+		
+		g_debug("Line %d (%d parameters): '%s'", line_count, parameter_count, line.c_str());
+	
+		if (parameter_count > 1)
+		{
+			switch(frontend.get_frontend_info().type)
+			{
+				case FE_OFDM:
+					if (parameter_count != 13)
+					{
+						Glib::ustring message = Glib::ustring::compose(_("Invalid parameter count on line %1"), line_count);
+						throw Exception(message);
+					}
+
+					{
+						Channel channel;
+
+						channel.name = channels_conf_line.get_name(0);
+						channel.sort_order = line_count;
+						channel.flags = CHANNEL_FLAG_DVB_T;
+				
+						channel.frontend_parameters.frequency						= channels_conf_line.get_frequency(1);
+						channel.frontend_parameters.inversion						= channels_conf_line.get_inversion(2);
+						channel.frontend_parameters.u.ofdm.bandwidth				= channels_conf_line.get_bandwidth(3);
+						channel.frontend_parameters.u.ofdm.code_rate_HP				= channels_conf_line.get_fec(4);
+						channel.frontend_parameters.u.ofdm.code_rate_LP				= channels_conf_line.get_fec(5);
+						channel.frontend_parameters.u.ofdm.constellation			= channels_conf_line.get_modulation(6);
+						channel.frontend_parameters.u.ofdm.transmission_mode		= channels_conf_line.get_transmit_mode(7);
+						channel.frontend_parameters.u.ofdm.guard_interval			= channels_conf_line.get_guard_interval(8);
+						channel.frontend_parameters.u.ofdm.hierarchy_information	= channels_conf_line.get_hierarchy(9);
+						channel.service_id											= channels_conf_line.get_service_id(12);
+				
+						current_profile.add_channel(channel);
+					}
+					break;
+				
+				default:
+					throw Exception(_("Invalid frontend type: only DVB-T is supported"));
+					break;
+			}
+		}		
+	}
+	g_debug("Finished importing channels");
+	
+	current_profile.save();	
+	hide();
+}
+
 void ScanWindow::on_button_scan_wizard_next_clicked()
 {
+	TRY
+	gboolean do_scan = true;
+	
 	stop_scan();
 
 	glade->get_widget("button_scan_wizard_next")->hide();
@@ -219,33 +284,51 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 	Glib::ustring initial_tuning_file;
 	
 	Gtk::RadioButton* radio_button_scan_by_location = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_by_location"));
+	Gtk::RadioButton* radio_button_scan_by_country = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_by_country"));
+	Gtk::RadioButton* radio_button_scan_import_channels_conf = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_import_channels_conf"));
+		
 	if (radio_button_scan_by_location->get_active())
 	{
 		Glib::ustring country_name = combo_box_select_country->get_active_text();
 		Glib::ustring region_name = combo_box_select_region->get_active_text();
 		initial_tuning_file = scan_directory_path + "/" + country_name + "-" + region_name;
 	}
-	else
+	else if (radio_button_scan_by_country->get_active())
 	{
 		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_select_file_to_scan"));
 		initial_tuning_file = file_chooser->get_filename();
 	}
-
-	if (initial_tuning_file.empty())
+	else if (radio_button_scan_import_channels_conf->get_active())
 	{
-		Gtk::MessageDialog dialog(*this, _("No tuning file has been selected"));
-		dialog.run();
+		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_channels_conf"));
+		Glib::ustring channels_conf_path = file_chooser->get_filename();
+		import_channels_conf(channels_conf_path);
+		do_scan = false;
 	}
 	else
 	{
-		g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
-		scan_thread = new ScanThread(frontend, initial_tuning_file);
-		Dvb::Scanner& scanner = scan_thread->get_scanner();
-		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_service));
-		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_progress));
-		get_application().stop_stream_thread();
-		scan_thread->start();
+		throw Exception(_("No scan/import option specified"));
 	}
+	
+	if (do_scan)
+	{
+		if (initial_tuning_file.empty())
+		{
+			Gtk::MessageDialog dialog(*this, _("No tuning file has been selected"));
+			dialog.run();
+		}
+		else
+		{
+			g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
+			scan_thread = new ScanThread(frontend, initial_tuning_file);
+			Dvb::Scanner& scanner = scan_thread->get_scanner();
+			scanner.signal_service.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_service));
+			scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_progress));
+			get_application().stop_stream_thread();
+			scan_thread->start();
+		}
+	}
+	CATCH
 }
 
 void ScanWindow::on_button_scan_wizard_add_clicked()

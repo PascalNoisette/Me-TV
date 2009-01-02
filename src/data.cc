@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -373,7 +373,7 @@ void Data::replace_epg_event_text(EpgEventText& epg_event_text)
 		{
 			command = Glib::ustring::compose
 			(
-				"UPDATE EPG_EVENT_TEXT SET DESCRIPTION = '%1' WHERE EPG_EVENT_TEXT_ID=%2;",
+				"UPDATE EPG_EVENT_TEXT SET DESCRIPTION = DESCRIPTION || '%1' WHERE EPG_EVENT_TEXT_ID=%2;",
 				fixed_description, existing_epg_event_text_id
 			);
 		}

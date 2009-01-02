@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -36,6 +36,7 @@ private:
 	void expose();
 	void set_size(gint width, gint height) {};
 	void set_audio_channel(guint channel) {};
+	gboolean is_running();
 
 public:
 	MplayerEngine(int window_id);

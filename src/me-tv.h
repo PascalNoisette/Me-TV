@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -30,7 +30,8 @@
 #define UNKNOWN_TEXT	_("Unknown")
 
 extern bool verbose_logging;
-extern bool maintenance_mode;
+extern bool safe_mode;
+extern bool minimised_mode;
 
 typedef sigc::signal<void, const Glib::ustring&> StringSignal;
 
@@ -38,6 +39,15 @@ StringSignal& get_signal_error();
 
 typedef std::vector<Glib::ustring> StringArray;
 typedef std::list<Glib::ustring> StringList;
+
+struct StringTable
+{
+	const char*	text;
+	guint		value;
+};
+
+guint convert_string_to_value(const StringTable* table, const Glib::ustring& text);
+Glib::ustring convert_value_to_string(const StringTable* table, guint value);
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to);
 Glib::ustring get_local_time_text(const gchar* format);

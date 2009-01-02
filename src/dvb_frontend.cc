@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -23,80 +23,6 @@
 #include "me-tv.h"
 
 using namespace Dvb;
-
-struct StringTable Dvb::bandwidth_table[] =
-{
-	{ "8MHz", BANDWIDTH_8_MHZ },
-	{ "7MHz", BANDWIDTH_7_MHZ },
-	{ "6MHz", BANDWIDTH_6_MHZ },
-	{ "AUTO", BANDWIDTH_AUTO },
-	{ NULL, 0 }
-};
-
-struct StringTable Dvb::fec_table[] =
-{
-	{ "NONE", FEC_NONE },
-	{ "1/2",  FEC_1_2 },
-	{ "2/3",  FEC_2_3 },
-	{ "3/4",  FEC_3_4 },
-	{ "4/5",  FEC_4_5 },
-	{ "5/6",  FEC_5_6 },
-	{ "6/7",  FEC_6_7 },
-	{ "7/8",  FEC_7_8 },
-	{ "8/9",  FEC_8_9 },
-	{ "AUTO", FEC_AUTO },
-	{ NULL, 0 }
-};
-
-struct StringTable Dvb::modulation_table[] =
-{
-	{ "QPSK",   QPSK },
-	{ "QAM16",  QAM_16 },
-	{ "QAM32",  QAM_32 },
-	{ "QAM64",  QAM_64 },
-	{ "QAM128", QAM_128 },
-	{ "QAM256", QAM_256 },
-	{ "AUTO",   QAM_AUTO },
-	{ "8VSB",   VSB_8 },
-	{ "16VSB",  VSB_16 },
-	{ NULL, 0 }
-};
-
-struct StringTable Dvb::transmit_mode_table[] =
-{
-	{ "2k",   TRANSMISSION_MODE_2K },
-	{ "8k",   TRANSMISSION_MODE_8K },
-	{ "AUTO", TRANSMISSION_MODE_AUTO },
-	{ NULL, 0 }
-};
-
-struct StringTable Dvb::guard_table[] =
-{
-	{ "1/32", GUARD_INTERVAL_1_32 },
-	{ "1/16", GUARD_INTERVAL_1_16 },
-	{ "1/8",  GUARD_INTERVAL_1_8 },
-	{ "1/4",  GUARD_INTERVAL_1_4 },
-	{ "AUTO", GUARD_INTERVAL_AUTO },
-	{ NULL, 0 }
-};
-
-struct StringTable Dvb::hierarchy_table[] =
-{
-	{ "NONE", HIERARCHY_NONE },
-	{ "1",    HIERARCHY_1 },
-	{ "2",    HIERARCHY_2 },
-	{ "4",    HIERARCHY_4 },
-	{ "AUTO", HIERARCHY_AUTO },
-	{ NULL, 0 }
-};
-
-struct StringTable Dvb::inversion_table[] =
-{
-	{ "INVERSION_OFF",	INVERSION_OFF },
-	{ "INVERSION_ON",	INVERSION_ON },
-	{ "INVERSION_AUTO",	INVERSION_AUTO },
-	{ NULL, 0 }
-};
 
 Frontend::Frontend(const Adapter& frontend_adapter, guint frontend_index)
 	: adapter(frontend_adapter)
@@ -125,56 +51,6 @@ Frontend::~Frontend()
 	{
 		close(fd);
 	}
-}
-
-guint Frontend::convert_string_to_value(const StringTable* table, const Glib::ustring& text)
-{
-	gboolean found = false;
-	const StringTable*	current = table;
-
-	while (current->text != NULL && !found)
-	{
-		if (text == current->text)
-		{
-			found = true;
-		}
-		else
-		{
-			current++;
-		}
-	}
-	
-	if (!found)
-	{
-		throw Exception(Glib::ustring::compose(_("Failed to find a value for '%1'"), text));
-	}
-	
-	return (guint)current->value;
-}
-
-Glib::ustring Frontend::convert_value_to_string(const StringTable* table, guint value)
-{
-	gboolean found = false;
-	const StringTable*	current = table;
-
-	while (current->text != NULL && !found)
-	{
-		if (value == current->value)
-		{
-			found = true;
-		}
-		else
-		{
-			current++;
-		}
-	}
-	
-	if (!found)
-	{
-		throw Exception(Glib::ustring::compose(_("Failed to find a text value for '%1'"), value));
-	}
-	
-	return current->text;
 }
 
 void Frontend::tune_to (const struct dvb_frontend_parameters& parameters, guint wait_seconds)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -59,25 +59,47 @@ int main (int argc, char *argv[])
 	verbose_option_entry.set_short_name('v');
 	verbose_option_entry.set_description(_("Enable verbose messages"));
 
-	Glib::OptionEntry maintenance_option_entry;
-	maintenance_option_entry.set_long_name("maintenance-mode");
-	maintenance_option_entry.set_short_name('m');
-	maintenance_option_entry.set_description(_("Enable maintenance mode"));
+	Glib::OptionEntry safe_mode_option_entry;
+	safe_mode_option_entry.set_long_name("safe-mode");
+	safe_mode_option_entry.set_short_name('s');
+	safe_mode_option_entry.set_description(_("Start in safe mode"));
+
+	Glib::OptionEntry minimised_option_entry;
+	minimised_option_entry.set_long_name("minimised");
+	minimised_option_entry.set_short_name('m');
+	minimised_option_entry.set_description(_("Start minimised in notification area"));
 
 	Glib::OptionGroup option_group(PACKAGE_NAME, "", _("Show Me TV help options"));
 	option_group.add_entry(verbose_option_entry, verbose_logging);
-	option_group.add_entry(maintenance_option_entry, maintenance_mode);
+	option_group.add_entry(safe_mode_option_entry, safe_mode);
+	option_group.add_entry(minimised_option_entry, minimised_mode);
 
 	Glib::OptionContext* option_context = new Glib::OptionContext();
 	option_context->set_summary(ME_TV_SUMMARY);
 	option_context->set_description(ME_TV_DESCRIPTION);
 	option_context->set_main_group(option_group);
 
-	TRY
-	Application application(argc, argv, *option_context);
-	application.run();
-	CATCH
+	try
+	{
+		Application application(argc, argv, *option_context);
+		application.run();
+	}
+	catch (const Glib::Exception& exception)
+	{
+		Gtk::MessageDialog dialog(exception.what(),
+			false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+		dialog.set_title(PACKAGE_NAME);
+		dialog.run();
+	}
+	catch (...)
+	{
+		Gtk::MessageDialog dialog(_("An unhandled error occurred"),
+			false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+		dialog.set_title(PACKAGE_NAME);
+		dialog.run();
+	}
 
+	// Seems to crash if I delete option_context.
 	//delete option_context;
 
 	g_message("Me TV terminated");

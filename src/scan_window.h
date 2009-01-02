@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -98,10 +98,11 @@ private:
 
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;
-		
+	
 	Glib::ustring get_initial_tuning_dir();
 	Country* find_country(const Glib::ustring& country_name);
 	Country& get_country(const Glib::ustring& country);
+	void import_channels_conf(const Glib::ustring& channels_conf_path);
 
 	void on_file_chooser_button_select_file_to_scan_clicked();
 	void on_combo_box_select_country_changed();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -58,7 +58,7 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	socket = NULL;
 	broadcast_failure_message = true;
 	
-	for(gint i = 0 ; i < 256 ; i++ )
+	for (gint i = 0 ; i < 256 ; i++ )
 	{
 		guint k = 0;
 		for (guint j = (i << 24) | 0x800000 ; j != 0x80000000 ; j <<= 1)

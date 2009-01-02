@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -24,78 +24,6 @@
 #include <gdk/gdkx.h>
 #include <sys/wait.h>
 
-class Parameters
-{
-private:
-	GSList* parameters;
-	guint length;
-
-public:
-	Parameters()
-	{
-		length = 0;
-		parameters = NULL;
-	}
-	
-	~Parameters()
-	{
-		clear();
-	}
-	
-	void clear()
-	{
-		GSList* iterator = parameters;
-		while (iterator != NULL)
-		{
-			g_free(iterator->data);
-			iterator = g_slist_next(iterator);
-		}
-		g_slist_free(parameters);
-		
-		length = 0;
-		parameters = NULL;
-	}
-	
-		void add(const Glib::ustring& value)
-	{
-		parameters = g_slist_append(parameters, g_strdup(value.c_str()));
-		length++;
-	}
-	
-	void add(gint value)
-	{
-		parameters = g_slist_append(parameters, g_strdup_printf("%d", value));
-		length++;
-	}
-	
-	Glib::ustring join(const gchar* separator = " ")
-	{
-		gchar** arguments = get_arguments();
-		gchar* joined = g_strjoinv(separator, arguments);
-		Glib::ustring result = joined;
-		g_free(joined);
-		delete [] arguments;
-		
-		return result;
-	}
-	
-	gchar** get_arguments()
-	{
-		gchar** arguments = new gchar*[length + 1];
-		guint index = 0;
-
-		GSList* iterator = parameters;
-		while (iterator != NULL)
-		{
-			arguments[index++] = (gchar*)iterator->data;
-			iterator = g_slist_next(iterator);
-		}
-		arguments[index++] = NULL;
-				
-		return arguments;
-	}
-};
-
 MplayerEngine::MplayerEngine(int window_id) : window_id(window_id)
 {
 }
@@ -107,47 +35,33 @@ MplayerEngine::~MplayerEngine()
 
 void MplayerEngine::play(const Glib::ustring& mrl)
 {
-	Parameters parameters;
+        Application& application = get_application();
 
-	parameters.add("mplayer");
-	parameters.add("-really-quiet");
-	parameters.add("-slave");
-	parameters.add("-softvol");
-	parameters.add("-stop-xscreensaver");
-	parameters.add("-vo");
-	parameters.add("x11");
-	parameters.add("-zoom");
-	parameters.add("-vf");
-	parameters.add("pp=fd");
-	parameters.add("-wid");
-	parameters.add(window_id);
-	parameters.add(mrl);
+        StringList argv;
+	argv.push_back("mplayer");
+	argv.push_back("-really-quiet");
+	argv.push_back("-slave");
+	argv.push_back("-softvol");
+	argv.push_back("-stop-xscreensaver");
+	argv.push_back("-vo");
+	argv.push_back(application.get_string_configuration_value("mplayer.video_driver"));
+	argv.push_back("-ao");
+	argv.push_back(application.get_string_configuration_value("mplayer.audio_driver"));
+	argv.push_back("-zoom");
+	argv.push_back("-vf");
+	argv.push_back("pp=fd");
+        argv.push_back("-wid");
+        argv.push_back(Glib::ustring::compose("%1", window_id));
+        argv.push_back(Glib::ustring::compose("%1", mrl));
 
-	Glib::ustring command_line = parameters.join();
-	g_debug("Command: %s", command_line.c_str());
-	GError* error = NULL;
-	gchar** arguments = parameters.get_arguments();
-	
-	g_spawn_async_with_pipes(
-							 NULL,
-							 arguments,
-							 NULL,
-							 G_SPAWN_SEARCH_PATH,
-							 NULL,
-							 NULL,
-							 &pid,
-							 &standard_input,
-							 NULL,
-							 NULL,
-							 &error
-							 );
-	
-	delete [] arguments;
-	
-	if (error != NULL)
-	{
-		throw Exception(error->message);
-	}
+        Glib::spawn_async_with_pipes("/tmp",
+                argv,
+                Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_DO_NOT_REAP_CHILD,
+                sigc::slot< void >(),
+                &pid,
+                &standard_input,
+                NULL,
+                NULL);
 }
 
 void MplayerEngine::stop()
@@ -175,3 +89,9 @@ void MplayerEngine::mute(gboolean state)
 void MplayerEngine::expose()
 {
 }
+
+gboolean MplayerEngine::is_running()
+{
+        return pid != -1;
+}
+

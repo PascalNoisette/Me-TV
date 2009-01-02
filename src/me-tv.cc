@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -23,7 +23,9 @@
 #include <glib/gprintf.h>
 
 bool verbose_logging;
-bool maintenance_mode;
+bool safe_mode;
+bool minimised_mode;
+
 StringSignal signal_error;
 
 StringSignal& get_signal_error()
@@ -95,4 +97,54 @@ void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar 
 void on_error(const Glib::ustring& message)
 {
 	g_message(message.c_str());
+}
+
+guint convert_string_to_value(const StringTable* table, const Glib::ustring& text)
+{
+	gboolean found = false;
+	const StringTable*	current = table;
+
+	while (current->text != NULL && !found)
+	{
+		if (text == current->text)
+		{
+			found = true;
+		}
+		else
+		{
+			current++;
+		}
+	}
+	
+	if (!found)
+	{
+		throw Exception(Glib::ustring::compose(_("Failed to find a value for '%1'"), text));
+	}
+	
+	return (guint)current->value;
+}
+
+Glib::ustring convert_value_to_string(const StringTable* table, guint value)
+{
+	gboolean found = false;
+	const StringTable*	current = table;
+
+	while (current->text != NULL && !found)
+	{
+		if (value == current->value)
+		{
+			found = true;
+		}
+		else
+		{
+			current++;
+		}
+	}
+	
+	if (!found)
+	{
+		throw Exception(Glib::ustring::compose(_("Failed to find a text value for '%1'"), value));
+	}
+	
+	return current->text;
 }

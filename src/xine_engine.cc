@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -24,6 +24,9 @@
 #include <libgnome/libgnome.h>
 #include <gdk/gdkx.h>
 #include <sys/wait.h>
+
+#define KILL_SLEEP_TIME		100000
+#define KILL_SLEEP_TIMEOUT  2000000
 
 XineEngine::XineEngine(int display_window_id) : window_id(display_window_id)
 {
@@ -78,8 +81,6 @@ void XineEngine::play(const Glib::ustring& mrl)
 	mute(mute_state);
 										  
 	g_debug("Spawned xine on pid %d", pid);
-
-	mute(mute_state);
 }
 
 void XineEngine::write(const Glib::ustring& text)
@@ -99,10 +100,49 @@ void XineEngine::stop()
 			standard_input = -1;
 		}
 		kill(pid, SIGHUP);
-		::waitpid(pid, NULL, 0);
-		g_spawn_close_pid(pid);
-		pid = -1;
-		g_debug("Xine has quit");
+		
+		gboolean done = false;
+		gint elapsed_time = 0;
+		while (!done)
+		{
+			pid_t pid_result = ::waitpid(pid, NULL, WNOHANG);
+			
+			if (pid_result < 0)
+			{
+				done = true;
+				g_debug("Failed to wait for xine to exit: waitpid returned %d", pid_result);
+			}
+			else if (pid_result == 0)
+			{
+				if (elapsed_time >= KILL_SLEEP_TIMEOUT)
+				{
+					g_debug("Timeout (%d usec) elapsed, exiting wait loop", KILL_SLEEP_TIMEOUT);
+					done = true;
+				}
+				else
+				{
+					g_debug("xine is still running, waiting for %d usec", KILL_SLEEP_TIME);
+					usleep(KILL_SLEEP_TIME);
+					elapsed_time += KILL_SLEEP_TIME;
+				}
+			}
+			else // pid_result > 0
+			{
+				done = true;
+				g_debug("xine has terminated normally");
+				g_spawn_close_pid(pid);
+				pid = -1;
+			}
+		}
+		if (pid != -1)
+		{
+			g_debug("Killing Xine");
+			kill(pid, SIGKILL);
+			usleep(KILL_SLEEP_TIME);
+			g_spawn_close_pid(pid);
+			pid = -1;
+		}
+		g_debug("Xine stop complete");
 	}
 }
 

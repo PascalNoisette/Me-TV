@@ -1,0 +1,848 @@
+# Persian translation for me-tv
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the me-tv package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: me-tv\n"
+"Report-Msgid-Bugs-To: Mohammad Reza Boozary <mohammad@boozary.org>\n"
+"POT-Creation-Date: 2008-11-30 01:04+1100\n"
+"PO-Revision-Date: 2009-01-02 02:32+0000\n"
+"Last-Translator: Mohammad Reza Boozary <mohammad.boozary@gmail.com>\n"
+"Language-Team: Persian <fa@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Launchpad-Export-Date: 2009-01-02 09:44+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../me-tv.desktop.in.h:1
+msgid "A digital television (DVB) viewer for GNOME"
+msgstr "یک بیننده‌ی تلویزیون دیجیتالی (DVB) برای گنوم"
+
+#: ../me-tv.desktop.in.h:2
+msgid "Digital Television"
+msgstr "تلویزیون دیجیتالی"
+
+#: ../src/application.cc:37
+msgid "Application has already been initialised"
+msgstr "کاربرد در حال حاظر آغاز شده"
+
+#: ../src/application.cc:229
+msgid "Application has not been initialised"
+msgstr "کاربرد آغاز نشده"
+
+#: ../src/application.cc:295
+msgid "Main window has not been created"
+msgstr "پنجره‌ی اصلی هنوز ساخته نشده"
+
+#: ../src/application.cc:402
+msgid "No channel to make recording filename"
+msgstr "کانالی برای ایجاد نامِ پرونده‌ی در حال ضبط شدن نیست"
+
+#: ../src/application.cc:464
+msgid "Stream thread has not been created"
+msgstr "رشته‌ی جاری ایجاد نشد"
+
+#: ../src/application.cc:489
+msgid ""
+"You are trying to stop a scheduled recording.  Would you like Me TV to "
+"delete the scheduled recording?"
+msgstr ""
+"شما سعی می‌کنید نگاه دارید یک برنامه‌ی در حال ضبظ شدن را. آیا تمایل دارید که "
+"Me TV حذف کند برنامه‌ی درحال ضبط شدن شما را؟"
+
+#: ../src/data.cc:147 ../src/data.cc:151
+msgid "Failed to prepare statement: %1"
+msgstr ""
+
+#: ../src/data.cc:157
+msgid "Prepare statement had remaining data: %1"
+msgstr ""
+
+#: ../src/data.cc:162
+msgid "Failed to create statement"
+msgstr ""
+
+#: ../src/data.cc:170
+msgid "Failed to finalise statement"
+msgstr ""
+
+#: ../src/data.cc:204
+msgid "Failed to connect to Me TV database"
+msgstr ""
+
+#: ../src/data.cc:296
+msgid "ASSERT: epg_event.channel_id == 0"
+msgstr ""
+
+#: ../src/data.cc:330
+msgid "Failed to get epg_event_id"
+msgstr ""
+
+#: ../src/data.cc:348
+msgid "Event ID was 0"
+msgstr ""
+
+#: ../src/data.cc:516
+msgid "Invalid channel flag"
+msgstr ""
+
+#: ../src/data.cc:687
+msgid ""
+"Failed to save scheduled recording because it conflicts with another "
+"scheduled recording called '%1'"
+msgstr ""
+
+#: ../src/data.cc:715
+msgid "ASSERT: scheduled_recording.scheduled_recording_id == 0"
+msgstr ""
+
+#: ../src/device_manager.cc:84
+msgid "No frontend available"
+msgstr ""
+
+#: ../src/device_manager.cc:131
+msgid "Failed to get frontend by path"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:36
+msgid "Failed to open demux device"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:67
+msgid "Failed to set PES filter"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:85
+msgid "Failed to set section filter for demuxer"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:93
+msgid "Failed to set demuxer buffer size"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:101
+msgid "Timeout while reading"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:107
+msgid "Failed to read data from demuxer"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:117
+msgid "Failed to stop demuxer"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:132
+msgid "Failed to poll"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:112
+msgid "Failed to open tuner"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:117
+msgid "Failed to get tuner info"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:149
+msgid "Failed to find a value for '%1'"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:174
+msgid "Failed to find a text value for '%1'"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:189
+msgid "Failed to tune device"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:192
+msgid "Waiting for signal lock ..."
+msgstr ""
+
+#: ../src/dvb_frontend.cc:194
+msgid "Got signal lock"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:214
+msgid "Failed to set tone off"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:219
+msgid "Failed to set voltage"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:225
+msgid "Failed to send master command"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:231
+msgid "Failed to send burst"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:237
+msgid "Failed to set tone"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:266
+msgid "Failed to lock to channel"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:275
+msgid "Failed to get signal strength"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:285
+msgid "Failed to get signal to noise ratio"
+msgstr ""
+
+#: ../src/dvb_scanner.cc:56
+msgid "Index out of bounds"
+msgstr ""
+
+#: ../src/dvb_scanner.cc:190
+msgid "Me TV cannot process a line in the initial tuning file"
+msgstr ""
+
+#: ../src/dvb_si.cc:129
+msgid "Failed to read header"
+msgstr ""
+
+#: ../src/dvb_si.cc:138
+msgid "Failed to read section"
+msgstr ""
+
+#: ../src/dvb_si.cc:145
+msgid "CRC32 check failed"
+msgstr ""
+
+#: ../src/dvb_si.cc:542
+msgid "ASSERT: offset > end_descriptor_offset"
+msgstr ""
+
+#: ../src/dvb_si.cc:553
+msgid "ASSERT: offset > end_section_offset"
+msgstr ""
+
+#: ../src/dvb_si.cc:759
+msgid "Failed to convert to UTF-8: %1"
+msgstr ""
+
+#: ../src/dvb_si.cc:780
+msgid "Failed to convert to UTF-8"
+msgstr ""
+
+#: ../src/dvb_transponder.cc:51
+msgid "Failed to find service with service ID %1"
+msgstr ""
+
+#: ../src/epg_event.cc:82 ../src/scheduled_recording.cc:36
+msgid "1 hour"
+msgid_plural "%1 hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../src/epg_event.cc:90 ../src/scheduled_recording.cc:44
+msgid "1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../src/epg_thread.cc:69
+msgid "No demuxers"
+msgstr ""
+
+#: ../src/epg_thread.cc:89
+msgid "Failed to poll EIT demuxers"
+msgstr ""
+
+#: ../src/epg_thread.cc:105
+msgid "Failed to get an EIT demuxer with events"
+msgstr ""
+
+#: ../src/epg_thread.cc:232
+msgid "Exiting EPG thread"
+msgstr ""
+
+#: ../src/exception.cc:30
+msgid "Failed to get error message"
+msgstr ""
+
+#: ../src/channels_dialog.cc:44
+msgid "Channel Name"
+msgstr ""
+
+#: ../src/main.cc:28
+msgid "Me TV is a digital television viewer for the GNOME desktop"
+msgstr ""
+
+#: ../src/main.cc:29
+msgid ""
+"Me TV was developed for the modern digital lounge room with a PC for a media "
+"centre that is capable of normal PC tasks (web surfing, word processing and "
+"watching TV). It is not designed to be a full-blown media centre such as "
+"MythTV but will integrate well with an existing GNOME desktop.\n"
+msgstr ""
+
+#: ../src/main.cc:60
+msgid "Enable verbose messages"
+msgstr "فعال کردن پیغام مطول"
+
+#: ../src/main.cc:65
+msgid "Enable maintenance mode"
+msgstr "فعال مردن حالت نگهداری"
+
+#: ../src/main.cc:67
+msgid "Show Me TV help options"
+msgstr "نمایش اختیارات راهنمای Me TV"
+
+#: ../src/main_window.cc:64
+msgid "Failed to load EPG widget"
+msgstr ""
+
+#: ../src/main_window.cc:146
+msgid "No DVB Devices"
+msgstr "دستگاه DVB ای وجود ندارد"
+
+#: ../src/main_window.cc:285
+msgid "Failed to launch help"
+msgstr "ایراد در اجرا کردن راهنما"
+
+#: ../src/main_window.cc:289
+msgid "Failed to launch help: %1"
+msgstr "ایراد در اجرا کردن راهنما: %1"
+
+#: ../src/main_window.cc:485
+msgid "Me TV - It's TV for me computer"
+msgstr ""
+
+#: ../src/main_window.cc:497 ../src/main_window.cc:498
+msgid " [Recording]"
+msgstr " [در حال ضبط کردن]"
+
+#: ../src/main_window.cc:667
+msgid "Failed to start engine: Engine has already been started"
+msgstr "ایراد در آغاز موتور: موتور قبل از این آغاز شده بود"
+
+#: ../src/main_window.cc:674
+msgid "Window ID was 0"
+msgstr "شناسه‌ی پنجره هست ۰"
+
+#: ../src/main_window.cc:685
+msgid "Unknown engine type"
+msgstr "نوع ناشناخته‌ی موتور"
+
+#: ../src/meters_dialog.cc:71
+msgid "Signal Strength (%1%%)"
+msgstr ""
+
+#: ../src/meters_dialog.cc:72
+msgid "S/N Ratio (%1%%)"
+msgstr ""
+
+#: ../src/me-tv.cc:56
+msgid "Failed to get time"
+msgstr ""
+
+#: ../src/me-tv.h:30 ../src/me-tv.glade.h:90
+msgid "Unknown"
+msgstr "ناشناخته"
+
+#: ../src/me-tv.glade.h:1
+msgid ""
+"\n"
+"eng\n"
+"esp\n"
+"fin\n"
+"fre\n"
+"swe"
+msgstr ""
+
+#: ../src/me-tv.glade.h:7
+msgid " hours"
+msgstr ""
+
+#: ../src/me-tv.glade.h:8
+msgid " minutes"
+msgstr " دقیقه"
+
+#: ../src/me-tv.glade.h:9
+msgid "192.168.0.255"
+msgstr ""
+
+#: ../src/me-tv.glade.h:10
+msgid "< Previous"
+msgstr "قبلی >"
+
+#: ../src/me-tv.glade.h:11
+msgid "Always on top"
+msgstr ""
+
+#: ../src/me-tv.glade.h:12
+msgid "Broadcast"
+msgstr ""
+
+#: ../src/me-tv.glade.h:13
+msgid "Broadcast address:"
+msgstr ""
+
+#: ../src/me-tv.glade.h:14
+msgid "Broadcast port:"
+msgstr ""
+
+#: ../src/me-tv.glade.h:15
+msgid "By location"
+msgstr ""
+
+#: ../src/me-tv.glade.h:16
+msgid "Channel Editor"
+msgstr ""
+
+#: ../src/me-tv.glade.h:17
+msgid "Channel:"
+msgstr "کانال:"
+
+#: ../src/me-tv.glade.h:18
+msgid "Copyright © Michael Lamothe <michael.lamothe@gmail.com>"
+msgstr ""
+
+#: ../src/me-tv.glade.h:19
+msgid "Description:"
+msgstr "شرح:"
+
+#: ../src/me-tv.glade.h:20
+msgid "Device Text"
+msgstr "دستگاه متن"
+
+#: ../src/me-tv.glade.h:21
+msgid "Device: "
+msgstr "دستگاه: "
+
+#: ../src/me-tv.glade.h:22
+msgid "Drag channels to reorder"
+msgstr ""
+
+#: ../src/me-tv.glade.h:23
+msgid "Duration:"
+msgstr "مدت:"
+
+#: ../src/me-tv.glade.h:24
+msgid "EPG span: "
+msgstr ""
+
+#. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
+#: ../src/me-tv.glade.h:26
+msgid ""
+"GNU General Public License:\n"
+"\n"
+"This program is free software; you can redistribute it and/or modify it "
+"under\n"
+"the terms of the GNU General Public License as published by the Free "
+"Software\n"
+"Foundation; either version 2 of the License, or (at your option) any later\n"
+"version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY\n"
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A\n"
+"PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
+"\n"
+"On Debian systems, the complete text of the GNU General Public License can "
+"be\n"
+"found in /usr/share/common-licenses/GPL file."
+msgstr ""
+
+#: ../src/me-tv.glade.h:39
+msgid "Me TV"
+msgstr "Me TV"
+
+#: ../src/me-tv.glade.h:40
+msgid "Me TV - About"
+msgstr "درباره - Me TV"
+
+#: ../src/me-tv.glade.h:41
+msgid "Me TV - Channels Editor"
+msgstr "ویرایشگر کانال - Me TV"
+
+#: ../src/me-tv.glade.h:42
+msgid "Me TV - Main Window"
+msgstr "پنجره‌ی اصلی - Me TV"
+
+#: ../src/me-tv.glade.h:43
+msgid "Me TV - Meters Window"
+msgstr "پنجره‌ی اندازه گیری - Me TV"
+
+#: ../src/me-tv.glade.h:44
+msgid "Me TV - Preferences Window"
+msgstr "پنجره‌ی ترجیح‌ها - Me TV"
+
+#: ../src/me-tv.glade.h:45
+msgid "Me TV - Program Details"
+msgstr "جزئیات برنامه - Me TV"
+
+#: ../src/me-tv.glade.h:46
+msgid "Me TV - Scan Wizard"
+msgstr "تنظیمات پویش - Me TV"
+
+#: ../src/me-tv.glade.h:47
+msgid "Me TV - Scheduled Recording"
+msgstr ""
+
+#: ../src/me-tv.glade.h:48
+msgid "Me TV - Scheduled Recordings"
+msgstr "جدول ضبظ کردن - Me TV"
+
+#: ../src/me-tv.glade.h:49
+msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
+msgstr "Me TV یک نمایش‌دهنده‌ی تلوزیون دیجیتالی (DVB) برای گنوم"
+
+#: ../src/me-tv.glade.h:50
+msgid "Me TV project website"
+msgstr "تارنمای پروژه‌ی Me TV"
+
+#: ../src/me-tv.glade.h:51
+msgid "Mute"
+msgstr "بی‌صدا"
+
+#: ../src/me-tv.glade.h:52
+msgid "Mute audio"
+msgstr "خفه کردن صدا"
+
+#: ../src/me-tv.glade.h:53
+msgid "Next >"
+msgstr "< بعدی"
+
+#: ../src/me-tv.glade.h:54
+msgid "No description available."
+msgstr "توصیفی وجود ندارد."
+
+#: ../src/me-tv.glade.h:55
+msgid "No title available"
+msgstr "عنوانی وجود ندارد"
+
+#: ../src/me-tv.glade.h:56
+msgid "Preferred language:"
+msgstr "زبان ترجیح داده شده:"
+
+#: ../src/me-tv.glade.h:57
+msgid "Quit Me TV"
+msgstr "خروج از Me TV"
+
+#: ../src/me-tv.glade.h:58
+msgid "Record extra after: "
+msgstr ""
+
+#: ../src/me-tv.glade.h:59
+msgid "Record extra before: "
+msgstr ""
+
+#: ../src/me-tv.glade.h:60
+msgid "Recording directory: "
+msgstr "فهرست ضبط شدن: "
+
+#: ../src/me-tv.glade.h:61
+msgid "Removes selected channels"
+msgstr "خذف کانال انتخاب شده"
+
+#: ../src/me-tv.glade.h:62
+msgid "S/N Ratio"
+msgstr "نسبت S/N"
+
+#: ../src/me-tv.glade.h:63
+msgid "Scan Progress"
+msgstr "پویش پیشرفت"
+
+#: ../src/me-tv.glade.h:64
+msgid "Scanning"
+msgstr "پویش"
+
+#: ../src/me-tv.glade.h:65
+msgid "Scanning ..."
+msgstr "پویش ..."
+
+#: ../src/me-tv.glade.h:66
+msgid "Schedule"
+msgstr "زمان‌بندی"
+
+#: ../src/me-tv.glade.h:67
+msgid "See https://launchpad.net/me-tv"
+msgstr "مشاهده کنید https://launchpad.net/me-tv"
+
+#: ../src/me-tv.glade.h:68
+msgid "Select A Recording Directory"
+msgstr "انتخاب یک فهرست برای ضبط کردن"
+
+#: ../src/me-tv.glade.h:69
+msgid "Select Channels"
+msgstr "انتخاب کانال‌ها"
+
+#: ../src/me-tv.glade.h:70
+msgid "Select Scan File"
+msgstr "انتخاب پوییدن پرونده"
+
+#: ../src/me-tv.glade.h:71
+msgid "Select a file"
+msgstr "انتخاب یک پرونده"
+
+#: ../src/me-tv.glade.h:72
+msgid "Select a file to scan"
+msgstr "انتخاب کنید یک پرونده را برای پوییدن"
+
+#: ../src/me-tv.glade.h:73
+msgid "Select a region file to scan"
+msgstr ""
+
+#: ../src/me-tv.glade.h:74
+msgid "Select the channels that you want to add."
+msgstr "کانالی که نیاز به اضافه کردن آن را دارید اضافه کنید."
+
+#: ../src/me-tv.glade.h:75
+msgid "Select your country: "
+msgstr "کشور خود را انتخاب کنید: "
+
+#: ../src/me-tv.glade.h:76
+msgid "Select your region: "
+msgstr "منطقه‌ی خود را انتخاب کنید: "
+
+#: ../src/me-tv.glade.h:77
+msgid "Show EPG header"
+msgstr "نمایش سرفصل‌های EPG"
+
+#: ../src/me-tv.glade.h:78
+msgid "Show Meters"
+msgstr ""
+
+#: ../src/me-tv.glade.h:79
+msgid "Show preferences dialog"
+msgstr ""
+
+#: ../src/me-tv.glade.h:80
+msgid "Show the About dialog"
+msgstr ""
+
+#: ../src/me-tv.glade.h:81
+msgid "Show time on EPG event buttons"
+msgstr ""
+
+#: ../src/me-tv.glade.h:82
+msgid "Show tooltips for EPG event buttons"
+msgstr ""
+
+#: ../src/me-tv.glade.h:83
+msgid "Signal Strength"
+msgstr ""
+
+#: ../src/me-tv.glade.h:84
+msgid "Start Date:"
+msgstr "تاریخ آغاز:"
+
+#: ../src/me-tv.glade.h:85
+msgid "Start Time:"
+msgstr "زمان آغاز:"
+
+#: ../src/me-tv.glade.h:86
+msgid "Streams"
+msgstr "در جریان"
+
+#: ../src/me-tv.glade.h:87
+msgid "Text encoding:"
+msgstr "رمزگذاری متن:"
+
+#: ../src/me-tv.glade.h:88
+msgid "Title:"
+msgstr "عنوان:"
+
+#: ../src/me-tv.glade.h:89
+msgid "Toggle fullscreen mode"
+msgstr ""
+
+#: ../src/me-tv.glade.h:91
+msgid "Use 24 hour workaround for GnomeDateEdit"
+msgstr ""
+
+#: ../src/me-tv.glade.h:92
+msgid "What's on now"
+msgstr ""
+
+#: ../src/me-tv.glade.h:93
+msgid "Xine audio driver:"
+msgstr ""
+
+#: ../src/me-tv.glade.h:94
+msgid "Xine video driver:"
+msgstr ""
+
+#: ../src/me-tv.glade.h:95
+msgid "_Audio"
+msgstr "صدا"
+
+#: ../src/me-tv.glade.h:96
+msgid "_Broadcast"
+msgstr "منتشر کردن"
+
+#: ../src/me-tv.glade.h:97
+msgid "_Devices"
+msgstr "دستگاه‌ها"
+
+#: ../src/me-tv.glade.h:98
+msgid "_File"
+msgstr "_پرونده"
+
+#: ../src/me-tv.glade.h:99
+msgid "_Help"
+msgstr "_راهنما"
+
+#: ../src/me-tv.glade.h:100
+msgid "_Mute"
+msgstr "_ساکت"
+
+#: ../src/me-tv.glade.h:101
+msgid "_Record"
+msgstr ""
+
+#: ../src/me-tv.glade.h:102
+msgid "_Scheduled Recordings"
+msgstr ""
+
+#: ../src/me-tv.glade.h:103
+msgid "_Video"
+msgstr ""
+
+#: ../src/me-tv.glade.h:104
+msgid "_View"
+msgstr ""
+
+#: ../src/me-tv.glade.h:105
+msgid ""
+"auto\n"
+"alsa\n"
+"oss\n"
+"pulseaudio\n"
+"file\n"
+"null\n"
+"none"
+msgstr ""
+
+#: ../src/me-tv.glade.h:112
+msgid ""
+"auto\n"
+"iso6937"
+msgstr ""
+
+#: ../src/me-tv.glade.h:114
+msgid ""
+"auto\n"
+"xshm\n"
+"xv\n"
+"opengl\n"
+"sdl\n"
+"none"
+msgstr ""
+
+#: ../src/profile.cc:59
+msgid "Channel '%1' not found"
+msgstr "کانال '%1' یافت نشد"
+
+#: ../src/profile.cc:76
+msgid "Failed to set display channel: channel not found"
+msgstr ""
+
+#: ../src/profile.cc:99
+msgid "Failed to add channel: You cannot have more than 100 channels"
+msgstr ""
+
+#: ../src/profile.cc:186 ../src/profile.cc:221
+msgid "No channels"
+msgstr "هیچ کانالی"
+
+#: ../src/profile_manager.cc:69
+msgid "Default"
+msgstr "پیشفرض"
+
+#: ../src/profile_manager.cc:104
+msgid "Failed to find profile '%1'"
+msgstr "ایراد در یافتن نمایه‌ی '%1'"
+
+#: ../src/profile_manager.cc:121
+msgid "There is no current profile"
+msgstr ""
+
+#: ../src/scan_window.cc:48
+msgid ""
+"Failed to find initial tuning directory, try installing the dvb-utils or dvb-"
+"apps package"
+msgstr ""
+
+#: ../src/scan_window.cc:57
+msgid "Unknown frontend type"
+msgstr ""
+
+#: ../src/scan_window.cc:89
+msgid "Service Name"
+msgstr "نام خدمت"
+
+#: ../src/scan_window.cc:218
+msgid "No tuning file has been selected"
+msgstr ""
+
+#: ../src/scan_window.cc:260
+msgid "Invalid frontend type"
+msgstr ""
+
+#: ../src/scan_window.cc:289
+msgid "Found 1 channel"
+msgid_plural "Found %1 channels"
+msgstr[0] "یک کانال یافت شد"
+
+#: ../src/scheduled_recordings_dialog.cc:42
+msgid "Description"
+msgstr "شرح"
+
+#: ../src/scheduled_recordings_dialog.cc:43
+msgid "Channel"
+msgstr "کانال"
+
+#: ../src/scheduled_recordings_dialog.cc:44
+msgid "Start Time"
+msgstr "زمان آغاز"
+
+#: ../src/scheduled_recordings_dialog.cc:45
+msgid "Duration"
+msgstr "مدت"
+
+#: ../src/scheduled_recordings_dialog.cc:104
+msgid "Failed to get scheduled recording"
+msgstr "ایراد در جدول ضبط شدن"
+
+#: ../src/stream_thread.cc:80
+msgid "Failed to create FIFO '%1'"
+msgstr "ایراد در ساختن FIFO '%1'"
+
+#: ../src/stream_thread.cc:521
+msgid "Failed to find PMT ID for service"
+msgstr ""
+
+#: ../src/stream_thread.cc:596
+msgid "Failed to record, output channel not open"
+msgstr ""
+
+#: ../src/stream_thread.cc:603
+msgid "Failed to open recording file"
+msgstr "ایراد در گشودن پرونده‌ی ضبط شدن"
+
+#: ../src/stream_thread.cc:633
+msgid "Failed to create internet address"
+msgstr "ایراد در ایجاد کردن آدرس اینترنتی"
+
+#: ../src/stream_thread.cc:639
+msgid "Failed to create socket"
+msgstr "ایراد در ساختن Socket"
+
+#: ../src/thread.cc:48
+msgid " thread has already been started"
+msgstr " رشته در حال حاظر آغاز شده"

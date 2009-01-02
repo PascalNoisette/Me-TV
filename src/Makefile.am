@@ -85,11 +85,17 @@ me_tv_SOURCES = \
 	epg_thread.h \
 	xine_engine.cc \
 	xine_engine.h \
+	mplayer_engine.cc \
+	mplayer_engine.h \
 	exception.cc \
 	scan_window.cc \
 	scan_window.h \
 	string_splitter.cc \
-	string_splitter.h
+	string_splitter.h \
+	channels_conf_line.cc \
+	channels_conf_line.h \
+	initial_scan_line.cc \
+	initial_scan_line.h
 
 me_tv_LDFLAGS = -Wl,--as-needed \
 	`getconf LFS_LDFLAGS` \

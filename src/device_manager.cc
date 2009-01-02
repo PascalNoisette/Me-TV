@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -19,6 +19,8 @@
  */
 
 #include "device_manager.h"
+
+#define NO_FRONTEND_MESSAGE _("There are no available DVB tuner devices")
 
 Glib::ustring DeviceManager::get_adapter_path(guint adapter)
 {
@@ -81,7 +83,7 @@ DeviceManager::DeviceManager()
 	}
 	else
 	{
-		throw Exception(_("No frontend available"));
+		throw Exception(NO_FRONTEND_MESSAGE);
 	}
 }
 
@@ -100,9 +102,8 @@ gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend
 
 	switch(test_frontend.get_frontend_type())
 	{
-	case FE_OFDM: // DVB-T
-	case FE_QAM: // DVB-C
-//	case FE_ATSC:
+	case FE_OFDM:	// DVB-T
+	case FE_QAM:	// DVB-C
 		result = true;
 		break;
 	default:
@@ -114,7 +115,12 @@ gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend
 }
 
 Dvb::Frontend& DeviceManager::get_frontend()
-{	
+{
+	if (frontend == NULL)
+	{
+		throw Exception(NO_FRONTEND_MESSAGE);
+	}
+	
 	return *frontend;
 }
 

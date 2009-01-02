@@ -15,7 +15,10 @@ pixmaps_DATA = \
         src/me-tv.xpm \
         src/me-tv-recording.xpm
 
-EXTRA_DIST = me-tv.1 \
+man_MANS = \
+	me-tv.1
+
+EXTRA_DIST = \
 	README\
 	AUTHORS\
 	ChangeLog\

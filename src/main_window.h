@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -71,7 +71,6 @@ private:
 	bool on_drawing_area_expose_event(GdkEventExpose* event);
 	static gboolean on_timeout(gpointer data);
 	void on_timeout();
-	void on_error(const Glib::ustring& message);
 	bool on_key_press_event(GdkEventKey* event);
 	void on_menu_item_record_clicked();
 	void on_menu_item_broadcast_clicked();

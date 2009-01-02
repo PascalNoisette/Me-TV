@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -25,6 +25,7 @@
 #include "dvb_demuxer.h"
 #include "dvb_frontend.h"
 #include "string_splitter.h"
+#include "initial_scan_line.h"
 
 using namespace Dvb;
 
@@ -65,18 +66,17 @@ void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& 
 {
 	struct dvb_frontend_parameters frontend_parameters;
 
-	StringSplitter splitter(line, " ", 100);
+	InitialScanLine initial_scan_line(line);
 	
-	frontend_parameters.frequency						= splitter.get_int_value(1);
+	frontend_parameters.frequency						= initial_scan_line.get_frequency(1);
 	frontend_parameters.inversion						= INVERSION_AUTO;
-
-	frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth_t)Frontend::convert_string_to_value(bandwidth_table,			splitter.get_value(2));
-	frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate_t)Frontend::convert_string_to_value(fec_table,					splitter.get_value(3));
-	frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate_t)Frontend::convert_string_to_value(fec_table,					splitter.get_value(4));
-	frontend_parameters.u.ofdm.constellation			= (fe_modulation_t)Frontend::convert_string_to_value(modulation_table,			splitter.get_value(5));
-	frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode_t)Frontend::convert_string_to_value(transmit_mode_table,	splitter.get_value(6));
-	frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval_t)Frontend::convert_string_to_value(guard_table,			splitter.get_value(7));
-	frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy_t)Frontend::convert_string_to_value(hierarchy_table,			splitter.get_value(8));
+	frontend_parameters.u.ofdm.bandwidth				= initial_scan_line.get_bandwidth(2);
+	frontend_parameters.u.ofdm.code_rate_HP				= initial_scan_line.get_fec(3);
+	frontend_parameters.u.ofdm.code_rate_LP				= initial_scan_line.get_fec(4);
+	frontend_parameters.u.ofdm.constellation			= initial_scan_line.get_modulation(5);
+	frontend_parameters.u.ofdm.transmission_mode		= initial_scan_line.get_transmit_mode(6);
+	frontend_parameters.u.ofdm.guard_interval			= initial_scan_line.get_guard_interval(7);
+	frontend_parameters.u.ofdm.hierarchy_information	= initial_scan_line.get_hierarchy(8);
 
 	Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;
@@ -88,11 +88,11 @@ void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
 {
 	struct dvb_frontend_parameters frontend_parameters;
 
-	StringSplitter splitter(line, " ", 100);
+	InitialScanLine initial_scan_line(line);
 	
-	frontend_parameters.frequency			= splitter.get_int_value(1);
+	frontend_parameters.frequency			= initial_scan_line.get_frequency(1);
+	frontend_parameters.u.vsb.modulation	= initial_scan_line.get_modulation(2);
 	frontend_parameters.inversion			= INVERSION_AUTO;
-	frontend_parameters.u.vsb.modulation	= (fe_modulation_t)Frontend::convert_string_to_value(modulation_table,	splitter.get_value(2));
 
 	Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;
@@ -103,15 +103,14 @@ void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
 void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)
 {
 	struct dvb_frontend_parameters frontend_parameters;
-
-	StringSplitter splitter(line, " ", 100);
+	InitialScanLine initial_scan_line(line);
 	
-	frontend_parameters.frequency			= splitter.get_int_value(1);
+	frontend_parameters.frequency			= initial_scan_line.get_frequency(1);
 	frontend_parameters.inversion			= INVERSION_AUTO;
 	
-	frontend_parameters.u.qam.symbol_rate	= splitter.get_int_value(2);
-	frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)Frontend::convert_string_to_value(fec_table,			splitter.get_value(3));
-	frontend_parameters.u.qam.modulation	= (fe_modulation_t)Frontend::convert_string_to_value(modulation_table,	splitter.get_value(4));
+	frontend_parameters.u.qam.symbol_rate	= initial_scan_line.get_symbol_rate(2);
+	frontend_parameters.u.qam.fec_inner		= initial_scan_line.get_fec(3);
+	frontend_parameters.u.qam.modulation	= initial_scan_line.get_modulation(4);
 
 	Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;

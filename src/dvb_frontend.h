@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Michael Lamothe
+ * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -36,21 +36,7 @@ struct diseqc_cmd
 };
 
 namespace Dvb
-{
-	struct StringTable
-	{
-		const char*	text;
-		guint		value;
-	};
-	
-	extern struct StringTable bandwidth_table[];
-	extern struct StringTable fec_table[];
-	extern struct StringTable transmit_mode_table[];
-	extern struct StringTable guard_table[];
-	extern struct StringTable hierarchy_table[];
-	extern struct StringTable inversion_table[];	
-	extern struct StringTable modulation_table[];
-	
+{	
 	class Adapter
 	{
 	private:
@@ -97,9 +83,6 @@ namespace Dvb
 		int get_fd() const { return fd; }
 		const Adapter& get_adapter() const { return adapter; }
 		Glib::ustring get_path() const { return adapter.get_frontend_path(frontend); }
-
-		static guint convert_string_to_value(const StringTable* table, const Glib::ustring& text);
-		static Glib::ustring convert_value_to_string(const StringTable* table, guint value);
 
 		guint get_signal_strength();
 		guint get_snr();
