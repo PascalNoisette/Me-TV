@@ -23,9 +23,17 @@
 #include "application.h"
 #include <gdk/gdkx.h>
 #include <sys/wait.h>
+#include <iomanip>
+
+#define KILL_SLEEP_TIME		100000
+#define KILL_SLEEP_TIMEOUT  2000000
 
 MplayerEngine::MplayerEngine(int window_id) : window_id(window_id)
 {
+	pid = -1;
+	standard_input = -1;
+	mute_state = false;
+	monitoraspect = Gdk::screen_width()/(double)Gdk::screen_height();
 }
 
 MplayerEngine::~MplayerEngine()
@@ -41,18 +49,22 @@ void MplayerEngine::play(const Glib::ustring& mrl)
 	argv.push_back("mplayer");
 	argv.push_back("-really-quiet");
 	argv.push_back("-slave");
-	argv.push_back("-softvol");
 	argv.push_back("-stop-xscreensaver");
-	argv.push_back("-vo");
-	argv.push_back(application.get_string_configuration_value("mplayer.video_driver"));
+	argv.push_back("-use-filedir-conf");
 	argv.push_back("-ao");
 	argv.push_back(application.get_string_configuration_value("mplayer.audio_driver"));
+	argv.push_back("-softvol");
+	argv.push_back("-vo");
+	argv.push_back(application.get_string_configuration_value("mplayer.video_driver"));
+	argv.push_back("-framedrop");
 	argv.push_back("-zoom");
+	argv.push_back("-monitoraspect");
+	argv.push_back(Glib::ustring::format(std::fixed, std::setprecision(6), monitoraspect));
 	argv.push_back("-vf");
 	argv.push_back("pp=fd");
-        argv.push_back("-wid");
-        argv.push_back(Glib::ustring::compose("%1", window_id));
-        argv.push_back(Glib::ustring::compose("%1", mrl));
+	argv.push_back("-wid");
+	argv.push_back(Glib::ustring::compose("%1", window_id));
+	argv.push_back(Glib::ustring::compose("%1", mrl));
 
         Glib::spawn_async_with_pipes("/tmp",
                 argv,
@@ -62,6 +74,17 @@ void MplayerEngine::play(const Glib::ustring& mrl)
                 &standard_input,
                 NULL,
                 NULL);
+
+	mute_state = false;
+	mute(mute_state);
+
+	g_debug("Spawned mplayer on pid %d", pid);
+}
+
+void MplayerEngine::write(const Glib::ustring& text)
+{
+	g_debug("Writing '%s' (%d)", text.c_str(), text.length());
+	::write(standard_input, text.c_str(), text.length());
 }
 
 void MplayerEngine::stop()
@@ -69,29 +92,77 @@ void MplayerEngine::stop()
 	if (pid != -1)
 	{
 		g_debug("Quitting MPlayer");
-		::write(standard_input, "q\n", 2);
+		if (standard_input != -1)
+		{
+			write("stop\n");
+			write("quit\n");
+			standard_input = -1;
+		}
+		kill(pid, SIGHUP);
 		
-		waitpid(pid, NULL, 0);
-		pid = -1;
-		g_debug("MPlayer has quit");
+		gboolean done = false;
+		gint elapsed_time = 0;
+		while (!done)
+		{
+			pid_t pid_result = ::waitpid(pid, NULL, WNOHANG);
+			
+			if (pid_result < 0)
+			{
+				done = true;
+				g_debug("Failed to wait for MPlayer to exit: waitpid returned %d", pid_result);
+			}
+			else if (pid_result == 0)
+			{
+				if (elapsed_time >= KILL_SLEEP_TIMEOUT)
+				{
+					g_debug("Timeout (%d usec) elapsed, exiting wait loop", KILL_SLEEP_TIMEOUT);
+					done = true;
+				}
+				else
+				{
+					g_debug("MPlayer is still running, waiting for %d usec", KILL_SLEEP_TIME);
+					usleep(KILL_SLEEP_TIME);
+					elapsed_time += KILL_SLEEP_TIME;
+				}
+			}
+			else // pid_result > 0
+			{
+				done = true;
+				g_debug("MPlayer has terminated normally");
+				g_spawn_close_pid(pid);
+				pid = -1;
+			}
+		}
+		if (pid != -1)
+		{
+			g_debug("Killing MPlayer");
+			kill(pid, SIGKILL);
+			usleep(KILL_SLEEP_TIME);
+			g_spawn_close_pid(pid);
+			pid = -1;
+		}
+		g_debug("MPlayer stop complete");
 	}
-}
-
-void MplayerEngine::mute(gboolean state)
-{
-	if (standard_input != -1)
-	{
-		g_debug(state ? "Muting" : "Unmuting");
-		::write(standard_input, "m\n", 2);
-	}
-}
-
-void MplayerEngine::expose()
-{
 }
 
 gboolean MplayerEngine::is_running()
 {
-        return pid != -1;
+	int result = -1;
+	
+	if (pid != -1)
+	{
+		result = ::waitpid(pid, NULL, WNOHANG | __WALL);
+	}
+	
+	return result == 0;
 }
 
+void MplayerEngine::mute(gboolean state)
+{
+	if (state != mute_state)
+	{
+		g_debug(state ? "Muting" : "Unmuting");
+		write("mute\n");
+		mute_state = state;
+	}
+}

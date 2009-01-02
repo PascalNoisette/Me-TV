@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: me-tv 0.6.4\n"
+"Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-29 17:41+0100\n"
-"PO-Revision-Date: 2008-12-29 17:42+0200\n"
+"POT-Creation-Date: 2009-01-02 22:28+0100\n"
+"PO-Revision-Date: 2008-01-02 17:42+0200\n"
 "Last-Translator: Luboš Staněk <lubek@users.sourceforge.net>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -30,23 +30,23 @@ msgstr "Digitální televize"
 msgid "Application has already been initialised"
 msgstr "Aplikace již byla inicializována"
 
-#: ../src/application.cc:235
+#: ../src/application.cc:239
 msgid "Application has not been initialised"
 msgstr "Aplikace nebyla inicializována"
 
-#: ../src/application.cc:310
+#: ../src/application.cc:314
 msgid "Main window has not been created"
 msgstr "Hlavní okno nebylo vytvořeno"
 
-#: ../src/application.cc:417
+#: ../src/application.cc:421
 msgid "No channel to make recording filename"
 msgstr "Žádný kanál pro vytvoření názvu souboru záznamu"
 
-#: ../src/application.cc:479
+#: ../src/application.cc:483
 msgid "Stream thread has not been created"
 msgstr "Vlákno proudu nebylo vytvořeno"
 
-#: ../src/application.cc:504
+#: ../src/application.cc:508
 msgid ""
 "You are trying to stop a scheduled recording.  Would you like Me TV to "
 "delete the scheduled recording?"
@@ -142,67 +142,59 @@ msgstr "Selhalo zastavení demultiplexoru"
 msgid "Failed to poll"
 msgstr "Selhalo dotazování"
 
-#: ../src/dvb_frontend.cc:120
-msgid "Failed to find a value for '%1'"
-msgstr "Selhalo nalezení hodnoty pro '%1'"
-
-#: ../src/dvb_frontend.cc:145
-msgid "Failed to find a text value for '%1'"
-msgstr "Selhalo nalezení textové hodnoty pro '%1'"
-
-#: ../src/dvb_frontend.cc:162
+#: ../src/dvb_frontend.cc:38
 msgid "Failed to open tuner"
 msgstr "Selhalo otevření tuneru "
 
-#: ../src/dvb_frontend.cc:167
+#: ../src/dvb_frontend.cc:43
 msgid "Failed to get tuner info"
 msgstr "Selhalo zjištění informací tuneru"
 
-#: ../src/dvb_frontend.cc:189
+#: ../src/dvb_frontend.cc:65
 msgid "Failed to tune device"
 msgstr "Selhalo ladění zařízení"
 
-#: ../src/dvb_frontend.cc:192
+#: ../src/dvb_frontend.cc:68
 msgid "Waiting for signal lock ..."
 msgstr "Čekám na zámek signálu ..."
 
-#: ../src/dvb_frontend.cc:194
+#: ../src/dvb_frontend.cc:70
 msgid "Got signal lock"
 msgstr "Obdržen zámek signálu"
 
-#: ../src/dvb_frontend.cc:214
+#: ../src/dvb_frontend.cc:90
 msgid "Failed to set tone off"
 msgstr "Selhalo vypnutí tónu"
 
-#: ../src/dvb_frontend.cc:219
+#: ../src/dvb_frontend.cc:95
 msgid "Failed to set voltage"
 msgstr "Selhalo nastavení napětí"
 
-#: ../src/dvb_frontend.cc:225
+#: ../src/dvb_frontend.cc:101
 msgid "Failed to send master command"
 msgstr "Selhalo odeslání řídícího příkazu"
 
-#: ../src/dvb_frontend.cc:231
+#: ../src/dvb_frontend.cc:107
 msgid "Failed to send burst"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:237
+#: ../src/dvb_frontend.cc:113
 msgid "Failed to set tone"
 msgstr "Selhalo nastavení tónu"
 
-#: ../src/dvb_frontend.cc:266
+#: ../src/dvb_frontend.cc:142
 msgid "Failed to lock to channel"
 msgstr "Selhalo uzamčení kanálu"
 
-#: ../src/dvb_frontend.cc:275
+#: ../src/dvb_frontend.cc:151
 msgid "Failed to get signal strength"
 msgstr "Selhalo zjištění síly signálu"
 
-#: ../src/dvb_frontend.cc:285
+#: ../src/dvb_frontend.cc:161
 msgid "Failed to get signal to noise ratio"
 msgstr "Selhalo zjištění poměru signálu k šumu"
 
-#: ../src/dvb_scanner.cc:172
+#: ../src/dvb_scanner.cc:171
 msgid "Me TV cannot process a line in the initial tuning file"
 msgstr "Me TV nemůže zpracovat řádku v počátečním ladícím souboru"
 
@@ -298,14 +290,18 @@ msgid "Enable verbose messages"
 msgstr "Povolit podrobná hlášení"
 
 #: ../src/main.cc:65
-msgid "Enable maintenance mode"
-msgstr "Povolit režimu údržby"
+msgid "Start in safe mode"
+msgstr "Spustit v bezpečném režimu"
 
-#: ../src/main.cc:67
+#: ../src/main.cc:70
+msgid "Start minimised in notification area"
+msgstr "Spustit minimalizovaně v oznamovací oblasti"
+
+#: ../src/main.cc:72
 msgid "Show Me TV help options"
 msgstr "Zobrazit možnosti nápovědy Me TV"
 
-#: ../src/main.cc:90
+#: ../src/main.cc:96
 msgid "An unhandled error occurred"
 msgstr "Nastala neošetřená chyba"
 
@@ -353,9 +349,17 @@ msgstr "Síla signálu (%1%%)"
 msgid "S/N Ratio (%1%%)"
 msgstr "Poměr S/N (%1%%)"
 
-#: ../src/me-tv.cc:56
+#: ../src/me-tv.cc:58
 msgid "Failed to get time"
 msgstr "Selhalo zjištění času"
+
+#: ../src/me-tv.cc:121
+msgid "Failed to find a value for '%1'"
+msgstr "Selhalo nalezení hodnoty pro '%1'"
+
+#: ../src/me-tv.cc:146
+msgid "Failed to find a text value for '%1'"
+msgstr "Selhalo nalezení textové hodnoty pro '%1'"
 
 #: ../src/me-tv.h:30 ../src/me-tv.glade.h:87
 msgid "Unknown"
@@ -812,39 +816,27 @@ msgstr "Neznámý typ rozhraní"
 msgid "Service Name"
 msgstr "Název služby"
 
-#: ../src/scan_window.cc:220
-msgid "Failed to load data from channels.conf file"
-msgstr "Selhalo načtení dat ze souboru channels.conf"
+#: ../src/scan_window.cc:234
+msgid "Invalid parameter count on line %1"
+msgstr "Neplatný počet parametrů na řádce %1"
 
-#: ../src/scan_window.cc:230
-msgid "You cannot have more than %1 channel"
-msgid_plural "You cannot have more than %1 channels"
-msgstr[0] "Nemůžete mít více než %1 kanál"
-msgstr[1] "Nemůžete mít více než %1 kanály"
-msgstr[2] "Nemůžete mít více než %1 kanálů"
-
-#: ../src/scan_window.cc:249
-#, c-format
-msgid "Invalid parameter count on line %d"
-msgstr "Neplatný počet parametrů na řádce %d"
-
-#: ../src/scan_window.cc:277
+#: ../src/scan_window.cc:261
 msgid "Invalid frontend type: only DVB-T is supported"
 msgstr "Neplatný typ rozhraní: je podporováno pouze DVB-T"
 
-#: ../src/scan_window.cc:324
+#: ../src/scan_window.cc:310
 msgid "No scan/import option specified"
 msgstr "Nebyla zadána žádná volba ladit/importovat"
 
-#: ../src/scan_window.cc:331
+#: ../src/scan_window.cc:317
 msgid "No tuning file has been selected"
 msgstr "Nebyl vybrán žádný ladící soubor"
 
-#: ../src/scan_window.cc:378
+#: ../src/scan_window.cc:365
 msgid "Invalid frontend type"
 msgstr "Neplatný typ rozhraní"
 
-#: ../src/scan_window.cc:407
+#: ../src/scan_window.cc:394
 msgid "Found 1 channel"
 msgid_plural "Found %1 channels"
 msgstr[0] "Nalezen 1 kanál"

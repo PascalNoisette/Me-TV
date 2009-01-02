@@ -27,8 +27,10 @@ class MplayerEngine : public Engine
 {
 private:
 	gint pid;
-	gint standard_input;
 	gint window_id;
+	gint standard_input;
+	gboolean mute_state;
+	gdouble monitoraspect;
 
 	void play(const Glib::ustring& mrl);
 	void stop();
@@ -36,6 +38,7 @@ private:
 	void expose();
 	void set_size(gint width, gint height) {};
 	void set_audio_channel(guint channel) {};
+	void write(const Glib::ustring& text);
 	gboolean is_running();
 
 public:

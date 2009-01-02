@@ -96,10 +96,10 @@ void XineEngine::stop()
 		g_debug("Quitting Xine");
 		if (standard_input != -1)
 		{
+			write("stop playback\n");
 			write("quit\n");
 			standard_input = -1;
 		}
-		kill(pid, SIGHUP);
 		
 		gboolean done = false;
 		gint elapsed_time = 0;
