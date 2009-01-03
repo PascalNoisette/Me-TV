@@ -257,8 +257,31 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 					}
 					break;
 				
+				case FE_ATSC:
+					if (parameter_count != 6)
+					{
+						Glib::ustring message = Glib::ustring::compose(_("Invalid parameter count on line %1"), line_count);
+						throw Exception(message);
+					}
+
+					{
+						Channel channel;
+
+						channel.name = channels_conf_line.get_name(0);
+						channel.sort_order = line_count;
+						channel.flags = CHANNEL_FLAG_ATSC;
+				
+						channel.frontend_parameters.frequency						= channels_conf_line.get_frequency(1);
+						channel.frontend_parameters.inversion						= channels_conf_line.get_inversion(2);
+						channel.frontend_parameters.u.vsb.modulation				= channels_conf_line.get_modulation(3);
+						channel.service_id											= channels_conf_line.get_service_id(5);
+				
+						current_profile.add_channel(channel);
+					}
+					break;
+				
 				default:
-					throw Exception(_("Invalid frontend type: only DVB-T is supported"));
+					throw Exception(_("Failed to import: importing a channels.conf is only supported only DVB-T and ATSC"));
 					break;
 			}
 		}		
@@ -275,9 +298,6 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 	gboolean do_scan = true;
 	
 	stop_scan();
-
-	glade->get_widget("button_scan_wizard_next")->hide();
-	notebook_scan_wizard->next_page();
 
 	list_store->clear();
 
@@ -319,6 +339,9 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 		}
 		else
 		{
+			glade->get_widget("button_scan_wizard_next")->hide();
+			notebook_scan_wizard->next_page();
+
 			g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
 			scan_thread = new ScanThread(frontend, initial_tuning_file);
 			Dvb::Scanner& scanner = scan_thread->get_scanner();
