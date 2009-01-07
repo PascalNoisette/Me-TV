@@ -332,6 +332,15 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 	
 	if (do_scan)
 	{
+		switch(frontend.get_frontend_info().type)
+		{
+			case FE_OFDM:
+			case FE_QAM:
+				break;
+			default:
+				throw Exception(_("Failed to scan: scanning is only supported for DVB-T and DVB-C devices"));
+		}
+
 		if (initial_tuning_file.empty())
 		{
 			Gtk::MessageDialog dialog(*this, _("No tuning file has been selected"));

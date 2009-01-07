@@ -34,7 +34,6 @@ private:
 	void play(const Glib::ustring& mrl);
 	void stop();
 	void mute(gboolean state);
-	void expose();
 	void set_size(gint width, gint height) {};
 	void set_audio_channel(guint channel) {};
 	void write(const Glib::ustring& text);

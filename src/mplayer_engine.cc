@@ -28,6 +28,8 @@
 #define KILL_SLEEP_TIME		100000
 #define KILL_SLEEP_TIMEOUT  2000000
 
+#define MPLAYER_CACHE_KB   4096
+
 MplayerEngine::MplayerEngine(int window_id) : window_id(window_id)
 {
 	pid = -1;
@@ -51,12 +53,16 @@ void MplayerEngine::play(const Glib::ustring& mrl)
 	argv.push_back("-slave");
 	argv.push_back("-stop-xscreensaver");
 	argv.push_back("-use-filedir-conf");
+	argv.push_back("-cache");
+	argv.push_back(Glib::ustring::format(std::fixed, MPLAYER_CACHE_KB));
 	argv.push_back("-ao");
 	argv.push_back(application.get_string_configuration_value("mplayer.audio_driver"));
 	argv.push_back("-softvol");
 	argv.push_back("-vo");
 	argv.push_back(application.get_string_configuration_value("mplayer.video_driver"));
 	argv.push_back("-framedrop");
+	argv.push_back("-hardframedrop");
+	argv.push_back("-tskeepbroken");
 	argv.push_back("-zoom");
 	argv.push_back("-monitoraspect");
 	argv.push_back(Glib::ustring::format(std::fixed, std::setprecision(6), monitoraspect));
@@ -66,19 +72,27 @@ void MplayerEngine::play(const Glib::ustring& mrl)
 	argv.push_back(Glib::ustring::compose("%1", window_id));
 	argv.push_back(Glib::ustring::compose("%1", mrl));
 
-        Glib::spawn_async_with_pipes("/tmp",
-                argv,
-                Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_DO_NOT_REAP_CHILD,
-                sigc::slot< void >(),
-                &pid,
-                &standard_input,
-                NULL,
-                NULL);
+	try
+	{
+		Glib::spawn_async_with_pipes("/tmp",
+			argv,
+			Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_DO_NOT_REAP_CHILD | 
+			Glib::SPAWN_STDOUT_TO_DEV_NULL | Glib::SPAWN_STDERR_TO_DEV_NULL,
+			sigc::slot< void >(),
+			&pid,
+			&standard_input,
+			NULL,
+			NULL);
 
-	mute_state = false;
-	mute(mute_state);
-
-	g_debug("Spawned mplayer on pid %d", pid);
+		mute_state = false;
+		mute(mute_state);
+		g_debug("Spawned mplayer on pid %d", pid);
+	}
+	catch (const Exception& exception)
+	{
+		g_debug("Failed to spawn mplayer!");
+		stop();
+	}
 }
 
 void MplayerEngine::write(const Glib::ustring& text)
@@ -94,12 +108,12 @@ void MplayerEngine::stop()
 		g_debug("Quitting MPlayer");
 		if (standard_input != -1)
 		{
-			write("stop\n");
+			write("pause\n");
 			write("quit\n");
-			standard_input = -1;
 		}
-		kill(pid, SIGHUP);
-		
+		else
+			kill(pid, SIGHUP);
+
 		gboolean done = false;
 		gint elapsed_time = 0;
 		while (!done)
@@ -142,6 +156,11 @@ void MplayerEngine::stop()
 			pid = -1;
 		}
 		g_debug("MPlayer stop complete");
+	}
+	if (standard_input != -1)
+	{
+		close(standard_input);
+		standard_input = -1;
 	}
 }
 

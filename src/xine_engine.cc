@@ -68,19 +68,27 @@ void XineEngine::play(const Glib::ustring& mrl)
 	argv.push_back(Glib::ustring::compose("%1", window_id));
 	argv.push_back(Glib::ustring::compose("fifo://%1", mrl));
 
-	Glib::spawn_async_with_pipes("/tmp",
-		argv,
-		Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_DO_NOT_REAP_CHILD,
-		sigc::slot< void >(),
-		&pid,
-		&standard_input,
-		NULL,
-		NULL);
+	try
+	{
+		Glib::spawn_async_with_pipes("/tmp",
+			argv,
+			Glib::SPAWN_SEARCH_PATH | Glib::SPAWN_DO_NOT_REAP_CHILD | 
+			Glib::SPAWN_STDOUT_TO_DEV_NULL | Glib::SPAWN_STDERR_TO_DEV_NULL,
+			sigc::slot< void >(),
+			&pid,
+			&standard_input,
+			NULL,
+			NULL);
 
-	mute_state = false;
-	mute(mute_state);
-										  
-	g_debug("Spawned xine on pid %d", pid);
+		mute_state = false;
+		mute(mute_state);
+		g_debug("Spawned xine on pid %d", pid);
+	}
+	catch (const Exception& exception)
+	{
+		g_debug("Failed to spawn xine!");
+		stop();
+	}
 }
 
 void XineEngine::write(const Glib::ustring& text)
@@ -96,10 +104,10 @@ void XineEngine::stop()
 		g_debug("Quitting Xine");
 		if (standard_input != -1)
 		{
-			write("stop playback\n");
+			write("pause\n");
 			write("quit\n");
-			standard_input = -1;
 		}
+		kill(pid, SIGHUP);
 		
 		gboolean done = false;
 		gint elapsed_time = 0;
@@ -143,6 +151,11 @@ void XineEngine::stop()
 			pid = -1;
 		}
 		g_debug("Xine stop complete");
+	}
+	if (standard_input != -1)
+	{
+		close(standard_input);
+		standard_input = -1;
 	}
 }
 

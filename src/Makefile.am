@@ -13,7 +13,7 @@ AM_CPPFLAGS = \
 	$(SQLITE_CFLAGS) \
 	$(WARN_CXXFLAGS) \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	-DPACKAGE_SRC_DIR=\""$(srcdir)"\"
+	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" 
 
 AM_CFLAGS =\
 	 -Wall\
@@ -95,14 +95,17 @@ me_tv_SOURCES = \
 	channels_conf_line.cc \
 	channels_conf_line.h \
 	initial_scan_line.cc \
-	initial_scan_line.h
+	initial_scan_line.h \
+	vlc_engine.h \
+	vlc_engine.cc
 
-me_tv_LDFLAGS = -Wl,--as-needed \
-	`getconf LFS_LDFLAGS` \
-        `getconf LFS64_LDFLAGS`
+me_tv_LDFLAGS = \
+	-Wl,--as-needed `getconf \
+	LFS_LDFLAGS` `getconf \
+	LFS64_LDFLAGS`
 
 me_tv_LDADD = \
 	$(ME_TV_LIBS) \
-	$(SQLITE_LIBS)
+	$(SQLITE_LIBS) -lvlc
 
 EXTRA_DIST = $(glade_DATA)

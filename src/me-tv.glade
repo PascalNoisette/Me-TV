@@ -1367,7 +1367,6 @@ swe</property>
             <child>
               <widget class="GtkMenuBar" id="menubar">
                 <property name="visible">True</property>
-                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <child>
                   <widget class="GtkMenuItem" id="menu_item_file">
                     <property name="visible">True</property>
@@ -1376,12 +1375,12 @@ swe</property>
                     <child>
                       <widget class="GtkMenu" id="menu_file">
                         <property name="visible">True</property>
-                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="take_focus">False</property>
                         <child>
                           <widget class="GtkMenuItem" id="menu_item_devices">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">_Devices</property>
+                            <property name="tooltip" translatable="yes">Switch devices</property>
                             <property name="use_underline">True</property>
                           </widget>
                         </child>
@@ -1394,6 +1393,7 @@ swe</property>
                           <widget class="GtkCheckMenuItem" id="menu_item_record">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">_Record</property>
+                            <property name="tooltip" translatable="yes">Toggle recording</property>
                             <property name="use_underline">True</property>
                           </widget>
                         </child>
@@ -1401,6 +1401,7 @@ swe</property>
                           <widget class="GtkCheckMenuItem" id="menu_item_broadcast">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">_Broadcast</property>
+                            <property name="tooltip" translatable="yes">Toggle broadcasting</property>
                             <property name="use_underline">True</property>
                           </widget>
                         </child>
@@ -1435,6 +1436,7 @@ swe</property>
                           <widget class="GtkMenuItem" id="menu_item_schedule">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">_Scheduled Recordings</property>
+                            <property name="tooltip" translatable="yes">Open scheduled recordings dialog</property>
                             <property name="use_underline">True</property>
                           </widget>
                         </child>
@@ -1442,6 +1444,7 @@ swe</property>
                           <widget class="GtkMenuItem" id="menu_item_channels">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Channel Editor</property>
+                            <property name="tooltip" translatable="yes">Open channel editor dialog</property>
                             <property name="use_underline">True</property>
                             <signal name="activate" handler="on_menu_item_channels_activate" object="dialog_channels"/>
                           </widget>
@@ -1450,13 +1453,13 @@ swe</property>
                           <widget class="GtkMenuItem" id="menu_item_meters">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Show Meters</property>
+                            <property name="tooltip" translatable="yes">Show meters dialog</property>
                             <property name="use_underline">True</property>
                           </widget>
                         </child>
                         <child>
                           <widget class="GtkImageMenuItem" id="menu_item_preferences">
                             <property name="visible">True</property>
-                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <property name="tooltip" translatable="yes">Show preferences dialog</property>
                             <property name="label">gtk-preferences</property>
                             <property name="use_underline">True</property>
@@ -1475,7 +1478,6 @@ swe</property>
                     <child>
                       <widget class="GtkMenu" id="menu_view">
                         <property name="visible">True</property>
-                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <child>
                           <widget class="GtkImageMenuItem" id="menu_item_fullscreen">
                             <property name="visible">True</property>
@@ -1492,18 +1494,15 @@ swe</property>
                 <child>
                   <widget class="GtkMenuItem" id="menu_item_audio">
                     <property name="visible">True</property>
-                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="label" translatable="yes">_Audio</property>
                     <property name="use_underline">True</property>
                     <child>
                       <widget class="GtkMenu" id="menu_audio">
                         <property name="visible">True</property>
-                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <child>
                           <widget class="GtkCheckMenuItem" id="menu_item_mute">
                             <property name="visible">True</property>
-                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                            <property name="tooltip" translatable="yes">Mute audio</property>
+                            <property name="tooltip" translatable="yes">Toggle mute audio</property>
                             <property name="label" translatable="yes">_Mute</property>
                             <property name="use_underline">True</property>
                           </widget>
@@ -1512,6 +1511,7 @@ swe</property>
                           <widget class="GtkMenuItem" id="menu_item_audio_streams">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Streams</property>
+                            <property name="tooltip" translatable="yes">Switch audio streams</property>
                             <property name="use_underline">True</property>
                           </widget>
                         </child>
@@ -1527,7 +1527,6 @@ swe</property>
                     <child>
                       <widget class="GtkMenu" id="menu_help">
                         <property name="visible">True</property>
-                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <child>
                           <widget class="GtkImageMenuItem" id="menu_item_about">
                             <property name="visible">True</property>

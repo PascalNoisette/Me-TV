@@ -72,6 +72,8 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_string_configuration_default("xine.audio_driver", "alsa");
 	set_string_configuration_default("mplayer.video_driver", "xv");
 	set_string_configuration_default("mplayer.audio_driver", "alsa");
+	set_string_configuration_default("vlc.vout", "xvideo");
+	set_string_configuration_default("vlc.aout", "alsa");
 	set_string_configuration_default("xine.deinterlace_type", "tvtime");
 	set_string_configuration_default("preferred_language", "");
 	set_string_configuration_default("text_encoding", "auto");

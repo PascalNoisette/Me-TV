@@ -27,5 +27,5 @@ src/scan_window.cc
 src/scheduled_recording.cc
 src/scheduled_recordings_dialog.cc
 src/stream_thread.cc
+src/string_splitter.cc
 src/thread.cc
-src/xine_engine.cc

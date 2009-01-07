@@ -1,3 +1,13 @@
+2009-01-05  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.10
+	* Added VLC based engine
+
+2009-01-04  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.9
+	* Fixed issue with man page not being included in dist
+
 2009-01-02  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.8

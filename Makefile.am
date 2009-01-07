@@ -24,6 +24,7 @@ EXTRA_DIST = \
 	ChangeLog\
 	INSTALL\
 	NEWS \
+	me-tv.1 \
 	$(desktop_in_files) \
 	$(pixmaps_DATA) \
 	intltool-update.in \

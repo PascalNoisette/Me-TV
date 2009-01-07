@@ -27,6 +27,7 @@
 #include "me-tv.h"
 #include "xine_engine.h"
 #include "mplayer_engine.h"
+#include "vlc_engine.h"
 #include <config.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
@@ -36,6 +37,9 @@
 
 #define POKE_INTERVAL 		30
 #define UPDATE_INTERVAL		60
+
+KeyCode keycode1, keycode2;
+KeyCode *keycode;
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)
 	: Gnome::UI::App(cobject), glade(glade_xml)
@@ -49,7 +53,13 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	engine				= NULL;
 	output_fd			= -1;
 	mute_state			= false;
-		
+
+	keycode1 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_L);
+	keycode2 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_R);
+	if (keycode2 == 0)
+		keycode2 = keycode1;
+	keycode = &keycode1;
+
 	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
 	app_bar->get_progress()->hide();
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
@@ -399,11 +409,16 @@ void MainWindow::on_timeout()
 		{ 		
 			Display* display = GDK_DISPLAY();
 
-			KeyCode keycode = XKeysymToKeycode(display, XK_Shift_L);
-			XTestFakeKeyEvent (display, keycode, True, CurrentTime);
-			XTestFakeKeyEvent (display, keycode, False, CurrentTime);
-			XSync(display, False);
-			XFlush(display);
+			XLockDisplay (display);
+			XTestFakeKeyEvent (display, *keycode, True, CurrentTime);
+			XTestFakeKeyEvent (display, *keycode, False, CurrentTime);
+			XSync (display, False);
+//			XFlush (display);
+//			XUnlockDisplay (display);
+			if (keycode == &keycode1)
+				keycode = &keycode2;
+			else
+				keycode = &keycode1;
 		}
 		last_poke_time = now;
 	}
@@ -676,6 +691,10 @@ void MainWindow::start_engine()
 		else if (engine_type == "mplayer")
 		{
 			engine = new MplayerEngine(window_id);
+		}
+		else if (engine_type == "vlc")
+		{
+			engine = new VlcEngine(window_id);
 		}
 		else
 		{
