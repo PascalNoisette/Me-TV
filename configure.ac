@@ -22,15 +22,15 @@ AC_PROG_RANLIB
 # GNOME aclocal, debug and maintainer flags
 GNOME_COMMON_INIT
 # debug, warnings, deprecated
-if test x"$enable_more_warnings" != xno ; then
+if test x"$enable_more_warnings" = xyes ; then
 	enable_cxx_warnings=yes
 fi
-if test x"$USE_MAINTAINER_MODE" = xyes ; then
+if test x"$USE_MAINTAINER_MODE" != xno; then
 	enable_debug=yes
 	CFLAGS=""
 fi
 if test x"$enable_debug" = xyes ; then
-	enable_cxx_warnings=yes
+#	enable_cxx_warnings=yes
 	enable_more_warnings=yes
 	CFLAGS="$CFLAGS -O0 -g"
 fi
@@ -50,7 +50,6 @@ if test x"$enable_more_warnings" != xno ; then
 -Wcomment \
 -Wformat \
 -Wimplicit \
--Winline \
 -Wmissing-braces \
 -Wpacked \
 -Wparentheses \

@@ -96,8 +96,8 @@ me_tv_SOURCES = \
 	channels_conf_line.h \
 	initial_scan_line.cc \
 	initial_scan_line.h \
-	vlc_engine.h \
-	vlc_engine.cc
+	lib_vlc_engine.cc \
+	lib_vlc_engine.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \
@@ -105,7 +105,6 @@ me_tv_LDFLAGS = \
 	LFS64_LDFLAGS`
 
 me_tv_LDADD = \
-	$(ME_TV_LIBS) \
-	$(SQLITE_LIBS) -lvlc
+	$(ME_TV_LIBS) $(SQLITE_LIBS)
 
 EXTRA_DIST = $(glade_DATA)

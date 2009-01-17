@@ -58,7 +58,7 @@ void Frontend::tune_to (const struct dvb_frontend_parameters& parameters, guint 
 	struct dvb_frontend_event ev;
 
 	// Discard stale events
-	while (ioctl(fd, FE_GET_EVENT, &ev) != -1);
+	do {} while (ioctl(fd, FE_GET_EVENT, &ev) != -1);
 
 	if ( ioctl ( fd, FE_SET_FRONTEND, &(parameters) ) < 0 )
 	{

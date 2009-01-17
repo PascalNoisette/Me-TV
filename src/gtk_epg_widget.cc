@@ -290,10 +290,10 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 	TRY
 	Gtk::Dialog* dialog_program_details = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
 	
-	(dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_program_title")))->set_text(epg_event.get_title());
-	(dynamic_cast<Gtk::TextView*>(glade->get_widget("textview_program_description")))->get_buffer()->assign(epg_event.get_description());
-	(dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_program_start_time")))->set_text(epg_event.get_start_time_text());
-	(dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_program_duration")))->set_text(epg_event.get_duration_text());
+	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_title")))->get_buffer()->assign(epg_event.get_title());
+	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_description")))->get_buffer()->assign(epg_event.get_description());
+	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_start_time")))->get_buffer()->assign(epg_event.get_start_time_text());
+	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_duration")))->get_buffer()->assign(epg_event.get_duration_text());
 	gint result = dialog_program_details->run();
 	dialog_program_details->hide();
 

@@ -44,7 +44,7 @@ private:
 	MetersDialog*							meters_dialog;
 	Gtk::HScale*							h_scale_position;
 	Gnome::UI::AppBar*						app_bar;
-	DisplayMode								display_mode;
+	DisplayMode								display_mode, prefullscreen;
 	Gtk::RadioButtonGroup					radio_button_group_devices;
 	guint									last_update_time;
 	guint									last_poke_time;
@@ -104,6 +104,7 @@ public:
 	void show_preferences_dialog();
 	void toggle_visibility();
 	void update();
+	void save_geometry();
 
 	void start_engine();
 	void stop_engine();

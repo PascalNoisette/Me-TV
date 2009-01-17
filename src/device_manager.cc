@@ -81,10 +81,6 @@ DeviceManager::DeviceManager()
 	{
 		g_debug("Using '%s' (%s) ", frontend->get_frontend_info().name, frontend->get_path().c_str());
 	}
-	else
-	{
-		throw Exception(NO_FRONTEND_MESSAGE);
-	}
 }
 
 DeviceManager::~DeviceManager()

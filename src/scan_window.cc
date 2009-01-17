@@ -272,8 +272,8 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 						channel.flags = CHANNEL_FLAG_ATSC;
 				
 						channel.frontend_parameters.frequency						= channels_conf_line.get_frequency(1);
-						channel.frontend_parameters.inversion						= channels_conf_line.get_inversion(2);
-						channel.frontend_parameters.u.vsb.modulation				= channels_conf_line.get_modulation(3);
+						channel.frontend_parameters.inversion						= INVERSION_AUTO;
+						channel.frontend_parameters.u.vsb.modulation				= channels_conf_line.get_modulation(2);
 						channel.service_id											= channels_conf_line.get_service_id(5);
 				
 						current_profile.add_channel(channel);

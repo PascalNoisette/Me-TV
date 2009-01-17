@@ -22,6 +22,8 @@
 #include "config.h"
 #include "data.h"
 
+//#define TEST_WITH_NO_DVB_DEVICE 1
+
 Application* Application::current = NULL;
 
 Application& get_application()
@@ -48,6 +50,10 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	record_state = false;
 	broadcast_state = false;
 
+#ifndef TEST_WITH_NO_DVB_DEVICE
+	device_manager.get_frontend();
+#endif
+	
 	signal_quit().connect(sigc::mem_fun(this, &Application::on_quit));
 
 	// Remove all other handlers first
@@ -78,6 +84,10 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_string_configuration_default("preferred_language", "");
 	set_string_configuration_default("text_encoding", "auto");
 	set_boolean_configuration_default("use_24_hour_workaround", true);
+	set_int_configuration_default("x", 10);
+	set_int_configuration_default("y", 10);
+	set_int_configuration_default("width", 500);
+	set_int_configuration_default("height", 500);
 
 	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
@@ -208,6 +218,7 @@ void Application::run()
 		}
 	}
 
+#ifndef TEST_WITH_NO_DVB_DEVICE
 	Profile& current_profile = get_profile_manager().get_current_profile();
 	ChannelList& channels = current_profile.get_channels();
 	if (channels.size() == 0)
@@ -229,6 +240,7 @@ void Application::run()
 		}
 		current_profile.set_display_channel(last_channel);
 	}
+#endif
 	
 	Gnome::Main::run();
 	CATCH
@@ -257,6 +269,8 @@ void Application::stop_stream_thread()
 void Application::set_source(const Channel& channel)
 {
 	Glib::RecMutex::Lock lock(mutex);
+
+#ifndef TEST_WITH_NO_DVB_DEVICE
 	main_window->stop_engine();
 	stop_stream_thread();
 	stream_thread = new StreamThread(channel);
@@ -272,14 +286,15 @@ void Application::set_source(const Channel& channel)
 		{
 			main_window->stop_engine();
 			get_signal_error().emit(exception.what().c_str());
-		}
-		
+		}	
 	}
 	catch(const Glib::Exception& exception)
 	{
 		stop_stream_thread();
 		get_signal_error().emit(exception.what().c_str());
 	}
+#endif
+	
 	update();
 }
 

@@ -1,7 +1,8 @@
-2009-01-05  Michael Lamothe <michael.lamothe@gmail.com>
+2009-01-10  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.10
 	* Added VLC based engine
+	* Persistent window geometry
 
 2009-01-04  Michael Lamothe <michael.lamothe@gmail.com>
 

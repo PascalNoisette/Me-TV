@@ -27,7 +27,7 @@
 #include "me-tv.h"
 #include "xine_engine.h"
 #include "mplayer_engine.h"
-#include "vlc_engine.h"
+#include "lib_vlc_engine.h"
 #include <config.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
@@ -130,6 +130,7 @@ MainWindow::~MainWindow()
 	{
 		g_source_remove(timeout_source);
 	}
+	save_geometry();
 }
 
 MainWindow* MainWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
@@ -354,10 +355,12 @@ bool MainWindow::on_motion_notify_event(GdkEventMotion* event_motion)
 void MainWindow::unfullscreen()
 {
 	Gtk::Window::unfullscreen();
+	set_display_mode(prefullscreen);
 }
 
 void MainWindow::fullscreen()
 {
+	prefullscreen = display_mode;
 	set_display_mode(DISPLAY_MODE_VIDEO);
 	Gtk::Window::fullscreen();
 }
@@ -412,9 +415,9 @@ void MainWindow::on_timeout()
 			XLockDisplay (display);
 			XTestFakeKeyEvent (display, *keycode, True, CurrentTime);
 			XTestFakeKeyEvent (display, *keycode, False, CurrentTime);
-			XSync (display, False);
+//			XSync (display, False);
 //			XFlush (display);
-//			XUnlockDisplay (display);
+			XUnlockDisplay (display);
 			if (keycode == &keycode1)
 				keycode = &keycode2;
 			else
@@ -571,12 +574,25 @@ void MainWindow::set_state(const Glib::ustring& name, gboolean state)
 
 void MainWindow::on_show()
 {
+	Application& application = get_application();
+	
+	gint x = application.get_int_configuration_value("x");
+	gint y = application.get_int_configuration_value("y");
+	gint width = application.get_int_configuration_value("width");
+	gint height = application.get_int_configuration_value("height");
+	
+	if (x != -1)
+	{
+		move(x, y);
+		set_default_size(width, height);
+	}
+	
 	Gtk::Window::on_show();
 	Gdk::Window::process_all_updates();
 
 	TRY
 	start_engine();
-	if (get_application().get_boolean_configuration_value("keep_above"))
+	if (application.get_boolean_configuration_value("keep_above"))
 	{
 		set_keep_above();
 	}
@@ -588,11 +604,31 @@ void MainWindow::on_show()
 
 void MainWindow::on_hide()
 {
+	save_geometry();
+	
 	TRY
 	stop_engine();
 	CATCH
 
 	Gtk::Window::on_hide();
+}
+
+void MainWindow::save_geometry()
+{
+	Application& application = get_application();
+
+	gint x = -1;
+	gint y = -1;
+	gint width = -1;
+	gint height = -1;
+	
+	get_position(x, y);
+	get_size(width, height);
+	
+	application.set_int_configuration_value("x", x);
+	application.set_int_configuration_value("y", y);
+	application.set_int_configuration_value("width", width);
+	application.set_int_configuration_value("height", height);
 }
 
 void MainWindow::toggle_visibility()
@@ -615,6 +651,17 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 		case GDK_f:
 		case GDK_F:
 			toggle_fullscreen();
+			break;
+
+		case GDK_Escape:
+			if (is_fullscreen())
+			{
+				unfullscreen();
+			}
+			else
+			{
+				result = false;
+			}
 			break;
 
 		case GDK_m:
@@ -692,10 +739,12 @@ void MainWindow::start_engine()
 		{
 			engine = new MplayerEngine(window_id);
 		}
-		else if (engine_type == "vlc")
+#ifndef EXCLUDE_LIB_VLC_ENGINE
+		else if (engine_type == "libvlc")
 		{
-			engine = new VlcEngine(window_id);
+			engine = new LibVlcEngine(window_id);
 		}
+#endif
 		else
 		{
 			throw Exception(_("Unknown engine type"));

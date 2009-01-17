@@ -96,7 +96,7 @@ void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar 
 
 void on_error(const Glib::ustring& message)
 {
-	g_message(message.c_str());
+	g_message("%s", message.c_str());
 }
 
 guint convert_string_to_value(const StringTable* table, const Glib::ustring& text)
