@@ -121,7 +121,7 @@ void* LibVlcEngine::get_symbol(const Glib::ustring& symbol_name)
 {
 	void* result = NULL;
 	
-	if (module_lib_vlc.get_symbol(symbol_name, result))
+	if (!module_lib_vlc.get_symbol(symbol_name, result))
 	{
 		Glib::ustring message = Glib::ustring::compose(_("Failed to load symbol '%1' from VLC library"), symbol_name);
 		throw Exception(message);
