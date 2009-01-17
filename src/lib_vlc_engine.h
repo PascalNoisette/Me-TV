@@ -18,30 +18,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __VLC_ENGINE_H__
-#define __VLC_ENGINE_H__
+#ifndef __LIB_VLC_ENGINE_H__
+#define __LIB_VLC_ENGINE_H__
+
+#ifndef EXCLUDE_LIB_VLC_ENGINE
 
 #include "engine.h"
-
-#ifdef USE_VLC_0_8_6_API
-#include <vlc/libvlc.h>
-#else
 #include <vlc/vlc.h>
-#endif
 
-class VlcEngine : public Engine
+class LibVlcEngine : public Engine
 {
 private:
 	libvlc_instance_t*		instance;
 	libvlc_exception_t		exception;
-	gint				window_id;
-	gboolean mute_state;
-	gint volume;
-
-
-#ifndef USE_VLC_0_8_6_API
+	gint					window_id;
+	gint					volume;
+	Glib::Module			module_lib_vlc;
+	
 	libvlc_media_player_t*	media_player;
-#endif
 
 	void check_exception();
 	void play(const Glib::ustring& mrl);
@@ -50,11 +44,14 @@ private:
 	void set_volume(gint newlevel);
 	void set_size(gint width, gint height) {};
 	void set_audio_channel(guint channel) {};
-	gboolean is_running(); 
+	gboolean is_running();
+	void* get_symbol(const Glib::ustring& symbol_name);
 
 public:
-	VlcEngine(int window_id);
-	~VlcEngine();
+	LibVlcEngine(int window_id);
+	~LibVlcEngine();
 };
+
+#endif
 
 #endif

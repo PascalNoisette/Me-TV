@@ -19,71 +19,139 @@
  */
 
 #include "application.h"
-#include "vlc_engine.h"
+#include "lib_vlc_engine.h"
 #include "exception.h"
+
+#ifndef EXCLUDE_LIB_VLC_ENGINE
 
 #define DEFAULT_VOLUME	130
 
-VlcEngine::VlcEngine(int window_id) : window_id(window_id)
+typedef VLC_PUBLIC_API void (* function_libvlc_exception_init)( libvlc_exception_t *p_exception );
+typedef VLC_PUBLIC_API libvlc_instance_t * (* function_libvlc_new)( int , const char *const *, libvlc_exception_t *);
+typedef VLC_PUBLIC_API void (* function_libvlc_media_player_release)( libvlc_media_player_t * );
+typedef VLC_PUBLIC_API void (* function_libvlc_audio_set_mute)( libvlc_instance_t *, int , libvlc_exception_t * );
+typedef VLC_PUBLIC_API int (* function_libvlc_audio_get_volume)( libvlc_instance_t *, libvlc_exception_t * );
+typedef VLC_PUBLIC_API void (* function_libvlc_release)( libvlc_instance_t * );
+typedef VLC_PUBLIC_API int (* function_libvlc_exception_raised)( const libvlc_exception_t *p_exception );
+typedef VLC_PUBLIC_API const char * (* function_libvlc_exception_get_message)( const libvlc_exception_t *p_exception );
+typedef VLC_PUBLIC_API libvlc_media_player_t * (* function_libvlc_media_player_new)( libvlc_instance_t *, libvlc_exception_t * );
+typedef VLC_PUBLIC_API void (* function_libvlc_media_player_set_drawable)( libvlc_media_player_t *, libvlc_drawable_t, libvlc_exception_t * );
+typedef VLC_PUBLIC_API void (* function_libvlc_audio_set_volume)( libvlc_instance_t *, int, libvlc_exception_t *);
+typedef VLC_PUBLIC_API libvlc_media_t * (* function_libvlc_media_new)(
+                                   libvlc_instance_t *p_instance,
+                                   const char * psz_mrl,
+                                   libvlc_exception_t *p_e );
+typedef VLC_PUBLIC_API void (* function_libvlc_media_add_option)(
+                                   libvlc_media_t * p_md,
+                                   const char * ppsz_options,
+                                   libvlc_exception_t * p_e );
+typedef VLC_PUBLIC_API void (* function_libvlc_media_player_set_media)( libvlc_media_player_t *, libvlc_media_t *, libvlc_exception_t * );
+typedef VLC_PUBLIC_API void (* function_libvlc_media_release)(
+                                   libvlc_media_t *p_meta_desc );
+typedef VLC_PUBLIC_API void (* function_libvlc_media_player_play) ( libvlc_media_player_t *, libvlc_exception_t * );
+typedef VLC_PUBLIC_API void (* function_libvlc_media_player_stop) ( libvlc_media_player_t *, libvlc_exception_t * );
+
+function_libvlc_exception_init				symbol_libvlc_exception_init			= NULL;
+function_libvlc_new							symbol_libvlc_new						= NULL;
+function_libvlc_audio_set_mute				symbol_libvlc_audio_set_mute			= NULL;
+function_libvlc_audio_get_volume			symbol_libvlc_audio_get_volume			= NULL;
+function_libvlc_media_player_release		symbol_libvlc_media_player_release		= NULL;
+function_libvlc_release						symbol_libvlc_release					= NULL;
+function_libvlc_exception_raised			symbol_libvlc_exception_raised			= NULL;
+function_libvlc_exception_get_message		symbol_libvlc_exception_get_message		= NULL;
+function_libvlc_media_player_new			symbol_libvlc_media_player_new			= NULL;
+function_libvlc_media_player_set_drawable	symbol_libvlc_media_player_set_drawable	= NULL;
+function_libvlc_audio_set_volume			symbol_libvlc_audio_set_volume			= NULL;
+function_libvlc_media_new					symbol_libvlc_media_new					= NULL;
+function_libvlc_media_add_option			symbol_libvlc_media_add_option			= NULL;
+function_libvlc_media_player_set_media		symbol_libvlc_media_player_set_media	= NULL;
+function_libvlc_media_release				symbol_libvlc_media_release				= NULL;
+function_libvlc_media_player_play			symbol_libvlc_media_player_play			= NULL;
+function_libvlc_media_player_stop			symbol_libvlc_media_player_stop			= NULL;
+
+LibVlcEngine::LibVlcEngine(int window_id) : window_id(window_id), module_lib_vlc("libvlc.so")
 {
 	const char * const argv[] = { 
 		"-I", "dummy", 
 		"--ignore-config", 
 		"--no-osd" };
 
-	libvlc_exception_init (&exception);
+	if (!module_lib_vlc)
+	{
+		throw Exception(_("Failed to load VLC library"));
+	}
+	
+	symbol_libvlc_exception_init			= (function_libvlc_exception_init)				get_symbol("libvlc_exception_init");
+	symbol_libvlc_new						= (function_libvlc_new)							get_symbol("libvlc_new");
+	symbol_libvlc_audio_set_mute			= (function_libvlc_audio_set_mute)				get_symbol("libvlc_audio_set_mute");
+	symbol_libvlc_audio_get_volume			= (function_libvlc_audio_get_volume)			get_symbol("libvlc_audio_get_volume");
+	symbol_libvlc_media_player_release		= (function_libvlc_media_player_release)		get_symbol("libvlc_media_player_release");
+	symbol_libvlc_release					= (function_libvlc_release)						get_symbol("libvlc_release");
+	symbol_libvlc_exception_raised			= (function_libvlc_exception_raised)			get_symbol("libvlc_exception_raised");
+	symbol_libvlc_exception_get_message		= (function_libvlc_exception_get_message)		get_symbol("libvlc_exception_get_message");
+	symbol_libvlc_media_player_new			= (function_libvlc_media_player_new)			get_symbol("libvlc_media_player_new");
+	symbol_libvlc_media_player_set_drawable	= (function_libvlc_media_player_set_drawable)	get_symbol("libvlc_media_player_set_drawable");
+	symbol_libvlc_audio_set_volume			= (function_libvlc_audio_set_volume)			get_symbol("libvlc_audio_set_volume");
+	symbol_libvlc_media_new					= (function_libvlc_media_new)					get_symbol("libvlc_media_new");
+	symbol_libvlc_media_add_option			= (function_libvlc_media_add_option)			get_symbol("libvlc_media_add_option");
+	symbol_libvlc_media_player_set_media	= (function_libvlc_media_player_set_media)		get_symbol("libvlc_media_player_set_media");
+	symbol_libvlc_media_release				= (function_libvlc_media_release)				get_symbol("libvlc_media_release");
+	symbol_libvlc_media_player_play			= (function_libvlc_media_player_play)			get_symbol("libvlc_media_player_play");
+	symbol_libvlc_media_player_stop			= (function_libvlc_media_player_stop)			get_symbol("libvlc_media_player_stop");	
+
+	symbol_libvlc_exception_init (&exception);
 	check_exception();
 
-	instance = libvlc_new (sizeof(argv) / sizeof(argv[0]), argv, &exception);
+	instance = symbol_libvlc_new (sizeof(argv) / sizeof(argv[0]), argv, &exception);
 	check_exception();
 
-	mute_state = libvlc_audio_get_mute(instance, &exception);
-	check_exception();
-	volume = libvlc_audio_get_volume(instance, &exception);
+	volume = symbol_libvlc_audio_get_volume(instance, &exception);
 	check_exception();
 }
 
-VlcEngine::~VlcEngine()
+LibVlcEngine::~LibVlcEngine()
 {
-#ifdef USE_VLC_0_8_6_API
-	libvlc_destroy (instance);
-#else
-	libvlc_media_player_release(media_player);
+	symbol_libvlc_media_player_release(media_player);
 	media_player = NULL;
-	libvlc_release(instance);
-#endif
+	symbol_libvlc_release(instance);
 	instance = NULL;
 }
 
-void VlcEngine::check_exception()
+void* LibVlcEngine::get_symbol(const Glib::ustring& symbol_name)
 {
-	if (libvlc_exception_raised(&exception))
+	void* result = NULL;
+	
+	if (module_lib_vlc.get_symbol(symbol_name, result))
 	{
-		throw Exception(libvlc_exception_get_message(&exception));
+		Glib::ustring message = Glib::ustring::compose(_("Failed to load symbol '%1' from VLC library"), symbol_name);
+		throw Exception(message);
+	}
+	
+	return result;
+}
+
+void LibVlcEngine::check_exception()
+{
+	if (symbol_libvlc_exception_raised(&exception))
+	{
+		throw Exception(symbol_libvlc_exception_get_message(&exception));
 	}
 }
 
-void VlcEngine::play(const Glib::ustring& mrl)
+void LibVlcEngine::play(const Glib::ustring& mrl)
 {
-#ifdef USE_VLC_0_8_6_API
-	int item = libvlc_playlist_add(instance, mrl.c_str(), NULL, &exception);
-	check_exception();
-
-	libvlc_playlist_play(instance, item, 0, NULL, &exception); 
-	check_exception();
-#else
 	Application& application = get_application();
 
-	media_player = libvlc_media_player_new (instance, &exception);
+	media_player = symbol_libvlc_media_player_new (instance, &exception);
 	check_exception();
 
-	libvlc_media_player_set_drawable(media_player, window_id, &exception);
+	symbol_libvlc_media_player_set_drawable(media_player, window_id, &exception);
 	check_exception();
 
-	libvlc_audio_set_volume (instance, volume, &exception);
+	symbol_libvlc_audio_set_volume (instance, volume, &exception);
 	check_exception();
 
-	libvlc_media_t* media = libvlc_media_new(instance, mrl.c_str(), &exception);
+	libvlc_media_t* media = symbol_libvlc_media_new(instance, mrl.c_str(), &exception);
 	check_exception();
 
 	StringList options;
@@ -106,70 +174,58 @@ void VlcEngine::play(const Glib::ustring& mrl)
 		Glib::ustring process_option = *iterator;
 		if (!process_option.empty())
 		{
-			libvlc_media_add_option(media, process_option.c_str(), &exception);
+			symbol_libvlc_media_add_option(media, process_option.c_str(), &exception);
 			check_exception();
 		}
 	}
 
-	libvlc_media_player_set_media (media_player, media, &exception);
+	symbol_libvlc_media_player_set_media (media_player, media, &exception);
 	check_exception();
 
-	libvlc_media_release(media);
+	symbol_libvlc_media_release(media);
 
-	libvlc_media_player_play(media_player, &exception);
+	symbol_libvlc_media_player_play(media_player, &exception);
 	check_exception();
 
 	mute(false);
 	set_volume(DEFAULT_VOLUME);
-#endif
 }
 
-void VlcEngine::stop()
+void LibVlcEngine::stop()
 {
-#ifdef USE_VLC_0_8_6_API
-	libvlc_playlist_stop(instance, &exception);
-#else
 	if(media_player != NULL)
 	{
-		libvlc_media_player_stop(media_player, &exception);
+		symbol_libvlc_media_player_stop(media_player, &exception);
 	}
-#endif
 	
 	check_exception();
 }
 
-gboolean VlcEngine::is_running()
+gboolean LibVlcEngine::is_running()
 {
 	int isplaying = 0;
 	
-#ifdef USE_VLC_0_8_6_API
-	isplaying = libvlc_playlist_isplaying(instance, &exception);
-#else
-//	isplaying = libvlc_media_player_isplaying(instance, &exception);
 	isplaying = media_player != NULL;
-#endif
 	check_exception();
 	
 	return isplaying == 1;
 }
 
-void VlcEngine::mute(gboolean state)
+void LibVlcEngine::mute(gboolean state)
 {
-	if (state != mute_state)
-	{
-		libvlc_audio_set_mute(instance, state, &exception);
-		check_exception();
-		mute_state = state;
-	}
+	symbol_libvlc_audio_set_mute(instance, state, &exception);
+	check_exception();
 }
 
-void VlcEngine::set_volume(gint newlevel)
+void LibVlcEngine::set_volume(gint newlevel)
 {
 	if (newlevel != volume)
 	{
-		libvlc_audio_set_volume(instance, newlevel, &exception);
+		symbol_libvlc_audio_set_volume(instance, newlevel, &exception);
 		check_exception();
-		volume = libvlc_audio_get_volume(instance, &exception);
+		volume = symbol_libvlc_audio_get_volume(instance, &exception);
 		check_exception();
 	}
 }
+
+#endif
