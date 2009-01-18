@@ -707,6 +707,19 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event_expose)
 	return false;
 }
 
+void MainWindow::play(const Glib::ustring& mrl)
+{
+	int window_id = GDK_WINDOW_XID(drawing_area_video->get_window()->gobj());
+
+	if (window_id == 0)
+	{
+		throw Exception(_("Window ID was 0"));
+	}
+	
+	engine = new LibVlcEngine(window_id);
+	engine->play(mrl);
+}
+
 void MainWindow::start_engine()
 {
 	Glib::RecMutex::Lock lock(mutex);

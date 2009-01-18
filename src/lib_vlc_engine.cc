@@ -80,6 +80,7 @@ LibVlcEngine::LibVlcEngine(int window_id) : window_id(window_id), module_lib_vlc
 	{
 		throw Exception(_("Failed to load VLC library"));
 	}
+	g_debug("VLC library loaded");
 	
 	symbol_libvlc_exception_init			= (function_libvlc_exception_init)				get_symbol("libvlc_exception_init");
 	symbol_libvlc_new						= (function_libvlc_new)							get_symbol("libvlc_new");

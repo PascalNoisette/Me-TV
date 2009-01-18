@@ -106,6 +106,7 @@ public:
 	void update();
 	void save_geometry();
 
+	void play(const Glib::ustring& mrl);
 	void start_engine();
 	void stop_engine();
 };

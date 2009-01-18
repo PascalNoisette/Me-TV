@@ -22,7 +22,7 @@
 #include "config.h"
 #include "data.h"
 
-//#define TEST_WITH_NO_DVB_DEVICE 1
+#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
 
 Application* Application::current = NULL;
 
@@ -50,7 +50,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	record_state = false;
 	broadcast_state = false;
 
-#ifndef TEST_WITH_NO_DVB_DEVICE
+#ifndef TEST_VIDEO_SOURCE
 	device_manager.get_frontend();
 #endif
 	
@@ -218,7 +218,7 @@ void Application::run()
 		}
 	}
 
-#ifndef TEST_WITH_NO_DVB_DEVICE
+#ifndef TEST_VIDEO_SOURCE
 	Profile& current_profile = get_profile_manager().get_current_profile();
 	ChannelList& channels = current_profile.get_channels();
 	if (channels.size() == 0)
@@ -240,6 +240,8 @@ void Application::run()
 		}
 		current_profile.set_display_channel(last_channel);
 	}
+#else
+	main_window->play(TEST_VIDEO_SOURCE);
 #endif
 	
 	Gnome::Main::run();
@@ -270,7 +272,7 @@ void Application::set_source(const Channel& channel)
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-#ifndef TEST_WITH_NO_DVB_DEVICE
+#ifndef TEST_VIDEO_SOURCE
 	main_window->stop_engine();
 	stop_stream_thread();
 	stream_thread = new StreamThread(channel);
@@ -293,6 +295,8 @@ void Application::set_source(const Channel& channel)
 		stop_stream_thread();
 		get_signal_error().emit(exception.what().c_str());
 	}
+#else
+	main_window->play(TEST_VIDEO_SOURCE);
 #endif
 	
 	update();
