@@ -707,16 +707,47 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event_expose)
 	return false;
 }
 
-void MainWindow::play(const Glib::ustring& mrl)
+void MainWindow::create_engine()
 {
+	if (engine != NULL)
+	{
+		throw Exception(_("Failed to start engine: Engine has already been started"));
+	}
+
 	int window_id = GDK_WINDOW_XID(drawing_area_video->get_window()->gobj());
 
 	if (window_id == 0)
 	{
 		throw Exception(_("Window ID was 0"));
 	}
-	
-	engine = new LibVlcEngine(window_id);
+
+	g_debug("Creating engine");
+	Application& application = get_application();
+	Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
+	if (engine_type == "xine")
+	{
+		engine = new XineEngine(window_id);
+	}
+	else if (engine_type == "mplayer")
+	{
+		engine = new MplayerEngine(window_id);
+	}
+#ifndef EXCLUDE_LIB_VLC_ENGINE
+	else if (engine_type == "libvlc")
+	{
+		engine = new LibVlcEngine(window_id);
+	}
+#endif
+	else
+	{
+		throw Exception(_("Unknown engine type"));
+	}
+	g_debug("%s engine created", engine_type.c_str());
+}
+
+void MainWindow::play(const Glib::ustring& mrl)
+{
+	create_engine();
 	engine->play(mrl);
 }
 
@@ -730,40 +761,8 @@ void MainWindow::start_engine()
 	{
 		g_debug("Starting engine");
 
-		if (engine != NULL)
-		{
-			throw Exception(_("Failed to start engine: Engine has already been started"));
-		}
-		
-		int window_id = GDK_WINDOW_XID(drawing_area_video->get_window()->gobj());
-
-		if (window_id == 0)
-		{
-			throw Exception(_("Window ID was 0"));
-		}
-		
-		g_debug("Creating engine");
-		Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
-		if (engine_type == "xine")
-		{
-			engine = new XineEngine(window_id);
-		}
-		else if (engine_type == "mplayer")
-		{
-			engine = new MplayerEngine(window_id);
-		}
-#ifndef EXCLUDE_LIB_VLC_ENGINE
-		else if (engine_type == "libvlc")
-		{
-			engine = new LibVlcEngine(window_id);
-		}
-#endif
-		else
-		{
-			throw Exception(_("Unknown engine type"));
-		}
-		g_debug("%s engine created", engine_type.c_str());
-		
+		create_engine();
+	
 		if (engine != NULL)
 		{
 			engine->mute(mute_state);

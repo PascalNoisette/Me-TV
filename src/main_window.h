@@ -94,6 +94,7 @@ private:
 	
 	void set_next_display_mode();
 		
+	void create_engine();
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	~MainWindow();
