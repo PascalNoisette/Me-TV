@@ -52,6 +52,7 @@ void PreferencesDialog::run()
 	Gtk::CheckButton* check_button_show_epg_time = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_show_epg_time"));
 	Gtk::CheckButton* check_button_show_epg_tooltips = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_show_epg_tooltips"));
 	Gtk::CheckButton* check_button_24_hour_workaround = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_24_hour_workaround"));
+	Gtk::CheckButton* check_button_status_icon = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_status_icon"));
 	
 	file_chooser_button_recording_directory->set_filename(application.get_string_configuration_value("recording_directory"));
 	spin_button_record_extra_before->set_value(application.get_int_configuration_value("record_extra_before"));
@@ -68,6 +69,7 @@ void PreferencesDialog::run()
 	check_button_show_epg_time->set_active(application.get_boolean_configuration_value("show_epg_time"));
 	check_button_show_epg_tooltips->set_active(application.get_boolean_configuration_value("show_epg_tooltips"));
 	check_button_24_hour_workaround->set_active(application.get_boolean_configuration_value("use_24_hour_workaround"));
+	check_button_status_icon->set_active(application.get_boolean_configuration_value("status_icon"));
 	
 	if (Dialog::run() == Gtk::RESPONSE_OK)
 	{
@@ -86,6 +88,7 @@ void PreferencesDialog::run()
 		application.set_boolean_configuration_value("show_epg_time", check_button_show_epg_time->get_active());
 		application.set_boolean_configuration_value("show_epg_tooltips", check_button_show_epg_tooltips->get_active());
 		application.set_boolean_configuration_value("use_24_hour_workaround", check_button_24_hour_workaround->get_active());
+		application.set_boolean_configuration_value("status_icon", check_button_status_icon->get_active());
 
 		get_application().update();
 	}

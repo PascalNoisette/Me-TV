@@ -73,4 +73,6 @@ void StatusIcon::update()
 	{
 		status_icon->set("me-tv");
 	}
+
+	status_icon->set_visible(get_application().get_boolean_configuration_value("status_icon"));
 }

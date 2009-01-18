@@ -1061,6 +1061,20 @@ iso6937</property>
               </packing>
             </child>
             <child>
+              <widget class="GtkCheckButton" id="check_button_status_icon">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label" translatable="yes">Show a status icon in the notification area</property>
+              <property name="draw_indicator">True</property>
+            </widget>
+            <packing>
+              <property name="left_attach">1</property>
+              <property name="right_attach">2</property>
+              <property name="top_attach">15</property>
+              <property name="bottom_attach">16</property>
+            </packing>
+          </child>
+            <child>
               <widget class="GtkHBox" id="hbox7">
                 <property name="visible">True</property>
                 <child>
