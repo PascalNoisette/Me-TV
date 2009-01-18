@@ -22,7 +22,7 @@
 #include "config.h"
 #include "data.h"
 
-#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
+//#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
 
 Application* Application::current = NULL;
 
