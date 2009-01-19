@@ -23,7 +23,8 @@
 #include "channel.h"
 #include "me-tv.h"
 
-StatusIcon::StatusIcon(Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) : glade(glade_xml)
+StatusIcon::StatusIcon(Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)
+	: glade(glade_xml)
 {
 	status_icon = Gtk::StatusIcon::create("me-tv");
 	popup_menu = dynamic_cast<Gtk::Menu*>(glade->get_widget("menu_application_popup"));

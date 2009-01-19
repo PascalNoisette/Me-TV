@@ -43,6 +43,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 
 	current = this;
 	main_window = NULL;
+	status_icon = NULL;
 	stream_thread = NULL;
 	update_epg_time();
 	timeout_source = 0;
@@ -84,6 +85,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_string_configuration_default("preferred_language", "");
 	set_string_configuration_default("text_encoding", "auto");
 	set_boolean_configuration_default("use_24_hour_workaround", true);
+	set_boolean_configuration_default("display_status_icon", true);
 	set_int_configuration_default("x", 10);
 	set_int_configuration_default("y", 10);
 	set_int_configuration_default("width", 500);
@@ -205,8 +207,12 @@ void Application::run()
 {
 	TRY
 	GdkLock gdk_lock;
-	status_icon = new StatusIcon(glade);
+	if (get_boolean_configuration_value("display_status_icon"))
+	{
+		status_icon = new StatusIcon(glade);
+	}
 	main_window = MainWindow::create(glade);
+	
 	
 	if (!minimised_mode)
 	{
@@ -245,6 +251,19 @@ void Application::run()
 #endif
 	
 	Gnome::Main::run();
+	
+	if (status_icon != NULL)
+	{
+		delete status_icon;
+		status_icon = NULL;
+	}
+	
+	if (main_window != NULL)
+	{
+		delete main_window;
+		main_window = NULL;
+	}
+
 	CATCH
 }
 
@@ -306,8 +325,15 @@ void Application::update()
 {
 	preferred_language = get_string_configuration_value("preferred_language");	
 
-	main_window->update();
-	status_icon->update();
+	if (main_window != NULL)
+	{
+		main_window->update();
+	}
+	
+	if (status_icon != NULL)
+	{
+		status_icon->update();
+	}
 }
 
 void Application::on_display_channel_changed(const Channel& channel)

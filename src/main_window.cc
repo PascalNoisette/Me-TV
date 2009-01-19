@@ -608,9 +608,11 @@ void MainWindow::on_hide()
 	
 	TRY
 	stop_engine();
-	CATCH
-
 	Gtk::Window::on_hide();
+	if (!get_application().get_boolean_configuration_value("status_icon")) {
+		Gtk::Main::quit();
+	}
+	CATCH
 }
 
 void MainWindow::save_geometry()
