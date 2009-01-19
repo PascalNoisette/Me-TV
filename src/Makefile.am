@@ -97,7 +97,12 @@ me_tv_SOURCES = \
 	initial_scan_line.cc \
 	initial_scan_line.h \
 	lib_vlc_engine.cc \
-	lib_vlc_engine.h
+	lib_vlc_engine.h \
+	lib_xine_engine.cc \
+	lib_xine_engine.h
+
+me_tv_CXXFLAGS = \
+	-DEXCLUDE_LIB_XINE_ENGINE
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \
