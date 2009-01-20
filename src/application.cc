@@ -38,7 +38,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	{
 		throw Exception(_("Application has already been initialised"));
 	}
-	application_dir = path;
 	
 	g_static_rec_mutex_init(mutex.gobj());
 
@@ -208,12 +207,8 @@ void Application::run()
 {
 	TRY
 	GdkLock gdk_lock;
-	if (get_boolean_configuration_value("display_status_icon"))
-	{
-		status_icon = new StatusIcon(glade);
-	}
+	status_icon = new StatusIcon(glade);
 	main_window = MainWindow::create(glade);
-	
 	
 	if (!minimised_mode)
 	{
