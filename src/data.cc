@@ -265,7 +265,7 @@ Data::Data(gboolean initialise)
 			"START_TIME INTEGER NOT NULL, " \
 			"DURATION INTEGER NOT NULL);");
 		
-		delete_old_sceduled_recordings();
+		delete_old_scheduled_recordings();
 	}
 }
 
@@ -792,7 +792,7 @@ void Data::delete_channel(guint channel_id)
 		channel_id));
 }
 
-void Data::delete_old_sceduled_recordings()
+void Data::delete_old_scheduled_recordings()
 {
 	execute_non_query(Glib::ustring::compose(
 		"DELETE FROM SCHEDULED_RECORDING WHERE (START_TIME+DURATION)<%1;",

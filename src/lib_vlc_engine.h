@@ -34,6 +34,7 @@ private:
 	gint					window_id;
 	gint					volume;
 	Glib::Module			module_lib_vlc;
+	gboolean			mute_state;
 	
 	libvlc_media_player_t*	media_player;
 

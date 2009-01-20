@@ -75,7 +75,7 @@ public:
 	void replace_scheduled_recording(ScheduledRecording& scheduled_recording);
 	ScheduledRecordingList get_scheduled_recordings();
 	void delete_scheduled_recording(guint scheduled_recording_id);
-	void delete_old_sceduled_recordings();
+	void delete_old_scheduled_recordings();
 	gboolean get_scheduled_recording(guint scheduled_recording_id, ScheduledRecording& scheduled_recording);
 };
 

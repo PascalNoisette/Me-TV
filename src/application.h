@@ -48,6 +48,7 @@ private:
 	gboolean							broadcast_state;
 	guint								scheduled_recording_id;
 	bool								on_quit();
+	Glib::ustring						application_dir;
 			
 	void on_display_channel_changed(const Channel& channel);
 
@@ -104,6 +105,7 @@ public:
 	
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 	Glib::ustring make_recording_filename(const Glib::ustring& description = "");
+	const Glib::ustring& get_application_dir() const { return application_dir; }
 	
 	MainWindow& get_main_window();
 };

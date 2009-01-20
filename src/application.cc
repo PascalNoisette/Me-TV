@@ -38,6 +38,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	{
 		throw Exception(_("Application has already been initialised"));
 	}
+	application_dir = path;
 	
 	g_static_rec_mutex_init(mutex.gobj());
 
@@ -377,7 +378,7 @@ gboolean Application::on_timeout()
 	gboolean got_recording = false;
 	
 	Data data;
-	data.delete_old_sceduled_recordings();
+	data.delete_old_scheduled_recordings();
 	ScheduledRecordingList scheduled_recording_list = data.get_scheduled_recordings();
 	if (scheduled_recording_list.size() > 0)
 	{
