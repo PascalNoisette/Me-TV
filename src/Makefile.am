@@ -102,7 +102,8 @@ me_tv_SOURCES = \
 	lib_xine_engine.h
 
 me_tv_CXXFLAGS = \
-	-DEXCLUDE_LIB_XINE_ENGINE
+	-DEXCLUDE_LIB_XINE_ENGINE \
+	-DEXCLUDE_LIB_VLC_ENGINE
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \
