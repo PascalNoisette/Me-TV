@@ -91,13 +91,13 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_int_configuration_default("width", 500);
 	set_int_configuration_default("height", 500);
 
-	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
+	Glib::ustring application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
+	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);
 	if (!file->query_exists())
 	{
 		file->make_directory();
 	}
-	
+
 	// Initialise database
 	Data data(true);
 	

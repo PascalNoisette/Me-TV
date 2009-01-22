@@ -69,8 +69,7 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	}
 
 	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
-	Glib::ustring working_directory = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-	fifo_path = Glib::build_filename(working_directory, filename);
+	fifo_path = Glib::build_filename(get_application().get_application_dir(), filename);
 
 	if (Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
 	{

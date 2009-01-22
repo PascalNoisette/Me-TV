@@ -20,6 +20,7 @@
 
 #include "data.h"
 #include "me-tv.h"
+#include "application.h"
 #include "exception.h"
 #include <giomm.h>
 
@@ -197,7 +198,7 @@ const Glib::ustring Statement::get_text(guint column)
 
 Data::Data(gboolean initialise)
 {
-	Glib::ustring database_path = Glib::build_filename(Glib::get_home_dir(), ".me-tv/me-tv.db");
+	Glib::ustring database_path = Glib::build_filename(get_application().get_application_dir(), "/me-tv.db");
 	
 	if (sqlite3_open(database_path.c_str(), &database) != 0)
 	{
