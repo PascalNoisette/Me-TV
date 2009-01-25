@@ -200,6 +200,7 @@ Data::Data(gboolean initialise)
 {
 	Glib::ustring database_path = Glib::build_filename(get_application().get_application_dir(), "/me-tv.db");
 	
+	g_debug("Opening database file '%s'", database_path.c_str());
 	if (sqlite3_open(database_path.c_str(), &database) != 0)
 	{
 		throw SQLiteException(database, _("Failed to connect to Me TV database"));
