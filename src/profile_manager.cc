@@ -54,7 +54,6 @@ ProfileManager::ProfileManager()
 
 ProfileManager::~ProfileManager()
 {
-	save();
 }
 
 void ProfileManager::load()
