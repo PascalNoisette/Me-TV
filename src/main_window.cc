@@ -605,11 +605,12 @@ void MainWindow::on_show()
 void MainWindow::on_hide()
 {
 	save_geometry();
-	
+
 	TRY
 	stop_engine();
 	Gtk::Window::on_hide();
-	if (!get_application().get_boolean_configuration_value("status_icon")) {
+	if (!get_application().get_boolean_configuration_value("display_status_icon"))
+	{
 		Gtk::Main::quit();
 	}
 	CATCH

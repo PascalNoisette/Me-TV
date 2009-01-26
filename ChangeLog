@@ -5,6 +5,7 @@
 	* Deleting old events periodically
 	* Vacuuming database periodically
 	* Fixed issue were EPG had gaps if start_time was now
+	* Fixed issue with application terminating on main_window hide
 
 2009-01-18  Michael Lamothe <michael.lamothe@gmail.com>
 
