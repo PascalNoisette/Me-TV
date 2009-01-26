@@ -65,8 +65,9 @@ public:
 	EpgEventList get_epg_events(const Channel& channel, guint start_time, guint end_time);
 	void replace_epg_event(EpgEvent& epg_event);
 	void replace_epg_event_text(EpgEventText& epg_event_text);
-	gint get_last_epg_update_time();
-	
+	void delete_old_epg_events();
+	void vacuum();
+
 	ProfileList get_all_profiles();
 	void replace_profile(Profile& profile);
 	void replace_channel(Channel& channel);

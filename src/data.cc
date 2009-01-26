@@ -454,9 +454,9 @@ EpgEventList Data::get_epg_events(const Channel& channel, guint start_time, guin
 	Glib::ustring select_command = Glib::ustring::compose
 	(
 		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 AND ("\
-	 	"(START_TIME > %2 AND START_TIME < %3) OR "\
-	 	"((START_TIME+DURATION) > %2 AND (START_TIME+DURATION) < %3) OR "\
-	 	"(START_TIME < %2 AND (START_TIME+DURATION) > %3)"\
+	 	"(START_TIME >= %2 AND START_TIME <= %3) OR "\
+	 	"((START_TIME+DURATION) > %2 AND (START_TIME+DURATION) <= %3) OR "\
+	 	"(START_TIME <= %2 AND (START_TIME+DURATION) >= %3)"\
 	 	") ORDER BY START_TIME;",
 		channel.channel_id , start_time, end_time
 	);
@@ -799,4 +799,24 @@ void Data::delete_old_scheduled_recordings()
 	execute_non_query(Glib::ustring::compose(
 		"DELETE FROM SCHEDULED_RECORDING WHERE (START_TIME+DURATION)<%1;",
 		time(NULL)));
+}
+
+void Data::delete_old_epg_events()
+{
+	time_t expired_time = time(NULL) - 2 * 60 * 60;
+
+	execute_non_query(Glib::ustring::compose(
+		"DELETE FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID IN "\
+		"(SELECT EPG_EVENT_ID FROM EPG_EVENT WHERE (START_TIME+DURATION)<%1);",
+		expired_time));
+	execute_non_query(Glib::ustring::compose(
+		"DELETE FROM EPG_EVENT WHERE (START_TIME+DURATION)<%1;",
+		expired_time));
+
+	g_debug("Expired EPG events cleanup");
+}
+
+void Data::vacuum()
+{
+	execute_non_query("VACUUM;");
 }

@@ -1,3 +1,11 @@
+2009-01-26  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.11
+	* Fixed issue with incorrect initialisation of application_dir
+	* Deleting old events periodically
+	* Vacuuming database periodically
+	* Fixed issue were EPG had gaps if start_time was now
+
 2009-01-18  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.10
