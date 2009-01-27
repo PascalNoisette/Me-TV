@@ -49,7 +49,7 @@ private:
 	guint								scheduled_recording_id;
 	bool								on_quit();
 	Glib::ustring						application_dir;
-			
+
 	void on_display_channel_changed(const Channel& channel);
 
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);

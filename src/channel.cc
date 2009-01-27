@@ -34,8 +34,20 @@ Channel::Channel()
 
 gboolean Channel::get_current_epg_event(EpgEvent& epg_event) const
 {
-	Data data;
-	return data.get_current_epg_event(*this, epg_event);
+	gboolean found = false;
+	guint now = convert_to_local_time(time(NULL));
+	
+	for (EpgEventList::const_iterator i = epg_events.begin(); i != epg_events.end() && found != true; i++)
+	{
+		const EpgEvent& e = *i;
+		if (e.start_time <= now && e.get_end_time() >= now)
+		{
+			epg_event = e;
+			found = true;
+		}
+	}
+
+	return found;
 }
 
 Glib::ustring Channel::get_text() const
@@ -57,3 +69,30 @@ guint Channel::get_transponder_frequency()
 	return frontend_parameters.frequency;
 }
 
+gboolean Channel::add_epg_event(EpgEvent& epg_event)
+{
+	gboolean found = false;
+	
+	EpgEventList::iterator i = epg_events.begin();
+	EpgEventList::iterator at = i;
+	for (; i != epg_events.end() && found != true; i++)
+	{
+		EpgEvent& e = *i;
+		if (e.event_id >= epg_event.event_id)
+		{
+			found = true;
+		}
+		else
+		{
+			at = i;
+		}
+	}
+	
+	if (!found)
+	{
+		epg_events.insert(at, epg_event);
+		g_debug("EPG Event %d (%s) added", epg_event.event_id, epg_event.get_title().c_str());
+	}
+	
+	return !found;
+}

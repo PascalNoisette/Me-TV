@@ -23,7 +23,7 @@
 #include "data.h"
 
 //#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
-#define CLEANUP_INTERVAL	60
+#define CLEANUP_INTERVAL	60 * 60
 
 Application* Application::current = NULL;
 
@@ -249,7 +249,7 @@ void Application::run()
 #endif
 	
 	Gnome::Main::run();
-	
+		
 	if (status_icon != NULL)
 	{
 		delete status_icon;
@@ -371,13 +371,20 @@ gboolean Application::on_timeout()
 {
 	TRY
 	static guint last_cleanup_time = 0;
+	static Data data;
 	
 	guint now = time(NULL);
 	Profile& profile = profile_manager.get_current_profile();
 	gboolean got_recording = false;
 	
-	Data data;
-	data.delete_old_scheduled_recordings();
+	if (last_cleanup_time >= now - CLEANUP_INTERVAL)
+	{
+		data.delete_old_scheduled_recordings();
+		data.delete_old_epg_events();
+		data.vacuum();
+		last_cleanup_time = now;
+	}
+
 	ScheduledRecordingList scheduled_recording_list = data.get_scheduled_recordings();
 	if (scheduled_recording_list.size() > 0)
 	{
@@ -452,13 +459,6 @@ gboolean Application::on_timeout()
  
 		g_debug("Record stopped by scheduled recording");
 		stop_recording();
-	}
-
-	if (last_cleanup_time >= now - CLEANUP_INTERVAL )
-	{
-		data.delete_old_epg_events();
-		data.vacuum();
-		last_cleanup_time = now;
 	}
 
 	CATCH

@@ -20,7 +20,6 @@
 
 #include "gtk_epg_widget.h"
 #include "application.h"
-#include "data.h"
 #include "scheduled_recording_dialog.h"
 
 GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
@@ -155,81 +154,88 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 	guint last_event_end_time = 0;
 	guint number_columns = epg_span_hours * 6 + 1;
 	
-	const EpgEventList& events = data.get_epg_events(channel, start_time, end_time);
+	const EpgEventList& events = channel.epg_events;
 	for (EpgEventList::const_iterator i = events.begin(); i != events.end(); i++)
 	{
 		const EpgEvent& epg_event = *i;
-			
-		guint event_end_time = epg_event.start_time + epg_event.duration;		
-		guint start_column = 0;
-		if (epg_event.start_time < start_time)
-		{
-			start_column = 0;
-		}
-		else
-		{
-			start_column = (guint)round((epg_event.start_time - start_time) / 600.0);
-		}
 		
-		guint end_column = (guint)round((event_end_time - start_time) / 600.0);
-		if (end_column > number_columns-1)
-		{
-			end_column = number_columns-1;
-		}
-		
-		guint column_count = end_column - start_column;
-		if (start_column >= total_number_columns && column_count > 0)
-		{
-			// If there's a gap, plug it
-			if (start_column > total_number_columns)
+		if (
+			(epg_event.start_time >= start_time && epg_event.start_time <= end_time) ||
+			(epg_event.get_end_time() >= start_time && epg_event.get_end_time() <= end_time) ||
+			(epg_event.start_time <= start_time && epg_event.get_end_time() >= end_time)
+		)
+		{		
+			guint event_end_time = epg_event.start_time + epg_event.duration;		
+			guint start_column = 0;
+			if (epg_event.start_time < start_time)
 			{
-				// If it's a small gap then just extend the event
-				if (epg_event.start_time - last_event_end_time <= 2 * 60)
-				{
-					start_column = total_number_columns;
-					column_count = end_column - start_column;
-				}
-				else
-				{
-					guint empty_columns = start_column - total_number_columns;
-					Gtk::Button& button = attach_button(UNKNOWN_TEXT, total_number_columns + 1, start_column + 1, table_row, table_row + 1);
-					button.set_sensitive(false);
-					total_number_columns += empty_columns;
-				}
+				start_column = 0;
 			}
-			
-			if (column_count > 0)
+			else
 			{
-				guint converted_start_time = convert_to_utc_time (epg_event.start_time);
-
-				Glib::ustring text;
-				if (show_epg_time)
+				start_column = (guint)round((epg_event.start_time - start_time) / 600.0);
+			}
+		
+			guint end_column = (guint)round((event_end_time - start_time) / 600.0);
+			if (end_column > number_columns-1)
+			{
+				end_column = number_columns-1;
+			}
+		
+			guint column_count = end_column - start_column;
+			if (start_column >= total_number_columns && column_count > 0)
+			{
+				// If there's a gap, plug it
+				if (start_column > total_number_columns)
 				{
-					text = get_local_time_text(converted_start_time, "<b>%H:%M");
-					text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
+					// If it's a small gap then just extend the event
+					if (epg_event.start_time - last_event_end_time <= 2 * 60)
+					{
+						start_column = total_number_columns;
+						column_count = end_column - start_column;
+					}
+					else
+					{
+						guint empty_columns = start_column - total_number_columns;
+						Gtk::Button& button = attach_button(UNKNOWN_TEXT, total_number_columns + 1, start_column + 1, table_row, table_row + 1);
+						button.set_sensitive(false);
+						total_number_columns += empty_columns;
+					}
 				}
-				text += encode_xml(epg_event.get_title());
+			
+				if (column_count > 0)
+				{
+					guint converted_start_time = convert_to_utc_time (epg_event.start_time);
+
+					Glib::ustring text;
+					if (show_epg_time)
+					{
+						text = get_local_time_text(converted_start_time, "<b>%H:%M");
+						text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
+					}
+					text += encode_xml(epg_event.get_title());
 				
-				Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
-				button.signal_clicked().connect(
-					sigc::bind<EpgEvent>
-					(
-						sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
-						epg_event
-					)
-				);
+					Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
+					button.signal_clicked().connect(
+						sigc::bind<EpgEvent>
+						(
+							sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
+							epg_event
+						)
+					);
 
-				if (show_epg_tooltips)
-				{
-					Glib::ustring tooltip_text = get_local_time_text(converted_start_time, "%A, %B %d\n%H:%M");
-					tooltip_text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M");
-					button.set_tooltip_text(tooltip_text);
+					if (show_epg_tooltips)
+					{
+						Glib::ustring tooltip_text = get_local_time_text(converted_start_time, "%A, %B %d\n%H:%M");
+						tooltip_text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M");
+						button.set_tooltip_text(tooltip_text);
+					}
 				}
-			}
 
-			total_number_columns += column_count;
+				total_number_columns += column_count;
+			}
+			last_event_end_time = event_end_time;
 		}
-		last_event_end_time = event_end_time;
 	}
 	
 	if (total_number_columns < number_columns-1)

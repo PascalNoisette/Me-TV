@@ -119,7 +119,6 @@ void EpgThread::run()
 {
 	TRY;
 
-	Data data;
 	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
 	Profile& profile = get_application().get_profile_manager().get_current_profile();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
@@ -138,7 +137,7 @@ void EpgThread::run()
 		for (guint i = 0; i < size; i++)
 		{
 			Dvb::SI::MasterGuideTableTable mgtt = master_guide_table.tables[i];
-			if (mgtt.type >= 0100 && mgtt.type <= 0x017F)
+			if (mgtt.type >= 0x0100 && mgtt.type <= 0x017F)
 			{		
 				demuxers.add()->set_filter(mgtt.pid, PSIP_EIT_ID, 0);
 				g_debug("Set up PID 0x%02X for events", mgtt.pid);
@@ -191,6 +190,7 @@ void EpgThread::run()
 							epg_event.event_id		= event.event_id;
 							epg_event.start_time	= event.start_time;
 							epg_event.duration		= event.duration;
+							epg_event.save			= true;
 							
 							for (Dvb::SI::EventTextList::iterator i = event.texts.begin(); i != event.texts.end(); i++)
 							{
@@ -207,10 +207,10 @@ void EpgThread::run()
 								epg_event.texts.push_back(epg_event_text);
 							}
 							
-							data.replace_epg_event(epg_event);
-							get_application().update_epg_time();
-
-							g_debug("EPG event %d added", event.event_id);
+							if (channel->add_epg_event(epg_event))
+							{
+								get_application().update_epg_time();
+							}
 						}
 					}
 				}

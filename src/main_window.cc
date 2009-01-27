@@ -190,6 +190,7 @@ void MainWindow::on_menu_item_broadcast_clicked()
 void MainWindow::on_menu_item_quit_clicked()
 {
 	TRY
+	hide();
 	Gnome::Main::quit();
 	CATCH
 }
@@ -611,7 +612,7 @@ void MainWindow::on_hide()
 	Gtk::Window::on_hide();
 	if (!get_application().get_boolean_configuration_value("display_status_icon"))
 	{
-		Gtk::Main::quit();
+		Gnome::Main::quit();
 	}
 	CATCH
 }

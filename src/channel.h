@@ -36,20 +36,23 @@ class Channel
 public:
 	Channel();
 
-	guint channel_id;
-	guint profile_id;
-	Glib::ustring name;
-	guint flags;
-	guint sort_order;
-	Glib::ustring mrl;
-
-	gboolean get_current_epg_event(EpgEvent& epg_event) const;
-	Glib::ustring get_text() const;
+	guint			channel_id;
+	guint			profile_id;
+	Glib::ustring	name;
+	guint			flags;
+	guint			sort_order;
+	Glib::ustring	mrl;
+	EpgEventList	epg_events;
 
 	// DVB Specific
 	guint service_id;
 	struct dvb_frontend_parameters frontend_parameters;
 	guint get_transponder_frequency();
+
+	Glib::ustring get_text() const;
+
+	gboolean get_current_epg_event(EpgEvent& epg_event) const;
+	gboolean add_epg_event(EpgEvent& epg_event);
 };
 
 typedef std::list<Channel> ChannelList;

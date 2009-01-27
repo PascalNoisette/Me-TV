@@ -41,6 +41,7 @@ void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
 
 void StatusIcon::on_menu_item_popup_quit_clicked()
 {
+	get_application().get_main_window().hide();
 	Gnome::Main::quit();
 }
 

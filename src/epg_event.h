@@ -40,13 +40,15 @@ typedef std::list<EpgEventText> EpgEventTextList;
 class EpgEvent
 {
 public:
-	guint epg_event_id;
-	guint channel_id;
-	guint event_id;
-	guint start_time;
-	guint duration;
-	EpgEventTextList texts;
-		
+	guint				epg_event_id;
+	guint				channel_id;
+	guint				event_id;
+	guint				start_time;
+	guint				duration;
+	gboolean			save;
+	EpgEventTextList	texts;
+	
+	guint get_end_time() const { return start_time + duration; }
 	Glib::ustring get_title() const;
 	Glib::ustring get_description() const;
 	Glib::ustring get_start_time_text() const;
