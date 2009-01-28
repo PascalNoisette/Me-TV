@@ -78,9 +78,13 @@ gboolean Channel::add_epg_event(EpgEvent& epg_event)
 	for (; i != epg_events.end() && found == false; i++)
 	{
 		EpgEvent& e = *i;
-		if (e.event_id >= epg_event.event_id)
+		if (e.event_id == epg_event.event_id)
 		{
 			found = true;
+		}
+		else if (e.event_id > epg_event.event_id)
+		{
+			// Do nothing
 		}
 		else
 		{

@@ -795,7 +795,7 @@ void Data::delete_old_scheduled_recordings()
 
 void Data::delete_old_epg_events()
 {
-	time_t expired_time = time(NULL) - 2 * 60 * 60;
+	time_t expired_time = time(NULL) - 24 * 60 * 60;
 
 	execute_non_query(Glib::ustring::compose(
 		"DELETE FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID IN "\
