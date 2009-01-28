@@ -464,6 +464,8 @@ EpgEventList Data::get_epg_events(const Channel& channel)
 		EpgEvent epg_event;
 		load_epg_event(statement, epg_event);
 		result.push_back(epg_event);
+		
+		g_debug("Event %d (%s) loaded", epg_event.event_id, epg_event.get_title().c_str());
 	}
 	
 	return result;

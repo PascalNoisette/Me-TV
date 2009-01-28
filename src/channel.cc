@@ -75,7 +75,7 @@ gboolean Channel::add_epg_event(EpgEvent& epg_event)
 	
 	EpgEventList::iterator i = epg_events.begin();
 	EpgEventList::iterator at = i;
-	for (; i != epg_events.end() && found == true; i++)
+	for (; i != epg_events.end() && found == false; i++)
 	{
 		EpgEvent& e = *i;
 		if (e.event_id >= epg_event.event_id)

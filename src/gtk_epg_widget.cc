@@ -164,7 +164,7 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 			(epg_event.get_end_time() >= start_time && epg_event.get_end_time() <= end_time) ||
 			(epg_event.start_time <= start_time && epg_event.get_end_time() >= end_time)
 		)
-		{		
+		{
 			guint event_end_time = epg_event.start_time + epg_event.duration;		
 			guint start_column = 0;
 			if (epg_event.start_time < start_time)
