@@ -75,7 +75,7 @@ gboolean Channel::add_epg_event(EpgEvent& epg_event)
 	
 	EpgEventList::iterator i = epg_events.begin();
 	EpgEventList::iterator at = i;
-	for (; i != epg_events.end() && found != true; i++)
+	for (; i != epg_events.end() && found == true; i++)
 	{
 		EpgEvent& e = *i;
 		if (e.event_id >= epg_event.event_id)
@@ -88,7 +88,7 @@ gboolean Channel::add_epg_event(EpgEvent& epg_event)
 		}
 	}
 	
-	if (!found)
+	if (found == false)
 	{
 		epg_events.insert(at, epg_event);
 		g_debug("EPG Event %d (%s) added", epg_event.event_id, epg_event.get_title().c_str());

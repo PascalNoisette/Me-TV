@@ -377,7 +377,7 @@ gboolean Application::on_timeout()
 	Profile& profile = profile_manager.get_current_profile();
 	gboolean got_recording = false;
 	
-	if (last_cleanup_time >= now - CLEANUP_INTERVAL)
+	if (now - CLEANUP_INTERVAL >= last_cleanup_time)
 	{
 		data.delete_old_scheduled_recordings();
 		data.delete_old_epg_events();

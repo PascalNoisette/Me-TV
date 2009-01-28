@@ -149,8 +149,6 @@ void EpgThread::run()
 		demuxers.add()->set_filter(EIT_PID, EIT_ID, 0);
 	}
 	
-	guint processed_event_count = 0;
-	guint processed_events[10000];	
 	guint frequency = frontend.get_frontend_parameters().frequency;
 	while (!is_terminated())
 	{
@@ -166,52 +164,34 @@ void EpgThread::run()
 			{
 				for( unsigned int k = 0; section.events.size() > k; k++ )
 				{
-					gboolean found = false;
 					Dvb::SI::Event& event	= section.events[k];
+					EpgEvent epg_event;
 
-					for (guint i = 0; i < processed_event_count && !found; i++)
+					epg_event.epg_event_id	= 0;
+					epg_event.channel_id	= channel->channel_id;
+					epg_event.event_id		= event.event_id;
+					epg_event.start_time	= event.start_time;
+					epg_event.duration		= event.duration;
+					epg_event.save			= true;
+					
+					for (Dvb::SI::EventTextList::iterator i = event.texts.begin(); i != event.texts.end(); i++)
 					{
-						if (processed_events[i] == event.event_id)
-						{
-							found = true;
-						}
+						EpgEventText epg_event_text;
+						const Dvb::SI::EventText& event_text = *i;
+						
+						epg_event_text.epg_event_text_id	= 0;
+						epg_event_text.epg_event_id			= 0;
+						epg_event_text.is_extended			= event_text.is_extended;
+						epg_event_text.language				= event_text.language;
+						epg_event_text.title				= event_text.title;
+						epg_event_text.description			= event_text.description;
+						
+						epg_event.texts.push_back(epg_event_text);
 					}
 					
-					if (processed_event_count < 10000)
+					if (channel->add_epg_event(epg_event))
 					{
-						if (!found)
-						{
-							processed_events[processed_event_count++] = event.event_id;
-
-							EpgEvent epg_event;
-
-							epg_event.epg_event_id	= 0;
-							epg_event.channel_id	= channel->channel_id;
-							epg_event.event_id		= event.event_id;
-							epg_event.start_time	= event.start_time;
-							epg_event.duration		= event.duration;
-							epg_event.save			= true;
-							
-							for (Dvb::SI::EventTextList::iterator i = event.texts.begin(); i != event.texts.end(); i++)
-							{
-								EpgEventText epg_event_text;
-								const Dvb::SI::EventText& event_text = *i;
-								
-								epg_event_text.epg_event_text_id	= 0;
-								epg_event_text.epg_event_id			= 0;
-								epg_event_text.is_extended			= event_text.is_extended;
-								epg_event_text.language				= event_text.language;
-								epg_event_text.title				= event_text.title;
-								epg_event_text.description			= event_text.description;
-								
-								epg_event.texts.push_back(epg_event_text);
-							}
-							
-							if (channel->add_epg_event(epg_event))
-							{
-								get_application().update_epg_time();
-							}
-						}
+						get_application().update_epg_time();
 					}
 				}
 			}
