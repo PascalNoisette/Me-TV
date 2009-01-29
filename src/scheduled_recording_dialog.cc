@@ -91,7 +91,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	
 	if (populate_default)
 	{
-		entry_description->set_text(UNKNOWN_TEXT);
+		entry_description->set_text(_("Unknown description"));
 		date_edit_start_time->set_time(time(NULL));
 		spinbutton_duration->set_value(30);
 	}

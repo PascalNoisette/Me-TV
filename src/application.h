@@ -21,6 +21,7 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
+#include "me-tv.h"
 #include <libglademm.h>
 #include <libgnomemm.h>
 #include "device_manager.h"

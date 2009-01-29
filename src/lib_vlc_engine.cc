@@ -18,11 +18,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include "application.h"
 #include "lib_vlc_engine.h"
-#include "exception.h"
 
-#ifndef EXCLUDE_LIB_VLC_ENGINE
+#ifdef ENABLE_LIBVLC_ENGINE
+
+#include "application.h"
+#include "exception.h"
 
 typedef VLC_PUBLIC_API void (* function_libvlc_exception_init)( libvlc_exception_t *p_exception );
 typedef VLC_PUBLIC_API libvlc_instance_t * (* function_libvlc_new)( int , const char *const *, libvlc_exception_t *);

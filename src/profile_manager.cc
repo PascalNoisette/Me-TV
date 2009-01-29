@@ -19,7 +19,6 @@
  */
 
 #include "profile_manager.h"
-#include "me-tv.h"
 #include "application.h"
 
 void ProfileManager::unset_directory(const Glib::ustring& path)

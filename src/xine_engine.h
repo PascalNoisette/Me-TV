@@ -21,6 +21,7 @@
 #ifndef __XINE_ENGINE_H__
 #define __XINE_ENGINE_H__
 
+#include "me-tv.h"
 #include "engine.h"
 
 class XineEngine : public Engine

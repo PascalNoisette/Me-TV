@@ -19,7 +19,6 @@
  */
 
 #include "data.h"
-#include "me-tv.h"
 #include "application.h"
 #include "exception.h"
 #include <giomm.h>

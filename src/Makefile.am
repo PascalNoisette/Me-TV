@@ -11,6 +11,8 @@ AM_CPPFLAGS = \
 	-I$(top_builddir) \
 	$(ME_TV_CFLAGS) \
 	$(SQLITE_CFLAGS) \
+	$(XINE_LIB_CFLAGS) \
+	$(LIBVLC_CFLAGS) \
 	$(WARN_CXXFLAGS) \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" 
@@ -101,16 +103,15 @@ me_tv_SOURCES = \
 	lib_xine_engine.cc \
 	lib_xine_engine.h
 
-me_tv_CXXFLAGS = \
-	-DEXCLUDE_LIB_XINE_ENGINE \
-	-DEXCLUDE_LIB_VLC_ENGINE
-
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \
 	LFS_LDFLAGS` `getconf \
 	LFS64_LDFLAGS`
 
 me_tv_LDADD = \
-	$(ME_TV_LIBS) $(SQLITE_LIBS)
+	$(ME_TV_LIBS) \
+	$(SQLITE_LIBS) \
+	$(XINE_LIB_LIBS) \
+	$(LIBVLC_LIBS)
 
 EXTRA_DIST = $(glade_DATA)

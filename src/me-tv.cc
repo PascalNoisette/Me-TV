@@ -19,6 +19,7 @@
  */
 
 #include "me-tv.h"
+#include "me-tv-i18n.h"
 #include "exception.h"
 #include <glib/gprintf.h>
 

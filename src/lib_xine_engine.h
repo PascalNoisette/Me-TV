@@ -21,7 +21,9 @@
 #ifndef __XINE_ENGINE_H__
 #define __XINE_ENGINE_H__
 
-#ifndef EXCLUDE_LIB_XINE_ENGINE
+#include "me-tv.h"
+
+#ifdef ENABLE_XINE_LIB_ENGINE
 
 #include <xine.h>
 #include "engine.h"

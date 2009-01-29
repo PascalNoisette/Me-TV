@@ -19,9 +19,9 @@
  */
 
 #include "application.h"
-#include "config.h"
 #include "me-tv.h"
 #include <glibmm.h>
+#include "me-tv-i18n.h"
 #include <glib/gprintf.h>
 #include <X11/Xlib.h>
 

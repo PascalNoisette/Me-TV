@@ -20,6 +20,7 @@
  
 #include "string_splitter.h"
 #include "exception.h"
+#include "me-tv-i18n.h"
 
 StringSplitter::StringSplitter(const Glib::ustring& text, const char* deliminator, gsize max_length)
 {

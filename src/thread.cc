@@ -20,6 +20,7 @@
 
 #include "thread.h"
 #include "me-tv-ui.h"
+#include "me-tv-i18n.h"
 
 Thread::Thread(const Glib::ustring& thread_name, gboolean join_thread_on_destroy)
 	: join_on_destroy(join_thread_on_destroy)

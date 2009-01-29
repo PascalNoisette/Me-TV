@@ -129,7 +129,8 @@ GCONF_REQUIRED=2.0
 GTHREAD_REQUIRED=2.10.0
 LIBXTST_REQUIRED=1.0.0
 GNET_REQUIRED=2.0.0
-LIBXINE_REQUIRED=1.1.0
+LIBXINE_REQUIRED=1.1.7
+LIBVLC_REQUIRED=0.9
 AC_SUBST(SQLITE_REQUIRED)
 AC_SUBST(LIBGNOMEMM_REQUIRED)
 AC_SUBST(LIBGNOMEUI_REQUIRED)
@@ -139,9 +140,51 @@ AC_SUBST(GTHREAD_REQUIRED)
 AC_SUBST(LIBXTST_REQUIRED)
 AC_SUBST(GNET_REQUIRED)
 AC_SUBST(LIBXINE_REQUIRED)
+AC_SUBST(LIBVLC_REQUIRED)
 
 # check for sqlite
 PKG_CHECK_MODULES(SQLITE, [sqlite3 >= $SQLITE_REQUIRED])
+
+# check for additional requirements when optional engines are enabled
+# default engine is xine, other engines are disabled at default
+# we are only checking optional engines
+AC_ARG_ENABLE(mplayer-engine, 
+	AC_HELP_STRING([--enable-mplayer-engine],[Enable experimental MPlayer engine support (default disabled)]), 
+	enable_mplayer_engine="$enableval", enable_mplayer_engine=no)
+if test x"$enable_mplayer_engine" = "xyes" ; then
+# the binary path test is not required in the build time
+# packagers should notice that the MPlayer binary is required in the install time
+	AC_DEFINE(ENABLE_MPLAYER_ENGINE,1,[Define to 1 if MPlayer engine is used.])
+fi
+
+AC_ARG_ENABLE(libvlc-engine, 
+	AC_HELP_STRING([--enable-libvlc-engine],[Enable experimental VLC library engine support (default disabled)]), 
+	enable_libvlc_engine="$enableval", enable_libvlc_engine=no)
+if test x$enable_libvlc_engine = xyes; then
+# we do not really need it, it is loaded dynamically
+PKG_CHECK_MODULES([LIBVLC], libvlc >= $LIBVLC_REQUIRED, found_libvlc=yes, found_libvlc=no)
+	if test x"$found_libvlc" = "xyes" ; then
+		AC_DEFINE(ENABLE_LIBVLC_ENGINE,1,[Define to 1 if libvlc is available and VLC engine is used.])
+		AC_SUBST(LIBVLC_CFLAGS)
+#		AC_SUBST(LIBVLC_LIBS)
+	else
+		AC_MSG_ERROR([Cannot find required vlc development package installed])
+	fi
+fi
+
+AC_ARG_ENABLE(xine-lib-engine, 
+	AC_HELP_STRING([--enable-xine-lib-engine],[Enable experimental xine-lib engine support (default disabled)]), 
+	enable_xine_lib_engine="$enableval", enable_xine_lib_engine=no)
+if test x$enable_xine_lib_engine = xyes; then
+PKG_CHECK_MODULES([XINE_LIB], libxine >= $LIBXINE_REQUIRED, found_xine_lib=yes, found_xine_lib=no)
+	if test x"$found_xine_lib" = "xyes" ; then
+		AC_DEFINE(ENABLE_XINE_LIB_ENGINE,1,[Define to 1 if xine-lib is available and xine-lib engine is used.])
+		AC_SUBST(XINE_LIB_CFLAGS)
+		AC_SUBST(XINE_LIB_LIBS)
+	else
+		AC_MSG_ERROR([Cannot find required xine-lib development package installed])
+	fi
+fi
 
 PKG_CHECK_MODULES(ME_TV, [
 libgnomemm-2.6 >= $LIBGNOMEMM_REQUIRED libgnomeuimm-2.6 >= $LIBGNOMEUI_REQUIRED giomm-2.4 >= $GIOMM_REQUIRED gthread-2.0 >= $GTHREAD_REQUIRED gconfmm-2.6 >= $GCONF_REQUIRED xtst >= $LIBXTST_REQUIRED gnet-2.0 >= $GNET_REQUIRED])
@@ -203,6 +246,11 @@ Configure summary:
 	Extra Compiler Warnings ....: ${WARN_CXXFLAGS}
 	Debug support ..............: ${enable_debug}
 	Installing into prefix .....: ${prefix}
+
+Optional engines support:
+	libvlc engine ..............: ${enable_libvlc_engine}
+	MPlayer engine .............: ${enable_mplayer_engine}
+	xine-lib engine ............: ${enable_xine_lib_engine}
 
 Type make to build ${PACKAGE_STRING}
 

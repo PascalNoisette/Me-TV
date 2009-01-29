@@ -21,12 +21,13 @@
 #ifndef __DVB_SI_H__
 #define __DVB_SI_H__
 
-#include "dvb_demuxer.h"
-#include "me-tv.h"
 #include <vector>
 #include <map>
 #include <iostream>
 #include <fstream>
+#include "dvb_demuxer.h"
+#include "me-tv.h"
+#include "me-tv-i18n.h"
 
 #define CRC_BYTE_SIZE			4
 #define DVB_SECTION_BUFFER_SIZE	16*1024
@@ -159,7 +160,7 @@ namespace Dvb
 			{
 				pid		= 0;
 				is_ac3	= false;
-				language = UNKNOWN_TEXT;
+				language = _("Unknown language");
 			}
 			
 			guint			pid;
@@ -172,7 +173,7 @@ namespace Dvb
 		public:
 			TeletextLanguageDescriptor()
 			{
-				language		= UNKNOWN_TEXT;
+				language		= _("Unknown language");
 				type			= 0;
 				magazine_number	= 0;
 				page_number		= 0;
@@ -205,7 +206,7 @@ namespace Dvb
 				subtitling_type		= 0;
 				ancillary_page_id	= 0;
 				composition_page_id	= 0;
-				language			= UNKNOWN_TEXT;
+				language			= _("Unknown language");
 			}
 			
 			guint pid;

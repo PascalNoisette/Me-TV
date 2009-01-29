@@ -17,10 +17,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
-#ifndef EXCLUDE_LIB_XINE_ENGINE
 
 #include "lib_xine_engine.h"
+
+#ifdef ENABLE_XINE_LIB_ENGINE
+
 #include "application.h"
 #include "exception.h"
 

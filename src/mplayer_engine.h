@@ -21,6 +21,10 @@
 #ifndef __MPLAYER_ENGINE_H__
 #define __MPLAYER_ENGINE_H__
 
+#include "me-tv.h"
+
+#ifdef ENABLE_MPLAYER_ENGINE
+
 #include "engine.h"
 
 class MplayerEngine : public Engine
@@ -45,5 +49,7 @@ public:
 	MplayerEngine(int window_id);
 	~MplayerEngine();
 };
+
+#endif
 
 #endif

@@ -21,6 +21,7 @@
 #ifndef __MAIN_WINDOW_H__
 #define __MAIN_WINDOW_H__
 
+#include "me-tv.h"
 #include "gtk_epg_widget.h"
 #include "meters_dialog.h"
 #include "engine.h"

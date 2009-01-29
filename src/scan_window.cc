@@ -21,7 +21,6 @@
 #include "scan_window.h"
 #include "dvb_scanner.h"
 #include "thread.h"
-#include "me-tv.h"
 #include "application.h"
 #include "channels_conf_line.h"
 #include "profile.h"

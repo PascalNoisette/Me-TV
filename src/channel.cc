@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include "me-tv.h"
 #include "channel.h"
 #include "data.h"
-#include "me-tv.h"
 #include <string.h>
 
 Channel::Channel()

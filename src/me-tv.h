@@ -21,13 +21,13 @@
 #ifndef __ME_TV_H__
 #define __ME_TV_H__
 
-#include <libgnome/libgnome.h>
+#ifdef HAVE_CONFIG_H
+#	include "config.h"
+#endif /* HAVE_CONFIG_H */
+
 #include <list>
 #include <vector>
 #include <glibmm.h>
-
-#define GCONF_PATH		"/apps/me-tv"
-#define UNKNOWN_TEXT	_("Unknown")
 
 extern bool verbose_logging;
 extern bool safe_mode;

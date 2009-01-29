@@ -19,9 +19,9 @@
  */
 
 #include "application.h"
-#include "config.h"
 #include "data.h"
 
+#define GCONF_PATH		"/apps/me-tv"
 //#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
 #define CLEANUP_INTERVAL	60 * 60
 

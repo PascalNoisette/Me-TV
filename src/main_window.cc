@@ -18,17 +18,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include "me-tv.h"
+#include "me-tv-i18n.h"
 #include "main_window.h"
 #include "channels_dialog.h"
 #include "meters_dialog.h"
 #include "preferences_dialog.h"
 #include "application.h"
 #include "scheduled_recordings_dialog.h"
-#include "me-tv.h"
 #include "xine_engine.h"
 #include "mplayer_engine.h"
 #include "lib_vlc_engine.h"
-#include <config.h>
+#include "lib_xine_engine.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
 #include <libgnome/libgnome.h>
@@ -732,11 +733,19 @@ void MainWindow::create_engine()
 	{
 		engine = new XineEngine(window_id);
 	}
+#ifdef ENABLE_MPLAYER_ENGINE
 	else if (engine_type == "mplayer")
 	{
 		engine = new MplayerEngine(window_id);
 	}
-#ifndef EXCLUDE_LIB_VLC_ENGINE
+#endif
+#ifdef ENABLE_XINE_LIB_ENGINE
+	else if (engine_type == "libxine")
+	{
+		engine = new LibXineEngine(window_id);
+	}
+#endif
+#ifdef ENABLE_LIBVLC_ENGINE
 	else if (engine_type == "libvlc")
 	{
 		engine = new LibVlcEngine(window_id);

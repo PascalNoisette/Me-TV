@@ -19,6 +19,9 @@
  */
 
 #include "mplayer_engine.h"
+
+#ifdef ENABLE_MPLAYER_ENGINE
+
 #include "exception.h"
 #include "application.h"
 #include <gdk/gdkx.h>
@@ -188,3 +191,5 @@ void MplayerEngine::mute(gboolean state)
 		mute_state = state;
 	}
 }
+
+#endif

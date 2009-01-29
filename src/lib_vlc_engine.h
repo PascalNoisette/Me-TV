@@ -21,7 +21,9 @@
 #ifndef __LIB_VLC_ENGINE_H__
 #define __LIB_VLC_ENGINE_H__
 
-#ifndef EXCLUDE_LIB_VLC_ENGINE
+#include "me-tv.h"
+
+#ifdef ENABLE_LIBVLC_ENGINE
 
 #include "engine.h"
 #include <vlc/vlc.h>

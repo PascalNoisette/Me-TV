@@ -21,8 +21,7 @@
 #include "profile.h"
 #include "exception.h"
 #include "data.h"
-
-#include <glibmm/i18n.h>
+#include "me-tv-i18n.h"
 
 Profile::Profile()
 {

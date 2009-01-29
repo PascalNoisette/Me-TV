@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <glibmm.h>
 #include "stream_thread.h"
 #include "application.h"
 #include "device_manager.h"
 #include "dvb_transponder.h"
-#include <glibmm.h>
 
 #define TS_PACKET_SIZE 188
 

@@ -21,8 +21,8 @@
 #ifndef __DATA_H__
 #define __DATA_H__
 
-#include <sqlite3.h>
 #include "me-tv.h"
+#include <sqlite3.h>
 #include "profile.h"
 #include "epg_event.h"
 #include "scheduled_recording.h"
