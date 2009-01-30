@@ -27,7 +27,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #ifdef ENABLE_NLS
-#	include <glib/gi18n-lib.h>
+#	include <glibmm/i18n-lib.h>
 #else /* NLS is disabled */
 	#define textdomain(String) (String)
 	#define gettext(String) (String)
