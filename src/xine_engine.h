@@ -27,10 +27,12 @@
 class XineEngine : public Engine
 {
 private:
-	gint pid;
-	gint window_id;
-	gint standard_input;
-	gboolean mute_state;
+	gint				pid;
+	gint				window_id;
+	gint				standard_input;
+	gboolean			mute_state;
+	AudioChannelState	audio_channel_state;
+	Glib::ustring		mrl;
 
 	void play(const Glib::ustring& mrl);
 	void stop();
@@ -38,7 +40,10 @@ private:
 	void set_size(gint width, gint height) {};
 	void set_audio_channel(guint channel) {};
 	void write(const Glib::ustring& text);
+	void set_audio_channel_state(AudioChannelState state);
 	gboolean is_running();
+
+	void restart();
 
 public:
 	XineEngine(int window_id);

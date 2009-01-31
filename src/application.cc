@@ -23,6 +23,7 @@
 
 #define GCONF_PATH		"/apps/me-tv"
 //#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
+//#define TEST_VIDEO_SOURCE "/home/michael/acdc.mp3"
 #define CLEANUP_INTERVAL	5 * 60
 
 Application* Application::current = NULL;

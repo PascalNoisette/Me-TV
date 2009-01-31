@@ -54,6 +54,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	engine				= NULL;
 	output_fd			= -1;
 	mute_state			= false;
+	audio_channel_state	= Engine::AUDIO_CHANNEL_STATE_BOTH;
 
 	keycode1 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_L);
 	keycode2 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_R);
@@ -91,6 +92,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("tool_button_schedule",		sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
 	glade->connect_clicked("tool_button_broadcast",		sigc::mem_fun(*this, &MainWindow::on_tool_button_broadcast_clicked));	
 	
+	glade->connect_clicked("radio_menu_item_audio_channels_both",	sigc::mem_fun(*this, &MainWindow::on_radio_menu_item_audio_channels_both));
+	glade->connect_clicked("radio_menu_item_audio_channels_left",	sigc::mem_fun(*this, &MainWindow::on_radio_menu_item_audio_channels_left));
+	glade->connect_clicked("radio_menu_item_audio_channels_right",	sigc::mem_fun(*this, &MainWindow::on_radio_menu_item_audio_channels_right));
+
 	signal_motion_notify_event().connect(sigc::mem_fun(*this, &MainWindow::on_motion_notify_event));
 
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
@@ -122,6 +127,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	Gtk::MenuItem* menu_item_audio_streams = dynamic_cast<Gtk::MenuItem*>(glade->get_widget("menu_item_audio_streams"));
 	menu_item_audio_streams->set_submenu(audio_streams_menu);
+
+	Gtk::RadioMenuItem* menu_item_audio_channels_both = dynamic_cast<Gtk::RadioMenuItem*>(glade->get_widget("radio_menu_item_audio_channels_both"));
+	menu_item_audio_channels_both->set_active(true);	
 }
 
 MainWindow::~MainWindow()
@@ -751,10 +759,21 @@ void MainWindow::create_engine()
 		engine = new LibVlcEngine(window_id);
 	}
 #endif
+	else if (engine_type == "none")
+	{
+		engine = NULL;
+	}
 	else
 	{
 		throw Exception(_("Unknown engine type"));
 	}
+
+	if (engine != NULL)
+	{
+		engine->mute(mute_state);
+		engine->set_audio_channel_state(audio_channel_state);
+	}
+	
 	g_debug("%s engine created", engine_type.c_str());
 }
 
@@ -778,9 +797,7 @@ void MainWindow::start_engine()
 	
 		if (engine != NULL)
 		{
-			engine->mute(mute_state);
-			engine->play(stream_thread->get_fifo_path());
-			
+			engine->play(stream_thread->get_fifo_path());			
 			g_debug("Output FD created");
 		}
 
@@ -825,5 +842,32 @@ void MainWindow::set_mute_state(gboolean state)
 		}
 
 		update();
+	}
+}
+
+void MainWindow::on_radio_menu_item_audio_channels_both()
+{
+	audio_channel_state = Engine::AUDIO_CHANNEL_STATE_BOTH;
+	if (engine != NULL)
+	{
+		engine->set_audio_channel_state(audio_channel_state);
+	}
+}
+
+void MainWindow::on_radio_menu_item_audio_channels_left()
+{
+	audio_channel_state = Engine::AUDIO_CHANNEL_STATE_LEFT;
+	if (engine != NULL)
+	{
+		engine->set_audio_channel_state(audio_channel_state);
+	}
+}
+
+void MainWindow::on_radio_menu_item_audio_channels_right()
+{
+	audio_channel_state = Engine::AUDIO_CHANNEL_STATE_RIGHT;
+	if (engine != NULL)
+	{
+		engine->set_audio_channel_state(audio_channel_state);
 	}
 }

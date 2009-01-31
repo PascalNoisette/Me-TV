@@ -26,15 +26,23 @@
 
 class Engine
 {
-private:
 public:
+	typedef enum
+	{
+		AUDIO_CHANNEL_STATE_BOTH = 0,
+		AUDIO_CHANNEL_STATE_LEFT = 1,
+		AUDIO_CHANNEL_STATE_RIGHT = 2
+	} AudioChannelState;
+
 	virtual ~Engine() {};
+	
 	virtual void play(const Glib::ustring& mrl) = 0;
 	virtual void stop() = 0;
 	virtual void mute(gboolean state) = 0;
 	virtual void set_size(gint width, gint height) = 0;
 	virtual void set_audio_channel(guint channel) = 0;
 	virtual gboolean is_running() = 0;
+	virtual void set_audio_channel_state(AudioChannelState state) = 0;
 };
 
 #endif
