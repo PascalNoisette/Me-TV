@@ -54,7 +54,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	engine				= NULL;
 	output_fd			= -1;
 	mute_state			= false;
-	audio_channel_state	= Engine::AUDIO_CHANNEL_STATE_BOTH;
 
 	keycode1 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_L);
 	keycode2 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_R);
@@ -518,7 +517,7 @@ void MainWindow::update()
 		status_text += _(" [Recording]");
 		window_title += _(" [Recording]");
 	}
-
+	
 	set_title(window_title);
 	app_bar->set_status(status_text);
 
@@ -771,7 +770,6 @@ void MainWindow::create_engine()
 	if (engine != NULL)
 	{
 		engine->mute(mute_state);
-		engine->set_audio_channel_state(audio_channel_state);
 	}
 	
 	g_debug("%s engine created", engine_type.c_str());
@@ -847,27 +845,24 @@ void MainWindow::set_mute_state(gboolean state)
 
 void MainWindow::on_radio_menu_item_audio_channels_both()
 {
-	audio_channel_state = Engine::AUDIO_CHANNEL_STATE_BOTH;
 	if (engine != NULL)
 	{
-		engine->set_audio_channel_state(audio_channel_state);
+		engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_BOTH);
 	}
 }
 
 void MainWindow::on_radio_menu_item_audio_channels_left()
 {
-	audio_channel_state = Engine::AUDIO_CHANNEL_STATE_LEFT;
 	if (engine != NULL)
 	{
-		engine->set_audio_channel_state(audio_channel_state);
+		engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_LEFT);
 	}
 }
 
 void MainWindow::on_radio_menu_item_audio_channels_right()
 {
-	audio_channel_state = Engine::AUDIO_CHANNEL_STATE_RIGHT;
 	if (engine != NULL)
 	{
-		engine->set_audio_channel_state(audio_channel_state);
+		engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_RIGHT);
 	}
 }

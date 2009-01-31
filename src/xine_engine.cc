@@ -45,6 +45,8 @@ void XineEngine::play(const Glib::ustring& mrl)
 {
 	Application& application = get_application();
 	this->mrl = mrl;
+	
+	g_debug("XineEngine::play(\"%s\")", mrl.c_str());
 
 	StringList argv;
 	argv.push_back("xine");
