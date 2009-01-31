@@ -190,7 +190,7 @@ void EpgThread::run()
 						epg_event.texts.push_back(epg_event_text);
 					}
 					
-					if (channel->add_epg_event(epg_event))
+					if (channel->epg_events.insert(epg_event))
 					{
 						get_application().update_epg_time();
 					}

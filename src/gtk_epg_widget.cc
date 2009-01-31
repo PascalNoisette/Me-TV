@@ -102,8 +102,8 @@ void GtkEpgWidget::update_table()
 		glade->get_widget("button_epg_now")->set_sensitive(offset > 0);
 			
 		Profile& profile = get_application().get_profile_manager().get_current_profile();
-		const Channel* display_channel = profile.get_display_channel();
-		const ChannelList& channels = profile.get_channels();
+		Channel* display_channel = profile.get_display_channel();
+		ChannelList& channels = profile.get_channels();
 
 		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
 
@@ -124,9 +124,9 @@ void GtkEpgWidget::update_table()
 			row++;
 		}
 		start_time += timezone;
-		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+		for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
-			const Channel& channel = *iterator;
+			Channel& channel = *iterator;
 			gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
 			create_channel_row(channel, row++, selected, start_time);
 		}
@@ -134,7 +134,7 @@ void GtkEpgWidget::update_table()
 	}
 }
 
-void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, gboolean selected, guint start_time)
+void GtkEpgWidget::create_channel_row(Channel& channel, guint table_row, gboolean selected, guint start_time)
 {	
 	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, table_row, table_row + 1);
 	gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
@@ -154,7 +154,7 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 	guint last_event_end_time = 0;
 	guint number_columns = epg_span_hours * 6 + 1;
 	
-	const EpgEventList& events = channel.epg_events;
+	EpgEventList events = channel.epg_events.get_list();
 	for (EpgEventList::const_iterator i = events.begin(); i != events.end(); i++)
 	{
 		const EpgEvent& epg_event = *i;

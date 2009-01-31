@@ -115,7 +115,7 @@ ChannelList& Profile::get_channels()
 	return channels;
 }
 
-const Channel* Profile::get_display_channel() const
+Channel* Profile::get_display_channel()
 {
 	return display_channel;
 }

@@ -20,7 +20,6 @@
 
 #include "scheduled_recordings_dialog.h"
 #include "scheduled_recording_dialog.h"
-#include "data.h"
 #include "application.h"
 
 ScheduledRecordingsDialog* ScheduledRecordingsDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
@@ -43,7 +42,6 @@ ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, co
 	tree_view_scheduled_recordings->append_column(_("Channel"), columns.column_channel);
 	tree_view_scheduled_recordings->append_column(_("Start Time"), columns.column_start_time);
 	tree_view_scheduled_recordings->append_column(_("Duration"), columns.column_duration);
-	update();
 }
 
 void ScheduledRecordingsDialog::on_button_scheduled_recordings_add_clicked()
@@ -67,7 +65,8 @@ void ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked()
 		Data data;
 		guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
 		data.delete_scheduled_recording(scheduled_recording_id);
-		update();
+		update(data);
+		get_application().check_scheduled_recordings(data);
 	}
 	CATCH
 }
@@ -75,7 +74,11 @@ void ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked()
 void ScheduledRecordingsDialog::update()
 {
 	Data data;
-	
+	update(data);
+}
+
+void ScheduledRecordingsDialog::update(Data& data)
+{
 	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
 	list_store->clear();
 	ScheduledRecordingList recordings = data.get_scheduled_recordings();
@@ -106,7 +109,7 @@ void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& tre
 	ScheduledRecordingDialog* scheduled_recording_dialog = ScheduledRecordingDialog::create(glade);
 	scheduled_recording_dialog->run(this, scheduled_recording);
 	scheduled_recording_dialog->hide();
-	update();
+	update(data);
 	CATCH
 }
 

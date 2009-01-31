@@ -486,7 +486,7 @@ void MainWindow::on_menu_item_audio_stream_activate(guint audio_stream_index)
 void MainWindow::update()
 {
 	Application& application = get_application();
-	const Channel* channel = application.get_profile_manager().get_current_profile().get_display_channel();
+	Channel* channel = application.get_profile_manager().get_current_profile().get_display_channel();
 	Glib::ustring window_title;
 	Glib::ustring status_text;
 	

@@ -23,6 +23,7 @@
 
 #include <libglademm.h>
 #include <libgnomeuimm.h>
+#include "data.h"
 
 class ScheduledRecordingsDialog : public Gtk::Dialog
 {
@@ -63,6 +64,7 @@ public:
 	static ScheduledRecordingsDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 
 	void update();
+	void update(Data& data);
 };
 
 #endif

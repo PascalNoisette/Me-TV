@@ -23,7 +23,7 @@
 
 #define GCONF_PATH		"/apps/me-tv"
 //#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
-#define CLEANUP_INTERVAL	60 * 60
+#define CLEANUP_INTERVAL	5 * 60
 
 Application* Application::current = NULL;
 
@@ -490,7 +490,7 @@ gboolean Application::on_timeout()
 
 Glib::ustring Application::make_recording_filename(const Glib::ustring& description)
 {
-	const Channel* channel = profile_manager.get_current_profile().get_display_channel();
+	Channel* channel = profile_manager.get_current_profile().get_display_channel();
 		
 	if (channel == NULL)
 	{

@@ -89,6 +89,7 @@ DeviceManager::~DeviceManager()
 	if (frontend != NULL)
 	{
 		delete frontend;
+		frontend = NULL;
 		g_debug("Closed DVB device");
 	}
 }

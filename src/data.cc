@@ -536,7 +536,8 @@ void Data::replace_channel(Channel& channel)
 		channel.channel_id = sqlite3_last_insert_rowid(database);
 	}
 	
-	for (EpgEventList::iterator i = channel.epg_events.begin(); i != channel.epg_events.end(); i++)
+	EpgEventList epg_event_list = channel.epg_events.get_list();
+	for (EpgEventList::iterator i = epg_event_list.begin(); i != epg_event_list.end(); i++)
 	{
 		EpgEvent& epg_event = *i;
 		if (epg_event.save)
@@ -650,7 +651,7 @@ ProfileList Data::get_all_profiles()
 			{
 				channel.frontend_parameters.u.vsb.modulation	= (fe_modulation_t)channel_statement.get_int(18);
 			}
-			channel.epg_events = get_epg_events(channel);
+			channel.epg_events.insert(get_epg_events(channel));
 			profile.add_channel(channel);
 			
 			g_debug("Loaded channel: %s", channel.name.c_str());

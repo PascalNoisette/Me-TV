@@ -102,7 +102,9 @@ me_tv_SOURCES = \
 	lib_vlc_engine.h \
 	lib_xine_engine.cc \
 	lib_xine_engine.h \
-	me-tv-i18n.h
+	me-tv-i18n.h \
+	epg_events.cc \
+	epg_events.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \

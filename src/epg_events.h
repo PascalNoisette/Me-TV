@@ -18,41 +18,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __EPG_EVENT_H__
-#define __EPG_EVENT_H__
+#ifndef __EPG_EVENTS_H__
+#define __EPG_EVENTS_H__
 
-#include <glibmm.h>
-#include <list>
+#include "epg_event.h"
 
-class EpgEventText
+typedef std::list<EpgEvent> EpgEventList;
+
+class EpgEvents
 {
-public:
-	guint epg_event_text_id;
-	guint epg_event_id;
-	gboolean is_extended;
-	Glib::ustring language;
-	Glib::ustring title;
-	Glib::ustring description;
-};
-
-typedef std::list<EpgEventText> EpgEventTextList;
-
-class EpgEvent
-{
-public:
-	guint				epg_event_id;
-	guint				channel_id;
-	guint				event_id;
-	guint				start_time;
-	guint				duration;
-	gboolean			save;
-	EpgEventTextList	texts;
+private:
+	EpgEventList			list;
+	Glib::StaticRecMutex	mutex;
 	
-	guint get_end_time() const { return start_time + duration; }
-	Glib::ustring get_title() const;
-	Glib::ustring get_description() const;
-	Glib::ustring get_start_time_text() const;
-	Glib::ustring get_duration_text() const;
+	gboolean exists(const EpgEvent& epg_event);
+public:
+	EpgEvents();
+	~EpgEvents();
+		
+	gboolean insert(const EpgEvent& epg_event);
+	void insert(const EpgEventList& epg_event_list);
+	gboolean get_current(EpgEvent& epg_event);
+	EpgEventList get_list();
 };
 
 #endif
