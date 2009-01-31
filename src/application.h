@@ -51,14 +51,13 @@ private:
 	bool								on_quit();
 	Glib::ustring						application_dir;
 
-	void on_display_channel_changed(const Channel& channel);
-
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);
 	
 	Glib::ustring get_configuration_path(const Glib::ustring& key);
 		
+	void on_display_channel_changed(const Channel& channel);
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
 	void on_error(const Glib::ustring& message);
@@ -99,6 +98,8 @@ public:
 	void stop_recording();
 	void toggle_recording();
 	void set_record_state(gboolean state);
+	void check_scheduled_recordings();
+	void check_scheduled_recordings(Data& data);
 	
 	gboolean is_broadcasting();
 	void set_broadcast_state(gboolean state);
