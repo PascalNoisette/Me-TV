@@ -31,27 +31,27 @@
 class LibVlcEngine : public Engine
 {
 private:
-	libvlc_instance_t*		instance;
-	libvlc_exception_t		exception;
-	gint					window_id;
-	gint					volume;
-	Glib::Module			module_lib_vlc;
+	libvlc_instance_t*	instance;
+	libvlc_exception_t	exception;
+	gint				volume;
+	Glib::Module		module_lib_vlc;
 	gboolean			mute_state;
 	
 	libvlc_media_player_t*	media_player;
 
-	void check_exception();
 	void play(const Glib::ustring& mrl);
 	void stop();
-	void mute(gboolean state);
+	void set_mute_state(gboolean state);
 	void set_volume(gint newlevel);
-	void set_size(gint width, gint height) {};
-	void set_audio_channel(guint channel) {};
+	void set_audio_stream(guint stream) {};
+	void set_audio_channel_state(AudioChannelState state) {};
 	gboolean is_running();
+
+	void check_exception();
 	void* get_symbol(const Glib::ustring& symbol_name);
 
 public:
-	LibVlcEngine(int window_id);
+	LibVlcEngine();
 	~LibVlcEngine();
 };
 

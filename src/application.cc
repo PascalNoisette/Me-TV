@@ -48,7 +48,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	stream_thread = NULL;
 	update_epg_time();
 	scheduled_recording_timeout_source = 0;
-	cleanup_timeout_source = 0;
 	scheduled_recording_id = 0;
 	record_state = false;
 	broadcast_state = false;
@@ -129,10 +128,6 @@ Application::~Application()
 	if (scheduled_recording_timeout_source == 0)
 	{
 		g_source_remove(scheduled_recording_timeout_source);
-	}
-	if (cleanup_timeout_source == 0)
-	{
-		g_source_remove(cleanup_timeout_source);
 	}
 	stop_stream_thread();
 	if (main_window != NULL)

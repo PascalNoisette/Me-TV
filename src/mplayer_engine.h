@@ -40,8 +40,8 @@ private:
 	void stop();
 	void mute(gboolean state);
 	void expose();
-	void set_size(gint width, gint height) {};
-	void set_audio_channel(guint channel) {};
+	void set_audio_stream(guint stream) {};
+	void set_audio_channel_state(AudioChannelState state) {};
 	void write(const Glib::ustring& text);
 	gboolean is_running();
 

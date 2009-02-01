@@ -61,7 +61,7 @@ function_libvlc_media_player_release		symbol_libvlc_media_player_release		= NULL
 function_libvlc_release						symbol_libvlc_release					= NULL;
 function_libvlc_exception_raised			symbol_libvlc_exception_raised			= NULL;
 function_libvlc_exception_get_message		symbol_libvlc_exception_get_message		= NULL;
-function_libvlc_exception_clear			symbol_libvlc_exception_clear			= NULL;
+function_libvlc_exception_clear				symbol_libvlc_exception_clear			= NULL;
 function_libvlc_media_player_new			symbol_libvlc_media_player_new			= NULL;
 function_libvlc_media_player_set_drawable	symbol_libvlc_media_player_set_drawable	= NULL;
 function_libvlc_audio_set_volume			symbol_libvlc_audio_set_volume			= NULL;
@@ -72,7 +72,7 @@ function_libvlc_media_release				symbol_libvlc_media_release				= NULL;
 function_libvlc_media_player_play			symbol_libvlc_media_player_play			= NULL;
 function_libvlc_media_player_stop			symbol_libvlc_media_player_stop			= NULL;
 
-LibVlcEngine::LibVlcEngine(int window_id) : window_id(window_id), module_lib_vlc("libvlc.so")
+LibVlcEngine::LibVlcEngine() : module_lib_vlc("libvlc.so")
 {
 	Application& application = get_application();
 
@@ -173,12 +173,12 @@ void LibVlcEngine::play(const Glib::ustring& mrl)
 		media_player = symbol_libvlc_media_player_new (instance, &exception);
 		check_exception();
 
-		symbol_libvlc_media_player_set_drawable(media_player, window_id, &exception);
+		symbol_libvlc_media_player_set_drawable(media_player, get_window_id(), &exception);
 		check_exception();
 	}
 
 	set_volume (volume);
-	mute (mute_state);
+	set_mute_state (mute_state);
 
 	libvlc_media_t* media = symbol_libvlc_media_new(instance, mrl.c_str(), &exception);
 	check_exception();
@@ -223,7 +223,7 @@ gboolean LibVlcEngine::is_running()
 	return media_player != NULL;
 }
 
-void LibVlcEngine::mute(gboolean state)
+void LibVlcEngine::set_mute_state(gboolean state)
 {
 	if (state != mute_state)
 	{

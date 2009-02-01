@@ -38,11 +38,13 @@ public:
 	
 	virtual void play(const Glib::ustring& mrl) = 0;
 	virtual void stop() = 0;
-	virtual void mute(gboolean state) = 0;
-	virtual void set_size(gint width, gint height) = 0;
-	virtual void set_audio_channel(guint channel) = 0;
-	virtual gboolean is_running() = 0;
+	virtual void set_mute_state(gboolean state) = 0;
+	virtual void set_audio_stream(guint stream) = 0;
 	virtual void set_audio_channel_state(AudioChannelState state) = 0;
+	virtual gboolean is_running() = 0;
+
+	gint get_window_id();
+	Gtk::DrawingArea* get_drawing_area_video();
 };
 
 #endif

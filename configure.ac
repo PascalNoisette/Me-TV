@@ -130,6 +130,7 @@ LIBXTST_REQUIRED=1.0.0
 GNET_REQUIRED=2.0.0
 LIBXINE_REQUIRED=1.1.7
 LIBVLC_REQUIRED=0.9
+LIBGSTREAMER_REQUIRED=0.10
 AC_SUBST(SQLITE_REQUIRED)
 AC_SUBST(LIBGNOMEMM_REQUIRED)
 AC_SUBST(LIBGNOMEUI_REQUIRED)
@@ -140,6 +141,7 @@ AC_SUBST(LIBXTST_REQUIRED)
 AC_SUBST(GNET_REQUIRED)
 AC_SUBST(LIBXINE_REQUIRED)
 AC_SUBST(LIBVLC_REQUIRED)
+AC_SUBST(LIBGSTREAMER_REQUIRED)
 
 # check for sqlite
 PKG_CHECK_MODULES(SQLITE, [sqlite3 >= $SQLITE_REQUIRED])
@@ -182,6 +184,21 @@ PKG_CHECK_MODULES([XINE_LIB], libxine >= $LIBXINE_REQUIRED, found_xine_lib=yes, 
 		AC_SUBST(XINE_LIB_LIBS)
 	else
 		AC_MSG_ERROR([Cannot find required xine-lib development package installed])
+	fi
+fi
+
+AC_ARG_ENABLE(libgstreamer-engine, 
+	AC_HELP_STRING([--enable-libgstreamer-engine],[Enable experimental GStreamer library engine support (default disabled)]), 
+	enable_libgstreamer_engine="$enableval", enable_libgstreamer_engine=no)
+if test x$enable_libgstreamer_engine = xyes; then
+# we do not really need it, it is loaded dynamically
+PKG_CHECK_MODULES([LIBGSTREAMER], gstreamer-0.10 >= $LIBGSTREAMER_REQUIRED, found_libgstreamer=yes, found_libgstreamer=no)
+	if test x"$found_libgstreamer" = "xyes" ; then
+		AC_DEFINE(ENABLE_LIBGSTREAMER_ENGINE,1,[Define to 1 if GStreamer library is available and GStreamer engine is used.])
+		AC_SUBST(LIBGSTREAMER_CFLAGS)
+#		AC_SUBST(LIBGSTREAMER_LIBS)
+	else
+		AC_MSG_ERROR([Cannot find required GStreamer development package installed])
 	fi
 fi
 
@@ -250,6 +267,7 @@ Optional engines support:
 	libvlc engine ..............: ${enable_libvlc_engine}
 	MPlayer engine .............: ${enable_mplayer_engine}
 	xine-lib engine ............: ${enable_xine_lib_engine}
+	GStreamer library engine ...: ${enable_libgstreamer_engine}
 
 Type make to build ${PACKAGE_STRING}
 

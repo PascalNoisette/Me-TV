@@ -28,7 +28,7 @@
 #define KILL_SLEEP_TIME		100000
 #define KILL_SLEEP_TIMEOUT  2000000
 
-XineEngine::XineEngine(int display_window_id) : window_id(display_window_id)
+XineEngine::XineEngine()
 {
 	pid = -1;
 	standard_input = -1;
@@ -80,13 +80,12 @@ void XineEngine::play(const Glib::ustring& mrl)
 
 	// Initial window size hack
 	gint width, height;
-	Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(application.get_glade()->get_widget("drawing_area_video"));
-	drawing_area_video->get_window()->get_size(width, height);
+	get_drawing_area_video()->get_window()->get_size(width, height);
 	argv.push_back("--geometry");
 	argv.push_back(Glib::ustring::compose("%1x%2", width, height));
 
 	argv.push_back("--wid");
-	argv.push_back(Glib::ustring::compose("%1", window_id));
+	argv.push_back(Glib::ustring::compose("%1", get_window_id()));
 	argv.push_back(Glib::ustring::compose("fifo://%1", mrl));
 
 	try
@@ -102,7 +101,7 @@ void XineEngine::play(const Glib::ustring& mrl)
 			NULL);
 
 		mute_state = false;
-		mute(mute_state);
+		set_mute_state(mute_state);
 		g_debug("Spawned xine on pid %d", pid);
 	}
 	catch (const Exception& exception)
@@ -195,7 +194,7 @@ gboolean XineEngine::is_running()
 	return result == 0;
 }
 
-void XineEngine::mute(gboolean state)
+void XineEngine::set_mute_state(gboolean state)
 {
 	if (state != mute_state)
 	{

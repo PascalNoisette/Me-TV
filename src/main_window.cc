@@ -30,6 +30,7 @@
 #include "mplayer_engine.h"
 #include "lib_vlc_engine.h"
 #include "lib_xine_engine.h"
+#include "lib_gstreamer_engine.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
 #include <libgnome/libgnome.h>
@@ -488,7 +489,7 @@ void MainWindow::on_menu_item_audio_stream_activate(guint audio_stream_index)
 	g_debug("MainWindow::on_menu_item_audio_stream_activate(%d)", audio_stream_index);
 	if (engine != NULL)
 	{
-		engine->set_audio_channel(audio_stream_index);
+		engine->set_audio_stream(audio_stream_index);
 	}
 }
 
@@ -727,37 +728,36 @@ void MainWindow::create_engine()
 	{
 		throw Exception(_("Failed to start engine: Engine has already been started"));
 	}
-
-	int window_id = GDK_WINDOW_XID(drawing_area_video->get_window()->gobj());
-
-	if (window_id == 0)
-	{
-		throw Exception(_("Window ID was 0"));
-	}
-
+	
 	g_debug("Creating engine");
 	Application& application = get_application();
 	Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
 	if (engine_type == "xine")
 	{
-		engine = new XineEngine(window_id);
+		engine = new XineEngine();
 	}
 #ifdef ENABLE_MPLAYER_ENGINE
 	else if (engine_type == "mplayer")
 	{
-		engine = new MplayerEngine(window_id);
+		engine = new MplayerEngine();
 	}
 #endif
 #ifdef ENABLE_XINE_LIB_ENGINE
 	else if (engine_type == "libxine")
 	{
-		engine = new LibXineEngine(window_id);
+		engine = new LibXineEngine();
 	}
 #endif
 #ifdef ENABLE_LIBVLC_ENGINE
 	else if (engine_type == "libvlc")
 	{
-		engine = new LibVlcEngine(window_id);
+		engine = new LibVlcEngine();
+	}
+#endif
+#ifdef ENABLE_LIBGSTREAMER_ENGINE
+	else if (engine_type == "libgstreamer")
+	{
+		engine = new LibGStreamerEngine();
 	}
 #endif
 	else if (engine_type == "none")
@@ -771,7 +771,7 @@ void MainWindow::create_engine()
 
 	if (engine != NULL)
 	{
-		engine->mute(mute_state);
+		engine->set_mute_state(mute_state);
 	}
 	
 	g_debug("%s engine created", engine_type.c_str());
@@ -837,7 +837,7 @@ void MainWindow::set_mute_state(gboolean state)
 			Glib::RecMutex::Lock lock(mutex);
 			if (engine != NULL)
 			{
-				engine->mute(mute_state);
+				engine->set_mute_state(mute_state);
 			}
 		}
 

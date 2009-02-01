@@ -45,7 +45,6 @@ private:
 	StreamThread*						stream_thread;
 	Glib::StaticRecMutex				mutex;
 	guint								scheduled_recording_timeout_source;
-	guint								cleanup_timeout_source;
 	gboolean							record_state;
 	gboolean							broadcast_state;
 	guint								scheduled_recording_id;
