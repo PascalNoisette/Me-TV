@@ -234,7 +234,9 @@ void MainWindow::show_channels_dialog()
 		Profile& current_profile = get_application().get_profile_manager().get_current_profile();
 		ChannelList channels = channels_dialog.get_channels();
 		current_profile.set_channels(channels);
-		current_profile.save();
+		
+		Data data;
+		data.replace_profile(current_profile);
 	}
 	update();
 

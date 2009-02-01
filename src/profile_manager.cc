@@ -81,10 +81,11 @@ Profile& ProfileManager::get_profile(const Glib::ustring& profile_name)
 
 void ProfileManager::save()
 {
+	Data data;
 	g_message(_("Saving profile data"));
 	for (ProfileList::iterator profile_iterator = profiles.begin(); profile_iterator != profiles.end(); profile_iterator++)
 	{
-		(*profile_iterator).save();
+		data.replace_profile(*profile_iterator);
 	}
 	g_message(_("Profile data saved"));
 }

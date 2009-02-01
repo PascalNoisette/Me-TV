@@ -24,7 +24,6 @@
 #define GCONF_PATH		"/apps/me-tv"
 //#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
 //#define TEST_VIDEO_SOURCE "/home/michael/acdc.mp3"
-#define CLEANUP_INTERVAL	5 * 60
 
 Application* Application::current = NULL;
 
@@ -48,7 +47,8 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	status_icon = NULL;
 	stream_thread = NULL;
 	update_epg_time();
-	timeout_source = 0;
+	scheduled_recording_timeout_source = 0;
+	cleanup_timeout_source = 0;
 	scheduled_recording_id = 0;
 	record_state = false;
 	broadcast_state = false;
@@ -120,15 +120,19 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	profile.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));	
 
-	timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
+	scheduled_recording_timeout_source = gdk_threads_add_timeout(1000, &Application::on_scheduled_recording_timeout, this);
 }
 
 Application::~Application()
 {
 	profile_manager.save();
-	if (timeout_source == 0)
+	if (scheduled_recording_timeout_source == 0)
 	{
-		g_source_remove(timeout_source);
+		g_source_remove(scheduled_recording_timeout_source);
+	}
+	if (cleanup_timeout_source == 0)
+	{
+		g_source_remove(cleanup_timeout_source);
 	}
 	stop_stream_thread();
 	if (main_window != NULL)
@@ -453,37 +457,25 @@ void Application::check_scheduled_recordings(Data& data)
 	}
 }
 
-gboolean Application::on_timeout(gpointer data)
+gboolean Application::on_scheduled_recording_timeout(gpointer data)
 {
-	return ((Application*)data)->on_timeout();
+	return ((Application*)data)->on_scheduled_recording_timeout();
 }
 
-gboolean Application::on_timeout()
+gboolean Application::on_scheduled_recording_timeout()
 {
 	TRY
-	static guint last_cleanup_time = 0;
 	static guint last_seconds = 60;
-	static Data data;
 	
 	guint now = time(NULL);
 	
 	guint seconds = now % 60;
 	if (last_seconds > seconds)
 	{
-		check_scheduled_recordings(data);
+		check_scheduled_recordings();
 		last_seconds = seconds;
 	}
 	
-	if (now - CLEANUP_INTERVAL >= last_cleanup_time)
-	{
-		data.delete_old_scheduled_recordings();
-		data.delete_old_epg_events();
-		data.vacuum();
-		profile_manager.get_current_profile().save();
-		
-		last_cleanup_time = now;
-	}
-
 	CATCH
 	
 	return true;

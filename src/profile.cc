@@ -142,13 +142,6 @@ Channel* Profile::find_channel(guint frequency, guint service_id)
 	return result;
 }
 
-void Profile::save()
-{
-	Data data;
-	data.replace_profile(*this);
-	g_debug("'%s' profile saved", name.c_str());
-}
-
 void Profile::set_channels(ChannelList& new_channels)
 {
 	g_debug("Setting channels");

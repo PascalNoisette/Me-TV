@@ -22,6 +22,8 @@
 #include "epg_thread.h"
 #include "application.h"
 
+#define CLEANUP_INTERVAL	60
+
 class EITDemuxers
 {
 private:
@@ -116,6 +118,11 @@ void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInf
 	}
 }
 
+EpgThread::EpgThread() : Thread("EPG Thread")
+{
+	last_cleanup_time = time(NULL);
+}
+
 void EpgThread::run()
 {
 	TRY;
@@ -195,6 +202,19 @@ void EpgThread::run()
 						get_application().update_epg_time();
 					}
 				}
+			}
+			
+			guint now = time(NULL);
+			if (now - CLEANUP_INTERVAL > last_cleanup_time)
+			{
+				Data data;
+
+				data.delete_old_scheduled_recordings();
+				data.delete_old_epg_events();
+				data.vacuum();
+				data.replace_profile(profile);
+				
+				last_cleanup_time = now;
 			}
 		}
 		catch(const TimeoutException& ex)

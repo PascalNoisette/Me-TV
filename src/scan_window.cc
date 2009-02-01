@@ -287,7 +287,8 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 	}
 	g_debug("Finished importing channels");
 	
-	current_profile.save();	
+	Data data;
+	data.replace_profile(current_profile);
 	hide();
 }
 
@@ -402,7 +403,8 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 		iterator++;
 	}
 
-	current_profile.save();
+	Data data;
+	data.replace_profile(current_profile);
 	hide();
 }
 

@@ -43,7 +43,6 @@ public:
 	void add_channels(ChannelList& channels);
 	void set_channels(ChannelList& channels);
 	void clear();
-	void save();
 	ChannelList& get_channels();
 	const ChannelList& get_channels() const;
 	Channel* get_display_channel();
