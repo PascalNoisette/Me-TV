@@ -33,15 +33,13 @@ class LibGStreamerEngine : public Engine
 private:
 	gint				pid;
 	gint				standard_input;
-	gboolean			mute_state;
-	AudioChannelState	audio_channel_state;
 	GstElement*			player;
 	GstElement*			sink;
 
 	void play(const Glib::ustring& mrl);
 	void stop();
 	void set_audio_stream(guint stream) {}
-	void set_mute_state(gboolean state) {}
+	void set_mute_state(gboolean state);
 	void set_audio_channel_state(AudioChannelState state) {}
 	gboolean is_running();
 

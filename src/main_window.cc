@@ -541,7 +541,7 @@ void MainWindow::update()
 		std::vector<Dvb::SI::AudioStream> audio_streams = stream.audio_streams;
 		guint count = 0;
 		
-		g_debug("Audio streams: %d", audio_streams.size());
+		g_debug("Audio streams: %zu", audio_streams.size());
 		for (std::vector<Dvb::SI::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
 		{
 			Dvb::SI::AudioStream audio_stream = *i;

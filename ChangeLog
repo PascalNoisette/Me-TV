@@ -1,7 +1,8 @@
-2009-01-26  Michael Lamothe <michael.lamothe@gmail.com>
+2009-02-02  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.12
-	* EPG events are now stored in memory to conserve disk access, only written on exit
+	* EPG events are now stored in memory to conserve disk access, written periodically and on exit
+	* Added option to compile in libvlc, libxine, libgstreamer and mplayer engines 
 
 2009-01-26  Michael Lamothe <michael.lamothe@gmail.com>
 

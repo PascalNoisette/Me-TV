@@ -29,9 +29,6 @@
 LibGStreamerEngine::LibGStreamerEngine()
 {
 	static gboolean initialised = false;
-	
-	mute_state = false;
-	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
 
 	if (!initialised)
 	{
@@ -39,10 +36,12 @@ LibGStreamerEngine::LibGStreamerEngine()
 		initialised = true;
 	}
 	
-	guint major, minor, micro, nano;
-	gst_version (&major, &minor, &micro, &nano);
-	
-	g_debug("GStreamer %d.%d.%d", major, minor, micro);
+	gchar* version = gst_version_string();
+	g_debug("%s", version);
+	g_free(version);
+
+	player	= create_element("playbin", "player");
+	sink	= create_element("xvimagesink", "sink");
 }
 
 LibGStreamerEngine::~LibGStreamerEngine()
@@ -81,10 +80,7 @@ gboolean LibGStreamerEngine::on_bus_message(GstBus *bus, GstMessage *message, gp
 }
 
 void LibGStreamerEngine::play(const Glib::ustring& mrl)
-{
-	player	= create_element("playbin", "player");
-	sink	= create_element("xvimagesink", "sink");
-	
+{	
 	Glib::ustring uri = "file://" + mrl;
 	
 	g_object_set (G_OBJECT (player), "video_sink", sink, (gchar*)NULL);
@@ -108,10 +104,9 @@ void LibGStreamerEngine::stop()
 
 gboolean LibGStreamerEngine::is_running()
 {
-//	GstState state;
-//	gst_element_get_state(player, &state, NULL, NULL);
-//	return state == GST_STATE_PLAYING;
-	return true;
+	GstState state;
+	gst_element_get_state(player, &state, NULL, NULL);
+	return state != GST_STATE_NULL;
 }
 
 GstElement* LibGStreamerEngine::create_element(const Glib::ustring& factoryname, const gchar *name)
@@ -126,5 +121,11 @@ GstElement* LibGStreamerEngine::create_element(const Glib::ustring& factoryname,
 	
 	return element;
 }
+
+void LibGStreamerEngine::set_mute_state(gboolean state)
+{
+	g_object_set (G_OBJECT (player), "volume", state ? 0.0 : 10.0, (gchar*)NULL);
+}
+
 
 #endif

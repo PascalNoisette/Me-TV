@@ -113,7 +113,7 @@ void XineEngine::play(const Glib::ustring& mrl)
 
 void XineEngine::write(const Glib::ustring& text)
 {
-	g_debug("Writing '%s' (%d)", text.c_str(), text.length());
+	g_debug("Writing '%s' (%zu)", text.c_str(), text.length());
 	if (::write(standard_input, text.c_str(), text.length()) <= 0)
 	{
 		g_debug("Failed to write command '%s'", text.c_str());
