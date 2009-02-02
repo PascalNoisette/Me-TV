@@ -153,7 +153,7 @@ void LibXineEngine::create()
 		throw Exception(_("Failed to initialise xine library"));
 	}
 	
-	Glib::ustring xine_config_path = Glib::get_home_dir() + "/xine.config";
+	Glib::ustring xine_config_path = Glib::build_filename(application.get_application_dir(), "/xine.config");
 	
 	if (!Gio::File::create_for_path(xine_config_path)->query_exists())
 	{
