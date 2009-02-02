@@ -85,6 +85,7 @@ void LibGStreamerEngine::play(const Glib::ustring& mrl)
 	
 	g_object_set (G_OBJECT (player), "video_sink", sink, NULL);
 	g_object_set (G_OBJECT (player), "uri", uri.c_str(), NULL);
+	g_object_set (G_OBJECT (sink), "force-aspect-ratio", true, NULL);
 		
 	GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE (player));
 	gst_bus_add_watch (bus, on_bus_message, (gpointer)this);
