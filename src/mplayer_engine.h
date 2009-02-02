@@ -31,14 +31,13 @@ class MplayerEngine : public Engine
 {
 private:
 	gint pid;
-	gint window_id;
 	gint standard_input;
 	gboolean mute_state;
 	gdouble monitoraspect;
 
 	void play(const Glib::ustring& mrl);
 	void stop();
-	void mute(gboolean state);
+	void set_mute_state(gboolean state);
 	void expose();
 	void set_audio_stream(guint stream) {};
 	void set_audio_channel_state(AudioChannelState state) {};
@@ -46,7 +45,7 @@ private:
 	gboolean is_running();
 
 public:
-	MplayerEngine(int window_id);
+	MplayerEngine();
 	~MplayerEngine();
 };
 

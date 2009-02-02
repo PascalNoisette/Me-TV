@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include "lib_xine_engine.h"
+#include "xine_lib_engine.h"
 
 #ifdef ENABLE_XINE_LIB_ENGINE
 
@@ -31,7 +31,7 @@
 #include <math.h>
 #include <string.h>
 
-class LibXineException : public Exception
+class XineLibException : public Exception
 {
 private:
 	Glib::ustring create_message(xine_stream_t* stream, const Glib::ustring& message)
@@ -59,85 +59,20 @@ private:
 	}
 	
 public:
-	LibXineException(xine_stream_t* stream, const Glib::ustring& message) :
+	XineLibException(xine_stream_t* stream, const Glib::ustring& message) :
 		Exception(create_message(stream, message)) {}
 };
 
-LibXineEngine::LibXineEngine (int window_id) : window_id(window_id), moduleLibXine("libxine.so")
+XineLibEngine::XineLibEngine ()
 {
 	xine				= NULL;
 	stream				= NULL;
 	video_port			= NULL;
 	audio_port			= NULL;
-	mute_state			= false;
-	video_thread		= NULL;
-	dual_language_state	= ENGINE_DUAL_LANGUAGE_STATE_DISABLED;
+	audio_channel_state	= AUDIO_CHANNEL_STATE_BOTH;
 
-	if (!moduleLibXine)
-	{
-		throw Exception(_("Failed to load xine library"));
-	}
-	
 	g_static_rec_mutex_init(mutex.gobj());
 	
-	create();
-}
-
-LibXineEngine::~LibXineEngine()
-{
-	destroy();
-}
-
-void LibXineEngine::dest_size_cb ( void *data,
-	int video_width, int video_height, double video_pixel_aspect,
-	int *dest_width, int *dest_height, double *dest_pixel_aspect )
-{
-	LibXineEngine* engine = (LibXineEngine*)data;
-	*dest_pixel_aspect = engine->pixel_aspect;
-
-	Glib::RecMutex::Lock lock(engine->mutex);
-	*dest_width        = engine->width;
-	*dest_height       = engine->height;
-}
-
-void LibXineEngine::frame_output_cb ( void *data,
-	int video_width, int video_height,
-	double video_pixel_aspect, int *dest_x, int *dest_y,
-	int *dest_width, int *dest_height,
-	double *dest_pixel_aspect, int *win_x, int *win_y )
-{
-	LibXineEngine* engine = (LibXineEngine*)data;
-	*dest_pixel_aspect = engine->pixel_aspect;
-
-	Glib::RecMutex::Lock lock(engine->mutex);
-	*dest_x            = 0;
-	*dest_y            = 0;
-	*win_x             = 0;
-	*win_y             = 0;
-	*dest_width        = engine->width;
-	*dest_height       = engine->height;
-}
-
-void LibXineEngine::mute(gboolean state)
-{
-	mute_state = state;
-	if (stream != NULL)
-	{
-		xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, state ? 0 : 100);
-	}
-}
-
-void LibXineEngine::write(const gchar* buffer, gsize length)
-{	
-	if (fifo_output_stream)
-	{
-		gsize bytes_written = 0;
-		fifo_output_stream->write(buffer, length, bytes_written);
-	}
-}
-
-void LibXineEngine::create()
-{
 	x11_visual_t	vis;
 	double			res_h, res_v;
 
@@ -189,7 +124,7 @@ void LibXineEngine::create()
 	{
 		vis.display           = GDK_DISPLAY();
 		vis.screen            = screen->get_number();
-		vis.d                 = window_id;
+		vis.d                 = get_window_id();
 		vis.dest_size_cb      = dest_size_cb;
 		vis.frame_output_cb   = frame_output_cb;
 		vis.user_data         = this;
@@ -212,7 +147,73 @@ void LibXineEngine::create()
 	}
 }
 
-void LibXineEngine::play(const Glib::ustring& mrl)
+XineLibEngine::~XineLibEngine()
+{
+	stop();
+	
+	if (xine != NULL)
+	{
+		if ( audio_port != NULL )
+		{
+			xine_close_audio_driver ( xine, audio_port );
+		}
+		audio_port = NULL;
+		
+		if ( video_port != NULL )
+		{
+			xine_close_video_driver ( xine, video_port );
+		}
+		video_port = NULL;
+
+		xine_exit ( xine );
+	
+		xine = NULL;
+	}
+}
+
+void XineLibEngine::dest_size_cb ( void *data,
+	int video_width, int video_height, double video_pixel_aspect,
+	int *dest_width, int *dest_height, double *dest_pixel_aspect )
+{
+	XineLibEngine* engine = (XineLibEngine*)data;
+	*dest_pixel_aspect = engine->pixel_aspect;
+
+	Glib::RecMutex::Lock lock(engine->mutex);
+	*dest_width        = engine->width;
+	*dest_height       = engine->height;
+}
+
+void XineLibEngine::frame_output_cb ( void *data,
+	int video_width, int video_height,
+	double video_pixel_aspect, int *dest_x, int *dest_y,
+	int *dest_width, int *dest_height,
+	double *dest_pixel_aspect, int *win_x, int *win_y )
+{
+	XineLibEngine* engine = (XineLibEngine*)data;
+	*dest_pixel_aspect = engine->pixel_aspect;
+
+	Glib::RecMutex::Lock lock(engine->mutex);
+	*dest_x            = 0;
+	*dest_y            = 0;
+	*win_x             = 0;
+	*win_y             = 0;
+	//*dest_width        = engine->width;
+	//*dest_height       = engine->height;
+	
+	gdk_threads_enter();
+	engine->get_drawing_area_video()->get_window()->get_size(*dest_width, *dest_height);
+	gdk_threads_leave();
+}
+
+void XineLibEngine::set_mute_state(gboolean state)
+{
+	if (stream != NULL)
+	{
+		xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, state ? 0 : 100);
+	}
+}
+
+void XineLibEngine::play(const Glib::ustring& mrl)
 {
 	Application& application = Application::get_current();
 
@@ -220,15 +221,13 @@ void LibXineEngine::play(const Glib::ustring& mrl)
 	
 	if (stream == NULL)
 	{
-		throw LibXineException(stream, "Failed to create stream");
+		throw XineLibException(stream, "Failed to create stream");
 	}
-
-	mute(mute_state);
 
 	if (video_port != NULL)
 	{
-		xine_gui_send_vo_data ( stream, XINE_GUI_SEND_DRAWABLE_CHANGED, ( void * ) window_id );
-		xine_gui_send_vo_data ( stream, XINE_GUI_SEND_VIDEOWIN_VISIBLE, ( void * ) 1 );
+		xine_port_send_gui_data ( video_port, XINE_GUI_SEND_DRAWABLE_CHANGED, ( void * ) get_window_id() );
+		xine_port_send_gui_data ( video_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, ( void * ) 1 );
 
 		// Set up deinterlacing
 		Glib::ustring deinterlace_type = application.get_string_configuration_value("xine.deinterlace_type");
@@ -279,95 +278,24 @@ void LibXineEngine::play(const Glib::ustring& mrl)
 		}
 	}
 	
-	if (video_thread != NULL)
-	{
-		throw Exception(_("Video thread was not NULL"));
-	}
+	Glib::ustring path = "fifo://" + mrl;
 
-	fifo_path = mrl;
-	video_thread = g_thread_create((GThreadFunc)video_thread_function, this, TRUE, NULL);
-
-	if (fifo_output_stream == NULL)
+	g_debug(_("About to open '%s' ..."), path.c_str());
+	if ( !xine_open ( stream, path.c_str() ) )
 	{
-		fifo_output_stream = Glib::IOChannel::create_from_file(mrl, "w");
-		fifo_output_stream->set_encoding("");
+		throw XineLibException (stream, _("Failed to open video stream"));
 	}
+	
+	g_debug("About to play from '%s' ...", path.c_str());
+	if ( !xine_play ( stream, 0, 0 ) )
+	{
+		throw XineLibException (stream, _("Failed to play video stream."));
+	}
+	g_debug("Playing from '%s'", path.c_str());
 }
 
-gpointer LibXineEngine::video_thread_function(LibXineEngine* engine)
+void XineLibEngine::stop()
 {
-	TRY;
-	
-	g_debug("Video thread created");
-
-	Glib::ustring path = "fifo:/" + engine->fifo_path;
-
-	if (engine->stream == NULL)
-	{
-		throw Exception(_("Stream is NULL"));
-	}
-	
-	g_debug(_("About to open FIFO '%s' ..."), path.c_str());
-	if ( !xine_open ( engine->stream, path.c_str() ) )
-	{
-		if (engine->fifo_output_stream != NULL)
-		{
-			throw LibXineException (engine->stream, _("Failed to open video stream"));
-		}
-	}
-	
-	if (engine->fifo_output_stream != NULL)
-	{
-		g_debug("About to play from FIFO ...");
-		if ( !xine_play ( engine->stream, 0, 0 ) )
-		{
-			throw LibXineException (engine->stream, _("Failed to play video stream."));
-		}
-		g_debug("Playing from FIFO");
-	}
-	
-	THREAD_CATCH;
-	
-	return NULL;
-}
-
-void LibXineEngine::destroy()
-{
-	close();
-	
-	if (xine != NULL)
-	{
-		if ( audio_port != NULL )
-		{
-			xine_close_audio_driver ( xine, audio_port );
-		}
-		audio_port = NULL;
-		
-		if ( video_port != NULL )
-		{
-			xine_close_video_driver ( xine, video_port );
-		}
-		video_port = NULL;
-
-		xine_exit ( xine );
-	
-		xine = NULL;
-	}
-}
-
-void LibXineEngine::close()
-{
-	if (fifo_output_stream != NULL)
-	{
-		fifo_output_stream.reset();
-	}
-
-	if (video_thread != NULL)
-	{
-		g_thread_join(video_thread);
-		video_thread = NULL;
-	}
-
 	if (stream != NULL)
 	{
 		xine_stop(stream);
@@ -377,35 +305,18 @@ void LibXineEngine::close()
 	}
 }
 
-void LibXineEngine::set_subtitle_channel(gint channel)
+void XineLibEngine::set_audio_channel_state(AudioChannelState state)
 {
 	if (stream == NULL)
 	{
-		throw Exception("Failed to set subtitle channel: stream has not been created");
-	}
-	
-	g_debug("set_subtitle_channel(%d)", channel);
-	xine_set_param(stream, XINE_PARAM_SPU_CHANNEL, channel);
-}
-
-void LibXineEngine::set_audio_channel(gint channel)
-{
-	if (stream == NULL)
-	{
-		throw Exception("Failed to set subtitle channel: stream has not been created");
+		throw Exception("Failed to set audio channel: stream has not been created");
 	}
 
-	g_debug("set_audio_channel(%d)", channel);
-	xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
-}
-
-void LibXineEngine::set_dual_language_state(gint state)
-{
 	static xine_post_t* plugin = NULL;
 	
-	if (dual_language_state != state)
+	if (audio_channel_state != state)
 	{
-		if (state == ENGINE_DUAL_LANGUAGE_STATE_DISABLED)
+		if (state == AUDIO_CHANNEL_STATE_BOTH)
 		{
 			if (plugin != NULL)
 			{
@@ -417,10 +328,9 @@ void LibXineEngine::set_dual_language_state(gint state)
 		{
 			switch (state)
 			{
-			case ENGINE_DUAL_LANGUAGE_STATE_LEFT: g_debug("Enabling dual language for left channel");  break;
-			case ENGINE_DUAL_LANGUAGE_STATE_RIGHT: g_debug("Enabling dual language for right channel");  break;
-			default:
-				throw Exception(_("Unknown dual language state"));
+			case AUDIO_CHANNEL_STATE_LEFT: g_debug("Enabling left channel");  break;
+			case AUDIO_CHANNEL_STATE_RIGHT: g_debug("Enabling right channel");  break;
+			default: break;
 			}
 			
 			if (plugin == NULL)
@@ -465,8 +375,8 @@ void LibXineEngine::set_dual_language_state(gint state)
 			int parameter = -1;
 			switch (state)
 			{
-			case ENGINE_DUAL_LANGUAGE_STATE_LEFT: parameter = 0; break;
-			case ENGINE_DUAL_LANGUAGE_STATE_RIGHT: parameter = 1; break;
+			case AUDIO_CHANNEL_STATE_LEFT: parameter = 0; break;
+			case AUDIO_CHANNEL_STATE_RIGHT: parameter = 1; break;
 			default: break;
 			}
 
@@ -484,8 +394,17 @@ void LibXineEngine::set_dual_language_state(gint state)
 			api->set_parameters (plugin, (void*)&parameter);
 		}
 		
-		dual_language_state = state;
+		audio_channel_state = state;
 	}
+}
+
+gboolean XineLibEngine::is_running()
+{
+	return stream != NULL;
+}
+
+void XineLibEngine::set_audio_stream(guint stream)
+{
 }
 
 #endif

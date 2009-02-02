@@ -101,13 +101,13 @@ me_tv_SOURCES = \
 	initial_scan_line.h \
 	lib_vlc_engine.cc \
 	lib_vlc_engine.h \
-	lib_xine_engine.cc \
-	lib_xine_engine.h \
 	me-tv-i18n.h \
 	epg_events.cc \
 	epg_events.h \
 	lib_gstreamer_engine.cc \
-	lib_gstreamer_engine.h
+	lib_gstreamer_engine.h \
+	xine_lib_engine.cc \
+	xine_lib_engine.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \

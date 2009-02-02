@@ -33,7 +33,7 @@
 
 #define MPLAYER_CACHE_KB   4096
 
-MplayerEngine::MplayerEngine(int window_id) : window_id(window_id)
+MplayerEngine::MplayerEngine()
 {
 	pid = -1;
 	standard_input = -1;
@@ -72,7 +72,7 @@ void MplayerEngine::play(const Glib::ustring& mrl)
 	argv.push_back("-vf");
 	argv.push_back("pp=fd");
 	argv.push_back("-wid");
-	argv.push_back(Glib::ustring::compose("%1", window_id));
+	argv.push_back(Glib::ustring::compose("%1", get_window_id()));
 	argv.push_back(Glib::ustring::compose("%1", mrl));
 
 	try
@@ -88,7 +88,6 @@ void MplayerEngine::play(const Glib::ustring& mrl)
 			NULL);
 
 		mute_state = false;
-		mute(mute_state);
 		g_debug("Spawned mplayer on pid %d", pid);
 	}
 	catch (const Exception& exception)
@@ -182,7 +181,7 @@ gboolean MplayerEngine::is_running()
 	return result == 0;
 }
 
-void MplayerEngine::mute(gboolean state)
+void MplayerEngine::set_mute_state(gboolean state)
 {
 	if (state != mute_state)
 	{

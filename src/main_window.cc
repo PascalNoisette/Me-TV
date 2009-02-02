@@ -29,7 +29,7 @@
 #include "xine_engine.h"
 #include "mplayer_engine.h"
 #include "lib_vlc_engine.h"
-#include "lib_xine_engine.h"
+#include "xine_lib_engine.h"
 #include "lib_gstreamer_engine.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
@@ -743,9 +743,9 @@ void MainWindow::create_engine()
 	}
 #endif
 #ifdef ENABLE_XINE_LIB_ENGINE
-	else if (engine_type == "libxine")
+	else if (engine_type == "xine-lib")
 	{
-		engine = new LibXineEngine();
+		engine = new XineLibEngine();
 	}
 #endif
 #ifdef ENABLE_LIBVLC_ENGINE
