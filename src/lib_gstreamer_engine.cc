@@ -56,6 +56,7 @@ LibGStreamerEngine::~LibGStreamerEngine()
 gboolean LibGStreamerEngine::on_bus_message(GstBus *bus, GstMessage *message, gpointer data)
 {
 	LibGStreamerEngine* engine = (LibGStreamerEngine*)data;
+	gboolean show = true;
 	GError* error = NULL;
 	gchar* debug = NULL;
 	Glib::ustring type = GST_MESSAGE_TYPE_NAME(message);
@@ -72,9 +73,14 @@ gboolean LibGStreamerEngine::on_bus_message(GstBus *bus, GstMessage *message, gp
 			text = debug;
 			break;
 		default:
+			show = false;
 			break;
 	}
-	g_message("GStreamer %s: %s", type.c_str(), text.c_str());
+	
+	if (show)
+	{
+		g_message("GStreamer %s: %s", type.c_str(), text.c_str());
+	}
 	
 	return TRUE;
 }
@@ -124,8 +130,8 @@ GstElement* LibGStreamerEngine::create_element(const Glib::ustring& factoryname,
 
 void LibGStreamerEngine::set_mute_state(gboolean state)
 {
-	g_object_set (G_OBJECT (player), "volume", state ? 0.0 : 10.0, (gchar*)NULL);
+	gdouble volume = state ? 0.0 : 10.0;
+	g_object_set (G_OBJECT (player), "volume", volume, (gchar*)NULL);
 }
-
 
 #endif

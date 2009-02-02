@@ -487,7 +487,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	
 	Glib::ustring start_time = get_local_time_text("%c");
 	Glib::ustring filename;
-
+	
 	if (description.size() == 0)
 	{
 		filename = Glib::ustring::compose
@@ -507,8 +507,10 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 			start_time
 		);
 	}
+
+	Glib::ustring fixed_filename = Glib::filename_from_utf8(filename);
 	
-	return Glib::build_filename(get_string_configuration_value("recording_directory"), filename);
+	return Glib::build_filename(get_string_configuration_value("recording_directory"), fixed_filename);
 }
 
 StreamThread* Application::get_stream_thread()

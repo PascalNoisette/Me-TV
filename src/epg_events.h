@@ -40,6 +40,7 @@ public:
 	void insert(const EpgEventList& epg_event_list);
 	gboolean get_current(EpgEvent& epg_event);
 	EpgEventList get_list();
+	void prune();
 };
 
 #endif

@@ -94,3 +94,18 @@ EpgEventList EpgEvents::get_list()
 	
 	return result;
 }
+
+class IsOld : public std::unary_function<EpgEvent, bool> 
+{
+public:
+	bool operator() (EpgEvent& epg_event)
+	{
+		return epg_event.get_end_time() < ((guint)time(NULL) - 24 * 60 * 60);
+	}
+};
+
+void EpgEvents::prune()
+{
+	Glib::RecMutex::Lock lock(mutex);
+	list.remove_if(IsOld());
+}
