@@ -57,21 +57,25 @@ LibGStreamerEngine::~LibGStreamerEngine()
 gboolean LibGStreamerEngine::on_bus_message(GstBus *bus, GstMessage *message, gpointer data)
 {
 	LibGStreamerEngine* engine = (LibGStreamerEngine*)data;
+	GError* error = NULL;
+	gchar* debug = NULL;
+	Glib::ustring type = GST_MESSAGE_TYPE_NAME(message);
+	Glib::ustring text;
 	
 	switch (GST_MESSAGE_TYPE(message))
 	{
+		case GST_MESSAGE_WARNING:
+			gst_message_parse_warning(message, &error, &debug);
+			text = debug;
+			break;
 		case GST_MESSAGE_ERROR:
-		{
-			GError* error = NULL;
-			gchar* debug = NULL;
 			gst_message_parse_error(message, &error, &debug);
-			g_message("GStreamer %s: %s", GST_MESSAGE_TYPE_NAME(message), debug);
-		}
+			text = debug;
 			break;
 		default:
-			g_debug("GStreamer Message: '%s'", GST_MESSAGE_TYPE_NAME(message));
 			break;
 	}
+	g_message("GStreamer %s: %s", type.c_str(), text.c_str());
 	
 	return TRUE;
 }
@@ -83,9 +87,9 @@ void LibGStreamerEngine::play(const Glib::ustring& mrl)
 	
 	Glib::ustring uri = "file://" + mrl;
 	
-	g_object_set (G_OBJECT (player), "video_sink", sink, NULL);
-	g_object_set (G_OBJECT (player), "uri", uri.c_str(), NULL);
-	g_object_set (G_OBJECT (sink), "force-aspect-ratio", true, NULL);
+	g_object_set (G_OBJECT (player), "video_sink", sink, (gchar*)NULL);
+	g_object_set (G_OBJECT (player), "uri", uri.c_str(), (gchar*)NULL);
+	g_object_set (G_OBJECT (sink), "force-aspect-ratio", true, (gchar*)NULL);
 		
 	GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE (player));
 	gst_bus_add_watch (bus, on_bus_message, (gpointer)this);

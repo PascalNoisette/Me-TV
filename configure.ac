@@ -192,7 +192,7 @@ AC_ARG_ENABLE(libgstreamer-engine,
 	enable_libgstreamer_engine="$enableval", enable_libgstreamer_engine=no)
 if test x$enable_libgstreamer_engine = xyes; then
 # we do not really need it, it is loaded dynamically
-PKG_CHECK_MODULES([LIBGSTREAMER], gstreamer-0.10 >= $LIBGSTREAMER_REQUIRED, found_libgstreamer=yes, found_libgstreamer=no)
+PKG_CHECK_MODULES([LIBGSTREAMER], gstreamer-0.10 >= $LIBGSTREAMER_REQUIRED gstreamer-interfaces-0.10 >= $LIBGSTREAMER_REQUIRED, found_libgstreamer=yes, found_libgstreamer=no)
 	if test x"$found_libgstreamer" = "xyes" ; then
 		AC_DEFINE(ENABLE_LIBGSTREAMER_ENGINE,1,[Define to 1 if GStreamer library is available and GStreamer engine is used.])
 		AC_SUBST(LIBGSTREAMER_CFLAGS)

@@ -119,7 +119,6 @@ me_tv_LDADD = \
 	$(SQLITE_LIBS) \
 	$(XINE_LIB_LIBS) \
 	$(LIBVLC_LIBS) \
-	$(LIBGSTREAMER_LIBS) \
-	-lgstinterfaces-0.10 
+	$(LIBGSTREAMER_LIBS)
 
 EXTRA_DIST = $(glade_DATA)
