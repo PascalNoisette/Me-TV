@@ -502,8 +502,8 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		filename = Glib::ustring::compose
 		(
 			"%1 - %2 - %3.mpeg",
-			channel->name,
 			description,
+			channel->name,
 			start_time
 		);
 	}
