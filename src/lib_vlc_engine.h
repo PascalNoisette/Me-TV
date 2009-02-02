@@ -31,13 +31,10 @@
 class LibVlcEngine : public Engine
 {
 private:
-	libvlc_instance_t*	instance;
-	libvlc_exception_t	exception;
-	gint				volume;
-	Glib::Module		module_lib_vlc;
-	gboolean			mute_state;
-	
+	libvlc_instance_t*		instance;
+	libvlc_exception_t		exception;
 	libvlc_media_player_t*	media_player;
+	gint					volume;	
 
 	void play(const Glib::ustring& mrl);
 	void stop();
@@ -48,7 +45,6 @@ private:
 	gboolean is_running();
 
 	void check_exception();
-	void* get_symbol(const Glib::ustring& symbol_name);
 
 public:
 	LibVlcEngine();
