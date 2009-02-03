@@ -19,6 +19,7 @@
  */
 
 #include "epg_events.h"
+#include "me-tv.h"
 
 EpgEvents::EpgEvents()
 {
@@ -66,13 +67,13 @@ gboolean EpgEvents::get_current(EpgEvent& epg_event)
 {
 	EpgEvent result;
 	gboolean found = false;
-	guint now = time(NULL);
+	guint now = convert_to_local_time(time(NULL));
 	
 	Glib::RecMutex::Lock lock(mutex);
 	for (EpgEventList::iterator i = list.begin(); i != list.end() && found == false; i++)
 	{
 		EpgEvent& current = *i;
-		if (epg_event.start_time <= now && epg_event.get_end_time() >= now)
+		if (current.start_time <= now && current.get_end_time() >= now)
 		{
 			found = true;
 			epg_event = current;
@@ -82,30 +83,36 @@ gboolean EpgEvents::get_current(EpgEvent& epg_event)
 	return found;
 }
 
-EpgEventList EpgEvents::get_list()
+EpgEventList EpgEvents::get_list(gboolean update_save)
 {
 	EpgEventList result;
 	Glib::RecMutex::Lock lock(mutex);
 
 	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
 	{
-		result.push_back(*i);
+		EpgEvent epg_event = *i;
+		
+		result.push_back(epg_event);
+
+		if (update_save)
+		{
+			epg_event.save = false;
+		}
 	}
 	
 	return result;
 }
 
-class IsOld : public std::unary_function<EpgEvent, bool> 
+guint now = 0;
+
+bool is_old(EpgEvent& epg_event)
 {
-public:
-	bool operator() (EpgEvent& epg_event)
-	{
-		return epg_event.get_end_time() < ((guint)time(NULL) - 24 * 60 * 60);
-	}
-};
+	return epg_event.get_end_time() < now;
+}
 
 void EpgEvents::prune()
 {
+	guint now = convert_to_local_time(time(NULL));
 	Glib::RecMutex::Lock lock(mutex);
-	list.remove_if(IsOld());
+	list.remove_if(is_old);
 }

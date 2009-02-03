@@ -32,11 +32,11 @@ class ScheduledRecordingDialog : public Gtk::Dialog
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 
-	Gnome::UI::DateEdit* date_edit_start_time;
-	Gtk::SpinButton* spinbutton_duration;
-	Gtk::Entry* entry_description;
-	ChannelComboBox* channel_combo_box;
-	guint scheduled_recording_id;
+	Gnome::UI::DateEdit*	date_edit_start_time;
+	Gtk::SpinButton*		spinbutton_duration;
+	Gtk::Entry*				entry_description;
+	ChannelComboBox*		channel_combo_box;
+	guint					scheduled_recording_id;
 
 public:
 	ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);

@@ -538,7 +538,7 @@ void Data::replace_channel(Channel& channel)
 		channel.channel_id = sqlite3_last_insert_rowid(database);
 	}
 	
-	EpgEventList epg_event_list = channel.epg_events.get_list();
+	EpgEventList epg_event_list = channel.epg_events.get_list(true);
 	for (EpgEventList::iterator i = epg_event_list.begin(); i != epg_event_list.end(); i++)
 	{
 		EpgEvent& epg_event = *i;
@@ -719,6 +719,8 @@ void Data::replace_scheduled_recording(ScheduledRecording& scheduled_recording)
 			throw Exception(_("ASSERT: scheduled_recording.scheduled_recording_id == 0"));
 		}
 	}
+
+	g_debug("Scheduled recording ID '%d' saved", scheduled_recording.scheduled_recording_id);
 }
 
 ScheduledRecordingList Data::get_scheduled_recordings()
@@ -786,6 +788,9 @@ void Data::delete_channel(guint channel_id)
 	execute_non_query(Glib::ustring::compose(
 		"DELETE FROM CHANNEL WHERE CHANNEL_ID=%1;",
 		channel_id));
+	execute_non_query(Glib::ustring::compose(
+		"DELETE FROM SCHEDULED_RECORDING WHERE CHANNEL_ID=%1;",
+		channel_id));
 }
 
 void Data::delete_old_scheduled_recordings()
@@ -797,7 +802,7 @@ void Data::delete_old_scheduled_recordings()
 
 void Data::delete_old_epg_events()
 {
-	time_t expired_time = time(NULL) - 24 * 60 * 60;
+	time_t expired_time = convert_to_local_time(time(NULL));
 
 	execute_non_query(Glib::ustring::compose(
 		"DELETE FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID IN "\

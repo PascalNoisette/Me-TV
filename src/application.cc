@@ -482,13 +482,23 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	
 	Glib::ustring start_time = get_local_time_text("%c");
 	Glib::ustring filename;
+	Glib::ustring title = description;
+
+	if (title.size() == 0)
+	{
+		EpgEvent epg_event;
+		if (channel->epg_events.get_current(epg_event))
+		{
+			title = epg_event.get_title();
+		}
+	}
 	
-	if (description.size() == 0)
+	if (title.size() == 0)
 	{
 		filename = Glib::ustring::compose
 		(
 			"%1 - %2.mpeg",
-			channel->get_text(),
+			channel->name,
 			start_time
 		);
 	}
@@ -497,7 +507,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		filename = Glib::ustring::compose
 		(
 			"%1 - %2 - %3.mpeg",
-			description,
+			title,
 			channel->name,
 			start_time
 		);

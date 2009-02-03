@@ -39,7 +39,7 @@ public:
 	gboolean insert(const EpgEvent& epg_event);
 	void insert(const EpgEventList& epg_event_list);
 	gboolean get_current(EpgEvent& epg_event);
-	EpgEventList get_list();
+	EpgEventList get_list(gboolean update_save = false);
 	void prune();
 };
 

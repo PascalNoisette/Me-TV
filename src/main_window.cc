@@ -427,8 +427,6 @@ void MainWindow::on_timeout()
 			XLockDisplay (display);
 			XTestFakeKeyEvent (display, *keycode, True, CurrentTime);
 			XTestFakeKeyEvent (display, *keycode, False, CurrentTime);
-//			XSync (display, False);
-//			XFlush (display);
 			XUnlockDisplay (display);
 			if (keycode == &keycode1)
 				keycode = &keycode2;
