@@ -50,8 +50,8 @@ void XineEngine::play(const Glib::ustring& mrl)
 
 	StringList argv;
 	argv.push_back("xine");
-	argv.push_back("--config");
-	argv.push_back(Glib::build_filename(application.get_application_dir(), "/xine.config"));
+//	argv.push_back("--config");
+//	argv.push_back(Glib::build_filename(application.get_application_dir(), "/xine.config"));
 	argv.push_back("--no-splash");
 	argv.push_back("--no-logo");
 	argv.push_back("--no-gui");
