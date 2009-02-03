@@ -97,7 +97,6 @@ public:
 	void stop_recording();
 	void toggle_recording();
 	void set_record_state(gboolean state);
-	void check_scheduled_recordings();
 	void check_scheduled_recordings(Data& data);
 	
 	gboolean is_broadcasting();

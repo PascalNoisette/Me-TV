@@ -362,12 +362,6 @@ MainWindow& Application::get_main_window()
 	return *main_window;
 }
 
-void Application::check_scheduled_recordings()
-{
-	Data data;
-	check_scheduled_recordings(data);
-}
-
 void Application::check_scheduled_recordings(Data& data)
 {
 	g_debug("Checking scheduled recordings");
@@ -467,9 +461,10 @@ gboolean Application::on_scheduled_recording_timeout()
 	guint seconds = now % 60;
 	if (last_seconds > seconds)
 	{
-		check_scheduled_recordings();
-		last_seconds = seconds;
+		Data data;
+		check_scheduled_recordings(data);
 	}
+	last_seconds = seconds;
 	
 	CATCH
 	
