@@ -69,8 +69,17 @@ XineLibEngine::XineLibEngine ()
 	stream				= NULL;
 	video_port			= NULL;
 	audio_port			= NULL;
+	width				= 320;
+	height				= 200;
 	audio_channel_state	= AUDIO_CHANNEL_STATE_BOTH;
 
+	get_drawing_area_video()->get_window()->get_size(width, height);
+	
+	connection_configure_event = get_drawing_area_video()->signal_configure_event().connect(
+		sigc::mem_fun(*this, &XineLibEngine::on_drawing_area_configure_event));
+	connection_expose_event = get_drawing_area_video()->signal_expose_event().connect(
+		sigc::mem_fun(*this, &XineLibEngine::on_drawing_area_expose_event));
+	
 	g_static_rec_mutex_init(mutex.gobj());
 	
 	x11_visual_t	vis;
@@ -116,10 +125,7 @@ XineLibEngine::XineLibEngine ()
 	{
 		pixel_aspect = 1.0;
 	}
-	
-	width	= 320;
-	height	= 200;
-		
+			
 	if (video_driver != "none")
 	{
 		vis.display           = GDK_DISPLAY();
@@ -150,6 +156,9 @@ XineLibEngine::XineLibEngine ()
 XineLibEngine::~XineLibEngine()
 {
 	stop();
+
+	connection_configure_event.disconnect();
+	connection_expose_event.disconnect();
 	
 	if (xine != NULL)
 	{
@@ -197,12 +206,8 @@ void XineLibEngine::frame_output_cb ( void *data,
 	*dest_y            = 0;
 	*win_x             = 0;
 	*win_y             = 0;
-	//*dest_width        = engine->width;
-	//*dest_height       = engine->height;
-	
-	gdk_threads_enter();
-	engine->get_drawing_area_video()->get_window()->get_size(*dest_width, *dest_height);
-	gdk_threads_leave();
+	*dest_width        = engine->width;
+	*dest_height       = engine->height;
 }
 
 void XineLibEngine::set_mute_state(gboolean state)
@@ -214,9 +219,7 @@ void XineLibEngine::set_mute_state(gboolean state)
 }
 
 void XineLibEngine::play(const Glib::ustring& mrl)
-{
-	Application& application = Application::get_current();
-
+{	
 	stream	= xine_stream_new ( xine, audio_port, video_port );
 	
 	if (stream == NULL)
@@ -226,6 +229,8 @@ void XineLibEngine::play(const Glib::ustring& mrl)
 
 	if (video_port != NULL)
 	{
+		Application& application = Application::get_current();
+		
 		xine_port_send_gui_data ( video_port, XINE_GUI_SEND_DRAWABLE_CHANGED, ( void * ) get_window_id() );
 		xine_port_send_gui_data ( video_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, ( void * ) 1 );
 
@@ -277,9 +282,9 @@ void XineLibEngine::play(const Glib::ustring& mrl)
 			throw Exception(message);
 		}
 	}
-	
-	Glib::ustring path = "fifo://" + mrl;
 
+	Glib::ustring path = "fifo://" + mrl;
+	
 	g_debug(_("About to open '%s' ..."), path.c_str());
 	if ( !xine_open ( stream, path.c_str() ) )
 	{
@@ -298,9 +303,9 @@ void XineLibEngine::stop()
 {
 	if (stream != NULL)
 	{
-		xine_stop(stream);
 		xine_close(stream);
 		xine_dispose(stream);
+		xine_stop(stream);
 		stream = NULL;
 	}
 }
@@ -405,6 +410,33 @@ gboolean XineLibEngine::is_running()
 
 void XineLibEngine::set_audio_stream(guint stream)
 {
+}
+
+bool XineLibEngine::on_drawing_area_configure_event(GdkEventConfigure* event)
+{
+//	Glib::RecMutex::Lock lock(mutex);
+	width = event->width;
+	height = event->height;
+	
+	return true;
+}
+
+bool XineLibEngine::on_drawing_area_expose_event(GdkEventExpose* event_expose)
+{
+	if (video_port != NULL)
+	{
+		XExposeEvent expose_event;
+		memset(&expose_event, 0, sizeof(XExposeEvent));
+		expose_event.x = 0;
+		expose_event.y = 0;
+		expose_event.width = width;
+		expose_event.height = height;
+		expose_event.display = GDK_DISPLAY();
+		expose_event.window = get_window_id();
+		xine_port_send_gui_data(video_port, XINE_GUI_SEND_EXPOSE_EVENT, &expose_event);
+	}
+	
+	return false;
 }
 
 #endif

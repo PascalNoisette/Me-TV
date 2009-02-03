@@ -40,14 +40,17 @@ private:
 	double							pixel_aspect;
 	AudioChannelState				audio_channel_state;
 	Glib::StaticRecMutex			mutex;
-	
+	sigc::connection				connection_configure_event;
+	sigc::connection				connection_expose_event;
+
 	static void dest_size_cb ( void *data,
 		int video_width, int video_height, double video_pixel_aspect,
 		int *dest_width, int *dest_height, double *dest_pixel_aspect );
 	static void frame_output_cb ( void *data,
 		int video_width, int video_height, double video_pixel_aspect, int *dest_x, int *dest_y,
 		int *dest_width, int *dest_height, double *dest_pixel_aspect, int *win_x, int *win_y );
-	static gpointer video_thread_function(XineLibEngine* engine);	
+	bool on_drawing_area_configure_event(GdkEventConfigure* event);
+	bool on_drawing_area_expose_event(GdkEventExpose* expose);
 	
 	void play(const Glib::ustring& mrl);
 	void stop();

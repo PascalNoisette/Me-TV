@@ -23,7 +23,6 @@
 
 #define GCONF_PATH		"/apps/me-tv"
 //#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
-//#define TEST_VIDEO_SOURCE "/home/michael/acdc.mp3"
 
 Application* Application::current = NULL;
 
