@@ -35,6 +35,7 @@ private:
 	gint				standard_input;
 	GstElement*			player;
 	GstElement*			sink;
+	gdouble				volume;
 
 	void play(const Glib::ustring& mrl);
 	void stop();
@@ -45,6 +46,8 @@ private:
 
 	GstElement* create_element(const Glib::ustring& factoryname, const gchar *name);
 	static gboolean on_bus_message(GstBus *bus, GstMessage *message, gpointer data);
+	void set_volume(gdouble value);
+
 public:
 	LibGStreamerEngine();
 	~LibGStreamerEngine();

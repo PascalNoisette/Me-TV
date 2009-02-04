@@ -23,12 +23,14 @@
 #ifdef ENABLE_LIBGSTREAMER_ENGINE
 
 #include "application.h"
+#include <gst/gstelement.h>
 #include <gst/interfaces/xoverlay.h>
 #include <gst/video/video.h>
 
 LibGStreamerEngine::LibGStreamerEngine()
 {
 	static gboolean initialised = false;
+	volume = 1.3;
 
 	if (!initialised)
 	{
@@ -42,6 +44,7 @@ LibGStreamerEngine::LibGStreamerEngine()
 
 	player	= create_element("playbin", "player");
 	sink	= create_element("xvimagesink", "sink");
+	set_volume(volume);
 }
 
 LibGStreamerEngine::~LibGStreamerEngine()
@@ -130,8 +133,14 @@ GstElement* LibGStreamerEngine::create_element(const Glib::ustring& factoryname,
 
 void LibGStreamerEngine::set_mute_state(gboolean state)
 {
-	gdouble volume = state ? 0.0 : 10.0;
-	g_object_set (G_OBJECT (player), "volume", volume, (gchar*)NULL);
+	gdouble mutevolume = state ? 0.0 : volume;
+	set_volume(mutevolume);
+}
+
+void LibGStreamerEngine::set_volume(gdouble value)
+{
+	if(GST_IS_ELEMENT(player))
+		g_object_set(G_OBJECT(player), "volume", value, (gchar *)NULL);
 }
 
 #endif

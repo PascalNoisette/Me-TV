@@ -166,7 +166,7 @@ PKG_CHECK_MODULES([LIBVLC], libvlc >= $LIBVLC_REQUIRED, found_libvlc=yes, found_
 	if test x"$found_libvlc" = "xyes" ; then
 		AC_DEFINE(ENABLE_LIBVLC_ENGINE,1,[Define to 1 if libvlc is available and VLC engine is used.])
 		AC_SUBST(LIBVLC_CFLAGS)
-#		AC_SUBST(LIBVLC_LIBS)
+		AC_SUBST(LIBVLC_LIBS)
 	else
 		AC_MSG_ERROR([Cannot find required vlc development package installed])
 	fi
@@ -194,7 +194,7 @@ PKG_CHECK_MODULES([LIBGSTREAMER], gstreamer-0.10 >= $LIBGSTREAMER_REQUIRED gstre
 	if test x"$found_libgstreamer" = "xyes" ; then
 		AC_DEFINE(ENABLE_LIBGSTREAMER_ENGINE,1,[Define to 1 if GStreamer library is available and GStreamer engine is used.])
 		AC_SUBST(LIBGSTREAMER_CFLAGS)
-#		AC_SUBST(LIBGSTREAMER_LIBS)
+		AC_SUBST(LIBGSTREAMER_LIBS)
 	else
 		AC_MSG_ERROR([Cannot find required GStreamer development package installed])
 	fi

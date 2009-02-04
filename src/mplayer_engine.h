@@ -34,15 +34,18 @@ private:
 	gint standard_input;
 	gboolean mute_state;
 	gdouble monitoraspect;
+	AudioChannelState audio_channel_state;
+	Glib::ustring mrl;
 
 	void play(const Glib::ustring& mrl);
 	void stop();
 	void set_mute_state(gboolean state);
 	void expose();
 	void set_audio_stream(guint stream) {};
-	void set_audio_channel_state(AudioChannelState state) {};
+	void set_audio_channel_state(AudioChannelState state);
 	void write(const Glib::ustring& text);
 	gboolean is_running();
+	void restart();
 
 public:
 	MplayerEngine();
