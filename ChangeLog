@@ -1,4 +1,4 @@
-2009-02-02  Michael Lamothe <michael.lamothe@gmail.com>
+2009-02-07  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.12
 	* EPG events are now stored in memory to conserve disk access, written periodically and on exit
