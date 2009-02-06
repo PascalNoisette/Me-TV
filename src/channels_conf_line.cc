@@ -143,6 +143,11 @@ fe_hierarchy_t ChannelsConfLine::get_hierarchy(guint index)
 	return (fe_hierarchy_t)convert_string_to_value(hierarchy_table, splitter.get_value(index));
 }
 
+guint ChannelsConfLine::get_symbol_rate(guint index)
+{
+	return splitter.get_int_value(index);
+}
+
 guint ChannelsConfLine::get_service_id(guint index)
 {
 	return splitter.get_int_value(index);
