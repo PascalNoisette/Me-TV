@@ -338,8 +338,6 @@ void Data::replace_epg_event(EpgEvent& epg_event)
 		epg_event_text.epg_event_id = epg_event.epg_event_id;
 		replace_epg_event_text(epg_event_text);
 	}
-
-	epg_event.save = false;
 }
 
 void Data::replace_epg_event_text(EpgEventText& epg_event_text)

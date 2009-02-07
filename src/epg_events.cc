@@ -90,7 +90,7 @@ EpgEventList EpgEvents::get_list(gboolean update_save)
 
 	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
 	{
-		EpgEvent epg_event = *i;
+		EpgEvent& epg_event = *i;
 		
 		result.push_back(epg_event);
 
