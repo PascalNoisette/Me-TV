@@ -1,3 +1,9 @@
+2009-02-08  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.13
+	* Removed my email addres from the application
+	* Fixed performance issue when calling data.vacuum()
+
 2009-02-07  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.12
