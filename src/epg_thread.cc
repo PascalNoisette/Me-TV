@@ -209,9 +209,13 @@ void EpgThread::run()
 			{
 				Data data;
 
+				g_debug("Deleting old scheduled recordings");
 				data.delete_old_scheduled_recordings();
+
+				g_debug("Deleting old EPG events");
 				data.delete_old_epg_events();
-				data.vacuum();
+
+				g_debug("Replacing profile");
 				data.replace_profile(profile);
 				
 				last_cleanup_time = now;
