@@ -129,7 +129,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	menu_item_audio_streams->set_submenu(audio_streams_menu);
 
 	Gtk::RadioMenuItem* menu_item_audio_channels_both = dynamic_cast<Gtk::RadioMenuItem*>(glade->get_widget("radio_menu_item_audio_channels_both"));
-	menu_item_audio_channels_both->set_active(true);	
+	menu_item_audio_channels_both->set_active(true);
 }
 
 MainWindow::~MainWindow()
@@ -359,7 +359,7 @@ bool MainWindow::on_motion_notify_event(GdkEventMotion* event_motion)
 	if (!is_cursor_visible)
 	{
 		Glib::RefPtr<Gdk::Window> event_box_video = glade->get_widget("event_box_video")->get_window();
-		if (event_box_video != NULL)
+		if (event_box_video)
 		{
 			event_box_video->set_cursor();
 			is_cursor_visible = true;
@@ -402,7 +402,7 @@ void MainWindow::on_timeout()
 	if (now - last_motion_time > 3 && is_cursor_visible)
 	{
 		Glib::RefPtr<Gdk::Window> event_box_video = glade->get_widget("event_box_video")->get_window();
-		if (event_box_video != NULL)
+		if (event_box_video)
 		{
 			event_box_video->set_cursor(Gdk::Cursor(hidden_cursor));
 			is_cursor_visible = false;
@@ -500,7 +500,7 @@ void MainWindow::on_menu_item_audio_stream_activate(guint audio_stream_index)
 }
 
 void MainWindow::update()
-{
+{	
 	Application& application = get_application();
 	Channel* channel = application.get_profile_manager().get_current_profile().get_display_channel();
 	Glib::ustring window_title;
@@ -616,6 +616,7 @@ void MainWindow::on_show()
 	}
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->resize_children();
+	update();
 
 	CATCH
 }

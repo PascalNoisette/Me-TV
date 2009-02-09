@@ -46,7 +46,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	status_icon = NULL;
 	stream_thread = NULL;
 	update_epg_time();
-	scheduled_recording_timeout_source = 0;
+	timeout_source = 0;
 	scheduled_recording_id = 0;
 	record_state = false;
 	broadcast_state = false;
@@ -118,15 +118,15 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	profile.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));	
 
-	scheduled_recording_timeout_source = gdk_threads_add_timeout(1000, &Application::on_scheduled_recording_timeout, this);
+	timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 }
 
 Application::~Application()
 {
 	profile_manager.save();
-	if (scheduled_recording_timeout_source == 0)
+	if (timeout_source != 0)
 	{
-		g_source_remove(scheduled_recording_timeout_source);
+		g_source_remove(timeout_source);
 	}
 	stop_stream_thread();
 	if (main_window != NULL)
@@ -445,12 +445,12 @@ void Application::check_scheduled_recordings(Data& data)
 	}
 }
 
-gboolean Application::on_scheduled_recording_timeout(gpointer data)
+gboolean Application::on_timeout(gpointer data)
 {
-	return ((Application*)data)->on_scheduled_recording_timeout();
+	return ((Application*)data)->on_timeout();
 }
 
-gboolean Application::on_scheduled_recording_timeout()
+gboolean Application::on_timeout()
 {
 	TRY
 	static guint last_seconds = 60;
@@ -462,6 +462,7 @@ gboolean Application::on_scheduled_recording_timeout()
 	{
 		Data data;
 		check_scheduled_recordings(data);
+		update();
 	}
 	last_seconds = seconds;
 	

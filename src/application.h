@@ -44,7 +44,7 @@ private:
 	Glib::ustring						preferred_language;
 	StreamThread*						stream_thread;
 	Glib::StaticRecMutex				mutex;
-	guint								scheduled_recording_timeout_source;
+	guint								timeout_source;
 	gboolean							record_state;
 	gboolean							broadcast_state;
 	guint								scheduled_recording_id;
@@ -57,8 +57,8 @@ private:
 	Glib::ustring get_configuration_path(const Glib::ustring& key);
 		
 	void on_display_channel_changed(const Channel& channel);
-	static gboolean on_scheduled_recording_timeout(gpointer data);
-	gboolean on_scheduled_recording_timeout();
+	static gboolean on_timeout(gpointer data);
+	gboolean on_timeout();
 	void on_error(const Glib::ustring& message);
 
 public:
