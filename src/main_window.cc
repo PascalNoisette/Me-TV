@@ -358,8 +358,12 @@ bool MainWindow::on_motion_notify_event(GdkEventMotion* event_motion)
 	last_motion_time = time(NULL);
 	if (!is_cursor_visible)
 	{
-		glade->get_widget("event_box_video")->get_window()->set_cursor();
-		is_cursor_visible = true;
+		Glib::RefPtr<Gdk::Window> event_box_video = glade->get_widget("event_box_video")->get_window();
+		if (event_box_video != NULL)
+		{
+			event_box_video->set_cursor();
+			is_cursor_visible = true;
+		}
 	}
 	return true;
 }
@@ -397,8 +401,12 @@ void MainWindow::on_timeout()
 	// Hide the mouse
 	if (now - last_motion_time > 3 && is_cursor_visible)
 	{
-		glade->get_widget("event_box_video")->get_window()->set_cursor(Gdk::Cursor(hidden_cursor));
-		is_cursor_visible = false;
+		Glib::RefPtr<Gdk::Window> event_box_video = glade->get_widget("event_box_video")->get_window();
+		if (event_box_video != NULL)
+		{
+			event_box_video->set_cursor(Gdk::Cursor(hidden_cursor));
+			is_cursor_visible = false;
+		}
 	}
 	
 	// Update EPG
