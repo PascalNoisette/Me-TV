@@ -120,7 +120,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	
 	load_devices();
 	set_display_mode(display_mode);
-	update();
 
 	Application& application = get_application();
 	set_keep_above(application.get_boolean_configuration_value("keep_above"));

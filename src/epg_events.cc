@@ -45,6 +45,11 @@ gboolean EpgEvents::exists(const EpgEvent& epg_event)
 	return result;
 }
 
+bool sort_function(const EpgEvent& a, const EpgEvent& b)
+{
+	return a.epg_event_id < b.epg_event_id;
+}
+
 gboolean EpgEvents::insert(const EpgEvent& epg_event)
 {
 	Glib::RecMutex::Lock lock(mutex);
@@ -52,6 +57,7 @@ gboolean EpgEvents::insert(const EpgEvent& epg_event)
 	if (!event_exists)
 	{
 		list.push_back(epg_event);
+		list.sort(sort_function);
 		g_debug("EPG Event %d (%s) added", epg_event.event_id, epg_event.get_title().c_str());
 	}
 	return !event_exists;

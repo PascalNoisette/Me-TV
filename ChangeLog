@@ -1,9 +1,10 @@
-2009-02-10  Michael Lamothe <michael.lamothe@gmail.com>
+2009-02-11  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.14
 	* Fix so that minimise mode does not crash
 	* Fix so that status icon shows current event
 	* Compatibility changes for 2.6.29 kernel
+	* ATSC support! (but not for scanning)
 
 2009-02-08  Michael Lamothe <michael.lamothe@gmail.com>
 
