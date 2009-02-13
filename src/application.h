@@ -21,6 +21,7 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
+#include "me-tv.h"
 #include <libglademm.h>
 #include <libgnomemm.h>
 #include "device_manager.h"
@@ -48,15 +49,14 @@ private:
 	gboolean							broadcast_state;
 	guint								scheduled_recording_id;
 	bool								on_quit();
-			
-	void on_display_channel_changed(const Channel& channel);
+	Glib::ustring						application_dir;
 
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
-	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);
-	
+	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);	
 	Glib::ustring get_configuration_path(const Glib::ustring& key);
 		
+	void on_display_channel_changed(const Channel& channel);
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
 	void on_error(const Glib::ustring& message);
@@ -97,6 +97,7 @@ public:
 	void stop_recording();
 	void toggle_recording();
 	void set_record_state(gboolean state);
+	void check_scheduled_recordings(Data& data);
 	
 	gboolean is_broadcasting();
 	void set_broadcast_state(gboolean state);
@@ -104,6 +105,7 @@ public:
 	
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 	Glib::ustring make_recording_filename(const Glib::ustring& description = "");
+	const Glib::ustring& get_application_dir() const { return application_dir; }
 	
 	MainWindow& get_main_window();
 };

@@ -21,29 +21,37 @@
 #ifndef __MPLAYER_ENGINE_H__
 #define __MPLAYER_ENGINE_H__
 
+#include "me-tv.h"
+
+#ifdef ENABLE_MPLAYER_ENGINE
+
 #include "engine.h"
 
 class MplayerEngine : public Engine
 {
 private:
 	gint pid;
-	gint window_id;
 	gint standard_input;
 	gboolean mute_state;
 	gdouble monitoraspect;
+	AudioChannelState audio_channel_state;
+	Glib::ustring mrl;
 
 	void play(const Glib::ustring& mrl);
 	void stop();
-	void mute(gboolean state);
+	void set_mute_state(gboolean state);
 	void expose();
-	void set_size(gint width, gint height) {};
-	void set_audio_channel(guint channel) {};
+	void set_audio_stream(guint stream) {};
+	void set_audio_channel_state(AudioChannelState state);
 	void write(const Glib::ustring& text);
 	gboolean is_running();
+	void restart();
 
 public:
-	MplayerEngine(int window_id);
+	MplayerEngine();
 	~MplayerEngine();
 };
+
+#endif
 
 #endif

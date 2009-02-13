@@ -19,6 +19,7 @@
  */
 
 #include "exception.h"
+#include "me-tv-i18n.h"
 
 Exception::Exception(const Glib::ustring& exception_message) : message(exception_message)
 {

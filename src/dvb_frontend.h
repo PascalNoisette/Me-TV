@@ -21,12 +21,12 @@
 #ifndef __DVB_FRONTEND_H__
 #define __DVB_FRONTEND_H__
 
-#include <linux/dvb/frontend.h>
 #include <sys/ioctl.h>
 #include <sys/poll.h>
 #include <fcntl.h>
 #include <stdint.h>
 #include <giomm.h>
+#include <linux/dvb/frontend.h>
 #include "dvb_transponder.h"
 
 struct diseqc_cmd

@@ -18,41 +18,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __EPG_EVENT_H__
-#define __EPG_EVENT_H__
+#ifndef __LIB_VLC_ENGINE_H__
+#define __LIB_VLC_ENGINE_H__
 
-#include <glibmm.h>
-#include <list>
+#include "me-tv.h"
 
-class EpgEventText
+#ifdef ENABLE_LIBVLC_ENGINE
+
+#include "engine.h"
+#include <vlc/vlc.h>
+
+class LibVlcEngine : public Engine
 {
+private:
+	libvlc_instance_t*		instance;
+	libvlc_exception_t		exception;
+	libvlc_media_player_t*	media_player;
+	gint					volume;	
+
+	void play(const Glib::ustring& mrl);
+	void stop();
+	void set_mute_state(gboolean state);
+	void set_volume(gint newlevel);
+	void set_audio_stream(guint stream) {};
+	void set_audio_channel_state(AudioChannelState state) {};
+	gboolean is_running();
+
+	void check_exception();
+
 public:
-	guint epg_event_text_id;
-	guint epg_event_id;
-	gboolean is_extended;
-	Glib::ustring language;
-	Glib::ustring title;
-	Glib::ustring description;
+	LibVlcEngine();
+	~LibVlcEngine();
 };
 
-typedef std::list<EpgEventText> EpgEventTextList;
-
-class EpgEvent
-{
-public:
-	guint				epg_event_id;
-	guint				channel_id;
-	guint				event_id;
-	guint				start_time;
-	guint				duration;
-	gboolean			save;
-	EpgEventTextList	texts;
-	
-	guint get_end_time() const { return start_time + duration; }
-	Glib::ustring get_title() const;
-	Glib::ustring get_description() const;
-	Glib::ustring get_start_time_text() const;
-	Glib::ustring get_duration_text() const;
-};
+#endif
 
 #endif

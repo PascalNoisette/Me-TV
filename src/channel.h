@@ -28,7 +28,7 @@
 #define CHANNEL_FLAG_ATSC		0x04
 
 #include <linux/dvb/frontend.h>
-#include "epg_event.h"
+#include "epg_events.h"
 #include "dvb_transponder.h"
 
 class Channel
@@ -36,20 +36,20 @@ class Channel
 public:
 	Channel();
 
-	guint channel_id;
-	guint profile_id;
-	Glib::ustring name;
-	guint flags;
-	guint sort_order;
-	Glib::ustring mrl;
-
-	gboolean get_current_epg_event(EpgEvent& epg_event) const;
-	Glib::ustring get_text() const;
+	guint			channel_id;
+	guint			profile_id;
+	Glib::ustring	name;
+	guint			flags;
+	guint			sort_order;
+	Glib::ustring	mrl;
+	EpgEvents		epg_events;
 
 	// DVB Specific
 	guint service_id;
 	struct dvb_frontend_parameters frontend_parameters;
 	guint get_transponder_frequency();
+
+	Glib::ustring get_text();
 };
 
 typedef std::list<Channel> ChannelList;

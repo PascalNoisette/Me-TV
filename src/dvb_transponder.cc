@@ -22,6 +22,7 @@
 #include "dvb_service.h"
 #include "exception.h"
 #include "me-tv.h"
+#include "me-tv-i18n.h"
 
 using namespace Dvb;
 

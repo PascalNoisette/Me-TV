@@ -43,10 +43,9 @@ public:
 	void add_channels(ChannelList& channels);
 	void set_channels(ChannelList& channels);
 	void clear();
-	void save();
 	ChannelList& get_channels();
 	const ChannelList& get_channels() const;
-	const Channel* get_display_channel() const;
+	Channel* get_display_channel();
 	sigc::signal<void, const Channel&> signal_display_channel_changed;
 	Channel& get_channel(guint channel_id);
 	Channel* find_channel(guint frequency, guint service_id);

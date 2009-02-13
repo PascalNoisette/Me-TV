@@ -28,11 +28,12 @@
 #define KILL_SLEEP_TIME		100000
 #define KILL_SLEEP_TIMEOUT  2000000
 
-XineEngine::XineEngine(int display_window_id) : window_id(display_window_id)
+XineEngine::XineEngine()
 {
 	pid = -1;
 	standard_input = -1;
 	mute_state = false;
+	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
 }
 
 XineEngine::~XineEngine()
@@ -43,9 +44,14 @@ XineEngine::~XineEngine()
 void XineEngine::play(const Glib::ustring& mrl)
 {
 	Application& application = get_application();
+	this->mrl = mrl;
+	
+	g_debug("XineEngine::play(\"%s\")", mrl.c_str());
 
 	StringList argv;
 	argv.push_back("xine");
+	argv.push_back("--config");
+	argv.push_back(Glib::build_filename(application.get_application_dir(), "/xine.config"));
 	argv.push_back("--no-splash");
 	argv.push_back("--no-logo");
 	argv.push_back("--no-gui");
@@ -56,16 +62,30 @@ void XineEngine::play(const Glib::ustring& mrl)
 	argv.push_back(application.get_string_configuration_value("xine.audio_driver"));
 	argv.push_back("-V");
 	argv.push_back(application.get_string_configuration_value("xine.video_driver"));
+	if (audio_channel_state != AUDIO_CHANNEL_STATE_BOTH)
+	{
+		argv.push_back("--post");
+		
+		gint channel = -1;
+		switch (audio_channel_state)
+		{
+			case AUDIO_CHANNEL_STATE_LEFT: channel = 0; break;
+			case AUDIO_CHANNEL_STATE_RIGHT: channel = 1; break;
+			default: channel = -1; break;
+		}
+		
+		Glib::ustring dual_audio_parameter = Glib::ustring::compose("upmix_mono:channel=%1", channel);
+		argv.push_back(dual_audio_parameter);
+	}
 
 	// Initial window size hack
 	gint width, height;
-	Gtk::DrawingArea* drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(application.get_glade()->get_widget("drawing_area_video"));
-	drawing_area_video->get_window()->get_size(width, height);
+	get_drawing_area_video()->get_window()->get_size(width, height);
 	argv.push_back("--geometry");
 	argv.push_back(Glib::ustring::compose("%1x%2", width, height));
 
 	argv.push_back("--wid");
-	argv.push_back(Glib::ustring::compose("%1", window_id));
+	argv.push_back(Glib::ustring::compose("%1", get_window_id()));
 	argv.push_back(Glib::ustring::compose("fifo://%1", mrl));
 
 	try
@@ -81,7 +101,7 @@ void XineEngine::play(const Glib::ustring& mrl)
 			NULL);
 
 		mute_state = false;
-		mute(mute_state);
+		set_mute_state(mute_state);
 		g_debug("Spawned xine on pid %d", pid);
 	}
 	catch (const Exception& exception)
@@ -93,8 +113,11 @@ void XineEngine::play(const Glib::ustring& mrl)
 
 void XineEngine::write(const Glib::ustring& text)
 {
-	g_debug("Writing '%s' (%d)", text.c_str(), text.length());
-	::write(standard_input, text.c_str(), text.length());
+	g_debug("Writing '%s' (%zu)", text.c_str(), text.length());
+	if (::write(standard_input, text.c_str(), text.length()) <= 0)
+	{
+		g_debug("Failed to write command '%s'", text.c_str());
+	}
 }
 
 void XineEngine::stop()
@@ -171,7 +194,7 @@ gboolean XineEngine::is_running()
 	return result == 0;
 }
 
-void XineEngine::mute(gboolean state)
+void XineEngine::set_mute_state(gboolean state)
 {
 	if (state != mute_state)
 	{
@@ -181,3 +204,17 @@ void XineEngine::mute(gboolean state)
 	}
 }
 
+void XineEngine::restart()
+{
+	stop();
+	play(mrl);
+}
+
+void XineEngine::set_audio_channel_state(AudioChannelState state)
+{
+	if (audio_channel_state != state)
+	{
+		audio_channel_state = state;
+		restart();
+	}
+}

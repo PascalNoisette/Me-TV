@@ -19,6 +19,9 @@
  */
 
 #include "mplayer_engine.h"
+
+#ifdef ENABLE_MPLAYER_ENGINE
+
 #include "exception.h"
 #include "application.h"
 #include <gdk/gdkx.h>
@@ -28,14 +31,13 @@
 #define KILL_SLEEP_TIME		100000
 #define KILL_SLEEP_TIMEOUT  2000000
 
-#define MPLAYER_CACHE_KB   4096
-
-MplayerEngine::MplayerEngine(int window_id) : window_id(window_id)
+MplayerEngine::MplayerEngine()
 {
 	pid = -1;
 	standard_input = -1;
 	mute_state = false;
 	monitoraspect = Gdk::screen_width()/(double)Gdk::screen_height();
+	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
 }
 
 MplayerEngine::~MplayerEngine()
@@ -45,16 +47,17 @@ MplayerEngine::~MplayerEngine()
 
 void MplayerEngine::play(const Glib::ustring& mrl)
 {
-        Application& application = get_application();
+	Application& application = get_application();
+	this->mrl = mrl;
 
-        StringList argv;
+	g_debug("MplayerEngine::play(\"%s\")", mrl.c_str());
+
+	StringList argv;
 	argv.push_back("mplayer");
 	argv.push_back("-really-quiet");
 	argv.push_back("-slave");
 	argv.push_back("-stop-xscreensaver");
 	argv.push_back("-use-filedir-conf");
-	argv.push_back("-cache");
-	argv.push_back(Glib::ustring::format(std::fixed, MPLAYER_CACHE_KB));
 	argv.push_back("-ao");
 	argv.push_back(application.get_string_configuration_value("mplayer.audio_driver"));
 	argv.push_back("-softvol");
@@ -68,8 +71,24 @@ void MplayerEngine::play(const Glib::ustring& mrl)
 	argv.push_back(Glib::ustring::format(std::fixed, std::setprecision(6), monitoraspect));
 	argv.push_back("-vf");
 	argv.push_back("pp=fd");
+	if (audio_channel_state != AUDIO_CHANNEL_STATE_BOTH)
+	{
+		Glib::ustring channel_mapping = "";
+		switch (audio_channel_state)
+		{
+			case AUDIO_CHANNEL_STATE_LEFT: channel_mapping = "0:1:0:0"; break;
+			case AUDIO_CHANNEL_STATE_RIGHT: channel_mapping = "1:0:1:1"; break;
+			default: break;
+		}
+		if (channel_mapping.length())
+		{
+			argv.push_back("-af");
+			Glib::ustring dual_audio_parameter = Glib::ustring::compose("channels=2:2:%1", channel_mapping);
+			argv.push_back(dual_audio_parameter);
+		}
+	}
 	argv.push_back("-wid");
-	argv.push_back(Glib::ustring::compose("%1", window_id));
+	argv.push_back(Glib::ustring::compose("%1", get_window_id()));
 	argv.push_back(Glib::ustring::compose("%1", mrl));
 
 	try
@@ -85,7 +104,7 @@ void MplayerEngine::play(const Glib::ustring& mrl)
 			NULL);
 
 		mute_state = false;
-		mute(mute_state);
+		set_mute_state(mute_state);
 		g_debug("Spawned mplayer on pid %d", pid);
 	}
 	catch (const Exception& exception)
@@ -97,8 +116,11 @@ void MplayerEngine::play(const Glib::ustring& mrl)
 
 void MplayerEngine::write(const Glib::ustring& text)
 {
-	g_debug("Writing '%s' (%d)", text.c_str(), text.length());
-	::write(standard_input, text.c_str(), text.length());
+	g_debug("Writing '%s' (%zu)", text.c_str(), text.length());
+	if (::write(standard_input, text.c_str(), text.length()) <= 0)
+	{
+		g_debug("Failed to write command '%s'", text.c_str());
+	}
 }
 
 void MplayerEngine::stop()
@@ -176,7 +198,7 @@ gboolean MplayerEngine::is_running()
 	return result == 0;
 }
 
-void MplayerEngine::mute(gboolean state)
+void MplayerEngine::set_mute_state(gboolean state)
 {
 	if (state != mute_state)
 	{
@@ -185,3 +207,20 @@ void MplayerEngine::mute(gboolean state)
 		mute_state = state;
 	}
 }
+
+void MplayerEngine::restart()
+{
+	stop();
+	play(mrl);
+}
+
+void MplayerEngine::set_audio_channel_state(AudioChannelState state)
+{
+	if (audio_channel_state != state)
+	{
+		audio_channel_state = state;
+		restart();
+	}
+}
+
+#endif

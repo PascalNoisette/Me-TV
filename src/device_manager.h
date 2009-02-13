@@ -21,11 +21,11 @@
 #ifndef __DEVICE_MANAGER_H__
 #define __DEVICE_MANAGER_H__
 
+#include "me-tv.h"
 #include <glibmm.h>
 #include <giomm.h>
 #include "dvb_frontend.h"
 #include "exception.h"
-#include "me-tv.h"
 
 typedef enum
 {

@@ -21,6 +21,7 @@
 #ifndef __MAIN_WINDOW_H__
 #define __MAIN_WINDOW_H__
 
+#include "me-tv.h"
 #include "gtk_epg_widget.h"
 #include "meters_dialog.h"
 #include "engine.h"
@@ -44,7 +45,7 @@ private:
 	MetersDialog*							meters_dialog;
 	Gtk::HScale*							h_scale_position;
 	Gnome::UI::AppBar*						app_bar;
-	DisplayMode								display_mode;
+	DisplayMode								display_mode, prefullscreen;
 	Gtk::RadioButtonGroup					radio_button_group_devices;
 	guint									last_update_time;
 	guint									last_poke_time;
@@ -88,12 +89,16 @@ private:
 	void on_tool_button_mute_clicked();
 	void on_tool_button_broadcast_clicked();
 	void on_menu_item_audio_stream_activate(guint audio_stream_index);
+	void on_radio_menu_item_audio_channels_both();
+	void on_radio_menu_item_audio_channels_left();
+	void on_radio_menu_item_audio_channels_right();
 
 	void on_show();
 	void on_hide();
 	
 	void set_next_display_mode();
 		
+	void create_engine();
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	~MainWindow();
@@ -104,7 +109,9 @@ public:
 	void show_preferences_dialog();
 	void toggle_visibility();
 	void update();
+	void save_geometry();
 
+	void play(const Glib::ustring& mrl);
 	void start_engine();
 	void stop_engine();
 };

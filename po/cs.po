@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-06 18:21+0100\n"
-"PO-Revision-Date: 2008-01-06 17:42+0200\n"
+"POT-Creation-Date: 2009-01-30 20:47+0100\n"
+"PO-Revision-Date: 2009-01-30 19:48+0200\n"
 "Last-Translator: Luboš Staněk <lubek@users.sourceforge.net>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -26,27 +26,27 @@ msgstr "Přehrávač digitální televize (DVB) pro GNOME"
 msgid "Digital Television"
 msgstr "Digitální televize"
 
-#: ../src/application.cc:37
+#: ../src/application.cc:40
 msgid "Application has already been initialised"
 msgstr "Aplikace již byla inicializována"
 
-#: ../src/application.cc:241
+#: ../src/application.cc:272
 msgid "Application has not been initialised"
 msgstr "Aplikace nebyla inicializována"
 
-#: ../src/application.cc:316
+#: ../src/application.cc:359
 msgid "Main window has not been created"
 msgstr "Hlavní okno nebylo vytvořeno"
 
-#: ../src/application.cc:423
+#: ../src/application.cc:475
 msgid "No channel to make recording filename"
 msgstr "Žádný kanál pro vytvoření názvu souboru záznamu"
 
-#: ../src/application.cc:485
+#: ../src/application.cc:537
 msgid "Stream thread has not been created"
 msgstr "Vlákno proudu nebylo vytvořeno"
 
-#: ../src/application.cc:510
+#: ../src/application.cc:562
 msgid ""
 "You are trying to stop a scheduled recording.  Would you like Me TV to "
 "delete the scheduled recording?"
@@ -70,27 +70,27 @@ msgstr "Selhalo vytvoření příkazu"
 msgid "Failed to finalise statement"
 msgstr "Selhalo dokončení příkazu"
 
-#: ../src/data.cc:204
+#: ../src/data.cc:205
 msgid "Failed to connect to Me TV database"
 msgstr "Selhalo připojení k databázi Me TV"
 
-#: ../src/data.cc:296
+#: ../src/data.cc:297
 msgid "ASSERT: epg_event.channel_id == 0"
 msgstr "ASSERT: epg_event.channel_id == 0"
 
-#: ../src/data.cc:330
+#: ../src/data.cc:331
 msgid "Failed to get epg_event_id"
 msgstr "Selhalo zjištění epg_event_id"
 
-#: ../src/data.cc:348
+#: ../src/data.cc:349
 msgid "Event ID was 0"
 msgstr "ID události bylo 0"
 
-#: ../src/data.cc:520
+#: ../src/data.cc:523
 msgid "Invalid channel flag"
 msgstr "Neplatná vlajka kanálu"
 
-#: ../src/data.cc:695
+#: ../src/data.cc:688
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'"
@@ -98,103 +98,103 @@ msgstr ""
 "Selhalo uložení plánovaného záznamu, protože koliduje s jiným plánovaným "
 "záznamem nazvaným '%1'"
 
-#: ../src/data.cc:723
+#: ../src/data.cc:716
 msgid "ASSERT: scheduled_recording.scheduled_recording_id == 0"
 msgstr "ASSERT: scheduled_recording.scheduled_recording_id == 0"
 
-#: ../src/device_manager.cc:23
+#: ../src/device_manager.cc:24
 msgid "There are no available DVB tuner devices"
 msgstr "Nejsou dostupná žádná laditelná DVB zařízení"
 
-#: ../src/device_manager.cc:142
+#: ../src/device_manager.cc:139
 msgid "Failed to get frontend by path"
 msgstr "Selhalo získání rozhraní podle cesty"
 
-#: ../src/dvb_demuxer.cc:36
+#: ../src/dvb_demuxer.cc:37
 msgid "Failed to open demux device"
 msgstr "Selhalo otevření demultiplexoru"
 
-#: ../src/dvb_demuxer.cc:67
+#: ../src/dvb_demuxer.cc:68
 msgid "Failed to set PES filter"
 msgstr "Selhalo nastavení filtru PES"
 
-#: ../src/dvb_demuxer.cc:85
+#: ../src/dvb_demuxer.cc:86
 msgid "Failed to set section filter for demuxer"
 msgstr "Selhalo nastavení sekčního filtru demultiplexoru"
 
-#: ../src/dvb_demuxer.cc:93
+#: ../src/dvb_demuxer.cc:94
 msgid "Failed to set demuxer buffer size"
 msgstr "Selhalo nastavení velikosti vyrovnávací paměti demultiplexoru"
 
-#: ../src/dvb_demuxer.cc:101
+#: ../src/dvb_demuxer.cc:102
 msgid "Timeout while reading"
 msgstr "Vypršel časový limit čtení"
 
-#: ../src/dvb_demuxer.cc:107
+#: ../src/dvb_demuxer.cc:108
 msgid "Failed to read data from demuxer"
 msgstr "Selhalo čtení dat z demultiplexoru"
 
-#: ../src/dvb_demuxer.cc:117
+#: ../src/dvb_demuxer.cc:118
 msgid "Failed to stop demuxer"
 msgstr "Selhalo zastavení demultiplexoru"
 
-#: ../src/dvb_demuxer.cc:132
+#: ../src/dvb_demuxer.cc:133
 msgid "Failed to poll"
 msgstr "Selhalo dotazování"
 
-#: ../src/dvb_frontend.cc:38
+#: ../src/dvb_frontend.cc:39
 msgid "Failed to open tuner"
 msgstr "Selhalo otevření tuneru "
 
-#: ../src/dvb_frontend.cc:43
+#: ../src/dvb_frontend.cc:44
 msgid "Failed to get tuner info"
 msgstr "Selhalo zjištění informací tuneru"
 
-#: ../src/dvb_frontend.cc:65
+#: ../src/dvb_frontend.cc:66
 msgid "Failed to tune device"
 msgstr "Selhalo ladění zařízení"
 
-#: ../src/dvb_frontend.cc:68
+#: ../src/dvb_frontend.cc:69
 msgid "Waiting for signal lock ..."
 msgstr "Čekám na zámek signálu ..."
 
-#: ../src/dvb_frontend.cc:70
+#: ../src/dvb_frontend.cc:71
 msgid "Got signal lock"
 msgstr "Obdržen zámek signálu"
 
-#: ../src/dvb_frontend.cc:90
+#: ../src/dvb_frontend.cc:91
 msgid "Failed to set tone off"
 msgstr "Selhalo vypnutí tónu"
 
-#: ../src/dvb_frontend.cc:95
+#: ../src/dvb_frontend.cc:96
 msgid "Failed to set voltage"
 msgstr "Selhalo nastavení napětí"
 
-#: ../src/dvb_frontend.cc:101
+#: ../src/dvb_frontend.cc:102
 msgid "Failed to send master command"
 msgstr "Selhalo odeslání řídícího příkazu"
 
-#: ../src/dvb_frontend.cc:107
+#: ../src/dvb_frontend.cc:108
 msgid "Failed to send burst"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:113
+#: ../src/dvb_frontend.cc:114
 msgid "Failed to set tone"
 msgstr "Selhalo nastavení tónu"
 
-#: ../src/dvb_frontend.cc:142
+#: ../src/dvb_frontend.cc:143
 msgid "Failed to lock to channel"
 msgstr "Selhalo uzamčení kanálu"
 
-#: ../src/dvb_frontend.cc:151
+#: ../src/dvb_frontend.cc:152
 msgid "Failed to get signal strength"
 msgstr "Selhalo zjištění síly signálu"
 
-#: ../src/dvb_frontend.cc:161
+#: ../src/dvb_frontend.cc:162
 msgid "Failed to get signal to noise ratio"
 msgstr "Selhalo zjištění poměru signálu k šumu"
 
-#: ../src/dvb_scanner.cc:171
+#: ../src/dvb_scanner.cc:172
 msgid "Me TV cannot process a line in the initial tuning file"
 msgstr "Me TV nemůže zpracovat řádku v počátečním ladícím souboru"
 
@@ -226,47 +226,169 @@ msgstr "Selhal převod do UTF-8: %1"
 msgid "Failed to convert to UTF-8"
 msgstr "Selhal převod do UTF-8"
 
-#: ../src/dvb_transponder.cc:51
+#: ../src/dvb_si.h:163 ../src/dvb_si.h:176 ../src/dvb_si.h:209
+msgid "Unknown language"
+msgstr "Neznámý jazyk"
+
+#: ../src/dvb_transponder.cc:52
 msgid "Failed to find service with service ID %1"
 msgstr "Selhalo nalezení služby s ID %1"
 
-#: ../src/epg_event.cc:82 ../src/scheduled_recording.cc:36
+#: ../src/epg_event.cc:41
+msgid "Unknown title"
+msgstr "Neznámý název"
+
+#: ../src/epg_event.cc:63 ../src/scheduled_recording_dialog.cc:94
+msgid "Unknown description"
+msgstr "Neznámý popis"
+
+#: ../src/epg_event.cc:82 ../src/scheduled_recording.cc:37
 msgid "1 hour"
 msgid_plural "%1 hours"
 msgstr[0] "1 hodina"
 msgstr[1] "%1 hodiny"
 msgstr[2] "%1 hodin"
 
-#: ../src/epg_event.cc:90 ../src/scheduled_recording.cc:44
+#: ../src/epg_event.cc:90 ../src/scheduled_recording.cc:45
 msgid "1 minute"
 msgid_plural "%1 minutes"
 msgstr[0] "1 minuta"
 msgstr[1] "%1 minuty"
 msgstr[2] "%1 minut"
 
-#: ../src/epg_thread.cc:69
+#: ../src/epg_thread.cc:70
 msgid "No demuxers"
 msgstr "Žádné demultiplexory"
 
-#: ../src/epg_thread.cc:89
+#: ../src/epg_thread.cc:90
 msgid "Failed to poll EIT demuxers"
 msgstr "Selhalo dotazování na demultiplexory EIT"
 
-#: ../src/epg_thread.cc:105
+#: ../src/epg_thread.cc:106
 msgid "Failed to get an EIT demuxer with events"
 msgstr "Selhalo získání demultiplexoru EIT s událostmi"
 
-#: ../src/epg_thread.cc:232
+#: ../src/epg_thread.cc:213
 msgid "Exiting EPG thread"
 msgstr "Ukončuji vlákno EPG"
 
-#: ../src/exception.cc:30
+#: ../src/exception.cc:31
 msgid "Failed to get error message"
 msgstr "Selhalo zjištění chybové zprávy"
 
-#: ../src/channels_dialog.cc:44
+#: ../src/gtk_epg_widget.cc:200 ../src/gtk_epg_widget.cc:243
+#: ../src/status_icon.cc:61
+msgid "Unknown program"
+msgstr "Neznámý program"
+
+#: ../src/channels_dialog.cc:45
 msgid "Channel Name"
 msgstr "Název kanálu"
+
+#: ../src/lib_vlc_engine.cc:93
+msgid "Failed to load VLC library"
+msgstr "Selhalo načtení knihovny VLC"
+
+#: ../src/lib_vlc_engine.cc:151
+msgid "Failed to load symbol '%1' from VLC library"
+msgstr "Selhalo načtení symbolu '%1' z knihovny VLC"
+
+#: ../src/lib_xine_engine.cc:44
+msgid "No error"
+msgstr "Žádná chyba"
+
+#: ../src/lib_xine_engine.cc:45
+msgid "No input plugin"
+msgstr "Žádné vstupní rozšíření"
+
+#: ../src/lib_xine_engine.cc:46
+msgid "No demux plugin"
+msgstr "Žádné demultiplexní rozšíření"
+
+#: ../src/lib_xine_engine.cc:47
+msgid "Demux failed"
+msgstr "Selhal demultiplex"
+
+#: ../src/lib_xine_engine.cc:48
+msgid "Malformed URL"
+msgstr "Nesprávný URL"
+
+#: ../src/lib_xine_engine.cc:49
+msgid "Input failed"
+msgstr "Selhal vstup"
+
+#: ../src/lib_xine_engine.cc:50
+msgid "Unknown xine error"
+msgstr "Neznámá chyba xine"
+
+#: ../src/lib_xine_engine.cc:78
+msgid "Failed to load xine library"
+msgstr "Selhalo načtení knihovny xine"
+
+#: ../src/lib_xine_engine.cc:153
+msgid "Failed to initialise xine library"
+msgstr "Selhala inicializace knihovny xine"
+
+#: ../src/lib_xine_engine.cc:201
+msgid "Failed to initialise video driver"
+msgstr "Selhala inicializace ovladače videa"
+
+#: ../src/lib_xine_engine.cc:210
+msgid "Failed to initialise audio driver"
+msgstr "Selhala inicializace ovladače zvuku"
+
+#: ../src/lib_xine_engine.cc:246
+msgid "Failed to create tvtime plugin"
+msgstr "Selhalo vytvoření rozšíření tvtime"
+
+#: ../src/lib_xine_engine.cc:254
+msgid "Failed to get xine plugin output for deinterlacing"
+msgstr "Selhal načtení výstupního rozšíření xine pro odstrannění prokládání"
+
+#: ../src/lib_xine_engine.cc:263
+msgid "Failed to get xine plugin input for deinterlacing"
+msgstr "Selhalo načtení vstupního rozšíření xine pro odstrannění prokládání"
+
+#: ../src/lib_xine_engine.cc:277
+msgid "Unknown deinterlace_type: '%1'"
+msgstr "Neznámý deinterlace_type: '%1'"
+
+#: ../src/lib_xine_engine.cc:284
+msgid "Video thread was not NULL"
+msgstr "Vlákno videa nebylo NULL"
+
+#: ../src/lib_xine_engine.cc:307
+msgid "Stream is NULL"
+msgstr "Proud je NULL"
+
+#: ../src/lib_xine_engine.cc:310
+#, c-format
+msgid "About to open FIFO '%s' ..."
+msgstr "Bude se otevírat FIFO '%s' ..."
+
+#: ../src/lib_xine_engine.cc:315
+msgid "Failed to open video stream"
+msgstr "Selhalo otevření proudu videa"
+
+#: ../src/lib_xine_engine.cc:324
+msgid "Failed to play video stream."
+msgstr "Selhalo přehrávání proudu videa."
+
+#: ../src/lib_xine_engine.cc:423
+msgid "Unknown dual language state"
+msgstr "Neznámý stav duálního jazyka"
+
+#: ../src/lib_xine_engine.cc:434
+msgid "Failed to create upmix_mono plugin"
+msgstr "Selhalo vytvoření rozšíření upmix_mono"
+
+#: ../src/lib_xine_engine.cc:449
+msgid "Failed to get xine plugin output for upmix_mono"
+msgstr "Selhalo načtení výstupního rozšíření xine pro upmix_mono"
+
+#: ../src/lib_xine_engine.cc:458
+msgid "Failed to get xine plugin input for upmix_mono"
+msgstr "Selhalo načtení vstupního rozšíření xine pro upmix_mono"
 
 #: ../src/main.cc:28
 msgid "Me TV is a digital television viewer for the GNOME desktop"
@@ -305,41 +427,41 @@ msgstr "Zobrazit možnosti nápovědy Me TV"
 msgid "An unhandled error occurred"
 msgstr "Nastala neošetřená chyba"
 
-#: ../src/main_window.cc:73
+#: ../src/main_window.cc:74
 msgid "Failed to load EPG widget"
 msgstr "Selhalo načtení komponenty EPG"
 
-#: ../src/main_window.cc:155
+#: ../src/main_window.cc:157
 msgid "No DVB Devices"
 msgstr "Žádná zařízení DVB"
 
-#: ../src/main_window.cc:288
+#: ../src/main_window.cc:291
 msgid "Failed to launch help"
 msgstr "Selhalo spuštění nápovědy"
 
-#: ../src/main_window.cc:292
+#: ../src/main_window.cc:295
 msgid "Failed to launch help: %1"
 msgstr "Selhalo spuštění nápovědy: %1"
 
-#: ../src/main_window.cc:493
+#: ../src/main_window.cc:498
 msgid "Me TV - It's TV for me computer"
 msgstr "Me TV - televize pro můj počítač"
 
-#: ../src/main_window.cc:505 ../src/main_window.cc:506
+#: ../src/main_window.cc:510 ../src/main_window.cc:511
 msgid " [Recording]"
 msgstr " [Záznam]"
 
-#: ../src/main_window.cc:675
+#: ../src/main_window.cc:719
 msgid "Failed to start engine: Engine has already been started"
-msgstr "Selhalo spuštění nástroje: nástroj již byl spuštěn"
+msgstr "Selhalo spuštění knihovny přehrávače: knihovna již byla spuštěna"
 
-#: ../src/main_window.cc:682
+#: ../src/main_window.cc:726
 msgid "Window ID was 0"
 msgstr "ID okna bylo 0"
 
-#: ../src/main_window.cc:701
+#: ../src/main_window.cc:756
 msgid "Unknown engine type"
-msgstr "Neznámý typ nástroje"
+msgstr "Neznámý typ knihovny přehrávače"
 
 #: ../src/meters_dialog.cc:71
 msgid "Signal Strength (%1%%)"
@@ -349,21 +471,17 @@ msgstr "Síla signálu (%1%%)"
 msgid "S/N Ratio (%1%%)"
 msgstr "Poměr S/N (%1%%)"
 
-#: ../src/me-tv.cc:58
+#: ../src/me-tv.cc:59
 msgid "Failed to get time"
 msgstr "Selhalo zjištění času"
 
-#: ../src/me-tv.cc:121
+#: ../src/me-tv.cc:122
 msgid "Failed to find a value for '%1'"
 msgstr "Selhalo nalezení hodnoty pro '%1'"
 
-#: ../src/me-tv.cc:146
+#: ../src/me-tv.cc:147
 msgid "Failed to find a text value for '%1'"
 msgstr "Selhalo nalezení textové hodnoty pro '%1'"
-
-#: ../src/me-tv.h:30 ../src/me-tv.glade.h:94
-msgid "Unknown"
-msgstr "Neznámý"
 
 #: ../src/me-tv.glade.h:1
 msgid " hours"
@@ -561,66 +679,58 @@ msgid "Next >"
 msgstr "Další >"
 
 #: ../src/me-tv.glade.h:48
-msgid "No description available."
-msgstr "Popis není dostupný."
-
-#: ../src/me-tv.glade.h:49
-msgid "No title available"
-msgstr "Název není dostupný"
-
-#: ../src/me-tv.glade.h:50
 msgid "Open channel editor dialog"
 msgstr "Otevře editor kanálů"
 
-#: ../src/me-tv.glade.h:51
+#: ../src/me-tv.glade.h:49
 msgid "Open scheduled recordings dialog"
 msgstr "Otevře dialog plánování záznamů"
 
-#: ../src/me-tv.glade.h:52
+#: ../src/me-tv.glade.h:50
 msgid "Preferred language:"
 msgstr "Preferovaný jazyk:"
 
-#: ../src/me-tv.glade.h:53
+#: ../src/me-tv.glade.h:51
 msgid "Quit Me TV"
 msgstr "Ukončí Me TV"
 
-#: ../src/me-tv.glade.h:54
+#: ../src/me-tv.glade.h:52
 msgid "Record extra after: "
 msgstr "Nahrát navíc po: "
 
-#: ../src/me-tv.glade.h:55
+#: ../src/me-tv.glade.h:53
 msgid "Record extra before: "
 msgstr "Nahrát navíc před: "
 
-#: ../src/me-tv.glade.h:56
+#: ../src/me-tv.glade.h:54
 msgid "Recording directory: "
 msgstr "Adresář pro nahrávání: "
 
-#: ../src/me-tv.glade.h:57
+#: ../src/me-tv.glade.h:55
 msgid "Removes selected channels"
 msgstr "Odstraní vybrané kanály"
 
-#: ../src/me-tv.glade.h:58
+#: ../src/me-tv.glade.h:56
 msgid "S/N Ratio"
 msgstr "Poměr S/N"
 
-#: ../src/me-tv.glade.h:59
+#: ../src/me-tv.glade.h:57
 msgid "Scan Progress"
 msgstr "Průběh ladění"
 
-#: ../src/me-tv.glade.h:60
+#: ../src/me-tv.glade.h:58
 msgid "Scanning ..."
 msgstr "Ladění ..."
 
-#: ../src/me-tv.glade.h:61
+#: ../src/me-tv.glade.h:59
 msgid "Scanning/Importing"
 msgstr "Ladím/Importuji"
 
-#: ../src/me-tv.glade.h:62
+#: ../src/me-tv.glade.h:60
 msgid "Schedule"
 msgstr "Plán"
 
-#: ../src/me-tv.glade.h:63
+#: ../src/me-tv.glade.h:61
 msgid "See https://launchpad.net/me-tv"
 msgstr ""
 "Aktivní překladatelé:\n"
@@ -629,226 +739,230 @@ msgstr ""
 "Přispěli:\n"
 "Jiří Andrys <Unknown>"
 
-#: ../src/me-tv.glade.h:64
+#: ../src/me-tv.glade.h:62
 msgid "Select A Recording Directory"
 msgstr "Vyberte adresář pro nahrávání"
 
-#: ../src/me-tv.glade.h:65
+#: ../src/me-tv.glade.h:63
 msgid "Select Channels"
 msgstr "Vyberte kanály"
 
-#: ../src/me-tv.glade.h:66
+#: ../src/me-tv.glade.h:64
 msgid "Select Scan File"
 msgstr "Zvolte ladící soubor"
 
-#: ../src/me-tv.glade.h:67
+#: ../src/me-tv.glade.h:65
 msgid "Select a channels.conf file"
 msgstr "Vyberte soubor channels.conf"
 
-#: ../src/me-tv.glade.h:68
+#: ../src/me-tv.glade.h:66
 msgid "Select a channels.conf to import"
 msgstr "Zvolte soubor channels.conf pro import"
 
-#: ../src/me-tv.glade.h:69
+#: ../src/me-tv.glade.h:67
 msgid "Select a file"
 msgstr "Zvolte soubor"
 
-#: ../src/me-tv.glade.h:70
+#: ../src/me-tv.glade.h:68
 msgid "Select a file to scan"
 msgstr "Zvolte soubor pro ladění"
 
-#: ../src/me-tv.glade.h:71
+#: ../src/me-tv.glade.h:69
 msgid "Select a region file to scan"
 msgstr "Zvolte soubor regionu pro ladění"
 
-#: ../src/me-tv.glade.h:72
+#: ../src/me-tv.glade.h:70
 msgid "Select the channels that you want to add."
 msgstr "Zvolte kanály, které chcete přidat."
 
-#: ../src/me-tv.glade.h:73
+#: ../src/me-tv.glade.h:71
 msgid "Select your country: "
 msgstr "Zvolte vaši zemi: "
 
-#: ../src/me-tv.glade.h:74
+#: ../src/me-tv.glade.h:72
 msgid "Select your region: "
 msgstr "Zvolte váš region: "
 
-#: ../src/me-tv.glade.h:75
+#: ../src/me-tv.glade.h:73
 msgid "Show EPG header"
 msgstr "Zobrazit záhlaví EPG"
 
-#: ../src/me-tv.glade.h:76
+#: ../src/me-tv.glade.h:74
 msgid "Show Meters"
 msgstr "Zobrazit měřiče"
 
-#: ../src/me-tv.glade.h:77
+#: ../src/me-tv.glade.h:75
+msgid "Show a status icon in the notification area"
+msgstr "Zobrazit stavovou ikonu v oznamovací oblasti"
+
+#: ../src/me-tv.glade.h:76
 msgid "Show meters dialog"
 msgstr "Zobrazí dialog měřičů"
 
-#: ../src/me-tv.glade.h:78
+#: ../src/me-tv.glade.h:77
 msgid "Show preferences dialog"
 msgstr "Zobrazí dialog nastavení"
 
-#: ../src/me-tv.glade.h:79
+#: ../src/me-tv.glade.h:78
 msgid "Show the About dialog"
 msgstr "Zobrazí dialog O programu"
 
-#: ../src/me-tv.glade.h:80
+#: ../src/me-tv.glade.h:79
 msgid "Show time on EPG event buttons"
 msgstr "Zobrazit čas na tlačítkách událostí EPG"
 
-#: ../src/me-tv.glade.h:81
+#: ../src/me-tv.glade.h:80
 msgid "Show tooltips for EPG event buttons"
 msgstr "Zobrazovat bubliny pro tlačítka událostí EPG"
 
-#: ../src/me-tv.glade.h:82
+#: ../src/me-tv.glade.h:81
 msgid "Signal Strength"
 msgstr "Síla signálu"
 
-#: ../src/me-tv.glade.h:83
+#: ../src/me-tv.glade.h:82
 msgid "Start Date:"
 msgstr "Datum začátku:"
 
-#: ../src/me-tv.glade.h:84
+#: ../src/me-tv.glade.h:83
 msgid "Start Time:"
 msgstr "Čas začátku:"
 
-#: ../src/me-tv.glade.h:85
+#: ../src/me-tv.glade.h:84
 msgid "Streams"
 msgstr "Proudy"
 
-#: ../src/me-tv.glade.h:86
+#: ../src/me-tv.glade.h:85
 msgid "Switch audio streams"
 msgstr "Přepne zvukový proud"
 
-#: ../src/me-tv.glade.h:87
+#: ../src/me-tv.glade.h:86
 msgid "Switch devices"
 msgstr "Přepne zařízení"
 
-#: ../src/me-tv.glade.h:88
+#: ../src/me-tv.glade.h:87
 msgid "Text encoding:"
 msgstr "Kódování textu:"
 
-#: ../src/me-tv.glade.h:89
+#: ../src/me-tv.glade.h:88
 msgid "Title:"
 msgstr "Název:"
 
-#: ../src/me-tv.glade.h:90
+#: ../src/me-tv.glade.h:89
 msgid "Toggle broadcasting"
 msgstr "Přepne vysílání"
 
-#: ../src/me-tv.glade.h:91
+#: ../src/me-tv.glade.h:90
 msgid "Toggle fullscreen mode"
 msgstr "Přepne režim přes celou obrazovku"
 
-#: ../src/me-tv.glade.h:92
+#: ../src/me-tv.glade.h:91
 msgid "Toggle mute audio"
 msgstr "Přepne umlčení zvuku"
 
-#: ../src/me-tv.glade.h:93
+#: ../src/me-tv.glade.h:92
 msgid "Toggle recording"
 msgstr "Přepne zaznamenávání"
 
-#: ../src/me-tv.glade.h:95
+#: ../src/me-tv.glade.h:93
 msgid "Use 24 hour workaround for GnomeDateEdit"
 msgstr "Obejít chybu zpracování 24 hodin pro GnomeDateEdit"
 
-#: ../src/me-tv.glade.h:96
+#: ../src/me-tv.glade.h:94
 msgid "What's on now"
 msgstr "Aktuální program"
 
-#: ../src/me-tv.glade.h:97
+#: ../src/me-tv.glade.h:95
 msgid "Xine audio driver:"
 msgstr "Ovladač zvuku Xine:"
 
-#: ../src/me-tv.glade.h:98
+#: ../src/me-tv.glade.h:96
 msgid "Xine video driver:"
 msgstr "Ovladač obrazu Xine:"
 
-#: ../src/me-tv.glade.h:99
+#: ../src/me-tv.glade.h:97
 msgid "_Audio"
 msgstr "_Zvuk"
 
-#: ../src/me-tv.glade.h:100
+#: ../src/me-tv.glade.h:98
 msgid "_Broadcast"
 msgstr "_Vysílání"
 
-#: ../src/me-tv.glade.h:101
+#: ../src/me-tv.glade.h:99
 msgid "_Devices"
 msgstr "_Zařízení"
 
-#: ../src/me-tv.glade.h:102
+#: ../src/me-tv.glade.h:100
 msgid "_File"
 msgstr "_Soubor"
 
-#: ../src/me-tv.glade.h:103
+#: ../src/me-tv.glade.h:101
 msgid "_Help"
 msgstr "_Nápověda"
 
-#: ../src/me-tv.glade.h:104
+#: ../src/me-tv.glade.h:102
 msgid "_Mute"
 msgstr "_Umlčet"
 
-#: ../src/me-tv.glade.h:105
+#: ../src/me-tv.glade.h:103
 msgid "_Record"
 msgstr "_Záznam"
 
-#: ../src/me-tv.glade.h:106
+#: ../src/me-tv.glade.h:104
 msgid "_Scheduled Recordings"
 msgstr "_Plánování záznamů"
 
-#: ../src/me-tv.glade.h:107
+#: ../src/me-tv.glade.h:105
 msgid "_Video"
 msgstr "_Video"
 
-#: ../src/me-tv.glade.h:108
+#: ../src/me-tv.glade.h:106
 msgid "_View"
 msgstr "_Zobrazit"
 
-#: ../src/profile.cc:59
+#: ../src/profile.cc:58
 msgid "Channel '%1' not found"
 msgstr "Kanál '%1' nebyl nalezen"
 
-#: ../src/profile.cc:76
+#: ../src/profile.cc:75
 msgid "Failed to set display channel: channel not found"
 msgstr "Selhalo nastavení zobrazovaného kanálu: kanál nenalezen"
 
-#: ../src/profile.cc:100
+#: ../src/profile.cc:99
 msgid "Failed to add channel: You cannot have more than %1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
 msgstr[0] "Selhalo přidání kanálu: Nemůžete mít více než %1 kanál"
 msgstr[1] "Selhalo přidání kanálu: Nemůžete mít více než %1 kanály"
 msgstr[2] "Selhalo přidání kanálu: Nemůžete mít více než %1 kanálů"
 
-#: ../src/profile.cc:190 ../src/profile.cc:225
+#: ../src/profile.cc:189 ../src/profile.cc:224
 msgid "No channels"
 msgstr "Žádné kanály"
 
-#: ../src/profile_manager.cc:69
+#: ../src/profile_manager.cc:67
 msgid "Default"
 msgstr "Výchozí"
 
-#: ../src/profile_manager.cc:104
+#: ../src/profile_manager.cc:102
 msgid "Failed to find profile '%1'"
 msgstr "Nelze nalézt profil '%1'"
 
-#: ../src/profile_manager.cc:121
+#: ../src/profile_manager.cc:119
 msgid "There is no current profile"
 msgstr "Neexistuje aktuální profil"
 
-#: ../src/scan_window.cc:67
+#: ../src/scan_window.cc:66
 msgid "Unknown frontend type"
 msgstr "Neznámý typ rozhraní"
 
-#: ../src/scan_window.cc:106
+#: ../src/scan_window.cc:105
 msgid "Service Name"
 msgstr "Název služby"
 
-#: ../src/scan_window.cc:234 ../src/scan_window.cc:263
+#: ../src/scan_window.cc:233 ../src/scan_window.cc:262
 msgid "Invalid parameter count on line %1"
 msgstr "Neplatný počet parametrů na řádce %1"
 
-#: ../src/scan_window.cc:284
+#: ../src/scan_window.cc:283
 msgid ""
 "Failed to import: importing a channels.conf is only supported only DVB-T and "
 "ATSC"
@@ -856,23 +970,23 @@ msgstr ""
 "Selhal import: importování channels.conf je podporováno pouze pro DVB-T a "
 "ATSC"
 
-#: ../src/scan_window.cc:330
+#: ../src/scan_window.cc:329
 msgid "No scan/import option specified"
 msgstr "Nebyla zadána žádná volba ladit/importovat"
 
-#: ../src/scan_window.cc:341
+#: ../src/scan_window.cc:340
 msgid "Failed to scan: scanning is only supported for DVB-T and DVB-C devices"
 msgstr "Selhalo ladění: ladění je podporváno pouze pro zařízení DVB-T a DVB-C"
 
-#: ../src/scan_window.cc:346
+#: ../src/scan_window.cc:345
 msgid "No tuning file has been selected"
 msgstr "Nebyl vybrán žádný ladící soubor"
 
-#: ../src/scan_window.cc:397
+#: ../src/scan_window.cc:396
 msgid "Invalid frontend type"
 msgstr "Neplatný typ rozhraní"
 
-#: ../src/scan_window.cc:426
+#: ../src/scan_window.cc:425
 msgid "Found 1 channel"
 msgid_plural "Found %1 channels"
 msgstr[0] "Nalezen 1 kanál"
@@ -899,30 +1013,30 @@ msgstr "Doba trvání"
 msgid "Failed to get scheduled recording"
 msgstr "Selhalo získání plánovaného záznamu"
 
-#: ../src/stream_thread.cc:82
+#: ../src/stream_thread.cc:81
 msgid "Failed to create FIFO '%1'"
 msgstr "Selhalo vytvoření FIFO '%1'"
 
-#: ../src/stream_thread.cc:89
+#: ../src/stream_thread.cc:88
 msgid "Failed to open FIFO for reading '%1'"
 msgstr "Selhalo otevření FIFO pro čtení '%1'"
 
-#: ../src/stream_thread.cc:534
+#: ../src/stream_thread.cc:533
 msgid "Failed to find PMT ID for service"
 msgstr "Selhalo nalezení PMT ID služby"
 
-#: ../src/stream_thread.cc:647
+#: ../src/stream_thread.cc:646
 msgid "Failed to create internet address"
 msgstr "Selhalo vytvoření internetové adresy"
 
-#: ../src/stream_thread.cc:653
+#: ../src/stream_thread.cc:652
 msgid "Failed to create socket"
 msgstr "Selhalo vytvoření soketu"
 
-#: ../src/string_splitter.cc:44
+#: ../src/string_splitter.cc:45
 msgid "Index out of bounds"
 msgstr "Index je mimo rozsah"
 
-#: ../src/thread.cc:48
+#: ../src/thread.cc:49
 msgid " thread has already been started"
 msgstr " vlákno již bylo spuštěno"

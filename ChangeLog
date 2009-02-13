@@ -1,7 +1,38 @@
-2009-01-05  Michael Lamothe <michael.lamothe@gmail.com>
+2009-02-11  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.14
+	* Fix so that minimise mode does not crash
+	* Fix so that status icon shows current event
+	* Compatibility changes for 2.6.29 kernel
+	* ATSC support! (but not for scanning)
+
+2009-02-08  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.13
+	* Removed my email addres from the application
+	* Fixed performance issue when calling data.vacuum()
+
+2009-02-07  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.12
+	* EPG events are now stored in memory to conserve disk access, written periodically and on exit
+	* Added option to compile in libvlc, libxine, libgstreamer and mplayer engines 
+
+2009-01-26  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.11
+	* Fixed issue with incorrect initialisation of application_dir
+	* Deleting old events periodically
+	* Vacuuming database periodically
+	* Fixed issue were EPG had gaps if start_time was now
+	* Fixed issue with application terminating on main_window hide
+
+2009-01-18  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.10
-	* Added VLC based engine
+	* Added dynamically loaded VLC based engine
+	* Persistent window geometry
+	* Added option for hiding status_icon
 
 2009-01-04  Michael Lamothe <michael.lamothe@gmail.com>
 

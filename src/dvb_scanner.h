@@ -21,9 +21,9 @@
 #ifndef __DVB_SCANNER_H__
 #define __DVB_SCANNER_H__
 
+#include <vector>
 #include "dvb_frontend.h"
 #include "dvb_service.h"
-#include <vector>
 
 namespace Dvb
 {

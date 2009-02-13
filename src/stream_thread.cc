@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <glibmm.h>
 #include "stream_thread.h"
 #include "application.h"
 #include "device_manager.h"
 #include "dvb_transponder.h"
-#include <glibmm.h>
 
 #define TS_PACKET_SIZE 188
 
@@ -69,8 +69,7 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	}
 
 	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
-	Glib::ustring working_directory = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-	fifo_path = Glib::build_filename(working_directory, filename);
+	fifo_path = Glib::build_filename(get_application().get_application_dir(), filename);
 
 	if (Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
 	{

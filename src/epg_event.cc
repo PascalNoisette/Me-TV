@@ -38,7 +38,7 @@ Glib::ustring EpgEvent::get_title() const
 	
 	if (result.size() == 0)
 	{
-		result = UNKNOWN_TEXT;
+		result = _("Unknown title");
 	}
 	
 	return result;		
@@ -60,7 +60,7 @@ Glib::ustring EpgEvent::get_description() const
 	
 	if (result.size() == 0)
 	{
-		result = UNKNOWN_TEXT;
+		result = _("Unknown description");
 	}
 	
 	return result;

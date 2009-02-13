@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include "me-tv.h"
 #include <libgnomeuimm.h>
 #include <libglademm.h>
 #include "scan_window.h"

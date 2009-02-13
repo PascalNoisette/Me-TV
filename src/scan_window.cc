@@ -21,7 +21,6 @@
 #include "scan_window.h"
 #include "dvb_scanner.h"
 #include "thread.h"
-#include "me-tv.h"
 #include "application.h"
 #include "channels_conf_line.h"
 #include "profile.h"
@@ -257,6 +256,31 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 					}
 					break;
 				
+				case FE_QAM:
+					if (parameter_count != 9)
+					{
+						Glib::ustring message = Glib::ustring::compose(_("Invalid parameter count on line %1"), line_count);
+						throw Exception(message);
+					}
+
+					{
+						Channel channel;
+
+						channel.name = channels_conf_line.get_name(0);
+						channel.sort_order = line_count;
+						channel.flags = CHANNEL_FLAG_DVB_C;
+				
+						channel.frontend_parameters.frequency			= channels_conf_line.get_frequency(1);
+						channel.frontend_parameters.inversion			= channels_conf_line.get_inversion(2);
+						channel.frontend_parameters.u.qam.symbol_rate	= channels_conf_line.get_symbol_rate(3);
+						channel.frontend_parameters.u.qam.fec_inner		= channels_conf_line.get_fec(4);
+						channel.frontend_parameters.u.qam.modulation	= channels_conf_line.get_modulation(5);
+						channel.service_id								= channels_conf_line.get_service_id(8);
+				
+						current_profile.add_channel(channel);
+					}
+					break;
+
 				case FE_ATSC:
 					if (parameter_count != 6)
 					{
@@ -272,8 +296,8 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 						channel.flags = CHANNEL_FLAG_ATSC;
 				
 						channel.frontend_parameters.frequency						= channels_conf_line.get_frequency(1);
-						channel.frontend_parameters.inversion						= channels_conf_line.get_inversion(2);
-						channel.frontend_parameters.u.vsb.modulation				= channels_conf_line.get_modulation(3);
+						channel.frontend_parameters.inversion						= INVERSION_AUTO;
+						channel.frontend_parameters.u.vsb.modulation				= channels_conf_line.get_modulation(2);
 						channel.service_id											= channels_conf_line.get_service_id(5);
 				
 						current_profile.add_channel(channel);
@@ -281,14 +305,15 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 					break;
 				
 				default:
-					throw Exception(_("Failed to import: importing a channels.conf is only supported only DVB-T and ATSC"));
+					throw Exception(_("Failed to import: importing a channels.conf is only supported with DVB-T, DVB-C and ATSC"));
 					break;
 			}
 		}		
 	}
 	g_debug("Finished importing channels");
 	
-	current_profile.save();	
+	Data data;
+	data.replace_profile(current_profile);
 	hide();
 }
 
@@ -403,7 +428,8 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 		iterator++;
 	}
 
-	current_profile.save();
+	Data data;
+	data.replace_profile(current_profile);
 	hide();
 }
 

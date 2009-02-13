@@ -18,43 +18,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __VLC_ENGINE_H__
-#define __VLC_ENGINE_H__
+#ifndef __EPG_EVENTS_H__
+#define __EPG_EVENTS_H__
 
-#include "engine.h"
+#include "epg_event.h"
 
-#ifdef USE_VLC_0_8_6_API
-#include <vlc/libvlc.h>
-#else
-#include <vlc/vlc.h>
-#endif
+typedef std::list<EpgEvent> EpgEventList;
 
-class VlcEngine : public Engine
+class EpgEvents
 {
 private:
-	libvlc_instance_t*		instance;
-	libvlc_exception_t		exception;
-	gint				window_id;
-	gboolean mute_state;
-	gint volume;
-
-
-#ifndef USE_VLC_0_8_6_API
-	libvlc_media_player_t*	media_player;
-#endif
-
-	void check_exception();
-	void play(const Glib::ustring& mrl);
-	void stop();
-	void mute(gboolean state);
-	void set_volume(gint newlevel);
-	void set_size(gint width, gint height) {};
-	void set_audio_channel(guint channel) {};
-	gboolean is_running(); 
-
+	EpgEventList			list;
+	Glib::StaticRecMutex	mutex;
+	
+	gboolean exists(const EpgEvent& epg_event);
 public:
-	VlcEngine(int window_id);
-	~VlcEngine();
+	EpgEvents();
+	~EpgEvents();
+		
+	gboolean insert(const EpgEvent& epg_event);
+	void insert(const EpgEventList& epg_event_list);
+	gboolean get_current(EpgEvent& epg_event);
+	EpgEventList get_list(gboolean update_save = false);
+	void prune();
 };
 
 #endif

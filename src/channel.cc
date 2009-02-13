@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include "me-tv.h"
 #include "channel.h"
 #include "data.h"
-#include "me-tv.h"
 #include <string.h>
 
 Channel::Channel()
@@ -32,18 +32,12 @@ Channel::Channel()
 	memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
 }
 
-gboolean Channel::get_current_epg_event(EpgEvent& epg_event) const
-{
-	Data data;
-	return data.get_current_epg_event(*this, epg_event);
-}
-
-Glib::ustring Channel::get_text() const
+Glib::ustring Channel::get_text()
 {
 	Glib::ustring result = encode_xml(name);
 	EpgEvent epg_event;
 	
-	if (get_current_epg_event(epg_event))
+	if (epg_events.get_current(epg_event))
 	{
 		result += " - ";
 		result += epg_event.get_title();
@@ -56,4 +50,3 @@ guint Channel::get_transponder_frequency()
 {
 	return frontend_parameters.frequency;
 }
-

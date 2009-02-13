@@ -1,6 +1,6 @@
 [Desktop Entry]
 Version=1.0
-_Name=Digital Television
+_Name=Me TV
 GenericName=Me TV
 _Comment=A digital television (DVB) viewer for GNOME
 Exec=me-tv

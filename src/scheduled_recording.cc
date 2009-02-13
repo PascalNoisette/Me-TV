@@ -20,6 +20,7 @@
 
 #include "scheduled_recording.h"
 #include "me-tv.h"
+#include "me-tv-i18n.h"
 
 Glib::ustring ScheduledRecording::get_start_time_text() const
 {

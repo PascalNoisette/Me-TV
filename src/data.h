@@ -21,8 +21,8 @@
 #ifndef __DATA_H__
 #define __DATA_H__
 
-#include <sqlite3.h>
 #include "me-tv.h"
+#include <sqlite3.h>
 #include "profile.h"
 #include "epg_event.h"
 #include "scheduled_recording.h"
@@ -61,12 +61,12 @@ public:
 	Data(gboolean initialise = false);
 	~Data();
 
-	gboolean get_current_epg_event(const Channel& channel, EpgEvent& epg_event);
-	EpgEventList get_epg_events(const Channel& channel, guint start_time, guint end_time);
+	EpgEventList get_epg_events(const Channel& channel);
 	void replace_epg_event(EpgEvent& epg_event);
 	void replace_epg_event_text(EpgEventText& epg_event_text);
-	gint get_last_epg_update_time();
-	
+	void delete_old_epg_events();
+	void vacuum();
+
 	ProfileList get_all_profiles();
 	void replace_profile(Profile& profile);
 	void replace_channel(Channel& channel);
@@ -75,7 +75,7 @@ public:
 	void replace_scheduled_recording(ScheduledRecording& scheduled_recording);
 	ScheduledRecordingList get_scheduled_recordings();
 	void delete_scheduled_recording(guint scheduled_recording_id);
-	void delete_old_sceduled_recordings();
+	void delete_old_scheduled_recordings();
 	gboolean get_scheduled_recording(guint scheduled_recording_id, ScheduledRecording& scheduled_recording);
 };
 

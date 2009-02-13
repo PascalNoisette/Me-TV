@@ -91,7 +91,14 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	
 	if (populate_default)
 	{
-		entry_description->set_text(UNKNOWN_TEXT);
+		Channel* channel = get_application().get_profile_manager().get_current_profile().get_display_channel();
+		if (channel == NULL)
+		{
+			throw Exception(_("Failed to create scheduled recording dialog: No display channel"));
+		}
+		
+		channel_combo_box->set_selected_channel_id(channel->channel_id);
+		entry_description->set_text(_("Unknown description"));
 		date_edit_start_time->set_time(time(NULL));
 		spinbutton_duration->set_value(30);
 	}
@@ -104,6 +111,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 		Data data;
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
 		data.replace_scheduled_recording(scheduled_recording);
+		get_application().check_scheduled_recordings(data);
 	}
 	
 	return dialog_response;

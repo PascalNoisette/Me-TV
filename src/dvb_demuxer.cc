@@ -17,10 +17,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
+
+#include "me-tv.h"
+#include "me-tv-i18n.h"
 #include "dvb_demuxer.h"
 #include "exception.h"
-#include "me-tv.h"
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <unistd.h>

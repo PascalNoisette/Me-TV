@@ -20,7 +20,6 @@
 
 #include "gtk_epg_widget.h"
 #include "application.h"
-#include "data.h"
 #include "scheduled_recording_dialog.h"
 
 GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
@@ -103,8 +102,8 @@ void GtkEpgWidget::update_table()
 		glade->get_widget("button_epg_now")->set_sensitive(offset > 0);
 			
 		Profile& profile = get_application().get_profile_manager().get_current_profile();
-		const Channel* display_channel = profile.get_display_channel();
-		const ChannelList& channels = profile.get_channels();
+		Channel* display_channel = profile.get_display_channel();
+		ChannelList& channels = profile.get_channels();
 
 		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
 
@@ -125,9 +124,9 @@ void GtkEpgWidget::update_table()
 			row++;
 		}
 		start_time += timezone;
-		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+		for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
-			const Channel& channel = *iterator;
+			Channel& channel = *iterator;
 			gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
 			create_channel_row(channel, row++, selected, start_time);
 		}
@@ -135,7 +134,7 @@ void GtkEpgWidget::update_table()
 	}
 }
 
-void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, gboolean selected, guint start_time)
+void GtkEpgWidget::create_channel_row(Channel& channel, guint table_row, gboolean selected, guint start_time)
 {	
 	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, table_row, table_row + 1);
 	gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
@@ -155,86 +154,93 @@ void GtkEpgWidget::create_channel_row(const Channel& channel, guint table_row, g
 	guint last_event_end_time = 0;
 	guint number_columns = epg_span_hours * 6 + 1;
 	
-	const EpgEventList& events = data.get_epg_events(channel, start_time, end_time);
+	EpgEventList events = channel.epg_events.get_list();
 	for (EpgEventList::const_iterator i = events.begin(); i != events.end(); i++)
 	{
 		const EpgEvent& epg_event = *i;
-			
-		guint event_end_time = epg_event.start_time + epg_event.duration;		
-		guint start_column = 0;
-		if (epg_event.start_time < start_time)
-		{
-			start_column = 0;
-		}
-		else
-		{
-			start_column = (guint)round((epg_event.start_time - start_time) / 600.0);
-		}
 		
-		guint end_column = (guint)round((event_end_time - start_time) / 600.0);
-		if (end_column > number_columns-1)
+		if (
+			(epg_event.start_time >= start_time && epg_event.start_time <= end_time) ||
+			(epg_event.get_end_time() >= start_time && epg_event.get_end_time() <= end_time) ||
+			(epg_event.start_time <= start_time && epg_event.get_end_time() >= end_time)
+		)
 		{
-			end_column = number_columns-1;
-		}
-		
-		guint column_count = end_column - start_column;
-		if (start_column >= total_number_columns && column_count > 0)
-		{
-			// If there's a gap, plug it
-			if (start_column > total_number_columns)
+			guint event_end_time = epg_event.start_time + epg_event.duration;		
+			guint start_column = 0;
+			if (epg_event.start_time < start_time)
 			{
-				// If it's a small gap then just extend the event
-				if (epg_event.start_time - last_event_end_time <= 2 * 60)
-				{
-					start_column = total_number_columns;
-					column_count = end_column - start_column;
-				}
-				else
-				{
-					guint empty_columns = start_column - total_number_columns;
-					Gtk::Button& button = attach_button(UNKNOWN_TEXT, total_number_columns + 1, start_column + 1, table_row, table_row + 1);
-					button.set_sensitive(false);
-					total_number_columns += empty_columns;
-				}
+				start_column = 0;
 			}
-			
-			if (column_count > 0)
+			else
 			{
-				guint converted_start_time = convert_to_utc_time (epg_event.start_time);
-
-				Glib::ustring text;
-				if (show_epg_time)
+				start_column = (guint)round((epg_event.start_time - start_time) / 600.0);
+			}
+		
+			guint end_column = (guint)round((event_end_time - start_time) / 600.0);
+			if (end_column > number_columns-1)
+			{
+				end_column = number_columns-1;
+			}
+		
+			guint column_count = end_column - start_column;
+			if (start_column >= total_number_columns && column_count > 0)
+			{
+				// If there's a gap, plug it
+				if (start_column > total_number_columns)
 				{
-					text = get_local_time_text(converted_start_time, "<b>%H:%M");
-					text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
+					// If it's a small gap then just extend the event
+					if (epg_event.start_time - last_event_end_time <= 2 * 60)
+					{
+						start_column = total_number_columns;
+						column_count = end_column - start_column;
+					}
+					else
+					{
+						guint empty_columns = start_column - total_number_columns;
+						Gtk::Button& button = attach_button(_("Unknown program"), total_number_columns + 1, start_column + 1, table_row, table_row + 1);
+						button.set_sensitive(false);
+						total_number_columns += empty_columns;
+					}
 				}
-				text += encode_xml(epg_event.get_title());
+			
+				if (column_count > 0)
+				{
+					guint converted_start_time = convert_to_utc_time (epg_event.start_time);
+
+					Glib::ustring text;
+					if (show_epg_time)
+					{
+						text = get_local_time_text(converted_start_time, "<b>%H:%M");
+						text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
+					}
+					text += encode_xml(epg_event.get_title());
 				
-				Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
-				button.signal_clicked().connect(
-					sigc::bind<EpgEvent>
-					(
-						sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
-						epg_event
-					)
-				);
+					Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
+					button.signal_clicked().connect(
+						sigc::bind<EpgEvent>
+						(
+							sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
+							epg_event
+						)
+					);
 
-				if (show_epg_tooltips)
-				{
-					Glib::ustring tooltip_text = get_local_time_text(converted_start_time, "%A, %B %d\n%H:%M");
-					tooltip_text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M");
-					button.set_tooltip_text(tooltip_text);
+					if (show_epg_tooltips)
+					{
+						Glib::ustring tooltip_text = get_local_time_text(converted_start_time, "%A, %B %d\n%H:%M");
+						tooltip_text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M");
+						button.set_tooltip_text(tooltip_text);
+					}
 				}
-			}
 
-			total_number_columns += column_count;
+				total_number_columns += column_count;
+			}
+			last_event_end_time = event_end_time;
 		}
-		last_event_end_time = event_end_time;
 	}
 	
 	if (total_number_columns < number_columns-1)
 	{		
-		Gtk::Button& button = attach_button(UNKNOWN_TEXT, total_number_columns + 1, number_columns, table_row, table_row + 1);
+		Gtk::Button& button = attach_button(_("Unknown program"), total_number_columns + 1, number_columns, table_row, table_row + 1);
 		button.set_sensitive(false);
 	}
 }
@@ -290,10 +296,10 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 	TRY
 	Gtk::Dialog* dialog_program_details = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
 	
-	(dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_program_title")))->set_text(epg_event.get_title());
-	(dynamic_cast<Gtk::TextView*>(glade->get_widget("textview_program_description")))->get_buffer()->assign(epg_event.get_description());
-	(dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_program_start_time")))->set_text(epg_event.get_start_time_text());
-	(dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_program_duration")))->set_text(epg_event.get_duration_text());
+	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_title")))->get_buffer()->assign(epg_event.get_title());
+	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_description")))->get_buffer()->assign(epg_event.get_description());
+	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_start_time")))->get_buffer()->assign(epg_event.get_start_time_text());
+	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_duration")))->get_buffer()->assign(epg_event.get_duration_text());
 	gint result = dialog_program_details->run();
 	dialog_program_details->hide();
 

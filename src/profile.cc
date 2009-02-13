@@ -21,8 +21,7 @@
 #include "profile.h"
 #include "exception.h"
 #include "data.h"
-
-#include <glibmm/i18n.h>
+#include "me-tv-i18n.h"
 
 Profile::Profile()
 {
@@ -116,7 +115,7 @@ ChannelList& Profile::get_channels()
 	return channels;
 }
 
-const Channel* Profile::get_display_channel() const
+Channel* Profile::get_display_channel()
 {
 	return display_channel;
 }
@@ -141,13 +140,6 @@ Channel* Profile::find_channel(guint frequency, guint service_id)
 	}
 	
 	return result;
-}
-
-void Profile::save()
-{
-	Data data;
-	data.replace_profile(*this);
-	g_debug("'%s' profile saved", name.c_str());
 }
 
 void Profile::set_channels(ChannelList& new_channels)

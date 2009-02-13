@@ -25,8 +25,10 @@
 
 class EpgThread : public Thread
 {
+private:
+	guint last_cleanup_time;
 public:
-	EpgThread() : Thread("EPG Thread") {}
+	EpgThread();
 	void run();
 };
 

@@ -17,42 +17,42 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
+ 
+#ifndef __LIB_GSTREAMER_ENGINE_H__
+#define __LIB_GSTREAMER_ENGINE_H__
 
-#ifndef __EPG_EVENT_H__
-#define __EPG_EVENT_H__
+#include "config.h"
 
-#include <glibmm.h>
-#include <list>
+#ifdef ENABLE_LIBGSTREAMER_ENGINE
 
-class EpgEventText
+#include "engine.h"
+#include <gst/gst.h>
+
+class LibGStreamerEngine : public Engine
 {
+private:
+	gint				pid;
+	gint				standard_input;
+	GstElement*			player;
+	GstElement*			sink;
+	gdouble				volume;
+
+	void play(const Glib::ustring& mrl);
+	void stop();
+	void set_audio_stream(guint stream) {}
+	void set_mute_state(gboolean state);
+	void set_audio_channel_state(AudioChannelState state) {}
+	gboolean is_running();
+
+	GstElement* create_element(const Glib::ustring& factoryname, const gchar *name);
+	static gboolean on_bus_message(GstBus *bus, GstMessage *message, gpointer data);
+	void set_volume(gdouble value);
+
 public:
-	guint epg_event_text_id;
-	guint epg_event_id;
-	gboolean is_extended;
-	Glib::ustring language;
-	Glib::ustring title;
-	Glib::ustring description;
+	LibGStreamerEngine();
+	~LibGStreamerEngine();
 };
 
-typedef std::list<EpgEventText> EpgEventTextList;
-
-class EpgEvent
-{
-public:
-	guint				epg_event_id;
-	guint				channel_id;
-	guint				event_id;
-	guint				start_time;
-	guint				duration;
-	gboolean			save;
-	EpgEventTextList	texts;
-	
-	guint get_end_time() const { return start_time + duration; }
-	Glib::ustring get_title() const;
-	Glib::ustring get_description() const;
-	Glib::ustring get_start_time_text() const;
-	Glib::ustring get_duration_text() const;
-};
+#endif
 
 #endif

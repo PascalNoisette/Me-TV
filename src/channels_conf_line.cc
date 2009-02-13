@@ -53,7 +53,7 @@ struct StringTable ChannelsConfLine::modulation_table[] =
 	{ "QAM_128",	QAM_128 },
 	{ "QAM_256",	QAM_256 },
 	{ "QAM_AUTO",	QAM_AUTO },
-	{ "VSB_8",		VSB_8 },
+	{ "8VSB",		VSB_8 },
 	{ "VSB_16",		VSB_16 },
 	{ NULL, 0 }
 };
@@ -141,6 +141,11 @@ fe_guard_interval_t	ChannelsConfLine::get_guard_interval(guint index)
 fe_hierarchy_t ChannelsConfLine::get_hierarchy(guint index)
 {
 	return (fe_hierarchy_t)convert_string_to_value(hierarchy_table, splitter.get_value(index));
+}
+
+guint ChannelsConfLine::get_symbol_rate(guint index)
+{
+	return splitter.get_int_value(index);
 }
 
 guint ChannelsConfLine::get_service_id(guint index)

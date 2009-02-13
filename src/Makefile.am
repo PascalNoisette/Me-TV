@@ -11,6 +11,9 @@ AM_CPPFLAGS = \
 	-I$(top_builddir) \
 	$(ME_TV_CFLAGS) \
 	$(SQLITE_CFLAGS) \
+	$(XINE_LIB_CFLAGS) \
+	$(LIBVLC_CFLAGS) \
+	$(LIBGSTREAMER_CFLAGS) \
 	$(WARN_CXXFLAGS) \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" 
@@ -96,8 +99,15 @@ me_tv_SOURCES = \
 	channels_conf_line.h \
 	initial_scan_line.cc \
 	initial_scan_line.h \
-	vlc_engine.h \
-	vlc_engine.cc
+	lib_vlc_engine.cc \
+	lib_vlc_engine.h \
+	me-tv-i18n.h \
+	epg_events.cc \
+	epg_events.h \
+	lib_gstreamer_engine.cc \
+	lib_gstreamer_engine.h \
+	xine_lib_engine.cc \
+	xine_lib_engine.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \
@@ -106,6 +116,9 @@ me_tv_LDFLAGS = \
 
 me_tv_LDADD = \
 	$(ME_TV_LIBS) \
-	$(SQLITE_LIBS) -lvlc
+	$(SQLITE_LIBS) \
+	$(XINE_LIB_LIBS) \
+	$(LIBVLC_LIBS) \
+	$(LIBGSTREAMER_LIBS)
 
 EXTRA_DIST = $(glade_DATA)

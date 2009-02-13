@@ -17,10 +17,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
+
+#include "me-tv.h"
 #include "dvb_frontend.h"
 #include "exception.h"
-#include "me-tv.h"
+#include "me-tv-i18n.h"
 
 using namespace Dvb;
 
@@ -58,7 +59,7 @@ void Frontend::tune_to (const struct dvb_frontend_parameters& parameters, guint 
 	struct dvb_frontend_event ev;
 
 	// Discard stale events
-	while (ioctl(fd, FE_GET_EVENT, &ev) != -1);
+	do {} while (ioctl(fd, FE_GET_EVENT, &ev) != -1);
 
 	if ( ioctl ( fd, FE_SET_FRONTEND, &(parameters) ) < 0 )
 	{

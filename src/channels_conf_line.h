@@ -51,6 +51,7 @@ public:
 	fe_transmit_mode_t		get_transmit_mode(guint index);
 	fe_guard_interval_t		get_guard_interval(guint index);
 	fe_hierarchy_t			get_hierarchy(guint index);
+	guint 					get_symbol_rate(guint index);
 	guint 					get_service_id(guint index);
 };
 

@@ -19,7 +19,7 @@
  */
 
 #include "data.h"
-#include "me-tv.h"
+#include "application.h"
 #include "exception.h"
 #include <giomm.h>
 
@@ -197,8 +197,9 @@ const Glib::ustring Statement::get_text(guint column)
 
 Data::Data(gboolean initialise)
 {
-	Glib::ustring database_path = Glib::build_filename(Glib::get_home_dir(), ".me-tv/me-tv.db");
+	Glib::ustring database_path = Glib::build_filename(get_application().get_application_dir(), "/me-tv.db");
 	
+	g_debug("Opening database file '%s'", database_path.c_str());
 	if (sqlite3_open(database_path.c_str(), &database) != 0)
 	{
 		throw SQLiteException(database, _("Failed to connect to Me TV database"));
@@ -265,7 +266,7 @@ Data::Data(gboolean initialise)
 			"START_TIME INTEGER NOT NULL, " \
 			"DURATION INTEGER NOT NULL);");
 		
-		delete_old_sceduled_recordings();
+		delete_old_scheduled_recordings();
 	}
 }
 
@@ -425,6 +426,7 @@ void Data::load_epg_event(Statement& statement, EpgEvent& epg_event)
 	epg_event.event_id		= statement.get_int(2);
 	epg_event.start_time	= statement.get_int(3);
 	epg_event.duration		= statement.get_int(4);
+	epg_event.save			= false;
 
 	Glib::ustring text_select_command = Glib::ustring::compose
 	(
@@ -445,18 +447,14 @@ void Data::load_epg_event(Statement& statement, EpgEvent& epg_event)
 	}
 }
 
-EpgEventList Data::get_epg_events(const Channel& channel, guint start_time, guint end_time)
+EpgEventList Data::get_epg_events(const Channel& channel)
 {
 	EpgEventList result;
 	
 	Glib::ustring select_command = Glib::ustring::compose
 	(
-		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 AND ("\
-	 	"(START_TIME > %2 AND START_TIME < %3) OR "\
-	 	"((START_TIME+DURATION) > %2 AND (START_TIME+DURATION) < %3) OR "\
-	 	"(START_TIME < %2 AND (START_TIME+DURATION) > %3)"\
-	 	") ORDER BY START_TIME;",
-		channel.channel_id , start_time, end_time
+		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 ORDER BY START_TIME;",
+		channel.channel_id
 	);
 
 	Statement statement(database, select_command);
@@ -465,6 +463,8 @@ EpgEventList Data::get_epg_events(const Channel& channel, guint start_time, guin
 		EpgEvent epg_event;
 		load_epg_event(statement, epg_event);
 		result.push_back(epg_event);
+		
+		g_debug("Event %d (%s) loaded", epg_event.event_id, epg_event.get_title().c_str());
 	}
 	
 	return result;
@@ -486,6 +486,9 @@ void Data::replace_channel(Channel& channel)
 	{
 		parameters.add("CHANNEL_ID", channel.channel_id);
 	}
+	
+	g_debug("Saving channel %d (%s)", channel.channel_id, channel.name.c_str());
+	
 	parameters.add("PROFILE_ID",	channel.profile_id);
 	parameters.add("NAME",			fixed_name);
 	parameters.add("FLAGS",			channel.flags);
@@ -531,6 +534,17 @@ void Data::replace_channel(Channel& channel)
 	if (channel.channel_id == 0)
 	{
 		channel.channel_id = sqlite3_last_insert_rowid(database);
+	}
+	
+	EpgEventList epg_event_list = channel.epg_events.get_list(true);
+	for (EpgEventList::iterator i = epg_event_list.begin(); i != epg_event_list.end(); i++)
+	{
+		EpgEvent& epg_event = *i;
+		if (epg_event.save)
+		{
+			replace_epg_event(epg_event);
+			g_debug("Saved EPG event %d (%s)", epg_event.event_id, epg_event.get_title().c_str());
+		}
 	}
 }
 
@@ -637,6 +651,7 @@ ProfileList Data::get_all_profiles()
 			{
 				channel.frontend_parameters.u.vsb.modulation	= (fe_modulation_t)channel_statement.get_int(18);
 			}
+			channel.epg_events.insert(get_epg_events(channel));
 			profile.add_channel(channel);
 			
 			g_debug("Loaded channel: %s", channel.name.c_str());
@@ -648,27 +663,6 @@ ProfileList Data::get_all_profiles()
 	}
 	
 	return profiles;
-}
-
-gboolean Data::get_current_epg_event(const Channel& channel, EpgEvent& epg_event)
-{
-	gboolean result = false;
-	
-	Glib::ustring select_command = Glib::ustring::compose
-	(
-		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 "\
-	 	"AND START_TIME <= %2 AND (START_TIME + DURATION) > %2",
-		channel.channel_id, convert_to_local_time(time(NULL))
-	);
-
-	Statement statement(database, select_command);
-	if (statement.step() == SQLITE_ROW)
-	{
-		load_epg_event(statement, epg_event);
-		result = true;
-	}
-	
-	return result;
 }
 
 void Data::replace_scheduled_recording(ScheduledRecording& scheduled_recording)
@@ -723,6 +717,8 @@ void Data::replace_scheduled_recording(ScheduledRecording& scheduled_recording)
 			throw Exception(_("ASSERT: scheduled_recording.scheduled_recording_id == 0"));
 		}
 	}
+
+	g_debug("Scheduled recording ID '%d' saved", scheduled_recording.scheduled_recording_id);
 }
 
 ScheduledRecordingList Data::get_scheduled_recordings()
@@ -790,11 +786,34 @@ void Data::delete_channel(guint channel_id)
 	execute_non_query(Glib::ustring::compose(
 		"DELETE FROM CHANNEL WHERE CHANNEL_ID=%1;",
 		channel_id));
+	execute_non_query(Glib::ustring::compose(
+		"DELETE FROM SCHEDULED_RECORDING WHERE CHANNEL_ID=%1;",
+		channel_id));
 }
 
-void Data::delete_old_sceduled_recordings()
+void Data::delete_old_scheduled_recordings()
 {
 	execute_non_query(Glib::ustring::compose(
 		"DELETE FROM SCHEDULED_RECORDING WHERE (START_TIME+DURATION)<%1;",
 		time(NULL)));
+}
+
+void Data::delete_old_epg_events()
+{
+	time_t expired_time = convert_to_local_time(time(NULL));
+
+	execute_non_query(Glib::ustring::compose(
+		"DELETE FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID IN "\
+		"(SELECT EPG_EVENT_ID FROM EPG_EVENT WHERE (START_TIME+DURATION)<%1);",
+		expired_time));
+	execute_non_query(Glib::ustring::compose(
+		"DELETE FROM EPG_EVENT WHERE (START_TIME+DURATION)<%1;",
+		expired_time));
+
+	g_debug("Expired EPG events cleanup");
+}
+
+void Data::vacuum()
+{
+	execute_non_query("VACUUM;");
 }

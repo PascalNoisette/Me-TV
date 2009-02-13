@@ -19,8 +19,10 @@
  */
 
 #include "application.h"
-#include "config.h"
 #include "data.h"
+
+#define GCONF_PATH		"/apps/me-tv"
+//#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
 
 Application* Application::current = NULL;
 
@@ -41,6 +43,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 
 	current = this;
 	main_window = NULL;
+	status_icon = NULL;
 	stream_thread = NULL;
 	update_epg_time();
 	timeout_source = 0;
@@ -48,6 +51,10 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	record_state = false;
 	broadcast_state = false;
 
+#ifndef TEST_VIDEO_SOURCE
+	device_manager.get_frontend();
+#endif
+	
 	signal_quit().connect(sigc::mem_fun(this, &Application::on_quit));
 
 	// Remove all other handlers first
@@ -78,14 +85,19 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_string_configuration_default("preferred_language", "");
 	set_string_configuration_default("text_encoding", "auto");
 	set_boolean_configuration_default("use_24_hour_workaround", true);
+	set_boolean_configuration_default("display_status_icon", true);
+	set_int_configuration_default("x", 10);
+	set_int_configuration_default("y", 10);
+	set_int_configuration_default("width", 500);
+	set_int_configuration_default("height", 500);
 
-	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
+	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
+	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);
 	if (!file->query_exists())
 	{
 		file->make_directory();
 	}
-	
+
 	// Initialise database
 	Data data(true);
 	
@@ -106,12 +118,13 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	profile.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));	
 
-	timeout_source = gdk_threads_add_timeout(10000, &Application::on_timeout, this);
+	timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 }
 
 Application::~Application()
 {
-	if (timeout_source == 0)
+	profile_manager.save();
+	if (timeout_source != 0)
 	{
 		g_source_remove(timeout_source);
 	}
@@ -208,6 +221,7 @@ void Application::run()
 		}
 	}
 
+#ifndef TEST_VIDEO_SOURCE
 	Profile& current_profile = get_profile_manager().get_current_profile();
 	ChannelList& channels = current_profile.get_channels();
 	if (channels.size() == 0)
@@ -229,8 +243,24 @@ void Application::run()
 		}
 		current_profile.set_display_channel(last_channel);
 	}
+#else
+	main_window->play(TEST_VIDEO_SOURCE);
+#endif
 	
 	Gnome::Main::run();
+		
+	if (status_icon != NULL)
+	{
+		delete status_icon;
+		status_icon = NULL;
+	}
+	
+	if (main_window != NULL)
+	{
+		delete main_window;
+		main_window = NULL;
+	}
+
 	CATCH
 }
 
@@ -257,6 +287,8 @@ void Application::stop_stream_thread()
 void Application::set_source(const Channel& channel)
 {
 	Glib::RecMutex::Lock lock(mutex);
+
+#ifndef TEST_VIDEO_SOURCE
 	main_window->stop_engine();
 	stop_stream_thread();
 	stream_thread = new StreamThread(channel);
@@ -272,14 +304,17 @@ void Application::set_source(const Channel& channel)
 		{
 			main_window->stop_engine();
 			get_signal_error().emit(exception.what().c_str());
-		}
-		
+		}	
 	}
 	catch(const Glib::Exception& exception)
 	{
 		stop_stream_thread();
 		get_signal_error().emit(exception.what().c_str());
 	}
+#else
+	main_window->play(TEST_VIDEO_SOURCE);
+#endif
+	
 	update();
 }
 
@@ -287,8 +322,15 @@ void Application::update()
 {
 	preferred_language = get_string_configuration_value("preferred_language");	
 
-	main_window->update();
-	status_icon->update();
+	if (main_window != NULL)
+	{
+		main_window->update();
+	}
+	
+	if (status_icon != NULL)
+	{
+		status_icon->update();
+	}
 }
 
 void Application::on_display_channel_changed(const Channel& channel)
@@ -319,20 +361,13 @@ MainWindow& Application::get_main_window()
 	return *main_window;
 }
 
-gboolean Application::on_timeout(gpointer data)
+void Application::check_scheduled_recordings(Data& data)
 {
-	return ((Application*)data)->on_timeout();
-}
-
-gboolean Application::on_timeout()
-{
-	TRY
-		
+	g_debug("Checking scheduled recordings");
+	
 	Profile& profile = profile_manager.get_current_profile();
 	gboolean got_recording = false;
-	
-	Data data;
-	data.delete_old_sceduled_recordings();
+
 	ScheduledRecordingList scheduled_recording_list = data.get_scheduled_recordings();
 	if (scheduled_recording_list.size() > 0)
 	{
@@ -399,7 +434,7 @@ gboolean Application::on_timeout()
 			}
 		}
 	}
-
+	
 	Glib::RecMutex::Lock lock(mutex);
 	if (stream_thread != NULL && record_state == true && !got_recording && scheduled_recording_id != 0)
 	{
@@ -408,7 +443,29 @@ gboolean Application::on_timeout()
 		g_debug("Record stopped by scheduled recording");
 		stop_recording();
 	}
+}
 
+gboolean Application::on_timeout(gpointer data)
+{
+	return ((Application*)data)->on_timeout();
+}
+
+gboolean Application::on_timeout()
+{
+	TRY
+	static guint last_seconds = 60;
+	
+	guint now = time(NULL);
+	
+	guint seconds = now % 60;
+	if (last_seconds > seconds)
+	{
+		Data data;
+		check_scheduled_recordings(data);
+		update();
+	}
+	last_seconds = seconds;
+	
 	CATCH
 	
 	return true;
@@ -416,7 +473,7 @@ gboolean Application::on_timeout()
 
 Glib::ustring Application::make_recording_filename(const Glib::ustring& description)
 {
-	const Channel* channel = profile_manager.get_current_profile().get_display_channel();
+	Channel* channel = profile_manager.get_current_profile().get_display_channel();
 		
 	if (channel == NULL)
 	{
@@ -425,13 +482,23 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	
 	Glib::ustring start_time = get_local_time_text("%c");
 	Glib::ustring filename;
+	Glib::ustring title = description;
 
-	if (description.size() == 0)
+	if (title.size() == 0)
+	{
+		EpgEvent epg_event;
+		if (channel->epg_events.get_current(epg_event))
+		{
+			title = epg_event.get_title();
+		}
+	}
+	
+	if (title.size() == 0)
 	{
 		filename = Glib::ustring::compose
 		(
 			"%1 - %2.mpeg",
-			channel->get_text(),
+			channel->name,
 			start_time
 		);
 	}
@@ -440,13 +507,15 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		filename = Glib::ustring::compose
 		(
 			"%1 - %2 - %3.mpeg",
+			title,
 			channel->name,
-			description,
 			start_time
 		);
 	}
+
+	Glib::ustring fixed_filename = Glib::filename_from_utf8(filename);
 	
-	return Glib::build_filename(get_string_configuration_value("recording_directory"), filename);
+	return Glib::build_filename(get_string_configuration_value("recording_directory"), fixed_filename);
 }
 
 StreamThread* Application::get_stream_thread()

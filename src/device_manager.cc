@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include "me-tv-i18n.h"
 #include "device_manager.h"
 
 #define NO_FRONTEND_MESSAGE _("There are no available DVB tuner devices")
@@ -81,10 +82,6 @@ DeviceManager::DeviceManager()
 	{
 		g_debug("Using '%s' (%s) ", frontend->get_frontend_info().name, frontend->get_path().c_str());
 	}
-	else
-	{
-		throw Exception(NO_FRONTEND_MESSAGE);
-	}
 }
 
 DeviceManager::~DeviceManager()
@@ -92,6 +89,7 @@ DeviceManager::~DeviceManager()
 	if (frontend != NULL)
 	{
 		delete frontend;
+		frontend = NULL;
 		g_debug("Closed DVB device");
 	}
 }
@@ -102,7 +100,8 @@ gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend
 
 	switch(test_frontend.get_frontend_type())
 	{
-	case FE_OFDM:	// DVB-T
+	case FE_ATSC:
+        case FE_OFDM:	// DVB-T
 	case FE_QAM:	// DVB-C
 		result = true;
 		break;

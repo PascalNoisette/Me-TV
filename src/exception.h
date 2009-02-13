@@ -21,10 +21,10 @@
 #ifndef __EXCEPTION_H__
 #define __EXCEPTION_H__
 
+#include "me-tv.h"
 #include <glibmm.h>
 #include <errno.h>
 #include <string.h>
-#include "me-tv.h"
 
 #define TRY		try {
 #define CATCH	} \

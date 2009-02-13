@@ -22,7 +22,6 @@
 #define __PROFILE_MANAGER_H__
 
 #include <glibmm.h>
-#include <glibmm/i18n.h>
 #include "dvb_frontend.h"
 #include "exception.h"
 #include "dvb_si.h"

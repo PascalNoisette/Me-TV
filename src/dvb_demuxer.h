@@ -21,12 +21,12 @@
 #ifndef __DVB_DEMUXER_H__
 #define __DVB_DEMUXER_H__
 
-#include <linux/dvb/dmx.h>
-#include <linux/types.h>
 #include <sys/poll.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <glibmm.h>
+#include <linux/dvb/dmx.h>
+#include <linux/types.h>
 
 namespace Dvb
 {

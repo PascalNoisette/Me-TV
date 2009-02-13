@@ -23,7 +23,8 @@
 #include "channel.h"
 #include "me-tv.h"
 
-StatusIcon::StatusIcon(Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) : glade(glade_xml)
+StatusIcon::StatusIcon(Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)
+	: glade(glade_xml)
 {
 	status_icon = Gtk::StatusIcon::create("me-tv");
 	popup_menu = dynamic_cast<Gtk::Menu*>(glade->get_widget("menu_application_popup"));
@@ -40,6 +41,7 @@ void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
 
 void StatusIcon::on_menu_item_popup_quit_clicked()
 {
+	get_application().get_main_window().hide();
 	Gnome::Main::quit();
 }
 
@@ -55,8 +57,10 @@ void StatusIcon::on_activate()
 
 void StatusIcon::update()
 {
-	const Channel* channel = get_application().get_profile_manager().get_current_profile().get_display_channel();
-	Glib::ustring title = UNKNOWN_TEXT;
+	Channel* channel = get_application().get_profile_manager().get_current_profile().get_display_channel();
+	Glib::ustring title = _("Unknown program");
+
+	status_icon->set_visible(get_application().get_boolean_configuration_value("display_status_icon"));
 	
 	if (channel != NULL)
 	{
