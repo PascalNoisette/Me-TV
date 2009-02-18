@@ -47,9 +47,17 @@ class DeviceMenuItem : public Gtk::RadioMenuItem
 {
 private:
         Dvb::Frontend* frontend;
+
+        static Glib::ustring get_text(Dvb::Frontend* f)
+        {
+                return Glib::ustring::compose("%1 (%2)",
+                        Glib::ustring(f->get_frontend_info().name),
+                        f->get_path());
+        }
+
 public:
         DeviceMenuItem(Gtk::RadioButtonGroup& group, Dvb::Frontend* f) :
-                Gtk::RadioMenuItem(group, f->get_frontend_info().name, false)
+                Gtk::RadioMenuItem(group, get_text(f), false)
         {
                 frontend = f;
         }
