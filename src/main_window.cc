@@ -43,6 +43,23 @@
 KeyCode keycode1, keycode2;
 KeyCode *keycode;
 
+class DeviceMenuItem : public Gtk::RadioMenuItem
+{
+private:
+        Dvb::Frontend* frontend;
+public:
+        DeviceMenuItem(Gtk::RadioButtonGroup& group, const Glib::ustring& text, Dvb::Frontend* f) :
+                Gtk::RadioMenuItem(group, text, false)
+        {
+                frontend = f;
+        }
+
+        void on_toggle()
+        {
+                get_application().get_device_manager().set_frontend(*frontend);
+        }
+};
+
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)
 	: Gnome::UI::App(cobject), glade(glade_xml)
 {
@@ -150,6 +167,8 @@ MainWindow* MainWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 
 void MainWindow::load_devices()
 {
+	Gtk::RadioButtonGroup radio_button_group_devices;
+
 	Gtk::MenuItem* menu_item_devices = dynamic_cast<Gtk::MenuItem*>(glade->get_widget("menu_item_devices"));
 	Gtk::Menu* menu = menu_item_devices->get_submenu();
 	if (menu == NULL)
@@ -169,8 +188,7 @@ void MainWindow::load_devices()
 		for (FrontendList::const_iterator iterator = frontends.begin(); iterator != frontends.end(); iterator++)
 		{
 			Dvb::Frontend* frontend = *iterator;
-			Glib::ustring text = frontend->get_frontend_info().name;
-			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(radio_button_group_devices, text, false);
+                        DeviceMenuItem* menu_item = manage(new DeviceMenuItem(radio_button_group_devices, frontend));
 			menu->append(*menu_item);
 		}
 	}
@@ -514,8 +532,6 @@ void MainWindow::update()
 	}
 	else
 	{
-		Glib::ustring channel_name = encode_xml(channel->name);
-		Glib::ustring name = "<b>" + channel_name + "</b>";
 		window_title = "Me TV - " + channel->get_text();
 		status_text = channel->get_text();
 	}

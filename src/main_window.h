@@ -46,7 +46,6 @@ private:
 	Gtk::HScale*							h_scale_position;
 	Gnome::UI::AppBar*						app_bar;
 	DisplayMode								display_mode, prefullscreen;
-	Gtk::RadioButtonGroup					radio_button_group_devices;
 	guint									last_update_time;
 	guint									last_poke_time;
 	guint									timeout_source;
