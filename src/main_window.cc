@@ -48,8 +48,8 @@ class DeviceMenuItem : public Gtk::RadioMenuItem
 private:
         Dvb::Frontend* frontend;
 public:
-        DeviceMenuItem(Gtk::RadioButtonGroup& group, const Glib::ustring& text, Dvb::Frontend* f) :
-                Gtk::RadioMenuItem(group, text, false)
+        DeviceMenuItem(Gtk::RadioButtonGroup& group, Dvb::Frontend* f) :
+                Gtk::RadioMenuItem(group, f->get_frontend_info().name, false)
         {
                 frontend = f;
         }
