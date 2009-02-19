@@ -34,7 +34,7 @@ class DeviceManager
 private:
 	Glib::ustring get_adapter_path(guint adapter);
 	Glib::ustring get_frontend_path(guint adapter, guint frontend);
-	FrontendList frontends;		
+	FrontendList frontends;	
 	Dvb::Frontend* frontend;
 	gboolean is_frontend_supported(const Dvb::Frontend& frontend);
 
@@ -43,7 +43,7 @@ public:
 	~DeviceManager();
 		
 	void set_frontend(Dvb::Frontend& new_frontend);
-	Dvb::Frontend& get_frontend_by_path(const Glib::ustring& path);
+	Dvb::Frontend* get_frontend_by_path(const Glib::ustring& path);
 	Dvb::Frontend& get_frontend();
 	const FrontendList& get_frontends() { return frontends; };
 };

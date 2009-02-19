@@ -224,7 +224,15 @@ void Application::run()
 	}
 	else
 	{
-		device_manager.set_frontend(device_manager.get_frontend_by_path(default_frontend));
+		Dvb::Frontend* frontend = device_manager.get_frontend_by_path(default_frontend);
+		if (frontend == NULL)
+		{
+			g_debug("Default device not available");
+		}
+		else
+		{
+			device_manager.set_frontend(*frontend);
+		}
 	}
 
 	if (!minimised_mode)
@@ -559,7 +567,7 @@ void Application::start_recording(const Glib::ustring& filename, guint id)
 		
 		if (stream_thread == NULL)
 		{
-			throw Exception(_("Stream thread has not been created"));
+			throw Exception(_("There is no stream to record"));
 		}
 		
 		Glib::ustring recording_filename = filename;

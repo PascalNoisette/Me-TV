@@ -48,6 +48,7 @@ DevicesDialog::DevicesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::
 
 void DevicesDialog::on_show()
 {
+	TRY
 	Dvb::Frontend& current_frontend = get_application().get_device_manager().get_frontend();
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_devices->get_selection();
 
@@ -69,6 +70,7 @@ void DevicesDialog::on_show()
 			selection->select(row);
 		}
 	}
+	CATCH
 
 	Gtk::Dialog::on_show();
 }

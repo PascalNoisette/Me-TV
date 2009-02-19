@@ -79,11 +79,6 @@ DeviceManager::DeviceManager()
 	{
 		set_frontend(**frontends.begin());
 	}
-	
-	if (frontend != NULL)
-	{
-		g_debug("Using '%s' (%s) ", frontend->get_frontend_info().name, frontend->get_path().c_str());
-	}
 }
 
 DeviceManager::~DeviceManager()
@@ -125,7 +120,7 @@ Dvb::Frontend& DeviceManager::get_frontend()
 	return *frontend;
 }
 
-Dvb::Frontend& DeviceManager::get_frontend_by_path(const Glib::ustring& path)
+Dvb::Frontend* DeviceManager::get_frontend_by_path(const Glib::ustring& path)
 {
 	Dvb::Frontend* result = NULL;
 
@@ -138,12 +133,7 @@ Dvb::Frontend& DeviceManager::get_frontend_by_path(const Glib::ustring& path)
 		}
 	}
 	
-	if (result == NULL)
-	{
-		throw Exception(_("Failed to get frontend by path: frontend not available"));
-	}
-	
-	return *result;
+	return result;
 }
 
 void DeviceManager::set_frontend(Dvb::Frontend& new_frontend)
@@ -155,6 +145,8 @@ void DeviceManager::set_frontend(Dvb::Frontend& new_frontend)
 			frontend->close();
 		}
 		frontend = &new_frontend;
-		new_frontend.open();
+		frontend->open();
+
+		g_debug("Using '%s' (%s) ", frontend->get_frontend_info().name, frontend->get_path().c_str());
 	}
 }
