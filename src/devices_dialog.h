@@ -18,34 +18,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __DEVICE_MANAGER_H__
-#define __DEVICE_MANAGER_H__
+#ifndef __DEVICES_DIALOG_H__
+#define __DEVICES_DIALOG_H__
 
-#include "me-tv.h"
-#include <glibmm.h>
-#include <giomm.h>
-#include "dvb_frontend.h"
-#include "exception.h"
+#include <libgnomeuimm.h>
+#include <libglademm.h>
 
-typedef std::list<Dvb::Frontend*> FrontendList;
-
-class DeviceManager
+class DevicesDialog : public Gtk::Dialog
 {
 private:
-	Glib::ustring get_adapter_path(guint adapter);
-	Glib::ustring get_frontend_path(guint adapter, guint frontend);
-	FrontendList frontends;		
-	Dvb::Frontend* frontend;
-	gboolean is_frontend_supported(const Dvb::Frontend& frontend);
+	class ModelColumns : public Gtk::TreeModelColumnRecord
+	{
+	public:
+		ModelColumns()
+		{
+			add(column_name);
+			add(column_path);
+			add(column_frontend);
+		}
+
+		Gtk::TreeModelColumn<Glib::ustring>		column_name;
+		Gtk::TreeModelColumn<Glib::ustring>		column_path;
+		Gtk::TreeModelColumn<Dvb::Frontend*>	column_frontend;
+	};
+		
+	ModelColumns columns;
+	Glib::RefPtr<Gtk::ListStore> list_store;
+	const Glib::RefPtr<Gnome::Glade::Xml> glade;
+	Gtk::TreeView* tree_view_devices;
+
+	void on_response(int response_id);
 
 public:
-	DeviceManager();
-	~DeviceManager();
-		
-	void set_frontend(Dvb::Frontend& f) { frontend = &f; };
-	Dvb::Frontend& get_frontend_by_path(const Glib::ustring& path);
-	Dvb::Frontend& get_frontend();
-	const FrontendList& get_frontends() { return frontends; };
+	DevicesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+
+	static DevicesDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 };
 
 #endif

@@ -78,6 +78,7 @@ private:
 	void on_menu_item_meters_clicked();
 	void on_menu_item_schedule_clicked();
 	void on_menu_item_channels_clicked();
+	void on_menu_item_devices_clicked();
 	void on_menu_item_preferences_clicked();
 	void on_menu_item_fullscreen_clicked();
 	void on_menu_item_mute_clicked();
@@ -104,6 +105,7 @@ public:
 		
 	static MainWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 		
+	void show_devices_dialog();
 	void show_channels_dialog();
 	void show_preferences_dialog();
 	void toggle_visibility();

@@ -329,7 +329,7 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 	Glib::ustring initial_tuning_file;
 	
 	Gtk::RadioButton* radio_button_scan_by_location = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_by_location"));
-	Gtk::RadioButton* radio_button_scan_by_country = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_by_country"));
+	Gtk::RadioButton* radio_button_scan_by_file = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_by_file"));
 	Gtk::RadioButton* radio_button_scan_import_channels_conf = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_import_channels_conf"));
 		
 	if (radio_button_scan_by_location->get_active())
@@ -338,7 +338,7 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 		Glib::ustring region_name = combo_box_select_region->get_active_text();
 		initial_tuning_file = scan_directory_path + "/" + country_name + "-" + region_name;
 	}
-	else if (radio_button_scan_by_country->get_active())
+	else if (radio_button_scan_by_file->get_active())
 	{
 		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_select_file_to_scan"));
 		initial_tuning_file = file_chooser->get_filename();

@@ -74,6 +74,7 @@ public:
 	Glib::StaticRecMutex& get_mutex();
 	StreamThread* get_stream_thread();
 	void stop_stream_thread();
+	void restart_stream();
 	void set_source(const Channel& channel);		
 
 	void update();
