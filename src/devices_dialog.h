@@ -47,6 +47,7 @@ private:
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 	Gtk::TreeView* tree_view_devices;
 
+	void on_show();
 	void on_response(int response_id);
 
 public:

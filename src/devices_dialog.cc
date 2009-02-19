@@ -36,7 +36,6 @@ DevicesDialog::DevicesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::
 	Gtk::Dialog(cobject), glade(glade_xml)
 {
 	tree_view_devices = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_devices"));
-	Dvb::Frontend& current_frontend = get_application().get_device_manager().get_frontend();
 	
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_devices->set_model(list_store);
@@ -45,7 +44,15 @@ DevicesDialog::DevicesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::
 	
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_devices->get_selection();
 	selection->set_mode(Gtk::SELECTION_SINGLE);
-	
+}
+
+void DevicesDialog::on_show()
+{
+	Dvb::Frontend& current_frontend = get_application().get_device_manager().get_frontend();
+	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_devices->get_selection();
+
+	list_store->clear();
+
 	const FrontendList& frontends = get_application().get_device_manager().get_frontends();
 	for (FrontendList::const_iterator i = frontends.begin(); i != frontends.end(); i++)
 	{
@@ -62,6 +69,8 @@ DevicesDialog::DevicesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::
 			selection->select(row);
 		}
 	}
+
+	Gtk::Dialog::on_show();
 }
 
 void DevicesDialog::on_response(int response_id)
@@ -81,7 +90,7 @@ void DevicesDialog::on_response(int response_id)
 		Dvb::Frontend* frontend = row[columns.column_frontend];
 		Dvb::Frontend& current_frontend = get_application().get_device_manager().get_frontend();
 		
-		if (frontend != current_frontend)
+		if (frontend != &current_frontend)
 		{
 			Application& application = get_application();
 			application.get_device_manager().set_frontend(*frontend);
