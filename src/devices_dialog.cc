@@ -81,20 +81,18 @@ void DevicesDialog::on_response(int response_id)
 		Glib::RefPtr<Gtk::TreeSelection> tree_selection = tree_view_devices->get_selection();
 		Gtk::TreeModel::iterator iterator = tree_selection->get_selected();
 		
-		if (!iterator)
+		if (iterator)
 		{
-			throw Exception(_("No device selected"));
-		}
-		
-		Gtk::TreeModel::Row row = *iterator;
-		Dvb::Frontend* frontend = row[columns.column_frontend];
-		Dvb::Frontend& current_frontend = get_application().get_device_manager().get_frontend();
-		
-		if (frontend != &current_frontend)
-		{
-			Application& application = get_application();
-			application.get_device_manager().set_frontend(*frontend);
-			application.restart_stream();
+			Gtk::TreeModel::Row row = *iterator;
+			Dvb::Frontend* frontend = row[columns.column_frontend];
+			Dvb::Frontend& current_frontend = get_application().get_device_manager().get_frontend();
+			
+			if (frontend != &current_frontend)
+			{
+				Application& application = get_application();
+				application.get_device_manager().set_frontend(*frontend);
+				application.restart_stream();
+			}
 		}
 	}
 	CATCH
