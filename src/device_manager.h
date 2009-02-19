@@ -42,7 +42,7 @@ public:
 	DeviceManager();
 	~DeviceManager();
 		
-	void set_frontend(Dvb::Frontend& f) { frontend = &f; };
+	void set_frontend(Dvb::Frontend& new_frontend);
 	Dvb::Frontend& get_frontend_by_path(const Glib::ustring& path);
 	Dvb::Frontend& get_frontend();
 	const FrontendList& get_frontends() { return frontends; };

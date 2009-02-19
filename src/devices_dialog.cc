@@ -90,6 +90,7 @@ void DevicesDialog::on_response(int response_id)
 			if (frontend != &current_frontend)
 			{
 				Application& application = get_application();
+				application.set_string_configuration_value("default_device", frontend->get_path());
 				application.get_device_manager().set_frontend(*frontend);
 				application.restart_stream();
 			}
