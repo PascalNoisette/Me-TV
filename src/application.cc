@@ -666,11 +666,13 @@ void Application::on_error(const Glib::ustring& message)
 	if (main_window != NULL)
 	{
 		Gtk::MessageDialog dialog(*main_window, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+		dialog.set_title(_("Me TV - Error Message"));
 		dialog.run();
 	}
 	else
 	{
 		Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+		dialog.set_title(_("Me TV - Error Message"));
 		dialog.run();
 	}
 }
