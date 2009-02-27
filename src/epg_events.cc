@@ -118,7 +118,7 @@ bool is_old(EpgEvent& epg_event)
 
 void EpgEvents::prune()
 {
-	guint now = convert_to_local_time(time(NULL));
+	now = convert_to_local_time(time(NULL));
 	Glib::RecMutex::Lock lock(mutex);
 	list.remove_if(is_old);
 }
