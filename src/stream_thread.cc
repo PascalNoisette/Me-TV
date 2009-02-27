@@ -112,7 +112,7 @@ void StreamThread::start()
 	setup_dvb();
 	g_debug("Starting stream thread");
 	Thread::start();	
-	start_epg_thread();
+	//start_epg_thread();
 }
 
 void StreamThread::write(gchar* buffer, gsize length)
