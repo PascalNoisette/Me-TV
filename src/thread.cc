@@ -110,6 +110,5 @@ void Thread::terminate()
 	
 gboolean Thread::is_terminated()
 {
-	Glib::RecMutex::Lock lock(mutex);
 	return terminated;
 }

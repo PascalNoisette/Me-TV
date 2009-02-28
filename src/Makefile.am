@@ -111,10 +111,13 @@ me_tv_SOURCES = \
 	devices_dialog.cc \
 	devices_dialog.h
 
+me_tv_CXXFLAGS = \
+        -pg
+
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \
 	LFS_LDFLAGS` `getconf \
-	LFS64_LDFLAGS`
+	LFS64_LDFLAGS` -pg
 
 me_tv_LDADD = \
 	$(ME_TV_LIBS) \

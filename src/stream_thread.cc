@@ -24,7 +24,8 @@
 #include "device_manager.h"
 #include "dvb_transponder.h"
 
-#define TS_PACKET_SIZE 188
+#define TS_PACKET_SIZE	188
+#define BUFFER_SIZE	100
 
 Stream::~Stream()
 {
@@ -91,7 +92,7 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
 	output_channel->set_encoding("");
 	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
-	output_channel->set_buffer_size(TS_PACKET_SIZE * 100);
+	output_channel->set_buffer_size(BUFFER_SIZE * 10);
 
 	close(fd);
 
@@ -112,7 +113,7 @@ void StreamThread::start()
 	setup_dvb();
 	g_debug("Starting stream thread");
 	Thread::start();	
-	//start_epg_thread();
+	start_epg_thread();
 }
 
 void StreamThread::write(gchar* buffer, gsize length)
@@ -162,7 +163,7 @@ const Glib::ustring& StreamThread::get_fifo_path() const
 
 void StreamThread::run()
 {
-	gchar buffer[TS_PACKET_SIZE * 10];
+	gchar buffer[BUFFER_SIZE];
 	gchar pat[TS_PACKET_SIZE];
 	gchar pmt[TS_PACKET_SIZE];
 
@@ -190,7 +191,7 @@ void StreamThread::run()
 			last_insert_time = now;
 		}
 				
-		input_channel->read(buffer, TS_PACKET_SIZE * 10, bytes_read);
+		input_channel->read(buffer, BUFFER_SIZE, bytes_read);
 		write(buffer, bytes_read);
 	}
 	THREAD_CATCH
