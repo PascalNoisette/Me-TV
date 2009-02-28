@@ -111,7 +111,7 @@ void GtkEpgWidget::update_table()
 		table_epg->resize(epg_span_hours * COLUMNS_PER_HOUR + 1, channels.size() + 1);
 
 		guint start_time = time(NULL) + offset;
-		start_time = (start_time / 600) * 600;
+		start_time = (start_time / COLUMNS_PER_HOUR) * COLUMNS_PER_HOUR;
 		
 		guint row = 0;
 		gboolean show_epg_header = get_application().get_boolean_configuration_value("show_epg_header");
@@ -177,10 +177,10 @@ void GtkEpgWidget::create_channel_row(Channel& channel, guint table_row, gboolea
 			}
 			else
 			{
-				start_column = (guint)round((epg_event.start_time - start_time) / 600.0);
+				start_column = (guint)round((epg_event.start_time - start_time) / COLUMNS_PER_HOUR);
 			}
 		
-			guint end_column = (guint)round((event_end_time - start_time) / 600.0);
+			guint end_column = (guint)round((event_end_time - start_time) / COLUMNS_PER_HOUR);
 			if (end_column > number_columns-1)
 			{
 				end_column = number_columns-1;
