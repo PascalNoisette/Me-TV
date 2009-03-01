@@ -111,6 +111,8 @@ me_tv_SOURCES = \
 	devices_dialog.cc \
 	devices_dialog.h
 
+me_tv_CXXFLAGS = 
+
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \
 	LFS_LDFLAGS` `getconf \

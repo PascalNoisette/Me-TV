@@ -1,3 +1,9 @@
+2009-03-01  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.7.16
+	* Fix so to increase the granularity of the GTK EPG widget
+	* Small performance fixes
+
 2009-02-20  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.15
