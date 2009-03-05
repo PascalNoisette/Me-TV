@@ -179,6 +179,10 @@ void Frontend::wait_lock(guint wait_seconds)
 	if (!(status & FE_HAS_LOCK))
 	{
 		g_debug("status: %d", status);
+		struct dvb_frontend_parameters parameters;
+		ioctl(fd, FE_GET_FRONTEND, &parameters);
+		g_debug("currently tuned to freq %d, symbol rate %d, inner fec %d", parameters.frequency, parameters.u.qpsk.symbol_rate, parameters.u.qpsk.fec_inner);
+		
 		throw Exception(_("Failed to lock to channel"));
 	}
 }
