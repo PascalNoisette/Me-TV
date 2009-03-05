@@ -29,6 +29,10 @@
 #include <linux/dvb/frontend.h>
 #include "dvb_transponder.h"
 
+#define LNBHighValue 10600000
+#define LNBLowValue 9750000
+#define LNBSwitchValue 11700000
+
 struct diseqc_cmd
 {
 	struct dvb_diseqc_master_cmd cmd;
@@ -76,8 +80,7 @@ namespace Dvb
 
 		void open();
 		void close();
-		void tune_to (const struct dvb_frontend_parameters& parameters,
-			guint timeout = 5);
+		void tune_to (Transponder& transponder, guint timeout = 5);
 
 		const struct dvb_frontend_parameters& get_frontend_parameters() const;
 		int get_frontend_type() const { return frontend_info.type; }

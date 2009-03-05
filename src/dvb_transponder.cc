@@ -26,6 +26,10 @@
 
 using namespace Dvb;
 
+Transponder::Transponder(const dvb_frontend_parameters params): frontend_parameters(params), satellite_number(0)
+{
+}
+
 void Transponder::add_service(Service& service)
 {
 	services.push_back(service);
@@ -53,4 +57,12 @@ Service& Transponder::get_service(guint service_id)
 	}
 	
 	return *result;
+}
+
+Transponder Transponder::operator=(const Transponder& transponder)
+{
+	(*this).frontend_parameters = transponder.frontend_parameters;
+	(*this).polarisation = transponder.polarisation;
+	(*this).satellite_number	= transponder.satellite_number;
+	return *this;
 }

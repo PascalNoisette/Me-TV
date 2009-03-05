@@ -25,20 +25,32 @@
 #include <linux/dvb/frontend.h>
 #include "dvb_service.h"
 
+
+enum polarisation {
+        POLARISATION_HORIZONTAL     = 0x00,
+        POLARISATION_VERTICAL       = 0x01,
+        POLARISATION_CIRCULAR_LEFT  = 0x02,
+        POLARISATION_CIRCULAR_RIGHT = 0x03
+};
+
+
 namespace Dvb
 {
 	class Transponder
 	{
 	public:
-		ServiceList						services;
+		Transponder(dvb_frontend_parameters params);
 		struct dvb_frontend_parameters	frontend_parameters;
+		ServiceList						services;
 		guint							polarisation;
 		guint							satellite_number;
-		gboolean						hi_band;
+		guint						hi_band;
 		
 		void add_service(Service& service);
 		Service& get_service(guint service_id);
 		ServiceList get_services() { return services; }
+		
+		Transponder operator=(const Transponder& transponder);
 	};
 }
 

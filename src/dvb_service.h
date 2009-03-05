@@ -31,11 +31,11 @@ namespace Dvb
 	class Service
 	{
 	public:
-		Service(const Transponder& transponder);
+		Service(Transponder& transponder);
 			
 		Glib::ustring		name;
 		guint				id;
-		const Transponder&	transponder;
+		Transponder&	transponder;
 		
 		gboolean operator ==(const Service& service) const;
 		gboolean operator !=(const Service& service) const;

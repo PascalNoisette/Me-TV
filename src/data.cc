@@ -476,6 +476,8 @@ void Data::replace_channel(Channel& channel)
 	
 	Glib::ustring fixed_name = channel.name;
 	fix_quotes(fixed_name);
+	
+	Dvb::Transponder transponder = *channel.transponder;
 
 	// General
 	if (channel.channel_id == 0)
@@ -495,28 +497,28 @@ void Data::replace_channel(Channel& channel)
 	parameters.add("SORT_ORDER",	channel.sort_order);
 	parameters.add("MRL",			channel.mrl);
 	parameters.add("SERVICE_ID",	channel.service_id);
-	parameters.add("FREQUENCY",		(guint)channel.frontend_parameters.frequency);
-	parameters.add("INVERSION",		(guint)channel.frontend_parameters.inversion);
+	parameters.add("FREQUENCY",		(guint)transponder.frontend_parameters.frequency);
+	parameters.add("INVERSION",		(guint)transponder.frontend_parameters.inversion);
 
 	if (channel.flags & CHANNEL_FLAG_DVB_T)
 	{
-		parameters.add("BANDWIDTH",				(guint)channel.frontend_parameters.u.ofdm.bandwidth);
-		parameters.add("CODE_RATE_HP",			(guint)channel.frontend_parameters.u.ofdm.code_rate_HP);
-		parameters.add("CODE_RATE_LP",			(guint)channel.frontend_parameters.u.ofdm.code_rate_LP);
-		parameters.add("CONSTELLATION",			(guint)channel.frontend_parameters.u.ofdm.constellation);
-		parameters.add("TRANSMISSION_MODE", 	(guint)channel.frontend_parameters.u.ofdm.transmission_mode);
-		parameters.add("GUARD_INTERVAL",		(guint)channel.frontend_parameters.u.ofdm.guard_interval);
-		parameters.add("HIERARCHY_INFORMATION", (guint)channel.frontend_parameters.u.ofdm.hierarchy_information);
+		parameters.add("BANDWIDTH",				(guint)transponder.frontend_parameters.u.ofdm.bandwidth);
+		parameters.add("CODE_RATE_HP",			(guint)transponder.frontend_parameters.u.ofdm.code_rate_HP);
+		parameters.add("CODE_RATE_LP",			(guint)transponder.frontend_parameters.u.ofdm.code_rate_LP);
+		parameters.add("CONSTELLATION",			(guint)transponder.frontend_parameters.u.ofdm.constellation);
+		parameters.add("TRANSMISSION_MODE", 	(guint)transponder.frontend_parameters.u.ofdm.transmission_mode);
+		parameters.add("GUARD_INTERVAL",		(guint)transponder.frontend_parameters.u.ofdm.guard_interval);
+		parameters.add("HIERARCHY_INFORMATION", (guint)transponder.frontend_parameters.u.ofdm.hierarchy_information);
 	}
 	else if (channel.flags & CHANNEL_FLAG_DVB_C)
 	{
-		parameters.add("SYMBOL_RATE",	(guint)channel.frontend_parameters.u.qam.symbol_rate);
-		parameters.add("FEC_INNER",		(guint)channel.frontend_parameters.u.qam.fec_inner);
-		parameters.add("MODULATION",	(guint)channel.frontend_parameters.u.qam.modulation);
+		parameters.add("SYMBOL_RATE",	(guint)transponder.frontend_parameters.u.qam.symbol_rate);
+		parameters.add("FEC_INNER",		(guint)transponder.frontend_parameters.u.qam.fec_inner);
+		parameters.add("MODULATION",	(guint)transponder.frontend_parameters.u.qam.modulation);
 	}
 	else if (channel.flags & CHANNEL_FLAG_ATSC)
 	{
-		parameters.add("MODULATION", (guint)channel.frontend_parameters.u.vsb.modulation);
+		parameters.add("MODULATION", (guint)transponder.frontend_parameters.u.vsb.modulation);
 	}
 	else
 	{
@@ -618,7 +620,8 @@ ProfileList Data::get_all_profiles()
 			Glib::ustring::compose("SELECT * FROM CHANNEL WHERE PROFILE_ID = %1 ORDER BY SORT_ORDER", profile.profile_id));
 		while (channel_statement.step() == SQLITE_ROW)
 		{
-			Channel channel;
+			Channel channel;			
+			Dvb::Transponder transponder = *channel.transponder;
 			
 			channel.channel_id	= channel_statement.get_int(0);
 			channel.profile_id	= channel_statement.get_int(1);
@@ -628,28 +631,28 @@ ProfileList Data::get_all_profiles()
 			channel.mrl			= channel_statement.get_text(5);
 			channel.service_id	= channel_statement.get_int(6);
 
-			channel.frontend_parameters.frequency	= channel_statement.get_int(7);
-			channel.frontend_parameters.inversion	= (fe_spectral_inversion_t)channel_statement.get_int(8);
+			transponder.frontend_parameters.frequency	= channel_statement.get_int(7);
+			transponder.frontend_parameters.inversion	= (fe_spectral_inversion_t)channel_statement.get_int(8);
 
 			if (channel.flags & CHANNEL_FLAG_DVB_T)
 			{
-				channel.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth_t)channel_statement.get_int(9);
-				channel.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate_t)channel_statement.get_int(10);
-				channel.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate_t)channel_statement.get_int(11);
-				channel.frontend_parameters.u.ofdm.constellation			= (fe_modulation_t)channel_statement.get_int(12);
-				channel.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode_t)channel_statement.get_int(13);
-				channel.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval_t)channel_statement.get_int(14);
-				channel.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy_t)channel_statement.get_int(15);
+				transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth_t)channel_statement.get_int(9);
+				transponder.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate_t)channel_statement.get_int(10);
+				transponder.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate_t)channel_statement.get_int(11);
+				transponder.frontend_parameters.u.ofdm.constellation			= (fe_modulation_t)channel_statement.get_int(12);
+				transponder.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode_t)channel_statement.get_int(13);
+				transponder.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval_t)channel_statement.get_int(14);
+				transponder.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy_t)channel_statement.get_int(15);
 			}
 			else if (channel.flags & CHANNEL_FLAG_DVB_C)
 			{
-				channel.frontend_parameters.u.qam.symbol_rate	= channel_statement.get_int(16);
-				channel.frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)channel_statement.get_int(17);
-				channel.frontend_parameters.u.qam.modulation	= (fe_modulation_t)channel_statement.get_int(18);
+				transponder.frontend_parameters.u.qam.symbol_rate	= channel_statement.get_int(16);
+				transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)channel_statement.get_int(17);
+				transponder.frontend_parameters.u.qam.modulation	= (fe_modulation_t)channel_statement.get_int(18);
 			}
 			else if (channel.flags & CHANNEL_FLAG_ATSC)
 			{
-				channel.frontend_parameters.u.vsb.modulation	= (fe_modulation_t)channel_statement.get_int(18);
+				transponder.frontend_parameters.u.vsb.modulation	= (fe_modulation_t)channel_statement.get_int(18);
 			}
 			channel.epg_events.insert(get_epg_events(channel));
 			profile.add_channel(channel);

@@ -46,7 +46,7 @@ public:
 
 	// DVB Specific
 	guint service_id;
-	struct dvb_frontend_parameters frontend_parameters;
+	Dvb::Transponder *transponder;
 	guint get_transponder_frequency();
 
 	Glib::ustring get_text();
