@@ -112,7 +112,6 @@ void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& 
 	Transponder transponder(frontend_parameters);
 
 	to_scan.push_back(transponder);
-	//tune_to(frontend, transponder);
 }
 
 void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
@@ -128,7 +127,6 @@ void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
 	Transponder transponder(frontend_parameters);
 	
 	to_scan.push_back(transponder);
-	//tune_to(frontend, transponder);
 }
 
 void Scanner::process_satellite_line(Frontend& frontend, const Glib::ustring& line)
@@ -140,7 +138,7 @@ void Scanner::process_satellite_line(Frontend& frontend, const Glib::ustring& li
 	frontend_parameters.inversion			= INVERSION_AUTO;
 	
 	frontend_parameters.u.qpsk.symbol_rate	= initial_scan_line.get_symbol_rate(3);
-	frontend_parameters.u.qpsk.fec_inner		= initial_scan_line.get_fec(4);
+	frontend_parameters.u.qpsk.fec_inner	= initial_scan_line.get_fec(4);
 
 	Transponder transponder(frontend_parameters);
 	transponder.polarisation				= initial_scan_line.get_polarisation(2);
@@ -148,7 +146,6 @@ void Scanner::process_satellite_line(Frontend& frontend, const Glib::ustring& li
 	g_debug("Frequency %d, Symbol rate %d, FEC %d, polarisation %d", frontend_parameters.frequency, frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner, transponder.polarisation);
 	
 	to_scan.push_back(transponder);
-	//tune_to(frontend, transponder);
 }
 
 void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)

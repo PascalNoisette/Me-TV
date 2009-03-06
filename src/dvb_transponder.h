@@ -40,11 +40,12 @@ namespace Dvb
 	{
 	public:
 		Transponder(dvb_frontend_parameters params);
+			
 		struct dvb_frontend_parameters	frontend_parameters;
 		ServiceList						services;
 		guint							polarisation;
 		guint							satellite_number;
-		guint						hi_band;
+		guint							hi_band;
 		
 		void add_service(Service& service);
 		Service& get_service(guint service_id);

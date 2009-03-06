@@ -236,6 +236,7 @@ Data::Data(gboolean initialise)
 			"SYMBOL_RATE INTEGER, "\
 			"FEC_INNER INTEGER, "\
 			"MODULATION INTEGER, "\
+			"POLARISATION INTEGER, "\
 
 			"UNIQUE (NAME));");
 		
@@ -516,6 +517,12 @@ void Data::replace_channel(Channel& channel)
 		parameters.add("FEC_INNER",		(guint)transponder.frontend_parameters.u.qam.fec_inner);
 		parameters.add("MODULATION",	(guint)transponder.frontend_parameters.u.qam.modulation);
 	}
+	else if (channel.flags & CHANNEL_FLAG_DVB_S)
+	{
+		parameters.add("SYMBOL_RATE",	(guint)transponder.frontend_parameters.u.qpsk.symbol_rate);
+		parameters.add("FEC_INNER",		(guint)transponder.frontend_parameters.u.qpsk.fec_inner);
+		parameters.add("POLARISATION",	(guint)transponder.polarisation);
+	}
 	else if (channel.flags & CHANNEL_FLAG_ATSC)
 	{
 		parameters.add("MODULATION", (guint)transponder.frontend_parameters.u.vsb.modulation);
@@ -649,6 +656,12 @@ ProfileList Data::get_all_profiles()
 				transponder.frontend_parameters.u.qam.symbol_rate	= channel_statement.get_int(16);
 				transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)channel_statement.get_int(17);
 				transponder.frontend_parameters.u.qam.modulation	= (fe_modulation_t)channel_statement.get_int(18);
+			}
+			else if (channel.flags & CHANNEL_FLAG_DVB_S)
+			{
+				transponder.frontend_parameters.u.qpsk.symbol_rate	= channel_statement.get_int(16);
+				transponder.frontend_parameters.u.qpsk.fec_inner	= (fe_code_rate_t)channel_statement.get_int(17);
+				transponder.polarisation							= (guint)channel_statement.get_int(19);
 			}
 			else if (channel.flags & CHANNEL_FLAG_ATSC)
 			{
