@@ -35,7 +35,7 @@ namespace Dvb
 			
 		Glib::ustring		name;
 		guint				id;
-		Transponder&	transponder;
+		Transponder&		transponder;
 		
 		gboolean operator ==(const Service& service) const;
 		gboolean operator !=(const Service& service) const;

@@ -478,7 +478,7 @@ void Data::replace_channel(Channel& channel)
 	Glib::ustring fixed_name = channel.name;
 	fix_quotes(fixed_name);
 	
-	Dvb::Transponder transponder = *channel.transponder;
+	Dvb::Transponder& transponder = channel.transponder;
 
 	// General
 	if (channel.channel_id == 0)
@@ -628,7 +628,7 @@ ProfileList Data::get_all_profiles()
 		while (channel_statement.step() == SQLITE_ROW)
 		{
 			Channel channel;			
-			Dvb::Transponder transponder = *channel.transponder;
+			Dvb::Transponder& transponder = channel.transponder;
 			
 			channel.channel_id	= channel_statement.get_int(0);
 			channel.profile_id	= channel_statement.get_int(1);

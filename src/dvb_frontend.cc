@@ -67,7 +67,7 @@ void Frontend::close()
 	}
 }
 
-void Frontend::tune_to (Transponder& transponder, guint wait_seconds)
+void Frontend::tune_to(Transponder& transponder, guint wait_seconds)
 {
 	struct dvb_frontend_parameters parameters = transponder.frontend_parameters;
 	struct dvb_frontend_event ev;
@@ -76,12 +76,22 @@ void Frontend::tune_to (Transponder& transponder, guint wait_seconds)
 	if(frontend_info.type == FE_QPSK)
 	{
 		transponder.hi_band = 0;
-		if(LNBHighValue > 0 && LNBSwitchValue > 0 && parameters.frequency >= LNBSwitchValue) transponder.hi_band = 1;
+		
+		if(LNBHighValue > 0 && LNBSwitchValue > 0 && parameters.frequency >= LNBSwitchValue)
+		{
+			transponder.hi_band = 1;
+		}
 		
 		diseqc(transponder);
 		
-		if(transponder.hi_band == 1) parameters.frequency = abs(parameters.frequency - LNBHighValue);
-		else parameters.frequency = abs(parameters.frequency - LNBLowValue);
+		if(transponder.hi_band == 1)
+		{
+			parameters.frequency = abs(parameters.frequency - LNBHighValue);
+		}
+		else
+		{
+			parameters.frequency = abs(parameters.frequency - LNBLowValue);
+		}
 		
 		g_debug("Diseqc'd, as this is a dvb-s device. We're hiband? %d new freq: %d polarisation: %d", transponder.hi_band, parameters.frequency, transponder.polarisation);
 		usleep(500000);
