@@ -22,6 +22,7 @@
 #include "me-tv-i18n.h"
 #include "main_window.h"
 #include "channels_dialog.h"
+#include "devices_dialog.h"
 #include "meters_dialog.h"
 #include "preferences_dialog.h"
 #include "application.h"
@@ -59,7 +60,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	keycode1 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_L);
 	keycode2 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_R);
 	if (keycode2 == 0)
+	{
 		keycode2 = keycode1;
+	}
 	keycode = &keycode1;
 
 	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
@@ -80,11 +83,11 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("menu_item_quit",			sigc::mem_fun(*this, &MainWindow::on_menu_item_quit_clicked));
 	glade->connect_clicked("menu_item_meters",			sigc::mem_fun(*this, &MainWindow::on_menu_item_meters_clicked));
 	glade->connect_clicked("menu_item_channels",		sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
+	glade->connect_clicked("menu_item_devices",			sigc::mem_fun(*this, &MainWindow::on_menu_item_devices_clicked));
 	glade->connect_clicked("menu_item_preferences",		sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
 	glade->connect_clicked("menu_item_fullscreen",		sigc::mem_fun(*this, &MainWindow::on_menu_item_fullscreen_clicked));	
 	glade->connect_clicked("menu_item_schedule",		sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
 	glade->connect_clicked("menu_item_mute",			sigc::mem_fun(*this, &MainWindow::on_menu_item_mute_clicked));	
-//	glade->connect_clicked("menu_item_help_contents",	sigc::mem_fun(*this, &MainWindow::on_menu_item_help_contents_clicked));	
 	glade->connect_clicked("menu_item_about",			sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
 
 	glade->connect_clicked("tool_button_record",		sigc::mem_fun(*this, &MainWindow::on_tool_button_record_clicked));	
@@ -118,7 +121,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
 	
-	load_devices();
 	set_display_mode(display_mode);
 
 	Application& application = get_application();
@@ -146,37 +148,6 @@ MainWindow* MainWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 	MainWindow* main_window = NULL;
 	glade->get_widget_derived("application_window", main_window);
 	return main_window;
-}
-
-void MainWindow::load_devices()
-{
-	Gtk::MenuItem* menu_item_devices = dynamic_cast<Gtk::MenuItem*>(glade->get_widget("menu_item_devices"));
-	Gtk::Menu* menu = menu_item_devices->get_submenu();
-	if (menu == NULL)
-	{
-		menu = new Gtk::Menu();
-		menu_item_devices->set_submenu(*menu);
-	}
-	
-	const FrontendList& frontends = get_application().get_device_manager().get_frontends();
-	if (frontends.size() == 0)
-	{
-		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("No DVB Devices"));
-		menu->append(*menu_item);
-	}
-	else
-	{
-		for (FrontendList::const_iterator iterator = frontends.begin(); iterator != frontends.end(); iterator++)
-		{
-			Dvb::Frontend* frontend = *iterator;
-			Glib::ustring text = frontend->get_frontend_info().name;
-			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(radio_button_group_devices, text, false);
-			menu->append(*menu_item);
-		}
-	}
-
-	menu_item_devices->set_submenu(*menu);
-	menu_item_devices->show_all();
 }
 
 void MainWindow::on_menu_item_record_clicked()
@@ -222,6 +193,20 @@ void MainWindow::on_menu_item_channels_clicked()
 	TRY
 	show_channels_dialog();
 	CATCH
+}
+
+void MainWindow::on_menu_item_devices_clicked()
+{
+	TRY
+	show_devices_dialog();
+	CATCH
+}
+
+void MainWindow::show_devices_dialog()
+{
+	DevicesDialog& devices_dialog = DevicesDialog::create(glade);
+	devices_dialog.run();
+	devices_dialog.hide();
 }
 
 void MainWindow::show_channels_dialog()
@@ -514,8 +499,6 @@ void MainWindow::update()
 	}
 	else
 	{
-		Glib::ustring channel_name = encode_xml(channel->name);
-		Glib::ustring name = "<b>" + channel_name + "</b>";
 		window_title = "Me TV - " + channel->get_text();
 		status_text = channel->get_text();
 	}

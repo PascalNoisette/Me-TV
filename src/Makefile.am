@@ -107,7 +107,11 @@ me_tv_SOURCES = \
 	lib_gstreamer_engine.cc \
 	lib_gstreamer_engine.h \
 	xine_lib_engine.cc \
-	xine_lib_engine.h
+	xine_lib_engine.h \
+	devices_dialog.cc \
+	devices_dialog.h
+
+me_tv_CXXFLAGS = 
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \

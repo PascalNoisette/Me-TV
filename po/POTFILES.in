@@ -18,6 +18,8 @@ src/data.cc
 src/data.h
 src/device_manager.cc
 src/device_manager.h
+src/devices_dialog.cc
+src/devices_dialog.h
 src/dvb_demuxer.cc
 src/dvb_demuxer.h
 src/dvb_frontend.cc

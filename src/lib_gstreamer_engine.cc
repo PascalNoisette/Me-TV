@@ -124,7 +124,7 @@ GstElement* LibGStreamerEngine::create_element(const Glib::ustring& factoryname,
 	
 	if (element == NULL)
 	{
-		Glib::ustring message = Glib::ustring::compose(N_("Failed to create GStreamer element '%1'"), name);
+		Glib::ustring message = Glib::ustring::compose(_("Failed to create GStreamer element '%1'"), Glib::ustring(name));
 		throw Exception(message);
 	}
 	

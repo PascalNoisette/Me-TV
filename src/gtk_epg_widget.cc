@@ -22,6 +22,9 @@
 #include "application.h"
 #include "scheduled_recording_dialog.h"
 
+#define MINUTES_PER_COLUMN	1
+#define COLUMNS_PER_HOUR	(60 * MINUTES_PER_COLUMN)
+
 GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
 	Gtk::ScrolledWindow(cobject), glade(glade_xml)
 {
@@ -105,10 +108,10 @@ void GtkEpgWidget::update_table()
 		Channel* display_channel = profile.get_display_channel();
 		ChannelList& channels = profile.get_channels();
 
-		table_epg->resize(epg_span_hours * 6 + 1, channels.size() + 1);
+		table_epg->resize(epg_span_hours * COLUMNS_PER_HOUR + 1, channels.size() + 1);
 
 		guint start_time = time(NULL) + offset;
-		start_time = (start_time / 600) * 600;
+		start_time = (start_time / COLUMNS_PER_HOUR) * COLUMNS_PER_HOUR;
 		
 		guint row = 0;
 		gboolean show_epg_header = get_application().get_boolean_configuration_value("show_epg_header");
@@ -118,7 +121,7 @@ void GtkEpgWidget::update_table()
 			{
 				guint hour_time = start_time + (hour * 60 * 60);
 				Glib::ustring hour_time_text = get_local_time_text(hour_time, "%c");
-				Gtk::Button& button = attach_button(hour_time_text, hour*6 + 1, (hour+1)*6 + 1, 0, 1, Gtk::FILL | Gtk::EXPAND);
+				Gtk::Button& button = attach_button(hour_time_text, hour * COLUMNS_PER_HOUR + 1, (hour+1) * COLUMNS_PER_HOUR + 1, 0, 1, Gtk::FILL | Gtk::EXPAND);
 				button.set_sensitive(false);
 			}
 			row++;
@@ -129,6 +132,7 @@ void GtkEpgWidget::update_table()
 			Channel& channel = *iterator;
 			gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
 			create_channel_row(channel, row++, selected, start_time);
+                        Gdk::Window::process_all_updates();
 		}
 		get_window()->thaw_updates();
 	}
@@ -152,7 +156,7 @@ void GtkEpgWidget::create_channel_row(Channel& channel, guint table_row, gboolea
 	guint total_number_columns = 0;
 	guint end_time = start_time + epg_span_hours*60*60;
 	guint last_event_end_time = 0;
-	guint number_columns = epg_span_hours * 6 + 1;
+	guint number_columns = epg_span_hours * COLUMNS_PER_HOUR + 1;
 	
 	EpgEventList events = channel.epg_events.get_list();
 	for (EpgEventList::const_iterator i = events.begin(); i != events.end(); i++)
@@ -173,10 +177,10 @@ void GtkEpgWidget::create_channel_row(Channel& channel, guint table_row, gboolea
 			}
 			else
 			{
-				start_column = (guint)round((epg_event.start_time - start_time) / 600.0);
+				start_column = (guint)round((epg_event.start_time - start_time) / COLUMNS_PER_HOUR);
 			}
 		
-			guint end_column = (guint)round((event_end_time - start_time) / 600.0);
+			guint end_column = (guint)round((event_end_time - start_time) / COLUMNS_PER_HOUR);
 			if (end_column > number_columns-1)
 			{
 				end_column = number_columns-1;
@@ -188,19 +192,10 @@ void GtkEpgWidget::create_channel_row(Channel& channel, guint table_row, gboolea
 				// If there's a gap, plug it
 				if (start_column > total_number_columns)
 				{
-					// If it's a small gap then just extend the event
-					if (epg_event.start_time - last_event_end_time <= 2 * 60)
-					{
-						start_column = total_number_columns;
-						column_count = end_column - start_column;
-					}
-					else
-					{
-						guint empty_columns = start_column - total_number_columns;
-						Gtk::Button& button = attach_button(_("Unknown program"), total_number_columns + 1, start_column + 1, table_row, table_row + 1);
-						button.set_sensitive(false);
-						total_number_columns += empty_columns;
-					}
+					guint empty_columns = start_column - total_number_columns;
+					Gtk::Button& button = attach_button(_("Unknown program"), total_number_columns + 1, start_column + 1, table_row, table_row + 1);
+					button.set_sensitive(false);
+					total_number_columns += empty_columns;
 				}
 			
 				if (column_count > 0)

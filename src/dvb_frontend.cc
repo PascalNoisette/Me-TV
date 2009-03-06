@@ -31,26 +31,38 @@ Frontend::Frontend(const Adapter& frontend_adapter, guint frontend_index)
 	fd = -1;
 	memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
 	frontend = frontend_index;
-
-	Glib::ustring path = adapter.get_frontend_path(frontend);
-	g_debug("Opening frontend device: %s", path.c_str());
-	if ( ( fd = open ( path.c_str(), O_RDWR | O_NONBLOCK ) ) < 0 )
-	{
-		throw SystemException(_("Failed to open tuner"));
-	}
-	
-	if ( ioctl ( fd, FE_GET_INFO, &frontend_info ) < 0 )
-	{
-		throw SystemException(_("Failed to get tuner info"));
-	}
 }
 
 Frontend::~Frontend()
 {
+	close();
 	g_debug("Frontend destroyed");
+}
+
+void Frontend::open()
+{
+	if (fd == -1)
+	{
+		Glib::ustring path = adapter.get_frontend_path(frontend);
+		g_debug("Opening frontend device: %s", path.c_str());
+		if ( ( fd = ::open ( path.c_str(), O_RDWR | O_NONBLOCK ) ) < 0 )
+		{
+			throw SystemException(_("Failed to open tuner"));
+		}
+	
+		if ( ioctl ( fd, FE_GET_INFO, &frontend_info ) < 0 )
+		{
+			throw SystemException(_("Failed to get tuner info"));
+		}
+	}
+}
+
+void Frontend::close()
+{
 	if (fd != -1)
 	{
-		close(fd);
+		::close(fd);
+		fd = -1;
 	}
 }
 

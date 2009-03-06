@@ -50,9 +50,10 @@ DeviceManager::DeviceManager()
 		frontend_path = get_frontend_path(adapter_count, frontend_count);
 		while (Gio::File::create_for_path(frontend_path)->query_exists())
 		{
+			Dvb::Frontend* current = new Dvb::Frontend(*adapter, frontend_count);
 			try
 			{
-				Dvb::Frontend* current = new Dvb::Frontend(*adapter, frontend_count);
+				current->open();
 				if (!is_frontend_supported(*current))
 				{
 					g_debug("Frontend not supported");
@@ -66,6 +67,7 @@ DeviceManager::DeviceManager()
 			{
 				g_debug("Failed to load '%s'", frontend_path.c_str());
 			}
+			current->close();
 			
 			frontend_path = get_frontend_path(adapter_count, ++frontend_count);
 		}
@@ -75,12 +77,7 @@ DeviceManager::DeviceManager()
 	
 	if (frontends.size() > 0)
 	{
-		frontend = *(frontends.begin());
-	}
-	
-	if (frontend != NULL)
-	{
-		g_debug("Using '%s' (%s) ", frontend->get_frontend_info().name, frontend->get_path().c_str());
+		set_frontend(**frontends.begin());
 	}
 }
 
@@ -123,10 +120,10 @@ Dvb::Frontend& DeviceManager::get_frontend()
 	return *frontend;
 }
 
-Dvb::Frontend& DeviceManager::get_frontend_by_path(const Glib::ustring& path)
+Dvb::Frontend* DeviceManager::get_frontend_by_path(const Glib::ustring& path)
 {
 	Dvb::Frontend* result = NULL;
-	
+
 	for (FrontendList::iterator iterator = frontends.begin(); iterator != frontends.end(); iterator++)
 	{
 		Dvb::Frontend* current_frontend = *iterator;
@@ -136,10 +133,20 @@ Dvb::Frontend& DeviceManager::get_frontend_by_path(const Glib::ustring& path)
 		}
 	}
 	
-	if (result == NULL)
+	return result;
+}
+
+void DeviceManager::set_frontend(Dvb::Frontend& new_frontend)
+{
+	if (frontend != &new_frontend)
 	{
-		throw Exception(_("Failed to get frontend by path"));
+		if (frontend != NULL)
+		{
+			frontend->close();
+		}
+		frontend = &new_frontend;
+		frontend->open();
+
+		g_debug("Using '%s' (%s) ", frontend->get_frontend_info().name, frontend->get_path().c_str());
 	}
-	
-	return *result;
 }

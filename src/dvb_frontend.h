@@ -74,6 +74,8 @@ namespace Dvb
 		Frontend(const Adapter& adapter, guint frontend);
 		~Frontend();
 
+		void open();
+		void close();
 		void tune_to (const struct dvb_frontend_parameters& parameters,
 			guint timeout = 5);
 

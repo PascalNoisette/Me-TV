@@ -20,9 +20,9 @@
 
 #include "application.h"
 #include "data.h"
+#include "devices_dialog.h"
 
 #define GCONF_PATH		"/apps/me-tv"
-//#define TEST_VIDEO_SOURCE "/usr/share/xine/visuals/default.avi"
 
 Application* Application::current = NULL;
 
@@ -50,10 +50,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	scheduled_recording_id = 0;
 	record_state = false;
 	broadcast_state = false;
-
-#ifndef TEST_VIDEO_SOURCE
-	device_manager.get_frontend();
-#endif
 	
 	signal_quit().connect(sigc::mem_fun(this, &Application::on_quit));
 
@@ -90,6 +86,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_int_configuration_default("y", 10);
 	set_int_configuration_default("width", 500);
 	set_int_configuration_default("height", 500);
+	set_string_configuration_default("default_frontend", "");
 
 	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);
@@ -208,9 +205,36 @@ void Application::run()
 {
 	TRY
 	GdkLock gdk_lock;
+
 	status_icon = new StatusIcon(glade);
 	main_window = MainWindow::create(glade);
 	
+	Glib::ustring default_frontend = get_string_configuration_value("default_frontend");
+	if (default_frontend.size() == 0)
+	{
+		const FrontendList& frontends = device_manager.get_frontends();
+		if (frontends.size() > 1)
+		{
+			main_window->show();
+			main_window->show_devices_dialog();
+
+			// Only need to set this when there's more than 1 adapter
+			set_string_configuration_value("default_frontend", device_manager.get_frontend().get_path());
+		}
+	}
+	else
+	{
+		Dvb::Frontend* frontend = device_manager.get_frontend_by_path(default_frontend);
+		if (frontend == NULL)
+		{
+			g_debug("Default device not available");
+		}
+		else
+		{
+			device_manager.set_frontend(*frontend);
+		}
+	}
+
 	if (!minimised_mode)
 	{
 		main_window->show();
@@ -221,7 +245,6 @@ void Application::run()
 		}
 	}
 
-#ifndef TEST_VIDEO_SOURCE
 	Profile& current_profile = get_profile_manager().get_current_profile();
 	ChannelList& channels = current_profile.get_channels();
 	if (channels.size() == 0)
@@ -243,9 +266,6 @@ void Application::run()
 		}
 		current_profile.set_display_channel(last_channel);
 	}
-#else
-	main_window->play(TEST_VIDEO_SOURCE);
-#endif
 	
 	Gnome::Main::run();
 		
@@ -288,7 +308,6 @@ void Application::set_source(const Channel& channel)
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-#ifndef TEST_VIDEO_SOURCE
 	main_window->stop_engine();
 	stop_stream_thread();
 	stream_thread = new StreamThread(channel);
@@ -311,9 +330,6 @@ void Application::set_source(const Channel& channel)
 		stop_stream_thread();
 		get_signal_error().emit(exception.what().c_str());
 	}
-#else
-	main_window->play(TEST_VIDEO_SOURCE);
-#endif
 	
 	update();
 }
@@ -551,7 +567,7 @@ void Application::start_recording(const Glib::ustring& filename, guint id)
 		
 		if (stream_thread == NULL)
 		{
-			throw Exception(_("Stream thread has not been created"));
+			throw Exception(_("There is no stream to record"));
 		}
 		
 		Glib::ustring recording_filename = filename;
@@ -650,11 +666,22 @@ void Application::on_error(const Glib::ustring& message)
 	if (main_window != NULL)
 	{
 		Gtk::MessageDialog dialog(*main_window, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+		dialog.set_title(_("Me TV - Error Message"));
 		dialog.run();
 	}
 	else
 	{
 		Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+		dialog.set_title(_("Me TV - Error Message"));
 		dialog.run();
+	}
+}
+
+void Application::restart_stream()
+{
+	Channel* channel = get_profile_manager().get_current_profile().get_display_channel();
+	if (channel != NULL)
+	{
+		set_source(*channel);
 	}
 }

@@ -27,14 +27,6 @@
 #include "dvb_frontend.h"
 #include "exception.h"
 
-typedef enum
-{
-	USAGE_TYPE_SCANNING,
-	USAGE_TYPE_RECORDING,		
-	USAGE_TYPE_VIEWING,
-	USAGE_TYPE_EPG_UPDATE
-} UsageType;
-
 typedef std::list<Dvb::Frontend*> FrontendList;
 
 class DeviceManager
@@ -42,7 +34,7 @@ class DeviceManager
 private:
 	Glib::ustring get_adapter_path(guint adapter);
 	Glib::ustring get_frontend_path(guint adapter, guint frontend);
-	FrontendList frontends;		
+	FrontendList frontends;	
 	Dvb::Frontend* frontend;
 	gboolean is_frontend_supported(const Dvb::Frontend& frontend);
 
@@ -50,9 +42,8 @@ public:
 	DeviceManager();
 	~DeviceManager();
 		
-	const std::list<Dvb::Frontend*> get_frontends() const;
-	void set_frontend(Dvb::Frontend& f) { frontend = &f; };
-	Dvb::Frontend& get_frontend_by_path(const Glib::ustring& path);
+	void set_frontend(Dvb::Frontend& new_frontend);
+	Dvb::Frontend* get_frontend_by_path(const Glib::ustring& path);
 	Dvb::Frontend& get_frontend();
 	const FrontendList& get_frontends() { return frontends; };
 };
