@@ -302,9 +302,9 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 						channel.sort_order = line_count;
 						channel.flags = CHANNEL_FLAG_ATSC;
 				
-						(*channel.transponder).frontend_parameters.frequency						= channels_conf_line.get_frequency(1);
-						(*channel.transponder).frontend_parameters.inversion						= INVERSION_AUTO;
-						(*channel.transponder).frontend_parameters.u.vsb.modulation				= channels_conf_line.get_modulation(2);
+						(*channel.transponder).frontend_parameters.frequency		= channels_conf_line.get_frequency(1);
+						(*channel.transponder).frontend_parameters.inversion		= INVERSION_AUTO;
+						(*channel.transponder).frontend_parameters.u.vsb.modulation	= channels_conf_line.get_modulation(2);
 						channel.service_id											= channels_conf_line.get_service_id(5);
 				
 						current_profile.add_channel(channel);
@@ -418,6 +418,10 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 				channel.flags = CHANNEL_FLAG_DVB_T;
 				break;
 				
+			case FE_QPSK:
+				channel.flags = CHANNEL_FLAG_DVB_S;
+				break;
+
 			case FE_QAM:
 				channel.flags = CHANNEL_FLAG_DVB_C;
 				break;
