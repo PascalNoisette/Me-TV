@@ -277,6 +277,7 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 				frontend_parameters.u.qpsk.symbol_rate *= 100;
 				
 				frontend_parameters.u.qpsk.fec_inner = parse_fec_inner(get_bits(buffer + offset + 7, 28, 4));
+				frontend_parameters.inversion = INVERSION_AUTO;
 				
 				Transponder transponder(frontend_parameters);
 				transponder.polarisation = polarisation;

@@ -50,7 +50,7 @@ public:
 				
 public:
 	ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file) :
-		Thread("Scan"), scanner(10), initial_tuning_file(file), frontend(scan_frontend) {}
+		Thread("Scan"), scanner(2), initial_tuning_file(file), frontend(scan_frontend) {}
 		
 	void run()
 	{
