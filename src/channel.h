@@ -45,8 +45,8 @@ public:
 	EpgEvents		epg_events;
 
 	// DVB Specific
-	guint service_id;
-	Dvb::Transponder *transponder;
+	guint				service_id;
+	Dvb::Transponder	transponder;
 	guint get_transponder_frequency();
 
 	Glib::ustring get_text();

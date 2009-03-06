@@ -109,10 +109,10 @@ void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& 
 	frontend_parameters.u.ofdm.guard_interval			= initial_scan_line.get_guard_interval(7);
 	frontend_parameters.u.ofdm.hierarchy_information	= initial_scan_line.get_hierarchy(8);
 
-	Transponder transponder(frontend_parameters);
+	Transponder transponder;
+	transponder.frontend_parameters = frontend_parameters;
 
 	to_scan.push_back(transponder);
-	//tune_to(frontend, transponder);
 }
 
 void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
@@ -125,10 +125,10 @@ void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
 	frontend_parameters.u.vsb.modulation	= initial_scan_line.get_modulation(2);
 	frontend_parameters.inversion			= INVERSION_AUTO;
 
-	Transponder transponder(frontend_parameters);
+	Transponder transponder;
+	transponder.frontend_parameters = frontend_parameters;
 	
 	to_scan.push_back(transponder);
-	//tune_to(frontend, transponder);
 }
 
 void Scanner::process_satellite_line(Frontend& frontend, const Glib::ustring& line)
@@ -140,15 +140,15 @@ void Scanner::process_satellite_line(Frontend& frontend, const Glib::ustring& li
 	frontend_parameters.inversion			= INVERSION_AUTO;
 	
 	frontend_parameters.u.qpsk.symbol_rate	= initial_scan_line.get_symbol_rate(3);
-	frontend_parameters.u.qpsk.fec_inner		= initial_scan_line.get_fec(4);
+	frontend_parameters.u.qpsk.fec_inner	= initial_scan_line.get_fec(4);
 
-	Transponder transponder(frontend_parameters);
-	transponder.polarisation				= initial_scan_line.get_polarisation(2);
+	Transponder transponder;
+	transponder.frontend_parameters = frontend_parameters;
+	transponder.polarisation		= initial_scan_line.get_polarisation(2);
 	
 	g_debug("Frequency %d, Symbol rate %d, FEC %d, polarisation %d", frontend_parameters.frequency, frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner, transponder.polarisation);
 	
 	to_scan.push_back(transponder);
-	//tune_to(frontend, transponder);
 }
 
 void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)
@@ -163,7 +163,8 @@ void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)
 	frontend_parameters.u.qam.fec_inner		= initial_scan_line.get_fec(3);
 	frontend_parameters.u.qam.modulation	= initial_scan_line.get_modulation(4);
 
-	Transponder transponder(frontend_parameters);
+	Transponder transponder;
+	transponder.frontend_parameters = frontend_parameters;
 	
 	to_scan.push_back(transponder);
 	//tune_to(frontend, transponder);

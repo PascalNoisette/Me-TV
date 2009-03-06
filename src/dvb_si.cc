@@ -279,7 +279,8 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 				frontend_parameters.u.qpsk.fec_inner = parse_fec_inner(get_bits(buffer + offset + 7, 28, 4));
 				frontend_parameters.inversion = INVERSION_AUTO;
 				
-				Transponder transponder(frontend_parameters);
+				Transponder transponder;
+				transponder.frontend_parameters = frontend_parameters;
 				transponder.polarisation = polarisation;
 				section.transponders.push_back(transponder);
 				g_debug("new frequency: %d, new polarisation: %d, symbol rate %d, fec_inner %d", frontend_parameters.frequency, transponder.polarisation, frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner);

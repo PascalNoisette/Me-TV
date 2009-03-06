@@ -236,6 +236,7 @@ Data::Data(gboolean initialise)
 			"SYMBOL_RATE INTEGER, "\
 			"FEC_INNER INTEGER, "\
 			"MODULATION INTEGER, "\
+			"POLARISATION INTEGER, "\
 
 			"UNIQUE (NAME));");
 		
@@ -477,7 +478,7 @@ void Data::replace_channel(Channel& channel)
 	Glib::ustring fixed_name = channel.name;
 	fix_quotes(fixed_name);
 	
-	Dvb::Transponder transponder = *channel.transponder;
+	Dvb::Transponder& transponder = channel.transponder;
 
 	// General
 	if (channel.channel_id == 0)
@@ -515,6 +516,12 @@ void Data::replace_channel(Channel& channel)
 		parameters.add("SYMBOL_RATE",	(guint)transponder.frontend_parameters.u.qam.symbol_rate);
 		parameters.add("FEC_INNER",		(guint)transponder.frontend_parameters.u.qam.fec_inner);
 		parameters.add("MODULATION",	(guint)transponder.frontend_parameters.u.qam.modulation);
+	}
+	else if (channel.flags & CHANNEL_FLAG_DVB_S)
+	{
+		parameters.add("SYMBOL_RATE",	(guint)transponder.frontend_parameters.u.qpsk.symbol_rate);
+		parameters.add("FEC_INNER",		(guint)transponder.frontend_parameters.u.qpsk.fec_inner);
+		parameters.add("POLARISATION",	(guint)transponder.polarisation);
 	}
 	else if (channel.flags & CHANNEL_FLAG_ATSC)
 	{
@@ -621,7 +628,7 @@ ProfileList Data::get_all_profiles()
 		while (channel_statement.step() == SQLITE_ROW)
 		{
 			Channel channel;			
-			Dvb::Transponder transponder = *channel.transponder;
+			Dvb::Transponder& transponder = channel.transponder;
 			
 			channel.channel_id	= channel_statement.get_int(0);
 			channel.profile_id	= channel_statement.get_int(1);
@@ -649,6 +656,12 @@ ProfileList Data::get_all_profiles()
 				transponder.frontend_parameters.u.qam.symbol_rate	= channel_statement.get_int(16);
 				transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)channel_statement.get_int(17);
 				transponder.frontend_parameters.u.qam.modulation	= (fe_modulation_t)channel_statement.get_int(18);
+			}
+			else if (channel.flags & CHANNEL_FLAG_DVB_S)
+			{
+				transponder.frontend_parameters.u.qpsk.symbol_rate	= channel_statement.get_int(16);
+				transponder.frontend_parameters.u.qpsk.fec_inner	= (fe_code_rate_t)channel_statement.get_int(17);
+				transponder.polarisation							= (guint)channel_statement.get_int(19);
 			}
 			else if (channel.flags & CHANNEL_FLAG_ATSC)
 			{

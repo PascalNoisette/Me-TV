@@ -248,16 +248,16 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 						channel.sort_order = line_count;
 						channel.flags = CHANNEL_FLAG_DVB_T;
 				
-						(*channel.transponder).frontend_parameters.frequency						= channels_conf_line.get_frequency(1);
-						(*channel.transponder).frontend_parameters.inversion						= channels_conf_line.get_inversion(2);
-						(*channel.transponder).frontend_parameters.u.ofdm.bandwidth				= channels_conf_line.get_bandwidth(3);
-						(*channel.transponder).frontend_parameters.u.ofdm.code_rate_HP				= channels_conf_line.get_fec(4);
-						(*channel.transponder).frontend_parameters.u.ofdm.code_rate_LP				= channels_conf_line.get_fec(5);
-						(*channel.transponder).frontend_parameters.u.ofdm.constellation			= channels_conf_line.get_modulation(6);
-						(*channel.transponder).frontend_parameters.u.ofdm.transmission_mode		= channels_conf_line.get_transmit_mode(7);
-						(*channel.transponder).frontend_parameters.u.ofdm.guard_interval			= channels_conf_line.get_guard_interval(8);
-						(*channel.transponder).frontend_parameters.u.ofdm.hierarchy_information	= channels_conf_line.get_hierarchy(9);
-						channel.service_id											= channels_conf_line.get_service_id(12);
+						channel.transponder.frontend_parameters.frequency						= channels_conf_line.get_frequency(1);
+						channel.transponder.frontend_parameters.inversion						= channels_conf_line.get_inversion(2);
+						channel.transponder.frontend_parameters.u.ofdm.bandwidth				= channels_conf_line.get_bandwidth(3);
+						channel.transponder.frontend_parameters.u.ofdm.code_rate_HP				= channels_conf_line.get_fec(4);
+						channel.transponder.frontend_parameters.u.ofdm.code_rate_LP				= channels_conf_line.get_fec(5);
+						channel.transponder.frontend_parameters.u.ofdm.constellation			= channels_conf_line.get_modulation(6);
+						channel.transponder.frontend_parameters.u.ofdm.transmission_mode		= channels_conf_line.get_transmit_mode(7);
+						channel.transponder.frontend_parameters.u.ofdm.guard_interval			= channels_conf_line.get_guard_interval(8);
+						channel.transponder.frontend_parameters.u.ofdm.hierarchy_information	= channels_conf_line.get_hierarchy(9);
+						channel.service_id														= channels_conf_line.get_service_id(12);
 				
 						current_profile.add_channel(channel);
 					}
@@ -277,12 +277,12 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 						channel.sort_order = line_count;
 						channel.flags = CHANNEL_FLAG_DVB_C;
 				
-						(*channel.transponder).frontend_parameters.frequency			= channels_conf_line.get_frequency(1);
-						(*channel.transponder).frontend_parameters.inversion			= channels_conf_line.get_inversion(2);
-						(*channel.transponder).frontend_parameters.u.qam.symbol_rate	= channels_conf_line.get_symbol_rate(3);
-						(*channel.transponder).frontend_parameters.u.qam.fec_inner		= channels_conf_line.get_fec(4);
-						(*channel.transponder).frontend_parameters.u.qam.modulation	= channels_conf_line.get_modulation(5);
-						channel.service_id								= channels_conf_line.get_service_id(8);
+						channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_frequency(1);
+						channel.transponder.frontend_parameters.inversion			= channels_conf_line.get_inversion(2);
+						channel.transponder.frontend_parameters.u.qam.symbol_rate	= channels_conf_line.get_symbol_rate(3);
+						channel.transponder.frontend_parameters.u.qam.fec_inner		= channels_conf_line.get_fec(4);
+						channel.transponder.frontend_parameters.u.qam.modulation	= channels_conf_line.get_modulation(5);
+						channel.service_id											= channels_conf_line.get_service_id(8);
 				
 						current_profile.add_channel(channel);
 					}
@@ -302,9 +302,9 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 						channel.sort_order = line_count;
 						channel.flags = CHANNEL_FLAG_ATSC;
 				
-						(*channel.transponder).frontend_parameters.frequency						= channels_conf_line.get_frequency(1);
-						(*channel.transponder).frontend_parameters.inversion						= INVERSION_AUTO;
-						(*channel.transponder).frontend_parameters.u.vsb.modulation				= channels_conf_line.get_modulation(2);
+						channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_frequency(1);
+						channel.transponder.frontend_parameters.inversion			= INVERSION_AUTO;
+						channel.transponder.frontend_parameters.u.vsb.modulation	= channels_conf_line.get_modulation(2);
 						channel.service_id											= channels_conf_line.get_service_id(5);
 				
 						current_profile.add_channel(channel);
@@ -410,7 +410,7 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 
 		channel.service_id			= row.get_value(columns.column_id);
 		channel.name				= row.get_value(columns.column_name);
-		(*channel.transponder).frontend_parameters = row.get_value(columns.column_frontend_parameters);
+		channel.transponder.frontend_parameters = row.get_value(columns.column_frontend_parameters);
 
 		switch(frontend.get_frontend_info().type)
 		{
@@ -418,6 +418,10 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 				channel.flags = CHANNEL_FLAG_DVB_T;
 				break;
 				
+			case FE_QPSK:
+				channel.flags = CHANNEL_FLAG_DVB_S;
+				break;
+
 			case FE_QAM:
 				channel.flags = CHANNEL_FLAG_DVB_C;
 				break;

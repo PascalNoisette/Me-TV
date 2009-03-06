@@ -47,7 +47,7 @@ public:
 class StreamThread : public Thread
 {
 private:
-	const Channel&			channel;
+	Channel					channel;
 	DemuxerList				demuxers;
 	Glib::ustring			fifo_path;
 	gint					CRC32[256];
