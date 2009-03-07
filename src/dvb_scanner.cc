@@ -67,7 +67,7 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		{
 			for (guint i = 0; i < number_of_services; i++)
 			{
-				signal_service(transponder.frontend_parameters, sds.services[i].id, sds.services[i].name);
+				signal_service(transponder.frontend_parameters, sds.services[i].id, sds.services[i].name, transponder.polarisation);
 			}
 		}
 		
