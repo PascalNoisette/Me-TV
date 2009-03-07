@@ -172,7 +172,6 @@ void GtkEpgWidget::update_table()
 				Channel& channel = *iterator;
 				gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
 				create_channel_row(channel, row++, selected, start_time);
-				Gdk::Window::process_all_updates();
 			}
 			
 			channel_count++;

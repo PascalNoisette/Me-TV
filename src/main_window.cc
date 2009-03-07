@@ -512,7 +512,12 @@ void MainWindow::update()
 	set_title(window_title);
 	app_bar->set_status(status_text);
 
-	widget_epg->update();
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	gboolean is_minimised = window == NULL || window->get_state() & Gdk::WINDOW_STATE_ICONIFIED;
+	if (!is_minimised && property_visible())
+	{
+		widget_epg->update();
+	}
 
 	Gtk::Menu_Helpers::MenuList& items = audio_streams_menu.items();
 	items.erase(items.begin(), items.end());
