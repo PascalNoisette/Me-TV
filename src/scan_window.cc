@@ -387,7 +387,7 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 	hide();
 }
 
-void ScanWindow::on_signal_service(struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name)
+void ScanWindow::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name)
 {
 	GdkLock gdk_lock;
 	Gtk::TreeModel::iterator iterator = list_store->append();

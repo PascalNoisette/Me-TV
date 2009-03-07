@@ -21,6 +21,8 @@
 #include "initial_scan_line.h"
 #include "dvb_transponder.h"
 
+using namespace Dvb;
+
 struct StringTable InitialScanLine::bandwidth_table[] =
 {
 	{ "8MHz", BANDWIDTH_8_MHZ },

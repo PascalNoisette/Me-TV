@@ -29,3 +29,24 @@ using namespace Dvb;
 Transponder::Transponder() : satellite_number(0)
 {
 }
+
+gboolean TransponderList::exists(const Transponder& transponder)
+{
+	for (const_iterator i = begin(); i != end(); i++)
+	{
+		if (transponder.frontend_parameters.frequency == (*i).frontend_parameters.frequency)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+void TransponderList::add(const Transponder& transponder)
+{
+	if (!exists(transponder))
+	{
+		push_back(transponder);
+	}
+}
