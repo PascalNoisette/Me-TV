@@ -32,11 +32,14 @@ namespace Dvb
 	private:
 		gint wait_timeout;
 		gboolean terminated;
+		std::list<guint> tuned_frequencies;
+		std::list<Transponder> to_scan;
 			
-		void tune_to(Frontend& frontend, Transponder& transponder);
+		void tune_to_next(Frontend& frontend);
 		guint convert_string_to_value(const StringTable* table, const gchar* text);
 
 		void process_terrestrial_line(Frontend& frontend, const Glib::ustring& line);
+		void process_satellite_line(Frontend& frontend, const Glib::ustring& line);
 		void process_cable_line(Frontend& frontend, const Glib::ustring& line);
 		void process_atsc_line(Frontend& frontend, const Glib::ustring& line);
 	public:

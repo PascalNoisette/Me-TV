@@ -35,18 +35,39 @@ Scanner::Scanner(guint timeout) : wait_timeout(timeout)
 	terminated = false;
 }
 
-void Scanner::tune_to(Frontend& frontend, Transponder& transponder)
+void Scanner::tune_to_next(Frontend& frontend)
 {
+	Transponder transponder = to_scan.front();
+	to_scan.pop_front();
+	
+	if(terminated) return;
+	
+	if(find(tuned_frequencies.begin(), tuned_frequencies.end(), transponder.frontend_parameters.frequency) != tuned_frequencies.end())
+	{
+		g_debug("Already tuned to %d, skipping..", transponder.frontend_parameters.frequency);
+		return;
+	}
+	
+	tuned_frequencies.push_back(transponder.frontend_parameters.frequency);
 	try
 	{
 		SI::SectionParser parser;
 		SI::ServiceDescriptionSection sds;
+		SI::NetworkInformationSection nis;
+		
 		Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 		Demuxer demuxer_sds(demux_path);
+		Demuxer demuxer_nis(demux_path);
 		
-		frontend.tune_to(transponder.frontend_parameters, wait_timeout);		
+		frontend.tune_to(transponder, wait_timeout);
+		
 		demuxer_sds.set_filter(SDT_PID, SDT_ID);
+		demuxer_nis.set_filter(NIT_PID, NIT_ID);
 		parser.parse_sds(demuxer_sds, sds);
+		parser.parse_nis(demuxer_nis, nis);
+		
+		demuxer_sds.stop();
+		demuxer_nis.stop();
 		
 		guint number_of_services = sds.services.size();
 		if (number_of_services > 0)
@@ -54,6 +75,15 @@ void Scanner::tune_to(Frontend& frontend, Transponder& transponder)
 			for (guint i = 0; i < number_of_services; i++)
 			{
 				signal_service(transponder.frontend_parameters, sds.services[i].id, sds.services[i].name);
+			}
+		}
+		
+		guint number_of_transponders = nis.transponders.size();
+		if(number_of_transponders > 0)
+		{
+			for(guint i = 0; i < number_of_transponders; i++ )
+			{
+				to_scan.push_back(nis.transponders[i]);
 			}
 		}
 	}
@@ -82,7 +112,7 @@ void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& 
 	Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;
 
-	tune_to(frontend, transponder);
+	to_scan.push_back(transponder);
 }
 
 void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
@@ -98,7 +128,27 @@ void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
 	Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;
 	
-	tune_to(frontend, transponder);
+	to_scan.push_back(transponder);
+}
+
+void Scanner::process_satellite_line(Frontend& frontend, const Glib::ustring& line)
+{
+	struct dvb_frontend_parameters frontend_parameters;
+	InitialScanLine initial_scan_line(line);
+	
+	frontend_parameters.frequency			= initial_scan_line.get_frequency(1);
+	frontend_parameters.inversion			= INVERSION_AUTO;
+	
+	frontend_parameters.u.qpsk.symbol_rate	= initial_scan_line.get_symbol_rate(3);
+	frontend_parameters.u.qpsk.fec_inner	= initial_scan_line.get_fec(4);
+
+	Transponder transponder;
+	transponder.frontend_parameters = frontend_parameters;
+	transponder.polarisation		= initial_scan_line.get_polarisation(2);
+	
+	g_debug("Frequency %d, Symbol rate %d, FEC %d, polarisation %d", frontend_parameters.frequency, frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner, transponder.polarisation);
+	
+	to_scan.push_back(transponder);
 }
 
 void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)
@@ -116,7 +166,8 @@ void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)
 	Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;
 	
-	tune_to(frontend, transponder);
+	to_scan.push_back(transponder);
+	//tune_to(frontend, transponder);
 }
 
 void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
@@ -163,6 +214,10 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 			{
 				process_cable_line(frontend, process_line);
 			}
+			else if (Glib::str_has_prefix(process_line, "S "))
+			{
+				process_satellite_line(frontend, process_line);
+			}
 			else if (Glib::str_has_prefix(process_line, "A "))
 			{
 				process_atsc_line(frontend, process_line);
@@ -172,6 +227,8 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 				throw Exception(_("Me TV cannot process a line in the initial tuning file"));
 			}
 		}
+		
+		while(to_scan.size() > 0) tune_to_next(frontend);
 		
 		if (!terminated)
 		{

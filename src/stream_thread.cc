@@ -502,7 +502,7 @@ void StreamThread::setup_dvb()
 	
 	remove_all_demuxers();
 	
-	frontend.tune_to(channel.frontend_parameters);
+	frontend.tune_to(channel.transponder);
 	
 	Dvb::Demuxer demuxer_pat(demux_path);
 	demuxer_pat.set_filter(PAT_PID, PAT_ID);

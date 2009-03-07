@@ -35,6 +35,7 @@ private:
 	static struct StringTable hierarchy_table[];
 	static struct StringTable inversion_table[];	
 	static struct StringTable modulation_table[];
+	static struct StringTable polarisation_table[];
 	
 	StringSplitter splitter;
 public:
@@ -43,7 +44,6 @@ public:
 	guint get_parameter_count() const { return splitter.get_count(); }
 		
 	const gchar*			get_name(guint index);
-	guint					get_frequency(guint index);
 	fe_spectral_inversion_t	get_inversion(guint index);
 	fe_bandwidth_t			get_bandwidth(guint index);
 	fe_code_rate_t			get_fec(guint index);
@@ -53,6 +53,8 @@ public:
 	fe_hierarchy_t			get_hierarchy(guint index);
 	guint 					get_symbol_rate(guint index);
 	guint 					get_service_id(guint index);
+	guint					get_polarisation(guint index);
+	guint					get_int(guint index);
 };
 
 #endif

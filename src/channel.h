@@ -24,7 +24,7 @@
 #define CHANNEL_FLAG_NONE		0
 #define CHANNEL_FLAG_DVB_T		0x01
 #define CHANNEL_FLAG_DVB_C		0x02
-#define CHANNEL_FLAG_DVB_S		0x03
+#define CHANNEL_FLAG_DVB_S		0x08
 #define CHANNEL_FLAG_ATSC		0x04
 
 #include <linux/dvb/frontend.h>
@@ -45,8 +45,8 @@ public:
 	EpgEvents		epg_events;
 
 	// DVB Specific
-	guint service_id;
-	struct dvb_frontend_parameters frontend_parameters;
+	guint				service_id;
+	Dvb::Transponder	transponder;
 	guint get_transponder_frequency();
 
 	Glib::ustring get_text();

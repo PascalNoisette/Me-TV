@@ -76,11 +76,6 @@ Glib::ustring ScanWindow::get_initial_tuning_dir()
 	return result;
 }
 
-bool compare_countries (const Country& a, const Country& b)
-{
-	return a.name < b.name;
-}
-
 ScanWindow::ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
 	Gtk::Window(cobject), glade(glade_xml), frontend(get_application().get_device_manager().get_frontend())
 {
@@ -106,53 +101,6 @@ ScanWindow::ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scanned_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
-	
-	combo_box_select_country = NULL;
-	glade->get_widget_derived("combo_box_select_country", combo_box_select_country);
-
-	combo_box_select_region = NULL;
-	glade->get_widget_derived("combo_box_select_region", combo_box_select_region);
-	
-	scan_directory_path = get_initial_tuning_dir();
-
-	if (scan_directory_path.size() > 0)
-	{
-		Glib::RefPtr<Gio::File> scan_directory = Gio::File::create_for_path(scan_directory_path);
-		g_debug("Scanning directory: %s", scan_directory_path.c_str());
-			
-		// This is a hack because I can't get scan_directory->enumerate_children() to work
-		GFileEnumerator* children = g_file_enumerate_children(scan_directory->gobj(),
-			"*", G_FILE_QUERY_INFO_NONE, NULL, NULL);
-		if (children != NULL)
-		{
-			GFileInfo* file_info = g_file_enumerator_next_file(children, NULL, NULL);
-			while (file_info != NULL)
-			{
-				Glib::ustring name = g_file_info_get_name(file_info);
-				if (name.substr(2,1) == "-")
-				{
-					Glib::ustring country_name = name.substr(0,2);
-					Glib::ustring region_name = name.substr(3);
-					Country& country = get_country(country_name);
-					country.regions.push_back(region_name);
-				}
-				file_info = g_file_enumerator_next_file(children, NULL, NULL);
-			}
-
-			// Populate controls
-			countries.sort(compare_countries);
-			CountryList::iterator country_iterator = countries.begin();
-			while (country_iterator != countries.end())
-			{
-				Country& country = *country_iterator;
-				country.regions.sort();
-				combo_box_select_country->append_text(country.name);
-				country_iterator++;
-			}
-			combo_box_select_country->signal_changed().connect(sigc::mem_fun(*this, &ScanWindow::on_combo_box_select_country_changed));
-			combo_box_select_country->set_active(0);
-		}
-	}
 }
 
 ScanWindow::~ScanWindow()
@@ -168,6 +116,10 @@ void ScanWindow::on_show()
 	glade->get_widget("button_scan_wizard_add")->hide();
 	glade->get_widget("button_scan_wizard_next")->show();
 	notebook_scan_wizard->set_current_page(0);
+
+	Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
+	file_chooser->set_current_folder(get_initial_tuning_dir());
+
 	Window::on_show();
 }
 
@@ -175,19 +127,6 @@ void ScanWindow::on_hide()
 {
 	stop_scan();
 	Window::on_hide();
-}
-
-void ScanWindow::on_combo_box_select_country_changed()
-{
-	combo_box_select_region->clear_items();
-	Country& country = get_country(combo_box_select_country->get_active_text());
-	StringList::iterator region_iterator = country.regions.begin();
-	while (region_iterator != country.regions.end())
-	{
-		combo_box_select_region->append_text(*region_iterator);
-		region_iterator++;
-	}
-	combo_box_select_region->set_active(0);
 }
 
 void ScanWindow::stop_scan()
@@ -241,16 +180,16 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 						channel.sort_order = line_count;
 						channel.flags = CHANNEL_FLAG_DVB_T;
 				
-						channel.frontend_parameters.frequency						= channels_conf_line.get_frequency(1);
-						channel.frontend_parameters.inversion						= channels_conf_line.get_inversion(2);
-						channel.frontend_parameters.u.ofdm.bandwidth				= channels_conf_line.get_bandwidth(3);
-						channel.frontend_parameters.u.ofdm.code_rate_HP				= channels_conf_line.get_fec(4);
-						channel.frontend_parameters.u.ofdm.code_rate_LP				= channels_conf_line.get_fec(5);
-						channel.frontend_parameters.u.ofdm.constellation			= channels_conf_line.get_modulation(6);
-						channel.frontend_parameters.u.ofdm.transmission_mode		= channels_conf_line.get_transmit_mode(7);
-						channel.frontend_parameters.u.ofdm.guard_interval			= channels_conf_line.get_guard_interval(8);
-						channel.frontend_parameters.u.ofdm.hierarchy_information	= channels_conf_line.get_hierarchy(9);
-						channel.service_id											= channels_conf_line.get_service_id(12);
+						channel.transponder.frontend_parameters.frequency						= channels_conf_line.get_int(1);
+						channel.transponder.frontend_parameters.inversion						= channels_conf_line.get_inversion(2);
+						channel.transponder.frontend_parameters.u.ofdm.bandwidth				= channels_conf_line.get_bandwidth(3);
+						channel.transponder.frontend_parameters.u.ofdm.code_rate_HP				= channels_conf_line.get_fec(4);
+						channel.transponder.frontend_parameters.u.ofdm.code_rate_LP				= channels_conf_line.get_fec(5);
+						channel.transponder.frontend_parameters.u.ofdm.constellation			= channels_conf_line.get_modulation(6);
+						channel.transponder.frontend_parameters.u.ofdm.transmission_mode		= channels_conf_line.get_transmit_mode(7);
+						channel.transponder.frontend_parameters.u.ofdm.guard_interval			= channels_conf_line.get_guard_interval(8);
+						channel.transponder.frontend_parameters.u.ofdm.hierarchy_information	= channels_conf_line.get_hierarchy(9);
+						channel.service_id														= channels_conf_line.get_service_id(12);
 				
 						current_profile.add_channel(channel);
 					}
@@ -270,12 +209,38 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 						channel.sort_order = line_count;
 						channel.flags = CHANNEL_FLAG_DVB_C;
 				
-						channel.frontend_parameters.frequency			= channels_conf_line.get_frequency(1);
-						channel.frontend_parameters.inversion			= channels_conf_line.get_inversion(2);
-						channel.frontend_parameters.u.qam.symbol_rate	= channels_conf_line.get_symbol_rate(3);
-						channel.frontend_parameters.u.qam.fec_inner		= channels_conf_line.get_fec(4);
-						channel.frontend_parameters.u.qam.modulation	= channels_conf_line.get_modulation(5);
-						channel.service_id								= channels_conf_line.get_service_id(8);
+						channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1);
+						channel.transponder.frontend_parameters.inversion			= channels_conf_line.get_inversion(2);
+						channel.transponder.frontend_parameters.u.qam.symbol_rate	= channels_conf_line.get_symbol_rate(3);
+						channel.transponder.frontend_parameters.u.qam.fec_inner		= channels_conf_line.get_fec(4);
+						channel.transponder.frontend_parameters.u.qam.modulation	= channels_conf_line.get_modulation(5);
+						channel.service_id											= channels_conf_line.get_service_id(8);
+				
+						current_profile.add_channel(channel);
+					}
+					break;
+
+				case FE_QPSK:
+					if (parameter_count != 8)
+					{
+						Glib::ustring message = Glib::ustring::compose(_("Invalid parameter count on line %1"), line_count);
+						throw Exception(message);
+					}
+
+					{
+						Channel channel;
+
+						channel.name = channels_conf_line.get_name(0);
+						channel.sort_order = line_count;
+						channel.flags = CHANNEL_FLAG_DVB_S;
+				
+						channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1);
+						channel.transponder.polarisation							= channels_conf_line.get_polarisation(2);
+						channel.transponder.satellite_number						= channels_conf_line.get_int(3);
+						channel.transponder.frontend_parameters.u.qpsk.symbol_rate	= channels_conf_line.get_int(4) * 1000;
+						channel.transponder.frontend_parameters.u.qpsk.fec_inner	= FEC_AUTO;
+						channel.transponder.frontend_parameters.inversion			= INVERSION_AUTO;
+						channel.service_id											= channels_conf_line.get_service_id(7);
 				
 						current_profile.add_channel(channel);
 					}
@@ -295,9 +260,9 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 						channel.sort_order = line_count;
 						channel.flags = CHANNEL_FLAG_ATSC;
 				
-						channel.frontend_parameters.frequency						= channels_conf_line.get_frequency(1);
-						channel.frontend_parameters.inversion						= INVERSION_AUTO;
-						channel.frontend_parameters.u.vsb.modulation				= channels_conf_line.get_modulation(2);
+						channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1);
+						channel.transponder.frontend_parameters.inversion			= INVERSION_AUTO;
+						channel.transponder.frontend_parameters.u.vsb.modulation	= channels_conf_line.get_modulation(2);
 						channel.service_id											= channels_conf_line.get_service_id(5);
 				
 						current_profile.add_channel(channel);
@@ -305,7 +270,7 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 					break;
 				
 				default:
-					throw Exception(_("Failed to import: importing a channels.conf is only supported with DVB-T, DVB-C and ATSC"));
+					throw Exception(_("Failed to import: importing a channels.conf is only supported with DVB-T, DVB-C, DVB-S and ATSC"));
 					break;
 			}
 		}		
@@ -320,50 +285,28 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 void ScanWindow::on_button_scan_wizard_next_clicked()
 {
 	TRY
-	gboolean do_scan = true;
-	
 	stop_scan();
 
 	list_store->clear();
 
 	Glib::ustring initial_tuning_file;
 	
-	Gtk::RadioButton* radio_button_scan_by_location = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_by_location"));
-	Gtk::RadioButton* radio_button_scan_by_file = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_by_file"));
-	Gtk::RadioButton* radio_button_scan_import_channels_conf = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan_import_channels_conf"));
-		
-	if (radio_button_scan_by_location->get_active())
-	{
-		Glib::ustring country_name = combo_box_select_country->get_active_text();
-		Glib::ustring region_name = combo_box_select_region->get_active_text();
-		initial_tuning_file = scan_directory_path + "/" + country_name + "-" + region_name;
-	}
-	else if (radio_button_scan_by_file->get_active())
-	{
-		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_select_file_to_scan"));
-		initial_tuning_file = file_chooser->get_filename();
-	}
-	else if (radio_button_scan_import_channels_conf->get_active())
-	{
-		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_channels_conf"));
-		Glib::ustring channels_conf_path = file_chooser->get_filename();
-		import_channels_conf(channels_conf_path);
-		do_scan = false;
-	}
-	else
-	{
-		throw Exception(_("No scan/import option specified"));
-	}
+	Gtk::RadioButton* radio_button_scan = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan"));
+	Gtk::RadioButton* radio_button_import = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_import"));
 	
-	if (do_scan)
+	if (radio_button_scan->get_active())
 	{
+		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
+		initial_tuning_file = file_chooser->get_filename();
+
 		switch(frontend.get_frontend_info().type)
 		{
 			case FE_OFDM:
 			case FE_QAM:
+			case FE_QPSK:
 				break;
 			default:
-				throw Exception(_("Failed to scan: scanning is only supported for DVB-T and DVB-C devices"));
+				throw Exception(_("Failed to scan: scanning is only supported for DVB-T, DVB-S and DVB-C devices"));
 		}
 
 		if (initial_tuning_file.empty())
@@ -385,6 +328,12 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 			scan_thread->start();
 		}
 	}
+	else if (radio_button_import->get_active())
+	{
+		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_import"));
+		Glib::ustring channels_conf_path = file_chooser->get_filename();
+		import_channels_conf(channels_conf_path);
+	}	
 	CATCH
 }
 
@@ -402,7 +351,7 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 
 		channel.service_id			= row.get_value(columns.column_id);
 		channel.name				= row.get_value(columns.column_name);
-		channel.frontend_parameters = row.get_value(columns.column_frontend_parameters);
+		channel.transponder.frontend_parameters = row.get_value(columns.column_frontend_parameters);
 
 		switch(frontend.get_frontend_info().type)
 		{
@@ -410,6 +359,10 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 				channel.flags = CHANNEL_FLAG_DVB_T;
 				break;
 				
+			case FE_QPSK:
+				channel.flags = CHANNEL_FLAG_DVB_S;
+				break;
+
 			case FE_QAM:
 				channel.flags = CHANNEL_FLAG_DVB_C;
 				break;
@@ -445,6 +398,7 @@ void ScanWindow::on_signal_service(struct dvb_frontend_parameters& frontend_para
 
 	channel_count++;
 	update_channel_count();
+	g_debug("Found channel #%d : %s", id, name.c_str());
 }
 
 void ScanWindow::update_channel_count()
@@ -462,38 +416,4 @@ void ScanWindow::on_signal_progress(guint step, gsize total)
 		glade->get_widget("button_scan_wizard_add")->show();
 		notebook_scan_wizard->next_page();
 	}
-}
-
-Country& ScanWindow::get_country(const Glib::ustring& country_name)
-{
-	Country* result = find_country(country_name);
-
-	// If we don't have the country already then create one
-	if (result == NULL)
-	{
-		Country country;
-		country.name = country_name;
-		countries.push_back(country);
-		result = find_country(country_name);
-	}
-	
-	return *result;
-}
-
-Country* ScanWindow::find_country(const Glib::ustring& country_name)
-{
-	Country* result = NULL;
-	
-	CountryList::iterator country_iterator = countries.begin();
-	while (country_iterator != countries.end() && result == NULL)
-	{
-		Country& country = *country_iterator;
-		if (country.name == country_name)
-		{
-			result = &(*country_iterator);
-		}
-		country_iterator++;
-	}
-	
-	return result;
 }

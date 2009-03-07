@@ -148,6 +148,33 @@ gsize SectionParser::read_section(Demuxer& demuxer)
 	return section_length;
 }
 
+// this method takes a bitmask as supplied by the NIT-section (satellite delivery system descriptor) for the FEC_INNER and converts them to a linux-style FEC value according to EN 300 468, v 1.9.1
+fe_code_rate_t SectionParser::parse_fec_inner(guint bitmask)
+{
+	switch(bitmask)
+	{
+		case 0x01:
+			return FEC_1_2;
+		case 0x02:
+			return FEC_2_3;
+		case 0x03:
+			return FEC_3_4;
+		case 0x04:
+			return FEC_5_6;
+		case 0x05:
+			return FEC_7_8;
+		case 0x06:
+			return FEC_8_9;
+		case 0x07:
+			return FEC_AUTO; // EN 300 468 specifies this as "fec 3/5", which is apparently not supported by the linux kernel or is a typo. just setting to auto.
+		case 0x08:
+			return FEC_4_5;
+		default:
+			return FEC_AUTO;
+	}
+	return FEC_AUTO; // this should never happen. but it wouldn't hurt.
+}
+
 void SectionParser::parse_pas(Demuxer& demuxer, ProgramAssociationSection& section)
 {
 	gsize section_length = read_section(demuxer);
@@ -196,6 +223,74 @@ void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& sect
 		
 		section.services.push_back(service);
 	}
+}
+
+
+void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& section)
+{
+	gsize section_length = read_section(demuxer);
+	//dump(buffer, section_length);
+	
+	guint offset = 8;
+	guint network_descriptor_length = get_bits(buffer + offset, 4, 12);
+	offset += 2;
+	
+	// We don't care for the network descriptors, as we only want to get new frequencies out of the stream, and they are saved in the "Transport stream descriptor" section.
+	offset += network_descriptor_length;
+	
+	// Now offset is at "transport_stream_loop_length" position.
+	guint transport_stream_length = get_bits(buffer + offset, 4, 12);
+	offset += 2;
+	
+	// loop through all transport descriptors and pick out 0x43 descriptors, as they contain new frequencies.
+	while(offset < section_length - 4)
+	{
+		offset += 4;
+		guint descriptors_loop_length = get_bits(buffer + offset, 4, 12);
+		offset += 2;
+		guint descriptors_end_offset = offset + descriptors_loop_length;
+		
+		while(offset < descriptors_end_offset)
+		{
+			guint descriptor_tag = buffer[offset];
+			guint descriptor_length = buffer[offset+1];
+			offset += 2;
+			if(descriptor_tag == 0x43)
+			{
+				struct dvb_frontend_parameters frontend_parameters;
+				
+				// extract data for new transponder, according to EN 300 468: dvb-s
+				frontend_parameters.frequency = 0;
+				for(int i=0; i<8; i++)
+				{
+					frontend_parameters.frequency = frontend_parameters.frequency*10 + get_bits(buffer + offset, i*4, 4);
+				}
+				frontend_parameters.frequency *= 10;
+				
+				guint polarisation = (get_bits(buffer + offset + 6, 2, 1) == 1) ?POLARISATION_VERTICAL :POLARISATION_HORIZONTAL;
+				
+				frontend_parameters.u.qpsk.symbol_rate = 0;
+				for(int i=0; i<7; i++)
+				{
+					frontend_parameters.u.qpsk.symbol_rate = frontend_parameters.u.qpsk.symbol_rate*10 + get_bits(buffer + offset + 7, i*4, 4);
+				}
+				frontend_parameters.u.qpsk.symbol_rate *= 100;
+				
+				frontend_parameters.u.qpsk.fec_inner = parse_fec_inner(get_bits(buffer + offset + 7, 28, 4));
+				frontend_parameters.inversion = INVERSION_AUTO;
+				
+				Transponder transponder;
+				transponder.frontend_parameters = frontend_parameters;
+				transponder.polarisation = polarisation;
+				section.transponders.push_back(transponder);
+				g_debug("new frequency: %d, new polarisation: %d, symbol rate %d, fec_inner %d", frontend_parameters.frequency, transponder.polarisation, frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner);
+			}
+			else g_debug("bad descriptor tag %d", descriptor_tag);
+			offset += descriptor_length;
+		}
+	}
+	
+	g_debug("transport_stream_length is %d, network_descriptor_length is %d and offset is %d", transport_stream_length, network_descriptor_length, offset);
 }
 
 gsize get_atsc_text(Glib::ustring& string, const guchar* buffer)

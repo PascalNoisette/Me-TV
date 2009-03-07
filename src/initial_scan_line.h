@@ -35,6 +35,7 @@ private:
 	static struct StringTable hierarchy_table[];
 	static struct StringTable inversion_table[];	
 	static struct StringTable modulation_table[];
+	static struct StringTable polarisation_table[];
 	
 	StringSplitter splitter;
 public:
@@ -50,6 +51,7 @@ public:
 	fe_guard_interval_t	get_guard_interval(guint index);
 	fe_hierarchy_t		get_hierarchy(guint index);
 	guint				get_symbol_rate(guint index);
+	guint				get_polarisation(guint index);
 };
 
 #endif

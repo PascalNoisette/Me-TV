@@ -29,7 +29,6 @@ Channel::Channel()
 	profile_id = 0;
 	flags = 0;
 	service_id = 0;
-	memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
 }
 
 Glib::ustring Channel::get_text()
@@ -48,5 +47,5 @@ Glib::ustring Channel::get_text()
 
 guint Channel::get_transponder_frequency()
 {
-	return frontend_parameters.frequency;
+	return transponder.frontend_parameters.frequency;
 }

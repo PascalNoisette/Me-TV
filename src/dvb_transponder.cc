@@ -26,31 +26,6 @@
 
 using namespace Dvb;
 
-void Transponder::add_service(Service& service)
+Transponder::Transponder() : satellite_number(0)
 {
-	services.push_back(service);
-}
-
-Service& Transponder::get_service(guint service_id)
-{
-	Service* result = NULL;
-	gboolean found = false;
-
-	ServiceList::iterator iterator = services.begin();
-	while (iterator != services.end() && !found)
-	{
-		Service& service = *iterator;
-		if (service.id == service_id)
-		{
-			result = &service;
-			found = true;
-		}
-	}
-
-	if (result == NULL)
-	{
-		throw Exception(Glib::ustring::compose(_("Failed to find service with service ID %1"), service_id));
-	}
-	
-	return *result;
 }

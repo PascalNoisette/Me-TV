@@ -23,6 +23,7 @@
 
 #include "me-tv.h"
 #include <sqlite3.h>
+#include <linux/dvb/frontend.h>
 #include "profile.h"
 #include "epg_event.h"
 #include "scheduled_recording.h"

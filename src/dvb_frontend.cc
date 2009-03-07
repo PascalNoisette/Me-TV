@@ -20,6 +20,7 @@
 
 #include "me-tv.h"
 #include "dvb_frontend.h"
+#include "dvb_transponder.h"
 #include "exception.h"
 #include "me-tv-i18n.h"
 
@@ -66,36 +67,62 @@ void Frontend::close()
 	}
 }
 
-void Frontend::tune_to (const struct dvb_frontend_parameters& parameters, guint wait_seconds)
+void Frontend::tune_to(const Transponder& transponder, guint wait_seconds)
 {
+	struct dvb_frontend_parameters parameters = transponder.frontend_parameters;
 	struct dvb_frontend_event ev;
+	
+	
+	if(frontend_info.type == FE_QPSK)
+	{
+		guint hi_band = 0;
+		
+		if(LNB_HIGH_VALUE > 0 && LNB_SWITCH_VALUE > 0 && parameters.frequency >= LNB_SWITCH_VALUE)
+		{
+			hi_band = 1;
+		}
+		
+		diseqc(0, transponder.polarisation, hi_band); // Note that satellite_number is constant 0. Maybe this should be configurable? I don't fully understand it's use, but it has something to do with being able to tune to different satellites.
+		
+		if(hi_band == 1)
+		{
+			parameters.frequency = abs(transponder.frontend_parameters.frequency - LNB_HIGH_VALUE);
+		}
+		else
+		{
+			parameters.frequency = abs(transponder.frontend_parameters.frequency - LNB_LOW_VALUE);
+		}
+
+		g_debug("Tuning DVB-S device to %d with symbol rate %d and inner fec %d", parameters.frequency, parameters.u.qpsk.symbol_rate, parameters.u.qpsk.fec_inner);
+		g_debug("Diseqc: Hiband: %d, polarisation: %d - new freq: %d", hi_band, transponder.polarisation, parameters.frequency);
+		usleep(500000);
+	}
 
 	// Discard stale events
 	do {} while (ioctl(fd, FE_GET_EVENT, &ev) != -1);
-
-	if ( ioctl ( fd, FE_SET_FRONTEND, &(parameters) ) < 0 )
+		
+	gint return_code = ioctl ( fd, FE_SET_FRONTEND, &parameters );
+	if (return_code  < 0 )
 	{
-		throw SystemException(_("Failed to tune device"));
+		g_debug("return code: %d", return_code);
+		throw SystemException(_("Failed to tune device") );
 	}
+	
 	
 	g_message(_("Waiting for signal lock ..."));
 	wait_lock(wait_seconds);
 	g_message(_("Got signal lock"));
 	
-	frontend_parameters = parameters;
+	frontend_parameters = transponder.frontend_parameters;
 }
 
-void Frontend::diseqc(const Transponder& transponder)
-{
-	int satellite_number	= transponder.satellite_number;
-	int polarisation		= transponder.polarisation;
-	int hi_band				= transponder.hi_band;
-	
+void Frontend::diseqc(int satellite_number, int polarisation, int hi_band)
+{	
 	struct dvb_diseqc_master_cmd cmd = { {0xe0, 0x10, 0x38, 0xf0, 0x00, 0x00}, 4};
 	cmd.msg[3] = 0xf0 | (((satellite_number * 4) & 0x0f) | (hi_band ? 1 : 0) | (polarisation ? 0 : 2));
 	
-	fe_sec_voltage_t	voltage	= polarisation ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
-	fe_sec_tone_mode_t	tone	= hi_band ? SEC_TONE_ON : SEC_TONE_OFF;
+	fe_sec_voltage_t	voltage	= (polarisation == POLARISATION_VERTICAL) ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
+	fe_sec_tone_mode_t	tone	= (hi_band == 1) ? SEC_TONE_ON : SEC_TONE_OFF;
 	fe_sec_mini_cmd_t	burst	= (satellite_number / 4) % 2 ? SEC_MINI_B : SEC_MINI_A;
 
 	if (ioctl(fd, FE_SET_TONE, SEC_TONE_OFF) == -1)
@@ -114,7 +141,7 @@ void Frontend::diseqc(const Transponder& transponder)
 		throw SystemException(_("Failed to send master command"));
 	}
 
-	usleep(15 * 1000);
+	usleep(19 * 1000);
 	if (ioctl(fd, FE_DISEQC_SEND_BURST, burst) == -1)
 	{
 		throw SystemException(_("Failed to send burst"));
@@ -152,6 +179,11 @@ void Frontend::wait_lock(guint wait_seconds)
 
 	if (!(status & FE_HAS_LOCK))
 	{
+		g_debug("status: %d", status);
+		struct dvb_frontend_parameters parameters;
+		ioctl(fd, FE_GET_FRONTEND, &parameters);
+		g_debug("currently tuned to freq %d, symbol rate %d, inner fec %d", parameters.frequency, parameters.u.qpsk.symbol_rate, parameters.u.qpsk.fec_inner);
+		
 		throw Exception(_("Failed to lock to channel"));
 	}
 }
