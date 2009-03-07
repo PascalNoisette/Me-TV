@@ -1908,7 +1908,7 @@ none</property>
                     <child>
                       <widget class="GtkLabel" id="label5">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Select your country: </property>
+                        <property name="label" translatable="yes">Select your country/satellite: </property>
                       </widget>
                     </child>
                     <child>
@@ -1924,7 +1924,7 @@ none</property>
                     <child>
                       <widget class="GtkLabel" id="label_select_region">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Select your region: </property>
+                        <property name="label" translatable="yes">Select your region/position: </property>
                       </widget>
                       <packing>
                         <property name="top_attach">1</property>

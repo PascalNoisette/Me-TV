@@ -77,7 +77,7 @@ void Frontend::tune_to(const Transponder& transponder, guint wait_seconds)
 	{
 		guint hi_band = 0;
 		
-		if(LNBHighValue > 0 && LNBSwitchValue > 0 && parameters.frequency >= LNBSwitchValue)
+		if(LNB_HIGH_VALUE > 0 && LNB_SWITCH_VALUE > 0 && parameters.frequency >= LNB_SWITCH_VALUE)
 		{
 			hi_band = 1;
 		}
@@ -86,11 +86,11 @@ void Frontend::tune_to(const Transponder& transponder, guint wait_seconds)
 		
 		if(hi_band == 1)
 		{
-			parameters.frequency = abs(transponder.frontend_parameters.frequency - LNBHighValue);
+			parameters.frequency = abs(transponder.frontend_parameters.frequency - LNB_HIGH_VALUE);
 		}
 		else
 		{
-			parameters.frequency = abs(transponder.frontend_parameters.frequency - LNBLowValue);
+			parameters.frequency = abs(transponder.frontend_parameters.frequency - LNB_LOW_VALUE);
 		}
 
 		g_debug("Tuning DVB-S device to %d with symbol rate %d and inner fec %d", parameters.frequency, parameters.u.qpsk.symbol_rate, parameters.u.qpsk.fec_inner);

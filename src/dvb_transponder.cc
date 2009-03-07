@@ -29,11 +29,3 @@ using namespace Dvb;
 Transponder::Transponder() : satellite_number(0)
 {
 }
-
-Transponder& Transponder::operator=(const Transponder& transponder)
-{
-	frontend_parameters	= transponder.frontend_parameters;
-	polarisation		= transponder.polarisation;
-	satellite_number	= transponder.satellite_number;
-	return *this;
-}

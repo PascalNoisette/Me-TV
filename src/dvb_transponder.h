@@ -44,8 +44,6 @@ namespace Dvb
 		guint							polarisation;
 		guint							satellite_number;
 		guint							hi_band;
-		
-		Transponder& operator=(const Transponder& transponder);
 	};
 }
 
