@@ -29,9 +29,9 @@
 #include <linux/dvb/frontend.h>
 #include "dvb_transponder.h"
 
-#define LNBHighValue 10600000
-#define LNBLowValue 9750000
-#define LNBSwitchValue 11700000
+#define LNB_HIGH_VALUE		10600000
+#define LNB_LOW_VALUE		9750000
+#define LNB_SWITCH_VALUE	11700000
 
 struct diseqc_cmd
 {

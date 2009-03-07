@@ -35,20 +35,13 @@ Scanner::Scanner(guint timeout) : wait_timeout(timeout)
 	terminated = false;
 }
 
-void Scanner::tune_to_next(Frontend& frontend)
+void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 {
-	Transponder transponder = to_scan.front();
-	to_scan.pop_front();
-	
-	if(terminated) return;
-	
-	if(find(tuned_frequencies.begin(), tuned_frequencies.end(), transponder.frontend_parameters.frequency) != tuned_frequencies.end())
+	if (terminated)
 	{
-		g_debug("Already tuned to %d, skipping..", transponder.frontend_parameters.frequency);
 		return;
 	}
 	
-	tuned_frequencies.push_back(transponder.frontend_parameters.frequency);
 	try
 	{
 		SI::SectionParser parser;
@@ -83,7 +76,7 @@ void Scanner::tune_to_next(Frontend& frontend)
 		{
 			for(guint i = 0; i < number_of_transponders; i++ )
 			{
-				to_scan.push_back(nis.transponders[i]);
+				transponders.add(nis.transponders[i]);
 			}
 		}
 	}
@@ -112,7 +105,7 @@ void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& 
 	Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;
 
-	to_scan.push_back(transponder);
+	transponders.add(transponder);
 }
 
 void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
@@ -128,7 +121,7 @@ void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
 	Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;
 	
-	to_scan.push_back(transponder);
+	transponders.add(transponder);
 }
 
 void Scanner::process_satellite_line(Frontend& frontend, const Glib::ustring& line)
@@ -148,7 +141,7 @@ void Scanner::process_satellite_line(Frontend& frontend, const Glib::ustring& li
 	
 	g_debug("Frequency %d, Symbol rate %d, FEC %d, polarisation %d", frontend_parameters.frequency, frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner, transponder.polarisation);
 	
-	to_scan.push_back(transponder);
+	transponders.add(transponder);
 }
 
 void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)
@@ -166,8 +159,7 @@ void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)
 	Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;
 	
-	to_scan.push_back(transponder);
-	//tune_to(frontend, transponder);
+	transponders.add(transponder);
 }
 
 void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
@@ -228,7 +220,10 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 			}
 		}
 		
-		while(to_scan.size() > 0) tune_to_next(frontend);
+		for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
+		{
+			tune_to(frontend, *i);
+		}
 		
 		if (!terminated)
 		{

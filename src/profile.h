@@ -24,7 +24,7 @@
 #include <glibmm.h>
 #include "channel.h"
 
-#define MAX_CHANNELS 100
+#define MAX_CHANNELS 1000
 
 class Profile
 {

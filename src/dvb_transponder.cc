@@ -30,10 +30,23 @@ Transponder::Transponder() : satellite_number(0)
 {
 }
 
-Transponder& Transponder::operator=(const Transponder& transponder)
+gboolean TransponderList::exists(const Transponder& transponder)
 {
-	frontend_parameters	= transponder.frontend_parameters;
-	polarisation		= transponder.polarisation;
-	satellite_number	= transponder.satellite_number;
-	return *this;
+	for (const_iterator i = begin(); i != end(); i++)
+	{
+		if (transponder.frontend_parameters.frequency == (*i).frontend_parameters.frequency)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+void TransponderList::add(const Transponder& transponder)
+{
+	if (!exists(transponder))
+	{
+		push_back(transponder);
+	}
 }

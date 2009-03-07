@@ -32,15 +32,6 @@
 #define SCAN_DIRECTORIES "/usr/share/dvb:/usr/share/doc/dvb-utils/examples/scan:/usr/share/dvb-apps"
 #endif
 
-class Country
-{
-public:
-	Glib::ustring name;
-	StringList regions;
-};
-
-typedef std::list<Country> CountryList;
-
 class ScanThread : public Thread
 {
 public:
@@ -73,10 +64,8 @@ private:
 	Gtk::Label*								label_scan_information;
 	Gtk::ProgressBar*						progress_bar_scan;
 	Gtk::TreeView*							tree_view_scanned_channels;
-	ComboBoxText*							combo_box_select_country;
-	ComboBoxText*							combo_box_select_region;
 	ScanThread*								scan_thread;
-	CountryList								countries;
+	StringList								system_files;
 	guint									channel_count;
 	Dvb::Frontend&							frontend;
 	Glib::ustring							scan_directory_path;
@@ -100,16 +89,13 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 	
 	Glib::ustring get_initial_tuning_dir();
-	Country* find_country(const Glib::ustring& country_name);
-	Country& get_country(const Glib::ustring& country);
 	void import_channels_conf(const Glib::ustring& channels_conf_path);
 
 	void on_file_chooser_button_select_file_to_scan_clicked();
-	void on_combo_box_select_country_changed();
 	void on_button_scan_wizard_next_clicked();
 	void on_button_scan_wizard_cancel_clicked();
 	void on_button_scan_wizard_add_clicked();
-	void on_signal_service(struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name);
+	void on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name);
 	void on_signal_progress(guint step, gsize total);
 	void on_hide();	
 	void stop_scan();
