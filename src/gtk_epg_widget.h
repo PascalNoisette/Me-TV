@@ -24,6 +24,7 @@
 #include <libgnomeuimm.h>
 #include <libglademm.h>
 #include "data.h"
+#include "me-tv-ui.h"
 
 class GtkEpgWidget : public Gtk::ScrolledWindow
 {
@@ -34,6 +35,8 @@ private:
 	gsize span_seconds;
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 	guint epg_span_hours;
+	guint epg_page;
+	IntComboBox* combo_box_epg_page;
 	
 	Gtk::Table* table_epg;
 	Gtk::ScrolledWindow* scrolled_window_epg;
@@ -43,8 +46,10 @@ private:
 		
 	void on_button_program_clicked(EpgEvent& epg_event);
 	void on_button_channel_name_clicked(guint channel_id);
+	void on_combo_box_epg_page_changed();
 		
 	void clear();
+	void update_pages();
 	void update_table();
 	Gtk::ToggleButton& attach_toggle_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	Gtk::Button& attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
@@ -56,7 +61,8 @@ public:
 	GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	
 	void update();
-	void set_offset(guint value);
+	void set_offset(gint value);
+	void set_epg_page(gint value);
 	void increment_offset(gint value);
 };
 

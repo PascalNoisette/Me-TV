@@ -29,6 +29,7 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 	Gtk::ScrolledWindow(cobject), glade(glade_xml)
 {
 	offset = 0;
+	epg_page = 0;
 
 	table_epg				= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
 	scrolled_window_epg		= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
@@ -38,16 +39,18 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 		sigc::bind<gint>(sigc::mem_fun(*this, &GtkEpgWidget::set_offset), 0));
 	glade->connect_clicked("button_epg_previous", sigc::mem_fun(*this, &GtkEpgWidget::previous));
 	glade->connect_clicked("button_epg_next", sigc::mem_fun(*this, &GtkEpgWidget::next));
+
+	glade->get_widget_derived("combo_box_epg_page", combo_box_epg_page);
+	combo_box_epg_page->signal_changed().connect(sigc::mem_fun(*this, &GtkEpgWidget::on_combo_box_epg_page_changed));
 }
 
-void GtkEpgWidget::set_offset(guint value)
-{	
-	offset = value;
-	
-	if (offset < 0)
+void GtkEpgWidget::set_offset(gint value)
+{		
+	if (value < 0)
 	{
-		offset = 0;
+		value = 0;
 	}
+	offset = value;
 
 	update();
 }
@@ -60,6 +63,14 @@ void GtkEpgWidget::previous()
 void GtkEpgWidget::next()
 {
 	set_offset(offset + (epg_span_hours*60*60));
+}
+
+void GtkEpgWidget::on_combo_box_epg_page_changed()
+{	
+	TRY
+	epg_page = combo_box_epg_page->get_selected_value();
+	update();
+	CATCH
 }
 
 void GtkEpgWidget::update()
@@ -76,6 +87,8 @@ void GtkEpgWidget::update()
 	
 	hadjustment->set_value(hvalue);
 	vadjustment->set_value(vvalue);
+
+	update_pages();
 }
 
 void GtkEpgWidget::clear()
@@ -89,6 +102,26 @@ void GtkEpgWidget::clear()
 		delete first;
 		iterator++;
 	}
+}
+
+void GtkEpgWidget::update_pages()
+{
+	guint epg_page_count = combo_box_epg_page->get_size();
+	guint epg_page_size = get_application().get_int_configuration_value("epg_page_size");
+	
+	Profile& profile = get_application().get_profile_manager().get_current_profile();
+	ChannelList& channels = profile.get_channels();
+	guint new_epg_page_count = (channels.size() / epg_page_size) + 1;
+	
+	if (new_epg_page_count != epg_page_count)
+	{
+		g_debug("New EPG page count: %d", new_epg_page_count);
+		combo_box_epg_page->set_size(new_epg_page_count);
+		combo_box_epg_page->set_active(epg_page);
+		epg_page_count = new_epg_page_count;
+	}
+	
+	combo_box_epg_page->property_sensitive() = (epg_page_count > 1);
 }
 
 void GtkEpgWidget::update_table()
@@ -127,12 +160,22 @@ void GtkEpgWidget::update_table()
 			row++;
 		}
 		start_time += timezone;
+
+		guint epg_page_size = get_application().get_int_configuration_value("epg_page_size");
+		guint channel_count = 0;
+		guint channel_start = (epg_page-1) * epg_page_size;
+		guint channel_end = channel_start + epg_page_size;
 		for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
-			Channel& channel = *iterator;
-			gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
-			create_channel_row(channel, row++, selected, start_time);
-			Gdk::Window::process_all_updates();
+			if (channel_start <= channel_count && channel_count < channel_end)
+			{
+				Channel& channel = *iterator;
+				gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
+				create_channel_row(channel, row++, selected, start_time);
+				Gdk::Window::process_all_updates();
+			}
+			
+			channel_count++;
 		}
 		get_window()->thaw_updates();
 	}

@@ -56,6 +56,46 @@ void ChannelComboBox::load(const ChannelList& channels)
 	set_active(0);
 }
 
+IntComboBox::IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
+	: Gtk::ComboBox(cobject)
+{
+	list_store = Gtk::ListStore::create(columns);
+}
+
+void IntComboBox::set_size(guint size)
+{
+	clear();
+	set_model(list_store);
+	pack_start(columns.column_int);
+	list_store->clear();
+	for (guint i = 1; i <= size; i++)
+	{
+		Gtk::TreeModel::Row row = *list_store->append();
+		row[columns.column_int] = i;
+	}
+	set_active(0);
+}
+
+guint IntComboBox::get_size()
+{
+	return list_store->children().size();
+}
+
+guint IntComboBox::get_selected_value()
+{
+	Gtk::TreeModel::iterator i = get_active();
+	if (i)
+	{
+		Gtk::TreeModel::Row row = *i;
+		if (row)
+		{
+			return row[columns.column_int];
+		}
+	}
+	
+	throw Exception(_("Failed to get selected integer value"));
+}
+
 void ChannelComboBox::set_selected_channel_id(guint channel_id)
 {
 	Gtk::TreeNodeChildren children = get_model()->children();

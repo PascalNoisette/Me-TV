@@ -87,6 +87,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_int_configuration_default("width", 500);
 	set_int_configuration_default("height", 500);
 	set_string_configuration_default("default_frontend", "");
+	set_int_configuration_default("epg_page_size", 20);
 
 	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);
