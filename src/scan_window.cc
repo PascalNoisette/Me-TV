@@ -222,7 +222,7 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 					channel.sort_order = line_count;
 					channel.flags = CHANNEL_FLAG_DVB_S;
 			
-					channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1);
+					channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1)*1000;
 					channel.transponder.polarisation							= channels_conf_line.get_polarisation(2);
 					channel.transponder.satellite_number						= channels_conf_line.get_int(3);
 					channel.transponder.frontend_parameters.u.qpsk.symbol_rate	= channels_conf_line.get_int(4) * 1000;
