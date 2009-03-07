@@ -1,7 +1,8 @@
 2009-03-07  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.17
-	* DVB-S support added
+	* DVB-S support added (scanning, importing)
+	* Updates to scan window UI to be more DVB-S friendly
 
 2009-03-01  Michael Lamothe <michael.lamothe@gmail.com>
 
