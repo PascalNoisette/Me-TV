@@ -119,10 +119,7 @@ void ScanWindow::on_show()
 
 	Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
 	Glib::ustring initial_tuning_file = get_initial_tuning_dir();
-	if (Gio::File::create_for_path(initial_tuning_file)->query_exists())
-	{
-		file_chooser->set_current_folder(initial_tuning_file);
-	}
+	file_chooser->set_current_folder(initial_tuning_file);
 
 	Window::on_show();
 }
