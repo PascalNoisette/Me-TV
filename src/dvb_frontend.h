@@ -70,7 +70,7 @@ namespace Dvb
 		int fd;
 		struct dvb_frontend_info frontend_info;
 		void wait_lock(guint wait_seconds);
-		void diseqc(const Transponder& transponder);
+		void diseqc(int satellite_number, int polarisation, int hi_band);
 		guint frontend;
 		struct dvb_frontend_parameters frontend_parameters;
 		
@@ -80,7 +80,7 @@ namespace Dvb
 
 		void open();
 		void close();
-		void tune_to(Transponder& transponder, guint timeout = 5);
+		void tune_to(const Transponder& transponder, guint timeout = 5);
 
 		const struct dvb_frontend_parameters& get_frontend_parameters() const;
 		int get_frontend_type() const { return frontend_info.type; }
