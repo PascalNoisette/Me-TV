@@ -222,7 +222,7 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 					channel.sort_order = line_count;
 					channel.flags = CHANNEL_FLAG_DVB_S;
 			
-					channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1);
+					channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1)*1000;
 					channel.transponder.polarisation							= channels_conf_line.get_polarisation(2);
 					channel.transponder.satellite_number						= channels_conf_line.get_int(3);
 					channel.transponder.frontend_parameters.u.qpsk.symbol_rate	= channels_conf_line.get_int(4) * 1000;
@@ -333,6 +333,7 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 		channel.service_id			= row.get_value(columns.column_id);
 		channel.name				= row.get_value(columns.column_name);
 		channel.transponder.frontend_parameters = row.get_value(columns.column_frontend_parameters);
+		channel.transponder.polarisation = row.get_value(columns.column_polarisation);
 
 		switch(frontend.get_frontend_info().type)
 		{
@@ -369,7 +370,7 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 	CATCH;
 }
 
-void ScanWindow::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name)
+void ScanWindow::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name, const guint polarisation)
 {
 	GdkLock gdk_lock;
 	Gtk::TreeModel::iterator iterator = list_store->append();
@@ -377,6 +378,7 @@ void ScanWindow::on_signal_service(const struct dvb_frontend_parameters& fronten
 	row[columns.column_id] = id;
 	row[columns.column_name] = name;
 	row[columns.column_frontend_parameters] = frontend_parameters;
+	row[columns.column_polarisation] = polarisation;
 	tree_view_scanned_channels->get_selection()->select(row);
 
 	channel_count++;
