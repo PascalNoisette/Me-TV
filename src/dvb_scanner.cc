@@ -220,7 +220,7 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 			}
 		}
 		
-		for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end(); i++)
+		for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
 		{
 			tune_to(frontend, *i);
 		}
