@@ -94,6 +94,13 @@ struct StringTable ChannelsConfLine::inversion_table[] =
 	{ NULL, 0 }
 };
 
+struct StringTable ChannelsConfLine::polarisation_table[] =
+{
+	{ "h",	0 },
+	{ "v",	1 },
+	{ NULL, 0 }
+};
+
 ChannelsConfLine::ChannelsConfLine(const Glib::ustring& line) : splitter(line, ":", 20)
 {
 }
@@ -101,11 +108,6 @@ ChannelsConfLine::ChannelsConfLine(const Glib::ustring& line) : splitter(line, "
 const gchar* ChannelsConfLine::get_name(guint index)
 {
 	return splitter.get_value(index);
-}
-
-guint ChannelsConfLine::get_frequency(guint index)
-{
-	return splitter.get_int_value(index);
 }
 
 fe_spectral_inversion_t ChannelsConfLine::get_inversion(guint index)
@@ -149,6 +151,16 @@ guint ChannelsConfLine::get_symbol_rate(guint index)
 }
 
 guint ChannelsConfLine::get_service_id(guint index)
+{
+	return splitter.get_int_value(index);
+}
+
+guint ChannelsConfLine::get_polarisation(guint index)
+{
+	return convert_string_to_value(polarisation_table, splitter.get_value(index));
+}
+
+guint ChannelsConfLine::get_int(guint index)
 {
 	return splitter.get_int_value(index);
 }
