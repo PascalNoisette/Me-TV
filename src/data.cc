@@ -25,6 +25,8 @@
 
 Glib::RecMutex statement_mutex;
 
+#define CURRENT_VERSION 2
+
 class SQLiteException : public Exception
 {
 public:
@@ -198,6 +200,10 @@ const Glib::ustring Statement::get_text(guint column)
 Data::Data(gboolean initialise)
 {
 	Glib::ustring database_path = Glib::build_filename(get_application().get_application_dir(), "/me-tv.db");
+
+	gboolean database_exists = Gio::File::create_for_path(database_path)->query_exists();
+	
+	g_debug("Database %s", database_exists ? "exists" : "does not exist");
 	
 	g_debug("Opening database file '%s'", database_path.c_str());
 	if (sqlite3_open(database_path.c_str(), &database) != 0)
@@ -207,16 +213,11 @@ Data::Data(gboolean initialise)
 	
 	if (initialise)
 	{
-		execute_non_query(
-			"CREATE TABLE IF NOT EXISTS PROFILE ("\
-			"PROFILE_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
-			"NAME CHAR(50) NOT NULL, "\
-			"UNIQUE (NAME));");
+		check_version(database_path, database_exists);
 		
 		execute_non_query(
 			"CREATE TABLE IF NOT EXISTS CHANNEL ("\
 			"CHANNEL_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
-			"PROFILE_ID INTEGER NOT NULL, "\
 			"NAME CHAR(50) NOT NULL, "\
 			"FLAGS INTEGER NOT NULL, "\
 			"SORT_ORDER INTEGER NOT NULL, "\
@@ -277,6 +278,47 @@ Data::~Data()
 	{
 		sqlite3_close(database);
 		database = NULL;
+	}
+}
+
+void Data::check_version(const Glib::ustring& database_path, gboolean database_exists)
+{
+	guint version = 1;
+
+	if (!database_exists)
+	{
+		execute_non_query(
+			"CREATE TABLE IF NOT EXISTS VERSION (VALUE INT);");
+		
+		g_debug("Inserting version %d in database", CURRENT_VERSION);
+		execute_non_query(
+			Glib::ustring::compose(
+				"INSERT INTO VERSION VALUES (%1);",
+				CURRENT_VERSION)
+		);
+		
+		version = CURRENT_VERSION;
+	}
+	else
+	{
+		Statement statement_master(database, "SELECT * FROM sqlite_master WHERE NAME='VERSION';");
+		if (statement_master.step() == SQLITE_ROW)
+		{
+			Statement statement_version(database, "SELECT VALUE FROM VERSION;");
+			if (statement_version.step() == SQLITE_ROW)
+			{
+				version = statement_version.get_int(0);
+				g_debug("Database version is %d", version);
+			}
+		}
+	}
+
+	if (version != CURRENT_VERSION)
+	{
+		Glib::ustring message = Glib::ustring::compose(
+			_("Your Me TV database version is too old.  Please delete %1 and restart Me TV."),
+			database_path);
+		throw Exception(message);
 	}
 }
 
@@ -478,7 +520,7 @@ void Data::replace_channel(Channel& channel)
 	Glib::ustring fixed_name = channel.name;
 	fix_quotes(fixed_name);
 	
-	Dvb::Transponder& transponder = channel.transponder;
+	const Dvb::Transponder& transponder = channel.transponder;
 
 	// General
 	if (channel.channel_id == 0)
@@ -492,7 +534,6 @@ void Data::replace_channel(Channel& channel)
 	
 	g_debug("Saving channel %d (%s)", channel.channel_id, channel.name.c_str());
 	
-	parameters.add("PROFILE_ID",	channel.profile_id);
 	parameters.add("NAME",			fixed_name);
 	parameters.add("FLAGS",			channel.flags);
 	parameters.add("SORT_ORDER",	channel.sort_order);
@@ -557,128 +598,67 @@ void Data::replace_channel(Channel& channel)
 	}
 }
 
-void Data::replace_profile(Profile& profile)
+void Data::replace_channels(ChannelList& channels)
 {
-	ParameterList parameters;
-	Glib::ustring fixed_name = profile.name;
-	
-	fix_quotes(fixed_name);
-	
-	if (profile.profile_id == 0)
+	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
 	{
-		parameters.add("PROFILE_ID");
-	}
-	else
-	{
-		parameters.add("PROFILE_ID", profile.profile_id);
-	}
-	parameters.add("NAME", profile.name);
-	
-	Glib::ustring replace_command = Glib::ustring::compose
-	(
-		"REPLACE INTO PROFILE (%1) VALUES (%2);",
-		parameters.get_names(), parameters.get_values()
-	);
-
-	execute_non_query(replace_command);
-	
-	if (profile.profile_id == 0)
-	{
-		profile.profile_id = sqlite3_last_insert_rowid(database);
-		if (profile.profile_id == 0)
-		{
-			throw Exception("ASSERT: profile.profile_id == 0");
-		}
-	}
-	
-	// First, remove channels
-	Statement statement(database,
-		Glib::ustring::compose("SELECT CHANNEL_ID FROM CHANNEL WHERE PROFILE_ID=%1;", profile.profile_id));
-	while (statement.step() == SQLITE_ROW)
-	{
-		gint channel_id = statement.get_int(0);
-		if (profile.find_channel(channel_id) == NULL)
-		{
-			delete_channel(channel_id);
-		}
-	}
-
-	ChannelList& channels = profile.get_channels();
-	for (ChannelList::iterator channel_iterator = channels.begin(); channel_iterator != channels.end(); channel_iterator++)
-	{
-		Channel& channel = *channel_iterator;
-		channel.profile_id = profile.profile_id;
-		replace_channel(channel);
+		replace_channel(*i);
 	}
 }
 
-ProfileList Data::get_all_profiles()
+ChannelList Data::get_all_channels()
 {
-	ProfileList profiles;
+	ChannelList channels;
 
-	Statement statement(database, "SELECT * FROM PROFILE ORDER BY PROFILE_ID");
-	while (statement.step() == SQLITE_ROW)
+	Statement channel_statement(database, "SELECT * FROM CHANNEL ORDER BY SORT_ORDER");
+	while (channel_statement.step() == SQLITE_ROW)
 	{
-		Profile profile;
-		profile.profile_id	= statement.get_int(0);
-		profile.name		= statement.get_text(1);
-
-		Statement channel_statement(database,
-			Glib::ustring::compose("SELECT * FROM CHANNEL WHERE PROFILE_ID = %1 ORDER BY SORT_ORDER", profile.profile_id));
-		while (channel_statement.step() == SQLITE_ROW)
-		{
-			Channel channel;			
-			Dvb::Transponder& transponder = channel.transponder;
-			
-			channel.channel_id	= channel_statement.get_int(0);
-			channel.profile_id	= channel_statement.get_int(1);
-			channel.name		= channel_statement.get_text(2);
-			channel.flags		= channel_statement.get_int(3);
-			channel.sort_order	= channel_statement.get_int(4);
-			channel.mrl			= channel_statement.get_text(5);
-			channel.service_id	= channel_statement.get_int(6);
-
-			transponder.frontend_parameters.frequency	= channel_statement.get_int(7);
-			transponder.frontend_parameters.inversion	= (fe_spectral_inversion_t)channel_statement.get_int(8);
-
-			if (channel.flags & CHANNEL_FLAG_DVB_T)
-			{
-				transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth_t)channel_statement.get_int(9);
-				transponder.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate_t)channel_statement.get_int(10);
-				transponder.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate_t)channel_statement.get_int(11);
-				transponder.frontend_parameters.u.ofdm.constellation			= (fe_modulation_t)channel_statement.get_int(12);
-				transponder.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode_t)channel_statement.get_int(13);
-				transponder.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval_t)channel_statement.get_int(14);
-				transponder.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy_t)channel_statement.get_int(15);
-			}
-			else if (channel.flags & CHANNEL_FLAG_DVB_C)
-			{
-				transponder.frontend_parameters.u.qam.symbol_rate	= channel_statement.get_int(16);
-				transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)channel_statement.get_int(17);
-				transponder.frontend_parameters.u.qam.modulation	= (fe_modulation_t)channel_statement.get_int(18);
-			}
-			else if (channel.flags & CHANNEL_FLAG_DVB_S)
-			{
-				transponder.frontend_parameters.u.qpsk.symbol_rate	= channel_statement.get_int(16);
-				transponder.frontend_parameters.u.qpsk.fec_inner	= (fe_code_rate_t)channel_statement.get_int(17);
-				transponder.polarisation							= (guint)channel_statement.get_int(19);
-			}
-			else if (channel.flags & CHANNEL_FLAG_ATSC)
-			{
-				transponder.frontend_parameters.u.vsb.modulation	= (fe_modulation_t)channel_statement.get_int(18);
-			}
-			channel.epg_events.insert(get_epg_events(channel));
-			profile.add_channel(channel);
-			
-			g_debug("Loaded channel: %s", channel.name.c_str());
-		}
+		Channel channel;			
+		Dvb::Transponder& transponder = channel.transponder;
 		
-		profiles.push_back(profile);
+		channel.channel_id	= channel_statement.get_int(0);
+		channel.name		= channel_statement.get_text(1);
+		channel.flags		= channel_statement.get_int(2);
+		channel.sort_order	= channel_statement.get_int(3);
+		channel.mrl			= channel_statement.get_text(4);
+		channel.service_id	= channel_statement.get_int(5);
 
-		g_debug("Loaded profile: %s", profile.name.c_str());
+		transponder.frontend_parameters.frequency	= channel_statement.get_int(6);
+		transponder.frontend_parameters.inversion	= (fe_spectral_inversion_t)channel_statement.get_int(7);
+
+		if (channel.flags & CHANNEL_FLAG_DVB_T)
+		{
+			transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth_t)channel_statement.get_int(8);
+			transponder.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate_t)channel_statement.get_int(9);
+			transponder.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate_t)channel_statement.get_int(10);
+			transponder.frontend_parameters.u.ofdm.constellation			= (fe_modulation_t)channel_statement.get_int(11);
+			transponder.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode_t)channel_statement.get_int(12);
+			transponder.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval_t)channel_statement.get_int(13);
+			transponder.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy_t)channel_statement.get_int(14);
+		}
+		else if (channel.flags & CHANNEL_FLAG_DVB_C)
+		{
+			transponder.frontend_parameters.u.qam.symbol_rate	= channel_statement.get_int(15);
+			transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)channel_statement.get_int(16);
+			transponder.frontend_parameters.u.qam.modulation	= (fe_modulation_t)channel_statement.get_int(17);
+		}
+		else if (channel.flags & CHANNEL_FLAG_DVB_S)
+		{
+			transponder.frontend_parameters.u.qpsk.symbol_rate	= channel_statement.get_int(15);
+			transponder.frontend_parameters.u.qpsk.fec_inner	= (fe_code_rate_t)channel_statement.get_int(16);
+			transponder.polarisation							= (guint)channel_statement.get_int(17);
+		}
+		else if (channel.flags & CHANNEL_FLAG_ATSC)
+		{
+			transponder.frontend_parameters.u.vsb.modulation	= (fe_modulation_t)channel_statement.get_int(17);
+		}
+		channel.epg_events.insert(get_epg_events(channel));
+		channels.push_back(channel);
+		
+		g_debug("Loaded channel: %s", channel.name.c_str());
 	}
-	
-	return profiles;
+
+	return channels;
 }
 
 void Data::replace_scheduled_recording(ScheduledRecording& scheduled_recording)

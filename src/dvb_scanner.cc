@@ -67,7 +67,7 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		{
 			for (guint i = 0; i < number_of_services; i++)
 			{
-				signal_service(transponder.frontend_parameters, sds.services[i].id, sds.services[i].name);
+				signal_service(transponder.frontend_parameters, sds.services[i].id, sds.services[i].name, transponder.polarisation);
 			}
 		}
 		
@@ -220,7 +220,7 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 			}
 		}
 		
-		for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end(); i++)
+		for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
 		{
 			tune_to(frontend, *i);
 		}

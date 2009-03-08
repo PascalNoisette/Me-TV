@@ -33,6 +33,30 @@ public:
 	ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
 };
 
+class IntComboBox : public Gtk::ComboBox
+{
+private:
+	class ModelColumns : public Gtk::TreeModel::ColumnRecord
+	{
+	public:
+		ModelColumns()
+		{
+			add(column_int);
+		}
+
+		Gtk::TreeModelColumn<guint> column_int;
+	};
+	
+	ModelColumns columns;
+	Glib::RefPtr<Gtk::ListStore> list_store;
+		
+public:
+	IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
+	void set_size(guint size);
+	guint get_size();
+	guint get_active_value();
+};
+
 class ComboBoxEntryText : public Gtk::ComboBoxEntryText
 {
 public:

@@ -25,7 +25,7 @@
 #include <libglademm.h>
 #include <libgnomemm.h>
 #include "device_manager.h"
-#include "profile_manager.h"
+#include "channel_manager.h"
 #include "main_window.h"
 #include "status_icon.h"
 #include "stream_thread.h"
@@ -35,7 +35,7 @@ class Application : public Gnome::Main
 private:
 	static Application*					current;
 	Glib::RefPtr<Gnome::Glade::Xml>		glade;
-	ProfileManager						profile_manager;
+	ChannelManager						channel_manager;
 	DeviceManager						device_manager;
 	MainWindow*							main_window;
 	StatusIcon*							status_icon;
@@ -68,7 +68,7 @@ public:
 	void run();
 	static Application& get_current();
 	
-	ProfileManager&		get_profile_manager()	{ return profile_manager; }
+	ChannelManager&		get_channel_manager()	{ return channel_manager; }
 	DeviceManager&		get_device_manager()	{ return device_manager; }
 
 	Glib::StaticRecMutex& get_mutex();

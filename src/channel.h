@@ -24,8 +24,8 @@
 #define CHANNEL_FLAG_NONE		0
 #define CHANNEL_FLAG_DVB_T		0x01
 #define CHANNEL_FLAG_DVB_C		0x02
-#define CHANNEL_FLAG_DVB_S		0x08
-#define CHANNEL_FLAG_ATSC		0x04
+#define CHANNEL_FLAG_DVB_S		0x04
+#define CHANNEL_FLAG_ATSC		0x08
 
 #include <linux/dvb/frontend.h>
 #include "epg_events.h"
@@ -37,7 +37,6 @@ public:
 	Channel();
 
 	guint			channel_id;
-	guint			profile_id;
 	Glib::ustring	name;
 	guint			flags;
 	guint			sort_order;

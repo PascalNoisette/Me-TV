@@ -18,19 +18,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include "profile.h"
+#include "channel_manager.h"
 #include "exception.h"
-#include "data.h"
 #include "me-tv-i18n.h"
 
-Profile::Profile()
+#define MAX_CHANNELS	1000
+
+ChannelManager::ChannelManager()
 {
-	g_debug("Profile constructor");
-	profile_id = 0;
 	display_channel = NULL;
 }
 
-Channel* Profile::find_channel(guint channel_id)
+void ChannelManager::load(Data& data)
+{
+	channels = data.get_all_channels();
+}
+
+void ChannelManager::save(Data& data)
+{
+	data.replace_channels(channels);
+}
+
+Channel* ChannelManager::find_channel(guint channel_id)
 {
 	Channel* channel = NULL;
 
@@ -49,7 +58,7 @@ Channel* Profile::find_channel(guint channel_id)
 	return channel;
 }
 
-Channel& Profile::get_channel(guint channel_id)
+Channel& ChannelManager::get_channel(guint channel_id)
 {
 	Channel* channel = find_channel(channel_id);
 
@@ -61,12 +70,12 @@ Channel& Profile::get_channel(guint channel_id)
 	return *channel;
 }
 
-void Profile::set_display_channel(guint channel_id)
+void ChannelManager::set_display_channel(guint channel_id)
 {
 	set_display_channel(get_channel(channel_id));
 }
 
-void Profile::set_display_channel(const Channel& channel)
+void ChannelManager::set_display_channel(const Channel& channel)
 {
 	g_message("Setting display channel to '%s' (%d)", channel.name.c_str(), channel.channel_id);
 	display_channel = find_channel(channel.channel_id);
@@ -80,18 +89,18 @@ void Profile::set_display_channel(const Channel& channel)
 	}
 }
 
-void Profile::add_channels(ChannelList& c)
+void ChannelManager::add_channels(const ChannelList& c)
 {
-	ChannelList::iterator iterator = c.begin();
+	ChannelList::const_iterator iterator = c.begin();
 	while (iterator != c.end())
 	{
-		Channel& channel = *iterator;
+		const Channel& channel = *iterator;
 		channels.push_back(channel);
 		iterator++;
 	}
 }
 
-void Profile::add_channel(Channel& channel)
+void ChannelManager::add_channel(const Channel& channel)
 {
 	if (channels.size() >= MAX_CHANNELS)
 	{
@@ -102,31 +111,31 @@ void Profile::add_channel(Channel& channel)
 		throw Exception(message);
 	}
 	channels.push_back(channel);
-	g_debug("Channel '%s' added to profile", channel.name.c_str());
+	g_debug("Channel '%s' added", channel.name.c_str());
 }
 
-const ChannelList& Profile::get_channels() const
+ChannelList& ChannelManager::get_channels()
 {
 	return channels;
 }
 
-ChannelList& Profile::get_channels()
+const ChannelList& ChannelManager::get_channels() const
 {
 	return channels;
 }
 
-Channel* Profile::get_display_channel()
+Channel* ChannelManager::get_display_channel()
 {
 	return display_channel;
 }
 
-void Profile::clear()
+void ChannelManager::clear()
 {
 	channels.clear();
-	g_debug("'%s' channels cleared", name.c_str());
+	g_debug("'Channels cleared");
 }
 
-Channel* Profile::find_channel(guint frequency, guint service_id)
+Channel* ChannelManager::find_channel(guint frequency, guint service_id)
 {
 	Channel* result = NULL;
 	
@@ -142,7 +151,7 @@ Channel* Profile::find_channel(guint frequency, guint service_id)
 	return result;
 }
 
-void Profile::set_channels(ChannelList& new_channels)
+void ChannelManager::set_channels(const ChannelList& new_channels)
 {
 	g_debug("Setting channels");
 	
@@ -175,7 +184,7 @@ void Profile::set_channels(ChannelList& new_channels)
 	g_debug("Finished setting channels");
 }
 
-void Profile::next_channel()
+void ChannelManager::next_channel()
 {
 	if (channels.size() == 0)
 	{
@@ -210,7 +219,7 @@ void Profile::next_channel()
 	}
 }
 
-void Profile::previous_channel()
+void ChannelManager::previous_channel()
 {
 	if (channels.size() == 0)
 	{

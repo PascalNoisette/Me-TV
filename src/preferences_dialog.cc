@@ -41,6 +41,7 @@ void PreferencesDialog::run()
 	Gtk::SpinButton* spin_button_record_extra_before = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spin_button_record_extra_before"));
 	Gtk::SpinButton* spin_button_record_extra_after = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spin_button_record_extra_after"));
 	Gtk::SpinButton* spin_button_epg_span_hours = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spin_button_epg_span_hours"));
+	Gtk::SpinButton* spin_button_epg_page_size = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spin_button_epg_page_size"));
 	Gtk::Entry* entry_broadcast_address = dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_broadcast_address"));
 	Gtk::SpinButton* spin_button_broadcast_port = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spin_button_broadcast_port"));
 	Gtk::Entry* entry_preferred_language = dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_preferred_language"));
@@ -58,6 +59,7 @@ void PreferencesDialog::run()
 	spin_button_record_extra_before->set_value(application.get_int_configuration_value("record_extra_before"));
 	spin_button_record_extra_after->set_value(application.get_int_configuration_value("record_extra_after"));
 	spin_button_epg_span_hours->set_value(application.get_int_configuration_value("epg_span_hours"));
+	spin_button_epg_page_size->set_value(application.get_int_configuration_value("epg_page_size"));
 	entry_broadcast_address->set_text(application.get_string_configuration_value("broadcast_address"));
 	spin_button_broadcast_port->set_value(application.get_int_configuration_value("broadcast_port"));
 	entry_preferred_language->set_text(application.get_string_configuration_value("preferred_language"));
@@ -77,6 +79,7 @@ void PreferencesDialog::run()
 		application.set_int_configuration_value("record_extra_before", spin_button_record_extra_before->get_value());
 		application.set_int_configuration_value("record_extra_after", spin_button_record_extra_after->get_value());
 		application.set_int_configuration_value("epg_span_hours", spin_button_epg_span_hours->get_value());
+		application.set_int_configuration_value("epg_page_size", spin_button_epg_page_size->get_value());
 		application.set_string_configuration_value("broadcast_address", entry_broadcast_address->get_text());
 		application.set_int_configuration_value("broadcast_port", spin_button_broadcast_port->get_value());
 		application.set_string_configuration_value("preferred_language", entry_preferred_language->get_text());

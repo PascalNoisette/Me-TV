@@ -127,8 +127,9 @@ void EpgThread::run()
 {
 	TRY;
 
-	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
-	Profile& profile = get_application().get_profile_manager().get_current_profile();
+	Application& application = get_application();
+	ChannelManager& channel_manager = application.get_channel_manager();
+	Dvb::Frontend& frontend = application.get_device_manager().get_frontend();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 	EITDemuxers demuxers(demux_path);
 	Dvb::SI::SectionParser parser;
@@ -167,7 +168,7 @@ void EpgThread::run()
 			demuxers.get_next_eit(parser, section, is_atsc);
 
 			guint service_id = section.service_id;
-			Channel* channel = profile.find_channel(frequency, service_id);
+			Channel* channel = channel_manager.find_channel(frequency, service_id);
 			if (channel != NULL)
 			{
 				for( unsigned int k = 0; section.events.size() > k; k++ )
@@ -215,8 +216,8 @@ void EpgThread::run()
 				g_debug("Deleting old EPG events");
 				data.delete_old_epg_events();
 
-				g_debug("Replacing profile");
-				data.replace_profile(profile);
+				g_debug("Replacing channels");
+				data.replace_channels(channel_manager.get_channels());
 				
 				last_cleanup_time = now;
 			}

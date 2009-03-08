@@ -58,16 +58,18 @@ void ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked()
 {
 	TRY
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scheduled_recordings->get_selection();	
-	if (selection->count_selected_rows() > 0)
+	if (selection->count_selected_rows() == 0)
 	{
-		Gtk::TreeModel::Row row = *(selection->get_selected());
-
-		Data data;
-		guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
-		data.delete_scheduled_recording(scheduled_recording_id);
-		update(data);
-		get_application().check_scheduled_recordings(data);
+		throw Exception(_("No scheduled recording selected"));
 	}
+	
+	Gtk::TreeModel::Row row = *(selection->get_selected());
+
+	Data data;
+	guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
+	data.delete_scheduled_recording(scheduled_recording_id);
+	update(data);
+	get_application().check_scheduled_recordings(data);
 	CATCH
 }
 
@@ -79,7 +81,7 @@ void ScheduledRecordingsDialog::update()
 
 void ScheduledRecordingsDialog::update(Data& data)
 {
-	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
+	ChannelManager& channel_manager = get_application().get_channel_manager();
 	list_store->clear();
 	ScheduledRecordingList recordings = data.get_scheduled_recordings();
 	for (ScheduledRecordingList::iterator i = recordings.begin(); i != recordings.end(); i++)
@@ -88,7 +90,7 @@ void ScheduledRecordingsDialog::update(Data& data)
 		Gtk::TreeModel::Row row = *(list_store->append());
 		row[columns.column_scheduled_recording_id]	= scheduled_recording.scheduled_recording_id;
 		row[columns.column_description]				= scheduled_recording.description;
-		row[columns.column_channel]					= current_profile.get_channel(scheduled_recording.channel_id).name;
+		row[columns.column_channel]					= channel_manager.get_channel(scheduled_recording.channel_id).name;
 		row[columns.column_start_time]				= scheduled_recording.get_start_time_text();
 		row[columns.column_duration]				= scheduled_recording.get_duration_text();
 	}

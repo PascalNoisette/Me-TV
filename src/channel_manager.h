@@ -18,34 +18,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __PROFILE_MANAGER_H__
-#define __PROFILE_MANAGER_H__
-
-#include <glibmm.h>
-#include "dvb_frontend.h"
-#include "exception.h"
-#include "dvb_si.h"
-#include "me-tv.h"
-#include "profile.h"
+#include "channel.h"
 #include "data.h"
 
-class ProfileManager
+class ChannelManager
 {
-protected:
-	ProfileList profiles;
-	Profile* current_profile;
-
-	void unset_directory(const Glib::ustring& path);
-	Profile* find_profile(const Glib::ustring& profile_name);
+private:
+	ChannelList channels;
+	Channel* display_channel;
 public:
-	ProfileManager();
-	~ProfileManager();
+	ChannelManager();
 		
-	Profile& get_current_profile();
-	Profile& get_profile(const Glib::ustring& profile_name);
-
-	void load();
-	void save();
+	void load(Data& data);
+	void save(Data& data);
+		
+	const ChannelList& get_channels() const;
+	ChannelList& get_channels();
+	void next_channel();
+	void previous_channel();
+	void set_display_channel(const Channel& channel);
+	void set_display_channel(guint channel_id);
+	Channel* get_display_channel();
+	void add_channel(const Channel& channel);
+	void add_channels(const ChannelList& channels);
+	void set_channels(const ChannelList& channels);
+	void clear();
+	sigc::signal<void, const Channel&> signal_display_channel_changed;
+	Channel& get_channel(guint channel_id);
+	Channel* find_channel(guint frequency, guint service_id);
+	Channel* find_channel(guint channel_id);
 };
-
-#endif
