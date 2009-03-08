@@ -57,7 +57,9 @@ private:
 
 	void load_epg_event(Statement& statement, EpgEvent& epg_event);
 	void load_scheduled_recording(Statement& statement, ScheduledRecording& scheduled_recording);
-	
+
+	void check_version(const Glib::ustring& database_path, gboolean database_exists);
+
 public:
 	Data(gboolean initialise = false);
 	~Data();

@@ -25,6 +25,8 @@
 
 Glib::RecMutex statement_mutex;
 
+#define CURRENT_VERSION 2
+
 class SQLiteException : public Exception
 {
 public:
@@ -198,6 +200,10 @@ const Glib::ustring Statement::get_text(guint column)
 Data::Data(gboolean initialise)
 {
 	Glib::ustring database_path = Glib::build_filename(get_application().get_application_dir(), "/me-tv.db");
+
+	gboolean database_exists = Gio::File::create_for_path(database_path)->query_exists();
+	
+	g_debug("Database %s", database_exists ? "exists" : "does not exist");
 	
 	g_debug("Opening database file '%s'", database_path.c_str());
 	if (sqlite3_open(database_path.c_str(), &database) != 0)
@@ -207,6 +213,8 @@ Data::Data(gboolean initialise)
 	
 	if (initialise)
 	{
+		check_version(database_path, database_exists);
+		
 		execute_non_query(
 			"CREATE TABLE IF NOT EXISTS CHANNEL ("\
 			"CHANNEL_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
@@ -270,6 +278,47 @@ Data::~Data()
 	{
 		sqlite3_close(database);
 		database = NULL;
+	}
+}
+
+void Data::check_version(const Glib::ustring& database_path, gboolean database_exists)
+{
+	guint version = 1;
+
+	if (!database_exists)
+	{
+		execute_non_query(
+			"CREATE TABLE IF NOT EXISTS VERSION (VALUE INT);");
+		
+		g_debug("Inserting version %d in database", CURRENT_VERSION);
+		execute_non_query(
+			Glib::ustring::compose(
+				"INSERT INTO VERSION VALUES (%1);",
+				CURRENT_VERSION)
+		);
+		
+		version = CURRENT_VERSION;
+	}
+	else
+	{
+		Statement statement_master(database, "SELECT * FROM sqlite_master WHERE NAME='VERSION';");
+		if (statement_master.step() == SQLITE_ROW)
+		{
+			Statement statement_version(database, "SELECT VALUE FROM VERSION;");
+			if (statement_version.step() == SQLITE_ROW)
+			{
+				version = statement_version.get_int(0);
+				g_debug("Database version is %d", version);
+			}
+		}
+	}
+
+	if (version != CURRENT_VERSION)
+	{
+		Glib::ustring message = Glib::ustring::compose(
+			_("Your Me TV database version is too old.  Please delete %1 and restart Me TV."),
+			database_path);
+		throw Exception(message);
 	}
 }
 
