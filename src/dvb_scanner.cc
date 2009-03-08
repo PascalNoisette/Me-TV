@@ -37,10 +37,14 @@ Scanner::Scanner(guint timeout) : wait_timeout(timeout)
 
 void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 {
+	static guint count = 0;
+	
 	if (terminated)
 	{
 		return;
 	}
+
+	signal_progress(++count, transponders.size());
 	
 	try
 	{
@@ -219,22 +223,18 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 				throw Exception(_("Me TV cannot process a line in the initial tuning file"));
 			}
 		}
-		
-		for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
-		{
-			tune_to(frontend, *i);
-		}
-		
-		if (!terminated)
-		{
-			signal_progress(++count, size);
-		}
 	}
+
+	for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
+	{
+		tune_to(frontend, *i);
+	}
+	
 	g_debug("Scanner loop exited");
 
 	if (!terminated)
 	{
-		signal_progress(size, size);
+		signal_complete();
 	}
 	
 	g_debug("Scanner finished");
