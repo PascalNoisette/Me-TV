@@ -29,7 +29,7 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 	Gtk::ScrolledWindow(cobject), glade(glade_xml)
 {
 	offset = 0;
-	epg_page = 0;
+	epg_page = 1;
 
 	table_epg				= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
 	scrolled_window_epg		= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
@@ -68,8 +68,11 @@ void GtkEpgWidget::next()
 void GtkEpgWidget::on_combo_box_epg_page_changed()
 {	
 	TRY
-	epg_page = combo_box_epg_page->get_selected_value();
-	update();
+	if (combo_box_epg_page->get_size() > 0)
+	{
+		epg_page = combo_box_epg_page->get_active_value();
+		update_table();
+	}
 	CATCH
 }
 
@@ -77,18 +80,10 @@ void GtkEpgWidget::update()
 {
 	g_debug("Updating EPG");
 	
-	Gtk::Adjustment* hadjustment = scrolled_window_epg->get_hadjustment();
-	Gtk::Adjustment* vadjustment = scrolled_window_epg->get_vadjustment();
-	
-	gdouble hvalue = hadjustment->get_value();
-	gdouble vvalue = vadjustment->get_value();
-
 	update_table();
-	
-	hadjustment->set_value(hvalue);
-	vadjustment->set_value(vvalue);
-
 	update_pages();
+
+	g_debug("EPG update complete");
 }
 
 void GtkEpgWidget::clear()
@@ -106,26 +101,28 @@ void GtkEpgWidget::clear()
 
 void GtkEpgWidget::update_pages()
 {
+	Application& application = get_application();
 	guint epg_page_count = combo_box_epg_page->get_size();
-	guint epg_page_size = get_application().get_int_configuration_value("epg_page_size");
+	guint epg_page_size = application.get_int_configuration_value("epg_page_size");
 	
-	Profile& profile = get_application().get_profile_manager().get_current_profile();
-	ChannelList& channels = profile.get_channels();
-	guint new_epg_page_count = (channels.size() / epg_page_size) + 1;
+	const ChannelList& channels = application.get_channel_manager().get_channels();
+	guint channel_count = channels.size();
+	guint new_epg_page_count = channel_count == 0 ? 1 : ((channel_count-1) / epg_page_size) + 1;
 	
 	if (new_epg_page_count != epg_page_count)
 	{
-		g_debug("New EPG page count: %d", new_epg_page_count);
 		combo_box_epg_page->set_size(new_epg_page_count);
-		combo_box_epg_page->set_active(epg_page);
-		epg_page_count = new_epg_page_count;
 	}
-	
-	combo_box_epg_page->property_sensitive() = (epg_page_count > 1);
 }
 
 void GtkEpgWidget::update_table()
 {
+	Gtk::Adjustment* hadjustment = scrolled_window_epg->get_hadjustment();
+	Gtk::Adjustment* vadjustment = scrolled_window_epg->get_vadjustment();
+	
+	gdouble hvalue = hadjustment->get_value();
+	gdouble vvalue = vadjustment->get_value();
+
 	if (get_window())
 	{
 		get_window()->freeze_updates();
@@ -136,10 +133,10 @@ void GtkEpgWidget::update_table()
 		
 		glade->get_widget("button_epg_previous")->set_sensitive(offset > 0);
 		glade->get_widget("button_epg_now")->set_sensitive(offset > 0);
-			
-		Profile& profile = get_application().get_profile_manager().get_current_profile();
-		Channel* display_channel = profile.get_display_channel();
-		ChannelList& channels = profile.get_channels();
+		
+		ChannelManager& channel_manager = get_application().get_channel_manager();
+		const Channel* display_channel = channel_manager.get_display_channel();
+		const ChannelList& channels = channel_manager.get_channels();
 
 		table_epg->resize(epg_span_hours * COLUMNS_PER_HOUR + 1, channels.size() + 1);
 
@@ -161,15 +158,16 @@ void GtkEpgWidget::update_table()
 		}
 		start_time += timezone;
 
+		g_debug("EPG page %d", epg_page);
 		guint epg_page_size = get_application().get_int_configuration_value("epg_page_size");
 		guint channel_count = 0;
 		guint channel_start = (epg_page-1) * epg_page_size;
 		guint channel_end = channel_start + epg_page_size;
-		for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
 			if (channel_start <= channel_count && channel_count < channel_end)
 			{
-				Channel& channel = *iterator;
+				const Channel& channel = *iterator;
 				gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
 				create_channel_row(channel, row++, selected, start_time);
 			}
@@ -178,10 +176,14 @@ void GtkEpgWidget::update_table()
 		}
 		get_window()->thaw_updates();
 	}
+	hadjustment->set_value(hvalue);
+	vadjustment->set_value(vvalue);
 }
 
-void GtkEpgWidget::create_channel_row(Channel& channel, guint table_row, gboolean selected, guint start_time)
+void GtkEpgWidget::create_channel_row(const Channel& const_channel, guint table_row, gboolean selected, guint start_time)
 {	
+	Channel channel = const_channel;
+
 	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, table_row, table_row + 1);
 	gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
 	gboolean show_epg_tooltips = get_application().get_boolean_configuration_value("show_epg_tooltips");
@@ -320,7 +322,7 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 {
 	TRY
-	get_application().get_profile_manager().get_current_profile().set_display_channel(channel_id);
+	get_application().get_channel_manager().set_display_channel(channel_id);
 	CATCH
 
 	TRY

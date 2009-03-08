@@ -149,7 +149,7 @@ void ScanWindow::on_button_scan_wizard_cancel_clicked()
 
 void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 {
-	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
+	ChannelManager& channel_manager = get_application().get_channel_manager();
 	Glib::RefPtr<Glib::IOChannel> file = Glib::IOChannel::create_from_file(channels_conf_path, "r");
 	Glib::ustring line;
 	guint line_count = 0;
@@ -252,13 +252,10 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 					throw Exception(_("Failed to import: importing a channels.conf is only supported with DVB-T, DVB-C, DVB-S and ATSC"));
 					break;
 			}
-			current_profile.add_channel(channel);
+			channel_manager.add_channel(channel);
 		}		
 	}
 	g_debug("Finished importing channels");
-	
-	Data data;
-	data.replace_profile(current_profile);
 	hide();
 }
 
@@ -320,8 +317,7 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 void ScanWindow::on_button_scan_wizard_add_clicked()
 {
 	TRY
-	Profile& current_profile = get_application().get_profile_manager().get_current_profile();
-
+	ChannelManager& channel_manager = get_application().get_channel_manager();
 	std::list<Gtk::TreeModel::Path> selected_services = tree_view_scanned_channels->get_selection()->get_selected_rows();		
 	std::list<Gtk::TreeModel::Path>::iterator iterator = selected_services.begin();
 	while (iterator != selected_services.end())
@@ -358,13 +354,11 @@ void ScanWindow::on_button_scan_wizard_add_clicked()
 				break;
 		}
 		
-		current_profile.add_channel(channel);
+		channel_manager.add_channel(channel);
 		
 		iterator++;
 	}
 
-	Data data;
-	data.replace_profile(current_profile);
 	hide();
 	
 	CATCH;

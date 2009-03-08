@@ -54,7 +54,7 @@ public:
 	IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
 	void set_size(guint size);
 	guint get_size();
-	guint get_selected_value();
+	guint get_active_value();
 };
 
 class ComboBoxEntryText : public Gtk::ComboBoxEntryText

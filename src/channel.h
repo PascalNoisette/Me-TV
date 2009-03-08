@@ -37,7 +37,6 @@ public:
 	Channel();
 
 	guint			channel_id;
-	guint			profile_id;
 	Glib::ustring	name;
 	guint			flags;
 	guint			sort_order;

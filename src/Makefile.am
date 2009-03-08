@@ -36,7 +36,6 @@ me_tv_SOURCES = \
 	exception.h \
 	thread.h \
 	application.cc \
-	profile_manager.h \
 	dvb_frontend.cc \
 	dvb_frontend.h \
 	dvb_scanner.cc \
@@ -59,15 +58,12 @@ me_tv_SOURCES = \
 	main_window.cc \
 	gtk_epg_widget.cc \
 	gtk_epg_widget.h \
-	profile_manager.cc \
 	me-tv-ui.h \
 	me-tv-ui.cc \
 	device_manager.cc \
 	engine.h \
 	meters_dialog.cc \
 	engine.cc \
-	profile.cc \
-	profile.h \
 	channel.h \
 	epg_event.h \
 	data.cc \
@@ -109,7 +105,9 @@ me_tv_SOURCES = \
 	xine_lib_engine.cc \
 	xine_lib_engine.h \
 	devices_dialog.cc \
-	devices_dialog.h
+	devices_dialog.h \
+	channel_manager.cc \
+	channel_manager.h
 
 me_tv_CXXFLAGS = 
 

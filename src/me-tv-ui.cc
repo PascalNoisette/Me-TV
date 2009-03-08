@@ -56,46 +56,6 @@ void ChannelComboBox::load(const ChannelList& channels)
 	set_active(0);
 }
 
-IntComboBox::IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
-	: Gtk::ComboBox(cobject)
-{
-	list_store = Gtk::ListStore::create(columns);
-}
-
-void IntComboBox::set_size(guint size)
-{
-	clear();
-	set_model(list_store);
-	pack_start(columns.column_int);
-	list_store->clear();
-	for (guint i = 1; i <= size; i++)
-	{
-		Gtk::TreeModel::Row row = *list_store->append();
-		row[columns.column_int] = i;
-	}
-	set_active(0);
-}
-
-guint IntComboBox::get_size()
-{
-	return list_store->children().size();
-}
-
-guint IntComboBox::get_selected_value()
-{
-	Gtk::TreeModel::iterator i = get_active();
-	if (i)
-	{
-		Gtk::TreeModel::Row row = *i;
-		if (row)
-		{
-			return row[columns.column_int];
-		}
-	}
-	
-	throw Exception(_("Failed to get selected integer value"));
-}
-
 void ChannelComboBox::set_selected_channel_id(guint channel_id)
 {
 	Gtk::TreeNodeChildren children = get_model()->children();
@@ -133,4 +93,60 @@ GdkUnlock::GdkUnlock()
 GdkUnlock::~GdkUnlock()
 {
 	gdk_threads_enter();
+}
+
+IntComboBox::IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
+	: Gtk::ComboBox(cobject)
+{
+	list_store = Gtk::ListStore::create(columns);
+	clear();
+	set_model(list_store);
+	pack_start(columns.column_int);
+	set_size(0);
+	set_active(0);
+}
+
+void IntComboBox::set_size(guint size)
+{	
+	g_debug("Setting integer combo box size to %d", size);
+
+	list_store->clear();
+	for (guint i = 0; i < size; i++)
+	{
+		Gtk::TreeModel::Row row = *list_store->append();
+		row[columns.column_int] = (i+1);
+		
+		if (list_store->children().size() == 1)
+		{
+			set_active(0);
+		}
+	}
+	
+	if (size == 0)
+	{
+		Gtk::TreeModel::Row row = *list_store->append();
+		row[columns.column_int] = 1;
+	}
+	
+	set_sensitive(size > 1);
+}
+
+guint IntComboBox::get_size()
+{
+	return list_store->children().size();
+}
+
+guint IntComboBox::get_active_value()
+{
+	Gtk::TreeModel::iterator i = get_active();
+	if (i)
+	{
+		Gtk::TreeModel::Row row = *i;
+		if (row)
+		{
+			return row[columns.column_int];
+		}
+	}
+	
+	throw Exception(_("Failed to get active integer value"));
 }

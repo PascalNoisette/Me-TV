@@ -216,12 +216,12 @@ void MainWindow::show_channels_dialog()
 	channels_dialog.hide();
 	if (dialog_result == Gtk::RESPONSE_OK)
 	{
-		Profile& current_profile = get_application().get_profile_manager().get_current_profile();
-		ChannelList channels = channels_dialog.get_channels();
-		current_profile.set_channels(channels);
+		const ChannelList& channels = channels_dialog.get_channels();
+		ChannelManager& channel_manager = get_application().get_channel_manager();
+		channel_manager.set_channels(channels);
 		
 		Data data;
-		data.replace_profile(current_profile);
+		channel_manager.save(data);
 	}
 	update();
 
@@ -486,7 +486,7 @@ void MainWindow::on_menu_item_audio_stream_activate(guint audio_stream_index)
 void MainWindow::update()
 {	
 	Application& application = get_application();
-	Channel* channel = application.get_profile_manager().get_current_profile().get_display_channel();
+	Channel* channel = application.get_channel_manager().get_display_channel();
 	Glib::ustring window_title;
 	Glib::ustring status_text;
 	
@@ -685,12 +685,12 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 		
 		case GDK_Up:
 		case GDK_minus:
-			get_application().get_profile_manager().get_current_profile().previous_channel();
+			get_application().get_channel_manager().previous_channel();
 			break;
 			
 		case GDK_plus:
 		case GDK_Down:
-			get_application().get_profile_manager().get_current_profile().next_channel();
+			get_application().get_channel_manager().next_channel();
 			break;
 
 		default:

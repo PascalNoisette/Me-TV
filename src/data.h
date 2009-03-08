@@ -24,7 +24,7 @@
 #include "me-tv.h"
 #include <sqlite3.h>
 #include <linux/dvb/frontend.h>
-#include "profile.h"
+#include "channel.h"
 #include "epg_event.h"
 #include "scheduled_recording.h"
 
@@ -68,8 +68,8 @@ public:
 	void delete_old_epg_events();
 	void vacuum();
 
-	ProfileList get_all_profiles();
-	void replace_profile(Profile& profile);
+	ChannelList get_all_channels();
+	void replace_channels(ChannelList& channels);
 	void replace_channel(Channel& channel);
 	void delete_channel(guint channel_id);
 		

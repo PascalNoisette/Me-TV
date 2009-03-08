@@ -111,9 +111,8 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	
 	glade = Gnome::Glade::Xml::create(glade_path);
 	
-	profile_manager.load();
-	Profile& profile = profile_manager.get_current_profile();
-	profile.signal_display_channel_changed.connect(
+	channel_manager.load(data);
+	channel_manager.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));	
 
 	timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
@@ -121,7 +120,9 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 
 Application::~Application()
 {
-	profile_manager.save();
+	Data data;
+	channel_manager.save(data);
+	
 	if (timeout_source != 0)
 	{
 		g_source_remove(timeout_source);
@@ -210,10 +211,11 @@ void Application::run()
 	status_icon = new StatusIcon(glade);
 	main_window = MainWindow::create(glade);
 	
+	const FrontendList& frontends = device_manager.get_frontends();
+
 	Glib::ustring default_frontend = get_string_configuration_value("default_frontend");
 	if (default_frontend.size() == 0)
 	{
-		const FrontendList& frontends = device_manager.get_frontends();
 		if (frontends.size() > 1)
 		{
 			main_window->show();
@@ -246,17 +248,18 @@ void Application::run()
 		}
 	}
 
-	Profile& current_profile = get_profile_manager().get_current_profile();
-	ChannelList& channels = current_profile.get_channels();
+	TRY
+	device_manager.get_frontend();
+	
+	const ChannelList& channels = channel_manager.get_channels();
 	if (channels.size() == 0)
 	{
 		main_window->show_channels_dialog();
 	}
-	channels = current_profile.get_channels();
 	if (channels.size() > 0)
 	{
 		gint last_channel = get_application().get_int_configuration_value("last_channel");
-		if (current_profile.find_channel(last_channel) == NULL)
+		if (channel_manager.find_channel(last_channel) == NULL)
 		{
 			g_debug("Last channel '%d' not found", last_channel);
 			last_channel = -1;
@@ -265,8 +268,9 @@ void Application::run()
 		{
 			last_channel = (*channels.begin()).channel_id;
 		}
-		current_profile.set_display_channel(last_channel);
+		channel_manager.set_display_channel(last_channel);
 	}
+	CATCH
 	
 	Gnome::Main::run();
 		
@@ -382,7 +386,6 @@ void Application::check_scheduled_recordings(Data& data)
 {
 	g_debug("Checking scheduled recordings");
 	
-	Profile& profile = profile_manager.get_current_profile();
 	gboolean got_recording = false;
 
 	ScheduledRecordingList scheduled_recording_list = data.get_scheduled_recordings();
@@ -404,7 +407,7 @@ void Application::check_scheduled_recordings(Data& data)
 				scheduled_recording.start_time,
 				scheduled_recording.duration,
 				record ? "true  " : "false ",
-				profile.get_channel(scheduled_recording.channel_id).name.c_str(),
+				channel_manager.get_channel(scheduled_recording.channel_id).name.c_str(),
 				scheduled_recording.description.c_str());
 			
 			if (record)
@@ -417,7 +420,7 @@ void Application::check_scheduled_recordings(Data& data)
 				{
 					got_recording = true;
 					
-					const Channel* channel = profile.get_display_channel();
+					const Channel* channel = channel_manager.get_display_channel();
 					if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
 					{
 						g_debug("Already tuned to correct channel");
@@ -441,7 +444,7 @@ void Application::check_scheduled_recordings(Data& data)
 						stop_recording();
 						
 						g_debug("Changing channel for scheduled recording");
-						profile.set_display_channel(scheduled_recording.channel_id);
+						channel_manager.set_display_channel(scheduled_recording.channel_id);
 
 						g_debug("Starting recording due to scheduled recording");
 						Glib::ustring filename = make_recording_filename(scheduled_recording.description);
@@ -490,7 +493,7 @@ gboolean Application::on_timeout()
 
 Glib::ustring Application::make_recording_filename(const Glib::ustring& description)
 {
-	Channel* channel = profile_manager.get_current_profile().get_display_channel();
+	Channel* channel = channel_manager.get_display_channel();
 		
 	if (channel == NULL)
 	{
@@ -680,7 +683,7 @@ void Application::on_error(const Glib::ustring& message)
 
 void Application::restart_stream()
 {
-	Channel* channel = get_profile_manager().get_current_profile().get_display_channel();
+	Channel* channel = channel_manager.get_display_channel();
 	if (channel != NULL)
 	{
 		set_source(*channel);
