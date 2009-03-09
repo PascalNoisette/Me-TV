@@ -301,6 +301,7 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 			Dvb::Scanner& scanner = scan_thread->get_scanner();
 			scanner.signal_service.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_service));
 			scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_progress));
+			scanner.signal_complete.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_complete));
 			get_application().stop_stream_thread();
 			scan_thread->start();
 		}
@@ -390,9 +391,10 @@ void ScanWindow::on_signal_progress(guint step, gsize total)
 	GdkLock gdk_lock;
 	gdouble fraction = total == 0 ? 0 : step/(gdouble)total;
 	progress_bar_scan->set_fraction(fraction);
-	if (step == total)
-	{
-		glade->get_widget("button_scan_wizard_add")->show();
-		notebook_scan_wizard->next_page();
-	}
+}
+
+void ScanWindow::on_signal_complete()
+{
+	glade->get_widget("button_scan_wizard_add")->show();
+	notebook_scan_wizard->next_page();
 }

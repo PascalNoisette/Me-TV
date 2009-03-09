@@ -99,6 +99,7 @@ private:
 	void on_button_scan_wizard_add_clicked();
 	void on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name, const guint polarisation);
 	void on_signal_progress(guint step, gsize total);
+	void on_signal_complete();
 	void on_hide();	
 	void stop_scan();
 	void update_channel_count();

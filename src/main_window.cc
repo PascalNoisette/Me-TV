@@ -726,10 +726,16 @@ void MainWindow::create_engine()
 	g_debug("Creating engine");
 	Application& application = get_application();
 	Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
-	if (engine_type == "xine")
+	if (engine_type == "none")
+	{
+		engine = NULL;
+	}
+#ifdef ENABLE_XINE_ENGINE
+	else if (engine_type == "xine")
 	{
 		engine = new XineEngine();
 	}
+#endif
 #ifdef ENABLE_MPLAYER_ENGINE
 	else if (engine_type == "mplayer")
 	{
@@ -754,10 +760,6 @@ void MainWindow::create_engine()
 		engine = new LibGStreamerEngine();
 	}
 #endif
-	else if (engine_type == "none")
-	{
-		engine = NULL;
-	}
 	else
 	{
 		throw Exception(_("Unknown engine type"));
@@ -774,7 +776,10 @@ void MainWindow::create_engine()
 void MainWindow::play(const Glib::ustring& mrl)
 {
 	create_engine();
-	engine->play(mrl);
+	if (engine != NULL)
+	{
+		engine->play(mrl);
+	}
 }
 
 void MainWindow::start_engine()
@@ -785,17 +790,7 @@ void MainWindow::start_engine()
 	StreamThread* stream_thread = application.get_stream_thread();
 	if (property_visible() && stream_thread != NULL)
 	{
-		g_debug("Starting engine");
-
-		create_engine();
-	
-		if (engine != NULL)
-		{
-			engine->play(stream_thread->get_fifo_path());			
-			g_debug("Output FD created");
-		}
-
-		g_debug("Engine started");
+		play(stream_thread->get_fifo_path());
 	}
 }
 

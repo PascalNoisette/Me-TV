@@ -25,6 +25,8 @@
 #include <gdk/gdkx.h>
 #include <sys/wait.h>
 
+#ifdef ENABLE_XINE_ENGINE
+
 #define KILL_SLEEP_TIME		100000
 #define KILL_SLEEP_TIMEOUT  2000000
 
@@ -100,7 +102,6 @@ void XineEngine::play(const Glib::ustring& mrl)
 			NULL,
 			NULL);
 
-		mute_state = false;
 		set_mute_state(mute_state);
 		g_debug("Spawned xine on pid %d", pid);
 	}
@@ -196,11 +197,14 @@ gboolean XineEngine::is_running()
 
 void XineEngine::set_mute_state(gboolean state)
 {
-	if (state != mute_state)
+	if (pid != -1)
 	{
-		g_debug(state ? "Muting" : "Unmuting");
-		write("mute\n");
-		mute_state = state;
+		if (state != mute_state)
+		{
+			g_debug(state ? "Muting" : "Unmuting");
+			write("mute\n");
+			mute_state = state;
+		}
 	}
 }
 
@@ -218,3 +222,5 @@ void XineEngine::set_audio_channel_state(AudioChannelState state)
 		restart();
 	}
 }
+
+#endif

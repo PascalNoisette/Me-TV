@@ -24,6 +24,8 @@
 #include "me-tv.h"
 #include "engine.h"
 
+#ifdef ENABLE_XINE_ENGINE
+
 class XineEngine : public Engine
 {
 private:
@@ -47,5 +49,7 @@ public:
 	XineEngine();
 	~XineEngine();
 };
+
+#endif
 
 #endif

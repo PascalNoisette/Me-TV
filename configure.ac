@@ -149,6 +149,15 @@ PKG_CHECK_MODULES(SQLITE, [sqlite3 >= $SQLITE_REQUIRED])
 # check for additional requirements when optional engines are enabled
 # default engine is xine, other engines are disabled at default
 # we are only checking optional engines
+AC_ARG_ENABLE(mplayer-engine,
+        AC_HELP_STRING([--enable-xine-engine],[Enable Xine engine support (default disabled)]),
+        enable_xine_engine="$enableval", enable_xine_engine=no)
+if test x"$enable_xine_engine" = "xyes" ; then
+# the binary path test is not required in the build time
+# packagers should notice that the MPlayer binary is required in the install time
+        AC_DEFINE(ENABLE_XINE_ENGINE,1,[Define to 1 if Xine engine is used.])
+fi
+
 AC_ARG_ENABLE(mplayer-engine, 
 	AC_HELP_STRING([--enable-mplayer-engine],[Enable experimental MPlayer engine support (default disabled)]), 
 	enable_mplayer_engine="$enableval", enable_mplayer_engine=no)
@@ -187,8 +196,8 @@ PKG_CHECK_MODULES([XINE_LIB], libxine >= $LIBXINE_REQUIRED, found_xine_lib=yes, 
 fi
 
 AC_ARG_ENABLE(libgstreamer-engine, 
-	AC_HELP_STRING([--enable-libgstreamer-engine],[Enable experimental GStreamer library engine support (default disabled)]), 
-	enable_libgstreamer_engine="$enableval", enable_libgstreamer_engine=no)
+	AC_HELP_STRING([--enable-libgstreamer-engine],[Enable experimental GStreamer library engine support (default enabled)]), 
+	enable_libgstreamer_engine="$enableval", enable_libgstreamer_engine=yes)
 if test x$enable_libgstreamer_engine = xyes; then
 PKG_CHECK_MODULES([LIBGSTREAMER], gstreamer-0.10 >= $LIBGSTREAMER_REQUIRED gstreamer-interfaces-0.10 >= $LIBGSTREAMER_REQUIRED, found_libgstreamer=yes, found_libgstreamer=no)
 	if test x"$found_libgstreamer" = "xyes" ; then
@@ -262,6 +271,7 @@ Configure summary:
 	Installing into prefix .....: ${prefix}
 
 Optional engines support:
+	xine engine ................: ${enable_xine_engine}
 	libvlc engine ..............: ${enable_libvlc_engine}
 	MPlayer engine .............: ${enable_mplayer_engine}
 	xine-lib engine ............: ${enable_xine_lib_engine}
