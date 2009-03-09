@@ -48,3 +48,17 @@ guint Channel::get_transponder_frequency()
 {
 	return transponder.frontend_parameters.frequency;
 }
+
+gboolean ChannelList::contains(guint channel_id)
+{
+	for (const_iterator i = begin(); i != end(); i++)
+	{
+		if ((*i).channel_id == channel_id)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+

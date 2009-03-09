@@ -23,7 +23,6 @@
 #include "thread.h"
 #include "application.h"
 #include "channels_conf_line.h"
-#include "profile.h"
 
 ScanWindow* ScanWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {

@@ -51,6 +51,10 @@ public:
 	Glib::ustring get_text();
 };
 
-typedef std::list<Channel> ChannelList;
+class ChannelList : public std::list<Channel>
+{
+public:
+	gboolean contains(guint channel_id);
+};
 
 #endif

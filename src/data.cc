@@ -601,6 +601,17 @@ void Data::replace_channel(Channel& channel)
 
 void Data::replace_channels(ChannelList& channels)
 {
+	// First, remove channels
+	Statement statement(database, "SELECT CHANNEL_ID FROM CHANNEL");
+	while (statement.step() == SQLITE_ROW)
+	{
+		gint channel_id = statement.get_int(0);
+		if (!channels.contains(channel_id))
+		{
+			delete_channel(channel_id);
+		}
+	}
+
 	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
 	{
 		replace_channel(*i);
