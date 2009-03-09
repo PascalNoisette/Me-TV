@@ -590,6 +590,7 @@ void Data::replace_channel(Channel& channel)
 	for (EpgEventList::iterator i = epg_event_list.begin(); i != epg_event_list.end(); i++)
 	{
 		EpgEvent& epg_event = *i;
+		epg_event.channel_id = channel.channel_id;
 		if (epg_event.save)
 		{
 			replace_epg_event(epg_event);

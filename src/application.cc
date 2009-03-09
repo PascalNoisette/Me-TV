@@ -62,7 +62,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_int_configuration_default("epg_span_hours", 3);
 	set_int_configuration_default("last_channel", -1);
 	set_string_configuration_default("recording_directory", Glib::get_home_dir());
-	set_string_configuration_default("engine_type", "xine");
+	set_string_configuration_default("engine_type", "libgstreamer");
 	set_boolean_configuration_default("keep_above", true);
 	set_int_configuration_default("record_extra_before", 5);
 	set_int_configuration_default("record_extra_after", 10);
@@ -88,6 +88,11 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_int_configuration_default("height", 500);
 	set_string_configuration_default("default_frontend", "");
 	set_int_configuration_default("epg_page_size", 20);
+	set_string_configuration_default ("gstreamer_command_line",
+		"filesrc location=\"%1\" ! queue ! decodebin2 name=decoder " \
+		"decoder. ! queue ! ffmpegcolorspace ! queue ! deinterlace ! queue ! " \
+		"xvimagesink name=\"videosink\" handle-expose=true force-aspect-ratio=true " \
+		"decoder. ! queue ! gconfaudiosink name=\"audiosink\"");
 
 	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);

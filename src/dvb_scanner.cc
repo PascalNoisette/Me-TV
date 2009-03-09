@@ -44,7 +44,7 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		return;
 	}
 
-	signal_progress(++count, transponders.size());
+	signal_progress(count++, transponders.size());
 	
 	try
 	{
@@ -76,7 +76,7 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		}
 		
 		guint number_of_transponders = nis.transponders.size();
-		if(number_of_transponders > 0)
+		if (number_of_transponders > 0)
 		{
 			for(guint i = 0; i < number_of_transponders; i++ )
 			{
