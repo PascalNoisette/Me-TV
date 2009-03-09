@@ -89,10 +89,10 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_string_configuration_default("default_frontend", "");
 	set_int_configuration_default("epg_page_size", 20);
 	set_string_configuration_default ("gstreamer_command_line",
-		"filesrc location=\"%1\" ! queue ! decodebin2 name=decoder " \
-		"decoder. ! queue ! ffmpegcolorspace ! queue ! deinterlace ! queue ! " \
-		"xvimagesink name=\"videosink\" handle-expose=true force-aspect-ratio=true " \
-		"decoder. ! queue ! gconfaudiosink name=\"audiosink\"");
+		"filesrc location=\"%1\" ! queue ! decodebin name=decoder " \
+		"decoder. ! queue ! deinterlace ! queue ! " \
+		"xvimagesink name=\"videosink\" force-aspect-ratio=true " \
+		"decoder. ! queue ! volume name=\"volume\" ! gconfaudiosink");
 
 	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);
