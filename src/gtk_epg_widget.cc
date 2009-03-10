@@ -29,7 +29,7 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 	Gtk::ScrolledWindow(cobject), glade(glade_xml)
 {
 	offset = 0;
-	epg_page = 1;
+	epg_page = 0;
 
 	table_epg				= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
 	scrolled_window_epg		= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
@@ -40,6 +40,7 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 	glade->connect_clicked("button_epg_previous", sigc::mem_fun(*this, &GtkEpgWidget::previous));
 	glade->connect_clicked("button_epg_next", sigc::mem_fun(*this, &GtkEpgWidget::next));
 
+	label_epg_page = dynamic_cast<Gtk::Label*>(glade->get_widget("label_epg_page"));
 	glade->get_widget_derived("combo_box_epg_page", combo_box_epg_page);
 	combo_box_epg_page->signal_changed().connect(sigc::mem_fun(*this, &GtkEpgWidget::on_combo_box_epg_page_changed));
 }
@@ -80,8 +81,8 @@ void GtkEpgWidget::update()
 {
 	g_debug("Updating EPG");
 	
-	update_table();
 	update_pages();
+	update_table();
 
 	g_debug("EPG update complete");
 }
@@ -109,10 +110,18 @@ void GtkEpgWidget::update_pages()
 	guint channel_count = channels.size();
 	guint new_epg_page_count = channel_count == 0 ? 1 : ((channel_count-1) / epg_page_size) + 1;
 	
-	if (new_epg_page_count != epg_page_count)
+	if (epg_page == 0 && new_epg_page_count >= 1)
 	{
+		epg_page = 1;
+	}
+	
+	if (new_epg_page_count != epg_page_count)
+	{		
 		combo_box_epg_page->set_size(new_epg_page_count);
 	}
+	
+	label_epg_page->property_visible() = new_epg_page_count > 1;
+	combo_box_epg_page->property_visible() = new_epg_page_count > 1;
 }
 
 void GtkEpgWidget::update_table()

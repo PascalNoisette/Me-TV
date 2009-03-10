@@ -37,6 +37,7 @@ private:
 	guint epg_span_hours;
 	guint epg_page;
 	IntComboBox* combo_box_epg_page;
+	Gtk::Label* label_epg_page;
 	
 	Gtk::Table* table_epg;
 	Gtk::ScrolledWindow* scrolled_window_epg;
