@@ -61,7 +61,7 @@ void Demuxer::set_pes_filter(uint16_t pid, dmx_pes_type_t pestype)
 	parameters.input   = DMX_IN_FRONTEND;
 	parameters.output  = DMX_OUT_TS_TAP;
 	parameters.pes_type = pestype;
-	parameters.flags   = DMX_IMMEDIATE_START;
+	parameters.flags   = DMX_IMMEDIATE_START | DMX_CHECK_CRC;
 	
 	if (ioctl(fd, DMX_SET_PES_FILTER, &parameters) < 0)
 	{
