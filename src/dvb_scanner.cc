@@ -232,10 +232,7 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	
 	g_debug("Scanner loop exited");
 
-	if (!terminated)
-	{
-		signal_complete();
-	}
+	signal_complete();
 	
 	g_debug("Scanner finished");
 }

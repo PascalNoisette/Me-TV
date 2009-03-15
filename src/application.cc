@@ -62,7 +62,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_int_configuration_default("epg_span_hours", 3);
 	set_int_configuration_default("last_channel", -1);
 	set_string_configuration_default("recording_directory", Glib::get_home_dir());
-	set_string_configuration_default("engine_type", "libgstreamer");
+	set_string_configuration_default("engine_type", "xine");
 	set_boolean_configuration_default("keep_above", true);
 	set_int_configuration_default("record_extra_before", 5);
 	set_int_configuration_default("record_extra_after", 10);

@@ -287,23 +287,20 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 
 		if (initial_tuning_file.empty())
 		{
-			Gtk::MessageDialog dialog(*this, _("No tuning file has been selected"));
-			dialog.run();
+			throw Exception(_("No tuning file has been selected"));
 		}
-		else
-		{
-			glade->get_widget("button_scan_wizard_next")->hide();
-			notebook_scan_wizard->next_page();
+		
+		glade->get_widget("button_scan_wizard_next")->hide();
+		notebook_scan_wizard->next_page();
 
-			g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
-			scan_thread = new ScanThread(frontend, initial_tuning_file);
-			Dvb::Scanner& scanner = scan_thread->get_scanner();
-			scanner.signal_service.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_service));
-			scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_progress));
-			scanner.signal_complete.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_complete));
-			get_application().stop_stream_thread();
-			scan_thread->start();
-		}
+		g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
+		scan_thread = new ScanThread(frontend, initial_tuning_file);
+		Dvb::Scanner& scanner = scan_thread->get_scanner();
+		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_service));
+		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_progress));
+		scanner.signal_complete.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_complete));
+		get_application().stop_stream_thread();
+		scan_thread->start();
 	}
 	else if (radio_button_import->get_active())
 	{

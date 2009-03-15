@@ -149,9 +149,9 @@ PKG_CHECK_MODULES(SQLITE, [sqlite3 >= $SQLITE_REQUIRED])
 # check for additional requirements when optional engines are enabled
 # default engine is xine, other engines are disabled at default
 # we are only checking optional engines
-AC_ARG_ENABLE(mplayer-engine,
+AC_ARG_ENABLE(xine-engine,
         AC_HELP_STRING([--enable-xine-engine],[Enable Xine engine support (default disabled)]),
-        enable_xine_engine="$enableval", enable_xine_engine=no)
+        enable_xine_engine="$enableval", enable_xine_engine=yes)
 if test x"$enable_xine_engine" = "xyes" ; then
 # the binary path test is not required in the build time
 # packagers should notice that the MPlayer binary is required in the install time
@@ -197,7 +197,7 @@ fi
 
 AC_ARG_ENABLE(libgstreamer-engine, 
 	AC_HELP_STRING([--enable-libgstreamer-engine],[Enable experimental GStreamer library engine support (default enabled)]), 
-	enable_libgstreamer_engine="$enableval", enable_libgstreamer_engine=yes)
+	enable_libgstreamer_engine="$enableval", enable_libgstreamer_engine=no)
 if test x$enable_libgstreamer_engine = xyes; then
 PKG_CHECK_MODULES([LIBGSTREAMER], gstreamer-0.10 >= $LIBGSTREAMER_REQUIRED gstreamer-interfaces-0.10 >= $LIBGSTREAMER_REQUIRED, found_libgstreamer=yes, found_libgstreamer=no)
 	if test x"$found_libgstreamer" = "xyes" ; then
