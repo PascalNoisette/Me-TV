@@ -34,6 +34,8 @@ Application& get_application()
 Application::Application(int argc, char *argv[], Glib::OptionContext& option_context) :
 	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context)
 {
+	g_debug("Application constructor");
+
 	if (current != NULL)
 	{
 		throw Exception(_("Application has already been initialised"));
@@ -112,15 +114,18 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 		glade_path = PACKAGE_DATA_DIR"/me-tv/glade/me-tv.glade";
 	}
 	
-	g_debug("Using glade file '%s'", glade_path.c_str());
-	
+	g_debug("Loading Glade file '%s' ...", glade_path.c_str());
 	glade = Gnome::Glade::Xml::create(glade_path);
-	
+		
+	g_debug("Loading channels ...");
 	channel_manager.load(data);
+	
 	channel_manager.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));	
 
 	timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
+	
+	g_debug("Application constructed");
 }
 
 Application::~Application()

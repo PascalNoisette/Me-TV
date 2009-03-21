@@ -47,6 +47,8 @@ KeyCode *keycode;
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)
 	: Gnome::UI::App(cobject), glade(glade_xml)
 {
+	g_debug("MainWindow constructor");
+
 	g_static_rec_mutex_init(mutex.gobj());
 
 	display_mode		= DISPLAY_MODE_EPG;
@@ -131,6 +133,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	Gtk::RadioMenuItem* menu_item_audio_channels_both = dynamic_cast<Gtk::RadioMenuItem*>(glade->get_widget("radio_menu_item_audio_channels_both"));
 	menu_item_audio_channels_both->set_active(true);
+
+	g_debug("MainWindow constructed");
 }
 
 MainWindow::~MainWindow()

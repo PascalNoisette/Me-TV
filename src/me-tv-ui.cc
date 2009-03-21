@@ -70,7 +70,7 @@ Glib::ustring ComboBoxText::get_active_text()
 		}
 	}
 	
-	throw Exception(_("Failed to get active integer value"));
+	throw Exception(_("Failed to get active text value"));
 }
 
 ComboBoxEntryText::ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
