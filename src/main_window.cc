@@ -762,7 +762,8 @@ void MainWindow::create_engine()
 #endif
 	else
 	{
-		throw Exception(_("Unknown engine type"));
+		Glib::ustring message = Glib::ustring::compose(_("Unknown engine type '%1'"), engine_type);
+		throw Exception(message);
 	}
 
 	if (engine != NULL)

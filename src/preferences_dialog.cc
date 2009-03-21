@@ -54,6 +54,27 @@ void PreferencesDialog::run()
 	Gtk::CheckButton* check_button_show_epg_tooltips = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_show_epg_tooltips"));
 	Gtk::CheckButton* check_button_24_hour_workaround = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_24_hour_workaround"));
 	Gtk::CheckButton* check_button_display_status_icon = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_display_status_icon"));
+
+	ComboBoxText* combo_box_engine_type = NULL;
+	glade->get_widget_derived("combo_box_engine_type", combo_box_engine_type);
+	
+	combo_box_engine_type->clear_items();
+	combo_box_engine_type->append_text("none");
+#ifdef ENABLE_XINE_ENGINE
+	combo_box_engine_type->append_text("xine");
+#endif
+#ifdef ENABLE_LIBGSTREAMER_ENGINE
+	combo_box_engine_type->append_text("libgstreamer");
+#endif
+#ifdef ENABLE_XINE_LIB_ENGINE
+	combo_box_engine_type->append_text("xine-lib");
+#endif
+#ifdef ENABLE_LIBVLC_ENGINE
+	combo_box_engine_type->append_text("libvlc");
+#endif
+#ifdef ENABLE_MPLAYER_ENGINE
+	combo_box_engine_type->append_text("mplayer");
+#endif
 	
 	file_chooser_button_recording_directory->set_filename(application.get_string_configuration_value("recording_directory"));
 	spin_button_record_extra_before->set_value(application.get_int_configuration_value("record_extra_before"));
@@ -63,6 +84,7 @@ void PreferencesDialog::run()
 	entry_broadcast_address->set_text(application.get_string_configuration_value("broadcast_address"));
 	spin_button_broadcast_port->set_value(application.get_int_configuration_value("broadcast_port"));
 	entry_preferred_language->set_text(application.get_string_configuration_value("preferred_language"));
+	combo_box_engine_type->set_active_text(application.get_string_configuration_value("engine_type"));
 	entry_xine_video_driver->set_text(application.get_string_configuration_value("xine.video_driver"));
 	entry_xine_audio_driver->set_text(application.get_string_configuration_value("xine.audio_driver"));
 	entry_text_encoding->set_text(application.get_string_configuration_value("text_encoding"));
@@ -83,6 +105,7 @@ void PreferencesDialog::run()
 		application.set_string_configuration_value("broadcast_address", entry_broadcast_address->get_text());
 		application.set_int_configuration_value("broadcast_port", spin_button_broadcast_port->get_value());
 		application.set_string_configuration_value("preferred_language", entry_preferred_language->get_text());
+		application.set_string_configuration_value("engine_type", combo_box_engine_type->get_active_text());
 		application.set_string_configuration_value("xine.video_driver", entry_xine_video_driver->get_text());
 		application.set_string_configuration_value("xine.audio_driver", entry_xine_audio_driver->get_text());
 		application.set_string_configuration_value("text_encoding", entry_text_encoding->get_text());

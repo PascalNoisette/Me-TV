@@ -88,7 +88,7 @@ void XineEngine::play(const Glib::ustring& mrl)
 
 	argv.push_back("--wid");
 	argv.push_back(Glib::ustring::compose("%1", get_window_id()));
-	argv.push_back(Glib::ustring::compose("fifo://%1", mrl));
+	argv.push_back(Glib::ustring::compose("fifo://%1#gui.audio_mixer_method:Software", mrl));
 
 	try
 	{

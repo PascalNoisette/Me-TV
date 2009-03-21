@@ -32,21 +32,25 @@
 
 int main (int argc, char *argv[])
 {	
-	XInitThreads();
-	
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 #endif
 
+	g_printf("Me TV %s\n", VERSION);
+
+	if (!XInitThreads())
+	{
+		g_printf(_("Failed to initialise X threads"));
+		return -1;
+	}
+
 	if (!Glib::thread_supported())
 	{
 		Glib::thread_init();
 	}
 	gdk_threads_init();
-
-	g_printf("Me TV %s\n", VERSION);
 
 	g_log_set_handler(G_LOG_DOMAIN,
 		(GLogLevelFlags)(G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION),

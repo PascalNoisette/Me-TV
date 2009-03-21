@@ -25,8 +25,52 @@
 #include "me-tv-ui.h"
 
 ComboBoxText::ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
-	: Gtk::ComboBoxText(cobject)
+	: Gtk::ComboBox(cobject)
 {
+	list_store = Gtk::ListStore::create(columns);
+	clear();
+	set_model(list_store);
+	pack_start(columns.column_string);
+	set_active(0);
+}
+
+void ComboBoxText::append_text(const Glib::ustring& text)
+{
+	Gtk::TreeModel::Row row = *list_store->append();
+	row[columns.column_string] = text;
+}
+
+void ComboBoxText::set_active_text(const Glib::ustring& text)
+{
+	Gtk::TreeNodeChildren children = get_model()->children();
+	for (Gtk::TreeNodeChildren::iterator i = children.begin(); i != children.end(); i++)
+	{
+		Gtk::TreeModel::Row row = *i;
+		if (row[columns.column_string] == text)
+		{
+			set_active(i);
+		}
+	}
+}
+
+void ComboBoxText::clear_items()
+{
+	list_store->clear();
+}
+
+Glib::ustring ComboBoxText::get_active_text()
+{
+	Gtk::TreeModel::iterator i = get_active();
+	if (i)
+	{
+		Gtk::TreeModel::Row row = *i;
+		if (row)
+		{
+			return row[columns.column_string];
+		}
+	}
+	
+	throw Exception(_("Failed to get active integer value"));
 }
 
 ComboBoxEntryText::ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)

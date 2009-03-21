@@ -27,10 +27,32 @@
 #include "dvb_frontend.h"
 #include "channel.h"
 
-class ComboBoxText : public Gtk::ComboBoxText
+// This class exists because I can't get Gtk::ComboBoxText to work properly
+// it seems to have 2 columns
+class ComboBoxText : public Gtk::ComboBox
 {
+private:
+	class ModelColumns : public Gtk::TreeModel::ColumnRecord
+	{
+	public:
+		ModelColumns()
+		{
+			add(column_string);
+		}
+
+		Gtk::TreeModelColumn<Glib::ustring> column_string;
+	};
+	
+	ModelColumns columns;
+	Glib::RefPtr<Gtk::ListStore> list_store;
+	
 public:
 	ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
+	
+	void clear_items();
+	void append_text(const Glib::ustring& text);
+	void set_active_text(const Glib::ustring& text);
+	Glib::ustring get_active_text();
 };
 
 class IntComboBox : public Gtk::ComboBox

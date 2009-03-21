@@ -26,6 +26,9 @@
 
 class Engine
 {
+private:
+	int					window_id;
+	Gtk::DrawingArea*	drawing_area_video;
 public:
 	typedef enum
 	{
@@ -34,6 +37,7 @@ public:
 		AUDIO_CHANNEL_STATE_RIGHT = 2
 	} AudioChannelState;
 
+	Engine();
 	virtual ~Engine() {};
 	
 	virtual void play(const Glib::ustring& mrl) = 0;

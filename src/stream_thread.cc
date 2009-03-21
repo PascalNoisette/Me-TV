@@ -81,7 +81,7 @@ StreamThread::StreamThread(const Channel& active_channel) :
 		throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
 	}
 
-	// Fudge the channel open
+	// Fudge the channel open.  Allows Glib::IO_FLAG_NONBLOCK
 	int fd = open(fifo_path.c_str(), O_RDONLY | O_NONBLOCK);
 	if (fd == -1)
 	{
