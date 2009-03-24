@@ -18,6 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#ifndef __CHANNEL_MANAGER_H__
+#define __CHANNEL_MANAGER_H__
+
 #include "channel.h"
 #include "data.h"
 
@@ -29,8 +32,9 @@ private:
 public:
 	ChannelManager();
 		
-	void load(Data& data);
-	void save(Data& data);
+	void load(Data::TableAdapter& adapter);
+	void load();
+	void save();
 		
 	const ChannelList& get_channels() const;
 	ChannelList& get_channels();
@@ -48,3 +52,5 @@ public:
 	Channel* find_channel(guint frequency, guint service_id);
 	Channel* find_channel(guint channel_id);
 };
+
+#endif

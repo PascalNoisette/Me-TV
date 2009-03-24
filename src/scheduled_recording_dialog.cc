@@ -107,10 +107,11 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	
 	if (dialog_response == Gtk::RESPONSE_OK)
 	{
-		Data data;
+/*		Data data;
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
 		data.replace_scheduled_recording(scheduled_recording);
 		get_application().check_scheduled_recordings(data);
+		*/
 	}
 	
 	return dialog_response;

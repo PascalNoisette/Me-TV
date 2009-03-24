@@ -128,6 +128,7 @@ void EpgThread::run()
 	TRY;
 
 	Application& application = get_application();
+	Data::Table table = application.get_schema().tables["epg_event"];
 	ChannelManager& channel_manager = application.get_channel_manager();
 	Dvb::Frontend& frontend = application.get_device_manager().get_frontend();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
@@ -208,16 +209,12 @@ void EpgThread::run()
 			guint now = time(NULL);
 			if (now - CLEANUP_INTERVAL > last_cleanup_time)
 			{
-				Data data;
-
-				g_debug("Deleting old scheduled recordings");
-				data.delete_old_scheduled_recordings();
-
+				Data::Connection connection;
+				Data::TableAdapter adapter(connection, table);
+				
 				g_debug("Deleting old EPG events");
-				data.delete_old_epg_events();
-
-				g_debug("Replacing channels");
-				data.replace_channels(channel_manager.get_channels());
+				Glib::ustring clause = Glib::ustring::compose("(START_TIME+DURATION)<%1", time(NULL));
+				adapter.delete_rows(clause);
 				
 				last_cleanup_time = now;
 			}

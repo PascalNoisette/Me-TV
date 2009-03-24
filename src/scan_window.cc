@@ -1,4 +1,4 @@
-/*
+	/*
  * Copyright (C) 2009 Michael Lamothe
  *
  * This file is part of Me TV
@@ -100,6 +100,12 @@ ScanWindow::ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scanned_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
+
+	Gtk::FileChooserButton* file_chooser_button_scan = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
+	Gtk::FileChooserButton* file_chooser_button_import = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_import"));
+
+	file_chooser_button_scan->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanWindow::on_file_chooser_button_scan_file_changed));
+	file_chooser_button_import->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanWindow::on_file_chooser_button_import_file_changed));
 }
 
 ScanWindow::~ScanWindow()
@@ -116,9 +122,9 @@ void ScanWindow::on_show()
 	glade->get_widget("button_scan_wizard_next")->show();
 	notebook_scan_wizard->set_current_page(0);
 
-	Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
+	Gtk::FileChooserButton* file_chooser_button = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
 	Glib::ustring initial_tuning_file = get_initial_tuning_dir();
-	file_chooser->set_current_folder(initial_tuning_file);
+	file_chooser_button->set_current_folder(initial_tuning_file);
 
 	Window::on_show();
 }
@@ -139,6 +145,18 @@ void ScanWindow::stop_scan()
 		delete scan_thread;
 		scan_thread = NULL;
 	}
+}
+
+void ScanWindow::on_file_chooser_button_scan_file_changed()
+{
+	Gtk::RadioButton* radio_button_scan = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan"));
+	radio_button_scan->set_active();
+}
+
+void ScanWindow::on_file_chooser_button_import_file_changed()
+{
+	Gtk::RadioButton* radio_button_import = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_import"));
+	radio_button_import->set_active();
 }
 
 void ScanWindow::on_button_scan_wizard_cancel_clicked()
@@ -272,8 +290,8 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 	
 	if (radio_button_scan->get_active())
 	{
-		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
-		initial_tuning_file = file_chooser->get_filename();
+		Gtk::FileChooserButton* file_chooser_button = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
+		initial_tuning_file = file_chooser_button->get_filename();
 
 		switch(frontend.get_frontend_info().type)
 		{
@@ -304,8 +322,8 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 	}
 	else if (radio_button_import->get_active())
 	{
-		Gtk::FileChooserButton* file_chooser = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_import"));
-		Glib::ustring channels_conf_path = file_chooser->get_filename();
+		Gtk::FileChooserButton* file_chooser_button = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_import"));
+		Glib::ustring channels_conf_path = file_chooser_button->get_filename();
 		import_channels_conf(channels_conf_path);
 	}	
 	CATCH

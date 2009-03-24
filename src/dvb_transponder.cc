@@ -26,8 +26,9 @@
 
 using namespace Dvb;
 
-Transponder::Transponder() : satellite_number(0)
+Transponder::Transponder() : polarisation(0), satellite_number(0), hi_band(0)
 {
+	memset(&frontend_parameters, 0, sizeof(frontend_parameters));
 }
 
 gboolean TransponderList::exists(const Transponder& transponder)

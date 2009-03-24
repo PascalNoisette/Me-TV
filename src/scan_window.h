@@ -100,6 +100,8 @@ private:
 	void on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name, const guint polarisation);
 	void on_signal_progress(guint step, gsize total);
 	void on_signal_complete();
+	void on_file_chooser_button_scan_file_changed();
+	void on_file_chooser_button_import_file_changed();
 	void on_hide();	
 	void stop_scan();
 	void update_channel_count();

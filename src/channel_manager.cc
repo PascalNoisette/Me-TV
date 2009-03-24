@@ -21,22 +21,128 @@
 #include "channel_manager.h"
 #include "exception.h"
 #include "me-tv-i18n.h"
+#include "application.h"
 
-#define MAX_CHANNELS	1000
+#define MAX_CHANNELS	10000
 
 ChannelManager::ChannelManager()
 {
 	display_channel = NULL;
 }
 
-void ChannelManager::load(Data& data)
+void ChannelManager::load()
 {
-	channels = data.get_all_channels();
+	Data::Table table = get_application().get_schema().tables["channel"];
+	Data::Connection connection;
+	Data::TableAdapter adapter(connection, table);
+	load(adapter);
 }
 
-void ChannelManager::save(Data& data)
+void ChannelManager::load(Data::TableAdapter& adapter)
 {
-	data.replace_channels(channels);
+	Data::DataTable data_table = adapter.select_rows("", "sort_order");
+
+	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
+	{
+		Data::Row row = *i;
+		
+		Channel channel;
+
+		channel.channel_id									= row["channel_id"].int_value;
+		channel.name										= row["name"].string_value;
+		channel.flags										= row["flags"].int_value;
+		channel.sort_order									= row["sort_order"].int_value;
+		channel.mrl											= row["mrl"].string_value;
+		channel.service_id									= row["service_id"].int_value;
+		channel.transponder.frontend_parameters.frequency	= row["frequency"].int_value;
+		channel.transponder.frontend_parameters.inversion	= (fe_spectral_inversion)row["inversion"].int_value;
+		
+		if (channel.flags & CHANNEL_FLAG_DVB_T)
+		{
+			channel.transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth)row["bandwidth"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate)row["code_rate_lp"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate)row["code_rate_lp"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.constellation			= (fe_modulation)row["constellation"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode)row["transmission_mode"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval)row["guard_interval"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy)row["hierarchy_information"].int_value;
+		}
+		else if (channel.flags & CHANNEL_FLAG_DVB_C)
+		{
+			channel.transponder.frontend_parameters.u.qam.symbol_rate	= row["symbol_rate"].int_value;
+			channel.transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate)row["fec_inner"].int_value;
+			channel.transponder.frontend_parameters.u.qam.modulation	= (fe_modulation)row["modulation"].int_value;
+		}
+		else if (channel.flags & CHANNEL_FLAG_DVB_S)
+		{
+			channel.transponder.frontend_parameters.u.qpsk.symbol_rate	= row["symbol_rate"].int_value;
+			channel.transponder.frontend_parameters.u.qpsk.fec_inner	= (fe_code_rate)row["fec_inner"].int_value;
+			channel.transponder.polarisation							= row["polarisation"].int_value;
+		}
+		else if (channel.flags & CHANNEL_FLAG_ATSC)
+		{
+			channel.transponder.frontend_parameters.u.vsb.modulation	= (fe_modulation)row["modulation"].int_value;
+		}
+		
+		add_channel(channel);
+	}
+}
+
+void ChannelManager::save()
+{	
+	Data::Table table = get_application().get_schema().tables["channel"];
+	Data::DataTable data_table(table);
+
+	ChannelList::iterator iterator = channels.begin();
+	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
+	{
+		Channel& channel = *i;
+		
+		Data::Row row;
+		row["channel_id"].int_value				= channel.channel_id;
+		row["name"].string_value				= channel.name;
+		row["flags"].int_value					= channel.flags;
+		row["sort_order"].int_value				= channel.sort_order;
+		row["mrl"].string_value					= channel.mrl;
+		row["service_id"].int_value				= channel.service_id;
+		row["frequency"].int_value				= channel.transponder.frontend_parameters.frequency;
+		row["inversion"].int_value				= channel.transponder.frontend_parameters.inversion;
+
+		if (channel.flags & CHANNEL_FLAG_DVB_T)
+		{
+			row["bandwidth"].int_value				= channel.transponder.frontend_parameters.u.ofdm.bandwidth;
+			row["code_rate_hp"].int_value			= channel.transponder.frontend_parameters.u.ofdm.code_rate_HP;
+			row["code_rate_lp"].int_value			= channel.transponder.frontend_parameters.u.ofdm.code_rate_LP;
+			row["constellation"].int_value			= channel.transponder.frontend_parameters.u.ofdm.constellation;
+			row["transmission_mode"].int_value		= channel.transponder.frontend_parameters.u.ofdm.transmission_mode;
+			row["guard_interval"].int_value			= channel.transponder.frontend_parameters.u.ofdm.guard_interval;
+			row["hierarchy_information"].int_value	= channel.transponder.frontend_parameters.u.ofdm.hierarchy_information;
+		}
+		else if (channel.flags & CHANNEL_FLAG_DVB_C)
+		{
+			row["symbol_rate"].int_value			= channel.transponder.frontend_parameters.u.qam.symbol_rate;
+			row["fec_inner"].int_value				= channel.transponder.frontend_parameters.u.qam.fec_inner;
+			row["modulation"].int_value				= channel.transponder.frontend_parameters.u.qam.modulation;
+		}
+		else if (channel.flags & CHANNEL_FLAG_DVB_S)
+		{
+			row["symbol_rate"].int_value			= channel.transponder.frontend_parameters.u.qpsk.symbol_rate;
+			row["fec_inner"].int_value				= channel.transponder.frontend_parameters.u.qpsk.fec_inner;
+			row["polarisation"].int_value			= channel.transponder.polarisation;
+		}
+		else if (channel.flags & CHANNEL_FLAG_ATSC)
+		{
+			row["modulation"].int_value				= channel.transponder.frontend_parameters.u.vsb.modulation;
+		}
+		data_table.rows.push_back(row);
+	}	
+	
+	Data::Connection connection;
+	Data::TableAdapter adapter(connection, table);
+	adapter.replace(data_table);
+
+	// Reload to make sure that we get the channel_ids updated
+	load(adapter);
 }
 
 Channel* ChannelManager::find_channel(guint channel_id)
@@ -132,7 +238,7 @@ Channel* ChannelManager::get_display_channel()
 void ChannelManager::clear()
 {
 	channels.clear();
-	g_debug("'Channels cleared");
+	g_debug("Channels cleared");
 }
 
 Channel* ChannelManager::find_channel(guint frequency, guint service_id)

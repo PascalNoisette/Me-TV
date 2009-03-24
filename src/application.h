@@ -50,6 +50,7 @@ private:
 	guint								scheduled_recording_id;
 	bool								on_quit();
 	Glib::ustring						application_dir;
+	Data::Schema						schema;
 
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
@@ -68,14 +69,16 @@ public:
 	void run();
 	static Application& get_current();
 	
-	ChannelManager&		get_channel_manager()	{ return channel_manager; }
-	DeviceManager&		get_device_manager()	{ return device_manager; }
+	ChannelManager&	get_channel_manager()	{ return channel_manager; }
+	DeviceManager&	get_device_manager()	{ return device_manager; }
 
 	Glib::StaticRecMutex& get_mutex();
 	StreamThread* get_stream_thread();
 	void stop_stream_thread();
 	void restart_stream();
-	void set_source(const Channel& channel);		
+	void set_source(const Channel& channel);
+	void initialise_database();
+	Data::Schema get_schema() const { return schema; }
 
 	void update();
 		
@@ -98,7 +101,7 @@ public:
 	void stop_recording();
 	void toggle_recording();
 	void set_record_state(gboolean state);
-	void check_scheduled_recordings(Data& data);
+	void check_scheduled_recordings(Data::TableAdapter& adapter);
 	
 	gboolean is_broadcasting();
 	void set_broadcast_state(gboolean state);

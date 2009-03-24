@@ -224,8 +224,7 @@ void MainWindow::show_channels_dialog()
 		ChannelManager& channel_manager = get_application().get_channel_manager();
 		channel_manager.set_channels(channels);
 		
-		Data data;
-		channel_manager.save(data);
+		channel_manager.save();
 	}
 	update();
 

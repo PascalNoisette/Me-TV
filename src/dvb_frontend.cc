@@ -46,12 +46,12 @@ void Frontend::open()
 	{
 		Glib::ustring path = adapter.get_frontend_path(frontend);
 		g_debug("Opening frontend device: %s", path.c_str());
-		if ( ( fd = ::open ( path.c_str(), O_RDWR | O_NONBLOCK ) ) < 0 )
+		if ( (fd = ::open( path.c_str(), O_RDWR | O_NONBLOCK) ) < 0 )
 		{
 			throw SystemException(_("Failed to open tuner"));
 		}
 	
-		if ( ioctl ( fd, FE_GET_INFO, &frontend_info ) < 0 )
+		if (ioctl(fd, FE_GET_INFO, &frontend_info) < 0)
 		{
 			throw SystemException(_("Failed to get tuner info"));
 		}
@@ -62,19 +62,23 @@ void Frontend::close()
 {
 	if (fd != -1)
 	{
+		Glib::ustring path = adapter.get_frontend_path(frontend);
+		g_debug("Closing frontend device: %s", path.c_str());
+		
 		::close(fd);
 		fd = -1;
 	}
 }
 
-void Frontend::tune_to(const Transponder& transponder, guint wait_seconds)
+void Frontend::tune_to(const Transponder& transponder)
 {
 	struct dvb_frontend_parameters parameters = transponder.frontend_parameters;
 	struct dvb_frontend_event ev;
 	
-	
+	guint wait_seconds = 2;
 	if(frontend_info.type == FE_QPSK)
 	{
+		wait_seconds = 5;
 		guint hi_band = 0;
 		
 		if(LNB_HIGH_VALUE > 0 && LNB_SWITCH_VALUE > 0 && parameters.frequency >= LNB_SWITCH_VALUE)

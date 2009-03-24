@@ -27,141 +27,41 @@ Glib::RecMutex statement_mutex;
 
 #define CURRENT_VERSION 2
 
+using namespace Data;
+
 class SQLiteException : public Exception
 {
 public:
-	SQLiteException(sqlite3* database, const Glib::ustring& exception_message) :
-		Exception(Glib::ustring::compose("%1: %2", exception_message, Glib::ustring(sqlite3_errmsg(database)))) {}
+	SQLiteException(sqlite3* connection, const Glib::ustring& exception_message) :
+		Exception(Glib::ustring::compose("%1: %2", exception_message, Glib::ustring(sqlite3_errmsg(connection)))) {}
 };
 
-typedef enum
-{
-	PARAMETER_TYPE_NULL,
-	PARAMETER_TYPE_STRING,
-	PARAMETER_TYPE_INTEGER
-} ParameterType;
-
-class Parameter
-{
-public:
-	Parameter(const Glib::ustring& parameter_name) :
-		name(parameter_name), parameter_type(PARAMETER_TYPE_NULL) {}
-	Parameter(const Glib::ustring& parameter_name, const Glib::ustring& value) :
-		name(parameter_name), string_value(value), parameter_type(PARAMETER_TYPE_STRING) {}
-	Parameter(const Glib::ustring& parameter_name, gint value) :
-		name(parameter_name), int_value(value), parameter_type(PARAMETER_TYPE_INTEGER) {}
-		
-	Glib::ustring	name;
-	guint			int_value;
-	Glib::ustring	string_value;
-	ParameterType	parameter_type;
-};
-
-class ParameterList : public std::list<Parameter>
-{
-public:
-	Glib::ustring get_names();
-	Glib::ustring get_values();
-	void add(const Glib::ustring& name, const Glib::ustring& value);
-	void add(const Glib::ustring& name, gint value);
-	void add(const Glib::ustring& name);
-};
-
-Glib::ustring ParameterList::get_names()
-{
-	gboolean first = true;
-	Glib::ustring result;
-	for (std::list<Parameter>::iterator i = begin(); i != end(); i++)
-	{
-		if (!first)
-		{
-			result += ", ";
-		}
-		else
-		{
-			first = false;
-		}
-
-		result += (*i).name;
-	}
-	return result;
-}
-
-Glib::ustring ParameterList::get_values()
-{
-	gboolean first = true;
-	Glib::ustring result;
-
-	for (std::list<Parameter>::iterator i = begin(); i != end(); i++)
-	{
-		if (!first)
-		{
-			result += ", ";
-		}
-		else
-		{
-			first = false;
-		}
-
-		Parameter& parameter = *i;
-		if (parameter.parameter_type == PARAMETER_TYPE_NULL)
-		{
-			result += "NULL";
-		}
-		else if (parameter.parameter_type == PARAMETER_TYPE_INTEGER)
-		{
-			result += Glib::ustring::compose("%1", parameter.int_value);
-		}
-		else if (parameter.parameter_type == PARAMETER_TYPE_STRING)
-		{
-			result += Glib::ustring::compose("\"%1\"", parameter.string_value);
-		}
-	}
-	return result;
-}
-
-void ParameterList::add(const Glib::ustring& name, const Glib::ustring& value)
-{
-	push_back(Parameter(name, value));
-}
-
-void ParameterList::add(const Glib::ustring& name, gint value)
-{
-	push_back(Parameter(name, value));
-}
-
-void ParameterList::add(const Glib::ustring& name)
-{
-	push_back(Parameter(name));
-}
-
-Statement::Statement(sqlite3* statement_database, const Glib::ustring& statement_command) :
-	lock(statement_mutex), database(statement_database), command(statement_command)
+Statement::Statement(sqlite3* connection, const Glib::ustring& command) :
+	lock(statement_mutex), connection(connection), command(command)
 {
 	statement = NULL;
 	const char* remaining = NULL;
-//	g_debug("Command: %s", command.c_str());
 	
-	if (sqlite3_prepare_v2(database, command.c_str(), -1, &statement, &remaining) != 0)
+	if (sqlite3_prepare_v2(connection, command.c_str(), -1, &statement, &remaining) != 0)
 	{
 		if (remaining == NULL || *remaining == 0)
 		{
-			throw SQLiteException(database, Glib::ustring::compose(_("Failed to prepare statement: %1"), command));
+			throw SQLiteException(connection, Glib::ustring::compose(_("Failed to prepare statement: %1"), command));
 		}
 		else
 		{
-			throw SQLiteException(database, Glib::ustring::compose(_("Failed to prepare statement: %1"), Glib::ustring(remaining)));
+			throw SQLiteException(connection, Glib::ustring::compose(_("Failed to prepare statement: %1"), Glib::ustring(remaining)));
 		}
 	}
 	
 	if (remaining != NULL && *remaining != 0)
 	{
-		throw SQLiteException(database, Glib::ustring::compose(_("Prepare statement had remaining data: %1"), Glib::ustring(remaining)));
+		throw SQLiteException(connection, Glib::ustring::compose(_("Prepare statement had remaining data: %1"), Glib::ustring(remaining)));
 	}
 	
 	if (statement == NULL)
 	{
-		throw SQLiteException(database, _("Failed to create statement"));
+		throw SQLiteException(connection, _("Failed to create statement"));
 	}
 }
 
@@ -169,8 +69,13 @@ Statement::~Statement()
 {
 	if (sqlite3_finalize(statement) != 0)
 	{
-		throw SQLiteException(database, _("Failed to finalise statement"));
+		throw SQLiteException(connection, _("Failed to finalise statement"));
 	}
+}
+
+void Statement::reset()
+{
+	sqlite3_reset(statement);
 }
 	
 gint Statement::step()
@@ -182,6 +87,13 @@ gint Statement::step()
 		g_debug("Database busy, trying again");
 		usleep(10000);
 		result = sqlite3_step(statement);
+	}
+	
+	if (!(result == SQLITE_DONE || result == SQLITE_OK || result == SQLITE_ROW))
+	{
+		Glib::ustring error_message = sqlite3_errmsg(connection);
+		Glib::ustring message = Glib::ustring::compose("Failed to execute statement: %1 (%2)", error_message, result);
+		throw Exception(message);
 	}
 	
 	return result;
@@ -197,631 +109,293 @@ const Glib::ustring Statement::get_text(guint column)
 	return (gchar*)sqlite3_column_text(statement, column);
 }
 
-Data::Data(gboolean initialise)
+void Statement::set_int_parameter(guint index, int value)
+{
+	sqlite3_bind_int(statement, index, value);
+}
+
+void Statement::set_string_parameter(guint index, const Glib::ustring& value)
+{
+	sqlite3_bind_text(statement, index, value.c_str(), -1, NULL);
+}
+
+int Statement::get_parameter_index(const Glib::ustring& name)
+{
+	int index = sqlite3_bind_parameter_index(statement, name.c_str());
+	if (index == 0)
+	{
+		Glib::ustring message = Glib::ustring::compose("Unknown parameter name '%1'", name);
+		throw Exception(message);
+	}
+	return index;
+}
+
+void Statement::set_int_parameter(const Glib::ustring& name, int value)
+{
+	set_int_parameter(get_parameter_index(name), value);
+}
+
+void Statement::set_string_parameter(const Glib::ustring& name, const Glib::ustring& value)
+{
+	set_string_parameter(get_parameter_index(name), value);
+}
+
+Connection::Connection()
 {
 	Glib::ustring database_path = Glib::build_filename(get_application().get_application_dir(), "/me-tv.db");
 
 	gboolean database_exists = Gio::File::create_for_path(database_path)->query_exists();
 	
 	g_debug("Database %s", database_exists ? "exists" : "does not exist");
-	
 	g_debug("Opening database file '%s'", database_path.c_str());
-	if (sqlite3_open(database_path.c_str(), &database) != 0)
+	if (sqlite3_open(database_path.c_str(), &connection) != 0)
 	{
-		throw SQLiteException(database, _("Failed to connect to Me TV database"));
-	}
-	
-	if (initialise)
-	{
-		check_version(database_path, database_exists);
-		
-		execute_non_query(
-			"CREATE TABLE IF NOT EXISTS CHANNEL ("\
-			"CHANNEL_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
-			"NAME CHAR(50) NOT NULL, "\
-			"FLAGS INTEGER NOT NULL, "\
-			"SORT_ORDER INTEGER NOT NULL, "\
-			"MRL CHAR(1024), "\
-			"SERVICE_ID INTEGER, "\
-			"FREQUENCY INTEGER, "\
-			"INVERSION INTEGER, "\
-						  
-			"BANDWIDTH INTEGER, "\
-			"CODE_RATE_HP INTEGER, "\
-			"CODE_RATE_LP INTEGER, "\
-			"CONSTELLATION INTEGER, "\
-			"TRANSMISSION_MODE INTEGER, "\
-			"GUARD_INTERVAL INTEGER, "\
-			"HIERARCHY_INFORMATION INTEGER, "\
-						  
-			"SYMBOL_RATE INTEGER, "\
-			"FEC_INNER INTEGER, "\
-			"MODULATION INTEGER, "\
-			"POLARISATION INTEGER, "\
-
-			"UNIQUE (NAME));");
-		
-		execute_non_query(
-			"CREATE TABLE IF NOT EXISTS EPG_EVENT ("\
-			"EPG_EVENT_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
-			"CHANNEL_ID INTEGER NOT NULL, "\
-			"EVENT_ID INTEGER NOT NULL, "\
-			"START_TIME INTEGER NOT NULL, "\
-			"DURATION INTEGER NOT NULL, "\
-			"UNIQUE (CHANNEL_ID, EVENT_ID));");
-
-		execute_non_query(
-			"CREATE TABLE IF NOT EXISTS EPG_EVENT_TEXT ("\
-			"EPG_EVENT_TEXT_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
-			"EPG_EVENT_ID INTEGER NOT NULL, "\
-			"LANGUAGE CHAR(3) NOT NULL, "\
-			"TITLE CHAR(100) NOT NULL, "\
-			"DESCRIPTION CHAR(200) NOT NULL, "\
-			"UNIQUE (EPG_EVENT_ID, LANGUAGE));");
-
-		execute_non_query(
-			"CREATE TABLE IF NOT EXISTS SCHEDULED_RECORDING ("\
-			"SCHEDULED_RECORDING_ID INTEGER PRIMARY KEY AUTOINCREMENT, "\
-			"DESCRIPTION CHAR(100) NOT NULL, "\
-			"TYPE INTEGER NOT NULL, " \
-			"CHANNEL_ID INTEGER NOT NULL, " \
-			"START_TIME INTEGER NOT NULL, " \
-			"DURATION INTEGER NOT NULL);");
-		
-		delete_old_scheduled_recordings();
+		throw SQLiteException(connection, _("Failed to connect to Me TV database"));
 	}
 }
 
-Data::~Data()
+Connection::~Connection()
 {
-	if (database != NULL)
+	if (connection != NULL)
 	{
-		sqlite3_close(database);
-		database = NULL;
+		sqlite3_close(connection);
+		connection = NULL;
 	}
 }
 
-void Data::check_version(const Glib::ustring& database_path, gboolean database_exists)
+int Connection::get_last_insert_rowid()
 {
-	guint version = 1;
+	return sqlite3_last_insert_rowid(connection);
+}
 
-	if (!database_exists)
+void SchemaAdapter::initialise_schema()
+{
+	for (Tables::const_iterator i = schema.tables.begin(); i != schema.tables.end(); i++)
 	{
-		execute_non_query(
-			"CREATE TABLE IF NOT EXISTS VERSION (VALUE INT);");
+		const Table& table = i->second;
 		
-		g_debug("Inserting version %d in database", CURRENT_VERSION);
-		execute_non_query(
-			Glib::ustring::compose(
-				"INSERT INTO VERSION VALUES (%1);",
-				CURRENT_VERSION)
-		);
+		g_debug("Initialising table '%s'", table.name.c_str());
 		
-		version = CURRENT_VERSION;
-	}
-	else
-	{
-		Statement statement_master(database, "SELECT * FROM sqlite_master WHERE NAME='VERSION';");
-		if (statement_master.step() == SQLITE_ROW)
+		Glib::ustring command = "CREATE TABLE IF NOT EXISTS ";
+		command += table.name;
+		command += " (";
+		gboolean first_column = true;
+		for (Columns::const_iterator j = table.columns.begin(); j != table.columns.end(); j++)
 		{
-			Statement statement_version(database, "SELECT VALUE FROM VERSION;");
-			if (statement_version.step() == SQLITE_ROW)
+			const Column& column = *j;
+			
+			if (first_column)
 			{
-				version = statement_version.get_int(0);
-				g_debug("Database version is %d", version);
+				first_column = false;
+			}
+			else
+			{
+				command += ", ";
+			}
+			
+			command += column.name;
+			command += " ";
+			
+			switch (column.type)
+			{
+			case DATA_TYPE_INTEGER:
+				command += "INTEGER";
+				break;
+			case DATA_TYPE_STRING:
+				command += Glib::ustring::compose("CHAR(%1)", column.size);
+				break;
+			default:
+				break;
+			}
+			
+			if (column.name == table.primary_key)
+			{
+				command += " PRIMARY KEY";
+				
+				if (column.auto_increment)
+				{
+					command += " AUTOINCREMENT";
+				}
+			}
+			else
+			{
+				if (!column.nullable)
+				{
+					command += " NOT NULL";
+				}
 			}
 		}
-	}
-
-	if (version != CURRENT_VERSION)
-	{
-		Glib::ustring message = Glib::ustring::compose(
-			_("Your Me TV database version is too old.  Please delete %1 and restart Me TV."),
-			database_path);
-		throw Exception(message);
-	}
-}
-
-guint Data::execute_non_query(const Glib::ustring& command)
-{
-	Statement statement(database, command);
-	return statement.step();
-}
-
-void fix_quotes(Glib::ustring& text)
-{
-	replace_text(text, "'", "''");
-}
-
-void Data::replace_epg_event(EpgEvent& epg_event)
-{
-	if (epg_event.channel_id == 0)
-	{
-		throw Exception(_("ASSERT: epg_event.channel_id == 0"));
-	}
-
-	Glib::ustring insert_command = Glib::ustring::compose
-	(
-		"REPLACE INTO EPG_EVENT "\
-	 	"(CHANNEL_ID, EVENT_ID, START_TIME, DURATION) "\
-	 	"VALUES (%1, %2, %3, %4);",
-		epg_event.channel_id, epg_event.event_id, epg_event.start_time, epg_event.duration
-	);
-	
-	execute_non_query(insert_command);
-	
-	if (epg_event.epg_event_id == 0)
-	{
-		epg_event.epg_event_id = sqlite3_last_insert_rowid(database);
-	}	
-	
-	if (epg_event.epg_event_id == 0)
-	{
-		Glib::ustring select_command = Glib::ustring::compose
-		(
-			"SELECT EPG_EVENT_ID FROM EPG_EVENT WHERE CHANNEL_ID = %1 AND EVENT_ID = %2",
-			epg_event.channel_id, epg_event.event_id
-		);
 		
-		Statement statement(database, select_command);
-		if (statement.step() == SQLITE_ROW)
+		for (Constraints::const_iterator j = table.constraints.begin(); j != table.constraints.end(); j++)
 		{
-			epg_event.epg_event_id = statement.get_int(0);
+			const Constraint& constraint = *j;
+			if (constraint.type == ConstraintTypeUnique)
+			{
+				gboolean first_constraint = true;
+				command += ", UNIQUE (";
+				for (StringList::const_iterator k = constraint.columns.begin(); k != constraint.columns.end(); k++)
+				{
+					Glib::ustring column = *k;
+					
+					if (first_constraint)
+					{
+						first_constraint = false;
+					}
+					else
+					{
+						command += ", ";
+					}
+					
+					command += column;
+				}
+				command += ")";
+			}
 		}
 		
-		if (epg_event.epg_event_id == 0)
-		{
-			throw Exception(_("Failed to get epg_event_id"));
-		}
-	}
-	
-	for (EpgEventTextList::iterator i = epg_event.texts.begin(); i != epg_event.texts.end(); i++)
-	{
-		EpgEventText& epg_event_text = *i;
-		epg_event_text.epg_event_id = epg_event.epg_event_id;
-		replace_epg_event_text(epg_event_text);
+		command += ");";
+		
+		Statement& statement = connection.create_statement(command);
+		statement.step();
 	}
 }
 
-void Data::replace_epg_event_text(EpgEventText& epg_event_text)
+TableAdapter::TableAdapter(Connection& connection, Table& table)
+	: connection(connection), table(table)
 {
-	Glib::ustring command;
-
-	if (epg_event_text.epg_event_id == 0)
-	{
-		throw Exception(_("Event ID was 0"));
-	}
-
-	Glib::ustring fixed_title = epg_event_text.title;
-	Glib::ustring fixed_description = epg_event_text.description;
+	Glib::ustring fields;
+	Glib::ustring replace_fields;
+	Glib::ustring replace_values;
 	
-	fix_quotes(fixed_title);
-	fix_quotes(fixed_description);
-
-	guint existing_epg_event_text_id = 0;
-
-	// Make sure that statement exists before we start the next command
+	for (Columns::const_iterator j = table.columns.begin(); j != table.columns.end(); j++)
 	{
-		Statement statement(database, Glib::ustring::compose(
-			"SELECT EPG_EVENT_TEXT_ID FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID=%1;",
-			epg_event_text.epg_event_id));
-		if (statement.step() == SQLITE_ROW)
-		{
-			existing_epg_event_text_id = statement.get_int(0);
-		}
+		const Column& column = *j;
+		
+		if (fields.length() > 0) fields += ", ";
+		if (replace_fields.length() > 0) replace_fields += ", ";
+		if (replace_values.length() > 0) replace_values += ", ";
+		
+		fields += column.name;
+		replace_fields += column.name;
+		replace_values += ":" + column.name;
 	}
 	
-	if (existing_epg_event_text_id != 0)
-	{
-		if (epg_event_text.is_extended)
-		{
-			command = Glib::ustring::compose
-			(
-				"UPDATE EPG_EVENT_TEXT SET DESCRIPTION = DESCRIPTION || '%1' WHERE EPG_EVENT_TEXT_ID=%2;",
-				fixed_description, existing_epg_event_text_id
-			);
-		}
-		else
-		{
-			command = Glib::ustring::compose
-			(
-				"UPDATE EPG_EVENT_TEXT SET TITLE = '%1' WHERE EPG_EVENT_TEXT_ID=%2;",
-				fixed_title, existing_epg_event_text_id
-			);
-		}
-	}
-	else
-	{
-		if (epg_event_text.is_extended)
-		{
-			command = Glib::ustring::compose
-			(
-				"INSERT INTO EPG_EVENT_TEXT "\
-				"(EPG_EVENT_ID, LANGUAGE, TITLE, DESCRIPTION) "\
-				"VALUES (%1, '%2', '%3', '%4');",
-				epg_event_text.epg_event_id, epg_event_text.language, fixed_title, fixed_description
-			);
-		}
-		else
-		{
-			command = Glib::ustring::compose
-			(
-				"INSERT INTO EPG_EVENT_TEXT "\
-				"(EPG_EVENT_ID, LANGUAGE, TITLE, DESCRIPTION) "\
-				"VALUES (%1, '%2', '%3', '%4');",
-				epg_event_text.epg_event_id, epg_event_text.language, fixed_title, fixed_description
-			);
-		}
-	}
-	
-	execute_non_query(command);
-
-	if (epg_event_text.epg_event_text_id == 0)
-	{
-		epg_event_text.epg_event_text_id = sqlite3_last_insert_rowid(database);
-	}	
+	select_command = Glib::ustring::compose("SELECT %1 FROM %2", fields, table.name);
+	replace_command = Glib::ustring::compose("REPLACE INTO %1 (%2) VALUES (%3)", table.name, replace_fields, replace_values);
+	delete_command = Glib::ustring::compose("DELETE FROM %1", table.name);
 }
 
-void Data::load_epg_event(Statement& statement, EpgEvent& epg_event)
+void TableAdapter::replace(DataTable& data_table)
 {
-	epg_event.epg_event_id	= statement.get_int(0);
-	epg_event.channel_id	= statement.get_int(1);
-	epg_event.event_id		= statement.get_int(2);
-	epg_event.start_time	= statement.get_int(3);
-	epg_event.duration		= statement.get_int(4);
-	epg_event.save			= false;
-
-	Glib::ustring text_select_command = Glib::ustring::compose
-	(
-		"SELECT * FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID=%1;",
-		epg_event.epg_event_id
-	);
-	
-	Statement text_statement(database, text_select_command);
-	while (text_statement.step() == SQLITE_ROW)
+	Statement& statement = connection.create_statement(replace_command);
+	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 	{
-		EpgEventText epg_event_text;
-		epg_event_text.epg_event_text_id	= text_statement.get_int(0);
-		epg_event_text.epg_event_id			= text_statement.get_int(1);
-		epg_event_text.language				= text_statement.get_text(2);
-		epg_event_text.title				= text_statement.get_text(3);
-		epg_event_text.description			= text_statement.get_text(4);
-		epg_event.texts.push_back(epg_event_text);
+		Data::Row& row = *i;
+		Glib::ustring auto_increment_column_name;
+			
+		for (Columns::iterator j = data_table.table.columns.begin(); j != data_table.table.columns.end(); j++)
+		{
+			Column& column = *j;
+			
+			if (column.auto_increment && row[column.name].int_value == 0)
+			{
+				auto_increment_column_name = column.name;
+			}
+			else
+			{
+				switch(column.type)
+				{
+				case DATA_TYPE_INTEGER:
+					statement.set_int_parameter(":" + column.name, row[column.name].int_value);
+					break;
+				case DATA_TYPE_STRING:
+					statement.set_string_parameter(":" + column.name, row[column.name].string_value);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		statement.step();
+		
+		if (auto_increment_column_name.size() > 0)
+		{
+			row[auto_increment_column_name].int_value = connection.get_last_insert_rowid();
+		}
+
+		statement.reset();
 	}
 }
 
-EpgEventList Data::get_epg_events(const Channel& channel)
+void TableAdapter::delete_row(const Glib::ustring& key)
 {
-	EpgEventList result;
-	
-	Glib::ustring select_command = Glib::ustring::compose
-	(
-		"SELECT * FROM EPG_EVENT WHERE CHANNEL_ID=%1 ORDER BY START_TIME;",
-		channel.channel_id
-	);
+	Glib::ustring clause = Glib::ustring::compose("%2 = '%3'", table.primary_key, key);
+	delete_rows(clause);
+}
 
-	Statement statement(database, select_command);
+void TableAdapter::delete_row(guint key)
+{
+	Glib::ustring clause = Glib::ustring::compose("%2 = %3", table.primary_key, key);
+	delete_rows(clause);
+}
+
+void TableAdapter::delete_rows(const Glib::ustring& clause)
+{
+	Glib::ustring command = delete_command;
+	if (clause.length() > 0)
+	{
+		command += Glib::ustring::compose(" WHERE %1", clause);
+	}
+	Statement& statement = connection.create_statement(command);
+	statement.step();
+}
+
+DataTable TableAdapter::select_row(const Glib::ustring& key)
+{
+	Glib::ustring clause = Glib::ustring::compose("%1 = '%2'", table.name, table.primary_key, key);
+	return select_rows(clause);
+}
+
+DataTable TableAdapter::select_row(guint key)
+{
+	Glib::ustring clause = Glib::ustring::compose("%1 = %2", table.name, table.primary_key, key);
+	return select_rows(clause);
+}
+
+DataTable TableAdapter::select_rows(const Glib::ustring& clause, const Glib::ustring& sort)
+{
+	DataTable data_table(table);
+	Glib::ustring command = select_command;
+	if (clause.length() > 0)
+	{
+		command += Glib::ustring::compose(" WHERE %1", clause);
+	}
+	if (sort.length() > 0)
+	{
+		command += Glib::ustring::compose(" ORDER BY %1", sort);
+	}
+	Statement& statement = connection.create_statement(command);
 	while (statement.step() == SQLITE_ROW)
 	{
-		EpgEvent epg_event;
-		load_epg_event(statement, epg_event);
-		result.push_back(epg_event);
+		Row row;
 		
-		g_debug("Event %d (%s) loaded", epg_event.event_id, epg_event.get_title().c_str());
-	}
-	
-	return result;
-}
-
-void Data::replace_channel(Channel& channel)
-{
-	ParameterList parameters;
-	
-	Glib::ustring fixed_name = channel.name;
-	fix_quotes(fixed_name);
-	
-	const Dvb::Transponder& transponder = channel.transponder;
-
-	// General
-	if (channel.channel_id == 0)
-	{
-		parameters.add("CHANNEL_ID");
-	}
-	else
-	{
-		parameters.add("CHANNEL_ID", channel.channel_id);
-	}
-	
-	g_debug("Saving channel %d (%s)", channel.channel_id, channel.name.c_str());
-	
-	parameters.add("NAME",			fixed_name);
-	parameters.add("FLAGS",			channel.flags);
-	parameters.add("SORT_ORDER",	channel.sort_order);
-	parameters.add("MRL",			channel.mrl);
-	parameters.add("SERVICE_ID",	channel.service_id);
-	parameters.add("FREQUENCY",		(guint)transponder.frontend_parameters.frequency);
-	parameters.add("INVERSION",		(guint)transponder.frontend_parameters.inversion);
-
-	if (channel.flags & CHANNEL_FLAG_DVB_T)
-	{
-		parameters.add("BANDWIDTH",				(guint)transponder.frontend_parameters.u.ofdm.bandwidth);
-		parameters.add("CODE_RATE_HP",			(guint)transponder.frontend_parameters.u.ofdm.code_rate_HP);
-		parameters.add("CODE_RATE_LP",			(guint)transponder.frontend_parameters.u.ofdm.code_rate_LP);
-		parameters.add("CONSTELLATION",			(guint)transponder.frontend_parameters.u.ofdm.constellation);
-		parameters.add("TRANSMISSION_MODE", 	(guint)transponder.frontend_parameters.u.ofdm.transmission_mode);
-		parameters.add("GUARD_INTERVAL",		(guint)transponder.frontend_parameters.u.ofdm.guard_interval);
-		parameters.add("HIERARCHY_INFORMATION", (guint)transponder.frontend_parameters.u.ofdm.hierarchy_information);
-	}
-	else if (channel.flags & CHANNEL_FLAG_DVB_C)
-	{
-		parameters.add("SYMBOL_RATE",	(guint)transponder.frontend_parameters.u.qam.symbol_rate);
-		parameters.add("FEC_INNER",		(guint)transponder.frontend_parameters.u.qam.fec_inner);
-		parameters.add("MODULATION",	(guint)transponder.frontend_parameters.u.qam.modulation);
-	}
-	else if (channel.flags & CHANNEL_FLAG_DVB_S)
-	{
-		parameters.add("SYMBOL_RATE",	(guint)transponder.frontend_parameters.u.qpsk.symbol_rate);
-		parameters.add("FEC_INNER",		(guint)transponder.frontend_parameters.u.qpsk.fec_inner);
-		parameters.add("POLARISATION",	(guint)transponder.polarisation);
-	}
-	else if (channel.flags & CHANNEL_FLAG_ATSC)
-	{
-		parameters.add("MODULATION", (guint)transponder.frontend_parameters.u.vsb.modulation);
-	}
-	else
-	{
-		throw Exception(_("Invalid channel flag"));
-	}
-	
-	Glib::ustring insert_command = Glib::ustring::compose
-	(
-		"REPLACE INTO CHANNEL (%1) VALUES (%2);",
-		parameters.get_names(), parameters.get_values()
-	);
-
-	execute_non_query(insert_command);
-	
-	if (channel.channel_id == 0)
-	{
-		channel.channel_id = sqlite3_last_insert_rowid(database);
-	}
-	
-	EpgEventList epg_event_list = channel.epg_events.get_list(true);
-	for (EpgEventList::iterator i = epg_event_list.begin(); i != epg_event_list.end(); i++)
-	{
-		EpgEvent& epg_event = *i;
-		epg_event.channel_id = channel.channel_id;
-		if (epg_event.save)
+		for (Columns::const_iterator j = table.columns.begin(); j != table.columns.end(); j++)
 		{
-			replace_epg_event(epg_event);
-			g_debug("Saved EPG event %d (%s)", epg_event.event_id, epg_event.get_title().c_str());
+			const Column& column = *j;
+			
+			switch (column.type)
+			{
+			case DATA_TYPE_INTEGER:
+				row[column.name].int_value = statement.get_int(column.index);
+				break;
+			case DATA_TYPE_STRING:
+				row[column.name].string_value = statement.get_text(column.index);
+				break;
+			default:
+				break;
+			}
 		}
+
+		data_table.rows.push_back(row);
 	}
-}
-
-void Data::replace_channels(ChannelList& channels)
-{
-	// First, remove channels
-	Statement statement(database, "SELECT CHANNEL_ID FROM CHANNEL");
-	while (statement.step() == SQLITE_ROW)
-	{
-		gint channel_id = statement.get_int(0);
-		if (!channels.contains(channel_id))
-		{
-			delete_channel(channel_id);
-		}
-	}
-
-	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
-	{
-		replace_channel(*i);
-	}
-}
-
-ChannelList Data::get_all_channels()
-{
-	ChannelList channels;
-
-	Statement channel_statement(database, "SELECT * FROM CHANNEL ORDER BY SORT_ORDER");
-	while (channel_statement.step() == SQLITE_ROW)
-	{
-		Channel channel;			
-		Dvb::Transponder& transponder = channel.transponder;
-		
-		channel.channel_id	= channel_statement.get_int(0);
-		channel.name		= channel_statement.get_text(1);
-		channel.flags		= channel_statement.get_int(2);
-		channel.sort_order	= channel_statement.get_int(3);
-		channel.mrl			= channel_statement.get_text(4);
-		channel.service_id	= channel_statement.get_int(5);
-
-		transponder.frontend_parameters.frequency	= channel_statement.get_int(6);
-		transponder.frontend_parameters.inversion	= (fe_spectral_inversion_t)channel_statement.get_int(7);
-
-		if (channel.flags & CHANNEL_FLAG_DVB_T)
-		{
-			transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth_t)channel_statement.get_int(8);
-			transponder.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate_t)channel_statement.get_int(9);
-			transponder.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate_t)channel_statement.get_int(10);
-			transponder.frontend_parameters.u.ofdm.constellation			= (fe_modulation_t)channel_statement.get_int(11);
-			transponder.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode_t)channel_statement.get_int(12);
-			transponder.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval_t)channel_statement.get_int(13);
-			transponder.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy_t)channel_statement.get_int(14);
-		}
-		else if (channel.flags & CHANNEL_FLAG_DVB_C)
-		{
-			transponder.frontend_parameters.u.qam.symbol_rate	= channel_statement.get_int(15);
-			transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate_t)channel_statement.get_int(16);
-			transponder.frontend_parameters.u.qam.modulation	= (fe_modulation_t)channel_statement.get_int(17);
-		}
-		else if (channel.flags & CHANNEL_FLAG_DVB_S)
-		{
-			transponder.frontend_parameters.u.qpsk.symbol_rate	= channel_statement.get_int(15);
-			transponder.frontend_parameters.u.qpsk.fec_inner	= (fe_code_rate_t)channel_statement.get_int(16);
-			transponder.polarisation							= (guint)channel_statement.get_int(17);
-		}
-		else if (channel.flags & CHANNEL_FLAG_ATSC)
-		{
-			transponder.frontend_parameters.u.vsb.modulation	= (fe_modulation_t)channel_statement.get_int(17);
-		}
-		channel.epg_events.insert(get_epg_events(channel));
-		channels.push_back(channel);
-		
-		g_debug("Loaded channel: %s", channel.name.c_str());
-	}
-
-	return channels;
-}
-
-void Data::replace_scheduled_recording(ScheduledRecording& scheduled_recording)
-{
-	Glib::ustring fixed_description = scheduled_recording.description;
-	
-	Glib::ustring select_command = Glib::ustring::compose
-	(
-		"SELECT * FROM SCHEDULED_RECORDING WHERE "\
-		"((START_TIME >= %1 AND START_TIME <= %2) OR "\
-		"(START_TIME+DURATION >= %1 AND START_TIME+DURATION <= %2) OR "\
-		"(START_TIME <= %1 AND START_TIME+DURATION >= %2)) AND "\
-		"CHANNEL_ID != %3",
-		scheduled_recording.start_time,
-		scheduled_recording.start_time + scheduled_recording.duration,
-		scheduled_recording.channel_id
-	);
-
-	Statement statement(database, select_command);
-	if (statement.step() == SQLITE_ROW)
-	{
-		Glib::ustring message = Glib::ustring::compose
-		(
-			_("Failed to save scheduled recording because it conflicts with another scheduled recording called '%1'"),
-			statement.get_text(1)
-		);
-		throw Exception(message);
-	}	
-	
-	fix_quotes(fixed_description);
-
-	Glib::ustring replace_command = Glib::ustring::compose
-	(
-		"REPLACE INTO SCHEDULED_RECORDING " \
-	 	"(SCHEDULED_RECORDING_ID, DESCRIPTION, TYPE, CHANNEL_ID, START_TIME, DURATION) VALUES " \
-	 	"(%1, '%2', %3, %4, %5, %6);",
-	 	scheduled_recording.scheduled_recording_id == 0 ? "NULL" : Glib::ustring::compose("%1", scheduled_recording.scheduled_recording_id),
-	 	fixed_description,
-	 	scheduled_recording.type,
-	 	scheduled_recording.channel_id,
-	 	scheduled_recording.start_time,
-	 	scheduled_recording.duration
-	);
-
-	execute_non_query(replace_command);
-	
-	if (scheduled_recording.scheduled_recording_id == 0)
-	{
-		scheduled_recording.scheduled_recording_id = sqlite3_last_insert_rowid(database);
-		if (scheduled_recording.scheduled_recording_id == 0)
-		{
-			throw Exception(_("ASSERT: scheduled_recording.scheduled_recording_id == 0"));
-		}
-	}
-
-	g_debug("Scheduled recording ID '%d' saved", scheduled_recording.scheduled_recording_id);
-}
-
-ScheduledRecordingList Data::get_scheduled_recordings()
-{
-	ScheduledRecordingList result;
-	
-	Glib::ustring select_command = "SELECT * FROM SCHEDULED_RECORDING ORDER BY START_TIME";
-
-	Statement statement(database, select_command);
-	while (statement.step() == SQLITE_ROW)
-	{
-		ScheduledRecording scheduled_recording;
-		load_scheduled_recording(statement, scheduled_recording);
-		result.push_back(scheduled_recording);
-	}
-	
-	return result;
-}
-
-void Data::delete_scheduled_recording(guint scheduled_recording_id)
-{
-	Glib::ustring command = Glib::ustring::compose(
-		"DELETE FROM SCHEDULED_RECORDING WHERE SCHEDULED_RECORDING_ID=%1",
-		scheduled_recording_id);
-	execute_non_query(command);
-}
-
-void Data::load_scheduled_recording(Statement& statement, ScheduledRecording& scheduled_recording)
-{
-	scheduled_recording.scheduled_recording_id	= statement.get_int(0);
-	scheduled_recording.description				= statement.get_text(1);
-	scheduled_recording.type					= statement.get_int(2);
-	scheduled_recording.channel_id				= statement.get_int(3);
-	scheduled_recording.start_time				= statement.get_int(4);
-	scheduled_recording.duration				= statement.get_int(5);
-}
-
-gboolean Data::get_scheduled_recording(guint scheduled_recording_id, ScheduledRecording& scheduled_recording)
-{
-	gboolean result = false;
-	Glib::ustring select_command = Glib::ustring::compose(
-		"SELECT * FROM SCHEDULED_RECORDING WHERE SCHEDULED_RECORDING_ID=%1;",
-		scheduled_recording_id
-	);
-	
-	Statement statement(database, select_command);
-	if (statement.step() == SQLITE_ROW)
-	{
-		load_scheduled_recording(statement, scheduled_recording);
-		result = true;
-	}
-	
-	return result;
-}
-
-void Data::delete_channel(guint channel_id)
-{
-	execute_non_query(Glib::ustring::compose(
-		"DELETE FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID IN "\
-		"(SELECT EPG_EVENT_ID FROM EPG_EVENT WHERE CHANNEL_ID=%1);",
-		channel_id));
-	execute_non_query(Glib::ustring::compose(
-		"DELETE FROM EPG_EVENT WHERE CHANNEL_ID=%1;",
-		channel_id));
-	execute_non_query(Glib::ustring::compose(
-		"DELETE FROM CHANNEL WHERE CHANNEL_ID=%1;",
-		channel_id));
-	execute_non_query(Glib::ustring::compose(
-		"DELETE FROM SCHEDULED_RECORDING WHERE CHANNEL_ID=%1;",
-		channel_id));
-}
-
-void Data::delete_old_scheduled_recordings()
-{
-	execute_non_query(Glib::ustring::compose(
-		"DELETE FROM SCHEDULED_RECORDING WHERE (START_TIME+DURATION)<%1;",
-		time(NULL)));
-}
-
-void Data::delete_old_epg_events()
-{
-	time_t expired_time = convert_to_local_time(time(NULL));
-
-	execute_non_query(Glib::ustring::compose(
-		"DELETE FROM EPG_EVENT_TEXT WHERE EPG_EVENT_ID IN "\
-		"(SELECT EPG_EVENT_ID FROM EPG_EVENT WHERE (START_TIME+DURATION)<%1);",
-		expired_time));
-	execute_non_query(Glib::ustring::compose(
-		"DELETE FROM EPG_EVENT WHERE (START_TIME+DURATION)<%1;",
-		expired_time));
-
-	g_debug("Expired EPG events cleanup");
-}
-
-void Data::vacuum()
-{
-	execute_non_query("VACUUM;");
+	return data_table;
 }
