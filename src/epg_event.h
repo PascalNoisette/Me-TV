@@ -27,12 +27,14 @@
 class EpgEventText
 {
 public:
-	guint epg_event_text_id;
-	guint epg_event_id;
-	gboolean is_extended;
-	Glib::ustring language;
-	Glib::ustring title;
-	Glib::ustring description;
+	guint			epg_event_text_id;
+	guint			epg_event_id;
+	gboolean		is_extended;
+	Glib::ustring	language;
+	Glib::ustring	title;
+	Glib::ustring	description;
+		
+	EpgEventText();
 };
 
 typedef std::list<EpgEventText> EpgEventTextList;
@@ -48,6 +50,8 @@ public:
 	gboolean			save;
 	EpgEventTextList	texts;
 	
+	EpgEvent();
+		
 	guint get_end_time() const { return start_time + duration; }
 	Glib::ustring get_title() const;
 	Glib::ustring get_description() const;

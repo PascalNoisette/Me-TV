@@ -88,6 +88,7 @@ public:
 
 	void start();
 	const Stream& get_stream() const;
+	guint get_last_epg_update_time();
 
 	void start_recording(const Glib::ustring& filename);
 	void stop_recording();

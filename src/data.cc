@@ -88,12 +88,15 @@ gint Statement::step()
 		usleep(10000);
 		result = sqlite3_step(statement);
 	}
-	
-	if (!(result == SQLITE_DONE || result == SQLITE_OK || result == SQLITE_ROW))
+
+	switch (result)
 	{
-		Glib::ustring error_message = sqlite3_errmsg(connection);
-		Glib::ustring message = Glib::ustring::compose("Failed to execute statement: %1 (%2)", error_message, result);
-		throw Exception(message);
+	case SQLITE_DONE:
+	case SQLITE_OK:
+	case SQLITE_ROW:
+		break;
+	default:
+		throw SQLiteException(connection, Glib::ustring::compose(_("Failed to execute statement: %1"), command));
 	}
 	
 	return result;
@@ -284,23 +287,18 @@ TableAdapter::TableAdapter(Connection& connection, Table& table)
 	delete_command = Glib::ustring::compose("DELETE FROM %1", table.name);
 }
 
-void TableAdapter::replace(DataTable& data_table)
+void TableAdapter::replace_rows(DataTable& data_table)
 {
 	Statement& statement = connection.create_statement(replace_command);
 	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 	{
 		Data::Row& row = *i;
-		Glib::ustring auto_increment_column_name;
-			
+
 		for (Columns::iterator j = data_table.table.columns.begin(); j != data_table.table.columns.end(); j++)
 		{
 			Column& column = *j;
-			
-			if (column.auto_increment && row[column.name].int_value == 0)
-			{
-				auto_increment_column_name = column.name;
-			}
-			else
+
+			if (!column.auto_increment || row[column.name].int_value != 0)
 			{
 				switch(column.type)
 				{
@@ -317,9 +315,9 @@ void TableAdapter::replace(DataTable& data_table)
 		}
 		statement.step();
 		
-		if (auto_increment_column_name.size() > 0)
+		if (row.auto_increment != NULL)
 		{
-			row[auto_increment_column_name].int_value = connection.get_last_insert_rowid();
+			*(row.auto_increment) = connection.get_last_insert_rowid();
 		}
 
 		statement.reset();

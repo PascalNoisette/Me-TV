@@ -26,6 +26,7 @@
 #include <libgnomemm.h>
 #include "device_manager.h"
 #include "channel_manager.h"
+#include "scheduled_recording_manager.h"
 #include "main_window.h"
 #include "status_icon.h"
 #include "stream_thread.h"
@@ -36,11 +37,11 @@ private:
 	static Application*					current;
 	Glib::RefPtr<Gnome::Glade::Xml>		glade;
 	ChannelManager						channel_manager;
+	ScheduledRecordingManager			scheduled_recording_manager;
 	DeviceManager						device_manager;
 	MainWindow*							main_window;
 	StatusIcon*							status_icon;
 	Glib::RefPtr<Gnome::Conf::Client>	client;
-	guint								last_epg_update_time;
 	Glib::ustring						preferred_language;
 	StreamThread*						stream_thread;
 	Glib::StaticRecMutex				mutex;
@@ -91,8 +92,6 @@ public:
 	void set_boolean_configuration_value(const Glib::ustring& key, gboolean value);
 	
 	Glib::RefPtr<Gnome::Glade::Xml> get_glade() { return glade; }
-	void update_epg_time();
-	guint get_last_epg_update_time() const;
 	
 	sigc::signal<void> signal_configuration_changed;
 

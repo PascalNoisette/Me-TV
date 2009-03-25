@@ -27,14 +27,16 @@
 class ChannelManager
 {
 private:
+	Glib::StaticRecMutex mutex;
 	ChannelList channels;
 	Channel* display_channel;
 public:
 	ChannelManager();
 		
-	void load(Data::TableAdapter& adapter);
 	void load();
 	void save();
+	
+	Glib::StaticRecMutex& get_mutex() { return mutex; }
 		
 	const ChannelList& get_channels() const;
 	ChannelList& get_channels();

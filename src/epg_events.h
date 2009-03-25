@@ -36,11 +36,11 @@ public:
 	EpgEvents();
 	~EpgEvents();
 		
-	gboolean insert(const EpgEvent& epg_event);
-	void insert(const EpgEventList& epg_event_list);
-	gboolean get_current(EpgEvent& epg_event);
-	EpgEventList get_list(gboolean update_save = false);
-	void prune();
+	gboolean		add_epg_event(const EpgEvent& epg_event);
+	void			add_epg_events(const EpgEventList& epg_event_list);
+	gboolean		get_current(EpgEvent& epg_event);
+	EpgEventList&	get_list();
+	void			prune();
 };
 
 #endif

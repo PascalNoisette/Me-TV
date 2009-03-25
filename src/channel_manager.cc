@@ -28,60 +28,96 @@
 ChannelManager::ChannelManager()
 {
 	display_channel = NULL;
+	g_static_rec_mutex_init(mutex.gobj());
 }
 
 void ChannelManager::load()
 {
-	Data::Table table = get_application().get_schema().tables["channel"];
+	Glib::RecMutex::Lock lock(mutex);
+
+	Application& application = get_application();
 	Data::Connection connection;
-	Data::TableAdapter adapter(connection, table);
-	load(adapter);
-}
 
-void ChannelManager::load(Data::TableAdapter& adapter)
-{
-	Data::DataTable data_table = adapter.select_rows("", "sort_order");
+	Data::Table table_channel			= application.get_schema().tables["channel"];
+	Data::Table table_epg_event			= application.get_schema().tables["epg_event"];
+	Data::Table table_epg_event_text	= application.get_schema().tables["epg_event_text"];
 
-	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
+	Data::TableAdapter adapter_channel(connection, table_channel);
+	Data::TableAdapter adapter_epg_event(connection, table_epg_event);
+	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
+
+	Data::DataTable data_table_channels = adapter_channel.select_rows("", "sort_order");
+
+	for (Data::Rows::iterator i = data_table_channels.rows.begin(); i != data_table_channels.rows.end(); i++)
 	{
-		Data::Row row = *i;
+		Data::Row row_channel = *i;
 		
 		Channel channel;
 
-		channel.channel_id									= row["channel_id"].int_value;
-		channel.name										= row["name"].string_value;
-		channel.flags										= row["flags"].int_value;
-		channel.sort_order									= row["sort_order"].int_value;
-		channel.mrl											= row["mrl"].string_value;
-		channel.service_id									= row["service_id"].int_value;
-		channel.transponder.frontend_parameters.frequency	= row["frequency"].int_value;
-		channel.transponder.frontend_parameters.inversion	= (fe_spectral_inversion)row["inversion"].int_value;
+		channel.channel_id									= row_channel["channel_id"].int_value;
+		channel.name										= row_channel["name"].string_value;
+		channel.flags										= row_channel["flags"].int_value;
+		channel.sort_order									= row_channel["sort_order"].int_value;
+		channel.mrl											= row_channel["mrl"].string_value;
+		channel.service_id									= row_channel["service_id"].int_value;
+		channel.transponder.frontend_parameters.frequency	= row_channel["frequency"].int_value;
+		channel.transponder.frontend_parameters.inversion	= (fe_spectral_inversion)row_channel["inversion"].int_value;
 		
 		if (channel.flags & CHANNEL_FLAG_DVB_T)
 		{
-			channel.transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth)row["bandwidth"].int_value;
-			channel.transponder.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate)row["code_rate_lp"].int_value;
-			channel.transponder.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate)row["code_rate_lp"].int_value;
-			channel.transponder.frontend_parameters.u.ofdm.constellation			= (fe_modulation)row["constellation"].int_value;
-			channel.transponder.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode)row["transmission_mode"].int_value;
-			channel.transponder.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval)row["guard_interval"].int_value;
-			channel.transponder.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy)row["hierarchy_information"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth)row_channel["bandwidth"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate)row_channel["code_rate_hp"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate)row_channel["code_rate_lp"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.constellation			= (fe_modulation)row_channel["constellation"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode)row_channel["transmission_mode"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval)row_channel["guard_interval"].int_value;
+			channel.transponder.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy)row_channel["hierarchy_information"].int_value;
 		}
 		else if (channel.flags & CHANNEL_FLAG_DVB_C)
 		{
-			channel.transponder.frontend_parameters.u.qam.symbol_rate	= row["symbol_rate"].int_value;
-			channel.transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate)row["fec_inner"].int_value;
-			channel.transponder.frontend_parameters.u.qam.modulation	= (fe_modulation)row["modulation"].int_value;
+			channel.transponder.frontend_parameters.u.qam.symbol_rate	= row_channel["symbol_rate"].int_value;
+			channel.transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate)row_channel["fec_inner"].int_value;
+			channel.transponder.frontend_parameters.u.qam.modulation	= (fe_modulation)row_channel["modulation"].int_value;
 		}
 		else if (channel.flags & CHANNEL_FLAG_DVB_S)
 		{
-			channel.transponder.frontend_parameters.u.qpsk.symbol_rate	= row["symbol_rate"].int_value;
-			channel.transponder.frontend_parameters.u.qpsk.fec_inner	= (fe_code_rate)row["fec_inner"].int_value;
-			channel.transponder.polarisation							= row["polarisation"].int_value;
+			channel.transponder.frontend_parameters.u.qpsk.symbol_rate	= row_channel["symbol_rate"].int_value;
+			channel.transponder.frontend_parameters.u.qpsk.fec_inner	= (fe_code_rate)row_channel["fec_inner"].int_value;
+			channel.transponder.polarisation							= row_channel["polarisation"].int_value;
 		}
 		else if (channel.flags & CHANNEL_FLAG_ATSC)
 		{
-			channel.transponder.frontend_parameters.u.vsb.modulation	= (fe_modulation)row["modulation"].int_value;
+			channel.transponder.frontend_parameters.u.vsb.modulation	= (fe_modulation)row_channel["modulation"].int_value;
+		}
+		
+		Glib::ustring clause = Glib::ustring::compose("channel_id = %1", channel.channel_id);
+		Data::DataTable data_table_epg_event = adapter_epg_event.select_rows(clause, "start_time");		
+		for (Data::Rows::iterator j = data_table_channels.rows.begin(); j != data_table_channels.rows.end(); j++)
+		{
+			Data::Row row_epg_event = *j;
+			EpgEvent epg_event;
+			
+			epg_event.epg_event_id	= row_epg_event["epg_event_id"].int_value;
+			epg_event.channel_id	= channel.channel_id;
+			epg_event.event_id		= row_epg_event["event_id"].int_value;
+			epg_event.start_time	= row_epg_event["start_time"].int_value;
+			epg_event.duration		= row_epg_event["duration"].int_value;
+			
+			for (Data::Rows::iterator k = data_table_channels.rows.begin(); k != data_table_channels.rows.end(); k++)
+			{
+				Data::Row row_epg_event_text = *k;
+				EpgEventText epg_event_text;
+				
+				epg_event_text.epg_event_text_id	= row_epg_event_text["epg_event_text_id"].int_value;
+				epg_event_text.epg_event_id			= epg_event.epg_event_id;
+				epg_event_text.language				= row_epg_event_text["language"].string_value;
+				epg_event_text.title				= row_epg_event_text["title"].string_value;
+				epg_event_text.description			= row_epg_event_text["description"].string_value;
+				
+				epg_event.texts.push_back(epg_event_text);
+			}			
+			
+			channel.epg_events.add_epg_event(epg_event);
 		}
 		
 		add_channel(channel);
@@ -89,16 +125,37 @@ void ChannelManager::load(Data::TableAdapter& adapter)
 }
 
 void ChannelManager::save()
-{	
-	Data::Table table = get_application().get_schema().tables["channel"];
-	Data::DataTable data_table(table);
+{
+	Glib::RecMutex::Lock lock(mutex);
 
-	ChannelList::iterator iterator = channels.begin();
+	Application& application = get_application();
+	Data::Connection connection;
+	
+	Data::Table table_channel			= application.get_schema().tables["channel"];
+	Data::Table table_epg_event			= application.get_schema().tables["epg_event"];
+	Data::Table table_epg_event_text	= application.get_schema().tables["epg_event_text"];
+
+	Data::TableAdapter adapter_channel(connection, table_channel);
+	Data::TableAdapter adapter_epg_event(connection, table_epg_event);
+	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
+
+	Data::DataTable data_table_channel(table_channel);
+	Data::DataTable data_table_epg_event(table_epg_event);
+	Data::DataTable data_table_epg_event_text(table_epg_event_text);
+
+	g_debug("Deleting old EPG events");
+	Glib::ustring clause = Glib::ustring::compose("(START_TIME+DURATION)<%1", time(NULL));
+	adapter_epg_event.delete_rows(clause);
+
+	g_debug("Saving channels");
 	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
 	{
 		Channel& channel = *i;
 		
 		Data::Row row;
+		
+		row.auto_increment = &(channel.channel_id);
+		
 		row["channel_id"].int_value				= channel.channel_id;
 		row["name"].string_value				= channel.name;
 		row["flags"].int_value					= channel.flags;
@@ -134,21 +191,67 @@ void ChannelManager::save()
 		{
 			row["modulation"].int_value				= channel.transponder.frontend_parameters.u.vsb.modulation;
 		}
-		data_table.rows.push_back(row);
-	}	
-	
-	Data::Connection connection;
-	Data::TableAdapter adapter(connection, table);
-	adapter.replace(data_table);
+		data_table_channel.rows.push_back(row);
+	}
+	adapter_channel.replace_rows(data_table_channel);
+		
+	g_debug("Saving EPG events");
+	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
+	{
+		Channel& channel = *i;
+		EpgEventList& epg_event_list = channel.epg_events.get_list();
+		for (EpgEventList::iterator j = epg_event_list.begin(); j != epg_event_list.end(); j++)
+		{
+			EpgEvent& epg_event = *j;
+			Data::Row row;
+			
+			row.auto_increment = &(epg_event.epg_event_id);
+			row["epg_event_id"].int_value	= epg_event.epg_event_id;
+			row["channel_id"].int_value		= channel.channel_id;
+			row["event_id"].int_value		= epg_event.event_id;
+			row["start_time"].int_value		= epg_event.start_time;
+			row["duration"].int_value		= epg_event.duration;
+			
+			data_table_epg_event.rows.add(row);
+		}
+	}
+	adapter_epg_event.replace_rows(data_table_epg_event);
 
-	// Reload to make sure that we get the channel_ids updated
-	load(adapter);
+	g_debug("Saving EPG event text");
+	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
+	{
+		Channel& channel = *i;
+		EpgEventList& epg_event_list = channel.epg_events.get_list();
+		for (EpgEventList::iterator j = epg_event_list.begin(); j != epg_event_list.end(); j++)
+		{
+			EpgEvent& epg_event = *j;
+
+			for (EpgEventTextList::iterator k = epg_event.texts.begin(); k != epg_event.texts.end(); k++)
+			{
+				EpgEventText epg_event_text = *k;
+				Data::Row row;
+				
+				row.auto_increment = &(epg_event_text.epg_event_text_id);
+				row["epg_event_text_id"].int_value	= epg_event_text.epg_event_text_id;
+				row["epg_event_id"].int_value		= epg_event.epg_event_id;
+				row["language"].string_value		= epg_event_text.language;
+				row["title"].string_value			= epg_event_text.title;
+				row["description"].string_value		= epg_event_text.description;
+				
+				data_table_epg_event_text.rows.add(row);
+			}
+		}
+	}
+	adapter_epg_event_text.replace_rows(data_table_epg_event_text);
+	
+	g_debug("Channels saved");
 }
 
 Channel* ChannelManager::find_channel(guint channel_id)
 {
 	Channel* channel = NULL;
 
+	Glib::RecMutex::Lock lock(mutex);
 	ChannelList::iterator iterator = channels.begin();
 	while (iterator != channels.end() && channel == NULL)
 	{
@@ -178,11 +281,14 @@ Channel& ChannelManager::get_channel(guint channel_id)
 
 void ChannelManager::set_display_channel(guint channel_id)
 {
+	Glib::RecMutex::Lock lock(mutex);
 	set_display_channel(get_channel(channel_id));
 }
 
 void ChannelManager::set_display_channel(const Channel& channel)
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	g_message("Setting display channel to '%s' (%d)", channel.name.c_str(), channel.channel_id);
 	display_channel = find_channel(channel.channel_id);
 	if (display_channel == NULL)
@@ -197,17 +303,21 @@ void ChannelManager::set_display_channel(const Channel& channel)
 
 void ChannelManager::add_channels(const ChannelList& c)
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	ChannelList::const_iterator iterator = c.begin();
 	while (iterator != c.end())
 	{
 		const Channel& channel = *iterator;
-		channels.push_back(channel);
+		add_channel(channel);
 		iterator++;
 	}
 }
 
 void ChannelManager::add_channel(const Channel& channel)
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	if (channels.size() >= MAX_CHANNELS)
 	{
 		Glib::ustring message = Glib::ustring::compose(ngettext(
@@ -237,6 +347,7 @@ Channel* ChannelManager::get_display_channel()
 
 void ChannelManager::clear()
 {
+	Glib::RecMutex::Lock lock(mutex);
 	channels.clear();
 	g_debug("Channels cleared");
 }
@@ -245,6 +356,7 @@ Channel* ChannelManager::find_channel(guint frequency, guint service_id)
 {
 	Channel* result = NULL;
 	
+	Glib::RecMutex::Lock lock(mutex);
 	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end() && result == NULL; iterator++)
 	{
 		Channel& channel = *iterator;
@@ -261,6 +373,8 @@ void ChannelManager::set_channels(const ChannelList& new_channels)
 {
 	g_debug("Setting channels");
 	
+	Glib::RecMutex::Lock lock(mutex);
+
 	guint display_channel_frequency = 0;
 	guint display_channel_service_id = 0;
 
@@ -292,6 +406,8 @@ void ChannelManager::set_channels(const ChannelList& new_channels)
 
 void ChannelManager::next_channel()
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	if (channels.size() == 0)
 	{
 		throw Exception(_("No channels"));
@@ -327,6 +443,8 @@ void ChannelManager::next_channel()
 
 void ChannelManager::previous_channel()
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	if (channels.size() == 0)
 	{
 		throw Exception(_("No channels"));

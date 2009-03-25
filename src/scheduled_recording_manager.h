@@ -18,47 +18,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include "me-tv.h"
-#include "channel.h"
-#include "data.h"
-#include <string.h>
+#ifndef __SCHEDULED_RECORDING_MANAGER_H__
+#define __SCHEDULED_RECORDING_MANAGER_H__
 
-Channel::Channel()
+#include "scheduled_recording.h"
+
+typedef std::list<ScheduledRecording> ScheduledRecordingList;
+
+class ScheduledRecordingManager
 {
-	channel_id	= 0;
-	flags		= 0;
-	service_id	= 0;
-}
+private:
+	Glib::StaticRecMutex mutex;
+public:
+	ScheduledRecordingManager();
+		
+	void load();
+	void save();
+	void add_scheduled_recording(const ScheduledRecording& scheduled_recording);
+		
+	ScheduledRecordingList scheduled_recordings;
+};
 
-Glib::ustring Channel::get_text()
-{
-	Glib::ustring result = encode_xml(name);
-	EpgEvent epg_event;
-	
-	if (epg_events.get_current(epg_event))
-	{
-		result += " - ";
-		result += epg_event.get_title();
-	}
-	
-	return result;
-}
-
-guint Channel::get_transponder_frequency()
-{
-	return transponder.frontend_parameters.frequency;
-}
-
-gboolean ChannelList::contains(guint channel_id)
-{
-	for (const_iterator i = begin(); i != end(); i++)
-	{
-		if ((*i).channel_id == channel_id)
-		{
-			return true;
-		}
-	}
-	
-	return false;
-}
-
+#endif

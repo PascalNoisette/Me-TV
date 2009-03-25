@@ -47,7 +47,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	main_window = NULL;
 	status_icon = NULL;
 	stream_thread = NULL;
-	update_epg_time();
 	timeout_source = 0;
 	scheduled_recording_id = 0;
 	record_state = false;
@@ -147,25 +146,25 @@ void Application::initialise_database()
 {
 	Data::Table table_channel;
 	table_channel.name = "channel";
-	table_channel.columns.add("channel_id", Data::DATA_TYPE_INTEGER, 0, false, true);
-	table_channel.columns.add("name", Data::DATA_TYPE_STRING, 50, false, false);
-	table_channel.columns.add("flags", Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_channel.columns.add("sort_order", Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_channel.columns.add("mrl", Data::DATA_TYPE_STRING, 1024, true, false);
-	table_channel.columns.add("service_id", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("frequency", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("inversion", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("bandwidth", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("code_rate_hp", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("code_rate_lp", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("constellation", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("transmission_mode", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("guard_interval", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("hierarchy_information", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("symbol_rate", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("fec_inner", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("modulation", Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("polarisation", Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false, true);
+	table_channel.columns.add("name",					Data::DATA_TYPE_STRING, 50, false, false);
+	table_channel.columns.add("flags",					Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_channel.columns.add("sort_order",				Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_channel.columns.add("mrl",					Data::DATA_TYPE_STRING, 1024, true, false);
+	table_channel.columns.add("service_id",				Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("frequency",				Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("inversion",				Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("bandwidth",				Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("code_rate_hp",			Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("code_rate_lp",			Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("constellation",			Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("transmission_mode",		Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("guard_interval",			Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("hierarchy_information",	Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("symbol_rate",			Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("fec_inner",				Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("modulation",				Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("polarisation",			Data::DATA_TYPE_INTEGER, 0, true, false);
 	table_channel.primary_key = "channel_id";
 	StringList table_channel_unique_columns;
 	table_channel_unique_columns.push_back("name");
@@ -174,11 +173,11 @@ void Application::initialise_database()
 	
 	Data::Table table_epg_event;
 	table_epg_event.name = "epg_event";
-	table_epg_event.columns.add("epg_event_id", Data::DATA_TYPE_INTEGER, 0, false, true);
-	table_epg_event.columns.add("channel_id", Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_epg_event.columns.add("event_id", Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_epg_event.columns.add("start_time", Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_epg_event.columns.add("duration", Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_epg_event.columns.add("epg_event_id",	Data::DATA_TYPE_INTEGER, 0, false, true);
+	table_epg_event.columns.add("channel_id",	Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_epg_event.columns.add("event_id",		Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_epg_event.columns.add("start_time",	Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_epg_event.columns.add("duration",		Data::DATA_TYPE_INTEGER, 0, false, false);
 	table_epg_event.primary_key = "epg_event_id";
 	StringList table_epg_event_unique_columns;
 	table_epg_event_unique_columns.push_back("channel_id");
@@ -188,11 +187,11 @@ void Application::initialise_database()
 			
 	Data::Table table_epg_event_text;
 	table_epg_event_text.name = "epg_event_text";
-	table_epg_event_text.columns.add("epg_event_text_id", Data::DATA_TYPE_INTEGER, 0, false, true);
-	table_epg_event_text.columns.add("epg_event_id", Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_epg_event_text.columns.add("language", Data::DATA_TYPE_STRING, 3, false, false);
-	table_epg_event_text.columns.add("title", Data::DATA_TYPE_STRING, 200, false, false);
-	table_epg_event_text.columns.add("description", Data::DATA_TYPE_STRING, 1000, false, false);
+	table_epg_event_text.columns.add("epg_event_text_id",	Data::DATA_TYPE_INTEGER, 0, false, true);
+	table_epg_event_text.columns.add("epg_event_id",		Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_epg_event_text.columns.add("language",			Data::DATA_TYPE_STRING, 3, false, false);
+	table_epg_event_text.columns.add("title",				Data::DATA_TYPE_STRING, 200, false, false);
+	table_epg_event_text.columns.add("description",			Data::DATA_TYPE_STRING, 1000, false, false);
 	table_epg_event_text.primary_key = "epg_event_text_id";
 	StringList table_epg_event_text_unique_columns;
 	table_epg_event_text_unique_columns.push_back("epg_event_id");
@@ -202,12 +201,12 @@ void Application::initialise_database()
 
 	Data::Table table_scheduled_recording;
 	table_scheduled_recording.name = "scheduled_recording";
-	table_scheduled_recording.columns.add("scheduled_recording_id", Data::DATA_TYPE_INTEGER, 0, false, true);
-	table_scheduled_recording.columns.add("description", Data::DATA_TYPE_STRING, 200, false, false);
-	table_scheduled_recording.columns.add("type", Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_scheduled_recording.columns.add("channel_id", Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_scheduled_recording.columns.add("start_time", Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_scheduled_recording.columns.add("duration", Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_scheduled_recording.columns.add("scheduled_recording_id",	Data::DATA_TYPE_INTEGER, 0, false, true);
+	table_scheduled_recording.columns.add("description",			Data::DATA_TYPE_STRING, 200, false, false);
+	table_scheduled_recording.columns.add("type",					Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_scheduled_recording.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_scheduled_recording.columns.add("start_time",				Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_scheduled_recording.columns.add("duration",				Data::DATA_TYPE_INTEGER, 0, false, false);
 	table_scheduled_recording.primary_key = "scheduled_recording_id";
 	schema.tables.add(table_scheduled_recording);
 
@@ -443,16 +442,6 @@ void Application::on_display_channel_changed(const Channel& channel)
 	CATCH
 }
 
-void Application::update_epg_time()
-{
-	last_epg_update_time = time(NULL);
-}
-
-guint Application::get_last_epg_update_time() const
-{
-	return last_epg_update_time;
-}
-
 MainWindow& Application::get_main_window()
 {
 	if (main_window == NULL)
@@ -570,10 +559,11 @@ gboolean Application::on_timeout()
 	guint seconds = now % 60;
 	if (last_seconds > seconds)
 	{
-		Data::Connection connection;
-		Data::TableAdapter adapter(connection, schema.tables["scheduled_recording"]);
-		check_scheduled_recordings(adapter);
-		update();
+//		Data::Connection connection;
+//		Data::TableAdapter adapter(connection, schema.tables["scheduled_recording"]);
+//		check_scheduled_recordings(adapter);
+//		channel_manager.save();
+//		update();
 	}
 	last_seconds = seconds;
 	

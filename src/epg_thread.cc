@@ -22,8 +22,6 @@
 #include "epg_thread.h"
 #include "application.h"
 
-#define CLEANUP_INTERVAL	60
-
 class EITDemuxers
 {
 private:
@@ -120,21 +118,19 @@ void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInf
 
 EpgThread::EpgThread() : Thread("EPG Thread")
 {
-	last_cleanup_time = time(NULL);
 }
 
 void EpgThread::run()
 {
 	TRY;
 
-	Application& application = get_application();
-	Data::Table table = application.get_schema().tables["epg_event"];
-	ChannelManager& channel_manager = application.get_channel_manager();
-	Dvb::Frontend& frontend = application.get_device_manager().get_frontend();
-	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
-	EITDemuxers demuxers(demux_path);
-	Dvb::SI::SectionParser parser;
-	Dvb::SI::MasterGuideTable master_guide_table;
+	Application&				application				= get_application();
+	ChannelManager&				channel_manager			= application.get_channel_manager();
+	Dvb::Frontend&				frontend				= application.get_device_manager().get_frontend();
+	Glib::ustring				demux_path				= frontend.get_adapter().get_demux_path();
+	EITDemuxers					demuxers(demux_path);
+	Dvb::SI::SectionParser		parser;
+	Dvb::SI::MasterGuideTable	master_guide_table;
 
 	gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
 	if (is_atsc)
@@ -199,24 +195,11 @@ void EpgThread::run()
 						epg_event.texts.push_back(epg_event_text);
 					}
 					
-					if (channel->epg_events.insert(epg_event))
+					if (channel->epg_events.add_epg_event(epg_event))
 					{
-						get_application().update_epg_time();
+						last_update_time = time(NULL);
 					}
 				}
-			}
-			
-			guint now = time(NULL);
-			if (now - CLEANUP_INTERVAL > last_cleanup_time)
-			{
-				Data::Connection connection;
-				Data::TableAdapter adapter(connection, table);
-				
-				g_debug("Deleting old EPG events");
-				Glib::ustring clause = Glib::ustring::compose("(START_TIME+DURATION)<%1", time(NULL));
-				adapter.delete_rows(clause);
-				
-				last_cleanup_time = now;
 			}
 		}
 		catch(const TimeoutException& ex)

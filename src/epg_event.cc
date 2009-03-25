@@ -22,6 +22,23 @@
 #include "me-tv.h"
 #include "application.h"
 
+EpgEventText::EpgEventText()
+{
+	epg_event_text_id = 0;
+	epg_event_id = 0;
+	is_extended = 0;
+}
+
+EpgEvent::EpgEvent()
+{
+	epg_event_id = 0;
+	channel_id = 0;
+	event_id = 0;
+	start_time = 0;
+	duration = 0;
+	save = false;
+}
+
 Glib::ustring EpgEvent::get_title() const
 {
 	Glib::ustring result;

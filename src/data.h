@@ -193,6 +193,13 @@ namespace Data
 		
 	class Row : public std::map<Glib::ustring, Value>
 	{
+	public:
+		Row()
+		{
+			auto_increment = NULL;
+		}
+		
+		guint* auto_increment;
 	};
 
 	class Rows : public std::vector<Row>
@@ -209,16 +216,8 @@ namespace Data
 	public:
 		DataTable(Table& table) : table(table) {}
 
-		Table& table;
-		Rows rows;
-	};
-
-	class IntegerIndex : std::map<int, Row&>
-	{
-	};
-	
-	class StringIndex : std::map<Glib::ustring, Row&>
-	{
+		Table	table;
+		Rows	rows;
 	};
 
 	class TableAdapter
@@ -241,7 +240,7 @@ namespace Data
 		DataTable select_row(guint key);
 		DataTable select_rows(const Glib::ustring& clause = "", const Glib::ustring& sort = "");
 			
-		void replace(DataTable& data_table);
+		void replace_rows(DataTable& data_table);
 	};
 }
 

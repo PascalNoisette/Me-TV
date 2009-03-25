@@ -667,3 +667,16 @@ void StreamThread::stop_broadcasting()
 		g_debug("Broadcasting stopped");
 	}
 }
+
+guint StreamThread::get_last_epg_update_time()
+{
+	guint result = 0;
+
+	Lock lock(mutex, "StreamThread::get_epg_last_update_time()");
+	if (epg_thread != NULL)
+	{
+		result = epg_thread->get_last_epg_update_time();
+	}
+	
+	return result;
+}

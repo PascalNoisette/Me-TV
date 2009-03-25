@@ -40,6 +40,4 @@ public:
 	gboolean is_in(guint at);
 };
 
-typedef std::list<ScheduledRecording> ScheduledRecordingList;
-
 #endif

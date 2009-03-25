@@ -39,7 +39,7 @@
 #include <gdk/gdkx.h>
 
 #define POKE_INTERVAL 		30
-#define UPDATE_INTERVAL		60
+#define UPDATE_INTERVAL		10
 
 KeyCode keycode1, keycode2;
 KeyCode *keycode;
@@ -397,11 +397,15 @@ void MainWindow::on_timeout()
 	}
 	
 	// Update EPG
-	guint application_last_update_time = get_application().get_last_epg_update_time();
-	if (((application_last_update_time-2) > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
+	StreamThread* stream_thread = get_application().get_stream_thread();
+	if (stream_thread != NULL)
 	{
-		update();
-		last_update_time = now;
+		guint last_epg_update_time = stream_thread->get_last_epg_update_time();
+		if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
+		{
+			update();
+			last_update_time = last_epg_update_time;
+		}
 	}
 	
 	// Check on engine

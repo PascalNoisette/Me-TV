@@ -50,7 +50,7 @@ bool sort_function(const EpgEvent& a, const EpgEvent& b)
 	return a.epg_event_id < b.epg_event_id;
 }
 
-gboolean EpgEvents::insert(const EpgEvent& epg_event)
+gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)
 {
 	Glib::RecMutex::Lock lock(mutex);
 	gboolean event_exists = exists(epg_event);
@@ -63,7 +63,7 @@ gboolean EpgEvents::insert(const EpgEvent& epg_event)
 	return !event_exists;
 }
 
-void EpgEvents::insert(const EpgEventList& epg_event_list)
+void EpgEvents::add_epg_events(const EpgEventList& epg_event_list)
 {
 	Glib::RecMutex::Lock lock(mutex);
 	list = epg_event_list;
@@ -89,24 +89,10 @@ gboolean EpgEvents::get_current(EpgEvent& epg_event)
 	return found;
 }
 
-EpgEventList EpgEvents::get_list(gboolean update_save)
+EpgEventList& EpgEvents::get_list()
 {
-	EpgEventList result;
 	Glib::RecMutex::Lock lock(mutex);
-
-	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
-	{
-		EpgEvent& epg_event = *i;
-		
-		result.push_back(epg_event);
-
-		if (update_save)
-		{
-			epg_event.save = false;
-		}
-	}
-	
-	return result;
+	return list;
 }
 
 guint now = 0;
@@ -119,6 +105,7 @@ bool is_old(EpgEvent& epg_event)
 void EpgEvents::prune()
 {
 	now = convert_to_local_time(time(NULL));
+
 	Glib::RecMutex::Lock lock(mutex);
 	list.remove_if(is_old);
 }

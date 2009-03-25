@@ -107,7 +107,9 @@ me_tv_SOURCES = \
 	devices_dialog.cc \
 	devices_dialog.h \
 	channel_manager.cc \
-	channel_manager.h
+	channel_manager.h \
+	scheduled_recording_manager.cc \
+	scheduled_recording_manager.h
 
 me_tv_CXXFLAGS = 
 
