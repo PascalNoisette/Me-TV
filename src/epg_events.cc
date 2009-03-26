@@ -47,7 +47,7 @@ gboolean EpgEvents::exists(const EpgEvent& epg_event)
 
 bool sort_function(const EpgEvent& a, const EpgEvent& b)
 {
-	return a.epg_event_id < b.epg_event_id;
+	return a.event_id < b.event_id;
 }
 
 gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)

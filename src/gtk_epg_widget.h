@@ -29,15 +29,15 @@
 class GtkEpgWidget : public Gtk::ScrolledWindow
 {
 private:
-	gint offset;
-	gsize span_hours;
-	gsize span_minutes;
-	gsize span_seconds;
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
-	guint epg_span_hours;
-	guint epg_page;
-	IntComboBox* combo_box_epg_page;
-	Gtk::Label* label_epg_page;
+	gint									offset;
+	gsize									span_hours;
+	gsize									span_minutes;
+	gsize									span_seconds;
+	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
+	guint									epg_span_hours;
+	guint									epg_page;
+	IntComboBox*							combo_box_epg_page;
+	Gtk::Label*								label_epg_page;
 	
 	Gtk::Table* table_epg;
 	Gtk::ScrolledWindow* scrolled_window_epg;

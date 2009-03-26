@@ -25,6 +25,26 @@
 
 #define MAX_CHANNELS	10000
 
+class LockLogger
+{
+private:
+	Glib::ustring description;
+	Glib::RecMutex& mutex;
+public:
+	LockLogger(Glib::RecMutex& mutex, const Glib::ustring& description)
+		: description(description), mutex(mutex)
+	{
+		//g_debug(">>> Locking (%s)", description.c_str());
+		mutex.lock();
+	}
+
+	~LockLogger()
+	{
+		//g_debug("<<< UnLocking (%s)", description.c_str());
+		mutex.unlock();
+	}
+};
+
 ChannelManager::ChannelManager()
 {
 	display_channel = NULL;
@@ -33,7 +53,7 @@ ChannelManager::ChannelManager()
 
 void ChannelManager::load()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 
 	Application& application = get_application();
 	Data::Connection connection;
@@ -48,6 +68,7 @@ void ChannelManager::load()
 
 	Data::DataTable data_table_channels = adapter_channel.select_rows("", "sort_order");
 
+	g_debug("Loading channels");
 	for (Data::Rows::iterator i = data_table_channels.rows.begin(); i != data_table_channels.rows.end(); i++)
 	{
 		Data::Row row_channel = *i;
@@ -63,6 +84,8 @@ void ChannelManager::load()
 		channel.transponder.frontend_parameters.frequency	= row_channel["frequency"].int_value;
 		channel.transponder.frontend_parameters.inversion	= (fe_spectral_inversion)row_channel["inversion"].int_value;
 		
+		g_debug("Loading channel '%s'", channel.name.c_str());
+
 		if (channel.flags & CHANNEL_FLAG_DVB_T)
 		{
 			channel.transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth)row_channel["bandwidth"].int_value;
@@ -92,7 +115,7 @@ void ChannelManager::load()
 		
 		Glib::ustring clause = Glib::ustring::compose("channel_id = %1", channel.channel_id);
 		Data::DataTable data_table_epg_event = adapter_epg_event.select_rows(clause, "start_time");		
-		for (Data::Rows::iterator j = data_table_channels.rows.begin(); j != data_table_channels.rows.end(); j++)
+		for (Data::Rows::iterator j = data_table_epg_event.rows.begin(); j != data_table_epg_event.rows.end(); j++)
 		{
 			Data::Row row_epg_event = *j;
 			EpgEvent epg_event;
@@ -103,7 +126,9 @@ void ChannelManager::load()
 			epg_event.start_time	= row_epg_event["start_time"].int_value;
 			epg_event.duration		= row_epg_event["duration"].int_value;
 			
-			for (Data::Rows::iterator k = data_table_channels.rows.begin(); k != data_table_channels.rows.end(); k++)
+			Glib::ustring clause = Glib::ustring::compose("epg_event_id = %1", epg_event.epg_event_id);
+			Data::DataTable data_table_epg_event_text = adapter_epg_event_text.select_rows(clause);
+			for (Data::Rows::iterator k = data_table_epg_event_text.rows.begin(); k != data_table_epg_event_text.rows.end(); k++)
 			{
 				Data::Row row_epg_event_text = *k;
 				EpgEventText epg_event_text;
@@ -113,7 +138,7 @@ void ChannelManager::load()
 				epg_event_text.language				= row_epg_event_text["language"].string_value;
 				epg_event_text.title				= row_epg_event_text["title"].string_value;
 				epg_event_text.description			= row_epg_event_text["description"].string_value;
-				
+								
 				epg_event.texts.push_back(epg_event_text);
 			}			
 			
@@ -122,11 +147,12 @@ void ChannelManager::load()
 		
 		add_channel(channel);
 	}
+	g_debug("Finished loading channels");
 }
 
 void ChannelManager::save()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 
 	Application& application = get_application();
 	Data::Connection connection;
@@ -143,9 +169,9 @@ void ChannelManager::save()
 	Data::DataTable data_table_epg_event(table_epg_event);
 	Data::DataTable data_table_epg_event_text(table_epg_event_text);
 
-	g_debug("Deleting old EPG events");
-	Glib::ustring clause = Glib::ustring::compose("(START_TIME+DURATION)<%1", time(NULL));
-	adapter_epg_event.delete_rows(clause);
+//	g_debug("Deleting old EPG events");
+//	Glib::ustring clause = Glib::ustring::compose("(START_TIME+DURATION)<%1", time(NULL));
+//	adapter_epg_event.delete_rows(clause);
 
 	g_debug("Saving channels");
 	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
@@ -203,16 +229,20 @@ void ChannelManager::save()
 		for (EpgEventList::iterator j = epg_event_list.begin(); j != epg_event_list.end(); j++)
 		{
 			EpgEvent& epg_event = *j;
-			Data::Row row;
 			
-			row.auto_increment = &(epg_event.epg_event_id);
-			row["epg_event_id"].int_value	= epg_event.epg_event_id;
-			row["channel_id"].int_value		= channel.channel_id;
-			row["event_id"].int_value		= epg_event.event_id;
-			row["start_time"].int_value		= epg_event.start_time;
-			row["duration"].int_value		= epg_event.duration;
-			
-			data_table_epg_event.rows.add(row);
+			if (epg_event.save)
+			{
+				Data::Row row;
+				
+				row.auto_increment = &(epg_event.epg_event_id);
+				row["epg_event_id"].int_value	= epg_event.epg_event_id;
+				row["channel_id"].int_value		= channel.channel_id;
+				row["event_id"].int_value		= epg_event.event_id;
+				row["start_time"].int_value		= epg_event.start_time;
+				row["duration"].int_value		= epg_event.duration;
+				
+				data_table_epg_event.rows.add(row);
+			}
 		}
 	}
 	adapter_epg_event.replace_rows(data_table_epg_event);
@@ -225,20 +255,25 @@ void ChannelManager::save()
 		for (EpgEventList::iterator j = epg_event_list.begin(); j != epg_event_list.end(); j++)
 		{
 			EpgEvent& epg_event = *j;
-
-			for (EpgEventTextList::iterator k = epg_event.texts.begin(); k != epg_event.texts.end(); k++)
+			
+			if (epg_event.save)
 			{
-				EpgEventText epg_event_text = *k;
-				Data::Row row;
-				
-				row.auto_increment = &(epg_event_text.epg_event_text_id);
-				row["epg_event_text_id"].int_value	= epg_event_text.epg_event_text_id;
-				row["epg_event_id"].int_value		= epg_event.epg_event_id;
-				row["language"].string_value		= epg_event_text.language;
-				row["title"].string_value			= epg_event_text.title;
-				row["description"].string_value		= epg_event_text.description;
-				
-				data_table_epg_event_text.rows.add(row);
+				for (EpgEventTextList::iterator k = epg_event.texts.begin(); k != epg_event.texts.end(); k++)
+				{
+					EpgEventText epg_event_text = *k;
+					Data::Row row;
+					
+					row.auto_increment = &(epg_event_text.epg_event_text_id);
+					row["epg_event_text_id"].int_value	= epg_event_text.epg_event_text_id;
+					row["epg_event_id"].int_value		= epg_event.epg_event_id;
+					row["language"].string_value		= epg_event_text.language;
+					row["title"].string_value			= epg_event_text.title;
+					row["description"].string_value		= epg_event_text.description;
+					
+					data_table_epg_event_text.rows.add(row);
+				}
+
+				epg_event.save = false;
 			}
 		}
 	}
@@ -251,7 +286,7 @@ Channel* ChannelManager::find_channel(guint channel_id)
 {
 	Channel* channel = NULL;
 
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 	ChannelList::iterator iterator = channels.begin();
 	while (iterator != channels.end() && channel == NULL)
 	{
@@ -281,13 +316,13 @@ Channel& ChannelManager::get_channel(guint channel_id)
 
 void ChannelManager::set_display_channel(guint channel_id)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 	set_display_channel(get_channel(channel_id));
 }
 
 void ChannelManager::set_display_channel(const Channel& channel)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 
 	g_message("Setting display channel to '%s' (%d)", channel.name.c_str(), channel.channel_id);
 	display_channel = find_channel(channel.channel_id);
@@ -303,7 +338,7 @@ void ChannelManager::set_display_channel(const Channel& channel)
 
 void ChannelManager::add_channels(const ChannelList& c)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 
 	ChannelList::const_iterator iterator = c.begin();
 	while (iterator != c.end())
@@ -316,7 +351,7 @@ void ChannelManager::add_channels(const ChannelList& c)
 
 void ChannelManager::add_channel(const Channel& channel)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 
 	if (channels.size() >= MAX_CHANNELS)
 	{
@@ -347,7 +382,7 @@ Channel* ChannelManager::get_display_channel()
 
 void ChannelManager::clear()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 	channels.clear();
 	g_debug("Channels cleared");
 }
@@ -356,7 +391,7 @@ Channel* ChannelManager::find_channel(guint frequency, guint service_id)
 {
 	Channel* result = NULL;
 	
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end() && result == NULL; iterator++)
 	{
 		Channel& channel = *iterator;
@@ -373,7 +408,7 @@ void ChannelManager::set_channels(const ChannelList& new_channels)
 {
 	g_debug("Setting channels");
 	
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 
 	guint display_channel_frequency = 0;
 	guint display_channel_service_id = 0;
@@ -406,7 +441,7 @@ void ChannelManager::set_channels(const ChannelList& new_channels)
 
 void ChannelManager::next_channel()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 
 	if (channels.size() == 0)
 	{
@@ -443,7 +478,7 @@ void ChannelManager::next_channel()
 
 void ChannelManager::previous_channel()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	LockLogger(mutex, __PRETTY_FUNCTION__);
 
 	if (channels.size() == 0)
 	{

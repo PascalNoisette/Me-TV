@@ -39,7 +39,7 @@
 #include <gdk/gdkx.h>
 
 #define POKE_INTERVAL 		30
-#define UPDATE_INTERVAL		10
+#define UPDATE_INTERVAL		60
 
 KeyCode keycode1, keycode2;
 KeyCode *keycode;
@@ -404,7 +404,7 @@ void MainWindow::on_timeout()
 		if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 		{
 			update();
-			last_update_time = last_epg_update_time;
+			last_update_time = now;
 		}
 	}
 	

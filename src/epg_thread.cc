@@ -118,6 +118,7 @@ void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInf
 
 EpgThread::EpgThread() : Thread("EPG Thread")
 {
+	last_update_time = 0;
 }
 
 void EpgThread::run()
@@ -168,7 +169,7 @@ void EpgThread::run()
 			Channel* channel = channel_manager.find_channel(frequency, service_id);
 			if (channel != NULL)
 			{
-				for( unsigned int k = 0; section.events.size() > k; k++ )
+				for (unsigned int k = 0; section.events.size() > k; k++)
 				{
 					Dvb::SI::Event& event	= section.events[k];
 					EpgEvent epg_event;
@@ -197,7 +198,7 @@ void EpgThread::run()
 					
 					if (channel->epg_events.add_epg_event(epg_event))
 					{
-						last_update_time = time(NULL);
+						last_update_time = time(NULL)+1;
 					}
 				}
 			}

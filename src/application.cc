@@ -559,11 +559,11 @@ gboolean Application::on_timeout()
 	guint seconds = now % 60;
 	if (last_seconds > seconds)
 	{
-//		Data::Connection connection;
-//		Data::TableAdapter adapter(connection, schema.tables["scheduled_recording"]);
-//		check_scheduled_recordings(adapter);
-//		channel_manager.save();
-//		update();
+		Data::Connection connection;
+		Data::TableAdapter adapter(connection, schema.tables["scheduled_recording"]);
+		check_scheduled_recordings(adapter);
+		channel_manager.save();
+		update();
 	}
 	last_seconds = seconds;
 	

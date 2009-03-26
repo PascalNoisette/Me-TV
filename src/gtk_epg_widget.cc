@@ -167,7 +167,6 @@ void GtkEpgWidget::update_table()
 		}
 		start_time += timezone;
 
-		g_debug("EPG page %d", epg_page);
 		guint epg_page_size = get_application().get_int_configuration_value("epg_page_size");
 		guint channel_count = 0;
 		guint channel_start = (epg_page-1) * epg_page_size;
@@ -215,7 +214,7 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel, guint table_
 	for (EpgEventList::const_iterator i = events.begin(); i != events.end(); i++)
 	{
 		const EpgEvent& epg_event = *i;
-		
+				
 		if (
 			(epg_event.start_time >= start_time && epg_event.start_time <= end_time) ||
 			(epg_event.get_end_time() >= start_time && epg_event.get_end_time() <= end_time) ||
