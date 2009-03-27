@@ -245,7 +245,9 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel, guint table_
 				if (start_column > total_number_columns)
 				{
 					guint empty_columns = start_column - total_number_columns;
-					Gtk::Button& button = attach_button(_("Unknown program"), total_number_columns + 1, start_column + 1, table_row, table_row + 1);
+					Gtk::Button& button = attach_button(
+						empty_columns < 5 ? _("?") : _("Unknown program"),
+						total_number_columns + 1, start_column + 1, table_row, table_row + 1);
 					button.set_sensitive(false);
 					total_number_columns += empty_columns;
 				}
@@ -286,8 +288,11 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel, guint table_
 	}
 	
 	if (total_number_columns < number_columns-1)
-	{		
-		Gtk::Button& button = attach_button(_("Unknown program"), total_number_columns + 1, number_columns, table_row, table_row + 1);
+	{
+		guint empty_columns = (number_columns-1) - total_number_columns;
+		Gtk::Button& button = attach_button(
+			empty_columns < 5 ? _("?") : _("Unknown program"),
+			total_number_columns + 1, number_columns, table_row, table_row + 1);
 		button.set_sensitive(false);
 	}
 }

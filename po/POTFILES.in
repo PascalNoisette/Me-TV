@@ -71,6 +71,8 @@ src/scan_window.h
 src/scheduled_recording.cc
 src/scheduled_recording_dialog.cc
 src/scheduled_recording_dialog.h
+src/scheduled_recording_manager.cc
+src/scheduled_recording_manager.h
 src/scheduled_recording.h
 src/scheduled_recordings_dialog.cc
 src/scheduled_recordings_dialog.h
