@@ -128,8 +128,7 @@ void ChannelsDialog::on_show()
 	update_channels();
 	Application& application = get_application();
 	const ChannelList& channels = application.channel_manager.get_channels();
-	guint device_count = application.device_manager.get_frontends().size();
-	if (channels.size() == 0 && device_count > 0)
+	if (channels.empty() && application.device_manager.get_frontends().empty())
 	{
 		show_scan_window();
 	}

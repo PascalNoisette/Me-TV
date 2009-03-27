@@ -47,13 +47,13 @@ Glib::ustring EpgEvent::get_title() const
 	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end(); i++)
 	{
 		EpgEventText text = *i;
-		if (result.size() == 0 || (preferred_language.size() > 0 && preferred_language == text.language))
+		if (result.empty() || (preferred_language.size() > 0 && preferred_language == text.language))
 		{
 			result = text.title;
 		}
 	}
 	
-	if (result.size() == 0)
+	if (result.empty())
 	{
 		result = _("Unknown title");
 	}
@@ -69,13 +69,13 @@ Glib::ustring EpgEvent::get_description() const
 	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end(); i++)
 	{
 		EpgEventText text = *i;
-		if (result.size() == 0 || (preferred_language.size() > 0 && preferred_language == text.language))
+		if (result.empty() || (preferred_language.size() > 0 && preferred_language == text.language))
 		{
 			result = text.description;
 		}
 	}
 	
-	if (result.size() == 0)
+	if (result.empty())
 	{
 		result = _("Unknown description");
 	}

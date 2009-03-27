@@ -64,7 +64,6 @@ public:
 	static ScheduledRecordingsDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 
 	void update();
-	void update(Data::TableAdapter& adapter);
 };
 
 #endif

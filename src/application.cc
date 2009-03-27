@@ -32,7 +32,9 @@ Application& get_application()
 }
 
 Application::Application(int argc, char *argv[], Glib::OptionContext& option_context) :
-	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context)
+	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context),
+	application_dir(Glib::build_filename(Glib::get_home_dir(), ".me-tv")),
+	connection(Glib::build_filename(get_application_dir(), "/me-tv.db"))
 {
 	g_debug("Application constructor");
 
@@ -43,14 +45,14 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	
 	g_static_rec_mutex_init(mutex.gobj());
 
-	current = this;
-	main_window = NULL;
-	status_icon = NULL;
-	stream_thread = NULL;
-	timeout_source = 0;
-	scheduled_recording_id = 0;
-	record_state = false;
-	broadcast_state = false;
+	current					= this;
+	main_window				= NULL;
+	status_icon				= NULL;
+	stream_thread			= NULL;
+	timeout_source			= 0;
+	scheduled_recording_id	= 0;
+	record_state			= false;
+	broadcast_state			= false;
 	
 	signal_quit().connect(sigc::mem_fun(this, &Application::on_quit));
 
@@ -95,7 +97,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 		"xvimagesink name=videosink force-aspect-ratio=true " \
 		"decoder. ! queue ! volume name=volume ! gconfaudiosink");
 
-	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);
 	if (!file->query_exists())
 	{
@@ -149,25 +150,25 @@ void Application::initialise_database()
 {
 	Data::Table table_channel;
 	table_channel.name = "channel";
-	table_channel.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false, true);
-	table_channel.columns.add("name",					Data::DATA_TYPE_STRING, 50, false, false);
-	table_channel.columns.add("flags",					Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_channel.columns.add("sort_order",				Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_channel.columns.add("mrl",					Data::DATA_TYPE_STRING, 1024, true, false);
-	table_channel.columns.add("service_id",				Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("frequency",				Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("inversion",				Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("bandwidth",				Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("code_rate_hp",			Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("code_rate_lp",			Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("constellation",			Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("transmission_mode",		Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("guard_interval",			Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("hierarchy_information",	Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("symbol_rate",			Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("fec_inner",				Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("modulation",				Data::DATA_TYPE_INTEGER, 0, true, false);
-	table_channel.columns.add("polarisation",			Data::DATA_TYPE_INTEGER, 0, true, false);
+	table_channel.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false);
+	table_channel.columns.add("name",					Data::DATA_TYPE_STRING, 50, false);
+	table_channel.columns.add("flags",					Data::DATA_TYPE_INTEGER, 0, false);
+	table_channel.columns.add("sort_order",				Data::DATA_TYPE_INTEGER, 0, false);
+	table_channel.columns.add("mrl",					Data::DATA_TYPE_STRING, 1024, true);
+	table_channel.columns.add("service_id",				Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("frequency",				Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("inversion",				Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("bandwidth",				Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("code_rate_hp",			Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("code_rate_lp",			Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("constellation",			Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("transmission_mode",		Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("guard_interval",			Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("hierarchy_information",	Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("symbol_rate",			Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("fec_inner",				Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("modulation",				Data::DATA_TYPE_INTEGER, 0, true);
+	table_channel.columns.add("polarisation",			Data::DATA_TYPE_INTEGER, 0, true);
 	table_channel.primary_key = "channel_id";
 	StringList table_channel_unique_columns;
 	table_channel_unique_columns.push_back("name");
@@ -176,11 +177,11 @@ void Application::initialise_database()
 	
 	Data::Table table_epg_event;
 	table_epg_event.name = "epg_event";
-	table_epg_event.columns.add("epg_event_id",	Data::DATA_TYPE_INTEGER, 0, false, true);
-	table_epg_event.columns.add("channel_id",	Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_epg_event.columns.add("event_id",		Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_epg_event.columns.add("start_time",	Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_epg_event.columns.add("duration",		Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_epg_event.columns.add("epg_event_id",	Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event.columns.add("channel_id",	Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event.columns.add("event_id",		Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event.columns.add("start_time",	Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event.columns.add("duration",		Data::DATA_TYPE_INTEGER, 0, false);
 	table_epg_event.primary_key = "epg_event_id";
 	StringList table_epg_event_unique_columns;
 	table_epg_event_unique_columns.push_back("channel_id");
@@ -190,11 +191,11 @@ void Application::initialise_database()
 			
 	Data::Table table_epg_event_text;
 	table_epg_event_text.name = "epg_event_text";
-	table_epg_event_text.columns.add("epg_event_text_id",	Data::DATA_TYPE_INTEGER, 0, false, true);
-	table_epg_event_text.columns.add("epg_event_id",		Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_epg_event_text.columns.add("language",			Data::DATA_TYPE_STRING, 3, false, false);
-	table_epg_event_text.columns.add("title",				Data::DATA_TYPE_STRING, 200, false, false);
-	table_epg_event_text.columns.add("description",			Data::DATA_TYPE_STRING, 1000, false, false);
+	table_epg_event_text.columns.add("epg_event_text_id",	Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event_text.columns.add("epg_event_id",		Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event_text.columns.add("language",			Data::DATA_TYPE_STRING, 3, false);
+	table_epg_event_text.columns.add("title",				Data::DATA_TYPE_STRING, 200, false);
+	table_epg_event_text.columns.add("description",			Data::DATA_TYPE_STRING, 1000, false);
 	table_epg_event_text.primary_key = "epg_event_text_id";
 	StringList table_epg_event_text_unique_columns;
 	table_epg_event_text_unique_columns.push_back("epg_event_id");
@@ -204,19 +205,18 @@ void Application::initialise_database()
 
 	Data::Table table_scheduled_recording;
 	table_scheduled_recording.name = "scheduled_recording";
-	table_scheduled_recording.columns.add("scheduled_recording_id",	Data::DATA_TYPE_INTEGER, 0, false, true);
-	table_scheduled_recording.columns.add("description",			Data::DATA_TYPE_STRING, 200, false, false);
-	table_scheduled_recording.columns.add("type",					Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_scheduled_recording.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_scheduled_recording.columns.add("start_time",				Data::DATA_TYPE_INTEGER, 0, false, false);
-	table_scheduled_recording.columns.add("duration",				Data::DATA_TYPE_INTEGER, 0, false, false);
+	table_scheduled_recording.columns.add("scheduled_recording_id",	Data::DATA_TYPE_INTEGER, 0, false);
+	table_scheduled_recording.columns.add("description",			Data::DATA_TYPE_STRING, 200, false);
+	table_scheduled_recording.columns.add("type",					Data::DATA_TYPE_INTEGER, 0, false);
+	table_scheduled_recording.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false);
+	table_scheduled_recording.columns.add("start_time",				Data::DATA_TYPE_INTEGER, 0, false);
+	table_scheduled_recording.columns.add("duration",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_scheduled_recording.primary_key = "scheduled_recording_id";
 	StringList table_scheduled_recording_unique_columns;
 	table_scheduled_recording_unique_columns.push_back("description");
 	table_scheduled_recording.constraints.add_unique(table_scheduled_recording_unique_columns);
 	schema.tables.add(table_scheduled_recording);
 
-	Data::Connection connection;
 	Data::SchemaAdapter adapter(schema, connection);
 	adapter.initialise_schema();
 }
@@ -300,7 +300,7 @@ void Application::run()
 	const FrontendList& frontends = device_manager.get_frontends();
 
 	Glib::ustring default_frontend = get_string_configuration_value("default_frontend");
-	if (default_frontend.size() == 0)
+	if (default_frontend.empty())
 	{
 		if (frontends.size() > 1)
 		{
@@ -338,7 +338,7 @@ void Application::run()
 	device_manager.get_frontend();
 	
 	const ChannelList& channels = channel_manager.get_channels();
-	if (channels.size() == 0)
+	if (channels.empty())
 	{
 		main_window->show_channels_dialog();
 	}
@@ -565,7 +565,6 @@ gboolean Application::on_timeout()
 	guint seconds = now % 60;
 	if (last_seconds > seconds)
 	{
-		Data::Connection connection;
 		Data::TableAdapter adapter(connection, schema.tables["scheduled_recording"]);
 		check_scheduled_recordings(adapter);
 		channel_manager.save();
@@ -591,7 +590,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	Glib::ustring filename;
 	Glib::ustring title = description;
 
-	if (title.size() == 0)
+	if (title.empty())
 	{
 		EpgEvent epg_event;
 		if (channel->epg_events.get_current(epg_event))
@@ -600,7 +599,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		}
 	}
 	
-	if (title.size() == 0)
+	if (title.empty())
 	{
 		filename = Glib::ustring::compose
 		(
@@ -663,7 +662,7 @@ void Application::start_recording(const Glib::ustring& filename, guint id)
 		
 		Glib::ustring recording_filename = filename;
 
-		if (recording_filename.size() == 0)
+		if (recording_filename.empty())
 		{
 			recording_filename = make_recording_filename();
 		}
@@ -687,7 +686,6 @@ void Application::stop_recording()
 			Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_YES_NO, true);
 			if (dialog.run() == Gtk::RESPONSE_YES)
 			{
-				Data::Connection connection;
 				Data::TableAdapter adapter(connection, schema.tables["scheduled_recording"]);
 				adapter.delete_row(scheduled_recording_id);
 			}

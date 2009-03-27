@@ -65,38 +65,20 @@ void ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked()
 	
 	Gtk::TreeModel::Row row = *(selection->get_selected());
 
-	Data::Connection connection;
-	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
-	Data::TableAdapter adapter(connection, table);
-	adapter.delete_row(row[columns.column_scheduled_recording_id]);
-	update(adapter);
+	guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
+	get_application().scheduled_recording_manager.delete_scheduled_recording(scheduled_recording_id);
+	update();
 	CATCH
 }
 
 void ScheduledRecordingsDialog::update()
 {
-	Data::Connection connection;
-	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
-	Data::TableAdapter adapter(connection, table);
-	update(adapter);
-}
-
-void ScheduledRecordingsDialog::update(Data::TableAdapter& adapter)
-{
 	ChannelManager& channel_manager = get_application().channel_manager;
 	list_store->clear();
-	Data::DataTable data_table = adapter.select_rows("", "start_time");
-	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
+	ScheduledRecordingMap& scheduled_recordings = get_application().scheduled_recording_manager.scheduled_recordings;
+	for (ScheduledRecordingMap::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
-		Data::Row& data_row = *i;
-		
-		ScheduledRecording scheduled_recording;
-		scheduled_recording.scheduled_recording_id	= data_row["scheduled_recording_id"].int_value;
-		scheduled_recording.description				= data_row["description"].string_value;
-		scheduled_recording.start_time				= data_row["start_time"].int_value;
-		scheduled_recording.duration				= data_row["duration"].int_value;
-		scheduled_recording.channel_id				= data_row["channel_id"].int_value;
-		
+		ScheduledRecording& scheduled_recording = scheduled_recordings[i->first];
 		Gtk::TreeModel::Row row = *(list_store->append());
 		row[columns.column_scheduled_recording_id]	= scheduled_recording.scheduled_recording_id;
 		row[columns.column_description]				= scheduled_recording.description;
@@ -113,29 +95,13 @@ void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& tre
 	Gtk::TreeModel::Row row = *(selection->get_selected());
 	guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
 
-	Data::Connection connection;
-	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
-	Data::TableAdapter adapter(connection, table);
-
-	Data::DataTable data_table = adapter.select_row(scheduled_recording_id);
-	if (data_table.rows.size() == 0)
-	{
-		throw Exception(_("Failed to get scheduled recording"));
-	}
-	
-	Data::Row data_row = data_table.rows[0];
-
-	ScheduledRecording scheduled_recording;
-	scheduled_recording.scheduled_recording_id	= data_row["scheduled_recording_id"].int_value;
-	scheduled_recording.description				= data_row["description"].string_value;
-	scheduled_recording.start_time				= data_row["start_time"].int_value;
-	scheduled_recording.duration				= data_row["duration"].int_value;
-	scheduled_recording.channel_id				= data_row["channel_id"].int_value;
+	ScheduledRecording& scheduled_recording = get_application().scheduled_recording_manager.scheduled_recordings[scheduled_recording_id];
 
 	ScheduledRecordingDialog* scheduled_recording_dialog = ScheduledRecordingDialog::create(glade);
 	scheduled_recording_dialog->run(this, scheduled_recording);
 	scheduled_recording_dialog->hide();
-	update(adapter);
+
+	update();
 	CATCH
 }
 

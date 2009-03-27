@@ -70,6 +70,7 @@ namespace Data
 		sqlite3*	connection;
 	public:
 		Connection();
+		Connection(const Glib::ustring& filename);
 		~Connection();
 			
 		Statement& create_statement(const Glib::ustring& command)
@@ -94,7 +95,6 @@ namespace Data
 		DataType type;
 		guint size;
 		gboolean nullable;
-		gboolean auto_increment;
 	};
 
 	class Columns : public std::vector<Column>
@@ -109,8 +109,7 @@ namespace Data
 			const Glib::ustring& name,
 			DataType type,
 			guint size,
-			gboolean nullable,
-			gboolean auto_increment)
+			gboolean nullable)
 		{
 			Column column;
 			
@@ -119,7 +118,6 @@ namespace Data
 			column.type = type;
 			column.size = size;
 			column.nullable = nullable;
-			column.auto_increment = auto_increment;
 			
 			push_back(column);
 			columns_by_name[name] = column;
@@ -232,11 +230,9 @@ namespace Data
 
 		Table& table;
 
-		void delete_row(const Glib::ustring& key);
 		void delete_row(guint key);
 		void delete_rows(const Glib::ustring& clause = "");
 
-		DataTable select_row(const Glib::ustring& key);
 		DataTable select_row(guint key);
 		DataTable select_rows(const Glib::ustring& clause = "", const Glib::ustring& sort = "");
 			

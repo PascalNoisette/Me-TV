@@ -70,6 +70,7 @@ public:
 	ChannelManager						channel_manager;
 	ScheduledRecordingManager			scheduled_recording_manager;
 	DeviceManager						device_manager;
+	Data::Connection					connection;
 
 	Glib::StaticRecMutex&	get_mutex();
 	StreamThread*			get_stream_thread();

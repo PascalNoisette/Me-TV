@@ -38,8 +38,11 @@ public:
 		
 	Glib::ustring get_start_time_text() const;
 	Glib::ustring get_duration_text() const;
+	guint get_end_time() const;
+	Glib::ustring get_end_time_text() const;
 		
-	gboolean is_in(guint at);
+	gboolean is_in(guint at) const;
+	gboolean overlaps(const ScheduledRecording& scheduled_recording) const;
 };
 
 #endif

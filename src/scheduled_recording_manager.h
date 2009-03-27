@@ -23,19 +23,22 @@
 
 #include "scheduled_recording.h"
 
-typedef std::list<ScheduledRecording> ScheduledRecordingList;
+typedef std::map<guint, ScheduledRecording> ScheduledRecordingMap;
 
 class ScheduledRecordingManager
 {
 private:
 	Glib::StaticRecMutex	mutex;
-	ScheduledRecordingList	scheduled_recordings;
 public:
 	ScheduledRecordingManager();
 		
+	ScheduledRecordingMap	scheduled_recordings;
+
 	void load();
 	void save();
+
 	void add_scheduled_recording(const ScheduledRecording& scheduled_recording);
+	void delete_scheduled_recording(guint scheduled_recording_id);
 };
 
 #endif

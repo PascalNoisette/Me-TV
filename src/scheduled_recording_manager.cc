@@ -34,8 +34,7 @@ void ScheduledRecordingManager::load()
 	g_debug("Loading scheduled recordings");
 
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
-	Data::Connection connection;
-	Data::TableAdapter adapter(connection, table);
+	Data::TableAdapter adapter(get_application().connection, table);
 	Data::DataTable data_table = adapter.select_rows("", "start_time");
 	
 	scheduled_recordings.clear();
@@ -50,7 +49,7 @@ void ScheduledRecordingManager::load()
 		scheduled_recording.start_time				= row["start_time"].int_value;
 		scheduled_recording.duration				= row["duration"].int_value;
 
-		scheduled_recordings.push_back(scheduled_recording);
+		scheduled_recordings[scheduled_recording.scheduled_recording_id] = scheduled_recording;
 	}
 	g_debug("Scheduled recordings loaded");
 }
@@ -61,12 +60,11 @@ void ScheduledRecordingManager::save()
 
 	g_debug("Saving scheduled recordings");
 
-	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
-	
+	Data::Table table = get_application().get_schema().tables["scheduled_recording"];	
 	Data::DataTable data_table(table);
-	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	for (ScheduledRecordingMap::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
-		ScheduledRecording& scheduled_recording = *i;
+		ScheduledRecording& scheduled_recording = scheduled_recordings[i->first];
 
 		Data::Row row;
 		row.auto_increment = &(scheduled_recording.scheduled_recording_id);
@@ -79,8 +77,7 @@ void ScheduledRecordingManager::save()
 		data_table.rows.add(row);
 	}
 	
-	Data::Connection connection;
-	Data::TableAdapter adapter(connection, table);
+	Data::TableAdapter adapter(get_application().connection, table);
 	adapter.replace_rows(data_table);
 	
 	g_debug("Scheduled recordings saved");
@@ -89,7 +86,30 @@ void ScheduledRecordingManager::save()
 void ScheduledRecordingManager::add_scheduled_recording(const ScheduledRecording& scheduled_recording)
 {
 	Glib::RecMutex::Lock lock(mutex);
-	scheduled_recordings.push_back(scheduled_recording);
+	
+	for (ScheduledRecordingMap::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	{
+		ScheduledRecording& current = scheduled_recordings[i->first];
+		if (scheduled_recording.overlaps(current))
+		{
+			Glib::ustring message =  Glib::ustring::compose(
+				_("Failed to save scheduled recording because it conflicts with another scheduled recording called '%1'"),
+				current.description);
+			throw Exception(message);
+		}
+	}	
+	
+	scheduled_recordings[scheduled_recording.scheduled_recording_id] = scheduled_recording;
 	g_debug("Scheduled recording '%s' (%d)", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
 	save();
+}
+
+void ScheduledRecordingManager::delete_scheduled_recording(guint scheduled_recording_id)
+{
+	Glib::RecMutex::Lock lock(mutex);
+
+	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
+	Data::TableAdapter adapter(get_application().connection, table);
+	adapter.delete_row(scheduled_recording_id);
+	scheduled_recordings.erase(scheduled_recording_id);
 }

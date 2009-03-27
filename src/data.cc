@@ -46,17 +46,20 @@ Statement::Statement(sqlite3* connection, const Glib::ustring& command) :
 	{
 		if (remaining == NULL || *remaining == 0)
 		{
-			throw SQLiteException(connection, Glib::ustring::compose(_("Failed to prepare statement: %1"), command));
+			throw SQLiteException(connection, Glib::ustring::compose(
+				_("Failed to prepare statement: %1"), command));
 		}
 		else
 		{
-			throw SQLiteException(connection, Glib::ustring::compose(_("Failed to prepare statement: %1"), Glib::ustring(remaining)));
+			throw SQLiteException(connection, Glib::ustring::compose(
+				_("Failed to prepare statement: %1"), Glib::ustring(remaining)));
 		}
 	}
 	
 	if (remaining != NULL && *remaining != 0)
 	{
-		throw SQLiteException(connection, Glib::ustring::compose(_("Prepare statement had remaining data: %1"), Glib::ustring(remaining)));
+		throw SQLiteException(connection, Glib::ustring::compose(
+			_("Prepared statement had remaining data: %1"), Glib::ustring(remaining)));
 	}
 	
 	if (statement == NULL)
@@ -96,7 +99,9 @@ gint Statement::step()
 	case SQLITE_ROW:
 		break;
 	default:
-		throw SQLiteException(connection, Glib::ustring::compose(_("Failed to execute statement: %1"), command));
+		throw SQLiteException(
+			connection,
+			Glib::ustring::compose(_("Failed to execute statement: %1"), command));
 	}
 	
 	return result;
@@ -145,17 +150,16 @@ void Statement::set_string_parameter(const Glib::ustring& name, const Glib::ustr
 	set_string_parameter(get_parameter_index(name), value);
 }
 
-Connection::Connection()
+Connection::Connection(const Glib::ustring& filename)
 {
-	Glib::ustring database_path = Glib::build_filename(get_application().get_application_dir(), "/me-tv.db");
-
-	gboolean database_exists = Gio::File::create_for_path(database_path)->query_exists();
+	gboolean database_exists = Gio::File::create_for_path(filename)->query_exists();
 	
 	g_debug("Database %s", database_exists ? "exists" : "does not exist");
-	g_debug("Opening database file '%s'", database_path.c_str());
-	if (sqlite3_open(database_path.c_str(), &connection) != 0)
+	g_debug("Opening database file '%s'", filename.c_str());
+	if (sqlite3_open(filename.c_str(), &connection) != 0)
 	{
-		throw SQLiteException(connection, _("Failed to connect to Me TV database"));
+		Glib::ustring message = Glib::ustring::compose(_("Failed to connect to Me TV database '%1'"), filename);
+		throw SQLiteException(connection, message);
 	}
 }
 
@@ -215,12 +219,12 @@ void SchemaAdapter::initialise_schema()
 			
 			if (column.name == table.primary_key)
 			{
-				command += " PRIMARY KEY";
-				
-				if (column.auto_increment)
+				if (column.type != DATA_TYPE_INTEGER)
 				{
-					command += " AUTOINCREMENT";
+					throw Exception(_("Only integers can be primary keys"));
 				}
+				
+				command += " PRIMARY KEY";
 			}
 			else
 			{
@@ -291,6 +295,8 @@ TableAdapter::TableAdapter(Connection& connection, Table& table)
 
 void TableAdapter::replace_rows(DataTable& data_table)
 {
+	Glib::ustring primary_key = data_table.table.primary_key;
+	
 	if (data_table.rows.size() > 0)
 	{
 		for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
@@ -302,7 +308,7 @@ void TableAdapter::replace_rows(DataTable& data_table)
 			{
 				Column& column = *j;
 
-				if (!column.auto_increment || row[column.name].int_value != 0)
+				if (column.name != primary_key || row[column.name].int_value != 0)
 				{
 					switch(column.type)
 					{
@@ -329,15 +335,9 @@ void TableAdapter::replace_rows(DataTable& data_table)
 	}
 }
 
-void TableAdapter::delete_row(const Glib::ustring& key)
-{
-	Glib::ustring clause = Glib::ustring::compose("%2 = '%3'", table.primary_key, key);
-	delete_rows(clause);
-}
-
 void TableAdapter::delete_row(guint key)
 {
-	Glib::ustring clause = Glib::ustring::compose("%2 = %3", table.primary_key, key);
+	Glib::ustring clause = Glib::ustring::compose("%1 = %2", table.primary_key, key);
 	delete_rows(clause);
 }
 
@@ -350,12 +350,6 @@ void TableAdapter::delete_rows(const Glib::ustring& clause)
 	}
 	Statement& statement = connection.create_statement(command);
 	statement.step();
-}
-
-DataTable TableAdapter::select_row(const Glib::ustring& key)
-{
-	Glib::ustring clause = Glib::ustring::compose("%1 = '%2'", table.name, table.primary_key, key);
-	return select_rows(clause);
 }
 
 DataTable TableAdapter::select_row(guint key)

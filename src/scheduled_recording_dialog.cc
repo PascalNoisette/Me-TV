@@ -109,11 +109,6 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	{
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
 		get_application().scheduled_recording_manager.add_scheduled_recording(scheduled_recording);
-
-		Data::Table table = get_application().get_schema().tables["scheduled_recording"];
-		Data::Connection connection;
-		Data::TableAdapter adapter(connection, table);
-		get_application().check_scheduled_recordings(adapter);
 	}
 	
 	return dialog_response;

@@ -56,15 +56,14 @@ void ChannelManager::load()
 	LockLogger(mutex, __PRETTY_FUNCTION__);
 
 	Application& application = get_application();
-	Data::Connection connection;
 
 	Data::Table table_channel			= application.get_schema().tables["channel"];
 	Data::Table table_epg_event			= application.get_schema().tables["epg_event"];
 	Data::Table table_epg_event_text	= application.get_schema().tables["epg_event_text"];
 
-	Data::TableAdapter adapter_channel(connection, table_channel);
-	Data::TableAdapter adapter_epg_event(connection, table_epg_event);
-	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
+	Data::TableAdapter adapter_channel(application.connection, table_channel);
+	Data::TableAdapter adapter_epg_event(application.connection, table_epg_event);
+	Data::TableAdapter adapter_epg_event_text(application.connection, table_epg_event_text);
 
 	Data::DataTable data_table_channels = adapter_channel.select_rows("", "sort_order");
 
@@ -155,41 +154,47 @@ void ChannelManager::save()
 	LockLogger(mutex, __PRETTY_FUNCTION__);
 
 	Application& application = get_application();
-	Data::Connection connection;
 	
 	Data::Table table_channel			= application.get_schema().tables["channel"];
 	Data::Table table_epg_event			= application.get_schema().tables["epg_event"];
 	Data::Table table_epg_event_text	= application.get_schema().tables["epg_event_text"];
 
-	Data::TableAdapter adapter_channel(connection, table_channel);
-	Data::TableAdapter adapter_epg_event(connection, table_epg_event);
-	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
+	Data::TableAdapter adapter_channel(application.connection, table_channel);
+	Data::TableAdapter adapter_epg_event(application.connection, table_epg_event);
+	Data::TableAdapter adapter_epg_event_text(application.connection, table_epg_event_text);
 
 	Data::DataTable data_table_channel(table_channel);
 	Data::DataTable data_table_epg_event(table_epg_event);
 	Data::DataTable data_table_epg_event_text(table_epg_event_text);
 
-//	g_debug("Deleting old EPG events");
-//	Glib::ustring clause = Glib::ustring::compose("(START_TIME+DURATION)<%1", time(NULL));
-//	adapter_epg_event.delete_rows(clause);
+	g_debug("Deleting old EPG events");
+	Glib::ustring clause_epg_event = Glib::ustring::compose("(START_TIME+DURATION)<%1", convert_to_local_time(time(NULL)));
+	adapter_epg_event.delete_rows(clause_epg_event);
 
+	g_debug("Deleting old EPG event texts");
+	Glib::ustring clause_epg_event_text =
+		"NOT EXISTS (SELECT epg_event_id FROM epg_event WHERE epg_event.epg_event_id = epg_event_text.epg_event_id)";
+	adapter_epg_event_text.delete_rows(clause_epg_event_text);
+	
 	g_debug("Saving channels");
 	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
 	{
 		Channel& channel = *i;
 		
+		channel.epg_events.prune();
+
 		Data::Row row;
 		
 		row.auto_increment = &(channel.channel_id);
 		
-		row["channel_id"].int_value				= channel.channel_id;
-		row["name"].string_value				= channel.name;
-		row["flags"].int_value					= channel.flags;
-		row["sort_order"].int_value				= channel.sort_order;
-		row["mrl"].string_value					= channel.mrl;
-		row["service_id"].int_value				= channel.service_id;
-		row["frequency"].int_value				= channel.transponder.frontend_parameters.frequency;
-		row["inversion"].int_value				= channel.transponder.frontend_parameters.inversion;
+		row["channel_id"].int_value		= channel.channel_id;
+		row["name"].string_value		= channel.name;
+		row["flags"].int_value			= channel.flags;
+		row["sort_order"].int_value		= channel.sort_order;
+		row["mrl"].string_value			= channel.mrl;
+		row["service_id"].int_value		= channel.service_id;
+		row["frequency"].int_value		= channel.transponder.frontend_parameters.frequency;
+		row["inversion"].int_value		= channel.transponder.frontend_parameters.inversion;
 
 		if (channel.flags & CHANNEL_FLAG_DVB_T)
 		{
@@ -422,6 +427,7 @@ void ChannelManager::set_channels(const ChannelList& new_channels)
 	
 	clear();
 	add_channels(new_channels);
+	save();
 
 	if (display_channel_frequency != 0)
 	{
@@ -443,7 +449,7 @@ void ChannelManager::next_channel()
 {
 	LockLogger(mutex, __PRETTY_FUNCTION__);
 
-	if (channels.size() == 0)
+	if (channels.empty())
 	{
 		throw Exception(_("No channels"));
 	}
@@ -480,7 +486,7 @@ void ChannelManager::previous_channel()
 {
 	LockLogger(mutex, __PRETTY_FUNCTION__);
 
-	if (channels.size() == 0)
+	if (channels.empty())
 	{
 		throw Exception(_("No channels"));
 	}
