@@ -126,8 +126,8 @@ void EpgThread::run()
 	TRY;
 
 	Application&				application				= get_application();
-	ChannelManager&				channel_manager			= application.get_channel_manager();
-	Dvb::Frontend&				frontend				= application.get_device_manager().get_frontend();
+	ChannelManager&				channel_manager			= application.channel_manager;
+	Dvb::Frontend&				frontend				= application.device_manager.get_frontend();
 	Glib::ustring				demux_path				= frontend.get_adapter().get_demux_path();
 	EITDemuxers					demuxers(demux_path);
 	Dvb::SI::SectionParser		parser;

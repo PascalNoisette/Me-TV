@@ -112,7 +112,6 @@ void Frontend::tune_to(const Transponder& transponder)
 		throw SystemException(_("Failed to tune device") );
 	}
 	
-	
 	g_message(_("Waiting for signal lock ..."));
 	wait_lock(wait_seconds);
 	g_message(_("Got signal lock"));

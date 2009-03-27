@@ -22,6 +22,15 @@
 #include "me-tv.h"
 #include "me-tv-i18n.h"
 
+ScheduledRecording::ScheduledRecording()
+{
+	scheduled_recording_id	= 0;
+	type					= 0;
+	channel_id				= 0;
+	start_time				= 0;
+	duration				= 0;
+}
+
 Glib::ustring ScheduledRecording::get_start_time_text() const
 {
 	return get_local_time_text(start_time, "%c");

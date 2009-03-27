@@ -67,6 +67,7 @@ private:
 	void show_scheduled_recordings_dialog();
 	void set_state(const Glib::ustring& name, gboolean state);
 		
+	bool on_delete_event(GdkEventAny* event);
 	bool on_motion_notify_event(GdkEventMotion* event);
 	bool on_drawing_area_expose_event(GdkEventExpose* event);
 	static gboolean on_timeout(gpointer data);

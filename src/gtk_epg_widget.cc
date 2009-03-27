@@ -106,7 +106,7 @@ void GtkEpgWidget::update_pages()
 	guint epg_page_count = combo_box_epg_page->get_size();
 	guint epg_page_size = application.get_int_configuration_value("epg_page_size");
 	
-	const ChannelList& channels = application.get_channel_manager().get_channels();
+	const ChannelList& channels = application.channel_manager.get_channels();
 	guint channel_count = channels.size();
 	guint new_epg_page_count = channel_count == 0 ? 1 : ((channel_count-1) / epg_page_size) + 1;
 	
@@ -143,7 +143,7 @@ void GtkEpgWidget::update_table()
 		glade->get_widget("button_epg_previous")->set_sensitive(offset > 0);
 		glade->get_widget("button_epg_now")->set_sensitive(offset > 0);
 		
-		ChannelManager& channel_manager = get_application().get_channel_manager();
+		ChannelManager& channel_manager = get_application().channel_manager;
 		const Channel* display_channel = channel_manager.get_display_channel();
 		const ChannelList& channels = channel_manager.get_channels();
 
@@ -330,7 +330,7 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 {
 	TRY
-	get_application().get_channel_manager().set_display_channel(channel_id);
+	get_application().channel_manager.set_display_channel(channel_id);
 	CATCH
 
 	TRY

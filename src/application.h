@@ -36,9 +36,6 @@ class Application : public Gnome::Main
 private:
 	static Application*					current;
 	Glib::RefPtr<Gnome::Glade::Xml>		glade;
-	ChannelManager						channel_manager;
-	ScheduledRecordingManager			scheduled_recording_manager;
-	DeviceManager						device_manager;
 	MainWindow*							main_window;
 	StatusIcon*							status_icon;
 	Glib::RefPtr<Gnome::Conf::Client>	client;
@@ -70,22 +67,23 @@ public:
 	void run();
 	static Application& get_current();
 	
-	ChannelManager&	get_channel_manager()	{ return channel_manager; }
-	DeviceManager&	get_device_manager()	{ return device_manager; }
+	ChannelManager						channel_manager;
+	ScheduledRecordingManager			scheduled_recording_manager;
+	DeviceManager						device_manager;
 
-	Glib::StaticRecMutex& get_mutex();
-	StreamThread* get_stream_thread();
-	void stop_stream_thread();
-	void restart_stream();
-	void set_source(const Channel& channel);
-	void initialise_database();
-	Data::Schema get_schema() const { return schema; }
+	Glib::StaticRecMutex&	get_mutex();
+	StreamThread*			get_stream_thread();
+	void					stop_stream_thread();
+	void					restart_stream();
+	void					set_source(const Channel& channel);
+	void					initialise_database();
+	Data::Schema			get_schema() const { return schema; }
 
 	void update();
 		
-	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
-	gint get_int_configuration_value(const Glib::ustring& key);
-	gboolean get_boolean_configuration_value(const Glib::ustring& key);
+	Glib::ustring	get_string_configuration_value(const Glib::ustring& key);
+	gint			get_int_configuration_value(const Glib::ustring& key);
+	gboolean		get_boolean_configuration_value(const Glib::ustring& key);
 
 	void set_string_configuration_value(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_value(const Glib::ustring& key, gint value);

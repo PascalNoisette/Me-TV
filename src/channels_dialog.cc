@@ -51,7 +51,7 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 void ChannelsDialog::show_scan_window()
 {
 	// Check for a valid frontend device
-	get_application().get_device_manager().get_frontend();
+	get_application().device_manager.get_frontend();
 	
 	ScanWindow* scan_window = ScanWindow::create(glade);
 	scan_window->show();
@@ -99,7 +99,7 @@ ChannelList ChannelsDialog::get_channels()
 
 void ChannelsDialog::update_channels()
 {
-	set_channels(get_application().get_channel_manager().get_channels());
+	set_channels(get_application().channel_manager.get_channels());
 }
 
 void ChannelsDialog::set_channels(const ChannelList& channels)
@@ -127,8 +127,8 @@ void ChannelsDialog::on_show()
 	TRY
 	update_channels();
 	Application& application = get_application();
-	const ChannelList& channels = application.get_channel_manager().get_channels();
-	guint device_count = application.get_device_manager().get_frontends().size();
+	const ChannelList& channels = application.channel_manager.get_channels();
+	guint device_count = application.device_manager.get_frontends().size();
 	if (channels.size() == 0 && device_count > 0)
 	{
 		show_scan_window();

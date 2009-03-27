@@ -62,7 +62,7 @@ void StatusIcon::on_activate()
 void StatusIcon::update()
 {
 	Application& application = get_application();
-	Channel* channel = application.get_channel_manager().get_display_channel();
+	Channel* channel = application.channel_manager.get_display_channel();
 	Glib::ustring title = _("Unknown program");
 
 	status_icon->set_visible(application.get_boolean_configuration_value("display_status_icon"));

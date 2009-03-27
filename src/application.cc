@@ -121,6 +121,8 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	channel_manager.signal_display_channel_changed.connect(
 		sigc::mem_fun(*this, &Application::on_display_channel_changed));	
 
+	scheduled_recording_manager.load();
+	
 	timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 	
 	g_debug("Application constructed");
@@ -129,6 +131,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 Application::~Application()
 {
 	channel_manager.save();
+	scheduled_recording_manager.save();
 	
 	if (timeout_source != 0)
 	{
@@ -208,6 +211,9 @@ void Application::initialise_database()
 	table_scheduled_recording.columns.add("start_time",				Data::DATA_TYPE_INTEGER, 0, false, false);
 	table_scheduled_recording.columns.add("duration",				Data::DATA_TYPE_INTEGER, 0, false, false);
 	table_scheduled_recording.primary_key = "scheduled_recording_id";
+	StringList table_scheduled_recording_unique_columns;
+	table_scheduled_recording_unique_columns.push_back("description");
+	table_scheduled_recording.constraints.add_unique(table_scheduled_recording_unique_columns);
 	schema.tables.add(table_scheduled_recording);
 
 	Data::Connection connection;

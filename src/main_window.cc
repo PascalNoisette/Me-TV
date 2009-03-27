@@ -102,6 +102,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	glade->connect_clicked("radio_menu_item_audio_channels_right",	sigc::mem_fun(*this, &MainWindow::on_radio_menu_item_audio_channels_right));
 
 	signal_motion_notify_event().connect(sigc::mem_fun(*this, &MainWindow::on_motion_notify_event));
+	signal_delete_event().connect(sigc::mem_fun(*this, &MainWindow::on_delete_event));
 
 	Gtk::EventBox* event_box_video = dynamic_cast<Gtk::EventBox*>(glade->get_widget("event_box_video"));
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
@@ -183,7 +184,7 @@ void MainWindow::on_menu_item_meters_clicked()
 	TRY
 	
 	// Check that there is a device
-	get_application().get_device_manager().get_frontend();
+	get_application().device_manager.get_frontend();
 	
 	meters_dialog = MetersDialog::create(glade);
 	meters_dialog->stop();
@@ -221,9 +222,8 @@ void MainWindow::show_channels_dialog()
 	if (dialog_result == Gtk::RESPONSE_OK)
 	{
 		const ChannelList& channels = channels_dialog.get_channels();
-		ChannelManager& channel_manager = get_application().get_channel_manager();
+		ChannelManager& channel_manager = get_application().channel_manager;
 		channel_manager.set_channels(channels);
-		
 		channel_manager.save();
 	}
 	update();
@@ -319,6 +319,12 @@ void MainWindow::set_next_display_mode()
 	{
 		set_display_mode(DISPLAY_MODE_VIDEO);
 	}
+}
+
+bool MainWindow::on_delete_event(GdkEventAny* event)
+{
+	hide();
+	return true;
 }
 
 bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event_button)
@@ -493,7 +499,7 @@ void MainWindow::on_menu_item_audio_stream_activate(guint audio_stream_index)
 void MainWindow::update()
 {	
 	Application& application = get_application();
-	Channel* channel = application.get_channel_manager().get_display_channel();
+	Channel* channel = application.channel_manager.get_display_channel();
 	Glib::ustring window_title;
 	Glib::ustring status_text;
 	
@@ -692,12 +698,12 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 		
 		case GDK_Up:
 		case GDK_minus:
-			get_application().get_channel_manager().previous_channel();
+			get_application().channel_manager.previous_channel();
 			break;
 			
 		case GDK_plus:
 		case GDK_Down:
-			get_application().get_channel_manager().next_channel();
+			get_application().channel_manager.next_channel();
 			break;
 
 		default:

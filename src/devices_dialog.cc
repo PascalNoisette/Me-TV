@@ -49,12 +49,12 @@ DevicesDialog::DevicesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::
 void DevicesDialog::on_show()
 {
 	TRY
-	Dvb::Frontend& current_frontend = get_application().get_device_manager().get_frontend();
+	Dvb::Frontend& current_frontend = get_application().device_manager.get_frontend();
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_devices->get_selection();
 
 	list_store->clear();
 
-	const FrontendList& frontends = get_application().get_device_manager().get_frontends();
+	const FrontendList& frontends = get_application().device_manager.get_frontends();
 	for (FrontendList::const_iterator i = frontends.begin(); i != frontends.end(); i++)
 	{
 		Dvb::Frontend* frontend = *i;
@@ -87,13 +87,13 @@ void DevicesDialog::on_response(int response_id)
 		{
 			Gtk::TreeModel::Row row = *iterator;
 			Dvb::Frontend* frontend = row[columns.column_frontend];
-			Dvb::Frontend& current_frontend = get_application().get_device_manager().get_frontend();
+			Dvb::Frontend& current_frontend = get_application().device_manager.get_frontend();
 			
 			if (frontend != &current_frontend)
 			{
 				Application& application = get_application();
 				application.set_string_configuration_value("default_device", frontend->get_path());
-				application.get_device_manager().set_frontend(*frontend);
+				application.device_manager.set_frontend(*frontend);
 				application.restart_stream();
 			}
 		}

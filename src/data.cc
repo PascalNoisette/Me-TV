@@ -135,11 +135,13 @@ int Statement::get_parameter_index(const Glib::ustring& name)
 
 void Statement::set_int_parameter(const Glib::ustring& name, int value)
 {
+//	g_debug("[%s] = %d", name.c_str(), value);
 	set_int_parameter(get_parameter_index(name), value);
 }
 
 void Statement::set_string_parameter(const Glib::ustring& name, const Glib::ustring& value)
 {
+//	g_debug("[%s] = %s", name.c_str(), value.c_str());
 	set_string_parameter(get_parameter_index(name), value);
 }
 
@@ -289,38 +291,41 @@ TableAdapter::TableAdapter(Connection& connection, Table& table)
 
 void TableAdapter::replace_rows(DataTable& data_table)
 {
-	Statement& statement = connection.create_statement(replace_command);
-	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
+	if (data_table.rows.size() > 0)
 	{
-		Data::Row& row = *i;
-
-		for (Columns::iterator j = data_table.table.columns.begin(); j != data_table.table.columns.end(); j++)
+		for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 		{
-			Column& column = *j;
+			Statement& statement = connection.create_statement(replace_command);
+			Data::Row& row = *i;
 
-			if (!column.auto_increment || row[column.name].int_value != 0)
+			for (Columns::iterator j = data_table.table.columns.begin(); j != data_table.table.columns.end(); j++)
 			{
-				switch(column.type)
+				Column& column = *j;
+
+				if (!column.auto_increment || row[column.name].int_value != 0)
 				{
-				case DATA_TYPE_INTEGER:
-					statement.set_int_parameter(":" + column.name, row[column.name].int_value);
-					break;
-				case DATA_TYPE_STRING:
-					statement.set_string_parameter(":" + column.name, row[column.name].string_value);
-					break;
-				default:
-					break;
+					switch(column.type)
+					{
+					case DATA_TYPE_INTEGER:
+						statement.set_int_parameter(":" + column.name, row[column.name].int_value);
+						break;
+					case DATA_TYPE_STRING:
+						statement.set_string_parameter(":" + column.name, row[column.name].string_value);
+						break;
+					default:
+						break;
+					}
 				}
 			}
-		}
-		statement.step();
-		
-		if (row.auto_increment != NULL)
-		{
-			*(row.auto_increment) = connection.get_last_insert_rowid();
-		}
+			statement.step();
+			
+			if (row.auto_increment != NULL && *row.auto_increment == 0)
+			{
+				*(row.auto_increment) = connection.get_last_insert_rowid();
+			}
 
-		statement.reset();
+			statement.reset();
+		}
 	}
 }
 
@@ -371,6 +376,7 @@ DataTable TableAdapter::select_rows(const Glib::ustring& clause, const Glib::ust
 	{
 		command += Glib::ustring::compose(" ORDER BY %1", sort);
 	}
+	
 	Statement& statement = connection.create_statement(command);
 	while (statement.step() == SQLITE_ROW)
 	{

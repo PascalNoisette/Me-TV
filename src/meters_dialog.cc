@@ -29,7 +29,7 @@ MetersDialog* MetersDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 }
 
 MetersDialog::MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
-	Gtk::Dialog(cobject), glade(glade_xml), meters_thread(*this), frontend(get_application().get_device_manager().get_frontend())
+	Gtk::Dialog(cobject), glade(glade_xml), meters_thread(*this), frontend(get_application().device_manager.get_frontend())
 {
 	progress_bar_signal_strength = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_strength"));
 	progress_bar_signal_noise = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_noise"));

@@ -76,7 +76,7 @@ Glib::ustring ScanWindow::get_initial_tuning_dir()
 }
 
 ScanWindow::ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
-	Gtk::Window(cobject), glade(glade_xml), frontend(get_application().get_device_manager().get_frontend())
+	Gtk::Window(cobject), glade(glade_xml), frontend(get_application().device_manager.get_frontend())
 {
 	scan_thread = NULL;
 
@@ -166,7 +166,7 @@ void ScanWindow::on_button_scan_wizard_cancel_clicked()
 
 void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 {
-	ChannelManager& channel_manager = get_application().get_channel_manager();
+	ChannelManager& channel_manager = get_application().channel_manager;
 	Glib::RefPtr<Glib::IOChannel> file = Glib::IOChannel::create_from_file(channels_conf_path, "r");
 	Glib::ustring line;
 	guint line_count = 0;
@@ -332,7 +332,7 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 void ScanWindow::on_button_scan_wizard_add_clicked()
 {
 	TRY
-	ChannelManager& channel_manager = get_application().get_channel_manager();
+	ChannelManager& channel_manager = get_application().channel_manager;
 	std::list<Gtk::TreeModel::Path> selected_services = tree_view_scanned_channels->get_selection()->get_selected_rows();		
 	std::list<Gtk::TreeModel::Path>::iterator iterator = selected_services.begin();
 	while (iterator != selected_services.end())

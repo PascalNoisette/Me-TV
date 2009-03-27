@@ -39,7 +39,7 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 	date_edit_start_time = dynamic_cast<Gnome::UI::DateEdit*>(glade->get_widget("date_edit_start_time"));
 	entry_description = dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_description"));
 	glade->get_widget_derived("combo_box_channel", channel_combo_box);
-	channel_combo_box->load(get_application().get_channel_manager().get_channels());
+	channel_combo_box->load(get_application().channel_manager.get_channels());
 	spinbutton_duration = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spinbutton_duration"));
 
 	if (get_application().get_boolean_configuration_value("use_24_hour_workaround"))
@@ -90,7 +90,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	
 	if (populate_default)
 	{
-		Channel* channel = get_application().get_channel_manager().get_display_channel();
+		Channel* channel = get_application().channel_manager.get_display_channel();
 		if (channel == NULL)
 		{
 			throw Exception(_("Failed to create scheduled recording dialog: No display channel"));
@@ -107,11 +107,13 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	
 	if (dialog_response == Gtk::RESPONSE_OK)
 	{
-/*		Data data;
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
-		data.replace_scheduled_recording(scheduled_recording);
-		get_application().check_scheduled_recordings(data);
-		*/
+		get_application().scheduled_recording_manager.add_scheduled_recording(scheduled_recording);
+
+		Data::Table table = get_application().get_schema().tables["scheduled_recording"];
+		Data::Connection connection;
+		Data::TableAdapter adapter(connection, table);
+		get_application().check_scheduled_recordings(adapter);
 	}
 	
 	return dialog_response;

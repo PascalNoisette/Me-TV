@@ -27,13 +27,15 @@
 class ScheduledRecording
 {
 public:
-	guint scheduled_recording_id;
-	Glib::ustring description;
-	guint type;
-	guint channel_id;
-	guint start_time;
-	guint duration;
+	guint			scheduled_recording_id;
+	Glib::ustring	description;
+	guint			type;
+	guint			channel_id;
+	guint			start_time;
+	guint			duration;
 
+	ScheduledRecording();
+		
 	Glib::ustring get_start_time_text() const;
 	Glib::ustring get_duration_text() const;
 		

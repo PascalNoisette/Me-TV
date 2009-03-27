@@ -28,15 +28,14 @@ typedef std::list<ScheduledRecording> ScheduledRecordingList;
 class ScheduledRecordingManager
 {
 private:
-	Glib::StaticRecMutex mutex;
+	Glib::StaticRecMutex	mutex;
+	ScheduledRecordingList	scheduled_recordings;
 public:
 	ScheduledRecordingManager();
 		
 	void load();
 	void save();
 	void add_scheduled_recording(const ScheduledRecording& scheduled_recording);
-		
-	ScheduledRecordingList scheduled_recordings;
 };
 
 #endif

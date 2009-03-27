@@ -49,7 +49,7 @@ public:
 StreamThread::StreamThread(const Channel& active_channel) :
 	Thread("Stream"),
 	channel(active_channel),
-	frontend(get_application().get_device_manager().get_frontend())
+	frontend(get_application().device_manager.get_frontend())
 {
 	g_debug("Creating StreamThread");
 	g_static_rec_mutex_init(mutex.gobj());

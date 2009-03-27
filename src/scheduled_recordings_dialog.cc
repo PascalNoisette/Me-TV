@@ -83,7 +83,7 @@ void ScheduledRecordingsDialog::update()
 
 void ScheduledRecordingsDialog::update(Data::TableAdapter& adapter)
 {
-	ChannelManager& channel_manager = get_application().get_channel_manager();
+	ChannelManager& channel_manager = get_application().channel_manager;
 	list_store->clear();
 	Data::DataTable data_table = adapter.select_rows("", "start_time");
 	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
