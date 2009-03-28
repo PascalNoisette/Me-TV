@@ -142,3 +142,93 @@ void ScheduledRecordingManager::delete_old_scheduled_recordings()
 	
 	load();
 }
+
+guint ScheduledRecordingManager::check_scheduled_recordings()
+{
+	g_debug("Checking scheduled recordings");
+	guint active_scheduled_recording_id = 0;
+	Glib::RecMutex::Lock lock(mutex);
+
+	Application& application = get_application();
+	
+	delete_old_scheduled_recordings();
+	
+	gboolean got_recording = false;
+
+	if (!scheduled_recordings.empty())
+	{
+		guint now = time(NULL);
+		g_debug(" ");
+		g_debug("======================================================================");
+		g_debug("Now: %d", now);
+		g_debug("======================================================================");
+		g_debug("#ID | Start Time | Duration | Record | Channel    | Description");
+		g_debug("======================================================================");
+		for (ScheduledRecordingMap::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+		{			
+			ScheduledRecording& scheduled_recording = scheduled_recordings[i->first];
+				
+			gboolean record = scheduled_recording.is_in(now);
+			g_debug("%3d | %d | %8d | %s | %10s | %s",
+				scheduled_recording.scheduled_recording_id,
+				scheduled_recording.start_time,
+				scheduled_recording.duration,
+				record ? "true  " : "false ",
+				application.channel_manager.get_channel(scheduled_recording.channel_id).name.c_str(),
+				scheduled_recording.description.c_str());
+			
+			if (record)
+			{
+				if (got_recording)
+				{
+					g_debug("Conflict!");
+				}
+				else
+				{
+					got_recording = true;
+					
+					const Channel* channel = application.channel_manager.get_display_channel();
+					if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
+					{
+						g_debug("Already tuned to correct channel");
+						
+						if (application.is_recording() == true)
+						{
+							g_debug("Already recording");
+						}
+						else
+						{
+							g_debug("Starting recording due to scheduled recording");
+							Glib::ustring filename = application.make_recording_filename(scheduled_recording.description);
+							application.start_recording(filename);
+						}
+					}
+					else
+					{
+						active_scheduled_recording_id = 0;
+						
+						g_debug("Recording stopped by scheduled recording");
+						application.stop_recording();
+						
+						g_debug("Changing channel for scheduled recording");
+						application.channel_manager.set_display_channel(scheduled_recording.channel_id);
+
+						g_debug("Starting recording due to scheduled recording");
+						Glib::ustring filename = application.make_recording_filename(scheduled_recording.description);
+						application.start_recording(filename);
+					}
+				}
+			}
+		}
+	}
+	
+	if (application.get_stream_thread() != NULL && application.is_recording() && !got_recording && active_scheduled_recording_id != 0)
+	{
+		active_scheduled_recording_id = 0;
+ 
+		g_debug("Record stopped by scheduled recording");
+		application.stop_recording();
+	}
+	
+	return active_scheduled_recording_id;
+}

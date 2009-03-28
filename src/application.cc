@@ -50,7 +50,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	status_icon				= NULL;
 	stream_thread			= NULL;
 	timeout_source			= 0;
-	scheduled_recording_id	= 0;
 	record_state			= false;
 	broadcast_state			= false;
 	
@@ -461,95 +460,7 @@ MainWindow& Application::get_main_window()
 void Application::check_scheduled_recordings(Data::TableAdapter& adapter)
 {
 	g_debug("Checking scheduled recordings");
-
-	scheduled_recording_manager.delete_old_scheduled_recordings();
-	
-	gboolean got_recording = false;
-
-	Data::DataTable data_table = adapter.select_rows();
-	Data::Rows& rows = data_table.rows;
-	if (rows.size() > 0)
-	{
-		guint now = time(NULL);
-		g_debug(" ");
-		g_debug("======================================================================");
-		g_debug("Now: %d", now);
-		g_debug("======================================================================");
-		g_debug("#ID | Start Time | Duration | Record | Channel    | Description");
-		g_debug("======================================================================");
-		for (Data::Rows::iterator i = rows.begin(); i != rows.end(); i++)
-		{
-			Data::Row row = *i;
-			
-			ScheduledRecording scheduled_recording;
-			scheduled_recording.scheduled_recording_id	= row["scheduled_recording_id"].int_value;
-			scheduled_recording.start_time				= row["start_time"].int_value;
-			scheduled_recording.duration				= row["duration"].int_value;
-			scheduled_recording.channel_id				= row["channel_id"].int_value;
-			scheduled_recording.description				= row["description"].string_value;
-				
-			gboolean record = scheduled_recording.is_in(now);
-			g_debug("%3d | %d | %8d | %s | %10s | %s",
-				scheduled_recording.scheduled_recording_id,
-				scheduled_recording.start_time,
-				scheduled_recording.duration,
-				record ? "true  " : "false ",
-				channel_manager.get_channel(scheduled_recording.channel_id).name.c_str(),
-				scheduled_recording.description.c_str());
-			
-			if (record)
-			{
-				if (got_recording)
-				{
-					g_debug("Conflict!");
-				}
-				else
-				{
-					got_recording = true;
-					
-					const Channel* channel = channel_manager.get_display_channel();
-					if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
-					{
-						g_debug("Already tuned to correct channel");
-						
-						if (record_state == true)
-						{
-							g_debug("Already recording");
-						}
-						else
-						{
-							g_debug("Starting recording due to scheduled recording");
-							Glib::ustring filename = make_recording_filename(scheduled_recording.description);
-							start_recording(filename, scheduled_recording.scheduled_recording_id);
-						}
-					}
-					else
-					{
-						scheduled_recording_id = 0;
-						
-						g_debug("Recording stopped by scheduled recording");
-						stop_recording();
-						
-						g_debug("Changing channel for scheduled recording");
-						channel_manager.set_display_channel(scheduled_recording.channel_id);
-
-						g_debug("Starting recording due to scheduled recording");
-						Glib::ustring filename = make_recording_filename(scheduled_recording.description);
-						start_recording(filename, scheduled_recording.scheduled_recording_id);
-					}
-				}
-			}
-		}
-	}
-	
-	Glib::RecMutex::Lock lock(mutex);
-	if (stream_thread != NULL && record_state == true && !got_recording && scheduled_recording_id != 0)
-	{
-		scheduled_recording_id = 0;
- 
-		g_debug("Record stopped by scheduled recording");
-		stop_recording();
-	}
+	scheduled_recording_manager.check_scheduled_recordings();
 }
 
 gboolean Application::on_timeout(gpointer data)
@@ -651,7 +562,7 @@ void Application::set_record_state(gboolean state)
 	}
 }
 
-void Application::start_recording(const Glib::ustring& filename, guint id)
+void Application::start_recording(const Glib::ustring& filename)
 {
 	if (record_state == false)
 	{
@@ -670,7 +581,6 @@ void Application::start_recording(const Glib::ustring& filename, guint id)
 		}
 		
 		stream_thread->start_recording(recording_filename);
-		scheduled_recording_id = id;
 		record_state = true;
 		update();
 		
@@ -682,20 +592,8 @@ void Application::stop_recording()
 {
 	if (record_state == true)
 	{
-		if (scheduled_recording_id != 0)
-		{
-			Glib::ustring message = _("You are trying to stop a scheduled recording.  Would you like Me TV to delete the scheduled recording?");
-			Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_YES_NO, true);
-			if (dialog.run() == Gtk::RESPONSE_YES)
-			{
-				Data::TableAdapter adapter(connection, schema.tables["scheduled_recording"]);
-				adapter.delete_row(scheduled_recording_id);
-			}
-		}
-
 		Glib::RecMutex::Lock lock(mutex);
 		stream_thread->stop_recording();
-		scheduled_recording_id = 0;
 		record_state = false;
 		update();
 		g_debug("Recording stopped");

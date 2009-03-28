@@ -45,7 +45,6 @@ private:
 	guint								timeout_source;
 	gboolean							record_state;
 	gboolean							broadcast_state;
-	guint								scheduled_recording_id;
 	bool								on_quit();
 	Glib::ustring						application_dir;
 	Data::Schema						schema;
@@ -95,7 +94,7 @@ public:
 	sigc::signal<void> signal_configuration_changed;
 
 	gboolean is_recording();
-	void start_recording(const Glib::ustring& filename = "", guint scheduled_recording_id = 0);
+	void start_recording(const Glib::ustring& filename = "");
 	void stop_recording();
 	void toggle_recording();
 	void set_record_state(gboolean state);

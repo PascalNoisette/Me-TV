@@ -29,6 +29,8 @@ class ScheduledRecordingManager
 {
 private:
 	Glib::StaticRecMutex	mutex;
+
+	void delete_old_scheduled_recordings();
 public:
 	ScheduledRecordingManager();
 		
@@ -38,9 +40,8 @@ public:
 	void save();
 
 	void add_scheduled_recording(ScheduledRecording& scheduled_recording);
-	void delete_scheduled_recording(guint scheduled_recording_id);
-		
-	void delete_old_scheduled_recordings();
+	void delete_scheduled_recording(guint scheduled_recording_id);		
+	guint check_scheduled_recordings();
 };
 
 #endif
