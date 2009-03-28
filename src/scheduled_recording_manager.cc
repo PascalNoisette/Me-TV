@@ -146,7 +146,7 @@ void ScheduledRecordingManager::delete_old_scheduled_recordings()
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
 	Data::TableAdapter adapter(get_application().connection, table);
 
-	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1", convert_to_local_time (time(NULL)));
+	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1", time(NULL));
 	adapter.delete_rows(clause);
 	
 	load();
