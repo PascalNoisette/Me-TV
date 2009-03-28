@@ -7,6 +7,7 @@
 	* Rewrote database tier so data access is more consistent
 	* EPG fix where some events not displaying
 	* Finally fixed mute on restore when using xine engine 
+	* Added a database version check
 
 2009-03-01  Michael Lamothe <michael.lamothe@gmail.com>
 
