@@ -32,13 +32,15 @@ private:
 public:
 	ScheduledRecordingManager();
 		
-	ScheduledRecordingMap	scheduled_recordings;
+	ScheduledRecordingMap scheduled_recordings;
 
 	void load();
 	void save();
 
 	void add_scheduled_recording(ScheduledRecording& scheduled_recording);
 	void delete_scheduled_recording(guint scheduled_recording_id);
+		
+	void delete_old_scheduled_recordings();
 };
 
 #endif

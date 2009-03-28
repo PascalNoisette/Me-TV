@@ -461,6 +461,8 @@ MainWindow& Application::get_main_window()
 void Application::check_scheduled_recordings(Data::TableAdapter& adapter)
 {
 	g_debug("Checking scheduled recordings");
+
+	scheduled_recording_manager.delete_old_scheduled_recordings();
 	
 	gboolean got_recording = false;
 
