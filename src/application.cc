@@ -211,9 +211,6 @@ void Application::initialise_database()
 	table_scheduled_recording.columns.add("start_time",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_scheduled_recording.columns.add("duration",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_scheduled_recording.primary_key = "scheduled_recording_id";
-	StringList table_scheduled_recording_unique_columns;
-	table_scheduled_recording_unique_columns.push_back("description");
-	table_scheduled_recording.constraints.add_unique(table_scheduled_recording_unique_columns);
 	schema.tables.add(table_scheduled_recording);
 
 	Data::SchemaAdapter adapter(schema, connection);

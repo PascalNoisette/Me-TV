@@ -97,11 +97,6 @@ void ScheduledRecordingManager::add_scheduled_recording(ScheduledRecording& sche
 				current.description);
 			throw Exception(message);
 		}
-		
-		if (current.description == scheduled_recording.description)
-		{
-			throw Exception(_("There is already a scheduled recording with that description"));
-		}
 	}	
 	
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];	
