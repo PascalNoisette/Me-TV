@@ -31,7 +31,8 @@ class XineEngine : public Engine
 private:
 	gint				pid;
 	gint				standard_input;
-	gboolean			mute_state;
+	gboolean			requested_mute_state;
+	gboolean			actual_mute_state;
 	AudioChannelState	audio_channel_state;
 	Glib::ustring		mrl;
 

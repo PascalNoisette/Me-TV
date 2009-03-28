@@ -34,7 +34,8 @@ XineEngine::XineEngine()
 {
 	pid = -1;
 	standard_input = -1;
-	mute_state = false;
+	requested_mute_state = false;
+	actual_mute_state = false;
 	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
 }
 
@@ -101,8 +102,8 @@ void XineEngine::play(const Glib::ustring& mrl)
 			&standard_input,
 			NULL,
 			NULL);
-
-		set_mute_state(mute_state);
+			
+		set_mute_state(requested_mute_state);
 		g_debug("Spawned xine on pid %d", pid);
 	}
 	catch (const Exception& exception)
@@ -199,13 +200,14 @@ void XineEngine::set_mute_state(gboolean state)
 {
 	if (pid != -1)
 	{
-		if (state != mute_state)
+		if (state != actual_mute_state)
 		{
 			g_debug(state ? "Muting" : "Unmuting");
 			write("mute\n");
-			mute_state = state;
+			actual_mute_state = state;
 		}
 	}
+	requested_mute_state = state;
 }
 
 void XineEngine::restart()
