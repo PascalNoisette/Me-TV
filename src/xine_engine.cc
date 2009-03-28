@@ -97,6 +97,13 @@ void XineEngine::play(const Glib::ustring& mrl)
 	argv.push_back(Glib::ustring::compose("%1", get_window_id()));
 	argv.push_back(Glib::ustring::compose("fifo://%1#gui.audio_mixer_method:Software", mrl));
 
+	g_debug("=================================================");
+	for (StringList::iterator i = argv.begin(); i != argv.end(); i++)
+	{
+		g_debug("> %s", (*i).c_str());
+	}
+	g_debug("=================================================");
+										  
 	try
 	{
 		Glib::spawn_async_with_pipes("/tmp",
@@ -114,7 +121,7 @@ void XineEngine::play(const Glib::ustring& mrl)
 	}
 	catch (const Exception& exception)
 	{
-		g_debug("Failed to spawn xine!");
+		g_debug("Failed to spawn xine: %s", exception.what().c_str());
 		stop();
 	}
 }
