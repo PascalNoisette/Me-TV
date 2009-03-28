@@ -181,93 +181,97 @@ int Connection::get_last_insert_rowid()
 
 void SchemaAdapter::initialise_schema()
 {
-	for (Tables::const_iterator i = schema.tables.begin(); i != schema.tables.end(); i++)
+	for (Tables::iterator i = schema.tables.begin(); i != schema.tables.end(); i++)
 	{
-		const Table& table = i->second;
-		
-		g_debug("Initialising table '%s'", table.name.c_str());
-		
-		Glib::ustring command = "CREATE TABLE IF NOT EXISTS ";
-		command += table.name;
-		command += " (";
-		gboolean first_column = true;
-		for (Columns::const_iterator j = table.columns.begin(); j != table.columns.end(); j++)
-		{
-			const Column& column = *j;
-			
-			if (first_column)
-			{
-				first_column = false;
-			}
-			else
-			{
-				command += ", ";
-			}
-			
-			command += column.name;
-			command += " ";
-			
-			switch (column.type)
-			{
-			case DATA_TYPE_INTEGER:
-				command += "INTEGER";
-				break;
-			case DATA_TYPE_STRING:
-				command += Glib::ustring::compose("CHAR(%1)", column.size);
-				break;
-			default:
-				break;
-			}
-			
-			if (column.name == table.primary_key)
-			{
-				if (column.type != DATA_TYPE_INTEGER)
-				{
-					throw Exception(_("Only integers can be primary keys"));
-				}
-				
-				command += " PRIMARY KEY";
-			}
-			else
-			{
-				if (!column.nullable)
-				{
-					command += " NOT NULL";
-				}
-			}
-		}
-		
-		for (Constraints::const_iterator j = table.constraints.begin(); j != table.constraints.end(); j++)
-		{
-			const Constraint& constraint = *j;
-			if (constraint.type == ConstraintTypeUnique)
-			{
-				gboolean first_constraint = true;
-				command += ", UNIQUE (";
-				for (StringList::const_iterator k = constraint.columns.begin(); k != constraint.columns.end(); k++)
-				{
-					Glib::ustring column = *k;
-					
-					if (first_constraint)
-					{
-						first_constraint = false;
-					}
-					else
-					{
-						command += ", ";
-					}
-					
-					command += column;
-				}
-				command += ")";
-			}
-		}
-		
-		command += ");";
-		
-		Statement& statement = connection.create_statement(command);
-		statement.step();
+		Table& table = i->second;
+		initialise_table(table);
 	}
+}
+
+void SchemaAdapter::initialise_table(Table& table)
+{
+        g_debug("Initialising table '%s'", table.name.c_str());
+        
+        Glib::ustring command = "CREATE TABLE IF NOT EXISTS ";
+        command += table.name;
+        command += " (";
+        gboolean first_column = true;
+        for (Columns::const_iterator j = table.columns.begin(); j != table.columns.end(); j++)
+        {
+                const Column& column = *j;
+                
+                if (first_column)
+                {
+                        first_column = false;
+                }
+                else
+                {
+                        command += ", ";
+                }
+                
+                command += column.name;
+                command += " ";
+                
+                switch (column.type)
+                {
+                case DATA_TYPE_INTEGER:
+                        command += "INTEGER";
+                        break;
+                case DATA_TYPE_STRING:
+                        command += Glib::ustring::compose("CHAR(%1)", column.size);
+                        break;
+                default:
+                        break;
+                }
+                
+                if (column.name == table.primary_key)
+                {
+                        if (column.type != DATA_TYPE_INTEGER)
+                        {
+                                throw Exception(_("Only integers can be primary keys"));
+                        }
+                        
+                        command += " PRIMARY KEY";
+                }
+                else
+                {
+                        if (!column.nullable)
+                        {
+                                command += " NOT NULL";
+                        }
+                }
+        }
+        
+        for (Constraints::const_iterator j = table.constraints.begin(); j != table.constraints.end(); j++)
+        {
+                const Constraint& constraint = *j;
+                if (constraint.type == ConstraintTypeUnique)
+                {
+                        gboolean first_constraint = true;
+                        command += ", UNIQUE (";
+                        for (StringList::const_iterator k = constraint.columns.begin(); k != constraint.columns.end(); k++)
+                        {
+                                Glib::ustring column = *k;
+                                
+                                if (first_constraint)
+                                {
+                                        first_constraint = false;
+                                }
+                                else
+                                {
+                                        command += ", ";
+                                }
+                                
+                                command += column;
+                        }
+                        command += ")";
+                }
+        }
+        
+        command += ");";
+        
+        Statement& statement = connection.create_statement(command);
+        statement.step();
 }
 
 void SchemaAdapter::drop_schema()

@@ -189,6 +189,7 @@ namespace Data
 			connection(connection), schema(schema) {}
 
 		void initialise_schema();
+		void initialise_table(Table& table);
 		void drop_schema();
 	};
 		
