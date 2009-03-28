@@ -457,6 +457,49 @@ MainWindow& Application::get_main_window()
 	return *main_window;
 }
 
+void Application::check_scheduled_recordings()
+{
+	guint scheduled_recording_id = scheduled_recording_manager.check_scheduled_recordings();
+	if (scheduled_recording_id != 0)
+	{
+		ScheduledRecording& scheduled_recording = scheduled_recording_manager.scheduled_recordings[scheduled_recording_id];
+
+		const Channel* channel = channel_manager.get_display_channel();
+		if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
+		{
+			g_debug("Already tuned to correct channel");
+		}
+		else
+		{
+			if (record_state == true)
+			{
+				g_debug("Recording stopped by scheduled recording");
+				stop_recording();
+			}
+			
+			g_debug("Changing channel for scheduled recording");
+			channel_manager.set_display_channel(scheduled_recording.channel_id);
+		}
+		
+		if (record_state == true)
+		{
+			g_debug("Already recording");
+		}
+		else
+		{
+			g_debug("Starting recording due to scheduled recording");
+			Glib::ustring filename = make_recording_filename(scheduled_recording.description);
+			start_recording(filename);
+		}
+	}
+	
+	if (stream_thread != NULL && record_state && scheduled_recording_id == 0)
+	{
+		g_debug("Record stopped by scheduled recording");
+		stop_recording();
+	}
+}
+
 gboolean Application::on_timeout(gpointer data)
 {
 	return ((Application*)data)->on_timeout();
@@ -472,43 +515,7 @@ gboolean Application::on_timeout()
 	guint seconds = now % 60;
 	if (last_seconds > seconds)
 	{
-		guint scheduled_recording_id = scheduled_recording_manager.check_scheduled_recordings();
-		if (scheduled_recording_id != 0)
-		{
-			ScheduledRecording& scheduled_recording = scheduled_recording_manager.scheduled_recordings[scheduled_recording_id];
-
-			const Channel* channel = channel_manager.get_display_channel();
-			if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
-			{
-				g_debug("Already tuned to correct channel");
-			}
-			else
-			{
-				g_debug("Recording stopped by scheduled recording");
-				stop_recording();
-				
-				g_debug("Changing channel for scheduled recording");
-				channel_manager.set_display_channel(scheduled_recording.channel_id);
-			}
-			
-			if (record_state == true)
-			{
-				g_debug("Already recording");
-			}
-			else
-			{
-				g_debug("Starting recording due to scheduled recording");
-				Glib::ustring filename = make_recording_filename(scheduled_recording.description);
-				start_recording(filename);
-			}
-		}
-		
-		if (stream_thread != NULL && record_state && scheduled_recording_id != 0)
-		{
-			g_debug("Record stopped by scheduled recording");
-			stop_recording();
-		}
-		
+		check_scheduled_recordings();
 		channel_manager.save();
 		update();
 	}
@@ -622,13 +629,6 @@ void Application::stop_recording()
 	if (record_state == true)
 	{
 		Glib::RecMutex::Lock lock(mutex);
-		
-		guint scheduled_recording_id = scheduled_recording_manager.check_scheduled_recordings();
-		if (scheduled_recording_id != 0)
-		{
-			throw Exception(_("You cannot stop this recording manually because it is a scheduled recording."));
-		}
-		
 		stream_thread->stop_recording();
 		record_state = false;
 		update();

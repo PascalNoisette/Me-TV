@@ -120,8 +120,8 @@ void ScheduledRecordingManager::add_scheduled_recording(ScheduledRecording& sche
 	
 	scheduled_recordings[scheduled_recording.scheduled_recording_id] = scheduled_recording;
 	g_debug("Scheduled recording '%s' (%d)", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
-	
-	check_scheduled_recordings();
+
+	get_application().check_scheduled_recordings();
 }
 
 void ScheduledRecordingManager::delete_scheduled_recording(guint scheduled_recording_id)
@@ -138,7 +138,7 @@ void ScheduledRecordingManager::delete_scheduled_recording(guint scheduled_recor
 
 	g_debug("Scheduled recording deleted");
 
-	check_scheduled_recordings();
+	get_application().check_scheduled_recordings();
 }
 
 void ScheduledRecordingManager::delete_old_scheduled_recordings()

@@ -98,7 +98,7 @@ public:
 	void stop_recording();
 	void toggle_recording();
 	void set_record_state(gboolean state);
-	void check_scheduled_recordings(Data::TableAdapter& adapter);
+	void check_scheduled_recordings();
 	
 	gboolean is_broadcasting();
 	void set_broadcast_state(gboolean state);
