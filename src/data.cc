@@ -154,13 +154,15 @@ Connection::Connection(const Glib::ustring& filename)
 {
 	gboolean database_exists = Gio::File::create_for_path(filename)->query_exists();
 	
-	g_debug("Database %s", database_exists ? "exists" : "does not exist");
+	g_debug("Database '%s' ", database_exists ? "exists" : "does not exist");
 	g_debug("Opening database file '%s'", filename.c_str());
 	if (sqlite3_open(filename.c_str(), &connection) != 0)
 	{
 		Glib::ustring message = Glib::ustring::compose(_("Failed to connect to Me TV database '%1'"), filename);
 		throw SQLiteException(connection, message);
 	}
+	
+	database_created = !database_exists;
 }
 
 Connection::~Connection()
@@ -263,6 +265,20 @@ void SchemaAdapter::initialise_schema()
 		
 		command += ");";
 		
+		Statement& statement = connection.create_statement(command);
+		statement.step();
+	}
+}
+
+void SchemaAdapter::drop_schema()
+{
+	for (Tables::const_iterator i = schema.tables.begin(); i != schema.tables.end(); i++)
+	{
+		const Table& table = i->second;
+		
+		g_debug("Dropping table '%s'", table.name.c_str());
+		
+		Glib::ustring command = Glib::ustring::compose("DROP TABLE %1", table.name);
 		Statement& statement = connection.create_statement(command);
 		statement.step();
 	}
@@ -396,4 +412,10 @@ DataTable TableAdapter::select_rows(const Glib::ustring& clause, const Glib::ust
 		data_table.rows.push_back(row);
 	}
 	return data_table;
+}
+
+void Connection::vacuum()
+{
+	Statement& statement = create_statement("VACUUM");
+	statement.step();
 }

@@ -76,7 +76,7 @@ public:
 	void					stop_stream_thread();
 	void					restart_stream();
 	void					set_source(const Channel& channel);
-	void					initialise_database();
+	gboolean				initialise_database();
 	Data::Schema			get_schema() const { return schema; }
 
 	void update();

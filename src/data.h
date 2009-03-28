@@ -68,8 +68,8 @@ namespace Data
 	{
 	private:
 		sqlite3*	connection;
+		gboolean	database_created;
 	public:
-		Connection();
 		Connection(const Glib::ustring& filename);
 		~Connection();
 			
@@ -79,6 +79,8 @@ namespace Data
 		}
 
 		int get_last_insert_rowid();
+		gboolean get_database_created() const { return database_created; }
+		void vacuum();
 	};
 	
 	typedef enum
@@ -180,13 +182,14 @@ namespace Data
 	class SchemaAdapter
 	{
 	private:
-		const Schema& schema;
-		Connection& connection;
+		Connection&	connection;
+		Schema&		schema;
 	public:
-		SchemaAdapter(Schema& schema, Connection& connection) :
-			schema(schema), connection(connection) {}
+		SchemaAdapter(Connection& connection, Schema& schema) :
+			connection(connection), schema(schema) {}
 
 		void initialise_schema();
+		void drop_schema();
 	};
 		
 	class Row : public std::map<Glib::ustring, Value>

@@ -1,11 +1,12 @@
-2009-03-27  Michael Lamothe <michael.lamothe@gmail.com>
+2009-03-28  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.0
 	* DVB-S support added
 	* Updates to scan window UI to be more DVB-S friendly
-	* Removed Profile code
+	* Removed support for Profiles (not used)
 	* Rewrote database tier so data access is more consistent
 	* EPG fix where some events not displaying
+	* Finally fixed mute on restore when using xine engine 
 
 2009-03-01  Michael Lamothe <michael.lamothe@gmail.com>
 
