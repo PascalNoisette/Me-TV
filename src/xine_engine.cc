@@ -37,6 +37,7 @@ XineEngine::XineEngine()
 	requested_mute_state = false;
 	actual_mute_state = false;
 	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
+	audio_stream = 0;
 }
 
 XineEngine::~XineEngine()
@@ -79,6 +80,11 @@ void XineEngine::play(const Glib::ustring& mrl)
 		
 		Glib::ustring dual_audio_parameter = Glib::ustring::compose("upmix_mono:channel=%1", channel);
 		argv.push_back(dual_audio_parameter);
+	}
+	if (audio_stream != 0)
+	{
+		argv.push_back("-a");
+		argv.push_back(Glib::ustring::compose("%1", audio_stream));
 	}
 
 	// Initial window size hack
@@ -221,7 +227,22 @@ void XineEngine::set_audio_channel_state(AudioChannelState state)
 	if (audio_channel_state != state)
 	{
 		audio_channel_state = state;
-		restart();
+		if (pid != -1)
+		{
+			restart();
+		}
+	}
+}
+
+void XineEngine::set_audio_stream(guint stream)
+{
+	if (audio_stream != stream)
+	{
+		audio_stream = stream;
+		if (pid != -1)
+		{
+			restart();
+		}
 	}
 }
 

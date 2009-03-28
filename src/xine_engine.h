@@ -34,12 +34,13 @@ private:
 	gboolean			requested_mute_state;
 	gboolean			actual_mute_state;
 	AudioChannelState	audio_channel_state;
+	guint				audio_stream;
 	Glib::ustring		mrl;
 
 	void play(const Glib::ustring& mrl);
 	void stop();
 	void set_mute_state(gboolean state);
-	void set_audio_stream(guint stream) {};
+	void set_audio_stream(guint stream);
 	void set_audio_channel_state(AudioChannelState state);
 	gboolean is_running();
 

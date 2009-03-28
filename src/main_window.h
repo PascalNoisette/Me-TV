@@ -54,6 +54,8 @@ private:
 	gint									output_fd;
 	Glib::StaticRecMutex					mutex;
 	gboolean								mute_state;
+	Engine::AudioChannelState				audio_channel_state;
+	guint									audio_stream_index;
 
 	void stop();
 	void fullscreen();

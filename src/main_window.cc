@@ -58,6 +58,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	engine				= NULL;
 	output_fd			= -1;
 	mute_state			= false;
+	audio_channel_state	= Engine::AUDIO_CHANNEL_STATE_BOTH;
+	audio_stream_index	= 0;
 
 	keycode1 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_L);
 	keycode2 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_R);
@@ -484,13 +486,14 @@ void MainWindow::on_tool_button_broadcast_clicked()
 	CATCH
 }
 
-void MainWindow::on_menu_item_audio_stream_activate(guint audio_stream_index)
+void MainWindow::on_menu_item_audio_stream_activate(guint index)
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-	g_debug("MainWindow::on_menu_item_audio_stream_activate(%d)", audio_stream_index);
+	g_debug("MainWindow::on_menu_item_audio_stream_activate(%d)", index);
 	if (engine != NULL)
 	{
+		audio_stream_index = index;
 		engine->set_audio_stream(audio_stream_index);
 	}
 }
@@ -786,6 +789,8 @@ void MainWindow::create_engine()
 	if (engine != NULL)
 	{
 		engine->set_mute_state(mute_state);
+		engine->set_audio_channel_state(audio_channel_state);
+		engine->set_audio_stream(audio_stream_index);
 	}
 	
 	g_debug("%s engine created", engine_type.c_str());
@@ -793,6 +798,8 @@ void MainWindow::create_engine()
 
 void MainWindow::play(const Glib::ustring& mrl)
 {
+	audio_channel_state	= Engine::AUDIO_CHANNEL_STATE_BOTH;
+	audio_stream_index = 0;
 	create_engine();
 	if (engine != NULL)
 	{
