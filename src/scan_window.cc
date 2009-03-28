@@ -404,7 +404,17 @@ void ScanWindow::on_signal_progress(guint step, gsize total)
 {
 	GdkLock gdk_lock;
 	gdouble fraction = total == 0 ? 0 : step/(gdouble)total;
-	progress_bar_scan->set_fraction(fraction);
+	
+	if (fraction < 0 || fraction > 1.0)
+	{
+		g_debug("Invalid fraction: %f", fraction);
+		g_debug("STEP: %d", step);
+		g_debug("TOTAL: %d", total);
+	}
+	else
+	{
+		progress_bar_scan->set_fraction(fraction);
+	}
 }
 
 void ScanWindow::on_signal_complete()
