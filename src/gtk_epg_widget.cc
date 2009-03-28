@@ -335,6 +335,10 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 {
 	TRY
+	if (get_application().is_recording())
+	{
+		throw Exception(_("You cannot change channels because you are recording."));
+	}
 	get_application().channel_manager.set_display_channel(channel_id);
 	CATCH
 

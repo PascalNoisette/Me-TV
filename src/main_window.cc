@@ -597,13 +597,14 @@ void MainWindow::on_show()
 	gint y = application.get_int_configuration_value("y");
 	gint width = application.get_int_configuration_value("width");
 	gint height = application.get_int_configuration_value("height");
-	
+		
 	if (x != -1)
 	{
+		g_debug("Setting geometry (%d, %d, %d, %d)", x, y, width, height);
 		move(x, y);
 		set_default_size(width, height);
 	}
-	
+
 	Gtk::Window::on_show();
 	Gdk::Window::process_all_updates();
 
@@ -636,20 +637,24 @@ void MainWindow::on_hide()
 
 void MainWindow::save_geometry()
 {
-	Application& application = get_application();
+	if (property_visible())
+	{
+		gint x = -1;
+		gint y = -1;
+		gint width = -1;
+		gint height = -1;
+		
+		get_position(x, y);
+		get_size(width, height);
+		
+		Application& application = get_application();
+		application.set_int_configuration_value("x", x);
+		application.set_int_configuration_value("y", y);
+		application.set_int_configuration_value("width", width);
+		application.set_int_configuration_value("height", height);
 
-	gint x = -1;
-	gint y = -1;
-	gint width = -1;
-	gint height = -1;
-	
-	get_position(x, y);
-	get_size(width, height);
-	
-	application.set_int_configuration_value("x", x);
-	application.set_int_configuration_value("y", y);
-	application.set_int_configuration_value("width", width);
-	application.set_int_configuration_value("height", height);
+		g_debug("Saved geometry (%d, %d, %d, %d)", x, y, width, height);
+	}
 }
 
 void MainWindow::toggle_visibility()

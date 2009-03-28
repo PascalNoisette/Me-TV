@@ -457,12 +457,6 @@ MainWindow& Application::get_main_window()
 	return *main_window;
 }
 
-void Application::check_scheduled_recordings(Data::TableAdapter& adapter)
-{
-	g_debug("Checking scheduled recordings");
-	scheduled_recording_manager.check_scheduled_recordings();
-}
-
 gboolean Application::on_timeout(gpointer data)
 {
 	return ((Application*)data)->on_timeout();
@@ -478,8 +472,7 @@ gboolean Application::on_timeout()
 	guint seconds = now % 60;
 	if (last_seconds > seconds)
 	{
-		Data::TableAdapter adapter(connection, schema.tables["scheduled_recording"]);
-		check_scheduled_recordings(adapter);
+		scheduled_recording_manager.check_scheduled_recordings();
 		channel_manager.save();
 		update();
 	}
@@ -593,6 +586,13 @@ void Application::stop_recording()
 	if (record_state == true)
 	{
 		Glib::RecMutex::Lock lock(mutex);
+		
+		guint scheduled_recording_id = scheduled_recording_manager.check_scheduled_recordings();
+		if (scheduled_recording_id != 0)
+		{
+			throw Exception(_("You cannot stop this recording manually because it is a scheduled recording."));
+		}
+		
 		stream_thread->stop_recording();
 		record_state = false;
 		update();

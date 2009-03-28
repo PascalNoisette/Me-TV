@@ -158,7 +158,6 @@ guint ScheduledRecordingManager::check_scheduled_recordings()
 	if (!scheduled_recordings.empty())
 	{
 		guint now = time(NULL);
-		g_debug(" ");
 		g_debug("======================================================================");
 		g_debug("Now: %d", now);
 		g_debug("======================================================================");
