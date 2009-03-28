@@ -97,6 +97,11 @@ void ScheduledRecordingManager::add_scheduled_recording(ScheduledRecording& sche
 				current.description);
 			throw Exception(message);
 		}
+		
+		if (current.description == scheduled_recording.description)
+		{
+			throw Exception(_("There is already a scheduled recording with that description"));
+		}
 	}	
 	
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];	
@@ -115,6 +120,8 @@ void ScheduledRecordingManager::add_scheduled_recording(ScheduledRecording& sche
 	
 	scheduled_recordings[scheduled_recording.scheduled_recording_id] = scheduled_recording;
 	g_debug("Scheduled recording '%s' (%d)", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
+	
+	check_scheduled_recordings();
 }
 
 void ScheduledRecordingManager::delete_scheduled_recording(guint scheduled_recording_id)
@@ -130,6 +137,8 @@ void ScheduledRecordingManager::delete_scheduled_recording(guint scheduled_recor
 	scheduled_recordings.erase(scheduled_recording_id);
 
 	g_debug("Scheduled recording deleted");
+
+	check_scheduled_recordings();
 }
 
 void ScheduledRecordingManager::delete_old_scheduled_recordings()
@@ -185,49 +194,11 @@ guint ScheduledRecordingManager::check_scheduled_recordings()
 				else
 				{
 					got_recording = true;
-					
-					const Channel* channel = application.channel_manager.get_display_channel();
-					if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
-					{
-						g_debug("Already tuned to correct channel");
-						
-						if (application.is_recording() == true)
-						{
-							g_debug("Already recording");
-						}
-						else
-						{
-							g_debug("Starting recording due to scheduled recording");
-							Glib::ustring filename = application.make_recording_filename(scheduled_recording.description);
-							application.start_recording(filename);
-						}
-					}
-					else
-					{
-						active_scheduled_recording_id = 0;
-						
-						g_debug("Recording stopped by scheduled recording");
-						application.stop_recording();
-						
-						g_debug("Changing channel for scheduled recording");
-						application.channel_manager.set_display_channel(scheduled_recording.channel_id);
-
-						g_debug("Starting recording due to scheduled recording");
-						Glib::ustring filename = application.make_recording_filename(scheduled_recording.description);
-						application.start_recording(filename);
-					}
+					active_scheduled_recording_id = scheduled_recording.scheduled_recording_id;
 				}
 			}
 		}
 	}
-	
-	if (application.get_stream_thread() != NULL && application.is_recording() && !got_recording && active_scheduled_recording_id != 0)
-	{
-		active_scheduled_recording_id = 0;
- 
-		g_debug("Record stopped by scheduled recording");
-		application.stop_recording();
-	}
-	
+		
 	return active_scheduled_recording_id;
 }
