@@ -37,7 +37,7 @@ public:
 	void load();
 	void save();
 
-	void add_scheduled_recording(const ScheduledRecording& scheduled_recording);
+	void add_scheduled_recording(ScheduledRecording& scheduled_recording);
 	void delete_scheduled_recording(guint scheduled_recording_id);
 };
 

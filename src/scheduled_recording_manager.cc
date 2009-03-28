@@ -83,14 +83,14 @@ void ScheduledRecordingManager::save()
 	g_debug("Scheduled recordings saved");
 }
 
-void ScheduledRecordingManager::add_scheduled_recording(const ScheduledRecording& scheduled_recording)
+void ScheduledRecordingManager::add_scheduled_recording(ScheduledRecording& scheduled_recording)
 {
 	Glib::RecMutex::Lock lock(mutex);
 	
 	for (ScheduledRecordingMap::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
 		ScheduledRecording& current = scheduled_recordings[i->first];
-		if (scheduled_recording.overlaps(current))
+		if (current.channel_id != scheduled_recording.channel_id && scheduled_recording.overlaps(current))
 		{
 			Glib::ustring message =  Glib::ustring::compose(
 				_("Failed to save scheduled recording because it conflicts with another scheduled recording called '%1'"),
@@ -99,17 +99,35 @@ void ScheduledRecordingManager::add_scheduled_recording(const ScheduledRecording
 		}
 	}	
 	
+	Data::Table table = get_application().get_schema().tables["scheduled_recording"];	
+	Data::DataTable data_table(table);
+	Data::Row row;
+	row.auto_increment = &(scheduled_recording.scheduled_recording_id);
+	row["scheduled_recording_id"].int_value	= scheduled_recording.scheduled_recording_id;
+	row["channel_id"].int_value				= scheduled_recording.channel_id;
+	row["description"].string_value			= scheduled_recording.description;
+	row["start_time"].int_value				= scheduled_recording.start_time;
+	row["duration"].int_value				= scheduled_recording.duration;
+	data_table.rows.add(row);
+
+	Data::TableAdapter adapter(get_application().connection, table);
+	adapter.replace_rows(data_table);
+	
 	scheduled_recordings[scheduled_recording.scheduled_recording_id] = scheduled_recording;
 	g_debug("Scheduled recording '%s' (%d)", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
-	save();
 }
 
 void ScheduledRecordingManager::delete_scheduled_recording(guint scheduled_recording_id)
 {
 	Glib::RecMutex::Lock lock(mutex);
 
+	ScheduledRecording& scheduled_recording = scheduled_recordings[scheduled_recording_id];
+	g_debug("Deleteing scheduled recording '%s' (%d)", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
+
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
 	Data::TableAdapter adapter(get_application().connection, table);
 	adapter.delete_row(scheduled_recording_id);
 	scheduled_recordings.erase(scheduled_recording_id);
+
+	g_debug("Scheduled recording deleted");
 }
