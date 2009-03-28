@@ -33,6 +33,7 @@ private:
 	public:
 		ModelColumns()
 		{
+			add(column_sort);
 			add(column_scheduled_recording_id);
 			add(column_description);
 			add(column_channel);
@@ -40,6 +41,7 @@ private:
 			add(column_duration);
 		}
 
+		Gtk::TreeModelColumn<guint>			column_sort;
 		Gtk::TreeModelColumn<guint>			column_scheduled_recording_id;
 		Gtk::TreeModelColumn<Glib::ustring>	column_description;
 		Gtk::TreeModelColumn<Glib::ustring>	column_channel;
