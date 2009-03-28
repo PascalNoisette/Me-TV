@@ -71,7 +71,14 @@ void GtkEpgWidget::on_combo_box_epg_page_changed()
 	TRY
 	if (combo_box_epg_page->get_size() > 0)
 	{
-		epg_page = combo_box_epg_page->get_active_value();
+		try
+		{
+			epg_page = combo_box_epg_page->get_active_value();
+		}
+		catch(...)
+		{
+			g_debug("Ignoring invalid active integer value");
+		}
 		update_table();
 	}
 	CATCH

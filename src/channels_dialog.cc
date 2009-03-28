@@ -128,7 +128,7 @@ void ChannelsDialog::on_show()
 	update_channels();
 	Application& application = get_application();
 	const ChannelList& channels = application.channel_manager.get_channels();
-	if (channels.empty() && application.device_manager.get_frontends().empty())
+	if (channels.empty() && !application.device_manager.get_frontends().empty())
 	{
 		show_scan_window();
 	}
