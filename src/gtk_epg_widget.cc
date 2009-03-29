@@ -199,7 +199,8 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel, guint table_
 {	
 	Channel channel = const_channel;
 
-	Gtk::ToggleButton& channel_button = attach_toggle_button("<b>" + channel.name + "</b>", 0, 1, table_row, table_row + 1);
+	Glib::ustring channel_text = Glib::ustring::compose("<b>%1</b>", encode_xml(channel.name));
+	Gtk::ToggleButton& channel_button = attach_toggle_button(channel_text, 0, 1, table_row, table_row + 1);
 	gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
 	gboolean show_epg_tooltips = get_application().get_boolean_configuration_value("show_epg_tooltips");
 	
