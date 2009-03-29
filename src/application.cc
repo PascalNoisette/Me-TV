@@ -207,6 +207,7 @@ gboolean Application::initialise_database()
 	schema.tables.add(table_version);
 	
 	Data::SchemaAdapter adapter(connection, schema);
+	adapter.initialise_table(table_version);
 	
 	Data::TableAdapter adapter_version(connection, table_version);
 	
