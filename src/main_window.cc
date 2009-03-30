@@ -561,7 +561,12 @@ void MainWindow::update()
 			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
 			menu_item->show_all();
 			audio_streams_menu.items().push_back(*menu_item);
-
+			
+			if (count == audio_stream_index)
+			{
+				menu_item->set_active(true);
+			}
+			
 			menu_item->signal_activate().connect(
 				sigc::bind<guint>
 				(
@@ -572,6 +577,13 @@ void MainWindow::update()
 
 			count++;
 		}
+	}
+	
+	if (audio_streams_menu.items().empty())
+	{
+		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("No audio streams available"));
+		menu_item->show_all();
+		audio_streams_menu.items().push_back(*menu_item);
 	}
 }
 
