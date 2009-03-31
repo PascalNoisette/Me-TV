@@ -30,9 +30,10 @@ private:
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 public:	
 	PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
-	static PreferencesDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 
 	void run();
+
+	static PreferencesDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 };
 
 #endif

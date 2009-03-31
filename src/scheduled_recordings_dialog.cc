@@ -22,11 +22,12 @@
 #include "scheduled_recording_dialog.h"
 #include "application.h"
 
-ScheduledRecordingsDialog* ScheduledRecordingsDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+ScheduledRecordingsDialog& ScheduledRecordingsDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	ScheduledRecordingsDialog* scheduled_recordings_dialog = NULL;
 	glade->get_widget_derived("dialog_scheduled_recordings", scheduled_recordings_dialog);
-	return scheduled_recordings_dialog;
+	check_glade(scheduled_recordings_dialog, "dialog_scheduled_recordings");
+	return *scheduled_recordings_dialog;
 }
 
 ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
@@ -49,9 +50,9 @@ ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, co
 void ScheduledRecordingsDialog::on_button_scheduled_recordings_add_clicked()
 {
 	TRY
-	ScheduledRecordingDialog* scheduled_recordings_dialog = ScheduledRecordingDialog::create(glade);
-	scheduled_recordings_dialog->run(this);
-	scheduled_recordings_dialog->hide();
+	ScheduledRecordingDialog& scheduled_recordings_dialog = ScheduledRecordingDialog::create(glade);
+	scheduled_recordings_dialog.run(this);
+	scheduled_recordings_dialog.hide();
 	update();
 	CATCH
 }
@@ -100,9 +101,9 @@ void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& tre
 
 	ScheduledRecording& scheduled_recording = get_application().scheduled_recording_manager.scheduled_recordings[scheduled_recording_id];
 
-	ScheduledRecordingDialog* scheduled_recording_dialog = ScheduledRecordingDialog::create(glade);
-	scheduled_recording_dialog->run(this, scheduled_recording);
-	scheduled_recording_dialog->hide();
+	ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(glade);
+	scheduled_recording_dialog.run(this, scheduled_recording);
+	scheduled_recording_dialog.hide();
 
 	update();
 	CATCH

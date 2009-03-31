@@ -42,7 +42,6 @@ private:
 	guint									last_motion_time;
 	GdkCursor*								hidden_cursor;
 	gboolean								is_cursor_visible;
-	MetersDialog*							meters_dialog;
 	Gtk::HScale*							h_scale_position;
 	Gnome::UI::AppBar*						app_bar;
 	DisplayMode								display_mode, prefullscreen;

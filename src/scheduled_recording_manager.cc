@@ -124,7 +124,7 @@ void ScheduledRecordingManager::delete_scheduled_recording(guint scheduled_recor
 	Glib::RecMutex::Lock lock(mutex);
 
 	ScheduledRecording& scheduled_recording = scheduled_recordings[scheduled_recording_id];
-	g_debug("Deleteing scheduled recording '%s' (%d)", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
+	g_debug("Deleting scheduled recording '%s' (%d)", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
 
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
 	Data::TableAdapter adapter(get_application().connection, table);

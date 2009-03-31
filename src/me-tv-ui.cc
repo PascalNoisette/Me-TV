@@ -194,3 +194,25 @@ guint IntComboBox::get_active_value()
 	
 	throw Exception(_("Failed to get active integer value"));
 }
+
+Gtk::Widget* get_widget(Glib::RefPtr<Gnome::Glade::Xml> glade, const Glib::ustring& name)
+{
+	Gtk::Widget* widget = glade->get_widget(name);
+	
+	if (widget == NULL)
+	{
+		Glib::ustring message = Glib::ustring::compose(_("Failed to load widget '%1'"), name);
+		throw Exception(message);
+	}
+	
+	return widget;
+}
+
+void check_glade(Gtk::Widget* widget, const Glib::ustring& name)
+{
+	if (widget == NULL)
+	{
+		Glib::ustring message = Glib::ustring::compose(_("Failed to load widget '%1'"), name);
+		throw Exception(message);
+	}
+}

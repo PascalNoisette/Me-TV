@@ -48,6 +48,7 @@ private:
 	bool								on_quit();
 	Glib::ustring						application_dir;
 	Data::Schema						schema;
+	guint								scheduled_recording_id;
 
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);

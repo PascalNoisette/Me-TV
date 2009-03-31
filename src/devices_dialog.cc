@@ -29,6 +29,7 @@ DevicesDialog& DevicesDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	DevicesDialog* devices_dialog = NULL;
 	glade->get_widget_derived("dialog_devices", devices_dialog);
+	check_glade(devices_dialog, "dialog_devices");
 	return *devices_dialog;
 }
 

@@ -53,6 +53,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	timeout_source			= 0;
 	record_state			= false;
 	broadcast_state			= false;
+	scheduled_recording_id	= 0;
 	
 	signal_quit().connect(sigc::mem_fun(this, &Application::on_quit));
 
@@ -509,6 +510,11 @@ void Application::update()
 void Application::on_display_channel_changed(const Channel& channel)
 {
 	TRY
+	if (record_state == true)
+	{
+		g_debug("Changing channel, stopping recording");
+		stop_recording();
+	}
 	set_source(channel);
 	set_int_configuration_value("last_channel", channel.channel_id);
 	CATCH
@@ -526,10 +532,11 @@ MainWindow& Application::get_main_window()
 
 void Application::check_scheduled_recordings()
 {
-	guint scheduled_recording_id = scheduled_recording_manager.check_scheduled_recordings();
-	if (scheduled_recording_id != 0)
+	guint id = scheduled_recording_manager.check_scheduled_recordings();
+	if (id != 0)
 	{
-		ScheduledRecording& scheduled_recording = scheduled_recording_manager.scheduled_recordings[scheduled_recording_id];
+		scheduled_recording_id = id;
+		ScheduledRecording& scheduled_recording = scheduled_recording_manager.scheduled_recordings[id];
 
 		const Channel* channel = channel_manager.get_display_channel();
 		if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
@@ -537,13 +544,7 @@ void Application::check_scheduled_recordings()
 			g_debug("Already tuned to correct channel");
 		}
 		else
-		{
-			if (record_state == true)
-			{
-				g_debug("Recording stopped by scheduled recording");
-				stop_recording();
-			}
-			
+		{			
 			g_debug("Changing channel for scheduled recording");
 			channel_manager.set_display_channel(scheduled_recording.channel_id);
 		}
@@ -560,7 +561,7 @@ void Application::check_scheduled_recordings()
 		}
 	}
 	
-	if (stream_thread != NULL && record_state && scheduled_recording_id == 0)
+	if (stream_thread != NULL && record_state && scheduled_recording_id != 0 && id == 0)
 	{
 		g_debug("Record stopped by scheduled recording");
 		stop_recording();
@@ -655,7 +656,7 @@ void Application::set_record_state(gboolean state)
 	if (record_state != state)
 	{
 		if (state == false)
-		{			
+		{
 			stop_recording();
 		}
 		else
@@ -696,8 +697,15 @@ void Application::stop_recording()
 	if (record_state == true)
 	{
 		Glib::RecMutex::Lock lock(mutex);
+
 		stream_thread->stop_recording();
 		record_state = false;
+		
+		if (scheduled_recording_id != 0)
+		{
+			scheduled_recording_manager.delete_scheduled_recording(scheduled_recording_id);
+		}
+	
 		update();
 		g_debug("Recording stopped");
 	}

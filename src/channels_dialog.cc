@@ -29,6 +29,7 @@ ChannelsDialog& ChannelsDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	ChannelsDialog* channels_dialog = NULL;
 	glade->get_widget_derived("dialog_channels", channels_dialog);
+	check_glade(channels_dialog, "dialog_channels");
 	return *channels_dialog;
 }
 
@@ -53,9 +54,9 @@ void ChannelsDialog::show_scan_window()
 	// Check for a valid frontend device
 	get_application().device_manager.get_frontend();
 	
-	ScanWindow* scan_window = ScanWindow::create(glade);
-	scan_window->show();
-	Gnome::Main::run(*scan_window);
+	ScanWindow& scan_window = ScanWindow::create(glade);
+	scan_window.show();
+	Gnome::Main::run(scan_window);
 	update_channels();
 }
 

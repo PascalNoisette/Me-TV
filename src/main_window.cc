@@ -154,6 +154,7 @@ MainWindow* MainWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	MainWindow* main_window = NULL;
 	glade->get_widget_derived("application_window", main_window);
+	check_glade(main_window, "application_window");
 	return main_window;
 }
 
@@ -188,10 +189,10 @@ void MainWindow::on_menu_item_meters_clicked()
 	// Check that there is a device
 	get_application().device_manager.get_frontend();
 	
-	meters_dialog = MetersDialog::create(glade);
-	meters_dialog->stop();
-	meters_dialog->start();
-	meters_dialog->show();
+	MetersDialog& meters_dialog = MetersDialog::create(glade);
+	meters_dialog.stop();
+	meters_dialog.start();
+	meters_dialog.show();
 	CATCH
 }
 
@@ -238,9 +239,9 @@ void MainWindow::show_channels_dialog()
 
 void MainWindow::show_preferences_dialog()
 {
-	PreferencesDialog* preferences_dialog = PreferencesDialog::create(glade);
-	preferences_dialog->run();
-	preferences_dialog->hide();
+	PreferencesDialog& preferences_dialog = PreferencesDialog::create(glade);
+	preferences_dialog.run();
+	preferences_dialog.hide();
 	update();
 }
 
@@ -457,9 +458,9 @@ void MainWindow::set_display_mode(DisplayMode mode)
 
 void MainWindow::show_scheduled_recordings_dialog()
 {
-	ScheduledRecordingsDialog* scheduled_recordings_dialog = ScheduledRecordingsDialog::create(glade);
-	scheduled_recordings_dialog->run();
-	scheduled_recordings_dialog->hide();
+	ScheduledRecordingsDialog& scheduled_recordings_dialog = ScheduledRecordingsDialog::create(glade);
+	scheduled_recordings_dialog.run();
+	scheduled_recordings_dialog.hide();
 }
 
 void MainWindow::on_tool_button_record_clicked()

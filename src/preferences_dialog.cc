@@ -21,11 +21,12 @@
 #include "preferences_dialog.h"
 #include "application.h"
 
-PreferencesDialog* PreferencesDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+PreferencesDialog& PreferencesDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	PreferencesDialog* preferences_dialog = NULL;
 	glade->get_widget_derived("dialog_preferences", preferences_dialog);
-	return preferences_dialog;
+	check_glade(preferences_dialog, "dialog_preferences");
+	return *preferences_dialog;
 }
 
 PreferencesDialog::PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)

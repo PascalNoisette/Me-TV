@@ -63,7 +63,7 @@ private:
 public:	
 	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	
-	static ScheduledRecordingsDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static ScheduledRecordingsDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 
 	void update();
 };

@@ -24,11 +24,12 @@
 #include "application.h"
 #include "channels_conf_line.h"
 
-ScanWindow* ScanWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+ScanWindow& ScanWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
-	ScanWindow* scan_window = NULL;
-	glade->get_widget_derived("window_scan_wizard", scan_window);
-	return scan_window;
+	ScanWindow* scan_dialog = NULL;
+	glade->get_widget_derived("window_scan_wizard", scan_dialog);
+	check_glade(scan_dialog, "window_scan_wizard");
+	return *scan_dialog;
 }
 
 Glib::ustring ScanWindow::get_initial_tuning_dir()

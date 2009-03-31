@@ -112,7 +112,7 @@ public:
 		
 	void on_show();
 
-	static ScanWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static ScanWindow& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 };
 
 #endif

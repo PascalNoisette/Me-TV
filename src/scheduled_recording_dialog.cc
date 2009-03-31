@@ -23,11 +23,12 @@
 #include "main_window.h"
 #include "application.h"
 
-ScheduledRecordingDialog* ScheduledRecordingDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+ScheduledRecordingDialog& ScheduledRecordingDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	ScheduledRecordingDialog* scheduled_recording_dialog = NULL;
 	glade->get_widget_derived("dialog_scheduled_recording", scheduled_recording_dialog);
-	return scheduled_recording_dialog;
+	check_glade(scheduled_recording_dialog, "dialog_scheduled_recording");
+	return *scheduled_recording_dialog;
 }
 
 ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :

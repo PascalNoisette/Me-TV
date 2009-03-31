@@ -125,4 +125,9 @@ public:
 	~GdkUnlock();
 };
 
+Gtk::Widget* get_widget(Glib::RefPtr<Gnome::Glade::Xml> glade,
+	const Glib::ustring& name);
+
+void check_glade(Gtk::Widget* widget, const Glib::ustring& name);
+
 #endif
