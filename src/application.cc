@@ -34,7 +34,7 @@ Application& get_application()
 
 Application::Application(int argc, char *argv[], Glib::OptionContext& option_context) :
 	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context),
-	application_dir(Glib::build_filename(Glib::get_home_dir(), ".me-tv")),
+	application_dir(make_application_directory()),
 	connection(Glib::build_filename(get_application_dir(), "/me-tv.db"))
 {
 	g_debug("Application constructor");
@@ -350,7 +350,6 @@ void Application::run()
 	{
 		g_debug("Me TV database initialsed successfully");
 
-		g_debug("Loading channels ...");
 		channel_manager.load();
 		
 		channel_manager.signal_display_channel_changed.connect(
@@ -450,6 +449,18 @@ Application& Application::get_current()
 	}
 	
 	return *current;
+}
+
+Glib::ustring Application::make_application_directory()
+{
+	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
+	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
+	if (!file->query_exists())
+	{
+		g_debug("Creating directory '%s'", path.c_str());
+		file->make_directory();
+	}
+	return path;
 }
 
 void Application::stop_stream_thread()

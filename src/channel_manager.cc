@@ -67,7 +67,7 @@ void ChannelManager::load()
 
 	Data::DataTable data_table_channels = adapter_channel.select_rows("", "sort_order");
 
-	g_debug("Loading channels");
+	g_debug("Loading channels ...");
 	for (Data::Rows::iterator i = data_table_channels.rows.begin(); i != data_table_channels.rows.end(); i++)
 	{
 		Data::Row row_channel = *i;
@@ -146,7 +146,7 @@ void ChannelManager::load()
 		
 		add_channel(channel);
 	}
-	g_debug("Finished loading channels");
+	g_debug("Channels loaded");
 }
 
 void ChannelManager::save()
