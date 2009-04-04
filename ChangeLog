@@ -2,6 +2,7 @@
 
 	* 0.8.1
 	* Creating ~/.me-tv directory on startup (LP: #353796) 
+	* Fix for extended EPG events so that descriptions make sense
 
 2009-03-28  Michael Lamothe <michael.lamothe@gmail.com>
 
