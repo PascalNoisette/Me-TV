@@ -569,7 +569,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 	section.last_table_id =					get_bits (buffer, 104, 8);
 
 	unsigned int offset = 14;
-	
+
 	while (offset < (section_length - CRC_BYTE_SIZE))
 	{
 		Event event;
@@ -584,7 +584,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 		duration				= get_bits (&buffer[offset], 56, 24);
 		event.running_status	= get_bits (&buffer[offset], 80, 3);
 		event.free_CA_mode		= get_bits (&buffer[offset], 83, 1);
-
+		
 		unsigned int descriptors_loop_length  = get_bits (&buffer[offset], 84, 12);
 		offset += 12;
 		unsigned int end_descriptor_offset = descriptors_loop_length + offset;
@@ -626,11 +626,14 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 			t.tm_year	= event_start_year - 1900;
 			
 			event.start_time = mktime(&t);
-		
+
+			EventText event_text;
 			while (offset < end_descriptor_offset)
 			{
-				offset += decode_event_descriptor(&buffer[offset], event);
+				offset += decode_event_descriptor(&buffer[offset], event_text);
 			}
+
+			event.texts.push_back(event_text);
 
 			if (offset > end_descriptor_offset)
 			{
@@ -649,7 +652,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 	}
 }
 
-gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event& event)
+gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, EventText& event_text)
 {
 	if (event_buffer[1] == 0)
 	{
@@ -666,10 +669,10 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 			Glib::ustring language;
 			Glib::ustring title;
 			Glib::ustring description;
-			Glib::ustring temp_description;
 			Glib::ustring temp_title;
+			Glib::ustring temp_description;
 
-			language = get_lang_desc (event_buffer);
+			language = get_lang_desc (event_buffer + 1);
 			unsigned int offset = 6;
 			guint length_of_items = event_buffer[offset];
 			offset++;
@@ -680,30 +683,40 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 
 				offset += get_text(temp_title, &event_buffer[offset]);
 				title += temp_title;
+				
 			}
 			offset += get_text(temp_description, &event_buffer[offset]);
-			description += temp_description;
+			description	+= temp_description;
 			
-			EventText event_text;
-			event_text.is_extended = true;
-			event_text.language = language;
-			event_text.description += description;
-			event_text.title += title;
+			if (!event_text.is_extended)
+			{
+				event_text.description.clear();
+			}
 			
-			event.texts.push_back(event_text);
+			event_text.is_extended	= true;
+			event_text.language		= language;
+			event_text.title		+= title;
+			event_text.description	+= description;			
 		}
 		break;
 
 	case SHORT_EVENT:
 		{
-			EventText event_text;
+			Glib::ustring	title;
+			Glib::ustring	description;
+						
 			event_text.is_extended = false;
 			event_text.language = get_lang_desc (event_buffer);
 			unsigned int offset = 5;
-			offset += get_text(event_text.title, &event_buffer[offset]);
-			offset += get_text(event_text.description, &event_buffer[offset]);
-					
-			event.texts.push_back(event_text);
+			offset += get_text(title, &event_buffer[offset]);
+			offset += get_text(description, &event_buffer[offset]);
+			
+			event_text.title = title;
+
+			if (!event_text.is_extended)
+			{
+				event_text.description = description;
+			}
 		}
 		break;
 	default:
