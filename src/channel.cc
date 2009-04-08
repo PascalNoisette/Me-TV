@@ -61,4 +61,3 @@ gboolean ChannelList::contains(guint channel_id)
 	
 	return false;
 }
-

@@ -410,7 +410,7 @@ void ScanWindow::on_signal_progress(guint step, gsize total)
 	{
 		g_debug("Invalid fraction: %f", fraction);
 		g_debug("STEP: %d", step);
-		g_debug("TOTAL: %d", total);
+		g_debug("TOTAL: %d", (guint)total);
 	}
 	else
 	{

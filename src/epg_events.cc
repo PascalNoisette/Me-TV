@@ -59,6 +59,7 @@ gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)
 		list.push_back(epg_event);
 		list.sort(sort_function);
 		g_debug("EPG Event %d (%s) added", epg_event.event_id, epg_event.get_title().c_str());
+//		g_debug("DESCRIPTION: '%s'", epg_event.get_description().c_str());
 	}
 	return !event_exists;
 }

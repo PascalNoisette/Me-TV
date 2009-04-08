@@ -66,7 +66,11 @@ namespace Dvb
 			Glib::ustring description;
 		};
 		
-		typedef std::list<EventText> EventTextList;
+		class EventTextMap : public std::map<Glib::ustring, EventText>
+		{
+		public:
+			gboolean contains(const Glib::ustring& language);
+		};
 		
 		class Event
 		{
@@ -79,7 +83,7 @@ namespace Dvb
 			guint	running_status;
 			guint	free_CA_mode;
 			
-			EventTextList texts;
+			EventTextMap texts;
 		};
 
 		typedef std::list<Event> EventList;
@@ -245,7 +249,7 @@ namespace Dvb
 			gboolean find_descriptor(uint8_t tag, const unsigned char *buf, int descriptors_loop_len, const unsigned char **desc, int *desc_len);
 			guint get_bits(const guchar* buffer, guint bitpos, gsize bitcount);
 			Glib::ustring convert_iso6937(const guchar* buffer, gsize length);
-			gsize decode_event_descriptor (const guchar* buffer, EventText& event_text);
+			gsize decode_event_descriptor (const guchar* buffer, Event& event);
 			gsize read_section(Demuxer& demuxer);
 		
 			fe_code_rate_t parse_fec_inner(guint bitmask);

@@ -103,7 +103,7 @@ private:
 	void create_engine();
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
-	~MainWindow();
+	virtual ~MainWindow();
 		
 	static MainWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 		

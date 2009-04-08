@@ -1,3 +1,9 @@
+2009-04-08  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.2
+	* Fix for bad EPG data collection if multiple languages
+	* Fixed errors from Gentoo output
+
 2009-04-05  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.1

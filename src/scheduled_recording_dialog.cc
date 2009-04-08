@@ -118,11 +118,11 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 ScheduledRecording ScheduledRecordingDialog::get_scheduled_recording()
 {
 	ScheduledRecording scheduled_recording;
-	scheduled_recording.scheduled_recording_id = scheduled_recording_id;
-	scheduled_recording.description = entry_description->get_text();
-	scheduled_recording.type = 0;
-	scheduled_recording.channel_id = channel_combo_box->get_selected_channel_id();
-	scheduled_recording.start_time = date_edit_start_time->get_time();
-	scheduled_recording.duration = spinbutton_duration->get_value() * 60;
+	scheduled_recording.scheduled_recording_id	= scheduled_recording_id;
+	scheduled_recording.description				= entry_description->get_text();
+	scheduled_recording.type					= 0;
+	scheduled_recording.channel_id				= channel_combo_box->get_selected_channel_id();
+	scheduled_recording.start_time				= date_edit_start_time->get_time();
+	scheduled_recording.duration				= (int)spinbutton_duration->get_value() * 60;
 	return scheduled_recording;
 }

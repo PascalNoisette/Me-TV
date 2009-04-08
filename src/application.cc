@@ -119,7 +119,9 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 }
 
 Application::~Application()
-{	
+{
+	channel_manager.save();
+	
 	if (timeout_source != 0)
 	{
 		g_source_remove(timeout_source);

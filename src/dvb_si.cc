@@ -541,7 +541,7 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 		{
 			EventText event_text;
 			get_atsc_text (event_text.title, &buffer[offset++]);
-			event.texts.push_back(event_text);
+			event.texts[event_text.language] = event_text;
 			offset += title_length;
 		}
 		
@@ -627,20 +627,17 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 			
 			event.start_time = mktime(&t);
 
-			EventText event_text;
 			while (offset < end_descriptor_offset)
 			{
-				offset += decode_event_descriptor(&buffer[offset], event_text);
+				offset += decode_event_descriptor(&buffer[offset], event);
 			}
-
-			event.texts.push_back(event_text);
 
 			if (offset > end_descriptor_offset)
 			{
 				throw Exception(_("ASSERT: offset > end_descriptor_offset"));
 			}
 
-			section.events.push_back( event );
+			section.events.push_back(event);
 		}
 	}
 	section.crc = get_bits (&buffer[offset], 0, 32);
@@ -652,7 +649,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 	}
 }
 
-gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, EventText& event_text)
+gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event& event)
 {
 	if (event_buffer[1] == 0)
 	{
@@ -673,40 +670,72 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, EventT
 			Glib::ustring temp_description;
 
 			language = get_lang_desc (event_buffer + 1);
+			
+			if (!event.texts.contains(language))
+			{
+				EventText event_text_temp;
+				event.texts[language] = event_text_temp;
+				event_text_temp.language = language;
+			}
+			EventText& event_text = event.texts[language];
+			
 			unsigned int offset = 6;
 			guint length_of_items = event_buffer[offset];
 			offset++;
 			while (length_of_items > offset - 7)
 			{
 				offset += get_text(temp_description, &event_buffer[offset]);			
-				description += temp_description;
+				if (temp_description != "-")
+				{
+					description += temp_description;
+					g_debug("DESCRIPTION: '* %s'", description.c_str());
+				}
 
 				offset += get_text(temp_title, &event_buffer[offset]);
-				title += temp_title;
-				
+				if (temp_title != "-")
+				{
+					title += temp_title;
+				}
 			}
 			offset += get_text(temp_description, &event_buffer[offset]);
-			description	+= temp_description;
+			if (temp_description != "-")
+			{
+				description	+= temp_description;
+				g_debug("DESCRIPTION: '** %s'", description.c_str());
+			}
 			
 			if (!event_text.is_extended)
 			{
 				event_text.description.clear();
 			}
 			
+			g_debug("DESCRIPTION: '*** %s'", description.c_str());
+			
 			event_text.is_extended	= true;
-			event_text.language		= language;
 			event_text.title		+= title;
-			event_text.description	+= description;			
+			event_text.description	+= description;
+
+			g_debug("DESCRIPTION: '**** %s'", event_text.description.c_str());
 		}
 		break;
 
 	case SHORT_EVENT:
 		{
+			Glib::ustring	language;
 			Glib::ustring	title;
 			Glib::ustring	description;
-						
+			
+			language = get_lang_desc (event_buffer);
+			if (!event.texts.contains(language))
+			{
+				EventText event_text_temp;
+				event.texts[language] = event_text_temp;
+				event_text_temp.language = language;
+			}
+			EventText& event_text = event.texts[language];
+
 			event_text.is_extended = false;
-			event_text.language = get_lang_desc (event_buffer);
+			event_text.language = language;
 			unsigned int offset = 5;
 			offset += get_text(title, &event_buffer[offset]);
 			offset += get_text(description, &event_buffer[offset]);
@@ -715,7 +744,7 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, EventT
 
 			if (!event_text.is_extended)
 			{
-				event_text.description = description;
+				event_text.description += description;
 			}
 		}
 		break;
@@ -1177,4 +1206,17 @@ Glib::ustring SectionParser::convert_iso6937(const guchar* text_buffer, gsize le
 		}
 	}
 	return result;
+}
+
+gboolean EventTextMap::contains(const Glib::ustring& language)
+{
+	for (const_iterator i = begin(); i != end(); i++)
+	{
+		if (i->first == language)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }

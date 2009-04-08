@@ -99,12 +99,12 @@ void PreferencesDialog::run()
 	if (Dialog::run() == Gtk::RESPONSE_OK)
 	{
 		application.set_string_configuration_value("recording_directory", file_chooser_button_recording_directory->get_filename());
-		application.set_int_configuration_value("record_extra_before", spin_button_record_extra_before->get_value());
-		application.set_int_configuration_value("record_extra_after", spin_button_record_extra_after->get_value());
-		application.set_int_configuration_value("epg_span_hours", spin_button_epg_span_hours->get_value());
-		application.set_int_configuration_value("epg_page_size", spin_button_epg_page_size->get_value());
+		application.set_int_configuration_value("record_extra_before", (int)spin_button_record_extra_before->get_value());
+		application.set_int_configuration_value("record_extra_after", (int)spin_button_record_extra_after->get_value());
+		application.set_int_configuration_value("epg_span_hours", (int)spin_button_epg_span_hours->get_value());
+		application.set_int_configuration_value("epg_page_size", (int)spin_button_epg_page_size->get_value());
 		application.set_string_configuration_value("broadcast_address", entry_broadcast_address->get_text());
-		application.set_int_configuration_value("broadcast_port", spin_button_broadcast_port->get_value());
+		application.set_int_configuration_value("broadcast_port", (int)spin_button_broadcast_port->get_value());
 		application.set_string_configuration_value("preferred_language", entry_preferred_language->get_text());
 		application.set_string_configuration_value("engine_type", combo_box_engine_type->get_active_text());
 		application.set_string_configuration_value("xine.video_driver", entry_xine_video_driver->get_text());
