@@ -1,3 +1,8 @@
+2009-04-09  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.3
+	* Fixed bug where instant record was stopped because scheduled_recording_id is not being cleared
+
 2009-04-08  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.2

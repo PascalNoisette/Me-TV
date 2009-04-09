@@ -718,6 +718,7 @@ void Application::stop_recording()
 		{
 			scheduled_recording_manager.delete_scheduled_recording(scheduled_recording_id);
 		}
+		scheduled_recording_id = 0;
 	
 		update();
 		g_debug("Recording stopped");
