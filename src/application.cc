@@ -92,6 +92,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_int_configuration_default("height", 500);
 	set_string_configuration_default("default_frontend", "");
 	set_int_configuration_default("epg_page_size", 20);
+	set_string_configuration_default("screensaver_poke_command", "gnome-screensaver-command --poke");
 	set_string_configuration_default ("gstreamer_command_line",
 		"filesrc location=\"%1\" ! queue ! decodebin name=decoder " \
 		"decoder. ! queue ! deinterlace name=deinterlace ! queue ! " \

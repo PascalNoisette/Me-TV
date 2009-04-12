@@ -1,3 +1,8 @@
+2009-04-13  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.5
+	* Changed screensaver poke method to be a configurable command (Default: gnome-screensaver-command --poke)
+
 2009-04-12  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.4

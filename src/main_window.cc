@@ -428,17 +428,9 @@ void MainWindow::on_timeout()
 		Glib::RefPtr<Gdk::Window> window = get_window();
 		gboolean is_minimised = window == NULL || window->get_state() & Gdk::WINDOW_STATE_ICONIFIED;
 		if (is_visible() && !is_minimised)
-		{ 		
-			Display* display = GDK_DISPLAY();
-
-			XLockDisplay (display);
-			XTestFakeKeyEvent (display, *keycode, True, CurrentTime);
-			XTestFakeKeyEvent (display, *keycode, False, CurrentTime);
-			XUnlockDisplay (display);
-			if (keycode == &keycode1)
-				keycode = &keycode2;
-			else
-				keycode = &keycode1;
+		{
+			g_debug("Poking screensaver");
+			Glib::spawn_command_line_async(get_application().get_string_configuration_value("screensaver_poke_command"));
 		}
 		last_poke_time = now;
 	}
