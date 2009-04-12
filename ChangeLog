@@ -1,3 +1,8 @@
+2009-04-12  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.4
+	* Fix for forward slashes in description (LP: #359710)
+
 2009-04-09  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.3
