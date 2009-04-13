@@ -32,10 +32,7 @@
 #include "lib_vlc_engine.h"
 #include "xine_lib_engine.h"
 #include "lib_gstreamer_engine.h"
-#include <X11/Xlib.h>
-#include <X11/extensions/XTest.h>
 #include <libgnome/libgnome.h>
-#include <linux/input.h>
 #include <gdk/gdkx.h>
 
 #define POKE_INTERVAL 		30
