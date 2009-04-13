@@ -425,6 +425,9 @@ void MainWindow::on_timeout()
 	// Disable screensaver
 	if (now - last_poke_time > POKE_INTERVAL)
 	{
+		// Update last poke time first, i.e. don't try a re-poke every second if it fails
+		last_poke_time = now;
+
 		Glib::RefPtr<Gdk::Window> window = get_window();
 		gboolean is_minimised = window == NULL || window->get_state() & Gdk::WINDOW_STATE_ICONIFIED;
 		if (is_visible() && !is_minimised)
@@ -432,7 +435,6 @@ void MainWindow::on_timeout()
 			g_debug("Poking screensaver");
 			Glib::spawn_command_line_async(get_application().get_string_configuration_value("screensaver_poke_command"));
 		}
-		last_poke_time = now;
 	}
 	
 	CATCH
