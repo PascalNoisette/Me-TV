@@ -177,6 +177,11 @@ void ChannelManager::save()
 	adapter_epg_event_text.delete_rows(clause_epg_event_text);
 	
 	g_debug("Saving channels");
+	
+	// Update sort_order = 0 to flag unused channels for removal later
+	adapter_channel.update_rows("sort_order = 0");
+	
+	int channel_count = 0;
 	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
 	{
 		Channel& channel = *i;
@@ -190,7 +195,7 @@ void ChannelManager::save()
 		row["channel_id"].int_value		= channel.channel_id;
 		row["name"].string_value		= channel.name;
 		row["flags"].int_value			= channel.flags;
-		row["sort_order"].int_value		= channel.sort_order;
+		row["sort_order"].int_value		= ++channel_count;
 		row["mrl"].string_value			= channel.mrl;
 		row["service_id"].int_value		= channel.service_id;
 		row["frequency"].int_value		= channel.transponder.frontend_parameters.frequency;
@@ -225,6 +230,9 @@ void ChannelManager::save()
 		data_table_channel.rows.push_back(row);
 	}
 	adapter_channel.replace_rows(data_table_channel);
+	
+	// Delete channels that are not used
+	adapter_channel.delete_rows("sort_order = 0");
 		
 	g_debug("Saving EPG events");
 	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)

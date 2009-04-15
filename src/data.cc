@@ -311,6 +311,7 @@ TableAdapter::TableAdapter(Connection& connection, Table& table)
 	select_command = Glib::ustring::compose("SELECT %1 FROM %2", fields, table.name);
 	replace_command = Glib::ustring::compose("REPLACE INTO %1 (%2) VALUES (%3)", table.name, replace_fields, replace_values);
 	delete_command = Glib::ustring::compose("DELETE FROM %1", table.name);
+	update_command = Glib::ustring::compose("UPDATE %1 SET", table.name);
 }
 
 void TableAdapter::replace_rows(DataTable& data_table)
@@ -355,36 +356,19 @@ void TableAdapter::replace_rows(DataTable& data_table)
 	}
 }
 
-void TableAdapter::delete_row(guint key)
-{
-	Glib::ustring clause = Glib::ustring::compose("%1 = %2", table.primary_key, key);
-	delete_rows(clause);
-}
-
-void TableAdapter::delete_rows(const Glib::ustring& clause)
-{
-	Glib::ustring command = delete_command;
-	if (clause.length() > 0)
-	{
-		command += Glib::ustring::compose(" WHERE %1", clause);
-	}
-	Statement& statement = connection.create_statement(command);
-	statement.step();
-}
-
 DataTable TableAdapter::select_row(guint key)
 {
-	Glib::ustring clause = Glib::ustring::compose("%1 = %2", table.name, table.primary_key, key);
-	return select_rows(clause);
+	Glib::ustring where = Glib::ustring::compose("%1 = %2", table.name, table.primary_key, key);
+	return select_rows(where);
 }
 
-DataTable TableAdapter::select_rows(const Glib::ustring& clause, const Glib::ustring& sort)
+DataTable TableAdapter::select_rows(const Glib::ustring& where, const Glib::ustring& sort)
 {
 	DataTable data_table(table);
 	Glib::ustring command = select_command;
-	if (clause.length() > 0)
+	if (where.length() > 0)
 	{
-		command += Glib::ustring::compose(" WHERE %1", clause);
+		command += Glib::ustring::compose(" WHERE %1", where);
 	}
 	if (sort.length() > 0)
 	{
@@ -416,6 +400,40 @@ DataTable TableAdapter::select_rows(const Glib::ustring& clause, const Glib::ust
 		data_table.rows.push_back(row);
 	}
 	return data_table;
+}
+
+void TableAdapter::delete_row(guint key)
+{
+	Glib::ustring where = Glib::ustring::compose("%1 = %2", table.primary_key, key);
+	delete_rows(where);
+}
+
+void TableAdapter::delete_rows(const Glib::ustring& where)
+{
+	Glib::ustring command = delete_command;
+	if (where.length() > 0)
+	{
+		command += Glib::ustring::compose(" WHERE %1", where);
+	}
+	Statement& statement = connection.create_statement(command);
+	statement.step();
+}
+
+void TableAdapter::update_rows(const Glib::ustring& set, const Glib::ustring& where)
+{
+	DataTable data_table(table);
+	Glib::ustring command = update_command;
+	if (set.length() > 0)
+	{
+		command += Glib::ustring::compose(" %1", set);
+	}
+	if (where.length() > 0)
+	{
+		command += Glib::ustring::compose(" WHERE %1", where);
+	}
+	
+	Statement& statement = connection.create_statement(command);
+	statement.step();
 }
 
 void Connection::vacuum()

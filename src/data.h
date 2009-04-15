@@ -229,6 +229,7 @@ namespace Data
 		Glib::ustring select_command;
 		Glib::ustring replace_command;
 		Glib::ustring delete_command;
+		Glib::ustring update_command;
 	public:
 		TableAdapter(Connection& connection, Table& table);
 
@@ -238,8 +239,10 @@ namespace Data
 		void delete_rows(const Glib::ustring& clause = "");
 
 		DataTable select_row(guint key);
-		DataTable select_rows(const Glib::ustring& clause = "", const Glib::ustring& sort = "");
+		DataTable select_rows(const Glib::ustring& where = "", const Glib::ustring& sort = "");
 			
+		void update_rows(const Glib::ustring& set = "", const Glib::ustring& where = "");
+
 		void replace_rows(DataTable& data_table);
 	};
 }
