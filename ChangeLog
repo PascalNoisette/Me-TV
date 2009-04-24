@@ -2,6 +2,7 @@
 
 	* 0.8.6
 	* Added default device option to command line
+	* Scheduled recordings now have a device parameter
 	* Screensaver failure message should now only show once
 
 2009-04-15  Michael Lamothe <michael.lamothe@gmail.com>
