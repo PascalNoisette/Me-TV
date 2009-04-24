@@ -31,11 +31,15 @@ void ScheduledRecordingManager::load()
 {
 	Glib::RecMutex::Lock lock(mutex);
 
+	Glib::ustring frontend_path = get_application().device_manager.get_frontend().get_path();
+	
 	g_debug("Loading scheduled recordings");
 
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
 	Data::TableAdapter adapter(get_application().connection, table);
-	Data::DataTable data_table = adapter.select_rows("", "start_time");
+	
+	Glib::ustring where = Glib::ustring::compose("device = '%1'", frontend_path);
+	Data::DataTable data_table = adapter.select_rows(where, "start_time");
 	
 	scheduled_recordings.clear();
 	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
