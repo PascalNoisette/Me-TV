@@ -23,7 +23,7 @@
 #include "devices_dialog.h"
 
 #define GCONF_PATH					"/apps/me-tv"
-#define CURRENT_DATABASE_VERSION	1
+#define CURRENT_DATABASE_VERSION	2
 
 Application* Application::current = NULL;
 
@@ -201,6 +201,7 @@ gboolean Application::initialise_database()
 	table_scheduled_recording.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_scheduled_recording.columns.add("start_time",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_scheduled_recording.columns.add("duration",				Data::DATA_TYPE_INTEGER, 0, false);
+	table_scheduled_recording.columns.add("device",					Data::DATA_TYPE_STRING, 200, false);
 	table_scheduled_recording.primary_key = "scheduled_recording_id";
 	schema.tables.add(table_scheduled_recording);
 

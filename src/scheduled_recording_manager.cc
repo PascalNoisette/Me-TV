@@ -48,6 +48,7 @@ void ScheduledRecordingManager::load()
 		scheduled_recording.description				= row["description"].string_value;
 		scheduled_recording.start_time				= row["start_time"].int_value;
 		scheduled_recording.duration				= row["duration"].int_value;
+		scheduled_recording.device					= row["device"].string_value;
 
 		scheduled_recordings[scheduled_recording.scheduled_recording_id] = scheduled_recording;
 	}
@@ -73,6 +74,7 @@ void ScheduledRecordingManager::save()
 		row["description"].string_value			= scheduled_recording.description;
 		row["start_time"].int_value				= scheduled_recording.start_time;
 		row["duration"].int_value				= scheduled_recording.duration;
+		row["device"].string_value				= scheduled_recording.device;
 				
 		data_table.rows.add(row);
 	}
@@ -108,6 +110,7 @@ void ScheduledRecordingManager::add_scheduled_recording(ScheduledRecording& sche
 	row["description"].string_value			= scheduled_recording.description;
 	row["start_time"].int_value				= scheduled_recording.start_time;
 	row["duration"].int_value				= scheduled_recording.duration;
+	row["device"].string_value				= scheduled_recording.device;
 	data_table.rows.add(row);
 
 	Data::TableAdapter adapter(get_application().connection, table);
@@ -162,22 +165,22 @@ guint ScheduledRecordingManager::check_scheduled_recordings()
 	if (!scheduled_recordings.empty())
 	{
 		guint now = time(NULL);
-		g_debug("======================================================================");
 		g_debug("Now: %d", now);
-		g_debug("======================================================================");
-		g_debug("#ID | Start Time | Duration | Record | Channel    | Description");
-		g_debug("======================================================================");
+		g_debug("=============================================================================================");
+		g_debug("#ID | Start Time | Duration | Record | Channel    | Device                      | Description");
+		g_debug("=============================================================================================");
 		for (ScheduledRecordingMap::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 		{			
 			ScheduledRecording& scheduled_recording = scheduled_recordings[i->first];
 				
 			gboolean record = scheduled_recording.is_in(now);
-			g_debug("%3d | %d | %8d | %s | %10s | %s",
+			g_debug("%3d | %d | %8d | %s | %10s | %27s | %s",
 				scheduled_recording.scheduled_recording_id,
 				scheduled_recording.start_time,
 				scheduled_recording.duration,
 				record ? "true  " : "false ",
 				application.channel_manager.get_channel(scheduled_recording.channel_id).name.c_str(),
+				scheduled_recording.device.c_str(),
 				scheduled_recording.description.c_str());
 			
 			if (record)

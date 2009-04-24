@@ -43,6 +43,7 @@ ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, co
 	tree_view_scheduled_recordings->append_column(_("Channel"), columns.column_channel);
 	tree_view_scheduled_recordings->append_column(_("Start Time"), columns.column_start_time);
 	tree_view_scheduled_recordings->append_column(_("Duration"), columns.column_duration);
+	tree_view_scheduled_recordings->append_column(_("Device"), columns.column_device);
 	
 	list_store->set_sort_column(columns.column_sort, Gtk::SORT_ASCENDING);
 }
@@ -89,6 +90,7 @@ void ScheduledRecordingsDialog::update()
 		row[columns.column_channel]					= channel_manager.get_channel(scheduled_recording.channel_id).name;
 		row[columns.column_start_time]				= scheduled_recording.get_start_time_text();
 		row[columns.column_duration]				= scheduled_recording.get_duration_text();
+		row[columns.column_device]					= scheduled_recording.device;
 	}
 }
 

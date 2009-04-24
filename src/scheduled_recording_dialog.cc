@@ -124,5 +124,6 @@ ScheduledRecording ScheduledRecordingDialog::get_scheduled_recording()
 	scheduled_recording.channel_id				= channel_combo_box->get_selected_channel_id();
 	scheduled_recording.start_time				= date_edit_start_time->get_time();
 	scheduled_recording.duration				= (int)spinbutton_duration->get_value() * 60;
+	scheduled_recording.device					= get_application().device_manager.get_frontend().get_path();
 	return scheduled_recording;
 }

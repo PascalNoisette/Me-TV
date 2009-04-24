@@ -33,7 +33,8 @@ public:
 	guint			channel_id;
 	guint			start_time;
 	guint			duration;
-
+	Glib::ustring	device;
+		
 	ScheduledRecording();
 		
 	Glib::ustring get_start_time_text() const;
