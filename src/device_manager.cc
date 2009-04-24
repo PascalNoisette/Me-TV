@@ -59,7 +59,7 @@ DeviceManager::DeviceManager()
 					g_debug("Frontend not supported");
 				}
 				else
-				{
+				{					
 					frontends.push_back(current);
 				}
 			}
@@ -73,11 +73,6 @@ DeviceManager::DeviceManager()
 		}
 
 		adapter_path = get_adapter_path(++adapter_count);
-	}
-	
-	if (frontends.size() > 0)
-	{
-		set_frontend(**frontends.begin());
 	}
 }
 
@@ -121,7 +116,7 @@ Dvb::Frontend& DeviceManager::get_frontend()
 	return *frontend;
 }
 
-Dvb::Frontend* DeviceManager::get_frontend_by_path(const Glib::ustring& path)
+Dvb::Frontend* DeviceManager::find_frontend_by_path(const Glib::ustring& path)
 {
 	Dvb::Frontend* result = NULL;
 

@@ -32,6 +32,7 @@
 extern bool verbose_logging;
 extern bool safe_mode;
 extern bool minimised_mode;
+extern Glib::ustring default_device;
 
 typedef sigc::signal<void, const Glib::ustring&> StringSignal;
 

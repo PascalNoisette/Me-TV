@@ -73,10 +73,16 @@ int main (int argc, char *argv[])
 	minimised_option_entry.set_short_name('m');
 	minimised_option_entry.set_description(_("Start minimised in notification area"));
 
+	Glib::OptionEntry device_option_entry;
+	device_option_entry.set_long_name("device");
+	device_option_entry.set_short_name('d');
+	device_option_entry.set_description(_("Set the default DVB frontend device (e.g. /dev/dvb/adapter0/frontend0)"));
+
 	Glib::OptionGroup option_group(PACKAGE_NAME, "", _("Show Me TV help options"));
 	option_group.add_entry(verbose_option_entry, verbose_logging);
 	option_group.add_entry(safe_mode_option_entry, safe_mode);
 	option_group.add_entry(minimised_option_entry, minimised_mode);
+	option_group.add_entry(device_option_entry, default_device);
 
 	Glib::OptionContext* option_context = new Glib::OptionContext();
 	option_context->set_summary(ME_TV_SUMMARY);

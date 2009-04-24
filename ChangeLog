@@ -1,3 +1,9 @@
+2009-04-24  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.6
+	* Added default device option to command line
+	* Screensaver failure message should now only show once
+
 2009-04-15  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.5

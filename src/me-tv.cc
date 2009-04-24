@@ -26,6 +26,7 @@
 bool verbose_logging;
 bool safe_mode;
 bool minimised_mode;
+Glib::ustring default_device;
 
 StringSignal signal_error;
 

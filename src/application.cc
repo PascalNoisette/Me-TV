@@ -90,7 +90,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_int_configuration_default("y", 10);
 	set_int_configuration_default("width", 500);
 	set_int_configuration_default("height", 500);
-	set_string_configuration_default("default_frontend", "");
 	set_int_configuration_default("epg_page_size", 20);
 	set_string_configuration_default("screensaver_poke_command", "gnome-screensaver-command --poke");
 	set_string_configuration_default ("gstreamer_command_line",
@@ -367,28 +366,24 @@ void Application::run()
 		
 		const FrontendList& frontends = device_manager.get_frontends();
 
-		Glib::ustring default_frontend = get_string_configuration_value("default_frontend");
-		if (default_frontend.empty())
+		if (!default_device.empty())
 		{
-			if (frontends.size() > 1)
+			Dvb::Frontend* default_frontend = device_manager.find_frontend_by_path(default_device);
+			
+			if (default_frontend == NULL)
 			{
-				main_window->show();
-				main_window->show_devices_dialog();
-
-				// Only need to set this when there's more than 1 adapter
-				set_string_configuration_value("default_frontend", device_manager.get_frontend().get_path());
+				Glib::ustring message = Glib::ustring::compose(
+					_("Failed to load default device '%1'"), default_device);
+				throw Exception(message);
 			}
+			
+			device_manager.set_frontend(*default_frontend);
 		}
 		else
 		{
-			Dvb::Frontend* frontend = device_manager.get_frontend_by_path(default_frontend);
-			if (frontend == NULL)
+			if (frontends.size() > 0)
 			{
-				g_debug("Default device not available");
-			}
-			else
-			{
-				device_manager.set_frontend(*frontend);
+				device_manager.set_frontend(**frontends.begin());
 			}
 		}
 
