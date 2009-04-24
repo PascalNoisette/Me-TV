@@ -352,19 +352,7 @@ void Application::run()
 	if (initialise_database())
 	{
 		g_debug("Me TV database initialsed successfully");
-
-		channel_manager.load();
-		
-		channel_manager.signal_display_channel_changed.connect(
-			sigc::mem_fun(*this, &Application::on_display_channel_changed));	
-
-		scheduled_recording_manager.load();
-		
-		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
-
-		status_icon = new StatusIcon(glade);
-		main_window = MainWindow::create(glade);
-		
+				
 		const FrontendList& frontends = device_manager.get_frontends();
 
 		if (!default_device.empty())
@@ -388,6 +376,16 @@ void Application::run()
 			}
 		}
 
+		channel_manager.load();
+		
+		channel_manager.signal_display_channel_changed.connect(
+			sigc::mem_fun(*this, &Application::on_display_channel_changed));	
+
+		scheduled_recording_manager.load();
+
+		status_icon = new StatusIcon(glade);
+		main_window = MainWindow::create(glade);
+
 		if (!minimised_mode)
 		{
 			main_window->show();
@@ -397,6 +395,8 @@ void Application::run()
 				main_window->show_preferences_dialog();
 			}
 		}
+
+		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 
 		TRY
 		device_manager.get_frontend();
