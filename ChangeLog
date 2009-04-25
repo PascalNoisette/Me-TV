@@ -1,3 +1,9 @@
+2009-04-25  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.7
+	* Added --disable-epg-thread and --disable-epg command line options
+	* Will not call screensaver poke command if empty
+
 2009-04-24  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.6

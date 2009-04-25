@@ -78,11 +78,21 @@ int main (int argc, char *argv[])
 	device_option_entry.set_short_name('d');
 	device_option_entry.set_description(_("Set the default DVB frontend device (e.g. /dev/dvb/adapter0/frontend0)"));
 
+	Glib::OptionEntry disable_epg_thread_option_entry;
+	disable_epg_thread_option_entry.set_long_name("disable-epg-thread");
+	disable_epg_thread_option_entry.set_description(_("Disable the EPG thread.  Me TV will stop collecting EPG events."));
+
+	Glib::OptionEntry disable_epg_option_entry;
+	disable_epg_option_entry.set_long_name("disable-epg");
+	disable_epg_option_entry.set_description(_("Stops the rendering of the EPG event buttons on the UI."));
+
 	Glib::OptionGroup option_group(PACKAGE_NAME, "", _("Show Me TV help options"));
 	option_group.add_entry(verbose_option_entry, verbose_logging);
 	option_group.add_entry(safe_mode_option_entry, safe_mode);
 	option_group.add_entry(minimised_option_entry, minimised_mode);
 	option_group.add_entry(device_option_entry, default_device);
+	option_group.add_entry(disable_epg_thread_option_entry, disable_epg_thread);
+	option_group.add_entry(disable_epg_option_entry, disable_epg);
 
 	Glib::OptionContext* option_context = new Glib::OptionContext();
 	option_context->set_summary(ME_TV_SUMMARY);

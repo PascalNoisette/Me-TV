@@ -25,8 +25,6 @@
 
 Glib::RecMutex statement_mutex;
 
-#define CURRENT_VERSION 2
-
 using namespace Data;
 
 class SQLiteException : public Exception

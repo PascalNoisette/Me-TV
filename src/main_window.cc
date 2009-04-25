@@ -430,8 +430,12 @@ void MainWindow::on_timeout()
 		{
 			try
 			{
-				g_debug("Poking screensaver");
-				Glib::spawn_command_line_async(get_application().get_string_configuration_value("screensaver_poke_command"));
+				Glib::ustring screensaver_poke_command = get_application().get_string_configuration_value("screensaver_poke_command");
+				if (!screensaver_poke_command.empty())
+				{
+					g_debug("Poking screensaver");
+					Glib::spawn_command_line_async(screensaver_poke_command);
+				}
 			}
 			catch(...)
 			{

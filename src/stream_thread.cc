@@ -574,24 +574,30 @@ void StreamThread::setup_dvb()
 
 void StreamThread::start_epg_thread()
 {
-	Lock lock(mutex, "StreamThread::start_epg_thread()");
+	if (!disable_epg_thread)
+	{
+		Lock lock(mutex, "StreamThread::start_epg_thread()");
 
-	stop_epg_thread();
-	epg_thread = new EpgThread();
-	epg_thread->start();
-	g_debug("EPG thread started");
+		stop_epg_thread();
+		epg_thread = new EpgThread();
+		epg_thread->start();
+		g_debug("EPG thread started");
+	}
 }
 
 void StreamThread::stop_epg_thread()
 {
-	Lock lock(mutex, "StreamThread::stop_epg_thread()");
-
-	if (epg_thread != NULL)
+	if (!disable_epg_thread)
 	{
-		g_debug("Stopping EPG thread");
-		delete epg_thread;
-		epg_thread = NULL;
-		g_debug("EPG thread stopped");
+		Lock lock(mutex, "StreamThread::stop_epg_thread()");
+
+		if (epg_thread != NULL)
+		{
+			g_debug("Stopping EPG thread");
+			delete epg_thread;
+			epg_thread = NULL;
+			g_debug("EPG thread stopped");
+		}
 	}
 }
 

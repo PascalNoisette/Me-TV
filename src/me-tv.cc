@@ -27,6 +27,8 @@ bool verbose_logging;
 bool safe_mode;
 bool minimised_mode;
 Glib::ustring default_device;
+bool disable_epg_thread;
+bool disable_epg;
 
 StringSignal signal_error;
 
