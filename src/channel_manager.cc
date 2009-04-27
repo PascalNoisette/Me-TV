@@ -156,26 +156,9 @@ void ChannelManager::save()
 	Application& application = get_application();
 	
 	Data::Table table_channel			= application.get_schema().tables["channel"];
-	Data::Table table_epg_event			= application.get_schema().tables["epg_event"];
-	Data::Table table_epg_event_text	= application.get_schema().tables["epg_event_text"];
-
 	Data::TableAdapter adapter_channel(application.connection, table_channel);
-	Data::TableAdapter adapter_epg_event(application.connection, table_epg_event);
-	Data::TableAdapter adapter_epg_event_text(application.connection, table_epg_event_text);
-
 	Data::DataTable data_table_channel(table_channel);
-	Data::DataTable data_table_epg_event(table_epg_event);
-	Data::DataTable data_table_epg_event_text(table_epg_event_text);
-
-	g_debug("Deleting old EPG events");
-	Glib::ustring clause_epg_event = Glib::ustring::compose("(START_TIME+DURATION)<%1", convert_to_local_time(time(NULL)));
-	adapter_epg_event.delete_rows(clause_epg_event);
-
-	g_debug("Deleting old EPG event texts");
-	Glib::ustring clause_epg_event_text =
-		"NOT EXISTS (SELECT epg_event_id FROM epg_event WHERE epg_event.epg_event_id = epg_event_text.epg_event_id)";
-	adapter_epg_event_text.delete_rows(clause_epg_event_text);
-	
+		
 	g_debug("Saving channels");
 	
 	// Update sort_order = 0 to flag unused channels for removal later
@@ -186,7 +169,7 @@ void ChannelManager::save()
 	{
 		Channel& channel = *i;
 		
-		channel.epg_events.prune();
+		g_debug("Saving channel '%s'", channel.name.c_str());
 
 		Data::Row row;
 		
@@ -228,70 +211,16 @@ void ChannelManager::save()
 			row["modulation"].int_value				= channel.transponder.frontend_parameters.u.vsb.modulation;
 		}
 		data_table_channel.rows.push_back(row);
+
+		channel.epg_events.save(channel.channel_id);
+
+		g_debug("Channel '%s' saved", channel.name.c_str());
 	}
 	adapter_channel.replace_rows(data_table_channel);
 	
 	// Delete channels that are not used
 	adapter_channel.delete_rows("sort_order = 0");
-		
-	g_debug("Saving EPG events");
-	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
-	{
-		Channel& channel = *i;
-		EpgEventList& epg_event_list = channel.epg_events.get_list();
-		for (EpgEventList::iterator j = epg_event_list.begin(); j != epg_event_list.end(); j++)
-		{
-			EpgEvent& epg_event = *j;
-			
-			if (epg_event.save)
-			{
-				Data::Row row;
-				
-				row.auto_increment = &(epg_event.epg_event_id);
-				row["epg_event_id"].int_value	= epg_event.epg_event_id;
-				row["channel_id"].int_value		= channel.channel_id;
-				row["event_id"].int_value		= epg_event.event_id;
-				row["start_time"].int_value		= epg_event.start_time;
-				row["duration"].int_value		= epg_event.duration;
-				
-				data_table_epg_event.rows.add(row);
-			}
-		}
-	}
-	adapter_epg_event.replace_rows(data_table_epg_event);
 
-	g_debug("Saving EPG event text");
-	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
-	{
-		Channel& channel = *i;
-		EpgEventList& epg_event_list = channel.epg_events.get_list();
-		for (EpgEventList::iterator j = epg_event_list.begin(); j != epg_event_list.end(); j++)
-		{
-			EpgEvent& epg_event = *j;
-			
-			if (epg_event.save)
-			{
-				for (EpgEventTextList::iterator k = epg_event.texts.begin(); k != epg_event.texts.end(); k++)
-				{
-					EpgEventText epg_event_text = *k;
-					Data::Row row;
-					
-					row.auto_increment = &(epg_event_text.epg_event_text_id);
-					row["epg_event_text_id"].int_value	= epg_event_text.epg_event_text_id;
-					row["epg_event_id"].int_value		= epg_event.epg_event_id;
-					row["language"].string_value		= epg_event_text.language;
-					row["title"].string_value			= epg_event_text.title;
-					row["description"].string_value		= epg_event_text.description;
-					
-					data_table_epg_event_text.rows.add(row);
-				}
-
-				epg_event.save = false;
-			}
-		}
-	}
-	adapter_epg_event_text.replace_rows(data_table_epg_event_text);
-	
 	g_debug("Channels saved");
 }
 

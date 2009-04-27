@@ -688,7 +688,6 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 				if (temp_description != "-")
 				{
 					description += temp_description;
-					g_debug("DESCRIPTION: '* %s'", description.c_str());
 				}
 
 				offset += get_text(temp_title, &event_buffer[offset]);
@@ -701,7 +700,6 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 			if (temp_description != "-")
 			{
 				description	+= temp_description;
-				g_debug("DESCRIPTION: '** %s'", description.c_str());
 			}
 			
 			if (!event_text.is_extended)
@@ -709,13 +707,9 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 				event_text.description.clear();
 			}
 			
-			g_debug("DESCRIPTION: '*** %s'", description.c_str());
-			
 			event_text.is_extended	= true;
 			event_text.title		+= title;
 			event_text.description	+= description;
-
-			g_debug("DESCRIPTION: '**** %s'", event_text.description.c_str());
 		}
 		break;
 

@@ -316,11 +316,12 @@ void TableAdapter::replace_rows(DataTable& data_table)
 {
 	Glib::ustring primary_key = data_table.table.primary_key;
 	
+	Statement& statement = connection.create_statement(replace_command);
+	
 	if (data_table.rows.size() > 0)
 	{
 		for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 		{
-			Statement& statement = connection.create_statement(replace_command);
 			Data::Row& row = *i;
 
 			for (Columns::iterator j = data_table.table.columns.begin(); j != data_table.table.columns.end(); j++)
@@ -342,7 +343,9 @@ void TableAdapter::replace_rows(DataTable& data_table)
 					}
 				}
 			}
+			g_debug("*** '%s' STEPPING", data_table.table.name.c_str());
 			statement.step();
+			g_debug("*** '%s' REPLACE", data_table.table.name.c_str());
 			
 			if (row.auto_increment != NULL && *row.auto_increment == 0)
 			{

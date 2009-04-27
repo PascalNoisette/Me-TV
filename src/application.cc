@@ -594,7 +594,6 @@ gboolean Application::on_timeout()
 	if (last_seconds > seconds)
 	{
 		check_scheduled_recordings();
-		channel_manager.save();
 		update();
 	}
 	last_seconds = seconds;

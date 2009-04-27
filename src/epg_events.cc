@@ -20,6 +20,8 @@
 
 #include "epg_events.h"
 #include "me-tv.h"
+#include "data.h"
+#include "application.h"
 
 EpgEvents::EpgEvents()
 {
@@ -47,7 +49,7 @@ gboolean EpgEvents::exists(const EpgEvent& epg_event)
 
 bool sort_function(const EpgEvent& a, const EpgEvent& b)
 {
-	return a.event_id < b.event_id;
+	return a.start_time < b.start_time;
 }
 
 gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)
@@ -59,7 +61,6 @@ gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)
 		list.push_back(epg_event);
 		list.sort(sort_function);
 		g_debug("EPG Event %d (%s) added", epg_event.event_id, epg_event.get_title().c_str());
-//		g_debug("DESCRIPTION: '%s'", epg_event.get_description().c_str());
 	}
 	return !event_exists;
 }
@@ -90,7 +91,7 @@ gboolean EpgEvents::get_current(EpgEvent& epg_event)
 	return found;
 }
 
-EpgEventList& EpgEvents::get_list()
+const EpgEventList& EpgEvents::get_list()
 {
 	Glib::RecMutex::Lock lock(mutex);
 	return list;
@@ -107,6 +108,83 @@ void EpgEvents::prune()
 {
 	now = convert_to_local_time(time(NULL));
 
-	Glib::RecMutex::Lock lock(mutex);
 	list.remove_if(is_old);
+}
+
+void EpgEvents::save(guint channel_id)
+{
+	Glib::RecMutex::Lock lock(mutex);
+
+	Application& application = get_application();
+	
+	Data::Table table_epg_event			= application.get_schema().tables["epg_event"];
+	Data::Table table_epg_event_text	= application.get_schema().tables["epg_event_text"];
+
+	Data::TableAdapter adapter_epg_event(application.connection, table_epg_event);
+	Data::TableAdapter adapter_epg_event_text(application.connection, table_epg_event_text);
+
+	Data::DataTable data_table_epg_event(table_epg_event);
+	Data::DataTable data_table_epg_event_text(table_epg_event_text);
+
+	g_debug("Deleting old EPG events");
+	Glib::ustring clause_epg_event = Glib::ustring::compose("(START_TIME+DURATION)<%1", convert_to_local_time(time(NULL)));
+	adapter_epg_event.delete_rows(clause_epg_event);
+
+	g_debug("Deleting old EPG event texts");
+	Glib::ustring clause_epg_event_text =
+		"NOT EXISTS (SELECT epg_event_id FROM epg_event WHERE epg_event.epg_event_id = epg_event_text.epg_event_id)";
+	adapter_epg_event_text.delete_rows(clause_epg_event_text);
+
+	g_debug("Saving %d EPG events", list.size());
+	for (EpgEventList::iterator j = list.begin(); j != list.end(); j++)
+	{
+		EpgEvent& epg_event = *j;
+		
+		if (epg_event.save)
+		{
+			Data::Row row_epg_event;
+			
+			row_epg_event.auto_increment = &(epg_event.epg_event_id);
+			row_epg_event["epg_event_id"].int_value	= epg_event.epg_event_id;
+			row_epg_event["channel_id"].int_value	= channel_id;
+			row_epg_event["event_id"].int_value		= epg_event.event_id;
+			row_epg_event["start_time"].int_value	= epg_event.start_time;
+			row_epg_event["duration"].int_value		= epg_event.duration;
+			
+			data_table_epg_event.rows.add(row_epg_event);
+		}
+	}
+
+	// Have to do this before updating the EPG event texts to get the correct epg_event_id
+	adapter_epg_event.replace_rows(data_table_epg_event);
+
+	g_debug("Saving EPG event texts");
+	for (EpgEventList::iterator j = list.begin(); j != list.end(); j++)
+	{
+		EpgEvent& epg_event = *j;
+		
+		if (epg_event.save)
+		{
+			for (EpgEventTextList::iterator k = epg_event.texts.begin(); k != epg_event.texts.end(); k++)
+			{
+				EpgEventText epg_event_text = *k;
+				Data::Row row_epg_event_text;
+			
+				row_epg_event_text.auto_increment = &(epg_event_text.epg_event_text_id);
+				row_epg_event_text["epg_event_text_id"].int_value	= epg_event_text.epg_event_text_id;
+				row_epg_event_text["epg_event_id"].int_value		= epg_event.epg_event_id;
+				row_epg_event_text["language"].string_value			= epg_event_text.language;
+				row_epg_event_text["title"].string_value			= epg_event_text.title;
+				row_epg_event_text["description"].string_value		= epg_event_text.description;
+			
+				data_table_epg_event_text.rows.add(row_epg_event_text);
+			}
+			
+			epg_event.save = false;
+		}
+	}
+	
+	adapter_epg_event_text.replace_rows(data_table_epg_event_text);		
+
+	g_debug("EPG events saved");
 }

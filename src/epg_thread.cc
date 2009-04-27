@@ -216,6 +216,17 @@ void EpgThread::run()
 		{
 			g_debug("Exception in EPG thread: %s", ex.what().c_str());
 		}
+		
+		static guint last_seconds = 60;
+		
+		guint now = time(NULL);
+		
+		guint seconds = now % 60;
+		if (last_seconds > seconds)
+		{
+			channel_manager.save();
+		}
+		last_seconds = seconds;		
 	}
 
 	THREAD_CATCH;
