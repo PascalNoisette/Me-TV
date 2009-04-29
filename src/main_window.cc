@@ -124,6 +124,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	Gtk::RadioMenuItem* menu_item_audio_channels_both = dynamic_cast<Gtk::RadioMenuItem*>(glade->get_widget("radio_menu_item_audio_channels_both"));
 	menu_item_audio_channels_both->set_active(true);
 
+	Gtk::MenuItem* menu_item_subtitle_streams = dynamic_cast<Gtk::MenuItem*>(glade->get_widget("menu_item_subtitle_streams"));
+	menu_item_subtitle_streams->set_submenu(subtitle_streams_menu);
+
 	g_debug("MainWindow constructed");
 }
 
@@ -620,14 +623,14 @@ void MainWindow::update()
 	
 	if (audio_streams_menu.items().empty())
 	{
-		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("No audio streams available"));
+		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("None available"));
 		menu_item->show_all();
 		audio_streams_menu.items().push_back(*menu_item);
 	}
 	
 	if (subtitle_streams_menu.items().empty())
 	{
-		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("No subtitle streams available"));
+		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("None available"));
 		menu_item->show_all();
 		subtitle_streams_menu.items().push_back(*menu_item);
 	}
