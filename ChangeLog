@@ -2,6 +2,7 @@
 
 	* 0.8.8
 	* Took channel save out of the main GDK thread because in Jaunty it is very slow causing UI lock-ups.
+	* Added subtitle support
 
 2009-04-25  Michael Lamothe <michael.lamothe@gmail.com>
 
