@@ -33,8 +33,8 @@ private:
 public:
 	ChannelManager();
 		
-	void load();
-	void save();
+	void load(Data::Connection& connection);
+	void save(Data::Connection& connection);
 	
 	Glib::StaticRecMutex& get_mutex() { return mutex; }
 		
@@ -49,7 +49,6 @@ public:
 	void add_channels(const ChannelList& channels);
 	void set_channels(const ChannelList& channels);
 	void clear();
-	sigc::signal<void, const Channel&> signal_display_channel_changed;
 	Channel& get_channel(guint channel_id);
 	Channel* find_channel(guint frequency, guint service_id);
 	Channel* find_channel(guint channel_id);

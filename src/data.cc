@@ -32,15 +32,17 @@ class SQLiteException : public Exception
 public:
 	SQLiteException(sqlite3* connection, const Glib::ustring& exception_message) :
 		Exception(Glib::ustring::compose("%1: %2", exception_message, Glib::ustring(sqlite3_errmsg(connection)))) {}
+	SQLiteException(Connection& connection, const Glib::ustring& exception_message) :
+		Exception(Glib::ustring::compose("%1: %2", exception_message, connection.get_error_message())) {}
 };
 
-Statement::Statement(sqlite3* connection, const Glib::ustring& command) :
+Statement::Statement(Connection& connection, const Glib::ustring& command) :
 	lock(statement_mutex), connection(connection), command(command)
 {
 	statement = NULL;
 	const char* remaining = NULL;
 	
-	if (sqlite3_prepare_v2(connection, command.c_str(), -1, &statement, &remaining) != 0)
+	if (sqlite3_prepare_v2(connection.get_connection(), command.c_str(), -1, &statement, &remaining) != 0)
 	{
 		if (remaining == NULL || *remaining == 0)
 		{
@@ -64,6 +66,8 @@ Statement::Statement(sqlite3* connection, const Glib::ustring& command) :
 	{
 		throw SQLiteException(connection, _("Failed to create statement"));
 	}
+	
+	g_debug(">>> Statement created");
 }
 
 Statement::~Statement()
@@ -72,6 +76,7 @@ Statement::~Statement()
 	{
 		throw SQLiteException(connection, _("Failed to finalise statement"));
 	}
+	g_debug("<<< Statement deleted");
 }
 
 void Statement::reset()
@@ -268,7 +273,7 @@ void SchemaAdapter::initialise_table(Table& table)
         
         command += ");";
         
-        Statement& statement = connection.create_statement(command);
+        Statement statement(connection, command);
         statement.step();
 }
 
@@ -281,7 +286,7 @@ void SchemaAdapter::drop_schema()
 		g_debug("Dropping table '%s'", table.name.c_str());
 		
 		Glib::ustring command = Glib::ustring::compose("DROP TABLE %1", table.name);
-		Statement& statement = connection.create_statement(command);
+        Statement statement(connection, command);
 		statement.step();
 	}
 }
@@ -316,7 +321,7 @@ void TableAdapter::replace_rows(DataTable& data_table)
 {
 	Glib::ustring primary_key = data_table.table.primary_key;
 	
-	Statement& statement = connection.create_statement(replace_command);
+	Statement statement(connection, replace_command);
 	
 	if (data_table.rows.size() > 0)
 	{
@@ -376,7 +381,7 @@ DataTable TableAdapter::select_rows(const Glib::ustring& where, const Glib::ustr
 		command += Glib::ustring::compose(" ORDER BY %1", sort);
 	}
 	
-	Statement& statement = connection.create_statement(command);
+    Statement statement(connection, command);
 	while (statement.step() == SQLITE_ROW)
 	{
 		Row row;
@@ -416,7 +421,7 @@ void TableAdapter::delete_rows(const Glib::ustring& where)
 	{
 		command += Glib::ustring::compose(" WHERE %1", where);
 	}
-	Statement& statement = connection.create_statement(command);
+    Statement statement(connection, command);
 	statement.step();
 }
 
@@ -433,12 +438,12 @@ void TableAdapter::update_rows(const Glib::ustring& set, const Glib::ustring& wh
 		command += Glib::ustring::compose(" WHERE %1", where);
 	}
 	
-	Statement& statement = connection.create_statement(command);
+    Statement statement(connection, command);
 	statement.step();
 }
 
 void Connection::vacuum()
 {
-	Statement& statement = create_statement("VACUUM");
+    Statement statement(*this, "VACUUM");
 	statement.step();
 }

@@ -22,6 +22,7 @@
 #define __EPG_EVENTS_H__
 
 #include "epg_event.h"
+#include "data.h"
 
 typedef std::list<EpgEvent> EpgEventList;
 
@@ -41,7 +42,7 @@ public:
 	gboolean			get_current(EpgEvent& epg_event);
 	const EpgEventList&	get_list();
 	void				prune();
-	void				save(guint channel_id);
+	void				save(Data::Connection& connection, guint channel_id);
 };
 
 #endif

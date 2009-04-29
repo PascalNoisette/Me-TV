@@ -111,8 +111,6 @@ me_tv_SOURCES = \
 	scheduled_recording_manager.cc \
 	scheduled_recording_manager.h
 
-me_tv_CXXFLAGS = 
-
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \
 	LFS_LDFLAGS` `getconf \

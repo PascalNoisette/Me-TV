@@ -38,9 +38,6 @@
 #define POKE_INTERVAL 		30
 #define UPDATE_INTERVAL		60
 
-KeyCode keycode1, keycode2;
-KeyCode *keycode;
-
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)
 	: Gnome::UI::App(cobject), glade(glade_xml)
 {
@@ -48,23 +45,16 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 
 	g_static_rec_mutex_init(mutex.gobj());
 
-	display_mode		= DISPLAY_MODE_EPG;
-	last_update_time	= 0;
-	last_poke_time		= 0;
-	timeout_source		= 0;
-	engine				= NULL;
-	output_fd			= -1;
-	mute_state			= false;
-	audio_channel_state	= Engine::AUDIO_CHANNEL_STATE_BOTH;
-	audio_stream_index	= 0;
-
-	keycode1 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_L);
-	keycode2 = XKeysymToKeycode (GDK_DISPLAY(), XK_Alt_R);
-	if (keycode2 == 0)
-	{
-		keycode2 = keycode1;
-	}
-	keycode = &keycode1;
+	display_mode			= DISPLAY_MODE_EPG;
+	last_update_time		= 0;
+	last_poke_time			= 0;
+	timeout_source			= 0;
+	engine					= NULL;
+	output_fd				= -1;
+	mute_state				= false;
+	audio_channel_state		= Engine::AUDIO_CHANNEL_STATE_BOTH;
+	audio_stream_index		= 0;
+	subtitle_stream_index	= 0;
 
 	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
 	app_bar->get_progress()->hide();
@@ -503,6 +493,18 @@ void MainWindow::on_menu_item_audio_stream_activate(guint index)
 	}
 }
 
+void MainWindow::on_menu_item_subtitle_stream_activate(guint index)
+{
+	Glib::RecMutex::Lock lock(mutex);
+
+	g_debug("MainWindow::on_menu_item_subtitle_stream_activate(%d)", index);
+	if (engine != NULL)
+	{
+		subtitle_stream_index = index;
+		engine->set_subtitle_stream(subtitle_stream_index);
+	}
+}
+
 void MainWindow::update()
 {	
 	Application& application = get_application();
@@ -539,10 +541,14 @@ void MainWindow::update()
 		widget_epg->update();
 	}
 
-	Gtk::Menu_Helpers::MenuList& items = audio_streams_menu.items();
-	items.erase(items.begin(), items.end());
+	Gtk::Menu_Helpers::MenuList& audio_items = audio_streams_menu.items();
+	audio_items.erase(audio_items.begin(), audio_items.end());
+
+	Gtk::Menu_Helpers::MenuList& subtitle_items = subtitle_streams_menu.items();
+	subtitle_items.erase(subtitle_items.begin(), subtitle_items.end());
 
 	Gtk::RadioMenuItem::Group audio_streams_menu_group;
+	Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
 	
 	// Acquire stream thread lock
 	Glib::RecMutex::Lock application_lock(application.get_mutex());
@@ -582,6 +588,34 @@ void MainWindow::update()
 
 			count++;
 		}
+
+		std::vector<Dvb::SI::SubtitleStream> subtitle_streams = stream.subtitle_streams;
+		count = 0;
+		
+		g_debug("Subtitle streams: %zu", subtitle_streams.size());
+		for (std::vector<Dvb::SI::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); i++)
+		{
+			Dvb::SI::SubtitleStream subtitle_stream = *i;
+			Glib::ustring text = Glib::ustring::compose("%1: %2", count, subtitle_stream.language);
+			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
+			menu_item->show_all();
+			subtitle_streams_menu.items().push_back(*menu_item);
+			
+			if (count == subtitle_stream_index)
+			{
+				menu_item->set_active(true);
+			}
+			
+			menu_item->signal_activate().connect(
+				sigc::bind<guint>
+				(
+					sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
+					count
+				)
+			);
+
+			count++;
+		}
 	}
 	
 	if (audio_streams_menu.items().empty())
@@ -589,6 +623,13 @@ void MainWindow::update()
 		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("No audio streams available"));
 		menu_item->show_all();
 		audio_streams_menu.items().push_back(*menu_item);
+	}
+	
+	if (subtitle_streams_menu.items().empty())
+	{
+		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("No subtitle streams available"));
+		menu_item->show_all();
+		subtitle_streams_menu.items().push_back(*menu_item);
 	}
 }
 

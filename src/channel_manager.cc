@@ -51,9 +51,9 @@ ChannelManager::ChannelManager()
 	g_static_rec_mutex_init(mutex.gobj());
 }
 
-void ChannelManager::load()
+void ChannelManager::load(Data::Connection& connection)
 {
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	Application& application = get_application();
 
@@ -61,9 +61,9 @@ void ChannelManager::load()
 	Data::Table table_epg_event			= application.get_schema().tables["epg_event"];
 	Data::Table table_epg_event_text	= application.get_schema().tables["epg_event_text"];
 
-	Data::TableAdapter adapter_channel(application.connection, table_channel);
-	Data::TableAdapter adapter_epg_event(application.connection, table_epg_event);
-	Data::TableAdapter adapter_epg_event_text(application.connection, table_epg_event_text);
+	Data::TableAdapter adapter_channel(connection, table_channel);
+	Data::TableAdapter adapter_epg_event(connection, table_epg_event);
+	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
 
 	Data::DataTable data_table_channels = adapter_channel.select_rows("", "sort_order");
 
@@ -149,21 +149,21 @@ void ChannelManager::load()
 	g_debug("Channels loaded");
 }
 
-void ChannelManager::save()
+void ChannelManager::save(Data::Connection& connection)
 {
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	Application& application = get_application();
 	
-	Data::Table table_channel			= application.get_schema().tables["channel"];
-	Data::TableAdapter adapter_channel(application.connection, table_channel);
+	Data::Table table_channel = application.get_schema().tables["channel"];
+	Data::TableAdapter adapter_channel(connection, table_channel);
 	Data::DataTable data_table_channel(table_channel);
 		
 	g_debug("Saving channels");
 	
 	// Update sort_order = 0 to flag unused channels for removal later
 	adapter_channel.update_rows("sort_order = 0");
-	
+		
 	int channel_count = 0;
 	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
 	{
@@ -212,7 +212,7 @@ void ChannelManager::save()
 		}
 		data_table_channel.rows.push_back(row);
 
-		channel.epg_events.save(channel.channel_id);
+		channel.epg_events.save(connection, channel.channel_id);
 
 		g_debug("Channel '%s' saved", channel.name.c_str());
 	}
@@ -228,7 +228,7 @@ Channel* ChannelManager::find_channel(guint channel_id)
 {
 	Channel* channel = NULL;
 
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 	ChannelList::iterator iterator = channels.begin();
 	while (iterator != channels.end() && channel == NULL)
 	{
@@ -258,29 +258,26 @@ Channel& ChannelManager::get_channel(guint channel_id)
 
 void ChannelManager::set_display_channel(guint channel_id)
 {
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 	set_display_channel(get_channel(channel_id));
 }
 
 void ChannelManager::set_display_channel(const Channel& channel)
 {
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	g_message("Setting display channel to '%s' (%d)", channel.name.c_str(), channel.channel_id);
-	display_channel = find_channel(channel.channel_id);
-	if (display_channel == NULL)
+	Channel* new_display_channel = find_channel(channel.channel_id);
+	if (new_display_channel == NULL)
 	{
 		throw Exception(_("Failed to set display channel: channel not found"));
 	}
-	else
-	{
-		signal_display_channel_changed(*display_channel);
-	}
+	display_channel = new_display_channel;
 }
 
 void ChannelManager::add_channels(const ChannelList& c)
 {
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	ChannelList::const_iterator iterator = c.begin();
 	while (iterator != c.end())
@@ -293,7 +290,7 @@ void ChannelManager::add_channels(const ChannelList& c)
 
 void ChannelManager::add_channel(const Channel& channel)
 {
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	if (channels.size() >= MAX_CHANNELS)
 	{
@@ -324,7 +321,7 @@ Channel* ChannelManager::get_display_channel()
 
 void ChannelManager::clear()
 {
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 	channels.clear();
 	g_debug("Channels cleared");
 }
@@ -333,7 +330,7 @@ Channel* ChannelManager::find_channel(guint frequency, guint service_id)
 {
 	Channel* result = NULL;
 	
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end() && result == NULL; iterator++)
 	{
 		Channel& channel = *iterator;
@@ -350,7 +347,7 @@ void ChannelManager::set_channels(const ChannelList& new_channels)
 {
 	g_debug("Setting channels");
 	
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	guint display_channel_frequency = 0;
 	guint display_channel_service_id = 0;
@@ -364,7 +361,6 @@ void ChannelManager::set_channels(const ChannelList& new_channels)
 	
 	clear();
 	add_channels(new_channels);
-	save();
 
 	if (display_channel_frequency != 0)
 	{
@@ -384,7 +380,7 @@ void ChannelManager::set_channels(const ChannelList& new_channels)
 
 void ChannelManager::next_channel()
 {
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	if (channels.empty())
 	{
@@ -421,7 +417,7 @@ void ChannelManager::next_channel()
 
 void ChannelManager::previous_channel()
 {
-	LockLogger(mutex, __PRETTY_FUNCTION__);
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	if (channels.empty())
 	{

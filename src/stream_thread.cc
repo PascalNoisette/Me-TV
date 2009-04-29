@@ -111,7 +111,7 @@ void StreamThread::start()
 {
 	setup_dvb();
 	g_debug("Starting stream thread");
-	Thread::start();	
+	Thread::start();
 	start_epg_thread();
 }
 
@@ -194,6 +194,7 @@ void StreamThread::run()
 		write(buffer, bytes_read);
 	}
 	THREAD_CATCH
+		
 	g_debug("StreamThread loop exited");
 	
 	Lock lock(mutex, "StreamThread::run() - exit");

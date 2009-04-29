@@ -45,10 +45,10 @@ private:
 	guint								timeout_source;
 	gboolean							record_state;
 	gboolean							broadcast_state;
-	bool								on_quit();
 	Glib::ustring						application_dir;
 	Data::Schema						schema;
 	guint								scheduled_recording_id;
+	Glib::ustring						database_filename;
 
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
@@ -57,6 +57,7 @@ private:
 		
 	Glib::ustring make_application_directory();
 		
+	bool on_quit();
 	void on_display_channel_changed(const Channel& channel);
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
@@ -78,10 +79,10 @@ public:
 	StreamThread*			get_stream_thread();
 	void					stop_stream_thread();
 	void					restart_stream();
-	void					set_source(const Channel& channel);
 	gboolean				initialise_database();
 	Data::Schema			get_schema() const { return schema; }
 
+	const Glib::ustring& get_database_filename();
 	void update();
 		
 	Glib::ustring	get_string_configuration_value(const Glib::ustring& key);
@@ -94,7 +95,8 @@ public:
 	
 	Glib::RefPtr<Gnome::Glade::Xml> get_glade() { return glade; }
 	
-	sigc::signal<void> signal_configuration_changed;
+	void set_display_channel(const Channel channel);
+	void set_display_channel(guint channel_id);
 
 	gboolean is_recording();
 	void start_recording(const Glib::ustring& filename = "");

@@ -24,9 +24,6 @@
 #include "me-tv.h"
 #include <sqlite3.h>
 #include <linux/dvb/frontend.h>
-#include "channel.h"
-#include "epg_event.h"
-#include "scheduled_recording.h"
 
 namespace Data
 {
@@ -37,18 +34,35 @@ namespace Data
 		Glib::ustring	string_value;
 	};
 	
-	typedef std::map<Glib::ustring, Value> Parameters;
+	typedef std::map<Glib::ustring, Value> Parameters;	
+
+	class Connection
+	{
+	private:
+		sqlite3*	connection;
+		gboolean	database_created;
+	public:
+		Connection(const Glib::ustring& filename);
+		~Connection();
+
+		int get_last_insert_rowid();
+		gboolean get_database_created() const { return database_created; }
+		void vacuum();
+		
+		sqlite3* get_connection() { return connection; }
+		Glib::ustring get_error_message() { return sqlite3_errmsg(connection); }
+	};
 	
 	class Statement
 	{
 	private:
 		Glib::RecMutex::Lock	lock;
 		sqlite3_stmt*			statement;
-		sqlite3*				connection;
+		Connection&				connection;
 		Glib::ustring			command;
 
 	public:
-		Statement(sqlite3* connection, const Glib::ustring& command);
+		Statement(Connection& connection, const Glib::ustring& command);
 		~Statement();
 
 		void reset();
@@ -64,25 +78,6 @@ namespace Data
 		void set_string_parameter(const Glib::ustring& name, const Glib::ustring& value);
 	};
 
-	class Connection
-	{
-	private:
-		sqlite3*	connection;
-		gboolean	database_created;
-	public:
-		Connection(const Glib::ustring& filename);
-		~Connection();
-			
-		Statement& create_statement(const Glib::ustring& command)
-		{
-			return *(new Statement(connection, command));
-		}
-
-		int get_last_insert_rowid();
-		gboolean get_database_created() const { return database_created; }
-		void vacuum();
-	};
-	
 	typedef enum
 	{
 		DATA_TYPE_INTEGER,

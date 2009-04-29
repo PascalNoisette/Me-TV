@@ -224,7 +224,12 @@ void EpgThread::run()
 		guint seconds = now % 60;
 		if (last_seconds > seconds)
 		{
-			channel_manager.save();
+			
+			Data::Connection connection(application.get_database_filename());
+			
+			g_debug("EPG thread saving channels");
+			channel_manager.save(connection);
+			g_debug("EPG thread saved channels");
 		}
 		last_seconds = seconds;		
 	}

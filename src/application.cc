@@ -35,7 +35,8 @@ Application& get_application()
 Application::Application(int argc, char *argv[], Glib::OptionContext& option_context) :
 	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context),
 	application_dir(make_application_directory()),
-	connection(Glib::build_filename(get_application_dir(), "/me-tv.db"))
+	database_filename(Glib::build_filename(get_application_dir(), "/me-tv.db")),
+	connection(get_database_filename())
 {
 	g_debug("Application constructor");
 
@@ -61,6 +62,12 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	get_signal_error().clear();
 	get_signal_error().connect(sigc::mem_fun(*this, &Application::on_error));
 
+	g_debug("sqlite3_threadsafe() = %d", sqlite3_threadsafe());
+	if (sqlite3_threadsafe() == 0)
+	{
+		throw Exception(_("The SQLite version is not thread-safe"));
+	}
+	
 	client = Gnome::Conf::Client::get_default_client();
 	
 	set_int_configuration_default("epg_span_hours", 3);
@@ -120,7 +127,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 
 Application::~Application()
 {
-	channel_manager.save();
+	channel_manager.save(connection);
 	
 	if (timeout_source != 0)
 	{
@@ -132,6 +139,11 @@ Application::~Application()
 		delete main_window;
 		main_window = NULL;
 	}
+}
+
+const Glib::ustring& Application::get_database_filename()
+{
+	return database_filename;
 }
 
 gboolean Application::initialise_database()
@@ -376,11 +388,7 @@ void Application::run()
 			}
 		}
 
-		channel_manager.load();
-		
-		channel_manager.signal_display_channel_changed.connect(
-			sigc::mem_fun(*this, &Application::on_display_channel_changed));	
-
+		channel_manager.load(connection);
 		scheduled_recording_manager.load();
 
 		status_icon = new StatusIcon(glade);
@@ -418,7 +426,7 @@ void Application::run()
 			{
 				last_channel = (*channels.begin()).channel_id;
 			}
-			channel_manager.set_display_channel(last_channel);
+			set_display_channel(last_channel);
 		}
 		CATCH
 		
@@ -472,10 +480,29 @@ void Application::stop_stream_thread()
 	}
 }
 
-void Application::set_source(const Channel& channel)
+void Application::update()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	preferred_language = get_string_configuration_value("preferred_language");	
 
+	if (main_window != NULL)
+	{
+		main_window->update();
+	}
+	
+	if (status_icon != NULL)
+	{
+		status_icon->update();
+	}
+}
+
+void Application::set_display_channel(const Channel channel)
+{
+	if (record_state == true)
+	{
+		g_debug("Changing channel, stopping recording");
+		stop_recording();
+	}
+	
 	main_window->stop_engine();
 	stop_stream_thread();
 	stream_thread = new StreamThread(channel);
@@ -498,36 +525,16 @@ void Application::set_source(const Channel& channel)
 		stop_stream_thread();
 		get_signal_error().emit(exception.what().c_str());
 	}
-	
+		
+	channel_manager.set_display_channel(channel);
+	set_int_configuration_value("last_channel", channel.channel_id);
+
 	update();
 }
 
-void Application::update()
+void Application::set_display_channel(guint channel_id)
 {
-	preferred_language = get_string_configuration_value("preferred_language");	
-
-	if (main_window != NULL)
-	{
-		main_window->update();
-	}
-	
-	if (status_icon != NULL)
-	{
-		status_icon->update();
-	}
-}
-
-void Application::on_display_channel_changed(const Channel& channel)
-{
-	TRY
-	if (record_state == true)
-	{
-		g_debug("Changing channel, stopping recording");
-		stop_recording();
-	}
-	set_source(channel);
-	set_int_configuration_value("last_channel", channel.channel_id);
-	CATCH
+	set_display_channel(channel_manager.get_channel(channel_id));
 }
 
 MainWindow& Application::get_main_window()
@@ -556,7 +563,7 @@ void Application::check_scheduled_recordings()
 		else
 		{			
 			g_debug("Changing channel for scheduled recording");
-			channel_manager.set_display_channel(scheduled_recording.channel_id);
+			set_display_channel(scheduled_recording.channel_id);
 		}
 		
 		if (record_state == true)
@@ -801,6 +808,6 @@ void Application::restart_stream()
 	Channel* channel = channel_manager.get_display_channel();
 	if (channel != NULL)
 	{
-		set_source(*channel);
+		set_display_channel(channel->channel_id);
 	}
 }

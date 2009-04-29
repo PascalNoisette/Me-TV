@@ -48,6 +48,7 @@ private:
 	guint									last_update_time;
 	guint									last_poke_time;
 	guint									timeout_source;
+	Gtk::Menu								subtitle_streams_menu;
 	Gtk::Menu								audio_streams_menu;
 	Engine*									engine;
 	gint									output_fd;
@@ -55,6 +56,7 @@ private:
 	gboolean								mute_state;
 	Engine::AudioChannelState				audio_channel_state;
 	guint									audio_stream_index;
+	guint									subtitle_stream_index;
 
 	void stop();
 	void fullscreen();
@@ -91,6 +93,7 @@ private:
 	void on_tool_button_mute_clicked();
 	void on_tool_button_broadcast_clicked();
 	void on_menu_item_audio_stream_activate(guint audio_stream_index);
+	void on_menu_item_subtitle_stream_activate(guint audio_stream_index);
 	void on_radio_menu_item_audio_channels_both();
 	void on_radio_menu_item_audio_channels_left();
 	void on_radio_menu_item_audio_channels_right();

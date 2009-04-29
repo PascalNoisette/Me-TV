@@ -38,6 +38,7 @@ XineEngine::XineEngine()
 	actual_mute_state = false;
 	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
 	audio_stream = 0;
+	subtitle_stream = 0;
 }
 
 XineEngine::~XineEngine()
@@ -246,6 +247,18 @@ void XineEngine::set_audio_stream(guint stream)
 	if (audio_stream != stream)
 	{
 		audio_stream = stream;
+		if (pid != -1)
+		{
+			restart();
+		}
+	}
+}
+
+void XineEngine::set_subtitle_stream(guint stream)
+{
+	if (subtitle_stream != stream)
+	{
+		subtitle_stream = stream;
 		if (pid != -1)
 		{
 			restart();
