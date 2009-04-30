@@ -514,7 +514,7 @@ void MainWindow::update()
 	Channel* channel = application.channel_manager.get_display_channel();
 	Glib::ustring window_title;
 	Glib::ustring status_text;
-	
+
 	set_state("record", application.is_recording());
 	set_state("broadcast", application.is_broadcasting());
 

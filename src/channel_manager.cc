@@ -149,10 +149,8 @@ void ChannelManager::load(Data::Connection& connection)
 	g_debug("Channels loaded");
 }
 
-void ChannelManager::save(Data::Connection& connection)
+void save_channels(Data::Connection& connection, ChannelList& channels)
 {
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-
 	Application& application = get_application();
 	
 	Data::Table table_channel = application.get_schema().tables["channel"];
@@ -222,6 +220,16 @@ void ChannelManager::save(Data::Connection& connection)
 	adapter_channel.delete_rows("sort_order = 0");
 
 	g_debug("Channels saved");
+}
+
+void ChannelManager::save(Data::Connection& connection)
+{
+	//LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	mutex.lock();
+	ChannelList channels_copy = channels;
+	mutex.unlock();
+
+	save_channels(connection, channels_copy);
 }
 
 Channel* ChannelManager::find_channel(guint channel_id)

@@ -30,6 +30,7 @@
 #include "main_window.h"
 #include "status_icon.h"
 #include "stream_thread.h"
+#include "save_thread.h"
 
 class Application : public Gnome::Main
 {
@@ -49,6 +50,7 @@ private:
 	Data::Schema						schema;
 	guint								scheduled_recording_id;
 	Glib::ustring						database_filename;
+	SaveThread*							save_thread;
 
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
@@ -114,6 +116,8 @@ public:
 	const Glib::ustring& get_application_dir() const { return application_dir; }
 	
 	MainWindow& get_main_window();
+
+	void start_save_thread();
 };
 
 Application& get_application();

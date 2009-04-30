@@ -20,14 +20,13 @@
 
 #include "scheduled_recording_manager.h"
 #include "application.h"
-#include "data.h"
 
 ScheduledRecordingManager::ScheduledRecordingManager()
 {
 	g_static_rec_mutex_init(mutex.gobj());
 }
 
-void ScheduledRecordingManager::load()
+void ScheduledRecordingManager::load(Data::Connection& connection)
 {
 	Glib::RecMutex::Lock lock(mutex);
 
@@ -36,9 +35,11 @@ void ScheduledRecordingManager::load()
 	g_debug("Loading scheduled recordings");
 
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
-	Data::TableAdapter adapter(get_application().connection, table);
+	Data::TableAdapter adapter(connection, table);
 	
-	Glib::ustring where = Glib::ustring::compose("device = '%1'", frontend_path);
+	Glib::ustring where = Glib::ustring::compose(
+		"device = '%1' AND (start_time + duration) < %2",
+		frontend_path, time(NULL));
 	Data::DataTable data_table = adapter.select_rows(where, "start_time");
 	
 	scheduled_recordings.clear();
@@ -59,33 +60,41 @@ void ScheduledRecordingManager::load()
 	g_debug("Scheduled recordings loaded");
 }
 
-void ScheduledRecordingManager::save()
+void ScheduledRecordingManager::save(Data::Connection& connection)
 {
 	Glib::RecMutex::Lock lock(mutex);
 
 	g_debug("Saving scheduled recordings");
-
+	
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];	
 	Data::DataTable data_table(table);
 	for (ScheduledRecordingMap::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
 		ScheduledRecording& scheduled_recording = scheduled_recordings[i->first];
 
-		Data::Row row;
-		row.auto_increment = &(scheduled_recording.scheduled_recording_id);
-		row["scheduled_recording_id"].int_value	= scheduled_recording.scheduled_recording_id;
-		row["channel_id"].int_value				= scheduled_recording.channel_id;
-		row["description"].string_value			= scheduled_recording.description;
-		row["start_time"].int_value				= scheduled_recording.start_time;
-		row["duration"].int_value				= scheduled_recording.duration;
-		row["device"].string_value				= scheduled_recording.device;
-				
-		data_table.rows.add(row);
+		guint now = convert_to_local_time(time(NULL));
+		if (scheduled_recording.get_end_time() > now)
+		{
+			Data::Row row;
+			row.auto_increment = &(scheduled_recording.scheduled_recording_id);
+			row["scheduled_recording_id"].int_value	= scheduled_recording.scheduled_recording_id;
+			row["channel_id"].int_value				= scheduled_recording.channel_id;
+			row["description"].string_value			= scheduled_recording.description;
+			row["start_time"].int_value				= scheduled_recording.start_time;
+			row["duration"].int_value				= scheduled_recording.duration;
+			row["device"].string_value				= scheduled_recording.device;
+					
+			data_table.rows.add(row);
+		}
 	}
 	
-	Data::TableAdapter adapter(get_application().connection, table);
+	Data::TableAdapter adapter(connection, table);
 	adapter.replace_rows(data_table);
 	
+	g_debug("Deleting old scheduled recordings");
+	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1", time(NULL));
+	adapter.delete_rows(clause);
+
 	g_debug("Scheduled recordings saved");
 }
 
@@ -104,54 +113,25 @@ void ScheduledRecordingManager::add_scheduled_recording(ScheduledRecording& sche
 			throw Exception(message);
 		}
 	}	
-	
-	Data::Table table = get_application().get_schema().tables["scheduled_recording"];	
-	Data::DataTable data_table(table);
-	Data::Row row;
-	row.auto_increment = &(scheduled_recording.scheduled_recording_id);
-	row["scheduled_recording_id"].int_value	= scheduled_recording.scheduled_recording_id;
-	row["channel_id"].int_value				= scheduled_recording.channel_id;
-	row["description"].string_value			= scheduled_recording.description;
-	row["start_time"].int_value				= scheduled_recording.start_time;
-	row["duration"].int_value				= scheduled_recording.duration;
-	row["device"].string_value				= scheduled_recording.device;
-	data_table.rows.add(row);
-
-	Data::TableAdapter adapter(get_application().connection, table);
-	adapter.replace_rows(data_table);
-	
+		
 	scheduled_recordings[scheduled_recording.scheduled_recording_id] = scheduled_recording;
 	g_debug("Scheduled recording '%s' (%d)", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
 
 	get_application().check_scheduled_recordings();
 }
 
-void ScheduledRecordingManager::delete_scheduled_recording(guint scheduled_recording_id)
+void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recording_id)
 {
 	Glib::RecMutex::Lock lock(mutex);
 
 	ScheduledRecording& scheduled_recording = scheduled_recordings[scheduled_recording_id];
 	g_debug("Deleting scheduled recording '%s' (%d)", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
 
-	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
-	Data::TableAdapter adapter(get_application().connection, table);
-	adapter.delete_row(scheduled_recording_id);
 	scheduled_recordings.erase(scheduled_recording_id);
 
 	g_debug("Scheduled recording deleted");
 
 	get_application().check_scheduled_recordings();
-}
-
-void ScheduledRecordingManager::delete_old_scheduled_recordings()
-{
-	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
-	Data::TableAdapter adapter(get_application().connection, table);
-
-	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1", time(NULL));
-	adapter.delete_rows(clause);
-	
-	load();
 }
 
 guint ScheduledRecordingManager::check_scheduled_recordings()
@@ -161,8 +141,16 @@ guint ScheduledRecordingManager::check_scheduled_recordings()
 	Glib::RecMutex::Lock lock(mutex);
 
 	Application& application = get_application();
-	
-	delete_old_scheduled_recordings();
+
+	guint now = convert_to_local_time(time(NULL));
+	for (ScheduledRecordingMap::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	{
+		ScheduledRecording& scheduled_recording = i->second;
+		if (scheduled_recording.get_end_time() < now)
+		{
+			scheduled_recordings.erase(i->first);
+		}
+	}
 	
 	gboolean got_recording = false;
 

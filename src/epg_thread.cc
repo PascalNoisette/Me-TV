@@ -216,22 +216,6 @@ void EpgThread::run()
 		{
 			g_debug("Exception in EPG thread: %s", ex.what().c_str());
 		}
-		
-		static guint last_seconds = 60;
-		
-		guint now = time(NULL);
-		
-		guint seconds = now % 60;
-		if (last_seconds > seconds)
-		{
-			
-			Data::Connection connection(application.get_database_filename());
-			
-			g_debug("EPG thread saving channels");
-			channel_manager.save(connection);
-			g_debug("EPG thread saved channels");
-		}
-		last_seconds = seconds;		
 	}
 
 	THREAD_CATCH;

@@ -70,7 +70,7 @@ void ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked()
 	Gtk::TreeModel::Row row = *(selection->get_selected());
 
 	guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
-	get_application().scheduled_recording_manager.delete_scheduled_recording(scheduled_recording_id);
+	get_application().scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
 	update();
 	CATCH
 }

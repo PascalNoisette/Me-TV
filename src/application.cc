@@ -55,6 +55,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	record_state			= false;
 	broadcast_state			= false;
 	scheduled_recording_id	= 0;
+	save_thread				= NULL;
 	
 	signal_quit().connect(sigc::mem_fun(this, &Application::on_quit));
 
@@ -126,9 +127,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 }
 
 Application::~Application()
-{
-	channel_manager.save(connection);
-	
+{	
 	if (timeout_source != 0)
 	{
 		g_source_remove(timeout_source);
@@ -363,7 +362,7 @@ void Application::run()
 
 	if (initialise_database())
 	{
-		g_debug("Me TV database initialsed successfully");
+		g_debug("Me TV database initialised successfully");
 				
 		const FrontendList& frontends = device_manager.get_frontends();
 
@@ -389,7 +388,7 @@ void Application::run()
 		}
 
 		channel_manager.load(connection);
-		scheduled_recording_manager.load();
+		scheduled_recording_manager.load(connection);
 
 		status_icon = new StatusIcon(glade);
 		main_window = MainWindow::create(glade);
@@ -601,6 +600,22 @@ gboolean Application::on_timeout()
 	if (last_seconds > seconds)
 	{
 		check_scheduled_recordings();
+		
+		if (save_thread == NULL)
+		{
+			start_save_thread();
+		}
+		else
+		{
+			if (save_thread->is_terminated())
+			{
+				delete save_thread;
+				save_thread = NULL;
+
+				g_debug("Save thread deleted");
+			}
+		}
+		
 		update();
 	}
 	last_seconds = seconds;
@@ -726,7 +741,7 @@ void Application::stop_recording()
 		
 		if (scheduled_recording_id != 0)
 		{
-			scheduled_recording_manager.delete_scheduled_recording(scheduled_recording_id);
+			scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
 		}
 		scheduled_recording_id = 0;
 	
@@ -810,4 +825,15 @@ void Application::restart_stream()
 	{
 		set_display_channel(channel->channel_id);
 	}
+}
+
+void Application::start_save_thread()
+{
+	if (save_thread != NULL)
+	{
+		throw Exception(_("Save thread is already running"));
+	}
+	
+	save_thread = new SaveThread();
+	save_thread->start();
 }

@@ -111,10 +111,8 @@ void EpgEvents::prune()
 	list.remove_if(is_old);
 }
 
-void EpgEvents::save(Data::Connection& connection, guint channel_id)
+void save_epg_events(Data::Connection& connection, EpgEventList& list, guint channel_id)
 {
-	Glib::RecMutex::Lock lock(mutex);
-
 	Application& application = get_application();
 	
 	Data::Table table_epg_event			= application.get_schema().tables["epg_event"];
@@ -187,4 +185,13 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id)
 	adapter_epg_event_text.replace_rows(data_table_epg_event_text);		
 
 	g_debug("EPG events saved");
+}
+
+void EpgEvents::save(Data::Connection& connection, guint channel_id)
+{
+	mutex.lock();
+	EpgEventList list_copy = list;
+	mutex.unlock();
+
+	save_epg_events (connection, list_copy, channel_id);
 }

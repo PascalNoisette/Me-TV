@@ -18,29 +18,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __SCHEDULED_RECORDING_MANAGER_H__
-#define __SCHEDULED_RECORDING_MANAGER_H__
+#ifndef __SAVE_THREAD_H__
+#define __SAVE_THREAD_H__
 
-#include "scheduled_recording.h"
-#include "data.h"
+#include "thread.h"
 
-typedef std::map<guint, ScheduledRecording> ScheduledRecordingMap;
-
-class ScheduledRecordingManager
+class SaveThread : public Thread
 {
-private:
-	Glib::StaticRecMutex	mutex;
 public:
-	ScheduledRecordingManager();
-		
-	ScheduledRecordingMap scheduled_recordings;
-
-	void load(Data::Connection& connection);
-	void save(Data::Connection& connection);
-
-	void add_scheduled_recording(ScheduledRecording& scheduled_recording);
-	void remove_scheduled_recording(guint scheduled_recording_id);		
-	guint check_scheduled_recordings();
+	SaveThread();
+	void run();
 };
 
 #endif
+

@@ -31,8 +31,8 @@
 	catch(const Glib::Exception& exception) { \
 		get_signal_error().emit(exception.what().c_str()); } \
 	catch(...) { get_signal_error().emit("An unhandled error occurred"); }
-#define THREAD_CATCH	} catch(const Glib::Exception& exception) { GdkLock gdk_lock; get_signal_error().emit(exception.what().c_str()); } \
-						catch(...) { GdkLock gdk_lock; get_signal_error().emit("An unhandled error occurred"); }
+#define THREAD_CATCH	} catch(const Glib::Exception& exception) { g_error("Error in thread: %s", exception.what().c_str()); } \
+						catch(...) { g_error("An unhandled error occurred"); }
 
 class Exception : public Glib::Exception
 {

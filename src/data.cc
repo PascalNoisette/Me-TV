@@ -66,8 +66,6 @@ Statement::Statement(Connection& connection, const Glib::ustring& command) :
 	{
 		throw SQLiteException(connection, _("Failed to create statement"));
 	}
-	
-	g_debug(">>> Statement created");
 }
 
 Statement::~Statement()
@@ -76,7 +74,6 @@ Statement::~Statement()
 	{
 		throw SQLiteException(connection, _("Failed to finalise statement"));
 	}
-	g_debug("<<< Statement deleted");
 }
 
 void Statement::reset()
@@ -348,9 +345,8 @@ void TableAdapter::replace_rows(DataTable& data_table)
 					}
 				}
 			}
-			g_debug("*** '%s' STEPPING", data_table.table.name.c_str());
 			statement.step();
-			g_debug("*** '%s' REPLACE", data_table.table.name.c_str());
+			g_debug("%s row replaced", data_table.table.name.c_str());
 			
 			if (row.auto_increment != NULL && *row.auto_increment == 0)
 			{
