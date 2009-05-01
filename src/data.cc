@@ -346,11 +346,16 @@ void TableAdapter::replace_rows(DataTable& data_table)
 				}
 			}
 			statement.step();
-			g_debug("%s row replaced", data_table.table.name.c_str());
 			
 			if (row.auto_increment != NULL && *row.auto_increment == 0)
 			{
 				*(row.auto_increment) = connection.get_last_insert_rowid();
+				g_debug("%s row replaced for id %d",
+					data_table.table.name.c_str(), *(row.auto_increment));
+			}
+			else
+			{
+				g_debug("%s row replaced", data_table.table.name.c_str());
 			}
 
 			statement.reset();
@@ -360,7 +365,8 @@ void TableAdapter::replace_rows(DataTable& data_table)
 
 DataTable TableAdapter::select_row(guint key)
 {
-	Glib::ustring where = Glib::ustring::compose("%1 = %2", table.name, table.primary_key, key);
+	Glib::ustring where = Glib::ustring::compose(
+		"%1 = %2", table.name, table.primary_key, key);
 	return select_rows(where);
 }
 

@@ -28,6 +28,8 @@
 
 using namespace Dvb;
 
+#define POLL_TIMEOUT 2000
+
 Demuxer::Demuxer(const Glib::ustring& device_path)
 {
 	fd = -1;
@@ -97,7 +99,7 @@ void Demuxer::set_buffer_size(unsigned int buffer_size)
 
 gint Demuxer::read(unsigned char* buffer, size_t length)
 {
-	if (!poll(10000))
+	if (!poll(POLL_TIMEOUT))
 	{
 		throw TimeoutException(_("Timeout while reading"));
 	}

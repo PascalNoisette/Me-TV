@@ -494,16 +494,18 @@ void Application::update()
 	}
 }
 
-void Application::set_display_channel(const Channel channel)
+void Application::set_display_channel(const Channel& channel)
 {
-	if (record_state == true)
+	if (is_recording())
 	{
-		g_debug("Changing channel, stopping recording");
-		stop_recording();
+		throw Exception(_("You cannot change channels because you are recording."));
 	}
-	
+
 	main_window->stop_engine();
 	stop_stream_thread();
+
+	channel_manager.set_display_channel(channel);
+	
 	stream_thread = new StreamThread(channel);
 	try
 	{
@@ -525,7 +527,6 @@ void Application::set_display_channel(const Channel channel)
 		get_signal_error().emit(exception.what().c_str());
 	}
 		
-	channel_manager.set_display_channel(channel);
 	set_int_configuration_value("last_channel", channel.channel_id);
 
 	update();
@@ -797,6 +798,11 @@ bool Application::on_quit()
 	if (main_window != NULL)
 	{
 		main_window->stop_engine();
+	}
+
+	if (save_thread == NULL)
+	{
+		start_save_thread();
 	}
 	
 	return true;

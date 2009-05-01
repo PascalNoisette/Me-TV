@@ -97,7 +97,7 @@ public:
 	
 	Glib::RefPtr<Gnome::Glade::Xml> get_glade() { return glade; }
 	
-	void set_display_channel(const Channel channel);
+	void set_display_channel(const Channel& channel);
 	void set_display_channel(guint channel_id);
 
 	gboolean is_recording();

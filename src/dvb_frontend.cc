@@ -75,7 +75,7 @@ void Frontend::tune_to(const Transponder& transponder)
 	struct dvb_frontend_parameters parameters = transponder.frontend_parameters;
 	struct dvb_frontend_event ev;
 	
-	guint wait_seconds = 5;
+	guint wait_seconds = 2;
 	if(frontend_info.type == FE_QPSK)
 	{
 		wait_seconds = 5;

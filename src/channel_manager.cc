@@ -149,10 +149,12 @@ void ChannelManager::load(Data::Connection& connection)
 	g_debug("Channels loaded");
 }
 
-void save_channels(Data::Connection& connection, ChannelList& channels)
+void ChannelManager::save(Data::Connection& connection)
 {
 	Application& application = get_application();
 	
+	mutex.lock();
+
 	Data::Table table_channel = application.get_schema().tables["channel"];
 	Data::TableAdapter adapter_channel(connection, table_channel);
 	Data::DataTable data_table_channel(table_channel);
@@ -210,8 +212,6 @@ void save_channels(Data::Connection& connection, ChannelList& channels)
 		}
 		data_table_channel.rows.push_back(row);
 
-		channel.epg_events.save(connection, channel.channel_id);
-
 		g_debug("Channel '%s' saved", channel.name.c_str());
 	}
 	adapter_channel.replace_rows(data_table_channel);
@@ -219,23 +219,23 @@ void save_channels(Data::Connection& connection, ChannelList& channels)
 	// Delete channels that are not used
 	adapter_channel.delete_rows("sort_order = 0");
 
-	g_debug("Channels saved");
-}
-
-void ChannelManager::save(Data::Connection& connection)
-{
-	//LockLogger lock(mutex, __PRETTY_FUNCTION__);
-	mutex.lock();
 	ChannelList channels_copy = channels;
+
+	g_debug("Channels saved");
 	mutex.unlock();
 
-	save_channels(connection, channels_copy);
+	for (ChannelList::iterator i = channels_copy.begin(); i != channels_copy.end(); i++)
+	{
+		Channel& channel = *i;
+		channel.epg_events.save(connection, channel.channel_id);
+	}
 }
 
 Channel* ChannelManager::find_channel(guint channel_id)
 {
 	Channel* channel = NULL;
 
+	g_debug("*** find_channel(%d)", channel_id);
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 	ChannelList::iterator iterator = channels.begin();
 	while (iterator != channels.end() && channel == NULL)
@@ -243,12 +243,22 @@ Channel* ChannelManager::find_channel(guint channel_id)
 		Channel* current_channel = &(*iterator);
 		if (current_channel->channel_id == channel_id)
 		{
+			g_debug("*** find_channel(%d) FOUND", channel_id);
 			channel = current_channel;
 		}
 		
 		iterator++;
 	}
 
+	if (channel == NULL)
+	{
+		g_debug("*** find_channel(%d) NOT FOUND", channel_id);
+	}
+	else
+	{
+		g_debug("*** find_channel(%d) RETURNING", channel_id);
+	}
+	
 	return channel;
 }
 
@@ -266,7 +276,6 @@ Channel& ChannelManager::get_channel(guint channel_id)
 
 void ChannelManager::set_display_channel(guint channel_id)
 {
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 	set_display_channel(get_channel(channel_id));
 }
 
@@ -369,7 +378,10 @@ void ChannelManager::set_channels(const ChannelList& new_channels)
 	
 	clear();
 	add_channels(new_channels);
-
+	
+	// Force save to get updated channel IDs
+	save(get_application().connection);
+	
 	if (display_channel_frequency != 0)
 	{
 		Channel* channel = find_channel(display_channel_frequency, display_channel_service_id);

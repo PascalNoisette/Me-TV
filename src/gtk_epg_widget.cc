@@ -46,7 +46,7 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Gl
 }
 
 void GtkEpgWidget::set_offset(gint value)
-{		
+{
 	if (value < 0)
 	{
 		value = 0;
@@ -183,6 +183,12 @@ void GtkEpgWidget::update_table()
 			if (channel_start <= channel_count && channel_count < channel_end)
 			{
 				const Channel& channel = *iterator;
+				
+				if (channel.channel_id == 0)
+				{
+					throw Exception(_("Failed to a create channel row because the channel ID was 0"));
+				}
+				
 				gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
 				create_channel_row(channel, row++, selected, start_time);
 			}
@@ -346,10 +352,6 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 {
 	TRY
-	if (get_application().is_recording())
-	{
-		throw Exception(_("You cannot change channels because you are recording."));
-	}
 	get_application().set_display_channel(channel_id);
 	CATCH
 

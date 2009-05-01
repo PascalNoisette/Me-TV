@@ -219,7 +219,7 @@ void MainWindow::show_channels_dialog()
 		channel_manager.set_channels(channels);
 	}
 	update();
-
+	
 	Glib::RecMutex::Lock lock(mutex);
 	if (engine == NULL)
 	{
