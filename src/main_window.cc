@@ -594,6 +594,17 @@ void MainWindow::update()
 
 		std::vector<Dvb::SI::SubtitleStream> subtitle_streams = stream.subtitle_streams;
 		count = 0;
+
+		Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
+		menu_item_subtitle_none->show_all();
+		subtitle_streams_menu.items().push_back(*menu_item_subtitle_none);
+		menu_item_subtitle_none->signal_activate().connect(
+			sigc::bind<guint>
+			(
+				sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
+				-1
+			)
+		);
 		
 		g_debug("Subtitle streams: %zu", subtitle_streams.size());
 		for (std::vector<Dvb::SI::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); i++)
@@ -626,13 +637,6 @@ void MainWindow::update()
 		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("None available"));
 		menu_item->show_all();
 		audio_streams_menu.items().push_back(*menu_item);
-	}
-	
-	if (subtitle_streams_menu.items().empty())
-	{
-		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("None available"));
-		menu_item->show_all();
-		subtitle_streams_menu.items().push_back(*menu_item);
 	}
 }
 
