@@ -190,6 +190,8 @@ void ChannelManager::save(Data::Connection& connection)
 	for (ChannelList::iterator i = channels_copy.begin(); i != channels_copy.end(); i++)
 	{
 		Channel& channel = *i;
+
+		g_debug("Saving EPG events for '%s'", channel.name.c_str());
 		channel.epg_events.save(
 			connection,
 			channel.channel_id,

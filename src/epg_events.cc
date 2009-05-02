@@ -128,6 +128,8 @@ void EpgEvents::load(Data::Connection& connection, guint channel_id)
 		Data::Row row_epg_event = *j;
 		EpgEvent epg_event;
 		
+		epg_event.save = false;
+		
 		epg_event.epg_event_id	= row_epg_event["epg_event_id"].int_value;
 		epg_event.channel_id	= channel_id;
 		epg_event.event_id		= row_epg_event["event_id"].int_value;

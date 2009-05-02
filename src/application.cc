@@ -128,6 +128,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 
 Application::~Application()
 {	
+	g_debug("Application destructor started");
 	if (timeout_source != 0)
 	{
 		g_source_remove(timeout_source);
@@ -138,6 +139,27 @@ Application::~Application()
 		delete main_window;
 		main_window = NULL;
 	}
+
+	while (save_thread != NULL)
+	{
+		if (save_thread->is_terminated())
+		{
+			delete save_thread;
+			save_thread = NULL;
+		}
+		else
+		{
+			g_debug("Waiting for existing stream thread to exit");
+			usleep(500000);
+		}
+	}
+	start_save_thread();
+	while (!save_thread->is_terminated())
+	{
+		g_debug("Waiting for stream thread to exit");
+		usleep(500000);
+	}
+	g_debug("Application destructor complete");
 }
 
 const Glib::ustring& Application::get_database_filename()
@@ -804,21 +826,6 @@ bool Application::on_quit()
 	{
 		main_window->stop_engine();
 	}
-
-	while (save_thread != NULL)
-	{
-		if (save_thread->is_terminated())
-		{
-			delete save_thread;
-			save_thread = NULL;
-		}
-		else
-		{
-			g_debug("Waiting for stream thread to exit");
-			usleep(500000);
-		}
-	}
-	start_save_thread();
 	
 	return true;
 }
