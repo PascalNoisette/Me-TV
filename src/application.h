@@ -117,7 +117,7 @@ public:
 	
 	MainWindow& get_main_window();
 
-	void start_save_thread();
+	void start_save_thread(gboolean block);
 };
 
 Application& get_application();

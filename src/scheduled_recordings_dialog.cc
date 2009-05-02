@@ -79,10 +79,10 @@ void ScheduledRecordingsDialog::update()
 {
 	ChannelManager& channel_manager = get_application().channel_manager;
 	list_store->clear();
-	ScheduledRecordingMap& scheduled_recordings = get_application().scheduled_recording_manager.scheduled_recordings;
-	for (ScheduledRecordingMap::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	ScheduledRecordingList& scheduled_recordings = get_application().scheduled_recording_manager.scheduled_recordings;
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
-		ScheduledRecording& scheduled_recording = scheduled_recordings[i->first];
+		ScheduledRecording& scheduled_recording = *i;
 		Gtk::TreeModel::Row row = *(list_store->append());
 		row[columns.column_sort]					= scheduled_recording.start_time;
 		row[columns.column_scheduled_recording_id]	= scheduled_recording.scheduled_recording_id;
@@ -101,7 +101,7 @@ void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& tre
 	Gtk::TreeModel::Row row = *(selection->get_selected());
 	guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
 
-	ScheduledRecording& scheduled_recording = get_application().scheduled_recording_manager.scheduled_recordings[scheduled_recording_id];
+	ScheduledRecording scheduled_recording = get_application().scheduled_recording_manager.get_scheduled_recording(scheduled_recording_id);
 
 	ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(glade);
 	scheduled_recording_dialog.run(this, scheduled_recording);

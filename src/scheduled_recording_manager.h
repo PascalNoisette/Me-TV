@@ -24,7 +24,7 @@
 #include "scheduled_recording.h"
 #include "data.h"
 
-typedef std::map<guint, ScheduledRecording> ScheduledRecordingMap;
+typedef std::list<ScheduledRecording> ScheduledRecordingList;
 
 class ScheduledRecordingManager
 {
@@ -33,13 +33,14 @@ private:
 public:
 	ScheduledRecordingManager();
 		
-	ScheduledRecordingMap scheduled_recordings;
+	ScheduledRecordingList scheduled_recordings;
 
 	void load(Data::Connection& connection);
 	void save(Data::Connection& connection);
 
 	void add_scheduled_recording(ScheduledRecording& scheduled_recording);
 	void remove_scheduled_recording(guint scheduled_recording_id);		
+	ScheduledRecording get_scheduled_recording(guint scheduled_recording_id);
 	guint check_scheduled_recordings();
 };
 

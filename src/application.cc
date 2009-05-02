@@ -140,20 +140,7 @@ Application::~Application()
 		main_window = NULL;
 	}
 
-	while (save_thread != NULL)
-	{
-		if (save_thread->is_terminated())
-		{
-			delete save_thread;
-			save_thread = NULL;
-		}
-		else
-		{
-			g_debug("Waiting for existing stream thread to exit");
-			usleep(500000);
-		}
-	}
-	start_save_thread();
+	start_save_thread(true);
 	while (!save_thread->is_terminated())
 	{
 		g_debug("Waiting for stream thread to exit");
@@ -575,7 +562,7 @@ void Application::check_scheduled_recordings()
 	if (id != 0)
 	{
 		scheduled_recording_id = id;
-		ScheduledRecording& scheduled_recording = scheduled_recording_manager.scheduled_recordings[id];
+		ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(id);
 
 		const Channel* channel = channel_manager.get_display_channel();
 		if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
@@ -599,9 +586,13 @@ void Application::check_scheduled_recordings()
 			start_recording(filename);
 		}
 	}
-	
-	if (stream_thread != NULL && record_state && scheduled_recording_id != 0 && id == 0)
-	{
+
+	// Check if the SR has just finished
+	if (stream_thread != NULL &&			// If there's a stream
+		record_state &&						// and it's recording
+		scheduled_recording_id != NULL &&	// and there is an existing SR running
+		id == NULL)							// but the recording manager has just told us that there's no SR
+	{										// then we need to stop recording
 		g_debug("Record stopped by scheduled recording");
 		stop_recording();
 	}
@@ -626,7 +617,7 @@ gboolean Application::on_timeout()
 		
 		if (save_thread == NULL)
 		{
-			start_save_thread();
+			start_save_thread(false);
 		}
 		else
 		{
@@ -640,7 +631,7 @@ gboolean Application::on_timeout()
 
 				g_debug("Save thread deleted");
 				
-				start_save_thread();
+				start_save_thread(false);
 			}
 		}
 		
@@ -855,13 +846,32 @@ void Application::restart_stream()
 	}
 }
 
-void Application::start_save_thread()
-{
-	if (save_thread != NULL)
+void Application::start_save_thread(gboolean block)
+{	
+	if (block)
 	{
-		throw Exception(_("Save thread is already running"));
+		while (save_thread != NULL)
+		{
+			if (save_thread->is_terminated())
+			{
+				delete save_thread;
+				save_thread = NULL;
+			}
+			else
+			{
+				g_debug("Waiting for existing save thread to exit");
+				usleep(500000);
+			}
+		}
 	}
-	
+	else
+	{
+		if (save_thread != NULL)
+		{
+			throw Exception(_("Save thread is already running"));
+		}
+	}
+
 	g_debug("Creating save thread");
 	save_thread = new SaveThread();
 	save_thread->start();

@@ -54,7 +54,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	mute_state				= false;
 	audio_channel_state		= Engine::AUDIO_CHANNEL_STATE_BOTH;
 	audio_stream_index		= 0;
-	subtitle_stream_index	= 0;
+	subtitle_stream_index	= -1;
 
 	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
 	app_bar->get_progress()->hide();
@@ -551,7 +551,6 @@ void MainWindow::update()
 	subtitle_items.erase(subtitle_items.begin(), subtitle_items.end());
 
 	Gtk::RadioMenuItem::Group audio_streams_menu_group;
-	Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
 	
 	// Acquire stream thread lock
 	Glib::RecMutex::Lock application_lock(application.get_mutex());
@@ -593,8 +592,9 @@ void MainWindow::update()
 		}
 
 		std::vector<Dvb::SI::SubtitleStream> subtitle_streams = stream.subtitle_streams;
+		Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
 		count = 0;
-
+		
 		Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
 		menu_item_subtitle_none->show_all();
 		subtitle_streams_menu.items().push_back(*menu_item_subtitle_none);
@@ -627,7 +627,7 @@ void MainWindow::update()
 					count
 				)
 			);
-
+			
 			count++;
 		}
 	}
