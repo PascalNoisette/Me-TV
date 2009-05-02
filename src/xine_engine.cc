@@ -261,7 +261,7 @@ void XineEngine::set_audio_stream(guint stream)
 	}
 }
 
-void XineEngine::set_subtitle_stream(guint stream)
+void XineEngine::set_subtitle_stream(gint stream)
 {
 	if (subtitle_stream != stream)
 	{

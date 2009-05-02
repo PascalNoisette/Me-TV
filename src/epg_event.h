@@ -47,7 +47,6 @@ public:
 	guint				event_id;
 	guint				start_time;
 	guint				duration;
-	gboolean			save;
 	EpgEventTextList	texts;
 	
 	EpgEvent();

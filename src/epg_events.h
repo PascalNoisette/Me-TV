@@ -33,6 +33,7 @@ private:
 	Glib::StaticRecMutex	mutex;
 	
 	gboolean exists(const EpgEvent& epg_event);
+	void set_saved(guint epg_event_id);
 public:
 	EpgEvents();
 	~EpgEvents();
@@ -42,7 +43,7 @@ public:
 	gboolean			get_current(EpgEvent& epg_event);
 	const EpgEventList&	get_list();
 	void				prune();
-	void				save(Data::Connection& connection, guint channel_id);
+	void				save(Data::Connection& connection, guint channel_id, EpgEvents& epg_events);
 };
 
 #endif

@@ -179,7 +179,6 @@ void EpgThread::run()
 					epg_event.event_id		= event.event_id;
 					epg_event.start_time	= event.start_time;
 					epg_event.duration		= event.duration;
-					epg_event.save			= true;
 					
 					for (Dvb::SI::EventTextMap::iterator i = event.texts.begin(); i != event.texts.end(); i++)
 					{

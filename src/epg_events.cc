@@ -111,7 +111,7 @@ void EpgEvents::prune()
 	list.remove_if(is_old);
 }
 
-void save_epg_events(Data::Connection& connection, EpgEventList& list, guint channel_id)
+void EpgEvents::save(Data::Connection& connection, guint channel_id, EpgEvents& epg_events)
 {
 	Application& application = get_application();
 	
@@ -138,7 +138,7 @@ void save_epg_events(Data::Connection& connection, EpgEventList& list, guint cha
 	{
 		EpgEvent& epg_event = *j;
 		
-		if (epg_event.save)
+		if (epg_event.epg_event_id == 0)
 		{
 			Data::Row row_epg_event;
 			
@@ -161,7 +161,7 @@ void save_epg_events(Data::Connection& connection, EpgEventList& list, guint cha
 	{
 		EpgEvent& epg_event = *j;
 		
-		if (epg_event.save)
+		if (epg_event.epg_event_id == 0)
 		{
 			for (EpgEventTextList::iterator k = epg_event.texts.begin(); k != epg_event.texts.end(); k++)
 			{
@@ -177,21 +177,26 @@ void save_epg_events(Data::Connection& connection, EpgEventList& list, guint cha
 			
 				data_table_epg_event_text.rows.add(row_epg_event_text);
 			}
-			
-			epg_event.save = false;
 		}
 	}
 	
 	adapter_epg_event_text.replace_rows(data_table_epg_event_text);		
 
+	g_debug("Updating original event IDs");
+
+	Glib::RecMutex::Lock lock(epg_events.mutex);
+	EpgEventList& list_real = epg_events.list;
+	EpgEventList& list_copy = list;
+	for (EpgEventList::iterator j = list_copy.begin(); j != list_copy.end(); j++)
+	{
+		for (EpgEventList::iterator k = list_real.begin(); k != list_real.end(); k++)
+		{
+			if ((*k).event_id == (*j).event_id)
+			{
+				(*k).epg_event_id = (*j).epg_event_id;
+			}
+		}
+	}
+	
 	g_debug("EPG events saved");
-}
-
-void EpgEvents::save(Data::Connection& connection, guint channel_id)
-{
-	mutex.lock();
-	EpgEventList list_copy = list;
-	mutex.unlock();
-
-	save_epg_events (connection, list_copy, channel_id);
 }

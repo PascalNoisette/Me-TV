@@ -608,12 +608,17 @@ gboolean Application::on_timeout()
 		}
 		else
 		{
+			g_debug("Save thread already running");
 			if (save_thread->is_terminated())
 			{
+				g_debug("Save thread has terminated, deleting");
+
 				delete save_thread;
 				save_thread = NULL;
 
 				g_debug("Save thread deleted");
+				
+				start_save_thread();
 			}
 		}
 		
@@ -840,6 +845,7 @@ void Application::start_save_thread()
 		throw Exception(_("Save thread is already running"));
 	}
 	
+	g_debug("Creating save thread");
 	save_thread = new SaveThread();
 	save_thread->start();
 }

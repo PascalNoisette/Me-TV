@@ -28,7 +28,7 @@
 
 using namespace Dvb;
 
-#define POLL_TIMEOUT 2000
+#define POLL_TIMEOUT 5000
 
 Demuxer::Demuxer(const Glib::ustring& device_path)
 {

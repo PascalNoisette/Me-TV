@@ -36,7 +36,6 @@ EpgEvent::EpgEvent()
 	event_id = 0;
 	start_time = 0;
 	duration = 0;
-	save = false;
 }
 
 Glib::ustring EpgEvent::get_title() const

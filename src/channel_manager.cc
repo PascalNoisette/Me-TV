@@ -227,7 +227,10 @@ void ChannelManager::save(Data::Connection& connection)
 	for (ChannelList::iterator i = channels_copy.begin(); i != channels_copy.end(); i++)
 	{
 		Channel& channel = *i;
-		channel.epg_events.save(connection, channel.channel_id);
+		channel.epg_events.save(
+			connection,
+			channel.channel_id,
+			get_channel(channel.channel_id).epg_events);
 	}
 }
 
@@ -235,7 +238,6 @@ Channel* ChannelManager::find_channel(guint channel_id)
 {
 	Channel* channel = NULL;
 
-	g_debug("*** find_channel(%d)", channel_id);
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 	ChannelList::iterator iterator = channels.begin();
 	while (iterator != channels.end() && channel == NULL)
@@ -243,20 +245,10 @@ Channel* ChannelManager::find_channel(guint channel_id)
 		Channel* current_channel = &(*iterator);
 		if (current_channel->channel_id == channel_id)
 		{
-			g_debug("*** find_channel(%d) FOUND", channel_id);
 			channel = current_channel;
 		}
 		
 		iterator++;
-	}
-
-	if (channel == NULL)
-	{
-		g_debug("*** find_channel(%d) NOT FOUND", channel_id);
-	}
-	else
-	{
-		g_debug("*** find_channel(%d) RETURNING", channel_id);
 	}
 	
 	return channel;
