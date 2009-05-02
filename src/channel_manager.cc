@@ -57,14 +57,8 @@ void ChannelManager::load(Data::Connection& connection)
 
 	Application& application = get_application();
 
-	Data::Table table_channel			= application.get_schema().tables["channel"];
-	Data::Table table_epg_event			= application.get_schema().tables["epg_event"];
-	Data::Table table_epg_event_text	= application.get_schema().tables["epg_event_text"];
-
+	Data::Table table_channel = application.get_schema().tables["channel"];
 	Data::TableAdapter adapter_channel(connection, table_channel);
-	Data::TableAdapter adapter_epg_event(connection, table_epg_event);
-	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
-
 	Data::DataTable data_table_channels = adapter_channel.select_rows("", "sort_order");
 
 	g_debug("Loading channels ...");
@@ -112,38 +106,7 @@ void ChannelManager::load(Data::Connection& connection)
 			channel.transponder.frontend_parameters.u.vsb.modulation	= (fe_modulation)row_channel["modulation"].int_value;
 		}
 		
-		Glib::ustring clause = Glib::ustring::compose("channel_id = %1", channel.channel_id);
-		Data::DataTable data_table_epg_event = adapter_epg_event.select_rows(clause, "start_time");		
-		for (Data::Rows::iterator j = data_table_epg_event.rows.begin(); j != data_table_epg_event.rows.end(); j++)
-		{
-			Data::Row row_epg_event = *j;
-			EpgEvent epg_event;
-			
-			epg_event.epg_event_id	= row_epg_event["epg_event_id"].int_value;
-			epg_event.channel_id	= channel.channel_id;
-			epg_event.event_id		= row_epg_event["event_id"].int_value;
-			epg_event.start_time	= row_epg_event["start_time"].int_value;
-			epg_event.duration		= row_epg_event["duration"].int_value;
-			
-			Glib::ustring clause = Glib::ustring::compose("epg_event_id = %1", epg_event.epg_event_id);
-			Data::DataTable data_table_epg_event_text = adapter_epg_event_text.select_rows(clause);
-			for (Data::Rows::iterator k = data_table_epg_event_text.rows.begin(); k != data_table_epg_event_text.rows.end(); k++)
-			{
-				Data::Row row_epg_event_text = *k;
-				EpgEventText epg_event_text;
-				
-				epg_event_text.epg_event_text_id	= row_epg_event_text["epg_event_text_id"].int_value;
-				epg_event_text.epg_event_id			= epg_event.epg_event_id;
-				epg_event_text.language				= row_epg_event_text["language"].string_value;
-				epg_event_text.title				= row_epg_event_text["title"].string_value;
-				epg_event_text.description			= row_epg_event_text["description"].string_value;
-								
-				epg_event.texts.push_back(epg_event_text);
-			}			
-			
-			channel.epg_events.add_epg_event(epg_event);
-		}
-		
+		channel.epg_events.load(connection, channel.channel_id);
 		add_channel(channel);
 	}
 	g_debug("Channels loaded");

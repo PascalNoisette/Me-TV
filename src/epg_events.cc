@@ -111,6 +111,49 @@ void EpgEvents::prune()
 	list.remove_if(is_old);
 }
 
+void EpgEvents::load(Data::Connection& connection, guint channel_id)
+{
+	Application& application = get_application();
+
+	Data::Table table_epg_event			= application.get_schema().tables["epg_event"];
+	Data::Table table_epg_event_text	= application.get_schema().tables["epg_event_text"];
+
+	Data::TableAdapter adapter_epg_event(connection, table_epg_event);
+	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
+
+	Glib::ustring clause = Glib::ustring::compose("channel_id = %1", channel_id);
+	Data::DataTable data_table_epg_event = adapter_epg_event.select_rows(clause, "start_time");		
+	for (Data::Rows::iterator j = data_table_epg_event.rows.begin(); j != data_table_epg_event.rows.end(); j++)
+	{
+		Data::Row row_epg_event = *j;
+		EpgEvent epg_event;
+		
+		epg_event.epg_event_id	= row_epg_event["epg_event_id"].int_value;
+		epg_event.channel_id	= channel_id;
+		epg_event.event_id		= row_epg_event["event_id"].int_value;
+		epg_event.start_time	= row_epg_event["start_time"].int_value;
+		epg_event.duration		= row_epg_event["duration"].int_value;
+		
+		Glib::ustring clause = Glib::ustring::compose("epg_event_id = %1", epg_event.epg_event_id);
+		Data::DataTable data_table_epg_event_text = adapter_epg_event_text.select_rows(clause);
+		for (Data::Rows::iterator k = data_table_epg_event_text.rows.begin(); k != data_table_epg_event_text.rows.end(); k++)
+		{
+			Data::Row row_epg_event_text = *k;
+			EpgEventText epg_event_text;
+			
+			epg_event_text.epg_event_text_id	= row_epg_event_text["epg_event_text_id"].int_value;
+			epg_event_text.epg_event_id			= epg_event.epg_event_id;
+			epg_event_text.language				= row_epg_event_text["language"].string_value;
+			epg_event_text.title				= row_epg_event_text["title"].string_value;
+			epg_event_text.description			= row_epg_event_text["description"].string_value;
+							
+			epg_event.texts.push_back(epg_event_text);
+		}			
+		
+		add_epg_event(epg_event);
+	}
+}
+
 void EpgEvents::save(Data::Connection& connection, guint channel_id, EpgEvents& epg_events)
 {
 	Application& application = get_application();
@@ -138,7 +181,7 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id, EpgEvents& 
 	{
 		EpgEvent& epg_event = *j;
 		
-		if (epg_event.epg_event_id == 0)
+		if (epg_event.save)
 		{
 			Data::Row row_epg_event;
 			
@@ -161,7 +204,7 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id, EpgEvents& 
 	{
 		EpgEvent& epg_event = *j;
 		
-		if (epg_event.epg_event_id == 0)
+		if (epg_event.save)
 		{
 			for (EpgEventTextList::iterator k = epg_event.texts.begin(); k != epg_event.texts.end(); k++)
 			{
@@ -177,6 +220,8 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id, EpgEvents& 
 			
 				data_table_epg_event_text.rows.add(row_epg_event_text);
 			}
+			
+			epg_event.save = false;
 		}
 	}
 	
@@ -194,6 +239,7 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id, EpgEvents& 
 			if ((*k).event_id == (*j).event_id)
 			{
 				(*k).epg_event_id = (*j).epg_event_id;
+				(*k).save = false;
 			}
 		}
 	}

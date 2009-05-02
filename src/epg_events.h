@@ -43,6 +43,7 @@ public:
 	gboolean			get_current(EpgEvent& epg_event);
 	const EpgEventList&	get_list();
 	void				prune();
+	void				load(Data::Connection& connection, guint channel_id);
 	void				save(Data::Connection& connection, guint channel_id, EpgEvents& epg_events);
 };
 

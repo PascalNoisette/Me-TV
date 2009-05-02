@@ -805,10 +805,20 @@ bool Application::on_quit()
 		main_window->stop_engine();
 	}
 
-	if (save_thread == NULL)
+	while (save_thread != NULL)
 	{
-		start_save_thread();
+		if (save_thread->is_terminated())
+		{
+			delete save_thread;
+			save_thread = NULL;
+		}
+		else
+		{
+			g_debug("Waiting for stream thread to exit");
+			usleep(500000);
+		}
 	}
+	start_save_thread();
 	
 	return true;
 }
