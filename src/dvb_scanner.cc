@@ -37,14 +37,10 @@ Scanner::Scanner(guint timeout) : wait_timeout(timeout)
 
 void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 {
-	static guint count = 0;
-	
 	if (terminated)
 	{
 		return;
 	}
-
-	signal_progress(count++, transponders.size());
 	
 	try
 	{
@@ -192,7 +188,6 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	}
 	
 	guint size = lines.size();
-	guint count = 0;
 	
 	for (StringList::iterator iterator = lines.begin(); iterator != lines.end() && !terminated; iterator++)
 	{
@@ -225,9 +220,11 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 		}
 	}
 
+	guint transponder_count = 0;
 	for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
 	{
 		tune_to(frontend, *i);
+		signal_progress(transponder_count++, transponders.size());
 	}
 	
 	g_debug("Scanner loop exited");
