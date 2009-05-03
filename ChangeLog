@@ -3,6 +3,7 @@
 	* 0.8.10
 	* Can now only add uniwue channel names
 	* Fixed up scanner UI to not return channels on cancel.
+	* Increased timeout to 5 seconds again (LP: #371165)
 
 2009-05-03  Michael Lamothe <michael.lamothe@gmail.com>
 
