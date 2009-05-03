@@ -171,7 +171,7 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	Glib::IOStatus status = initial_tuning_file->read_line(line);
 	while (status == Glib::IO_STATUS_NORMAL && !terminated)
 	{
-		if (Glib::str_has_prefix(line, "#")|| line.empty())
+		if (Glib::str_has_prefix(line, "#") || line.empty())
 		{
 			// Ignore empty lines or comments
 		}

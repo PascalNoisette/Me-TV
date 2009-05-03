@@ -1,3 +1,8 @@
+2009-05-03  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.9
+	* Fix so that channels don't persist until channel dialog exits
+
 2009-05-02  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.8
