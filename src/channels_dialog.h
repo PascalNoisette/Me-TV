@@ -44,7 +44,7 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 	const Glib::RefPtr<Gnome::Glade::Xml> glade;
 	Gtk::TreeView* tree_view_displayed_channels;
-	void show_scan_window();
+	void show_scan_dialog();
 	
 	void on_show();
 	void on_button_scan_clicked();

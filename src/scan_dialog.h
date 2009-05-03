@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __SCAN_WINDOW_H__
-#define __SCAN_WINDOW_H__
+#ifndef __SCAN_DIALOG_H__
+#define __SCAN_DIALOG_H__
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
@@ -56,7 +56,7 @@ public:
 	Dvb::Scanner& get_scanner() { return scanner; }
 };
 
-class ScanWindow : public Gtk::Window
+class ScanDialog : public Gtk::Window
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
@@ -105,15 +105,16 @@ private:
 	void on_hide();	
 	void stop_scan();
 	void update_channel_count();
+	void add_channel_row(const Channel& channel);
 		
 public:
-	ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
-	~ScanWindow();
+	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	~ScanDialog();
 		
 	void on_show();
 	ChannelList get_channels();
 
-	static ScanWindow& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static ScanDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 };
 
 #endif

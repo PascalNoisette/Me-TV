@@ -204,16 +204,14 @@ Channel* ChannelManager::find_channel(guint channel_id)
 	Channel* channel = NULL;
 
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-	ChannelList::iterator iterator = channels.begin();
-	while (iterator != channels.end() && channel == NULL)
+	
+	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end() && channel == NULL; iterator++)
 	{
 		Channel* current_channel = &(*iterator);
 		if (current_channel->channel_id == channel_id)
 		{
 			channel = current_channel;
 		}
-		
-		iterator++;
 	}
 	
 	return channel;
@@ -253,12 +251,9 @@ void ChannelManager::add_channels(const ChannelList& c)
 {
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
-	ChannelList::const_iterator iterator = c.begin();
-	while (iterator != c.end())
+	for (ChannelList::const_iterator iterator = c.begin(); iterator != c.end(); iterator++)
 	{
-		const Channel& channel = *iterator;
-		add_channel(channel);
-		iterator++;
+		add_channel(*iterator);
 	}
 }
 
@@ -274,6 +269,15 @@ void ChannelManager::add_channel(const Channel& channel)
 			MAX_CHANNELS), MAX_CHANNELS);
 		throw Exception(message);
 	}
+	
+	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+	{
+		if ((*iterator).name == channel.name)
+		{
+			throw Exception("Failed to add channel: channel name already exists");
+		}
+	}
+	
 	channels.push_back(channel);
 	g_debug("Channel '%s' added", channel.name.c_str());
 }

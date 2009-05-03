@@ -21,7 +21,7 @@
 #include "me-tv.h"
 #include <libgnomeuimm.h>
 #include <libglademm.h>
-#include "scan_window.h"
+#include "scan_dialog.h"
 #include "application.h"
 #include "channels_dialog.h"
 
@@ -49,16 +49,16 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
 }
 
-void ChannelsDialog::show_scan_window()
+void ChannelsDialog::show_scan_dialog()
 {
 	// Check for a valid frontend device
 	get_application().device_manager.get_frontend();
 	
-	ScanWindow& scan_window = ScanWindow::create(glade);
-	scan_window.show();
-	Gnome::Main::run(scan_window);
-	
-	ChannelList channels = scan_window.get_channels();	
+	ScanDialog& scan_dialog = ScanDialog::create(glade);
+	scan_dialog.show();
+	Gnome::Main::run(scan_dialog);
+
+	ChannelList channels = scan_dialog.get_channels();	
 	for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 	{
 		const Channel& channel = *iterator;
@@ -73,7 +73,7 @@ void ChannelsDialog::show_scan_window()
 void ChannelsDialog::on_button_scan_clicked()
 {
 	TRY
-	show_scan_window();
+	show_scan_dialog();
 	CATCH
 }
 
@@ -118,7 +118,7 @@ void ChannelsDialog::on_show()
 	ChannelList& channels = application.channel_manager.get_channels();
 	if (channels.empty() && !application.device_manager.get_frontends().empty())
 	{
-		show_scan_window();
+		show_scan_dialog();
 	}
 	else
 	{

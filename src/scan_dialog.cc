@@ -18,21 +18,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include "scan_window.h"
+#include "scan_dialog.h"
 #include "dvb_scanner.h"
 #include "thread.h"
 #include "application.h"
 #include "channels_conf_line.h"
 
-ScanWindow& ScanWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+ScanDialog& ScanDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
-	ScanWindow* scan_dialog = NULL;
+	ScanDialog* scan_dialog = NULL;
 	glade->get_widget_derived("window_scan_wizard", scan_dialog);
 	check_glade(scan_dialog, "window_scan_wizard");
 	return *scan_dialog;
 }
 
-Glib::ustring ScanWindow::get_initial_tuning_dir()
+Glib::ustring ScanDialog::get_initial_tuning_dir()
 {
 	Glib::ustring result;
 	gboolean done = false;
@@ -76,16 +76,16 @@ Glib::ustring ScanWindow::get_initial_tuning_dir()
 	return result;
 }
 
-ScanWindow::ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
+ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
 	Gtk::Window(cobject), glade(glade_xml), frontend(get_application().device_manager.get_frontend())
 {
 	scan_thread = NULL;
 
 	notebook_scan_wizard = dynamic_cast<Gtk::Notebook*>(glade->get_widget("notebook_scan_wizard"));
 	label_scan_information = dynamic_cast<Gtk::Label*>(glade->get_widget("label_scan_information"));
-	glade->connect_clicked("button_scan_wizard_add", sigc::mem_fun(*this, &ScanWindow::on_button_scan_wizard_add_clicked));
-	glade->connect_clicked("button_scan_wizard_next", sigc::mem_fun(*this, &ScanWindow::on_button_scan_wizard_next_clicked));
-	glade->connect_clicked("button_scan_wizard_cancel", sigc::mem_fun(*this, &ScanWindow::on_button_scan_wizard_cancel_clicked));
+	glade->connect_clicked("button_scan_wizard_add", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_add_clicked));
+	glade->connect_clicked("button_scan_wizard_next", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_next_clicked));
+	glade->connect_clicked("button_scan_wizard_cancel", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_cancel_clicked));
 
 	notebook_scan_wizard->set_show_tabs(false);
 		
@@ -105,16 +105,16 @@ ScanWindow::ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	Gtk::FileChooserButton* file_chooser_button_scan = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
 	Gtk::FileChooserButton* file_chooser_button_import = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_import"));
 
-	file_chooser_button_scan->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanWindow::on_file_chooser_button_scan_file_changed));
-	file_chooser_button_import->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanWindow::on_file_chooser_button_import_file_changed));
+	file_chooser_button_scan->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_scan_file_changed));
+	file_chooser_button_import->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_import_file_changed));
 }
 
-ScanWindow::~ScanWindow()
+ScanDialog::~ScanDialog()
 {
 	stop_scan();
 }
 
-void ScanWindow::on_show()
+void ScanDialog::on_show()
 {
 	channel_count = 0;
 	update_channel_count();
@@ -130,13 +130,13 @@ void ScanWindow::on_show()
 	Window::on_show();
 }
 
-void ScanWindow::on_hide()
+void ScanDialog::on_hide()
 {
 	stop_scan();
 	Window::on_hide();
 }
 
-void ScanWindow::stop_scan()
+void ScanDialog::stop_scan()
 {
 	if (scan_thread != NULL)
 	{
@@ -148,24 +148,25 @@ void ScanWindow::stop_scan()
 	}
 }
 
-void ScanWindow::on_file_chooser_button_scan_file_changed()
+void ScanDialog::on_file_chooser_button_scan_file_changed()
 {
 	Gtk::RadioButton* radio_button_scan = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan"));
 	radio_button_scan->set_active();
 }
 
-void ScanWindow::on_file_chooser_button_import_file_changed()
+void ScanDialog::on_file_chooser_button_import_file_changed()
 {
 	Gtk::RadioButton* radio_button_import = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_import"));
 	radio_button_import->set_active();
 }
 
-void ScanWindow::on_button_scan_wizard_cancel_clicked()
+void ScanDialog::on_button_scan_wizard_cancel_clicked()
 {
+	list_store->clear();
 	hide();
 }
 
-void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
+void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 {
 	Glib::RefPtr<Glib::IOChannel> file = Glib::IOChannel::create_from_file(channels_conf_path, "r");
 	Glib::ustring line;
@@ -272,25 +273,52 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 					throw Exception(_("Failed to import: importing a channels.conf is only supported with DVB-T, DVB-C, DVB-S and ATSC"));
 					break;
 			}
-			
-			Gtk::TreeModel::iterator iterator = list_store->append();
-			Gtk::TreeModel::Row row = *iterator;
-			row[columns.column_id] = channel.service_id;
-			row[columns.column_name] = channel.name;
-			row[columns.column_frontend_parameters] = channel.transponder.frontend_parameters;
-			row[columns.column_polarisation] = channel.transponder.polarisation;
-			tree_view_scanned_channels->get_selection()->select(row);
 
-			channel_count++;
-			update_channel_count();
-			g_debug("Found channel #%d : %s", channel.service_id, channel.name.c_str());
+			add_channel_row(channel);
 		}		
 	}
+	notebook_scan_wizard->next_page();
+
 	g_debug("Finished importing channels");
-	hide();
 }
 
-void ScanWindow::on_button_scan_wizard_next_clicked()
+void ScanDialog::add_channel_row(const Channel& channel)
+{
+	gboolean found = false;
+	
+	Gtk::TreeModel::Children children = tree_view_scanned_channels->get_model()->children();	
+	for (Gtk::TreeIter iterator = children.begin(); iterator != children.end(); iterator++)
+	{
+		Gtk::TreeModel::Row row(*iterator);
+		if (row.get_value(columns.column_name) == channel.name)
+		{
+			found = true;
+		}
+	}
+
+	if (found)
+	{
+		g_debug("Ignoring %d '%s', already got a channel with that name",
+			channel.service_id, channel.name.c_str());
+	}
+	else
+	{
+		Gtk::TreeModel::iterator iterator = list_store->append();
+		
+		Gtk::TreeModel::Row row					= *iterator;
+		row[columns.column_id]					= channel.service_id;
+		row[columns.column_name]				= channel.name;
+		row[columns.column_frontend_parameters]	= channel.transponder.frontend_parameters;
+		row[columns.column_polarisation]		= channel.transponder.polarisation;
+		tree_view_scanned_channels->get_selection()->select(row);
+
+		channel_count++;
+		update_channel_count();
+		g_debug("Found channel %d : %s", channel.service_id, channel.name.c_str());
+	}
+}
+
+void ScanDialog::on_button_scan_wizard_next_clicked()
 {
 	TRY
 	stop_scan();
@@ -328,9 +356,9 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 		g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
 		scan_thread = new ScanThread(frontend, initial_tuning_file);
 		Dvb::Scanner& scanner = scan_thread->get_scanner();
-		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_service));
-		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_progress));
-		scanner.signal_complete.connect(sigc::mem_fun(*this, &ScanWindow::on_signal_complete));
+		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
+		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
+		scanner.signal_complete.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_complete));
 		get_application().stop_stream_thread();
 		scan_thread->start();
 	}
@@ -343,37 +371,34 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 	CATCH
 }
 
-void ScanWindow::on_button_scan_wizard_add_clicked()
+void ScanDialog::on_button_scan_wizard_add_clicked()
 {
 	TRY
-
 	hide();
-	
 	CATCH;
 }
 
-void ScanWindow::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name, const guint polarisation)
+void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name, const guint polarisation)
 {
 	GdkLock gdk_lock;
-	Gtk::TreeModel::iterator iterator = list_store->append();
-	Gtk::TreeModel::Row row = *iterator;
-	row[columns.column_id] = id;
-	row[columns.column_name] = name;
-	row[columns.column_frontend_parameters] = frontend_parameters;
-	row[columns.column_polarisation] = polarisation;
-	tree_view_scanned_channels->get_selection()->select(row);
-
-	channel_count++;
-	update_channel_count();
-	g_debug("Found channel #%d : %s", id, name.c_str());
+	
+	Channel channel;
+	channel.service_id						= id;
+	channel.name							= name;
+	channel.transponder.frontend_parameters = frontend_parameters;
+	channel.transponder.polarisation		= polarisation;
+	add_channel_row(channel);
 }
 
-void ScanWindow::update_channel_count()
+void ScanDialog::update_channel_count()
 {
-	label_scan_information->set_text(Glib::ustring::compose(ngettext("Found 1 channel", "Found %1 channels", channel_count), channel_count));
+	label_scan_information->set_text(
+		Glib::ustring::compose(
+			ngettext("Found 1 channel", "Found %1 channels", channel_count),
+			channel_count));
 }
 
-void ScanWindow::on_signal_progress(guint step, gsize total)
+void ScanDialog::on_signal_progress(guint step, gsize total)
 {
 	GdkLock gdk_lock;
 	gdouble fraction = total == 0 ? 0 : step/(gdouble)total;
@@ -390,13 +415,13 @@ void ScanWindow::on_signal_progress(guint step, gsize total)
 	}
 }
 
-void ScanWindow::on_signal_complete()
+void ScanDialog::on_signal_complete()
 {
 	glade->get_widget("button_scan_wizard_add")->show();
 	notebook_scan_wizard->next_page();
 }
 
-ChannelList ScanWindow::get_channels()
+ChannelList ScanDialog::get_channels()
 {
 	ChannelList result;
 	std::list<Gtk::TreeModel::Path> selected_services = tree_view_scanned_channels->get_selection()->get_selected_rows();		

@@ -87,8 +87,6 @@ me_tv_SOURCES = \
 	mplayer_engine.cc \
 	mplayer_engine.h \
 	exception.cc \
-	scan_window.cc \
-	scan_window.h \
 	string_splitter.cc \
 	string_splitter.h \
 	channels_conf_line.cc \
@@ -111,7 +109,9 @@ me_tv_SOURCES = \
 	scheduled_recording_manager.cc \
 	scheduled_recording_manager.h \
 	save_thread.cc \
-	save_thread.h
+	save_thread.h \
+	scan_dialog.cc \
+	scan_dialog.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \

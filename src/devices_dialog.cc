@@ -21,7 +21,6 @@
 #include "me-tv.h"
 #include <libgnomeuimm.h>
 #include <libglademm.h>
-#include "scan_window.h"
 #include "application.h"
 #include "devices_dialog.h"
 
