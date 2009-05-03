@@ -167,11 +167,13 @@ void ScanWindow::on_button_scan_wizard_cancel_clicked()
 
 void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 {
-	ChannelManager& channel_manager = get_application().channel_manager;
 	Glib::RefPtr<Glib::IOChannel> file = Glib::IOChannel::create_from_file(channels_conf_path, "r");
 	Glib::ustring line;
 	guint line_count = 0;
 	
+	glade->get_widget("button_scan_wizard_next")->hide();
+	notebook_scan_wizard->next_page();
+
 	while (file->read_line(line) == Glib::IO_STATUS_NORMAL)
 	{
 		ChannelsConfLine channels_conf_line(line);
@@ -270,7 +272,18 @@ void ScanWindow::import_channels_conf(const Glib::ustring& channels_conf_path)
 					throw Exception(_("Failed to import: importing a channels.conf is only supported with DVB-T, DVB-C, DVB-S and ATSC"));
 					break;
 			}
-			channel_manager.add_channel(channel);
+			
+			Gtk::TreeModel::iterator iterator = list_store->append();
+			Gtk::TreeModel::Row row = *iterator;
+			row[columns.column_id] = channel.service_id;
+			row[columns.column_name] = channel.name;
+			row[columns.column_frontend_parameters] = channel.transponder.frontend_parameters;
+			row[columns.column_polarisation] = channel.transponder.polarisation;
+			tree_view_scanned_channels->get_selection()->select(row);
+
+			channel_count++;
+			update_channel_count();
+			g_debug("Found channel #%d : %s", channel.service_id, channel.name.c_str());
 		}		
 	}
 	g_debug("Finished importing channels");
@@ -333,47 +346,6 @@ void ScanWindow::on_button_scan_wizard_next_clicked()
 void ScanWindow::on_button_scan_wizard_add_clicked()
 {
 	TRY
-	ChannelManager& channel_manager = get_application().channel_manager;
-	std::list<Gtk::TreeModel::Path> selected_services = tree_view_scanned_channels->get_selection()->get_selected_rows();		
-	std::list<Gtk::TreeModel::Path>::iterator iterator = selected_services.begin();
-	while (iterator != selected_services.end())
-	{
-		Gtk::TreeModel::Row row(*list_store->get_iter(*iterator));
-
-		Channel channel;
-
-		channel.service_id			= row.get_value(columns.column_id);
-		channel.name				= row.get_value(columns.column_name);
-		channel.transponder.frontend_parameters = row.get_value(columns.column_frontend_parameters);
-		channel.transponder.polarisation = row.get_value(columns.column_polarisation);
-
-		switch(frontend.get_frontend_info().type)
-		{
-			case FE_OFDM:
-				channel.flags = CHANNEL_FLAG_DVB_T;
-				break;
-				
-			case FE_QPSK:
-				channel.flags = CHANNEL_FLAG_DVB_S;
-				break;
-
-			case FE_QAM:
-				channel.flags = CHANNEL_FLAG_DVB_C;
-				break;
-				
-			case FE_ATSC:
-				channel.flags = CHANNEL_FLAG_ATSC;
-				break;
-
-			default:
-				throw Exception(_("Invalid frontend type"));
-				break;
-		}
-		
-		channel_manager.add_channel(channel);
-		
-		iterator++;
-	}
 
 	hide();
 	
@@ -422,4 +394,50 @@ void ScanWindow::on_signal_complete()
 {
 	glade->get_widget("button_scan_wizard_add")->show();
 	notebook_scan_wizard->next_page();
+}
+
+ChannelList ScanWindow::get_channels()
+{
+	ChannelList result;
+	std::list<Gtk::TreeModel::Path> selected_services = tree_view_scanned_channels->get_selection()->get_selected_rows();		
+	std::list<Gtk::TreeModel::Path>::iterator iterator = selected_services.begin();
+	while (iterator != selected_services.end())
+	{
+		Gtk::TreeModel::Row row(*list_store->get_iter(*iterator));
+
+		Channel channel;
+
+		channel.service_id			= row.get_value(columns.column_id);
+		channel.name				= row.get_value(columns.column_name);
+		channel.transponder.frontend_parameters = row.get_value(columns.column_frontend_parameters);
+		channel.transponder.polarisation = row.get_value(columns.column_polarisation);
+
+		switch(frontend.get_frontend_info().type)
+		{
+			case FE_OFDM:
+				channel.flags = CHANNEL_FLAG_DVB_T;
+				break;
+				
+			case FE_QPSK:
+				channel.flags = CHANNEL_FLAG_DVB_S;
+				break;
+
+			case FE_QAM:
+				channel.flags = CHANNEL_FLAG_DVB_C;
+				break;
+				
+			case FE_ATSC:
+				channel.flags = CHANNEL_FLAG_ATSC;
+				break;
+
+			default:
+				throw Exception(_("Invalid frontend type"));
+				break;
+		}
+		
+		result.push_back(channel);
+		
+		iterator++;
+	}
+	return result;	
 }

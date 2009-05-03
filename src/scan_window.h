@@ -84,7 +84,7 @@ private:
 		Gtk::TreeModelColumn<guint>								column_id;
 		Gtk::TreeModelColumn<Glib::ustring>						column_name;
 		Gtk::TreeModelColumn<struct dvb_frontend_parameters>	column_frontend_parameters;
-		Gtk::TreeModelColumn<guint>						column_polarisation;
+		Gtk::TreeModelColumn<guint>								column_polarisation;
 	};
 
 	ModelColumns columns;
@@ -111,6 +111,7 @@ public:
 	~ScanWindow();
 		
 	void on_show();
+	ChannelList get_channels();
 
 	static ScanWindow& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 };

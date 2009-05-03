@@ -57,7 +57,17 @@ void ChannelsDialog::show_scan_window()
 	ScanWindow& scan_window = ScanWindow::create(glade);
 	scan_window.show();
 	Gnome::Main::run(scan_window);
-	update_channels();
+	
+	ChannelList channels = scan_window.get_channels();	
+	for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+	{
+		const Channel& channel = *iterator;
+
+		Gtk::TreeModel::iterator row_iterator = list_store->append();
+		Gtk::TreeModel::Row row		= *row_iterator;
+		row[columns.column_name]	= channel.name;
+		row[columns.column_channel]	= channel;
+	}
 }
 
 void ChannelsDialog::on_button_scan_clicked()
@@ -98,40 +108,31 @@ ChannelList ChannelsDialog::get_channels()
 	return result;
 }
 
-void ChannelsDialog::update_channels()
-{
-	set_channels(get_application().channel_manager.get_channels());
-}
-
-void ChannelsDialog::set_channels(const ChannelList& channels)
-{
-	list_store->clear();
-	
-	ChannelList::const_iterator iterator = channels.begin();
-	while (iterator != channels.end())
-	{
-		const Channel& channel = *iterator;
-
-		Gtk::TreeModel::iterator row_iterator = list_store->append();
-		Gtk::TreeModel::Row row		= *row_iterator;
-		row[columns.column_name]	= channel.name;
-		row[columns.column_channel]	= channel;
-		
-		iterator++;			
-	}
-}
-
 void ChannelsDialog::on_show()
 {
-	Gtk::Dialog::on_show();
-
 	TRY
-	update_channels();
+	list_store->clear();
+	
 	Application& application = get_application();
-	const ChannelList& channels = application.channel_manager.get_channels();
+
+	ChannelList& channels = application.channel_manager.get_channels();
 	if (channels.empty() && !application.device_manager.get_frontends().empty())
 	{
 		show_scan_window();
 	}
+	else
+	{
+		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+		{
+			const Channel& channel = *iterator;
+
+			Gtk::TreeModel::iterator row_iterator = list_store->append();
+			Gtk::TreeModel::Row row		= *row_iterator;
+			row[columns.column_name]	= channel.name;
+			row[columns.column_channel]	= channel;
+		}
+	}
+	Gtk::Dialog::on_show();
+
 	CATCH
 }
