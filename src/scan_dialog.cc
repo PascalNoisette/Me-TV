@@ -386,7 +386,8 @@ void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& fronten
 	channel.service_id						= id;
 	channel.name							= name;
 	channel.transponder.frontend_parameters = frontend_parameters;
-	channel.transponder.polarisation		= polarisation;
+	channel.transponder.polarisation		= polarisation;		
+
 	add_channel_row(channel);
 }
 

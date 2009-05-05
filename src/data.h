@@ -45,7 +45,7 @@ namespace Data
 		Connection(const Glib::ustring& filename);
 		~Connection();
 
-		int get_last_insert_rowid();
+		guint get_last_insert_rowid();
 		gboolean get_database_created() const { return database_created; }
 		void vacuum();
 		
@@ -66,11 +66,11 @@ namespace Data
 		~Statement();
 
 		void reset();
-		gint step();
+		guint step();
 		gint get_int(guint column);
 		const Glib::ustring get_text(guint column);
 
-		int get_parameter_index(const Glib::ustring& name);
+		guint get_parameter_index(const Glib::ustring& name);
 			
 		void set_int_parameter(guint index, int value);
 		void set_string_parameter(guint index, const Glib::ustring& value);

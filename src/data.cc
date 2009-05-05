@@ -81,7 +81,7 @@ void Statement::reset()
 	sqlite3_reset(statement);
 }
 	
-gint Statement::step()
+guint Statement::step()
 {
 	int result = sqlite3_step(statement);
 	
@@ -127,7 +127,7 @@ void Statement::set_string_parameter(guint index, const Glib::ustring& value)
 	sqlite3_bind_text(statement, index, value.c_str(), -1, NULL);
 }
 
-int Statement::get_parameter_index(const Glib::ustring& name)
+guint Statement::get_parameter_index(const Glib::ustring& name)
 {
 	int index = sqlite3_bind_parameter_index(statement, name.c_str());
 	if (index == 0)
@@ -140,13 +140,11 @@ int Statement::get_parameter_index(const Glib::ustring& name)
 
 void Statement::set_int_parameter(const Glib::ustring& name, int value)
 {
-//	g_debug("[%s] = %d", name.c_str(), value);
 	set_int_parameter(get_parameter_index(name), value);
 }
 
 void Statement::set_string_parameter(const Glib::ustring& name, const Glib::ustring& value)
 {
-//	g_debug("[%s] = %s", name.c_str(), value.c_str());
 	set_string_parameter(get_parameter_index(name), value);
 }
 
@@ -174,7 +172,7 @@ Connection::~Connection()
 	}
 }
 
-int Connection::get_last_insert_rowid()
+guint Connection::get_last_insert_rowid()
 {
 	return sqlite3_last_insert_rowid(connection);
 }
@@ -317,15 +315,15 @@ TableAdapter::TableAdapter(Connection& connection, Table& table)
 void TableAdapter::replace_rows(DataTable& data_table)
 {
 	Glib::ustring primary_key = data_table.table.primary_key;
-	
-	Statement statement(connection, replace_command);
-	
+			
 	if (data_table.rows.size() > 0)
 	{
 		for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 		{
 			Data::Row& row = *i;
 
+			Statement statement(connection, replace_command);
+			
 			for (Columns::iterator j = data_table.table.columns.begin(); j != data_table.table.columns.end(); j++)
 			{
 				Column& column = *j;
@@ -345,8 +343,9 @@ void TableAdapter::replace_rows(DataTable& data_table)
 					}
 				}
 			}
-			statement.step();
 			
+			statement.step();
+						
 			if (row.auto_increment != NULL && *row.auto_increment == 0)
 			{
 				*(row.auto_increment) = connection.get_last_insert_rowid();
@@ -357,8 +356,6 @@ void TableAdapter::replace_rows(DataTable& data_table)
 			{
 				g_debug("%s row replaced", data_table.table.name.c_str());
 			}
-
-			statement.reset();
 		}
 	}
 }

@@ -137,8 +137,8 @@ void ChannelManager::save(Data::Connection& connection)
 		Data::Row row;
 		
 		row.auto_increment = &(channel.channel_id);
-		
-		row["channel_id"].int_value		= channel.channel_id;
+
+		row["channel_id"].int_value		= channel.channel_id;		
 		row["name"].string_value		= channel.name;
 		row["flags"].int_value			= channel.flags;
 		row["sort_order"].int_value		= ++channel_count;
@@ -275,6 +275,11 @@ void ChannelManager::add_channel(const Channel& channel)
 		if ((*iterator).name == channel.name)
 		{
 			throw Exception("Failed to add channel: channel name already exists");
+		}
+
+		if ((*iterator).channel_id == channel.channel_id)
+		{
+			throw Exception("Failed to add channel: channel id already exists");
 		}
 	}
 	
