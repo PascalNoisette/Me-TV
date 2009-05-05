@@ -40,6 +40,7 @@ private:
 	void set_audio_stream(guint stream) {}
 	void set_mute_state(gboolean state);
 	void set_audio_channel_state(AudioChannelState state) {}
+	void set_subtitle_stream(guint stream) {}
 	gboolean is_running();
 
 	static gboolean on_bus_message(GstBus *bus, GstMessage *message, gpointer data);
