@@ -1,9 +1,10 @@
-2009-05-03  Michael Lamothe <michael.lamothe@gmail.com>
+2009-05-06  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.10
-	* Can now only add uniwue channel names
-	* Fixed up scanner UI to not return channels on cancel.
+	* Can now only add unique channel names
+	* Fixed up scanner UI to not return channels on cancel
 	* Increased timeout to 5 seconds again (LP: #371165)
+	* Fixed issue with SQLite parameters not being reset
 
 2009-05-03  Michael Lamothe <michael.lamothe@gmail.com>
 
