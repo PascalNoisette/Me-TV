@@ -66,8 +66,8 @@ src/preferences_dialog.cc
 src/preferences_dialog.h
 src/channel_manager.h
 src/channel_manager.cc
-src/scan_window.cc
-src/scan_window.h
+src/scan_dialog.cc
+src/scan_dialog.h
 src/scheduled_recording.cc
 src/scheduled_recording_dialog.cc
 src/scheduled_recording_dialog.h
