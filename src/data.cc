@@ -79,6 +79,7 @@ Statement::~Statement()
 void Statement::reset()
 {
 	sqlite3_reset(statement);
+	sqlite3_clear_bindings(statement);
 }
 	
 guint Statement::step()
@@ -316,13 +317,13 @@ void TableAdapter::replace_rows(DataTable& data_table)
 {
 	Glib::ustring primary_key = data_table.table.primary_key;
 			
+	Statement statement(connection, replace_command);
+
 	if (data_table.rows.size() > 0)
 	{
 		for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 		{
 			Data::Row& row = *i;
-
-			Statement statement(connection, replace_command);
 			
 			for (Columns::iterator j = data_table.table.columns.begin(); j != data_table.table.columns.end(); j++)
 			{
@@ -356,6 +357,8 @@ void TableAdapter::replace_rows(DataTable& data_table)
 			{
 				g_debug("%s row replaced", data_table.table.name.c_str());
 			}
+			
+			statement.reset();
 		}
 	}
 }
