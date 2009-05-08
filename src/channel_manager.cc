@@ -277,7 +277,7 @@ void ChannelManager::add_channel(const Channel& channel)
 			throw Exception("Failed to add channel: channel name already exists");
 		}
 
-		if ((*iterator).channel_id == channel.channel_id)
+		if (channel.channel_id != 0 && (*iterator).channel_id == channel.channel_id)
 		{
 			throw Exception("Failed to add channel: channel id already exists");
 		}

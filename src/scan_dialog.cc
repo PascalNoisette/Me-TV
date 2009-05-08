@@ -277,6 +277,7 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 			add_channel_row(channel);
 		}		
 	}
+	glade->get_widget("button_scan_wizard_add")->show();
 	notebook_scan_wizard->next_page();
 
 	g_debug("Finished importing channels");

@@ -2,6 +2,8 @@
 
 	* 0.8.11
 	* Fixed unsupported engines
+	* Fix so that the Add button appears for channel import
+	* Fix for duplicate channel error when adding channels
 
 2009-05-06  Michael Lamothe <michael.lamothe@gmail.com>
 
