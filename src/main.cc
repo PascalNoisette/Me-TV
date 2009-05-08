@@ -40,12 +40,6 @@ int main (int argc, char *argv[])
 
 	g_printf("Me TV %s\n", VERSION);
 
-	if (!XInitThreads())
-	{
-		g_printf(_("Failed to initialise X threads"));
-		return -1;
-	}
-
 	if (!Glib::thread_supported())
 	{
 		Glib::thread_init();

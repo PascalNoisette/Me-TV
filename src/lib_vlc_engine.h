@@ -42,7 +42,7 @@ private:
 	void set_volume(gint newlevel);
 	void set_audio_stream(guint stream) {};
 	void set_audio_channel_state(AudioChannelState state) {};
-	void set_subtitle_stream(guint stream) {}
+	void set_subtitle_stream(gint stream) {}
 	gboolean is_running();
 
 	void check_exception();
