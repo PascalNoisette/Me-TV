@@ -1,5 +1,5 @@
 .pc
-.TH "ME TV" 1 "2009-05-08" "0.8.11" "Me TV Manual"
+.TH "ME TV" 1 "2009-05-09" "0.8.12" "Me TV Manual"
 
 .SH NAME
 me-tv \- a digital television (DVB) viewer for GNOME
@@ -13,6 +13,7 @@ me-tv \- a digital television (DVB) viewer for GNOME
 .I [-d|--default-device]
 .I [--disable-epg]
 .I [--disable-epg-thread]
+.I [--read-timeout]
 .I [--display=DISPLAY]
 
 .SH DESCRIPTION
@@ -49,6 +50,9 @@ Stops the rendering of the EPG event buttons on the UI.
 .TP
 .B --disable-epg-thread
 Disable the EPG thread.  Me TV will stop collecting EPG events.
+.TP
+.B --read-timeout
+How long to wait (in seconds) before timing out while waiting for data from demuxer (default 5)
 .TP
 .B --display=DISPLAY
 X display to use

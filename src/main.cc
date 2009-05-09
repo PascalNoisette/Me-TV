@@ -80,6 +80,10 @@ int main (int argc, char *argv[])
 	disable_epg_option_entry.set_long_name("disable-epg");
 	disable_epg_option_entry.set_description(_("Stops the rendering of the EPG event buttons on the UI."));
 
+	Glib::OptionEntry read_timeout_option_entry;
+	read_timeout_option_entry.set_long_name("read_timeout");
+	read_timeout_option_entry.set_description(_("How long to wait (in seconds) before timing out while waiting for data from demuxer (default 5)."));
+	
 	Glib::OptionGroup option_group(PACKAGE_NAME, "", _("Show Me TV help options"));
 	option_group.add_entry(verbose_option_entry, verbose_logging);
 	option_group.add_entry(safe_mode_option_entry, safe_mode);
@@ -87,6 +91,7 @@ int main (int argc, char *argv[])
 	option_group.add_entry(device_option_entry, default_device);
 	option_group.add_entry(disable_epg_thread_option_entry, disable_epg_thread);
 	option_group.add_entry(disable_epg_option_entry, disable_epg);
+	option_group.add_entry(read_timeout_option_entry, read_timeout);
 
 	Glib::OptionContext* option_context = new Glib::OptionContext();
 	option_context->set_summary(ME_TV_SUMMARY);

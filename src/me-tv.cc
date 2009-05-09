@@ -29,6 +29,7 @@ bool minimised_mode;
 Glib::ustring default_device;
 bool disable_epg_thread;
 bool disable_epg;
+gint read_timeout;
 
 StringSignal signal_error;
 

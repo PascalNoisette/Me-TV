@@ -44,7 +44,7 @@ namespace Dvb
 		void set_filter(ushort pid, ushort table_id, ushort mask = 0);
 		void set_buffer_size(unsigned int buffer_size);
 		gint read(unsigned char* buffer, size_t length);
-		gboolean poll(guint timeout);
+		gboolean poll();
 		void stop();
 		int get_fd() const;
 	};
