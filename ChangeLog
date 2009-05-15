@@ -1,3 +1,8 @@
+2009-05-15  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.13
+	* Moved from GNOME to GTK frontend to make the transition to GtkBuilder easier
+
 2009-05-09  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.12
