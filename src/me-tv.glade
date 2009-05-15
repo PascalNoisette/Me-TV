@@ -12,7 +12,7 @@
     <property name="icon">me-tv.xpm</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="skip_taskbar_hint">True</property>
-    <property name="transient_for">application_window</property>
+    <property name="transient_for">window_main</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog_vbox">
@@ -191,7 +191,7 @@
     <property name="icon">me-tv.xpm</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="skip_taskbar_hint">True</property>
-    <property name="transient_for">application_window</property>
+    <property name="transient_for">window_main</property>
     <property name="program_name">Me TV</property>
     <property name="version">0.0.1</property>
     <property name="copyright" translatable="yes">Copyright © Michael Lamothe</property>
@@ -246,7 +246,7 @@ found in /usr/share/common-licenses/GPL file.</property>
     <property name="icon">me-tv.xpm</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="skip_taskbar_hint">True</property>
-    <property name="transient_for">application_window</property>
+    <property name="transient_for">window_main</property>
     <property name="opacity">0.98999999999999999</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
@@ -460,7 +460,7 @@ found in /usr/share/common-licenses/GPL file.</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <property name="icon">me-tv.xpm</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
-    <property name="transient_for">application_window</property>
+    <property name="transient_for">window_main</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox5">
@@ -574,7 +574,7 @@ found in /usr/share/common-licenses/GPL file.</property>
     <property name="icon">me-tv.xpm</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="skip_taskbar_hint">True</property>
-    <property name="transient_for">application_window</property>
+    <property name="transient_for">window_main</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox4">
@@ -1254,7 +1254,7 @@ iso6937</property>
     <property name="icon_name">Me TV</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="skip_taskbar_hint">True</property>
-    <property name="transient_for">application_window</property>
+    <property name="transient_for">window_main</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox10">
@@ -1377,7 +1377,7 @@ iso6937</property>
     <property name="icon">me-tv.xpm</property>
     <property name="icon_name">Me TV</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
-    <property name="transient_for">application_window</property>
+    <property name="transient_for">window_main</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox11">
@@ -1723,7 +1723,7 @@ iso6937</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
-    <property name="transient_for">application_window</property>
+    <property name="transient_for">window_main</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox9">
