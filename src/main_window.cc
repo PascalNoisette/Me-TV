@@ -39,7 +39,7 @@
 #define UPDATE_INTERVAL		60
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)
-	: Gnome::UI::App(cobject), glade(glade_xml)
+: Gtk::Window(cobject), glade(glade_xml)
 {
 	g_debug("MainWindow constructor");
 
@@ -56,8 +56,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	audio_stream_index		= 0;
 	subtitle_stream_index	= -1;
 
-	app_bar = dynamic_cast<Gnome::UI::AppBar*>(glade->get_widget("app_bar"));
-	app_bar->get_progress()->hide();
+	statusbar = dynamic_cast<Gtk::Statusbar*>(glade->get_widget("statusbar"));
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
 	drawing_area_video->set_double_buffered(false);
 	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_expose_event));
@@ -143,8 +142,8 @@ MainWindow::~MainWindow()
 MainWindow* MainWindow::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	MainWindow* main_window = NULL;
-	glade->get_widget_derived("application_window", main_window);
-	check_glade(main_window, "application_window");
+	glade->get_widget_derived("window_main", main_window);
+	check_glade(main_window, "window_main");
 	return main_window;
 }
 
@@ -445,10 +444,10 @@ void MainWindow::on_timeout()
 
 void MainWindow::set_display_mode(DisplayMode mode)
 {
-	glade->get_widget("menubar")->property_visible()			= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
-	glade->get_widget("handlebox_toolbar")->property_visible()	= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
-	glade->get_widget("app_bar")->property_visible()			= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
-	glade->get_widget("vbox_epg")->property_visible()			= (mode == DISPLAY_MODE_EPG);
+	glade->get_widget("menubar")->property_visible()	= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	glade->get_widget("toolbar")->property_visible()	= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	glade->get_widget("statusbar")->property_visible()	= (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	glade->get_widget("vbox_epg")->property_visible()	= (mode == DISPLAY_MODE_EPG);
 		
 	display_mode = mode;
 }
@@ -535,7 +534,8 @@ void MainWindow::update()
 	}
 	
 	set_title(window_title);
-	app_bar->set_status(status_text);
+	statusbar->pop();
+	statusbar->push(status_text);
 
 	Glib::RefPtr<Gdk::Window> window = get_window();
 	gboolean is_minimised = window == NULL || window->get_state() & Gdk::WINDOW_STATE_ICONIFIED;

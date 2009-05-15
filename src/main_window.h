@@ -33,7 +33,7 @@ typedef enum
 	DISPLAY_MODE_EPG
 } DisplayMode;
 
-class MainWindow : public Gnome::UI::App
+class MainWindow : public Gtk::Window
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
@@ -43,7 +43,7 @@ private:
 	GdkCursor*								hidden_cursor;
 	gboolean								is_cursor_visible;
 	Gtk::HScale*							h_scale_position;
-	Gnome::UI::AppBar*						app_bar;
+	Gtk::Statusbar*							statusbar;
 	DisplayMode								display_mode, prefullscreen;
 	guint									last_update_time;
 	guint									last_poke_time;
