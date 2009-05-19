@@ -75,10 +75,9 @@ void Frontend::tune_to(const Transponder& transponder)
 	struct dvb_frontend_parameters parameters = transponder.frontend_parameters;
 	struct dvb_frontend_event ev;
 	
-	guint wait_seconds = 5;
+	guint wait_seconds = read_timeout;
 	if(frontend_info.type == FE_QPSK)
 	{
-		wait_seconds = 5;
 		guint hi_band = 0;
 		
 		if(LNB_HIGH_VALUE > 0 && LNB_SWITCH_VALUE > 0 && parameters.frequency >= LNB_SWITCH_VALUE)
@@ -182,10 +181,11 @@ void Frontend::wait_lock(guint wait_seconds)
 
 	if (!(status & FE_HAS_LOCK))
 	{
-		g_debug("status: %d", status);
+		g_debug("Status: %d", status);
 		struct dvb_frontend_parameters parameters;
 		ioctl(fd, FE_GET_FRONTEND, &parameters);
-		g_debug("currently tuned to freq %d, symbol rate %d, inner fec %d", parameters.frequency, parameters.u.qpsk.symbol_rate, parameters.u.qpsk.fec_inner);
+		g_debug("Currently tuned to freq %d, symbol rate %d, inner fec %d",
+			parameters.frequency, parameters.u.qpsk.symbol_rate, parameters.u.qpsk.fec_inner);
 		
 		throw Exception(_("Failed to lock to channel"));
 	}

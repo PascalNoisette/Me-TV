@@ -2,6 +2,7 @@
 
 	* 0.8.13
 	* Moved from GNOME to GTK frontend to make the transition to GtkBuilder easier
+	* Using read_timeout for tuning lock
 
 2009-05-09  Michael Lamothe <michael.lamothe@gmail.com>
 
