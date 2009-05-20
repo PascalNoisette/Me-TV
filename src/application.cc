@@ -590,8 +590,8 @@ void Application::check_scheduled_recordings()
 	// Check if the SR has just finished
 	if (stream_thread != NULL &&			// If there's a stream
 		record_state &&						// and it's recording
-		scheduled_recording_id != NULL &&	// and there is an existing SR running
-		id == NULL)							// but the recording manager has just told us that there's no SR
+		scheduled_recording_id != 0 &&		// and there is an existing SR running
+		id == 0)							// but the recording manager has just told us that there's no SR
 	{										// then we need to stop recording
 		g_debug("Record stopped by scheduled recording");
 		stop_recording();

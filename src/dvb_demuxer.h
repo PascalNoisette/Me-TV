@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include <glibmm.h>
 #include <linux/dvb/dmx.h>
-#include <linux/types.h>
 
 namespace Dvb
 {
