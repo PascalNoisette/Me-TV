@@ -539,7 +539,7 @@ void MainWindow::update()
 
 	Glib::RefPtr<Gdk::Window> window = get_window();
 	gboolean is_minimised = window == NULL || window->get_state() & Gdk::WINDOW_STATE_ICONIFIED;
-	if (!is_minimised && property_visible())
+	if (!is_minimised && property_visible() && display_mode == DISPLAY_MODE_EPG)
 	{
 		widget_epg->update();
 	}
