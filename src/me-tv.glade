@@ -836,7 +836,7 @@ none</property>
               <widget class="GtkHBox" id="hbox7">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkComboBoxEntry" id="comboboxentry1">
+                  <widget class="GtkComboBoxEntry" id="combo_box_entry_xine_audio_driver">
                     <property name="visible">True</property>
                     <property name="items">auto
 alsa
