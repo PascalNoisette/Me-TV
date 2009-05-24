@@ -3,6 +3,7 @@
 	* 0.8.14
 	* Fixed icon on application popup menu
 	* Not updating EPG when it's not shown
+	* Changed "read_timeout" option to "read-timeout"
 
 2009-05-15  Michael Lamothe <michael.lamothe@gmail.com>
 

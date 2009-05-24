@@ -81,7 +81,7 @@ int main (int argc, char *argv[])
 	disable_epg_option_entry.set_description(_("Stops the rendering of the EPG event buttons on the UI."));
 
 	Glib::OptionEntry read_timeout_option_entry;
-	read_timeout_option_entry.set_long_name("read_timeout");
+	read_timeout_option_entry.set_long_name("read-timeout");
 	read_timeout_option_entry.set_description(_("How long to wait (in seconds) before timing out while waiting for data from demuxer (default 5)."));
 	
 	Glib::OptionGroup option_group(PACKAGE_NAME, "", _("Show Me TV help options"));
