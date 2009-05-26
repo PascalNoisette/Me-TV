@@ -92,7 +92,7 @@ gboolean EpgEvents::get_current(EpgEvent& epg_event)
 	return found;
 }
 
-const EpgEventList& EpgEvents::get_list()
+const EpgEventList EpgEvents::get_list()
 {
 	Glib::RecMutex::Lock lock(mutex);
 	return list;
