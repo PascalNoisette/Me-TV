@@ -363,6 +363,9 @@ void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 {
 	TRY
+		
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
 	Gtk::Dialog* dialog_program_details = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
 	
 	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_title")))->get_buffer()->assign(epg_event.get_title());

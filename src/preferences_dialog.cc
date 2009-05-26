@@ -54,6 +54,7 @@ void PreferencesDialog::run()
 	Gtk::CheckButton* check_button_show_epg_time = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_show_epg_time"));
 	Gtk::CheckButton* check_button_show_epg_tooltips = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_show_epg_tooltips"));
 	Gtk::CheckButton* check_button_24_hour_workaround = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_24_hour_workaround"));
+	Gtk::CheckButton* check_button_fullscreen_bug_workaround = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_fullscreen_bug_workaround"));
 	Gtk::CheckButton* check_button_display_status_icon = dynamic_cast<Gtk::CheckButton*>(glade->get_widget("check_button_display_status_icon"));
 
 	ComboBoxText* combo_box_engine_type = NULL;
@@ -94,6 +95,7 @@ void PreferencesDialog::run()
 	check_button_show_epg_time->set_active(application.get_boolean_configuration_value("show_epg_time"));
 	check_button_show_epg_tooltips->set_active(application.get_boolean_configuration_value("show_epg_tooltips"));
 	check_button_24_hour_workaround->set_active(application.get_boolean_configuration_value("use_24_hour_workaround"));
+	check_button_fullscreen_bug_workaround->set_active(application.get_boolean_configuration_value("fullscreen_bug_workaround"));
 	check_button_display_status_icon->set_active(application.get_boolean_configuration_value("display_status_icon"));
 	
 	if (Dialog::run() == Gtk::RESPONSE_OK)
@@ -115,6 +117,7 @@ void PreferencesDialog::run()
 		application.set_boolean_configuration_value("show_epg_time", check_button_show_epg_time->get_active());
 		application.set_boolean_configuration_value("show_epg_tooltips", check_button_show_epg_tooltips->get_active());
 		application.set_boolean_configuration_value("use_24_hour_workaround", check_button_24_hour_workaround->get_active());
+		application.set_boolean_configuration_value("fullscreen_bug_workaround", check_button_fullscreen_bug_workaround->get_active());
 		application.set_boolean_configuration_value("display_status_icon", check_button_display_status_icon->get_active());
 
 		get_application().update();

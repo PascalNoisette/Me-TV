@@ -93,6 +93,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_string_configuration_default("preferred_language", "");
 	set_string_configuration_default("text_encoding", "auto");
 	set_boolean_configuration_default("use_24_hour_workaround", true);
+	set_boolean_configuration_default("fullscreen_bug_workaround", true);
 	set_boolean_configuration_default("display_status_icon", true);
 	set_int_configuration_default("x", 10);
 	set_int_configuration_default("y", 10);
@@ -825,6 +826,7 @@ void Application::on_error(const Glib::ustring& message)
 {
 	if (main_window != NULL)
 	{
+		FullscreenBugWorkaround fullscreen_bug_workaround;
 		Gtk::MessageDialog dialog(*main_window, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
 		dialog.set_title(_("Me TV - Error Message"));
 		dialog.run();

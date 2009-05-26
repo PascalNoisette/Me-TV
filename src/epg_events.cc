@@ -36,6 +36,7 @@ gboolean EpgEvents::exists(const EpgEvent& epg_event)
 {
 	gboolean result = false;
 	
+	Glib::RecMutex::Lock lock(mutex);
 	for (EpgEventList::const_iterator i = list.begin(); i != list.end() && result == false; i++)
 	{
 		if (epg_event.event_id == (*i).event_id)

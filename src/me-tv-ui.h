@@ -27,6 +27,7 @@
 #include "dvb_frontend.h"
 #include "channel.h"
 
+
 // This class exists because I can't get Gtk::ComboBoxText to work properly
 // it seems to have 2 columns
 class ComboBoxText : public Gtk::ComboBox
@@ -123,6 +124,15 @@ class GdkUnlock
 public:
 	GdkUnlock();
 	~GdkUnlock();
+};
+
+class FullscreenBugWorkaround
+{
+private:
+	gboolean apply;
+public:
+	FullscreenBugWorkaround();
+	~FullscreenBugWorkaround();
 };
 
 Gtk::Widget* get_widget(Glib::RefPtr<Gnome::Glade::Xml> glade,

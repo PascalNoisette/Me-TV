@@ -57,11 +57,9 @@ private:
 	Engine::AudioChannelState				audio_channel_state;
 	guint									audio_stream_index;
 	guint									subtitle_stream_index;
+	gboolean								maximise_forced;
 
 	void stop();
-	void fullscreen();
-	void unfullscreen();
-	gboolean is_fullscreen();
 	void toggle_fullscreen();
 	void toggle_mute();
 	void set_mute_state(gboolean mute_state);
@@ -120,6 +118,10 @@ public:
 	void play(const Glib::ustring& mrl);
 	void start_engine();
 	void stop_engine();
+
+	void fullscreen(gboolean change_mode = true);
+	void unfullscreen(gboolean restore_mode = true);
+	gboolean is_fullscreen();
 };
 
 #endif

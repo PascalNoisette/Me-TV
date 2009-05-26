@@ -55,6 +55,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	audio_channel_state		= Engine::AUDIO_CHANNEL_STATE_BOTH;
 	audio_stream_index		= 0;
 	subtitle_stream_index	= -1;
+	maximise_forced			= false;
 
 	statusbar = dynamic_cast<Gtk::Statusbar*>(glade->get_widget("statusbar"));
 	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(glade->get_widget("drawing_area_video"));
@@ -201,6 +202,8 @@ void MainWindow::on_menu_item_devices_clicked()
 
 void MainWindow::show_devices_dialog()
 {
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
 	DevicesDialog& devices_dialog = DevicesDialog::create(glade);
 	devices_dialog.run();
 	devices_dialog.hide();
@@ -208,6 +211,8 @@ void MainWindow::show_devices_dialog()
 
 void MainWindow::show_channels_dialog()
 {
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
 	ChannelsDialog& channels_dialog = ChannelsDialog::create(glade);	
 	gint dialog_result = channels_dialog.run();
 	channels_dialog.hide();
@@ -228,6 +233,8 @@ void MainWindow::show_channels_dialog()
 
 void MainWindow::show_preferences_dialog()
 {
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
 	PreferencesDialog& preferences_dialog = PreferencesDialog::create(glade);
 	preferences_dialog.run();
 	preferences_dialog.hide();
@@ -289,6 +296,8 @@ void MainWindow::on_menu_item_help_contents_clicked()
 void MainWindow::on_menu_item_about_clicked()
 {
 	TRY
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
 	Gtk::Dialog* about_dialog = NULL;
 	glade->get_widget("dialog_about", about_dialog);
 	about_dialog->run();
@@ -352,16 +361,30 @@ bool MainWindow::on_motion_notify_event(GdkEventMotion* event_motion)
 	return true;
 }
 
-void MainWindow::unfullscreen()
+
+void MainWindow::unfullscreen(gboolean restore_mode)
 {
 	Gtk::Window::unfullscreen();
-	set_display_mode(prefullscreen);
+	
+	if (restore_mode)
+	{
+		set_display_mode(prefullscreen);
+	}
 }
 
-void MainWindow::fullscreen()
+void MainWindow::fullscreen(gboolean change_mode)
 {
 	prefullscreen = display_mode;
-	set_display_mode(DISPLAY_MODE_VIDEO);
+	if (change_mode)
+	{
+		set_display_mode(DISPLAY_MODE_VIDEO);
+	}
+	
+	if (get_application().get_boolean_configuration_value("fullscreen_bug_workaround"))
+	{
+		maximise_forced = true;
+		get_window()->maximize();
+	}	
 	Gtk::Window::fullscreen();
 }
 
@@ -454,6 +477,8 @@ void MainWindow::set_display_mode(DisplayMode mode)
 
 void MainWindow::show_scheduled_recordings_dialog()
 {
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
 	ScheduledRecordingsDialog& scheduled_recordings_dialog = ScheduledRecordingsDialog::create(glade);
 	scheduled_recordings_dialog.run();
 	scheduled_recordings_dialog.hide();

@@ -54,6 +54,8 @@ void ChannelsDialog::show_scan_dialog()
 	// Check for a valid frontend device
 	get_application().device_manager.get_frontend();
 	
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
 	ScanDialog& scan_dialog = ScanDialog::create(glade);
 	scan_dialog.show();
 	Gnome::Main::run(scan_dialog);
