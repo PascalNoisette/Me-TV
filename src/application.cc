@@ -114,15 +114,15 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	}
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
-	Glib::ustring glade_path = current_directory + "/me-tv.glade";
+	Glib::ustring ui_path = current_directory + "/me-tv.ui";
 
-	if (!Gio::File::create_for_path(glade_path)->query_exists())
+	if (!Gio::File::create_for_path(ui_path)->query_exists())
 	{
-		glade_path = PACKAGE_DATA_DIR"/me-tv/glade/me-tv.glade";
+		ui_path = PACKAGE_DATA_DIR"/me-tv/glade/me-tv.ui";
 	}
 	
-	g_debug("Loading Glade file '%s' ...", glade_path.c_str());
-	glade = Gnome::Glade::Xml::create(glade_path);
+	g_debug("Loading GtkBuilder file '%s' ...", ui_path.c_str());
+	builder = Gtk::Builder::create_from_file(ui_path);
 	
 	g_debug("Application constructed");
 }
@@ -267,7 +267,8 @@ gboolean Application::initialise_database()
 		}
 		else
 		{
-			Gtk::Dialog* dialog_database_version = (Gtk::Dialog*)glade->get_widget("dialog_database_version");
+			Gtk::Dialog* dialog_database_version = NULL;
+			builder->get_widget("dialog_database_version", dialog_database_version);
 			int response = dialog_database_version->run();
 			dialog_database_version->hide();
 			if (response == 0)
@@ -398,10 +399,10 @@ void Application::run()
 		}
 
 		channel_manager.load(connection);
-		scheduled_recording_manager.load(connection);
+//		scheduled_recording_manager.load(connection);
 
-		status_icon = new StatusIcon(glade);
-		main_window = MainWindow::create(glade);
+		status_icon = new StatusIcon(builder);
+		main_window = MainWindow::create(builder);
 
 		if (!minimised_mode)
 		{
@@ -416,7 +417,7 @@ void Application::run()
 		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 
 		TRY
-		device_manager.get_frontend();
+		//device_manager.get_frontend();
 		
 		const ChannelList& channels = channel_manager.get_channels();
 		if (channels.empty())

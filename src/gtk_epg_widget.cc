@@ -25,23 +25,29 @@
 #define MINUTES_PER_COLUMN	1
 #define COLUMNS_PER_HOUR	(60 * MINUTES_PER_COLUMN)
 
-GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
-	Gtk::ScrolledWindow(cobject), glade(glade_xml)
+GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
+	Gtk::ScrolledWindow(cobject), builder(builder)
 {
 	offset = 0;
 	epg_page = 0;
 
-	table_epg				= dynamic_cast<Gtk::Table*>(glade->get_widget("table_epg"));
-	scrolled_window_epg		= dynamic_cast<Gtk::ScrolledWindow*>(glade->get_widget("scrolled_window_epg"));
+	builder->get_widget("table_epg", table_epg);
+	builder->get_widget("scrolled_window_epg", scrolled_window_epg);
 	
 	epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
-	glade->connect_clicked("button_epg_now",
-		sigc::bind<gint>(sigc::mem_fun(*this, &GtkEpgWidget::set_offset), 0));
-	glade->connect_clicked("button_epg_previous", sigc::mem_fun(*this, &GtkEpgWidget::previous));
-	glade->connect_clicked("button_epg_next", sigc::mem_fun(*this, &GtkEpgWidget::next));
+	Gtk::Button* button = NULL;
+	
+	builder->get_widget("button_epg_now", button);
+	button->signal_clicked().connect(sigc::bind<gint>(sigc::mem_fun(*this, &GtkEpgWidget::set_offset), 0));
 
-	label_epg_page = dynamic_cast<Gtk::Label*>(glade->get_widget("label_epg_page"));
-	glade->get_widget_derived("combo_box_epg_page", combo_box_epg_page);
+	builder->get_widget("button_epg_previous", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &GtkEpgWidget::previous));
+
+	builder->get_widget("button_epg_next", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &GtkEpgWidget::next));
+
+	builder->get_widget("label_epg_page", label_epg_page);
+	builder->get_widget_derived("combo_box_epg_page", combo_box_epg_page);
 	combo_box_epg_page->signal_changed().connect(sigc::mem_fun(*this, &GtkEpgWidget::on_combo_box_epg_page_changed));
 }
 
@@ -146,9 +152,14 @@ void GtkEpgWidget::update_table()
 		clear();
 		
 		epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
+
+		Gtk::Widget* widget = NULL;
+
+		builder->get_widget("button_epg_previous", widget);
+		widget->set_sensitive(offset > 0);
 		
-		glade->get_widget("button_epg_previous")->set_sensitive(offset > 0);
-		glade->get_widget("button_epg_now")->set_sensitive(offset > 0);
+		builder->get_widget("button_epg_now", widget);
+		widget->set_sensitive(offset > 0);
 		
 		ChannelManager& channel_manager = get_application().channel_manager;
 		const Channel* display_channel = channel_manager.get_display_channel();
@@ -366,19 +377,29 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 		
 	FullscreenBugWorkaround fullscreen_bug_workaround;
 
-	Gtk::Dialog* dialog_program_details = dynamic_cast<Gtk::Dialog*>(glade->get_widget("dialog_program_details"));
-	
-	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_title")))->get_buffer()->assign(epg_event.get_title());
-	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_description")))->get_buffer()->assign(epg_event.get_description());
-	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_start_time")))->get_buffer()->assign(epg_event.get_start_time_text());
-	(dynamic_cast<Gtk::TextView*>(glade->get_widget("text_view_program_duration")))->get_buffer()->assign(epg_event.get_duration_text());
+	Gtk::Dialog* dialog_program_details = NULL;
+	builder->get_widget("dialog_program_details", dialog_program_details);
+
+	Gtk::TextView* text_view = NULL;
+	builder->get_widget("text_view_program_title", text_view);
+	text_view->get_buffer()->assign(epg_event.get_title());
+
+	builder->get_widget("text_view_program_description", text_view);
+	text_view->get_buffer()->assign(epg_event.get_description());
+
+	builder->get_widget("text_view_program_start_time", text_view);
+	text_view->get_buffer()->assign(epg_event.get_start_time_text());
+
+	builder->get_widget("text_view_program_duration", text_view);
+	text_view->get_buffer()->assign(epg_event.get_duration_text());
+
 	gint result = dialog_program_details->run();
 	dialog_program_details->hide();
 
 	if (result == 1)
 	{
-		ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(glade);
-		scheduled_recording_dialog.run(MainWindow::create(glade), epg_event);
+		ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
+		scheduled_recording_dialog.run(MainWindow::create(builder), epg_event);
 		scheduled_recording_dialog.hide();
 	}
 	

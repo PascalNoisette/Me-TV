@@ -22,7 +22,6 @@
 #define __METERS_DIALOG_H__
 
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 #include "me-tv-ui.h"
 #include "thread.h"
 
@@ -49,19 +48,19 @@ private:
 		}
 	};
 
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
-	Gtk::ProgressBar*	progress_bar_signal_strength;
-	Gtk::ProgressBar*	progress_bar_signal_noise;
-	MetersThread		meters_thread;
-	Dvb::Frontend&		frontend;
+	const Glib::RefPtr<Gtk::Builder>	builder;
+	Gtk::ProgressBar*					progress_bar_signal_strength;
+	Gtk::ProgressBar*					progress_bar_signal_noise;
+	MetersThread						meters_thread;
+	Dvb::Frontend&						frontend;
 
 	void on_hide();
 
 public:	
-	MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder> builder);
 	~MetersDialog();
 
-	static MetersDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static MetersDialog& create(Glib::RefPtr<Gtk::Builder> builder);
 		
 	void start();
 	void stop();

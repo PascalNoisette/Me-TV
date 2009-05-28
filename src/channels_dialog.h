@@ -22,7 +22,6 @@
 #define __CHANNELS_DIALOG_H__
 
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 
 class ChannelsDialog : public Gtk::Dialog
 {
@@ -40,10 +39,11 @@ private:
 		Gtk::TreeModelColumn<Channel>			column_channel;
 	};
 		
-	ModelColumns columns;
-	Glib::RefPtr<Gtk::ListStore> list_store;
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
-	Gtk::TreeView* tree_view_displayed_channels;
+	ModelColumns						columns;
+	Glib::RefPtr<Gtk::ListStore>		list_store;
+	const Glib::RefPtr<Gtk::Builder>	builder;
+	Gtk::TreeView*						tree_view_displayed_channels;
+	
 	void show_scan_dialog();
 	
 	void on_show();
@@ -51,11 +51,11 @@ private:
 	void on_button_button_remove_selected_channels_clicked();
 
 public:
-	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 		
 	ChannelList get_channels();
 
-	static ChannelsDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static ChannelsDialog& create(Glib::RefPtr<Gtk::Builder> builder);
 };
 
 #endif

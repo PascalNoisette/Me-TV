@@ -24,11 +24,10 @@
 #include "application.h"
 #include "channels_conf_line.h"
 
-ScanDialog& ScanDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+ScanDialog& ScanDialog::create(Glib::RefPtr<Gtk::Builder> builder)
 {
 	ScanDialog* scan_dialog = NULL;
-	glade->get_widget_derived("window_scan_wizard", scan_dialog);
-	check_glade(scan_dialog, "window_scan_wizard");
+	builder->get_widget_derived("window_scan_wizard", scan_dialog);
 	return *scan_dialog;
 }
 
@@ -76,24 +75,35 @@ Glib::ustring ScanDialog::get_initial_tuning_dir()
 	return result;
 }
 
-ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
-	Gtk::Window(cobject), glade(glade_xml), frontend(get_application().device_manager.get_frontend())
+ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
+	Gtk::Window(cobject), builder(builder), frontend(get_application().device_manager.get_frontend())
 {
 	scan_thread = NULL;
 
-	notebook_scan_wizard = dynamic_cast<Gtk::Notebook*>(glade->get_widget("notebook_scan_wizard"));
-	label_scan_information = dynamic_cast<Gtk::Label*>(glade->get_widget("label_scan_information"));
-	glade->connect_clicked("button_scan_wizard_add", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_add_clicked));
-	glade->connect_clicked("button_scan_wizard_next", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_next_clicked));
-	glade->connect_clicked("button_scan_wizard_cancel", sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_cancel_clicked));
+	builder->get_widget("notebook_scan_wizard", notebook_scan_wizard);
+    builder->get_widget("label_scan_information", label_scan_information);
+
+	Gtk::Button* button = NULL;
+
+	builder->get_widget("button_scan_wizard_add", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_add_clicked));
+
+	builder->get_widget("button_scan_wizard_next", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_next_clicked));
+
+	builder->get_widget("button_scan_wizard_cancel", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_cancel_clicked));
 
 	notebook_scan_wizard->set_show_tabs(false);
 		
 	Glib::ustring device_name = frontend.get_frontend_info().name;
-	dynamic_cast<Gtk::Label*>(glade->get_widget("label_scan_device"))->set_label(device_name);
+
+	Gtk::Label* label = NULL;
+	builder->get_widget("label_scan_device", label);
+	label->set_label(device_name);
 		
-	progress_bar_scan = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_scan"));
-	tree_view_scanned_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_scanned_channels"));
+	builder->get_widget("progress_bar_scan", progress_bar_scan);
+	builder->get_widget("tree_view_scanned_channels", tree_view_scanned_channels);
 	
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_scanned_channels->set_model(list_store);
@@ -102,8 +112,11 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade:
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scanned_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
 
-	Gtk::FileChooserButton* file_chooser_button_scan = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
-	Gtk::FileChooserButton* file_chooser_button_import = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_import"));
+	Gtk::FileChooserButton* file_chooser_button_scan = NULL;
+	builder->get_widget("file_chooser_button_scan", file_chooser_button_scan);
+
+	Gtk::FileChooserButton* file_chooser_button_import = NULL;
+	builder->get_widget("file_chooser_button_import", file_chooser_button_import);
 
 	file_chooser_button_scan->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_scan_file_changed));
 	file_chooser_button_import->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_import_file_changed));
@@ -119,11 +132,20 @@ void ScanDialog::on_show()
 	channel_count = 0;
 	update_channel_count();
 	progress_bar_scan->set_fraction(0);
-	glade->get_widget("button_scan_wizard_add")->hide();
-	glade->get_widget("button_scan_wizard_next")->show();
+
+	Gtk::Button* button = NULL;
+
+	builder->get_widget("button_scan_wizard_add", button);
+	button->hide();
+
+	builder->get_widget("button_scan_wizard_next", button);
+	button->show();
+	
 	notebook_scan_wizard->set_current_page(0);
 
-	Gtk::FileChooserButton* file_chooser_button = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
+	Gtk::FileChooserButton* file_chooser_button = NULL;
+	builder->get_widget("file_chooser_button_scan", file_chooser_button);
+	
 	Glib::ustring initial_tuning_file = get_initial_tuning_dir();
 	file_chooser_button->set_current_folder(initial_tuning_file);
 
@@ -150,13 +172,15 @@ void ScanDialog::stop_scan()
 
 void ScanDialog::on_file_chooser_button_scan_file_changed()
 {
-	Gtk::RadioButton* radio_button_scan = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan"));
+	Gtk::RadioButton* radio_button_scan = NULL;
+	builder->get_widget("radio_button_scan", radio_button_scan);
 	radio_button_scan->set_active();
 }
 
 void ScanDialog::on_file_chooser_button_import_file_changed()
 {
-	Gtk::RadioButton* radio_button_import = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_import"));
+	Gtk::RadioButton* radio_button_import = NULL;
+	builder->get_widget("radio_button_import", radio_button_import);
 	radio_button_import->set_active();
 }
 
@@ -171,8 +195,10 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 	Glib::RefPtr<Glib::IOChannel> file = Glib::IOChannel::create_from_file(channels_conf_path, "r");
 	Glib::ustring line;
 	guint line_count = 0;
-	
-	glade->get_widget("button_scan_wizard_next")->hide();
+
+	Gtk::Button* button = NULL;
+	builder->get_widget("button_scan_wizard_next", button);
+	button->hide();
 	notebook_scan_wizard->next_page();
 
 	while (file->read_line(line) == Glib::IO_STATUS_NORMAL)
@@ -277,7 +303,10 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 			add_channel_row(channel);
 		}		
 	}
-	glade->get_widget("button_scan_wizard_add")->show();
+
+	builder->get_widget("button_scan_wizard_add", button);
+	button->show();
+	
 	notebook_scan_wizard->next_page();
 
 	g_debug("Finished importing channels");
@@ -328,12 +357,16 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 
 	Glib::ustring initial_tuning_file;
 	
-	Gtk::RadioButton* radio_button_scan = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_scan"));
-	Gtk::RadioButton* radio_button_import = dynamic_cast<Gtk::RadioButton*>(glade->get_widget("radio_button_import"));
+	Gtk::RadioButton* radio_button_scan = NULL;
+	builder->get_widget("radio_button_scan", radio_button_scan);
+
+	Gtk::RadioButton* radio_button_import = NULL;
+	builder->get_widget("radio_button_import", radio_button_import);
 	
 	if (radio_button_scan->get_active())
 	{
-		Gtk::FileChooserButton* file_chooser_button = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_scan"));
+		Gtk::FileChooserButton* file_chooser_button = NULL;
+		builder->get_widget("file_chooser_button_scan", file_chooser_button);
 		initial_tuning_file = file_chooser_button->get_filename();
 
 		switch(frontend.get_frontend_info().type)
@@ -350,8 +383,10 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		{
 			throw Exception(_("No tuning file has been selected"));
 		}
-		
-		glade->get_widget("button_scan_wizard_next")->hide();
+
+		Gtk::Button* button = NULL;
+		builder->get_widget("button_scan_wizard_next", button);
+		button->hide();
 		notebook_scan_wizard->next_page();
 
 		g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
@@ -365,7 +400,8 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 	}
 	else if (radio_button_import->get_active())
 	{
-		Gtk::FileChooserButton* file_chooser_button = dynamic_cast<Gtk::FileChooserButton*>(glade->get_widget("file_chooser_button_import"));
+		Gtk::FileChooserButton* file_chooser_button = NULL;
+		builder->get_widget("file_chooser_button_import", file_chooser_button);
 		Glib::ustring channels_conf_path = file_chooser_button->get_filename();
 		import_channels_conf(channels_conf_path);
 	}	
@@ -419,7 +455,9 @@ void ScanDialog::on_signal_progress(guint step, gsize total)
 
 void ScanDialog::on_signal_complete()
 {
-	glade->get_widget("button_scan_wizard_add")->show();
+	Gtk::Button* button_scan_wizard_add = NULL;
+	builder->get_widget("button_scan_wizard_add", button_scan_wizard_add);
+	button_scan_wizard_add->show();
 	notebook_scan_wizard->next_page();
 }
 

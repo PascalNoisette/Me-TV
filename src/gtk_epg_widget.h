@@ -22,25 +22,23 @@
 #define __GTK_EPG_WIDGET__
 
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 #include "data.h"
 #include "me-tv-ui.h"
 
 class GtkEpgWidget : public Gtk::ScrolledWindow
 {
 private:
-	gint									offset;
-	gsize									span_hours;
-	gsize									span_minutes;
-	gsize									span_seconds;
-	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
-	guint									epg_span_hours;
-	guint									epg_page;
-	IntComboBox*							combo_box_epg_page;
-	Gtk::Label*								label_epg_page;
-	
-	Gtk::Table* table_epg;
-	Gtk::ScrolledWindow* scrolled_window_epg;
+	gint								offset;
+	gsize								span_hours;
+	gsize								span_minutes;
+	gsize								span_seconds;
+	const Glib::RefPtr<Gtk::Builder>	builder;
+	guint								epg_span_hours;
+	guint								epg_page;
+	IntComboBox*						combo_box_epg_page;
+	Gtk::Label*							label_epg_page;
+	Gtk::Table*							table_epg;
+	Gtk::ScrolledWindow*				scrolled_window_epg;
 	
 	void previous();
 	void next();
@@ -59,7 +57,7 @@ private:
 	void create_channel_row(const Channel& channel, guint row, gboolean selected, guint start_time);
 
 public:
-	GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	
 	void update();
 	void set_offset(gint value);

@@ -23,17 +23,22 @@
 #include "channel.h"
 #include "me-tv.h"
 
-StatusIcon::StatusIcon(Glib::RefPtr<Gnome::Glade::Xml>& glade_xml)
-	: glade(glade_xml)
+StatusIcon::StatusIcon(Glib::RefPtr<Gtk::Builder>& builder)
+	: builder(builder)
 {
 	g_debug("StatusIcon constructor started");
 	
 	status_icon = Gtk::StatusIcon::create("me-tv");
-	popup_menu = dynamic_cast<Gtk::Menu*>(glade->get_widget("menu_application_popup"));
+	builder->get_widget("menu_application_popup", popup_menu);
 	status_icon->signal_activate().connect(sigc::mem_fun(*this, &StatusIcon::on_activate));
 	status_icon->signal_popup_menu().connect(sigc::mem_fun(*this, &StatusIcon::on_popup_menu));
-	glade->connect_clicked("application_menu_item_me_tv", sigc::mem_fun(*this, &StatusIcon::on_menu_item_me_tv_clicked));
-	glade->connect_clicked("menu_item_popup_quit", sigc::mem_fun(*this, &StatusIcon::on_menu_item_popup_quit_clicked));
+
+//	builder->get_widget("application_menu_item_me_tv");
+//	builder->connect_clicked(sigc::mem_fun(*this, &StatusIcon::on_menu_item_me_tv_clicked));
+
+	Gtk::MenuItem* menu_item = NULL;
+	builder->get_widget("menu_item_popup_quit", menu_item);
+	menu_item->signal_activate().connect(sigc::mem_fun(*this, &StatusIcon::on_menu_item_popup_quit_clicked));
 
 	g_debug("StatusIcon constructed");
 }

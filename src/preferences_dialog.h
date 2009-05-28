@@ -22,18 +22,17 @@
 #define __PREFERENCES_DIALOG_H__
 
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 
 class PreferencesDialog : public Gtk::Dialog
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
+	const Glib::RefPtr<Gtk::Builder> builder;
 public:	
-	PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 
 	void run();
 
-	static PreferencesDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static PreferencesDialog& create(Glib::RefPtr<Gtk::Builder> builder);
 };
 
 #endif

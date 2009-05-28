@@ -25,7 +25,7 @@
 
 Engine::Engine()
 {
-	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(get_application().get_glade()->get_widget("drawing_area_video"));
+	get_application().get_builder()->get_widget("drawing_area_video", drawing_area_video);
 
 	window_id = GDK_WINDOW_XID(drawing_area_video->get_window()->gobj());
 	if (window_id == 0)

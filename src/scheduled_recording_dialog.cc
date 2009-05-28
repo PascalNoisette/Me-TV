@@ -23,25 +23,24 @@
 #include "main_window.h"
 #include "application.h"
 
-ScheduledRecordingDialog& ScheduledRecordingDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+ScheduledRecordingDialog& ScheduledRecordingDialog::create(Glib::RefPtr<Gtk::Builder> builder)
 {
 	ScheduledRecordingDialog* scheduled_recording_dialog = NULL;
-	glade->get_widget_derived("dialog_scheduled_recording", scheduled_recording_dialog);
-	check_glade(scheduled_recording_dialog, "dialog_scheduled_recording");
+	builder->get_widget_derived("dialog_scheduled_recording", scheduled_recording_dialog);
 	return *scheduled_recording_dialog;
 }
 
-ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
-	Gtk::Dialog(cobject), glade(glade_xml)
+ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
+	Gtk::Dialog(cobject), builder(builder)
 {
 	channel_combo_box = NULL;
 	scheduled_recording_id = 0;
 	
-	date_edit_start_time = dynamic_cast<Gnome::UI::DateEdit*>(glade->get_widget("date_edit_start_time"));
-	entry_description = dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_description"));
-	glade->get_widget_derived("combo_box_channel", channel_combo_box);
+	builder->get_widget("date_edit_start_time", date_edit_start_time);
+	builder->get_widget("entry_description", entry_description);
+	builder->get_widget_derived("combo_box_channel", channel_combo_box);
 	channel_combo_box->load(get_application().channel_manager.get_channels());
-	spinbutton_duration = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spinbutton_duration"));
+	builder->get_widget("spinbutton_duration", spinbutton_duration);
 
 	if (get_application().get_boolean_configuration_value("use_24_hour_workaround"))
 	{

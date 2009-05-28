@@ -36,7 +36,7 @@ typedef enum
 class MainWindow : public Gtk::Window
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
+	const Glib::RefPtr<Gtk::Builder>		builder;
 	Gtk::DrawingArea*						drawing_area_video;
 	GtkEpgWidget*							widget_epg;
 	guint									last_motion_time;
@@ -103,10 +103,10 @@ private:
 		
 	void create_engine();
 public:
-	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder> builder);
 	virtual ~MainWindow();
 		
-	static MainWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static MainWindow* create(Glib::RefPtr<Gtk::Builder> builder);
 		
 	void show_devices_dialog();
 	void show_channels_dialog();

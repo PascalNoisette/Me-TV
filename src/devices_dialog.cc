@@ -20,22 +20,20 @@
 
 #include "me-tv.h"
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 #include "application.h"
 #include "devices_dialog.h"
 
-DevicesDialog& DevicesDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+DevicesDialog& DevicesDialog::create(Glib::RefPtr<Gtk::Builder> builder)
 {
 	DevicesDialog* devices_dialog = NULL;
-	glade->get_widget_derived("dialog_devices", devices_dialog);
-	check_glade(devices_dialog, "dialog_devices");
+	builder->get_widget_derived("dialog_devices", devices_dialog);
 	return *devices_dialog;
 }
 
-DevicesDialog::DevicesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
-	Gtk::Dialog(cobject), glade(glade_xml)
+DevicesDialog::DevicesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
+	Gtk::Dialog(cobject), builder(builder)
 {
-	tree_view_devices = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_devices"));
+	builder->get_widget("tree_view_devices", tree_view_devices);
 	
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_devices->set_model(list_store);

@@ -22,7 +22,6 @@
 #define __APPLICATION_H__
 
 #include "me-tv.h"
-#include <libglademm.h>
 #include <libgnomemm.h>
 #include "device_manager.h"
 #include "channel_manager.h"
@@ -36,7 +35,7 @@ class Application : public Gnome::Main
 {
 private:
 	static Application*					current;
-	Glib::RefPtr<Gnome::Glade::Xml>		glade;
+	Glib::RefPtr<Gtk::Builder>			builder;
 	MainWindow*							main_window;
 	StatusIcon*							status_icon;
 	Glib::RefPtr<Gnome::Conf::Client>	client;
@@ -95,7 +94,7 @@ public:
 	void set_int_configuration_value(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_value(const Glib::ustring& key, gboolean value);
 	
-	Glib::RefPtr<Gnome::Glade::Xml> get_glade() { return glade; }
+	Glib::RefPtr<Gtk::Builder> get_builder() { return builder; }
 	
 	void set_display_channel(const Channel& channel);
 	void set_display_channel(guint channel_id);

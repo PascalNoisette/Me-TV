@@ -20,26 +20,31 @@
 
 #include "me-tv.h"
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 #include "scan_dialog.h"
 #include "application.h"
 #include "channels_dialog.h"
 
-ChannelsDialog& ChannelsDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+ChannelsDialog& ChannelsDialog::create(Glib::RefPtr<Gtk::Builder> builder)
 {
 	ChannelsDialog* channels_dialog = NULL;
-	glade->get_widget_derived("dialog_channels", channels_dialog);
-	check_glade(channels_dialog, "dialog_channels");
+	builder->get_widget_derived("dialog_channels", channels_dialog);
 	return *channels_dialog;
 }
 
-ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
-	Gtk::Dialog(cobject), glade(glade_xml)
+ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
+	Gtk::Dialog(cobject), builder(builder)
 {
-	glade->connect_clicked("button_scan",							sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
-	glade->connect_clicked("button_remove_selected_channels",		sigc::mem_fun(*this, &ChannelsDialog::on_button_button_remove_selected_channels_clicked));
+	Gtk::Button* button = NULL;
+
+	builder->get_widget("button_scan", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
 	
-	tree_view_displayed_channels = dynamic_cast<Gtk::TreeView*>(glade->get_widget("tree_view_displayed_channels"));
+	builder->get_widget("button_remove_selected_channels", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &ChannelsDialog::on_button_button_remove_selected_channels_clicked));
+
+	tree_view_displayed_channels = NULL;
+	
+	builder->get_widget("tree_view_displayed_channels", tree_view_displayed_channels);
 	
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_displayed_channels->set_model(list_store);
@@ -56,7 +61,7 @@ void ChannelsDialog::show_scan_dialog()
 	
 	FullscreenBugWorkaround fullscreen_bug_workaround;
 
-	ScanDialog& scan_dialog = ScanDialog::create(glade);
+	ScanDialog& scan_dialog = ScanDialog::create(builder);
 	scan_dialog.show();
 	Gnome::Main::run(scan_dialog);
 
