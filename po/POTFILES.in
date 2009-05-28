@@ -3,7 +3,7 @@
 [encoding: UTF-8]
 
 me-tv.desktop.in
-src/me-tv.glade
+src/me-tv.ui
 src/application.cc
 src/application.h
 src/atsc_text.cc
