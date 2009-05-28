@@ -28,7 +28,7 @@ MetersDialog& MetersDialog::create(Glib::RefPtr<Gtk::Builder> builder)
 	return *meters_dialog;
 }
 
-MetersDialog::MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder> builder) :
+MetersDialog::MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
 	Gtk::Dialog(cobject), builder(builder), meters_thread(*this), frontend(get_application().device_manager.get_frontend())
 {
 	builder->get_widget("progress_bar_signal_strength", progress_bar_signal_strength);

@@ -103,7 +103,7 @@ private:
 		
 	void create_engine();
 public:
-	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder> builder);
+	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	virtual ~MainWindow();
 		
 	static MainWindow* create(Glib::RefPtr<Gtk::Builder> builder);

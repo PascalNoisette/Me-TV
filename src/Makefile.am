@@ -3,7 +3,7 @@
 ## Created by Anjuta
 
 gladedir = $(datadir)/me-tv/glade
-glade_DATA = me-tv.glade \
+glade_DATA = me-tv.ui \
 	me-tv.xpm
 
 AM_CPPFLAGS = \

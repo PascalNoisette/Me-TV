@@ -38,7 +38,7 @@
 #define POKE_INTERVAL 		30
 #define UPDATE_INTERVAL		60
 
-MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder> builder)
+MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : Gtk::Window(cobject), builder(builder)
 {
 	g_debug("MainWindow constructor");

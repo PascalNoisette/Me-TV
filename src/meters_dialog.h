@@ -57,7 +57,7 @@ private:
 	void on_hide();
 
 public:	
-	MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder> builder);
+	MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	~MetersDialog();
 
 	static MetersDialog& create(Glib::RefPtr<Gtk::Builder> builder);
