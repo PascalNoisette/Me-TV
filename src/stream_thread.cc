@@ -49,7 +49,7 @@ public:
 StreamThread::StreamThread(const Channel& active_channel) :
 	Thread("Stream"),
 	channel(active_channel),
-	frontend(get_application().get_device_manager().get_frontend())
+	frontend(get_application().device_manager.get_frontend())
 {
 	g_debug("Creating StreamThread");
 	g_static_rec_mutex_init(mutex.gobj());
@@ -81,7 +81,7 @@ StreamThread::StreamThread(const Channel& active_channel) :
 		throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
 	}
 
-	// Fudge the channel open
+	// Fudge the channel open.  Allows Glib::IO_FLAG_NONBLOCK
 	int fd = open(fifo_path.c_str(), O_RDONLY | O_NONBLOCK);
 	if (fd == -1)
 	{
@@ -111,7 +111,7 @@ void StreamThread::start()
 {
 	setup_dvb();
 	g_debug("Starting stream thread");
-	Thread::start();	
+	Thread::start();
 	start_epg_thread();
 }
 
@@ -194,6 +194,7 @@ void StreamThread::run()
 		write(buffer, bytes_read);
 	}
 	THREAD_CATCH
+		
 	g_debug("StreamThread loop exited");
 	
 	Lock lock(mutex, "StreamThread::run() - exit");
@@ -502,7 +503,7 @@ void StreamThread::setup_dvb()
 	
 	remove_all_demuxers();
 	
-	frontend.tune_to(channel.frontend_parameters);
+	frontend.tune_to(channel.transponder);
 	
 	Dvb::Demuxer demuxer_pat(demux_path);
 	demuxer_pat.set_filter(PAT_PID, PAT_ID);
@@ -520,11 +521,12 @@ void StreamThread::setup_dvb()
 	for (guint i = 0; i < length; i++)
 	{
 		Dvb::SI::ProgramAssociation program_association = pas.program_associations[i];
-		
+
+		g_debug("%d: PMT ID: %d", i, pmt_pid);
 		if (program_association.program_number == channel.service_id)
 		{
 			pmt_pid = program_association.program_map_pid;
-			g_debug("%d: PMT ID: %d", i, pmt_pid);
+			g_debug("PMT ID found");
 		}
 	}
 	
@@ -574,24 +576,30 @@ void StreamThread::setup_dvb()
 
 void StreamThread::start_epg_thread()
 {
-	Lock lock(mutex, "StreamThread::start_epg_thread()");
+	if (!disable_epg_thread)
+	{
+		Lock lock(mutex, "StreamThread::start_epg_thread()");
 
-	stop_epg_thread();
-	epg_thread = new EpgThread();
-	epg_thread->start();
-	g_debug("EPG thread started");
+		stop_epg_thread();
+		epg_thread = new EpgThread();
+		epg_thread->start();
+		g_debug("EPG thread started");
+	}
 }
 
 void StreamThread::stop_epg_thread()
 {
-	Lock lock(mutex, "StreamThread::stop_epg_thread()");
-
-	if (epg_thread != NULL)
+	if (!disable_epg_thread)
 	{
-		g_debug("Stopping EPG thread");
-		delete epg_thread;
-		epg_thread = NULL;
-		g_debug("EPG thread stopped");
+		Lock lock(mutex, "StreamThread::stop_epg_thread()");
+
+		if (epg_thread != NULL)
+		{
+			g_debug("Stopping EPG thread");
+			delete epg_thread;
+			epg_thread = NULL;
+			g_debug("EPG thread stopped");
+		}
 	}
 }
 
@@ -666,4 +674,17 @@ void StreamThread::stop_broadcasting()
 		inet_address = NULL;
 		g_debug("Broadcasting stopped");
 	}
+}
+
+guint StreamThread::get_last_epg_update_time()
+{
+	guint result = 0;
+
+	Lock lock(mutex, "StreamThread::get_epg_last_update_time()");
+	if (epg_thread != NULL)
+	{
+		result = epg_thread->get_last_epg_update_time();
+	}
+	
+	return result;
 }

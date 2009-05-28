@@ -6,6 +6,7 @@
         <copyright>
             <year>2007</year>
             <year>2008</year>
+            <year>2009</year>
             <holder>Michael Lamothe</holder>
         </copyright>
         <publisher>
@@ -69,13 +70,8 @@
                     <para>Instant Record</para>
                 </listitem>
                 <listitem>
-                    <para>Once off, daily or weekly scheduled recordings (see <link
+                    <para>Scheduled recordings (see <link
                             linkend="scheduled_recording">Scheduled Recordings</link>)</para>
-                </listitem>
-                <listitem>
-                    <para>
-                        <link linkend="program_search">Program search</link>
-                    </para>
                 </listitem>
                 <listitem>
                     <para>Auto channel scan (see <link linkend="channel_scan_window">Channel Scan
@@ -95,9 +91,6 @@
                     </para>
                 </listitem>
                 <listitem>
-                    <para>Subtitles</para>
-                </listitem>
-                <listitem>
                     <para>
                         <link linkend="dual_language">Dual language</link>
                     </para>
@@ -107,11 +100,6 @@
                 </listitem>
                 <listitem>
                     <para>Double-click fullscreen</para>
-                </listitem>
-                <listitem>
-                    <para>
-                        <link linkend="auto_surf">Auto surf</link>
-                    </para>
                 </listitem>
                 <listitem>
                     <para>
@@ -248,29 +236,19 @@
                         audio in a recording or broadcast stream.</para>
                 </listitem>
                 <listitem>
-                    <para><guibutton>Broadcast</guibutton> toggles <link linkend="network_broadcast"
-                            >Network broadcast</link>.</para>
-                </listitem>
-                <listitem>
-                    <para><guibutton>Auto Surf</guibutton> toggles <link linkend="auto_surf">Auto
-                            surf</link>.</para>
-                </listitem>
-                <listitem>
                     <para><guibutton>Schedule</guibutton> opens the <link
                             linkend="scheduled_recordings_window">Scheduled recordings
                         window</link>.</para>
                 </listitem>
                 <listitem>
-                    <para><guibutton>Hide Controls</guibutton> hides all controls on the <link
-                            linkend="main_window"/> giving the <link linkend="video_window">Video
-                            window</link> the maximum amount screen real estate available in the
-                        Main window. Simply right click the Video Window to leave this mode.</para>
+                    <para><guibutton>Broadcast</guibutton> toggles <link linkend="network_broadcast"
+                            >Network broadcast</link>.</para>
                 </listitem>
             </itemizedlist>
         </sect2>
         <sect2 id="video_window">
             <title>Video Window</title>
-            <para>You can double click on video window to toggle fullscreen mode. Upon entering
+            <para>You can double click on the video window to toggle fullscreen mode. Upon entering
                 fullscreen mode, all controls will be hidden. Right click on the video window to
                 toggle the display of the controls in <application>Me TV</application>.</para>
         </sect2>
@@ -282,15 +260,6 @@
             <para>Click on a program to see the <link linkend="program_details_window">Program
                     details window</link> for that program or to schedule a recording for that
                 program.</para>
-        </sect2>
-        <sect2 id="program_search_bar">
-            <title>Program Search Bar</title>
-            <para>The search bar is used to search for programs in the EPG. By default, the bar is
-                not visible, use <keycombo>
-                    <keysym>Ctrl+F</keysym>
-                </keycombo> to activate the program search bar.</para>
-            <para>For more information see the <link linkend="program_search">Program search</link>
-                feature.</para>
         </sect2>
         <sect2 id="status_bar">
             <title>Status Bar</title>
@@ -457,11 +426,6 @@
                         <para><keysym>F</keysym> toggles fullscreen</para>
                     </listitem>
                     <listitem>
-                        <para><keysym>Ctrl+F</keysym> shows the <link linkend="program_search_bar"
-                                >Program search bar</link> under the <link linkend="epg_window">EPG
-                                window</link></para>
-                    </listitem>
-                    <listitem>
                         <para><keysym>H</keysym> hides all the controls</para>
                     </listitem>
                     <listitem>
@@ -476,40 +440,7 @@
             <title>Scheduled Recording</title>
             <para><application>Me TV</application> is able to schedule future programs to be
                 recorded. When a program is due to be recorded, <application>Me TV</application>
-                will change to the channel and start recording. If a future program is scheduled
-                then when you close the Main Window, <application>Me TV</application> will continue
-                to run in the notification area of the GNOME panel.</para>
-            <para> There are several types of scheduled recordings:<itemizedlist>
-                    <listitem>
-                        <para>Once Off</para>
-                    </listitem>
-                    <listitem>
-                        <para>Every Day (not including weekends)</para>
-                    </listitem>
-                    <listitem>
-                        <para>Every Day (including weekends)</para>
-                    </listitem>
-                    <listitem>
-                        <para>Every Week</para>
-                    </listitem>
-                </itemizedlist></para>
-            <para>If a "Once Off" recording is scheduled then once the recording is complete,
-                    <application>Me TV</application> will delete the scheduled recording program.
-            </para>
-        </sect2>
-        <sect2 id="program_search">
-            <title>Program Search</title>
-            <para><application>Me TV</application> allows you to search the EPG for programs. You
-                can do this using the <link linkend="program_search_bar">Program search bar</link>.</para>
-            <para>The Program search bar is displayed below the <link linkend="epg_window">EPG
-                    window</link> but, by default it is hidden. You can activate the Program search
-                bar using <keycombo>
-                    <keysym>Ctrl+F</keysym>
-                </keycombo>.</para>
-            <para>You only need to enter part of the program title to search. For example, if you
-                enter "Thomas", Me TV will search the entire EPG for any program with "Thomas" in
-                the title. If a program is found it will be displayed in the EPG highlighted in
-                yellow.</para>
+                will change to the channel and start recording.</para>
         </sect2>
         <sect2 id="audio_select">
             <title>Audio Select</title>
@@ -518,15 +449,6 @@
                     <guimenuitem>Audio/Streams</guimenuitem> menu item. <application>Me
                 TV</application> will remember (until you log out) which audio stream you selected
                 the next time you select the channel.</para>
-        </sect2>
-        <sect2 id="auto_surf">
-            <title>Auto Surf</title>
-            <para>Auto surf tells <application>Me TV</application> to traverse through every channel
-                in the <link linkend="epg_window">EPG window</link>. This gives <application>Me
-                TV</application> the chance to update EPG information for all channels. This feature
-                can be useful because some stations only supply EPG programs a few shows in advance
-                so if you haven't used that channel in a few hours then there will be no EPG
-                information for that channel.</para>
         </sect2>
         <sect2 id="dual_language">
             <title>Dual Language</title>

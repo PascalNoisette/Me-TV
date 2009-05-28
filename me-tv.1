@@ -1,5 +1,5 @@
 .pc
-.TH "ME TV" 1 "2009-02-27" "0.7.16" "Me TV Manual"
+.TH "ME TV" 1 "2009-05-15" "0.8.14" "Me TV Manual"
 
 .SH NAME
 me-tv \- a digital television (DVB) viewer for GNOME
@@ -10,11 +10,15 @@ me-tv \- a digital television (DVB) viewer for GNOME
 .I [-v|--verbose]
 .I [-s|--safe-mode]
 .I [-m|--minimised]
+.I [-d|--default-device]
+.I [--disable-epg]
+.I [--disable-epg-thread]
+.I [--read-timeout]
 .I [--display=DISPLAY]
 
 .SH DESCRIPTION
 Me TV is a GNOME desktop application for watching digital television services 
-that use the DVB standard.  Me TV works with DVB-T and DVB-C cards that have 
+that use the DVB standard.  Me TV works with DVB-T/C/S and ATSC cards that have 
 kernel driver support.
 
 Me TV uses the xine video player to render its output onto its video window. 
@@ -38,8 +42,20 @@ Show the preferences dialog an don't show video upon start.
 .B -m|--minimised-mode
 Show minimised in notification area at startup.
 .TP
+.B -d|--default-device
+Set the default DVB frontend device (e.g. /dev/dvb/adapter0/frontend0)
+.TP
+.B --disable-epg
+Stops the rendering of the EPG event buttons on the UI.
+.TP
+.B --disable-epg-thread
+Disable the EPG thread.  Me TV will stop collecting EPG events.
+.TP
+.B --read-timeout
+How long to wait (in seconds) before timing out while waiting for data from demuxer (default 5)
+.TP
 .B --display=DISPLAY
-Use the particular X display.
+X display to use
 
 .SH AUTHOR
 Michael Lamothe (2007-2009) <michael.lamothe@gmail.com>.

@@ -24,20 +24,26 @@
 #include "me-tv.h"
 #include "engine.h"
 
+#ifdef ENABLE_XINE_ENGINE
+
 class XineEngine : public Engine
 {
 private:
 	gint				pid;
 	gint				standard_input;
-	gboolean			mute_state;
+	gboolean			requested_mute_state;
+	gboolean			actual_mute_state;
 	AudioChannelState	audio_channel_state;
+	guint				audio_stream;
+	gint				subtitle_stream;
 	Glib::ustring		mrl;
 
 	void play(const Glib::ustring& mrl);
 	void stop();
 	void set_mute_state(gboolean state);
-	void set_audio_stream(guint stream) {};
+	void set_audio_stream(guint stream);
 	void set_audio_channel_state(AudioChannelState state);
+	void set_subtitle_stream(gint stream);
 	gboolean is_running();
 
 	void write(const Glib::ustring& text);
@@ -47,5 +53,7 @@ public:
 	XineEngine();
 	~XineEngine();
 };
+
+#endif
 
 #endif

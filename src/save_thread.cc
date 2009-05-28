@@ -18,22 +18,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __PREFERENCES_DIALOG_H__
-#define __PREFERENCES_DIALOG_H__
+#include "save_thread.h"
+#include "application.h"
+#include "data.h"
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
-
-class PreferencesDialog : public Gtk::Dialog
+SaveThread::SaveThread() : Thread("Save Thread", true)
 {
-private:
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
-public:	
-	PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+}
 
-	void run();
-
-	static PreferencesDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
-};
-
-#endif
+void SaveThread::run()
+{
+	g_debug("Save thread running");
+	Data::Connection connection(get_application().get_database_filename());
+	get_application().scheduled_recording_manager.save(connection);
+	get_application().channel_manager.save(connection);
+	terminate();
+	g_debug("Save thread finished");
+}

@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __SCAN_WINDOW_H__
-#define __SCAN_WINDOW_H__
+#ifndef __SCAN_DIALOG_H__
+#define __SCAN_DIALOG_H__
 
 #include <libgnomeuimm.h>
 #include <libglademm.h>
@@ -31,15 +31,6 @@
 #ifndef SCAN_DIRECTORIES
 #define SCAN_DIRECTORIES "/usr/share/dvb:/usr/share/doc/dvb-utils/examples/scan:/usr/share/dvb-apps"
 #endif
-
-class Country
-{
-public:
-	Glib::ustring name;
-	StringList regions;
-};
-
-typedef std::list<Country> CountryList;
 
 class ScanThread : public Thread
 {
@@ -65,7 +56,7 @@ public:
 	Dvb::Scanner& get_scanner() { return scanner; }
 };
 
-class ScanWindow : public Gtk::Window
+class ScanDialog : public Gtk::Window
 {
 private:
 	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
@@ -73,10 +64,8 @@ private:
 	Gtk::Label*								label_scan_information;
 	Gtk::ProgressBar*						progress_bar_scan;
 	Gtk::TreeView*							tree_view_scanned_channels;
-	ComboBoxText*							combo_box_select_country;
-	ComboBoxText*							combo_box_select_region;
 	ScanThread*								scan_thread;
-	CountryList								countries;
+	StringList								system_files;
 	guint									channel_count;
 	Dvb::Frontend&							frontend;
 	Glib::ustring							scan_directory_path;
@@ -89,39 +78,43 @@ private:
 			add(column_id);
 			add(column_name);
 			add(column_frontend_parameters);
+			add(column_polarisation); // for DVB-S only
 		}
 
 		Gtk::TreeModelColumn<guint>								column_id;
 		Gtk::TreeModelColumn<Glib::ustring>						column_name;
 		Gtk::TreeModelColumn<struct dvb_frontend_parameters>	column_frontend_parameters;
+		Gtk::TreeModelColumn<guint>								column_polarisation;
 	};
 
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;
 	
 	Glib::ustring get_initial_tuning_dir();
-	Country* find_country(const Glib::ustring& country_name);
-	Country& get_country(const Glib::ustring& country);
 	void import_channels_conf(const Glib::ustring& channels_conf_path);
 
 	void on_file_chooser_button_select_file_to_scan_clicked();
-	void on_combo_box_select_country_changed();
 	void on_button_scan_wizard_next_clicked();
 	void on_button_scan_wizard_cancel_clicked();
 	void on_button_scan_wizard_add_clicked();
-	void on_signal_service(struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name);
+	void on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name, const guint polarisation);
 	void on_signal_progress(guint step, gsize total);
+	void on_signal_complete();
+	void on_file_chooser_button_scan_file_changed();
+	void on_file_chooser_button_import_file_changed();
 	void on_hide();	
 	void stop_scan();
 	void update_channel_count();
+	void add_channel_row(const Channel& channel);
 		
 public:
-	ScanWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
-	~ScanWindow();
+	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	~ScanDialog();
 		
 	void on_show();
+	ChannelList get_channels();
 
-	static ScanWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static ScanDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 };
 
 #endif

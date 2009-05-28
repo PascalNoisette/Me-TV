@@ -21,15 +21,16 @@
 #include "meters_dialog.h"
 #include "application.h"
 
-MetersDialog* MetersDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+MetersDialog& MetersDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	MetersDialog* meters_dialog = NULL;
 	glade->get_widget_derived("dialog_meters", meters_dialog);
-	return meters_dialog;
+	check_glade(meters_dialog, "dialog_meters");
+	return *meters_dialog;
 }
 
 MetersDialog::MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
-	Gtk::Dialog(cobject), glade(glade_xml), meters_thread(*this), frontend(get_application().get_device_manager().get_frontend())
+	Gtk::Dialog(cobject), glade(glade_xml), meters_thread(*this), frontend(get_application().device_manager.get_frontend())
 {
 	progress_bar_signal_strength = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_strength"));
 	progress_bar_signal_noise = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_noise"));
@@ -67,7 +68,7 @@ void MetersDialog::update_meters()
 
 void MetersDialog::set_meters(gdouble strength, gdouble snr)
 {
-	gdouble bits16 = 65535;
+	gdouble bits16 = 0xFFFF;
 	Glib::ustring signal_strength_text = Glib::ustring::compose(_("Signal Strength (%1%%)"), (guint)((strength/bits16)*100));
 	Glib::ustring signal_noise_text = Glib::ustring::compose(_("S/N Ratio (%1%%)"), (guint)((snr/bits16)*100));
 	progress_bar_signal_strength->set_text(signal_strength_text);

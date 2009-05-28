@@ -26,10 +26,13 @@
 class EpgThread : public Thread
 {
 private:
-	guint last_cleanup_time;
+	guint last_update_time;
 public:
 	EpgThread();
+
 	void run();
+		
+	guint get_last_epg_update_time() const { return last_update_time; }
 };
 
 #endif

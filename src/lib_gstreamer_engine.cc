@@ -31,7 +31,8 @@ LibGStreamerEngine::LibGStreamerEngine()
 {
 	static gboolean initialised = false;
 	volume = 1.3;
-
+	pipeline = NULL;
+	
 	if (!initialised)
 	{
 		gst_init(0, NULL);
@@ -41,19 +42,10 @@ LibGStreamerEngine::LibGStreamerEngine()
 	gchar* version = gst_version_string();
 	g_debug("%s", version);
 	g_free(version);
-
-	player	= create_element("playbin", "player");
-	sink	= create_element("xvimagesink", "sink");
-	set_volume(volume);
 }
 
 LibGStreamerEngine::~LibGStreamerEngine()
 {
-	if (player != NULL)
-	{
-		gst_object_unref (GST_OBJECT (player));
-		player = NULL;
-	}
 }
 
 gboolean LibGStreamerEngine::on_bus_message(GstBus *bus, GstMessage *message, gpointer data)
@@ -89,58 +81,71 @@ gboolean LibGStreamerEngine::on_bus_message(GstBus *bus, GstMessage *message, gp
 }
 
 void LibGStreamerEngine::play(const Glib::ustring& mrl)
-{	
-	Glib::ustring uri = "file://" + mrl;
+{
+	Glib::ustring command_line = get_application().get_string_configuration_value("gstreamer_command_line");
+	Glib::ustring spec = Glib::ustring::compose(command_line, mrl);
+	g_debug("GStreamer command line: %s", command_line.c_str());
+
+	GError* error = NULL;
+	pipeline = gst_parse_launch(spec.c_str(), &error);
+	if (error != NULL)
+	{
+		Glib::ustring message = Glib::ustring::compose("Failed to launch GStreamer command: %1", error->message);
+		throw Exception(message);
+	}
 	
-	g_object_set (G_OBJECT (player), "video_sink", sink, (gchar*)NULL);
-	g_object_set (G_OBJECT (player), "uri", uri.c_str(), (gchar*)NULL);
-	g_object_set (G_OBJECT (sink), "force-aspect-ratio", true, (gchar*)NULL);
-		
-	GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE (player));
+	GstElement* audiosink = gst_bin_get_by_name(GST_BIN(pipeline), "videosink");
+	if (audiosink == NULL)
+	{
+		throw Exception("Failed to get videosink element");
+	}
+
+	GstBus* bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
 	gst_bus_add_watch (bus, on_bus_message, (gpointer)this);
 	gst_object_unref (bus);
 
-	gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (sink), get_window_id());
+	gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (audiosink), get_window_id());
 
-	gst_element_set_state (player, GST_STATE_PLAYING);
+	gst_element_set_state (pipeline, GST_STATE_PLAYING);
 }
 
 void LibGStreamerEngine::stop()
 {
 	g_debug("Stopping GStreamer pipeline");
-	gst_element_set_state (player, GST_STATE_NULL);
+	gst_element_set_state (pipeline, GST_STATE_NULL);
+
+	if (pipeline != NULL)
+	{
+		gst_object_unref (GST_OBJECT (pipeline));
+		pipeline = NULL;
+	}
 }
 
 gboolean LibGStreamerEngine::is_running()
 {
 	GstState state;
-	gst_element_get_state(player, &state, NULL, NULL);
+	gst_element_get_state(pipeline, &state, NULL, NULL);
 	return state != GST_STATE_NULL;
-}
-
-GstElement* LibGStreamerEngine::create_element(const Glib::ustring& factoryname, const gchar *name)
-{
-	GstElement* element = gst_element_factory_make(factoryname.c_str(), name);
-	
-	if (element == NULL)
-	{
-		Glib::ustring message = Glib::ustring::compose(_("Failed to create GStreamer element '%1'"), Glib::ustring(name));
-		throw Exception(message);
-	}
-	
-	return element;
 }
 
 void LibGStreamerEngine::set_mute_state(gboolean state)
 {
-	gdouble mutevolume = state ? 0.0 : volume;
-	set_volume(mutevolume);
+	gdouble mute_volume = state ? 0.0 : volume;
+	set_volume(mute_volume);
 }
 
 void LibGStreamerEngine::set_volume(gdouble value)
 {
-	if(GST_IS_ELEMENT(player))
-		g_object_set(G_OBJECT(player), "volume", value, (gchar *)NULL);
+	if (GST_IS_ELEMENT(pipeline))
+	{
+		GstElement* volume = gst_bin_get_by_name(GST_BIN(pipeline), "volume");
+		if (volume == NULL)
+		{
+			throw Exception("Failed to get volume element");
+		}
+		
+		g_object_set(G_OBJECT(volume), "volume", value, (gchar *)NULL);
+	}
 }
 
 #endif

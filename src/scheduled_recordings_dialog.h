@@ -33,18 +33,22 @@ private:
 	public:
 		ModelColumns()
 		{
+			add(column_sort);
 			add(column_scheduled_recording_id);
 			add(column_description);
 			add(column_channel);
 			add(column_start_time);
 			add(column_duration);
+			add(column_device);
 		}
 
+		Gtk::TreeModelColumn<guint>			column_sort;
 		Gtk::TreeModelColumn<guint>			column_scheduled_recording_id;
 		Gtk::TreeModelColumn<Glib::ustring>	column_description;
 		Gtk::TreeModelColumn<Glib::ustring>	column_channel;
 		Gtk::TreeModelColumn<Glib::ustring>	column_start_time;
 		Gtk::TreeModelColumn<Glib::ustring>	column_duration;
+		Gtk::TreeModelColumn<Glib::ustring>	column_device;
 	};
 	
 	ModelColumns columns;
@@ -61,10 +65,9 @@ private:
 public:	
 	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 	
-	static ScheduledRecordingsDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static ScheduledRecordingsDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 
 	void update();
-	void update(Data& data);
 };
 
 #endif

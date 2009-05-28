@@ -61,7 +61,7 @@ void Demuxer::set_pes_filter(uint16_t pid, dmx_pes_type_t pestype)
 	parameters.input   = DMX_IN_FRONTEND;
 	parameters.output  = DMX_OUT_TS_TAP;
 	parameters.pes_type = pestype;
-	parameters.flags   = DMX_IMMEDIATE_START;
+	parameters.flags   = DMX_IMMEDIATE_START | DMX_CHECK_CRC;
 	
 	if (ioctl(fd, DMX_SET_PES_FILTER, &parameters) < 0)
 	{
@@ -97,7 +97,7 @@ void Demuxer::set_buffer_size(unsigned int buffer_size)
 
 gint Demuxer::read(unsigned char* buffer, size_t length)
 {
-	if (!poll(10000))
+	if (!poll())
 	{
 		throw TimeoutException(_("Timeout while reading"));
 	}
@@ -124,9 +124,9 @@ int Demuxer::get_fd() const
 	return fd;
 }
 
-gboolean Demuxer::poll(guint timeout)
+gboolean Demuxer::poll()
 {
-	gint result = ::poll(pfd, 1, timeout);
+	gint result = ::poll(pfd, 1, read_timeout * 1000);
 	
 	if (result == -1)
 	{

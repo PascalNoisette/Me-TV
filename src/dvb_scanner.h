@@ -24,19 +24,22 @@
 #include <vector>
 #include "dvb_frontend.h"
 #include "dvb_service.h"
+#include "dvb_transponder.h"
 
 namespace Dvb
-{
+{	
 	class Scanner
 	{
 	private:
 		gint wait_timeout;
 		gboolean terminated;
+		TransponderList transponders;
 			
-		void tune_to(Frontend& frontend, Transponder& transponder);
+		void tune_to(Frontend& frontend, const Transponder& transponder);
 		guint convert_string_to_value(const StringTable* table, const gchar* text);
 
 		void process_terrestrial_line(Frontend& frontend, const Glib::ustring& line);
+		void process_satellite_line(Frontend& frontend, const Glib::ustring& line);
 		void process_cable_line(Frontend& frontend, const Glib::ustring& line);
 		void process_atsc_line(Frontend& frontend, const Glib::ustring& line);
 	public:
@@ -45,8 +48,9 @@ namespace Dvb
 		void start(Frontend& frontend, const Glib::ustring& region_file_path);
 		void terminate();
 			
-		sigc::signal<void, struct dvb_frontend_parameters&, guint, const Glib::ustring&> signal_service;
+		sigc::signal<void,const struct dvb_frontend_parameters&, guint, const Glib::ustring&, const guint> signal_service;
 		sigc::signal<void, guint, gsize> signal_progress;
+		sigc::signal<void> signal_complete;
 	};
 }
 

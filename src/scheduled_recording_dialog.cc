@@ -23,11 +23,12 @@
 #include "main_window.h"
 #include "application.h"
 
-ScheduledRecordingDialog* ScheduledRecordingDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+ScheduledRecordingDialog& ScheduledRecordingDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
 {
 	ScheduledRecordingDialog* scheduled_recording_dialog = NULL;
 	glade->get_widget_derived("dialog_scheduled_recording", scheduled_recording_dialog);
-	return scheduled_recording_dialog;
+	check_glade(scheduled_recording_dialog, "dialog_scheduled_recording");
+	return *scheduled_recording_dialog;
 }
 
 ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
@@ -35,12 +36,11 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 {
 	channel_combo_box = NULL;
 	scheduled_recording_id = 0;
-	const Profile& profile = get_application().get_profile_manager().get_current_profile();
 	
 	date_edit_start_time = dynamic_cast<Gnome::UI::DateEdit*>(glade->get_widget("date_edit_start_time"));
 	entry_description = dynamic_cast<Gtk::Entry*>(glade->get_widget("entry_description"));
 	glade->get_widget_derived("combo_box_channel", channel_combo_box);
-	channel_combo_box->load(profile.get_channels());
+	channel_combo_box->load(get_application().channel_manager.get_channels());
 	spinbutton_duration = dynamic_cast<Gtk::SpinButton*>(glade->get_widget("spinbutton_duration"));
 
 	if (get_application().get_boolean_configuration_value("use_24_hour_workaround"))
@@ -91,7 +91,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	
 	if (populate_default)
 	{
-		Channel* channel = get_application().get_profile_manager().get_current_profile().get_display_channel();
+		Channel* channel = get_application().channel_manager.get_display_channel();
 		if (channel == NULL)
 		{
 			throw Exception(_("Failed to create scheduled recording dialog: No display channel"));
@@ -108,10 +108,8 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	
 	if (dialog_response == Gtk::RESPONSE_OK)
 	{
-		Data data;
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
-		data.replace_scheduled_recording(scheduled_recording);
-		get_application().check_scheduled_recordings(data);
+		get_application().scheduled_recording_manager.add_scheduled_recording(scheduled_recording);
 	}
 	
 	return dialog_response;
@@ -120,11 +118,12 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 ScheduledRecording ScheduledRecordingDialog::get_scheduled_recording()
 {
 	ScheduledRecording scheduled_recording;
-	scheduled_recording.scheduled_recording_id = scheduled_recording_id;
-	scheduled_recording.description = entry_description->get_text();
-	scheduled_recording.type = 0;
-	scheduled_recording.channel_id = channel_combo_box->get_selected_channel_id();
-	scheduled_recording.start_time = date_edit_start_time->get_time();
-	scheduled_recording.duration = spinbutton_duration->get_value() * 60;
+	scheduled_recording.scheduled_recording_id	= scheduled_recording_id;
+	scheduled_recording.description				= entry_description->get_text();
+	scheduled_recording.type					= 0;
+	scheduled_recording.channel_id				= channel_combo_box->get_selected_channel_id();
+	scheduled_recording.start_time				= date_edit_start_time->get_time();
+	scheduled_recording.duration				= (int)spinbutton_duration->get_value() * 60;
+	scheduled_recording.device					= get_application().device_manager.get_frontend().get_path();
 	return scheduled_recording;
 }

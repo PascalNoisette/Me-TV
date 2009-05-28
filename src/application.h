@@ -25,37 +25,41 @@
 #include <libglademm.h>
 #include <libgnomemm.h>
 #include "device_manager.h"
-#include "profile_manager.h"
+#include "channel_manager.h"
+#include "scheduled_recording_manager.h"
 #include "main_window.h"
 #include "status_icon.h"
 #include "stream_thread.h"
+#include "save_thread.h"
 
 class Application : public Gnome::Main
 {
 private:
 	static Application*					current;
 	Glib::RefPtr<Gnome::Glade::Xml>		glade;
-	ProfileManager						profile_manager;
-	DeviceManager						device_manager;
 	MainWindow*							main_window;
 	StatusIcon*							status_icon;
 	Glib::RefPtr<Gnome::Conf::Client>	client;
-	guint								last_epg_update_time;
 	Glib::ustring						preferred_language;
 	StreamThread*						stream_thread;
 	Glib::StaticRecMutex				mutex;
 	guint								timeout_source;
 	gboolean							record_state;
 	gboolean							broadcast_state;
-	guint								scheduled_recording_id;
-	bool								on_quit();
 	Glib::ustring						application_dir;
+	Data::Schema						schema;
+	guint								scheduled_recording_id;
+	Glib::ustring						database_filename;
+	SaveThread*							save_thread;
 
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);	
 	Glib::ustring get_configuration_path(const Glib::ustring& key);
 		
+	Glib::ustring make_application_directory();
+		
+	bool on_quit();
 	void on_display_channel_changed(const Channel& channel);
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
@@ -68,37 +72,40 @@ public:
 	void run();
 	static Application& get_current();
 	
-	ProfileManager&		get_profile_manager()	{ return profile_manager; }
-	DeviceManager&		get_device_manager()	{ return device_manager; }
+	ChannelManager						channel_manager;
+	ScheduledRecordingManager			scheduled_recording_manager;
+	DeviceManager						device_manager;
+	Data::Connection					connection;
 
-	Glib::StaticRecMutex& get_mutex();
-	StreamThread* get_stream_thread();
-	void stop_stream_thread();
-	void restart_stream();
-	void set_source(const Channel& channel);		
+	Glib::StaticRecMutex&	get_mutex();
+	StreamThread*			get_stream_thread();
+	void					stop_stream_thread();
+	void					restart_stream();
+	gboolean				initialise_database();
+	Data::Schema			get_schema() const { return schema; }
 
+	const Glib::ustring& get_database_filename();
 	void update();
 		
-	Glib::ustring get_string_configuration_value(const Glib::ustring& key);
-	gint get_int_configuration_value(const Glib::ustring& key);
-	gboolean get_boolean_configuration_value(const Glib::ustring& key);
+	Glib::ustring	get_string_configuration_value(const Glib::ustring& key);
+	gint			get_int_configuration_value(const Glib::ustring& key);
+	gboolean		get_boolean_configuration_value(const Glib::ustring& key);
 
 	void set_string_configuration_value(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_value(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_value(const Glib::ustring& key, gboolean value);
 	
 	Glib::RefPtr<Gnome::Glade::Xml> get_glade() { return glade; }
-	void update_epg_time();
-	guint get_last_epg_update_time() const;
 	
-	sigc::signal<void> signal_configuration_changed;
+	void set_display_channel(const Channel& channel);
+	void set_display_channel(guint channel_id);
 
 	gboolean is_recording();
-	void start_recording(const Glib::ustring& filename = "", guint scheduled_recording_id = 0);
+	void start_recording(const Glib::ustring& filename = "");
 	void stop_recording();
 	void toggle_recording();
 	void set_record_state(gboolean state);
-	void check_scheduled_recordings(Data& data);
+	void check_scheduled_recordings();
 	
 	gboolean is_broadcasting();
 	void set_broadcast_state(gboolean state);
@@ -109,6 +116,8 @@ public:
 	const Glib::ustring& get_application_dir() const { return application_dir; }
 	
 	MainWindow& get_main_window();
+
+	void start_save_thread(gboolean block);
 };
 
 Application& get_application();

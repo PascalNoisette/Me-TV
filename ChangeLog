@@ -1,3 +1,101 @@
+2009-05-24  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.14
+	* Fixed icon on application popup menu
+	* Not updating EPG when it's not shown
+	* Changed "read_timeout" option to "read-timeout"
+
+2009-05-15  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.13
+	* Moved from GNOME to GTK frontend to make the transition to GtkBuilder easier
+	* Using read_timeout for tuning lock
+
+2009-05-09  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.12
+	* Added option for setting demuxer read timeout 
+
+2009-05-08  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.11
+	* Fixed unsupported engines
+	* Fix so that the Add button appears for channel import
+	* Fix for duplicate channel error when adding channels
+
+2009-05-06  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.10
+	* Can now only add unique channel names
+	* Fixed up scanner UI to not return channels on cancel
+	* Increased timeout to 5 seconds again (LP: #371165)
+	* Fixed issue with SQLite parameters not being reset
+
+2009-05-03  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.9
+	* Fix so that channels don't persist until channel dialog exits
+
+2009-05-02  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.8
+	* Took channel save out of the main GDK thread because in Jaunty it is very slow causing UI lock-ups.
+	* Added subtitle support
+	* Fixed issue with scanner reporting incorrect percentage
+
+2009-04-25  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.7
+	* Added --disable-epg-thread and --disable-epg command line options
+	* Will not call screensaver poke command if empty
+
+2009-04-24  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.6
+	* Added default device option to command line
+	* Scheduled recordings now have a device parameter
+	* Screensaver failure message should now only show once
+
+2009-04-15  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.5
+	* Changed screensaver poke method to be a configurable command (Default: gnome-screensaver-command --poke)
+	* Fixed channel persistence (LP: #361514)
+
+2009-04-12  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.4
+	* Fix for forward slashes in description (LP: #359710)
+
+2009-04-09  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.3
+	* Fixed bug where instant record was stopped because scheduled_recording_id is not being cleared
+
+2009-04-08  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.2
+	* Fix for bad EPG data collection if multiple languages
+	* Fixed errors from Gentoo output
+
+2009-04-05  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.1
+	* Creating ~/.me-tv directory on startup (LP: #353796) 
+	* Fix for extended EPG events so that descriptions make sense
+
+2009-03-28  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.8.0
+	* DVB-S support added
+	* Updates to scan window UI to be more DVB-S friendly
+	* Removed support for Profiles (not used)
+	* Rewrote database tier so data access is more consistent
+	* EPG fix where some events not displaying
+	* Finally fixed mute on restore when using xine engine 
+	* Added a database version check
+	* Audio streams now work
+
 2009-03-01  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.7.16

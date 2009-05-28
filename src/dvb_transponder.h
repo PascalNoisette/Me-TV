@@ -27,18 +27,30 @@
 
 namespace Dvb
 {
+	enum polarisation
+	{
+		POLARISATION_HORIZONTAL     = 0x00,
+		POLARISATION_VERTICAL       = 0x01,
+		POLARISATION_CIRCULAR_LEFT  = 0x02,
+		POLARISATION_CIRCULAR_RIGHT = 0x03
+	};
+
 	class Transponder
 	{
 	public:
-		ServiceList						services;
+		Transponder();
+			
 		struct dvb_frontend_parameters	frontend_parameters;
 		guint							polarisation;
 		guint							satellite_number;
-		gboolean						hi_band;
-		
-		void add_service(Service& service);
-		Service& get_service(guint service_id);
-		ServiceList get_services() { return services; }
+		guint							hi_band;
+	};
+
+	class TransponderList : public std::list<Transponder>
+	{
+	public:
+		gboolean exists(const Transponder& transponder);
+		void add(const Transponder& transponder);
 	};
 }
 

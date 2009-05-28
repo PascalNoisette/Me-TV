@@ -59,7 +59,7 @@ DeviceManager::DeviceManager()
 					g_debug("Frontend not supported");
 				}
 				else
-				{
+				{					
 					frontends.push_back(current);
 				}
 			}
@@ -73,11 +73,6 @@ DeviceManager::DeviceManager()
 		}
 
 		adapter_path = get_adapter_path(++adapter_count);
-	}
-	
-	if (frontends.size() > 0)
-	{
-		set_frontend(**frontends.begin());
 	}
 }
 
@@ -98,8 +93,9 @@ gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend
 	switch(test_frontend.get_frontend_type())
 	{
 	case FE_ATSC:
-        case FE_OFDM:	// DVB-T
+	case FE_OFDM:	// DVB-T
 	case FE_QAM:	// DVB-C
+	case FE_QPSK:	// DVB-S
 		result = true;
 		break;
 	default:
@@ -120,7 +116,7 @@ Dvb::Frontend& DeviceManager::get_frontend()
 	return *frontend;
 }
 
-Dvb::Frontend* DeviceManager::get_frontend_by_path(const Glib::ustring& path)
+Dvb::Frontend* DeviceManager::find_frontend_by_path(const Glib::ustring& path)
 {
 	Dvb::Frontend* result = NULL;
 

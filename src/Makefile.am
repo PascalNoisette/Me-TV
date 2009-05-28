@@ -36,7 +36,6 @@ me_tv_SOURCES = \
 	exception.h \
 	thread.h \
 	application.cc \
-	profile_manager.h \
 	dvb_frontend.cc \
 	dvb_frontend.h \
 	dvb_scanner.cc \
@@ -59,15 +58,12 @@ me_tv_SOURCES = \
 	main_window.cc \
 	gtk_epg_widget.cc \
 	gtk_epg_widget.h \
-	profile_manager.cc \
 	me-tv-ui.h \
 	me-tv-ui.cc \
 	device_manager.cc \
 	engine.h \
 	meters_dialog.cc \
 	engine.cc \
-	profile.cc \
-	profile.h \
 	channel.h \
 	epg_event.h \
 	data.cc \
@@ -91,8 +87,6 @@ me_tv_SOURCES = \
 	mplayer_engine.cc \
 	mplayer_engine.h \
 	exception.cc \
-	scan_window.cc \
-	scan_window.h \
 	string_splitter.cc \
 	string_splitter.h \
 	channels_conf_line.cc \
@@ -109,9 +103,15 @@ me_tv_SOURCES = \
 	xine_lib_engine.cc \
 	xine_lib_engine.h \
 	devices_dialog.cc \
-	devices_dialog.h
-
-me_tv_CXXFLAGS = 
+	devices_dialog.h \
+	channel_manager.cc \
+	channel_manager.h \
+	scheduled_recording_manager.cc \
+	scheduled_recording_manager.h \
+	save_thread.cc \
+	save_thread.h \
+	scan_dialog.cc \
+	scan_dialog.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \

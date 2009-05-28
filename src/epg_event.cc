@@ -22,6 +22,23 @@
 #include "me-tv.h"
 #include "application.h"
 
+EpgEventText::EpgEventText()
+{
+	epg_event_text_id = 0;
+	epg_event_id = 0;
+	is_extended = 0;
+}
+
+EpgEvent::EpgEvent()
+{
+	epg_event_id = 0;
+	channel_id = 0;
+	event_id = 0;
+	start_time = 0;
+	duration = 0;
+	save = true;
+}
+
 Glib::ustring EpgEvent::get_title() const
 {
 	Glib::ustring result;
@@ -30,13 +47,13 @@ Glib::ustring EpgEvent::get_title() const
 	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end(); i++)
 	{
 		EpgEventText text = *i;
-		if (result.size() == 0 || (preferred_language.size() > 0 && preferred_language == text.language))
+		if (result.empty() || (preferred_language.size() > 0 && preferred_language == text.language))
 		{
 			result = text.title;
 		}
 	}
 	
-	if (result.size() == 0)
+	if (result.empty())
 	{
 		result = _("Unknown title");
 	}
@@ -52,13 +69,13 @@ Glib::ustring EpgEvent::get_description() const
 	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end(); i++)
 	{
 		EpgEventText text = *i;
-		if (result.size() == 0 || (preferred_language.size() > 0 && preferred_language == text.language))
+		if (result.empty() || (preferred_language.size() > 0 && preferred_language == text.language))
 		{
 			result = text.description;
 		}
 	}
 	
-	if (result.size() == 0)
+	if (result.empty())
 	{
 		result = _("Unknown description");
 	}

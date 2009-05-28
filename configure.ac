@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([Me TV], [0.7.16], [http://launchpad.net/me-tv], me-tv)
+AC_INIT([Me TV], [0.8.14], [http://launchpad.net/me-tv], me-tv)
 AC_COPYRIGHT([Michael Lamothe <michael.lamothe@gmail.com>])
 AC_CONFIG_SRCDIR([src/main.cc])
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -126,7 +126,6 @@ LIBGNOMEUI_REQUIRED=2.20
 GIOMM_REQUIRED=2.10.0
 GCONF_REQUIRED=2.0
 GTHREAD_REQUIRED=2.10.0
-LIBXTST_REQUIRED=1.0.0
 GNET_REQUIRED=2.0.0
 LIBXINE_REQUIRED=1.1.7
 LIBVLC_REQUIRED=0.9
@@ -149,6 +148,15 @@ PKG_CHECK_MODULES(SQLITE, [sqlite3 >= $SQLITE_REQUIRED])
 # check for additional requirements when optional engines are enabled
 # default engine is xine, other engines are disabled at default
 # we are only checking optional engines
+AC_ARG_ENABLE(xine-engine,
+        AC_HELP_STRING([--enable-xine-engine],[Enable Xine engine support (default disabled)]),
+        enable_xine_engine="$enableval", enable_xine_engine=yes)
+if test x"$enable_xine_engine" = "xyes" ; then
+# the binary path test is not required in the build time
+# packagers should notice that the MPlayer binary is required in the install time
+        AC_DEFINE(ENABLE_XINE_ENGINE,1,[Define to 1 if Xine engine is used.])
+fi
+
 AC_ARG_ENABLE(mplayer-engine, 
 	AC_HELP_STRING([--enable-mplayer-engine],[Enable experimental MPlayer engine support (default disabled)]), 
 	enable_mplayer_engine="$enableval", enable_mplayer_engine=no)
@@ -187,7 +195,7 @@ PKG_CHECK_MODULES([XINE_LIB], libxine >= $LIBXINE_REQUIRED, found_xine_lib=yes, 
 fi
 
 AC_ARG_ENABLE(libgstreamer-engine, 
-	AC_HELP_STRING([--enable-libgstreamer-engine],[Enable experimental GStreamer library engine support (default disabled)]), 
+	AC_HELP_STRING([--enable-libgstreamer-engine],[Enable experimental GStreamer library engine support (default enabled)]), 
 	enable_libgstreamer_engine="$enableval", enable_libgstreamer_engine=no)
 if test x$enable_libgstreamer_engine = xyes; then
 PKG_CHECK_MODULES([LIBGSTREAMER], gstreamer-0.10 >= $LIBGSTREAMER_REQUIRED gstreamer-interfaces-0.10 >= $LIBGSTREAMER_REQUIRED, found_libgstreamer=yes, found_libgstreamer=no)
@@ -201,7 +209,7 @@ PKG_CHECK_MODULES([LIBGSTREAMER], gstreamer-0.10 >= $LIBGSTREAMER_REQUIRED gstre
 fi
 
 PKG_CHECK_MODULES(ME_TV, [
-libgnomemm-2.6 >= $LIBGNOMEMM_REQUIRED libgnomeuimm-2.6 >= $LIBGNOMEUI_REQUIRED giomm-2.4 >= $GIOMM_REQUIRED gthread-2.0 >= $GTHREAD_REQUIRED gconfmm-2.6 >= $GCONF_REQUIRED xtst >= $LIBXTST_REQUIRED gnet-2.0 >= $GNET_REQUIRED])
+libgnomemm-2.6 >= $LIBGNOMEMM_REQUIRED libgnomeuimm-2.6 >= $LIBGNOMEUI_REQUIRED giomm-2.4 >= $GIOMM_REQUIRED gthread-2.0 >= $GTHREAD_REQUIRED gconfmm-2.6 >= $GCONF_REQUIRED gnet-2.0 >= $GNET_REQUIRED])
 AC_SUBST(ME_TV_CFLAGS)
 AC_SUBST(ME_TV_LIBS)
 
@@ -262,6 +270,7 @@ Configure summary:
 	Installing into prefix .....: ${prefix}
 
 Optional engines support:
+	xine engine ................: ${enable_xine_engine}
 	libvlc engine ..............: ${enable_libvlc_engine}
 	MPlayer engine .............: ${enable_mplayer_engine}
 	xine-lib engine ............: ${enable_xine_lib_engine}

@@ -18,22 +18,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __PREFERENCES_DIALOG_H__
-#define __PREFERENCES_DIALOG_H__
+#ifndef __SAVE_THREAD_H__
+#define __SAVE_THREAD_H__
 
-#include <libgnomeuimm.h>
-#include <libglademm.h>
+#include "thread.h"
 
-class PreferencesDialog : public Gtk::Dialog
+class SaveThread : public Thread
 {
-private:
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
-public:	
-	PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
-
+public:
+	SaveThread();
 	void run();
-
-	static PreferencesDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 };
 
 #endif
+

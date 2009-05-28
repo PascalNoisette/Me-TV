@@ -19,6 +19,9 @@
  */
 
 #include "initial_scan_line.h"
+#include "dvb_transponder.h"
+
+using namespace Dvb;
 
 struct StringTable InitialScanLine::bandwidth_table[] =
 {
@@ -94,6 +97,15 @@ struct StringTable InitialScanLine::inversion_table[] =
 	{ NULL, 0 }
 };
 
+struct StringTable InitialScanLine::polarisation_table[] =
+{
+	{ "V",	POLARISATION_VERTICAL },
+	{ "R",	POLARISATION_VERTICAL },
+	{ "H",	POLARISATION_HORIZONTAL },
+	{ "L",	POLARISATION_HORIZONTAL },
+	{ NULL, 0 }
+};
+
 InitialScanLine::InitialScanLine(const Glib::ustring& line) : splitter(line, " ", 20)
 {
 }
@@ -136,4 +148,9 @@ fe_hierarchy_t InitialScanLine::get_hierarchy(guint index)
 guint InitialScanLine::get_symbol_rate(guint index)
 {
 	return splitter.get_int_value(index);
+}
+
+guint InitialScanLine::get_polarisation(guint index)
+{
+	return (guint)convert_string_to_value(polarisation_table, splitter.get_value(index));
 }

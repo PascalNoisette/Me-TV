@@ -47,7 +47,7 @@ public:
 class StreamThread : public Thread
 {
 private:
-	const Channel&			channel;
+	Channel					channel;
 	DemuxerList				demuxers;
 	Glib::ustring			fifo_path;
 	gint					CRC32[256];
@@ -88,6 +88,7 @@ public:
 
 	void start();
 	const Stream& get_stream() const;
+	guint get_last_epg_update_time();
 
 	void start_recording(const Glib::ustring& filename);
 	void stop_recording();

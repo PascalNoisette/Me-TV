@@ -23,19 +23,23 @@
 #include "me-tv-i18n.h"
 #include <gdk/gdkx.h>
 
-gint Engine::get_window_id()
+Engine::Engine()
 {
-	int window_id = GDK_WINDOW_XID(get_drawing_area_video()->get_window()->gobj());
+	drawing_area_video = dynamic_cast<Gtk::DrawingArea*>(get_application().get_glade()->get_widget("drawing_area_video"));
 
+	window_id = GDK_WINDOW_XID(drawing_area_video->get_window()->gobj());
 	if (window_id == 0)
 	{
 		throw Exception(_("Window ID was 0"));
 	}
+}
 
+gint Engine::get_window_id()
+{
 	return window_id;
 }
 
 Gtk::DrawingArea* Engine::get_drawing_area_video()
 {
-	return dynamic_cast<Gtk::DrawingArea*>(get_application().get_glade()->get_widget("drawing_area_video"));
+	return drawing_area_video;
 }

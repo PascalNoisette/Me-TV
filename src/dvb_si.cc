@@ -148,6 +148,33 @@ gsize SectionParser::read_section(Demuxer& demuxer)
 	return section_length;
 }
 
+// this method takes a bitmask as supplied by the NIT-section (satellite delivery system descriptor) for the FEC_INNER and converts them to a linux-style FEC value according to EN 300 468, v 1.9.1
+fe_code_rate_t SectionParser::parse_fec_inner(guint bitmask)
+{
+	switch(bitmask)
+	{
+		case 0x01:
+			return FEC_1_2;
+		case 0x02:
+			return FEC_2_3;
+		case 0x03:
+			return FEC_3_4;
+		case 0x04:
+			return FEC_5_6;
+		case 0x05:
+			return FEC_7_8;
+		case 0x06:
+			return FEC_8_9;
+		case 0x07:
+			return FEC_AUTO; // EN 300 468 specifies this as "fec 3/5", which is apparently not supported by the linux kernel or is a typo. just setting to auto.
+		case 0x08:
+			return FEC_4_5;
+		default:
+			return FEC_AUTO;
+	}
+	return FEC_AUTO; // this should never happen. but it wouldn't hurt.
+}
+
 void SectionParser::parse_pas(Demuxer& demuxer, ProgramAssociationSection& section)
 {
 	gsize section_length = read_section(demuxer);
@@ -196,6 +223,74 @@ void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& sect
 		
 		section.services.push_back(service);
 	}
+}
+
+
+void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& section)
+{
+	gsize section_length = read_section(demuxer);
+	//dump(buffer, section_length);
+	
+	guint offset = 8;
+	guint network_descriptor_length = get_bits(buffer + offset, 4, 12);
+	offset += 2;
+	
+	// We don't care for the network descriptors, as we only want to get new frequencies out of the stream, and they are saved in the "Transport stream descriptor" section.
+	offset += network_descriptor_length;
+	
+	// Now offset is at "transport_stream_loop_length" position.
+	guint transport_stream_length = get_bits(buffer + offset, 4, 12);
+	offset += 2;
+	
+	// loop through all transport descriptors and pick out 0x43 descriptors, as they contain new frequencies.
+	while(offset < section_length - 4)
+	{
+		offset += 4;
+		guint descriptors_loop_length = get_bits(buffer + offset, 4, 12);
+		offset += 2;
+		guint descriptors_end_offset = offset + descriptors_loop_length;
+		
+		while(offset < descriptors_end_offset)
+		{
+			guint descriptor_tag = buffer[offset];
+			guint descriptor_length = buffer[offset+1];
+			offset += 2;
+			if(descriptor_tag == 0x43)
+			{
+				struct dvb_frontend_parameters frontend_parameters;
+				
+				// extract data for new transponder, according to EN 300 468: dvb-s
+				frontend_parameters.frequency = 0;
+				for(int i=0; i<8; i++)
+				{
+					frontend_parameters.frequency = frontend_parameters.frequency*10 + get_bits(buffer + offset, i*4, 4);
+				}
+				frontend_parameters.frequency *= 10;
+				
+				guint polarisation = (get_bits(buffer + offset + 6, 2, 1) == 1) ?POLARISATION_VERTICAL :POLARISATION_HORIZONTAL;
+				
+				frontend_parameters.u.qpsk.symbol_rate = 0;
+				for(int i=0; i<7; i++)
+				{
+					frontend_parameters.u.qpsk.symbol_rate = frontend_parameters.u.qpsk.symbol_rate*10 + get_bits(buffer + offset + 7, i*4, 4);
+				}
+				frontend_parameters.u.qpsk.symbol_rate *= 100;
+				
+				frontend_parameters.u.qpsk.fec_inner = parse_fec_inner(get_bits(buffer + offset + 7, 28, 4));
+				frontend_parameters.inversion = INVERSION_AUTO;
+				
+				Transponder transponder;
+				transponder.frontend_parameters = frontend_parameters;
+				transponder.polarisation = polarisation;
+				section.transponders.push_back(transponder);
+				g_debug("new frequency: %d, new polarisation: %d, symbol rate %d, fec_inner %d", frontend_parameters.frequency, transponder.polarisation, frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner);
+			}
+			else g_debug("bad descriptor tag %d", descriptor_tag);
+			offset += descriptor_length;
+		}
+	}
+	
+	g_debug("transport_stream_length is %d, network_descriptor_length is %d and offset is %d", transport_stream_length, network_descriptor_length, offset);
 }
 
 gsize get_atsc_text(Glib::ustring& string, const guchar* buffer)
@@ -446,7 +541,7 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 		{
 			EventText event_text;
 			get_atsc_text (event_text.title, &buffer[offset++]);
-			event.texts.push_back(event_text);
+			event.texts[event_text.language] = event_text;
 			offset += title_length;
 		}
 		
@@ -474,7 +569,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 	section.last_table_id =					get_bits (buffer, 104, 8);
 
 	unsigned int offset = 14;
-	
+
 	while (offset < (section_length - CRC_BYTE_SIZE))
 	{
 		Event event;
@@ -489,7 +584,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 		duration				= get_bits (&buffer[offset], 56, 24);
 		event.running_status	= get_bits (&buffer[offset], 80, 3);
 		event.free_CA_mode		= get_bits (&buffer[offset], 83, 1);
-
+		
 		unsigned int descriptors_loop_length  = get_bits (&buffer[offset], 84, 12);
 		offset += 12;
 		unsigned int end_descriptor_offset = descriptors_loop_length + offset;
@@ -531,7 +626,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 			t.tm_year	= event_start_year - 1900;
 			
 			event.start_time = mktime(&t);
-		
+
 			while (offset < end_descriptor_offset)
 			{
 				offset += decode_event_descriptor(&buffer[offset], event);
@@ -542,7 +637,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 				throw Exception(_("ASSERT: offset > end_descriptor_offset"));
 			}
 
-			section.events.push_back( event );
+			section.events.push_back(event);
 		}
 	}
 	section.crc = get_bits (&buffer[offset], 0, 32);
@@ -571,44 +666,80 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 			Glib::ustring language;
 			Glib::ustring title;
 			Glib::ustring description;
-			Glib::ustring temp_description;
 			Glib::ustring temp_title;
+			Glib::ustring temp_description;
 
-			language = get_lang_desc (event_buffer);
+			language = get_lang_desc (event_buffer + 1);
+			
+			if (!event.texts.contains(language))
+			{
+				EventText event_text_temp;
+				event.texts[language] = event_text_temp;
+				event_text_temp.language = language;
+			}
+			EventText& event_text = event.texts[language];
+			
 			unsigned int offset = 6;
 			guint length_of_items = event_buffer[offset];
 			offset++;
 			while (length_of_items > offset - 7)
 			{
 				offset += get_text(temp_description, &event_buffer[offset]);			
-				description += temp_description;
+				if (temp_description != "-")
+				{
+					description += temp_description;
+				}
 
 				offset += get_text(temp_title, &event_buffer[offset]);
-				title += temp_title;
+				if (temp_title != "-")
+				{
+					title += temp_title;
+				}
 			}
 			offset += get_text(temp_description, &event_buffer[offset]);
-			description += temp_description;
+			if (temp_description != "-")
+			{
+				description	+= temp_description;
+			}
 			
-			EventText event_text;
-			event_text.is_extended = true;
-			event_text.language = language;
-			event_text.description += description;
-			event_text.title += title;
+			if (!event_text.is_extended)
+			{
+				event_text.description.clear();
+			}
 			
-			event.texts.push_back(event_text);
+			event_text.is_extended	= true;
+			event_text.title		+= title;
+			event_text.description	+= description;
 		}
 		break;
 
 	case SHORT_EVENT:
 		{
-			EventText event_text;
+			Glib::ustring	language;
+			Glib::ustring	title;
+			Glib::ustring	description;
+			
+			language = get_lang_desc (event_buffer);
+			if (!event.texts.contains(language))
+			{
+				EventText event_text_temp;
+				event.texts[language] = event_text_temp;
+				event_text_temp.language = language;
+			}
+			EventText& event_text = event.texts[language];
+
 			event_text.is_extended = false;
-			event_text.language = get_lang_desc (event_buffer);
+			event_text.language = language;
 			unsigned int offset = 5;
-			offset += get_text(event_text.title, &event_buffer[offset]);
-			offset += get_text(event_text.description, &event_buffer[offset]);
-					
-			event.texts.push_back(event_text);
+			offset += get_text(title, &event_buffer[offset]);
+			offset += get_text(description, &event_buffer[offset]);
+			
+			event_text.title = title;
+
+			if (!event_text.is_extended)
+			{
+				event_text.description += description;
+			}
 		}
 		break;
 	default:
@@ -1069,4 +1200,17 @@ Glib::ustring SectionParser::convert_iso6937(const guchar* text_buffer, gsize le
 		}
 	}
 	return result;
+}
+
+gboolean EventTextMap::contains(const Glib::ustring& language)
+{
+	for (const_iterator i = begin(); i != end(); i++)
+	{
+		if (i->first == language)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }

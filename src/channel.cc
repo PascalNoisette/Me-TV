@@ -25,11 +25,9 @@
 
 Channel::Channel()
 {
-	channel_id = 0;
-	profile_id = 0;
-	flags = 0;
-	service_id = 0;
-	memset(&frontend_parameters, 0, sizeof(struct dvb_frontend_parameters));
+	channel_id	= 0;
+	flags		= 0;
+	service_id	= 0;
 }
 
 Glib::ustring Channel::get_text()
@@ -48,5 +46,18 @@ Glib::ustring Channel::get_text()
 
 guint Channel::get_transponder_frequency()
 {
-	return frontend_parameters.frequency;
+	return transponder.frontend_parameters.frequency;
+}
+
+gboolean ChannelList::contains(guint channel_id)
+{
+	for (const_iterator i = begin(); i != end(); i++)
+	{
+		if ((*i).channel_id == channel_id)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }

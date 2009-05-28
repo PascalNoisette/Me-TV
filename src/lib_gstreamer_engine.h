@@ -32,9 +32,7 @@ class LibGStreamerEngine : public Engine
 {
 private:
 	gint				pid;
-	gint				standard_input;
-	GstElement*			player;
-	GstElement*			sink;
+	GstElement*			pipeline;
 	gdouble				volume;
 
 	void play(const Glib::ustring& mrl);
@@ -42,9 +40,9 @@ private:
 	void set_audio_stream(guint stream) {}
 	void set_mute_state(gboolean state);
 	void set_audio_channel_state(AudioChannelState state) {}
+	void set_subtitle_stream(gint stream) {}
 	gboolean is_running();
 
-	GstElement* create_element(const Glib::ustring& factoryname, const gchar *name);
 	static gboolean on_bus_message(GstBus *bus, GstMessage *message, gpointer data);
 	void set_volume(gdouble value);
 

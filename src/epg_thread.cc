@@ -22,8 +22,6 @@
 #include "epg_thread.h"
 #include "application.h"
 
-#define CLEANUP_INTERVAL	60
-
 class EITDemuxers
 {
 private:
@@ -86,7 +84,7 @@ void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInf
 		eit_demuxer = g_slist_next(eit_demuxer);
 	}
 
-	gint result = ::poll(fds, demuxer_count, 5000);
+	gint result = ::poll(fds, demuxer_count, read_timeout * 1000);
 	if (result < 0)
 	{
 		throw SystemException (_("Failed to poll EIT demuxers"));
@@ -96,7 +94,7 @@ void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInf
 	while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
 	{
 		Dvb::Demuxer* current = (Dvb::Demuxer*)eit_demuxer->data;
-		if (current->poll(1))
+		if (current->poll())
 		{
 			selected_eit_demuxer = current;
 		}
@@ -120,19 +118,20 @@ void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInf
 
 EpgThread::EpgThread() : Thread("EPG Thread")
 {
-	last_cleanup_time = time(NULL);
+	last_update_time = 0;
 }
 
 void EpgThread::run()
 {
 	TRY;
 
-	Dvb::Frontend& frontend = get_application().get_device_manager().get_frontend();
-	Profile& profile = get_application().get_profile_manager().get_current_profile();
-	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
-	EITDemuxers demuxers(demux_path);
-	Dvb::SI::SectionParser parser;
-	Dvb::SI::MasterGuideTable master_guide_table;
+	Application&				application				= get_application();
+	ChannelManager&				channel_manager			= application.channel_manager;
+	Dvb::Frontend&				frontend				= application.device_manager.get_frontend();
+	Glib::ustring				demux_path				= frontend.get_adapter().get_demux_path();
+	EITDemuxers					demuxers(demux_path);
+	Dvb::SI::SectionParser		parser;
+	Dvb::SI::MasterGuideTable	master_guide_table;
 
 	gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
 	if (is_atsc)
@@ -167,10 +166,10 @@ void EpgThread::run()
 			demuxers.get_next_eit(parser, section, is_atsc);
 
 			guint service_id = section.service_id;
-			Channel* channel = profile.find_channel(frequency, service_id);
+			Channel* channel = channel_manager.find_channel(frequency, service_id);
 			if (channel != NULL)
 			{
-				for( unsigned int k = 0; section.events.size() > k; k++ )
+				for (unsigned int k = 0; section.events.size() > k; k++)
 				{
 					Dvb::SI::Event& event	= section.events[k];
 					EpgEvent epg_event;
@@ -180,12 +179,11 @@ void EpgThread::run()
 					epg_event.event_id		= event.event_id;
 					epg_event.start_time	= event.start_time;
 					epg_event.duration		= event.duration;
-					epg_event.save			= true;
 					
-					for (Dvb::SI::EventTextList::iterator i = event.texts.begin(); i != event.texts.end(); i++)
+					for (Dvb::SI::EventTextMap::iterator i = event.texts.begin(); i != event.texts.end(); i++)
 					{
 						EpgEventText epg_event_text;
-						const Dvb::SI::EventText& event_text = *i;
+						const Dvb::SI::EventText& event_text = i->second;
 						
 						epg_event_text.epg_event_text_id	= 0;
 						epg_event_text.epg_event_id			= 0;
@@ -197,28 +195,15 @@ void EpgThread::run()
 						epg_event.texts.push_back(epg_event_text);
 					}
 					
-					if (channel->epg_events.insert(epg_event))
+					if (epg_event.get_end_time() < convert_to_local_time(time(NULL)))
 					{
-						get_application().update_epg_time();
+						g_debug("Ignoring EPG event %d (%s), too old", epg_event.event_id, epg_event.get_title().c_str());
+					}
+					else if (channel->epg_events.add_epg_event(epg_event))
+					{
+						last_update_time = time(NULL)+1;
 					}
 				}
-			}
-			
-			guint now = time(NULL);
-			if (now - CLEANUP_INTERVAL > last_cleanup_time)
-			{
-				Data data;
-
-				g_debug("Deleting old scheduled recordings");
-				data.delete_old_scheduled_recordings();
-
-				g_debug("Deleting old EPG events");
-				data.delete_old_epg_events();
-
-				g_debug("Replacing profile");
-				data.replace_profile(profile);
-				
-				last_cleanup_time = now;
 			}
 		}
 		catch(const TimeoutException& ex)

@@ -18,43 +18,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __PROFILE_H__
-#define __PROFILE_H__
+#ifndef __CHANNEL_MANAGER_H__
+#define __CHANNEL_MANAGER_H__
 
-#include <glibmm.h>
 #include "channel.h"
+#include "data.h"
 
-#define MAX_CHANNELS 100
-
-class Profile
+class ChannelManager
 {
 private:
+	Glib::StaticRecMutex mutex;
 	ChannelList channels;
 	Channel* display_channel;
-
 public:
-	Profile();
+	ChannelManager();
 		
+	void load(Data::Connection& connection);
+	void save(Data::Connection& connection);
+	
+	Glib::StaticRecMutex& get_mutex() { return mutex; }
+		
+	const ChannelList& get_channels() const;
+	ChannelList& get_channels();
 	void next_channel();
 	void previous_channel();
 	void set_display_channel(const Channel& channel);
 	void set_display_channel(guint channel_id);
-	void add_channel(Channel& channel);
-	void add_channels(ChannelList& channels);
-	void set_channels(ChannelList& channels);
-	void clear();
-	ChannelList& get_channels();
-	const ChannelList& get_channels() const;
 	Channel* get_display_channel();
-	sigc::signal<void, const Channel&> signal_display_channel_changed;
+	void add_channel(const Channel& channel);
+	void add_channels(const ChannelList& channels);
+	void set_channels(const ChannelList& channels);
+	void clear();
 	Channel& get_channel(guint channel_id);
 	Channel* find_channel(guint frequency, guint service_id);
 	Channel* find_channel(guint channel_id);
-
-	guint			profile_id;
-	Glib::ustring	name;
 };
-
-typedef std::list<Profile> ProfileList;
 
 #endif

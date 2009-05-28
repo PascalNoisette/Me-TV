@@ -43,6 +43,7 @@ private:
 	void expose();
 	void set_audio_stream(guint stream) {};
 	void set_audio_channel_state(AudioChannelState state);
+	void set_subtitle_stream(gint stream) {}
 	void write(const Glib::ustring& text);
 	gboolean is_running();
 	void restart();

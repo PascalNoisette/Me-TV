@@ -26,31 +26,28 @@
 
 using namespace Dvb;
 
-void Transponder::add_service(Service& service)
+Transponder::Transponder() : polarisation(0), satellite_number(0), hi_band(0)
 {
-	services.push_back(service);
+	memset(&frontend_parameters, 0, sizeof(frontend_parameters));
 }
 
-Service& Transponder::get_service(guint service_id)
+gboolean TransponderList::exists(const Transponder& transponder)
 {
-	Service* result = NULL;
-	gboolean found = false;
-
-	ServiceList::iterator iterator = services.begin();
-	while (iterator != services.end() && !found)
+	for (const_iterator i = begin(); i != end(); i++)
 	{
-		Service& service = *iterator;
-		if (service.id == service_id)
+		if (transponder.frontend_parameters.frequency == (*i).frontend_parameters.frequency)
 		{
-			result = &service;
-			found = true;
+			return true;
 		}
 	}
-
-	if (result == NULL)
-	{
-		throw Exception(Glib::ustring::compose(_("Failed to find service with service ID %1"), service_id));
-	}
 	
-	return *result;
+	return false;
+}
+
+void TransponderList::add(const Transponder& transponder)
+{
+	if (!exists(transponder))
+	{
+		push_back(transponder);
+	}
 }

@@ -22,6 +22,15 @@
 #include "me-tv.h"
 #include "me-tv-i18n.h"
 
+ScheduledRecording::ScheduledRecording()
+{
+	scheduled_recording_id	= 0;
+	type					= 0;
+	channel_id				= 0;
+	start_time				= 0;
+	duration				= 0;
+}
+
 Glib::ustring ScheduledRecording::get_start_time_text() const
 {
 	return get_local_time_text(start_time, "%c");
@@ -48,7 +57,24 @@ Glib::ustring ScheduledRecording::get_duration_text() const
 	return result;
 }
 
-gboolean ScheduledRecording::is_in(guint at)
+guint ScheduledRecording::get_end_time() const
+{
+	return start_time + duration;
+}
+
+Glib::ustring ScheduledRecording::get_end_time_text() const
+{
+	return get_local_time_text(get_end_time(), "%c");
+}
+
+gboolean ScheduledRecording::is_in(guint at) const
 {
 	return start_time <= at && start_time+duration > at;
+}
+
+gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_recording) const
+{
+	return is_in(scheduled_recording.start_time) ||
+		is_in(scheduled_recording.get_end_time()) ||
+		scheduled_recording.is_in(start_time);
 }

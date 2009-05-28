@@ -41,7 +41,7 @@ private:
 public:
 	ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
 
-	static ScheduledRecordingDialog* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static ScheduledRecordingDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
 
 	gint run(Gtk::Window* transient_for, ScheduledRecording& scheduled_recording);
 	gint run(Gtk::Window* transient_for, EpgEvent& epg_event);

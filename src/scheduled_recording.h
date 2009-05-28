@@ -27,19 +27,23 @@
 class ScheduledRecording
 {
 public:
-	guint scheduled_recording_id;
-	Glib::ustring description;
-	guint type;
-	guint channel_id;
-	guint start_time;
-	guint duration;
-
+	guint			scheduled_recording_id;
+	Glib::ustring	description;
+	guint			type;
+	guint			channel_id;
+	guint			start_time;
+	guint			duration;
+	Glib::ustring	device;
+		
+	ScheduledRecording();
+		
 	Glib::ustring get_start_time_text() const;
 	Glib::ustring get_duration_text() const;
+	guint get_end_time() const;
+	Glib::ustring get_end_time_text() const;
 		
-	gboolean is_in(guint at);
+	gboolean is_in(guint at) const;
+	gboolean overlaps(const ScheduledRecording& scheduled_recording) const;
 };
-
-typedef std::list<ScheduledRecording> ScheduledRecordingList;
 
 #endif
