@@ -1,5 +1,9 @@
 2009-05-24  Michael Lamothe <michael.lamothe@gmail.com>
 
+	* 0.9.0
+
+2009-05-24  Michael Lamothe <michael.lamothe@gmail.com>
+
 	* 0.8.14
 	* Fixed icon on application popup menu
 	* Not updating EPG when it's not shown
