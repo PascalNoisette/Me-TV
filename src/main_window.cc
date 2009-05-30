@@ -416,6 +416,12 @@ void MainWindow::unfullscreen(gboolean restore_mode)
 	{
 		set_display_mode(prefullscreen);
 	}
+
+	if (maximise_forced)
+	{
+		get_window()->unmaximize();
+		maximise_forced = false;
+	}
 }
 
 void MainWindow::fullscreen(gboolean change_mode)
