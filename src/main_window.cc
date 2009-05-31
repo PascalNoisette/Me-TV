@@ -307,14 +307,27 @@ void MainWindow::on_menu_item_mute_clicked()
 	CATCH
 }
 
+// This method should only be called by UI interactions
 void MainWindow::toggle_fullscreen()
 {
 	if (is_fullscreen())
 	{
 		unfullscreen();
+
+		if (maximise_forced)
+		{
+			get_window()->unmaximize();
+			maximise_forced = false;
+		}
 	}
 	else
 	{
+		if (get_application().get_boolean_configuration_value("fullscreen_bug_workaround"))
+		{
+			maximise_forced = true;
+			get_window()->maximize();
+		}	
+
 		fullscreen();
 	}
 }
@@ -416,12 +429,6 @@ void MainWindow::unfullscreen(gboolean restore_mode)
 	{
 		set_display_mode(prefullscreen);
 	}
-
-	if (maximise_forced)
-	{
-		get_window()->unmaximize();
-		maximise_forced = false;
-	}
 }
 
 void MainWindow::fullscreen(gboolean change_mode)
@@ -432,11 +439,6 @@ void MainWindow::fullscreen(gboolean change_mode)
 		set_display_mode(DISPLAY_MODE_VIDEO);
 	}
 	
-	if (get_application().get_boolean_configuration_value("fullscreen_bug_workaround"))
-	{
-		maximise_forced = true;
-		get_window()->maximize();
-	}	
 	Gtk::Window::fullscreen();
 }
 

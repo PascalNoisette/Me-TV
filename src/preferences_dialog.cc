@@ -97,8 +97,8 @@ void PreferencesDialog::run()
 #endif
 	
 	file_chooser_button_recording_directory->set_filename(application.get_string_configuration_value("recording_directory"));
-	spin_button_record_extra_before->set_value(application.get_int_configuration_value("record_extra_before"));
-	spin_button_record_extra_after->set_value(application.get_int_configuration_value("record_extra_after"));
+//	spin_button_record_extra_before->set_value(application.get_int_configuration_value("record_extra_before"));
+//	spin_button_record_extra_after->set_value(application.get_int_configuration_value("record_extra_after"));
 	spin_button_epg_span_hours->set_value(application.get_int_configuration_value("epg_span_hours"));
 	spin_button_epg_page_size->set_value(application.get_int_configuration_value("epg_page_size"));
 	entry_broadcast_address->set_text(application.get_string_configuration_value("broadcast_address"));
