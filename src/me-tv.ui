@@ -294,7 +294,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="max_length">4</property>
                     <property name="width_chars">4</property>
-                    <property name="adjustment"></property>
+                    <property name="adjustment">adjustment_duration</property>
                     <property name="climb_rate">1</property>
                     <property name="numeric">True</property>
                   </object>
@@ -627,7 +627,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <property name="can_focus">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="has_tooltip">True</property>
-                    <property name="adjustment"></property>
+                    <property name="adjustment">adjustment_page_size</property>
                     <property name="numeric">True</property>
                   </object>
                   <packing>
@@ -723,7 +723,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <property name="max_length">5</property>
                     <property name="width_chars">5</property>
                     <property name="truncate_multiline">True</property>
-                    <property name="adjustment"></property>
+                    <property name="adjustment">adjustment_broadcast_port</property>
                     <property name="numeric">True</property>
                   </object>
                   <packing>
@@ -975,7 +975,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <property name="can_focus">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="has_tooltip">True</property>
-                    <property name="adjustment"></property>
+                    <property name="adjustment">adjustment_epg_span</property>
                     <property name="numeric">True</property>
                   </object>
                   <packing>
@@ -1011,7 +1011,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <property name="can_focus">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="has_tooltip">True</property>
-                    <property name="adjustment"></property>
+                    <property name="adjustment">adjustment_record_after</property>
                     <property name="numeric">True</property>
                   </object>
                   <packing>
@@ -1048,7 +1048,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <property name="can_focus">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="has_tooltip">True</property>
-                    <property name="adjustment"></property>
+                    <property name="adjustment">adjustment_record_before</property>
                     <property name="numeric">True</property>
                   </object>
                   <packing>
@@ -2387,5 +2387,44 @@ If you've just upgraded Me TV then this is probably what you want to do.
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_record_before">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_record_after">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_epg_span">
+    <property name="lower">1</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_page_size">
+    <property name="lower">1</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_broadcast_port">
+    <property name="upper">65535</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_duration">
+    <property name="lower">1</property>
+    <property name="upper">1000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
   </object>
 </interface>

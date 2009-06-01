@@ -1,7 +1,8 @@
 2009-06-01  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.9.1
-	* Fix to stop EPG update crashing the application after faulty save (see LP: 72872)
+	* Fix to stop EPG update crashing the application after faulty save (LP: #72872)
+	* Fixed spin buttons from GtkBuilder conversion (LP: #382197)
 
 2009-05-24  Michael Lamothe <michael.lamothe@gmail.com>
 
