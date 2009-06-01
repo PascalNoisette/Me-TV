@@ -118,6 +118,11 @@ void GtkEpgWidget::update_pages()
 	Application& application = get_application();
 	guint epg_page_count = combo_box_epg_page->get_size();
 	guint epg_page_size = application.get_int_configuration_value("epg_page_size");
+
+	if (epg_page_size == 0)
+	{
+		return;
+	}
 	
 	const ChannelList& channels = application.channel_manager.get_channels();
 	guint channel_count = channels.size();

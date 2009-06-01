@@ -107,6 +107,16 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 		"xvimagesink name=videosink force-aspect-ratio=true " \
 		"decoder. ! queue ! volume name=volume ! gconfaudiosink");
 
+	if (get_int_configuration_value("epg_span_hours") == 0)
+	{
+		set_int_configuration_value("epg_span_hours", 1);
+	}
+
+	if (get_int_configuration_value("epg_page_size") == 0)
+	{
+		set_int_configuration_value("epg_page_size", 1);
+	}
+	
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);
 	if (!file->query_exists())
 	{
@@ -399,7 +409,7 @@ void Application::run()
 		}
 
 		channel_manager.load(connection);
-		scheduled_recording_manager.load(connection);
+		//scheduled_recording_manager.load(connection);
 
 		status_icon = new StatusIcon(builder);
 		main_window = MainWindow::create(builder);
