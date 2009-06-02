@@ -44,10 +44,10 @@ void PreferencesDialog::run()
 	Gtk::SpinButton* spin_button_epg_page_size = NULL;
 	Gtk::Entry* entry_broadcast_address = NULL;
 	Gtk::SpinButton* spin_button_broadcast_port = NULL;
-	Gtk::ComboBoxEntry* combo_box_entry_preferred_language = NULL;
-	Gtk::ComboBoxEntry* combo_box_entry_xine_video_driver = NULL;
-	Gtk::ComboBoxEntry* combo_box_entry_xine_audio_driver = NULL;
-	Gtk::ComboBoxEntry* combo_box_entry_text_encoding = NULL;
+	ComboBoxEntryText* combo_box_entry_preferred_language = NULL;
+	ComboBoxEntryText* combo_box_entry_xine_video_driver = NULL;
+	ComboBoxEntryText* combo_box_entry_xine_audio_driver = NULL;
+	ComboBoxEntryText* combo_box_entry_text_encoding = NULL;
 	Gtk::CheckButton* check_button_keep_above = NULL;
 	Gtk::CheckButton* check_button_show_epg_header = NULL;
 	Gtk::CheckButton* check_button_show_epg_time = NULL;
@@ -63,10 +63,10 @@ void PreferencesDialog::run()
 	builder->get_widget("spin_button_epg_page_size", spin_button_epg_page_size);
 	builder->get_widget("entry_broadcast_address", entry_broadcast_address);
 	builder->get_widget("spin_button_broadcast_port", spin_button_broadcast_port);
-	builder->get_widget("combo_box_entry_preferred_language", combo_box_entry_preferred_language);
-	builder->get_widget("combo_box_entry_xine_video_driver", combo_box_entry_xine_video_driver);
-	builder->get_widget("combo_box_entry_xine_audio_driver", combo_box_entry_xine_audio_driver);
-	builder->get_widget("combo_box_entry_text_encoding", combo_box_entry_text_encoding);
+	builder->get_widget_derived("combo_box_entry_preferred_language", combo_box_entry_preferred_language);
+	builder->get_widget_derived("combo_box_entry_xine_video_driver", combo_box_entry_xine_video_driver);
+	builder->get_widget_derived("combo_box_entry_xine_audio_driver", combo_box_entry_xine_audio_driver);
+	builder->get_widget_derived("combo_box_entry_text_encoding", combo_box_entry_text_encoding);
 	builder->get_widget("check_button_keep_above", check_button_keep_above);
 	builder->get_widget("check_button_show_epg_header", check_button_show_epg_header);
 	builder->get_widget("check_button_show_epg_time", check_button_show_epg_time);
@@ -96,6 +96,37 @@ void PreferencesDialog::run()
 	combo_box_engine_type->append_text("mplayer");
 #endif
 
+	combo_box_entry_preferred_language->append_text("eng");
+	combo_box_entry_preferred_language->append_text("fin");
+	combo_box_entry_preferred_language->append_text("ger");
+	combo_box_entry_preferred_language->append_text("swe");
+	combo_box_entry_preferred_language->append_text("fre");
+	
+	combo_box_entry_xine_video_driver->append_text("dxr3");
+	combo_box_entry_xine_video_driver->append_text("aadxr3");
+	combo_box_entry_xine_video_driver->append_text("xv");
+	combo_box_entry_xine_video_driver->append_text("XDirectFB");
+	combo_box_entry_xine_video_driver->append_text("DirectFB");
+	combo_box_entry_xine_video_driver->append_text("SyncFB");
+	combo_box_entry_xine_video_driver->append_text("opengl");
+	combo_box_entry_xine_video_driver->append_text("xshm");
+	combo_box_entry_xine_video_driver->append_text("none");
+	combo_box_entry_xine_video_driver->append_text("xxmc");
+	combo_box_entry_xine_video_driver->append_text("sdl");
+	combo_box_entry_xine_video_driver->append_text("fb");
+	combo_box_entry_xine_video_driver->append_text("xvmc");
+
+	combo_box_entry_xine_audio_driver->append_text("null");
+	combo_box_entry_xine_audio_driver->append_text("pulseaudio");
+	combo_box_entry_xine_audio_driver->append_text("alsa");
+	combo_box_entry_xine_audio_driver->append_text("oss");
+	combo_box_entry_xine_audio_driver->append_text("esd");
+	combo_box_entry_xine_audio_driver->append_text("file");
+	combo_box_entry_xine_audio_driver->append_text("none");
+
+	combo_box_entry_text_encoding->append_text("auto");
+	combo_box_entry_text_encoding->append_text("iso6937");
+	
 	file_chooser_button_recording_directory->set_filename(application.get_string_configuration_value("recording_directory"));
 	spin_button_record_extra_before->set_value(application.get_int_configuration_value("record_extra_before"));
 	spin_button_record_extra_after->set_value(application.get_int_configuration_value("record_extra_after"));
