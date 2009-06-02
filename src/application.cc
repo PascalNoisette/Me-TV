@@ -409,7 +409,7 @@ void Application::run()
 		}
 
 		channel_manager.load(connection);
-		//scheduled_recording_manager.load(connection);
+		scheduled_recording_manager.load(connection);
 
 		status_icon = new StatusIcon(builder);
 		main_window = MainWindow::create(builder);

@@ -468,6 +468,12 @@ found in /usr/share/common-licenses/GPL file.</property>
       </object>
     </child>
   </object>
+  <object class="GtkListStore" id="liststore_combo">
+    <columns>
+      <!-- column-name Value -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkDialog" id="dialog_scheduled_recordings">
     <property name="can_focus">True</property>
     <property name="has_focus">True</property>
@@ -758,6 +764,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <child>
                   <object class="GtkComboBoxEntry" id="combo_box_entry_preferred_language">
                     <property name="visible">True</property>
+                    <property name="model">liststore_combo</property>
+                    <property name="text_column">1</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -792,6 +800,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <child>
                   <object class="GtkComboBoxEntry" id="combo_box_entry_xine_video_driver">
                     <property name="visible">True</property>
+                    <property name="model">liststore_combo</property>
+                    <property name="text_column">1</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -826,6 +836,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <child>
                   <object class="GtkComboBoxEntry" id="combo_box_entry_xine_audio_driver">
                     <property name="visible">True</property>
+                    <property name="model">liststore_combo</property>
+                    <property name="text_column">1</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -870,6 +882,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <child>
                   <object class="GtkComboBoxEntry" id="combo_box_entry_text_encoding">
                     <property name="visible">True</property>
+                    <property name="model">liststore_combo</property>
+                    <property name="text_column">1</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
