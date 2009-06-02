@@ -900,7 +900,7 @@ found in /usr/share/common-licenses/GPL file.</property>
             </child>
             <child>
               <object class="GtkCheckButton" id="check_button_keep_above">
-                <property name="label" translatable="yes">Always on top</property>
+                <property name="label" translatable="yes">Set "Always on Top" at startup</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
