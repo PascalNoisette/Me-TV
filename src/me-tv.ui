@@ -765,7 +765,6 @@ found in /usr/share/common-licenses/GPL file.</property>
                   <object class="GtkComboBoxEntry" id="combo_box_entry_preferred_language">
                     <property name="visible">True</property>
                     <property name="model">liststore_combo</property>
-                    <property name="text_column">1</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -801,7 +800,6 @@ found in /usr/share/common-licenses/GPL file.</property>
                   <object class="GtkComboBoxEntry" id="combo_box_entry_xine_video_driver">
                     <property name="visible">True</property>
                     <property name="model">liststore_combo</property>
-                    <property name="text_column">1</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -837,7 +835,6 @@ found in /usr/share/common-licenses/GPL file.</property>
                   <object class="GtkComboBoxEntry" id="combo_box_entry_xine_audio_driver">
                     <property name="visible">True</property>
                     <property name="model">liststore_combo</property>
-                    <property name="text_column">1</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -883,7 +880,6 @@ found in /usr/share/common-licenses/GPL file.</property>
                   <object class="GtkComboBoxEntry" id="combo_box_entry_text_encoding">
                     <property name="visible">True</property>
                     <property name="model">liststore_combo</property>
-                    <property name="text_column">1</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
