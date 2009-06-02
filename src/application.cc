@@ -409,7 +409,6 @@ void Application::run()
 		}
 
 		channel_manager.load(connection);
-		scheduled_recording_manager.load(connection);
 
 		status_icon = new StatusIcon(builder);
 		main_window = MainWindow::create(builder);
@@ -427,6 +426,8 @@ void Application::run()
 		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 
 		TRY		
+		scheduled_recording_manager.load(connection);
+
 		const ChannelList& channels = channel_manager.get_channels();
 		if (channels.empty())
 		{
