@@ -115,8 +115,8 @@ void ChannelManager::load(Data::Connection& connection)
 void ChannelManager::save(Data::Connection& connection)
 {
 	Application& application = get_application();
-	
-	mutex.lock();
+
+	ChannelList channels_copy;
 
 	Data::Table table_channel = application.get_schema().tables["channel"];
 	Data::TableAdapter adapter_channel(connection, table_channel);
@@ -126,66 +126,69 @@ void ChannelManager::save(Data::Connection& connection)
 	
 	// Update sort_order = 0 to flag unused channels for removal later
 	adapter_channel.update_rows("sort_order = 0");
-		
-	int channel_count = 0;
-	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
+
 	{
-		Channel& channel = *i;
+		LockLogger lock(mutex, __PRETTY_FUNCTION__);
+
+		int channel_count = 0;
+		for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
+		{
+			Channel& channel = *i;
+			
+			g_debug("Saving channel '%s'", channel.name.c_str());
+
+			Data::Row row;
+			
+			row.auto_increment = &(channel.channel_id);
+
+			row["channel_id"].int_value		= channel.channel_id;		
+			row["name"].string_value		= channel.name;
+			row["flags"].int_value			= channel.flags;
+			row["sort_order"].int_value		= ++channel_count;
+			row["mrl"].string_value			= channel.mrl;
+			row["service_id"].int_value		= channel.service_id;
+			row["frequency"].int_value		= channel.transponder.frontend_parameters.frequency;
+			row["inversion"].int_value		= channel.transponder.frontend_parameters.inversion;
+
+			if (channel.flags & CHANNEL_FLAG_DVB_T)
+			{
+				row["bandwidth"].int_value				= channel.transponder.frontend_parameters.u.ofdm.bandwidth;
+				row["code_rate_hp"].int_value			= channel.transponder.frontend_parameters.u.ofdm.code_rate_HP;
+				row["code_rate_lp"].int_value			= channel.transponder.frontend_parameters.u.ofdm.code_rate_LP;
+				row["constellation"].int_value			= channel.transponder.frontend_parameters.u.ofdm.constellation;
+				row["transmission_mode"].int_value		= channel.transponder.frontend_parameters.u.ofdm.transmission_mode;
+				row["guard_interval"].int_value			= channel.transponder.frontend_parameters.u.ofdm.guard_interval;
+				row["hierarchy_information"].int_value	= channel.transponder.frontend_parameters.u.ofdm.hierarchy_information;
+			}
+			else if (channel.flags & CHANNEL_FLAG_DVB_C)
+			{
+				row["symbol_rate"].int_value			= channel.transponder.frontend_parameters.u.qam.symbol_rate;
+				row["fec_inner"].int_value				= channel.transponder.frontend_parameters.u.qam.fec_inner;
+				row["modulation"].int_value				= channel.transponder.frontend_parameters.u.qam.modulation;
+			}
+			else if (channel.flags & CHANNEL_FLAG_DVB_S)
+			{
+				row["symbol_rate"].int_value			= channel.transponder.frontend_parameters.u.qpsk.symbol_rate;
+				row["fec_inner"].int_value				= channel.transponder.frontend_parameters.u.qpsk.fec_inner;
+				row["polarisation"].int_value			= channel.transponder.polarisation;
+			}
+			else if (channel.flags & CHANNEL_FLAG_ATSC)
+			{
+				row["modulation"].int_value				= channel.transponder.frontend_parameters.u.vsb.modulation;
+			}
+			data_table_channel.rows.push_back(row);
+
+			g_debug("Channel '%s' saved", channel.name.c_str());
+		}
+		adapter_channel.replace_rows(data_table_channel);
 		
-		g_debug("Saving channel '%s'", channel.name.c_str());
+		// Delete channels that are not used
+		adapter_channel.delete_rows("sort_order = 0");
 
-		Data::Row row;
-		
-		row.auto_increment = &(channel.channel_id);
+		channels_copy = channels;
 
-		row["channel_id"].int_value		= channel.channel_id;		
-		row["name"].string_value		= channel.name;
-		row["flags"].int_value			= channel.flags;
-		row["sort_order"].int_value		= ++channel_count;
-		row["mrl"].string_value			= channel.mrl;
-		row["service_id"].int_value		= channel.service_id;
-		row["frequency"].int_value		= channel.transponder.frontend_parameters.frequency;
-		row["inversion"].int_value		= channel.transponder.frontend_parameters.inversion;
-
-		if (channel.flags & CHANNEL_FLAG_DVB_T)
-		{
-			row["bandwidth"].int_value				= channel.transponder.frontend_parameters.u.ofdm.bandwidth;
-			row["code_rate_hp"].int_value			= channel.transponder.frontend_parameters.u.ofdm.code_rate_HP;
-			row["code_rate_lp"].int_value			= channel.transponder.frontend_parameters.u.ofdm.code_rate_LP;
-			row["constellation"].int_value			= channel.transponder.frontend_parameters.u.ofdm.constellation;
-			row["transmission_mode"].int_value		= channel.transponder.frontend_parameters.u.ofdm.transmission_mode;
-			row["guard_interval"].int_value			= channel.transponder.frontend_parameters.u.ofdm.guard_interval;
-			row["hierarchy_information"].int_value	= channel.transponder.frontend_parameters.u.ofdm.hierarchy_information;
-		}
-		else if (channel.flags & CHANNEL_FLAG_DVB_C)
-		{
-			row["symbol_rate"].int_value			= channel.transponder.frontend_parameters.u.qam.symbol_rate;
-			row["fec_inner"].int_value				= channel.transponder.frontend_parameters.u.qam.fec_inner;
-			row["modulation"].int_value				= channel.transponder.frontend_parameters.u.qam.modulation;
-		}
-		else if (channel.flags & CHANNEL_FLAG_DVB_S)
-		{
-			row["symbol_rate"].int_value			= channel.transponder.frontend_parameters.u.qpsk.symbol_rate;
-			row["fec_inner"].int_value				= channel.transponder.frontend_parameters.u.qpsk.fec_inner;
-			row["polarisation"].int_value			= channel.transponder.polarisation;
-		}
-		else if (channel.flags & CHANNEL_FLAG_ATSC)
-		{
-			row["modulation"].int_value				= channel.transponder.frontend_parameters.u.vsb.modulation;
-		}
-		data_table_channel.rows.push_back(row);
-
-		g_debug("Channel '%s' saved", channel.name.c_str());
+		g_debug("Channels saved");
 	}
-	adapter_channel.replace_rows(data_table_channel);
-	
-	// Delete channels that are not used
-	adapter_channel.delete_rows("sort_order = 0");
-
-	ChannelList channels_copy = channels;
-
-	g_debug("Channels saved");
-	mutex.unlock();
 
 	for (ChannelList::iterator i = channels_copy.begin(); i != channels_copy.end(); i++)
 	{

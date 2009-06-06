@@ -63,7 +63,7 @@ void ChannelsDialog::show_scan_dialog()
 
 	ScanDialog& scan_dialog = ScanDialog::create(builder);
 	scan_dialog.show();
-	Gnome::Main::run(scan_dialog);
+	Gtk::Main::run(scan_dialog);
 
 	ChannelList channels = scan_dialog.get_channels();	
 	for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)

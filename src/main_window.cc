@@ -376,6 +376,7 @@ void MainWindow::set_next_display_mode()
 	{
 		set_display_mode(DISPLAY_MODE_VIDEO);
 	}
+	update();
 }
 
 bool MainWindow::on_delete_event(GdkEventAny* event)
