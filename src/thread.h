@@ -33,6 +33,9 @@ private:
 	Glib::ustring			name;
 	gboolean				join_on_destroy;
 	gboolean				started;
+
+	void on_run();
+
 public:
 	Thread(const Glib::ustring& name, gboolean join_on_destroy = true);
 	virtual ~Thread();
@@ -40,7 +43,7 @@ public:
 	virtual void run() = 0;
 	
 	void start();
-	void on_run();
+
 	void join(gboolean set_terminate = false);
 	void terminate();
 	gboolean is_terminated();

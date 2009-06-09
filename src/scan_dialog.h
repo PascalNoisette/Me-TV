@@ -39,18 +39,10 @@ public:
 	Dvb::Frontend& frontend;
 				
 public:
-	ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file) :
-		Thread("Scan"), scanner(2), initial_tuning_file(file), frontend(scan_frontend) {}
+	ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file);
 		
-	void run()
-	{
-		scanner.start(frontend, initial_tuning_file);
-	}
-		
-	void stop()
-	{
-		scanner.terminate();
-	}
+	void run();
+	void stop();
 
 	Dvb::Scanner& get_scanner() { return scanner; }
 };
@@ -105,12 +97,13 @@ private:
 	void stop_scan();
 	void update_channel_count();
 	void add_channel_row(const Channel& channel);
+
+	void on_show();
 		
 public:
 	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	~ScanDialog();
 		
-	void on_show();
 	ChannelList get_channels();
 
 	static ScanDialog& create(Glib::RefPtr<Gtk::Builder> builder);

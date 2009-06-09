@@ -31,7 +31,6 @@ namespace Dvb
 	class Scanner
 	{
 	private:
-		gint wait_timeout;
 		gboolean terminated;
 		TransponderList transponders;
 			
@@ -43,7 +42,7 @@ namespace Dvb
 		void process_cable_line(Frontend& frontend, const Glib::ustring& line);
 		void process_atsc_line(Frontend& frontend, const Glib::ustring& line);
 	public:
-		Scanner(guint wait_timeout);
+		Scanner();
 			
 		void start(Frontend& frontend, const Glib::ustring& region_file_path);
 		void terminate();

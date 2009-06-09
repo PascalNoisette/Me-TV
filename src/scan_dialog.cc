@@ -24,6 +24,21 @@
 #include "application.h"
 #include "channels_conf_line.h"
 
+ScanThread::ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file) :
+	Thread("Scan"), scanner(), initial_tuning_file(file), frontend(scan_frontend)
+{
+}
+		
+void ScanThread::run()
+{
+	scanner.start(frontend, initial_tuning_file);
+}
+	
+void ScanThread::stop()
+{
+	scanner.terminate();
+}
+
 ScanDialog& ScanDialog::create(Glib::RefPtr<Gtk::Builder> builder)
 {
 	ScanDialog* scan_dialog = NULL;

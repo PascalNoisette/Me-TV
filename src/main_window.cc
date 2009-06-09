@@ -537,7 +537,7 @@ void MainWindow::set_display_mode(DisplayMode mode)
 	
 	builder->get_widget("vbox_epg", widget);
 	widget->property_visible() = (mode == DISPLAY_MODE_EPG);
-		
+	
 	display_mode = mode;
 }
 
@@ -634,12 +634,7 @@ void MainWindow::update()
 	statusbar->pop();
 	statusbar->push(status_text);
 
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	gboolean is_minimised = window == NULL || window->get_state() & Gdk::WINDOW_STATE_ICONIFIED;
-	if (!is_minimised && property_visible() && display_mode == DISPLAY_MODE_EPG)
-	{
-		widget_epg->update();
-	}
+	widget_epg->update();
 
 	Gtk::Menu_Helpers::MenuList& audio_items = audio_streams_menu.items();
 	audio_items.erase(audio_items.begin(), audio_items.end());

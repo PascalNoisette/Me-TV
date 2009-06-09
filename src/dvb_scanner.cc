@@ -30,7 +30,7 @@
 
 using namespace Dvb;
 
-Scanner::Scanner(guint timeout) : wait_timeout(timeout)
+Scanner::Scanner()
 {
 	terminated = false;
 }

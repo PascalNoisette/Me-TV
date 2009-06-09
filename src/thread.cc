@@ -100,7 +100,7 @@ void Thread::join(gboolean set_terminate)
 		terminated = true;
 	}
 }
-	
+
 void Thread::terminate()
 {
 	Glib::RecMutex::Lock lock(mutex);
