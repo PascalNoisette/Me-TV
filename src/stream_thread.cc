@@ -522,7 +522,9 @@ void StreamThread::setup_dvb()
 	{
 		Dvb::SI::ProgramAssociation program_association = pas.program_associations[i];
 
-		g_debug("%d: PMT ID: %d", i, pmt_pid);
+		g_debug("%d: Service ID: %d, PMT ID: %d", i,
+		        program_association.program_number,
+		        program_association.program_map_pid);
 		if (program_association.program_number == channel.service_id)
 		{
 			pmt_pid = program_association.program_map_pid;
