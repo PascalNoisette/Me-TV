@@ -427,43 +427,54 @@ void ScanDialog::on_button_scan_wizard_add_clicked()
 
 void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name, const guint polarisation)
 {
-	GdkLock gdk_lock;
-	
-	Channel channel;
-	channel.service_id						= id;
-	channel.name							= name;
-	channel.transponder.frontend_parameters = frontend_parameters;
-	channel.transponder.polarisation		= polarisation;		
+	if (!scan_thread->is_terminated())
+	{
+		GdkLock gdk_lock;
+		
+		Channel channel;
+		channel.service_id						= id;
+		channel.name							= name;
+		channel.transponder.frontend_parameters = frontend_parameters;
+		channel.transponder.polarisation		= polarisation;		
 
-	add_channel_row(channel);
+		add_channel_row(channel);
+	}
 }
 
 void ScanDialog::on_signal_progress(guint step, gsize total)
 {
-	GdkLock gdk_lock;
-	gdouble fraction = total == 0 ? 0 : step/(gdouble)total;
-	
-	if (fraction < 0 || fraction > 1.0)
+	if (!scan_thread->is_terminated())
 	{
-		g_debug("Invalid fraction: %f", fraction);
-		g_debug("STEP: %d", step);
-		g_debug("TOTAL: %d", (guint)total);
-	}
-	else
-	{
-		progress_bar_scan->set_fraction(fraction);
-		Glib::ustring text = Glib::ustring::compose(_("%1/%2 (%3 channels)"), step, total, channel_count);
-		progress_bar_scan->set_text(text);
+		GdkLock gdk_lock;
+		gdouble fraction = total == 0 ? 0 : step/(gdouble)total;
+		
+		if (fraction < 0 || fraction > 1.0)
+		{
+			g_debug("Invalid fraction: %f", fraction);
+			g_debug("STEP: %d", step);
+			g_debug("TOTAL: %d", (guint)total);
+		}
+		else
+		{
+			progress_bar_scan->set_fraction(fraction);
+			Glib::ustring text = Glib::ustring::compose(_("%1/%2 (%3 channels)"), step, total, channel_count);
+			progress_bar_scan->set_text(text);
+		}
 	}
 }
 
 void ScanDialog::on_signal_complete()
 {
-	Gtk::Button* button_scan_wizard_add = NULL;
-	builder->get_widget("button_scan_wizard_add", button_scan_wizard_add);
-	button_scan_wizard_add->show();
-	progress_bar_scan->set_fraction(1);
-	progress_bar_scan->set_text(_("Scan complete"));
+	if (!scan_thread->is_terminated())
+	{
+		GdkLock gdk_lock;
+
+		Gtk::Button* button_scan_wizard_add = NULL;
+		builder->get_widget("button_scan_wizard_add", button_scan_wizard_add);
+		button_scan_wizard_add->show();
+		progress_bar_scan->set_fraction(1);
+		progress_bar_scan->set_text(_("Scan complete"));
+	}
 }
 
 ChannelList ScanDialog::get_channels()

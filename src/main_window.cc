@@ -263,6 +263,7 @@ void MainWindow::show_channels_dialog()
 		const ChannelList& channels = channels_dialog.get_channels();
 		ChannelManager& channel_manager = get_application().channel_manager;
 		channel_manager.set_channels(channels);
+		get_application().select_channel_to_play();
 	}
 	update();
 	

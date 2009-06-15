@@ -117,6 +117,7 @@ public:
 	MainWindow& get_main_window();
 
 	void start_save_thread(gboolean block);
+	void select_channel_to_play();
 };
 
 Application& get_application();

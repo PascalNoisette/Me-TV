@@ -376,6 +376,25 @@ void Application::set_boolean_configuration_value(const Glib::ustring& key, gboo
 	client->set(get_configuration_path(key), (bool)value);
 }
 
+void Application::select_channel_to_play()
+{
+	const ChannelList& channels = channel_manager.get_channels();
+	if (channels.size() > 0)
+	{
+		gint last_channel = get_application().get_int_configuration_value("last_channel");
+		if (channel_manager.find_channel(last_channel) == NULL)
+		{
+			g_debug("Last channel '%d' not found", last_channel);
+			last_channel = -1;
+		}
+		if (last_channel == -1)
+		{
+			last_channel = (*channels.begin()).channel_id;
+		}
+		set_display_channel(last_channel);
+	}
+}
+
 void Application::run()
 {
 	TRY
@@ -433,20 +452,8 @@ void Application::run()
 		{
 			main_window->show_channels_dialog();
 		}
-		if (channels.size() > 0)
-		{
-			gint last_channel = get_application().get_int_configuration_value("last_channel");
-			if (channel_manager.find_channel(last_channel) == NULL)
-			{
-				g_debug("Last channel '%d' not found", last_channel);
-				last_channel = -1;
-			}
-			if (last_channel == -1)
-			{
-				last_channel = (*channels.begin()).channel_id;
-			}
-			set_display_channel(last_channel);
-		}
+
+		select_channel_to_play();
 		CATCH
 		
 		Gnome::Main::run();

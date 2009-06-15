@@ -3,6 +3,7 @@
 	* 0.9.3
 	* Added extra logging for character set conversion
 	* Updated Channel Editor and Scan Dialog
+	* Fixed hang when cancelling the scan dialog
 
 2009-06-14  Michael Lamothe <michael.lamothe@gmail.com>
 
