@@ -58,7 +58,6 @@ private:
 		
 	Glib::ustring make_application_directory();
 		
-	bool on_quit();
 	void on_display_channel_changed(const Channel& channel);
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
@@ -71,10 +70,10 @@ public:
 	void run();
 	static Application& get_current();
 	
-	ChannelManager						channel_manager;
-	ScheduledRecordingManager			scheduled_recording_manager;
-	DeviceManager						device_manager;
-	Data::Connection					connection;
+	ChannelManager				channel_manager;
+	ScheduledRecordingManager	scheduled_recording_manager;
+	DeviceManager				device_manager;
+	Data::Connection			connection;
 
 	Glib::StaticRecMutex&	get_mutex();
 	StreamThread*			get_stream_thread();

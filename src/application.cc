@@ -57,8 +57,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	scheduled_recording_id	= 0;
 	save_thread				= NULL;
 	
-	signal_quit().connect(sigc::mem_fun(this, &Application::on_quit));
-
 	// Remove all other handlers first
 	get_signal_error().clear();
 	get_signal_error().connect(sigc::mem_fun(*this, &Application::on_error));
@@ -827,16 +825,6 @@ void Application::set_broadcast_state(gboolean state)
 Glib::StaticRecMutex& Application::get_mutex()
 {
 	return mutex;
-}
-
-bool Application::on_quit()
-{
-	if (main_window != NULL)
-	{
-		main_window->stop_engine();
-	}
-	
-	return true;
 }
 
 void Application::on_error(const Glib::ustring& message)

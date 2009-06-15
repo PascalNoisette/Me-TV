@@ -40,7 +40,7 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::
 	button->signal_clicked().connect(sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
 	
 	builder->get_widget("button_remove_selected_channels", button);
-	button->signal_clicked().connect(sigc::mem_fun(*this, &ChannelsDialog::on_button_button_remove_selected_channels_clicked));
+	button->signal_clicked().connect(sigc::mem_fun(*this, &ChannelsDialog::on_button_remove_selected_channels_clicked));
 
 	tree_view_displayed_channels = NULL;
 	
@@ -84,7 +84,7 @@ void ChannelsDialog::on_button_scan_clicked()
 	CATCH
 }
 
-void ChannelsDialog::on_button_button_remove_selected_channels_clicked()
+void ChannelsDialog::on_button_remove_selected_channels_clicked()
 {
 	get_window()->freeze_updates();
 	Glib::RefPtr<Gtk::TreeSelection> tree_selection = tree_view_displayed_channels->get_selection();

@@ -48,7 +48,7 @@ private:
 	
 	void on_show();
 	void on_button_scan_clicked();
-	void on_button_button_remove_selected_channels_clicked();
+	void on_button_remove_selected_channels_clicked();
 
 public:
 	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);

@@ -258,6 +258,7 @@ void MainWindow::show_channels_dialog()
 	ChannelsDialog& channels_dialog = ChannelsDialog::create(builder);	
 	gint dialog_result = channels_dialog.run();
 	channels_dialog.hide();
+
 	if (dialog_result == Gtk::RESPONSE_OK)
 	{
 		const ChannelList& channels = channels_dialog.get_channels();
