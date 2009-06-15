@@ -893,7 +893,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 
 				if (error != NULL || result == NULL)
 				{
-					const gchar* error_message = "Result was NULL";
+					const gchar* error_message = _("No message");
 					if (error != NULL)
 					{
 						error_message = error->message;
