@@ -96,7 +96,6 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	scan_thread = NULL;
 
 	builder->get_widget("notebook_scan_wizard", notebook_scan_wizard);
-    builder->get_widget("label_scan_information", label_scan_information);
 
 	Gtk::Button* button = NULL;
 
@@ -145,7 +144,6 @@ ScanDialog::~ScanDialog()
 void ScanDialog::on_show()
 {
 	channel_count = 0;
-	update_channel_count();
 	progress_bar_scan->set_fraction(0);
 
 	Gtk::Button* button = NULL;
@@ -321,8 +319,6 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 
 	builder->get_widget("button_scan_wizard_add", button);
 	button->show();
-	
-	notebook_scan_wizard->next_page();
 
 	g_debug("Finished importing channels");
 }
@@ -358,7 +354,6 @@ void ScanDialog::add_channel_row(const Channel& channel)
 		tree_view_scanned_channels->get_selection()->select(row);
 
 		channel_count++;
-		update_channel_count();
 		g_debug("Found channel %d : %s", channel.service_id, channel.name.c_str());
 	}
 }
@@ -443,14 +438,6 @@ void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& fronten
 	add_channel_row(channel);
 }
 
-void ScanDialog::update_channel_count()
-{
-	label_scan_information->set_text(
-		Glib::ustring::compose(
-			ngettext("Found 1 channel", "Found %1 channels", channel_count),
-			channel_count));
-}
-
 void ScanDialog::on_signal_progress(guint step, gsize total)
 {
 	GdkLock gdk_lock;
@@ -465,6 +452,8 @@ void ScanDialog::on_signal_progress(guint step, gsize total)
 	else
 	{
 		progress_bar_scan->set_fraction(fraction);
+		Glib::ustring text = Glib::ustring::compose(_("%1/%2 (%3 channels)"), step + 1, total, channel_count);
+		progress_bar_scan->set_text(text);
 	}
 }
 
@@ -473,7 +462,8 @@ void ScanDialog::on_signal_complete()
 	Gtk::Button* button_scan_wizard_add = NULL;
 	builder->get_widget("button_scan_wizard_add", button_scan_wizard_add);
 	button_scan_wizard_add->show();
-	notebook_scan_wizard->next_page();
+	progress_bar_scan->set_fraction(1);
+	progress_bar_scan->set_text(_("Scan complete"));
 }
 
 ChannelList ScanDialog::get_channels()

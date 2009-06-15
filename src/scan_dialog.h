@@ -52,7 +52,6 @@ class ScanDialog : public Gtk::Window
 private:
 	const Glib::RefPtr<Gtk::Builder>	builder;
 	Gtk::Notebook*						notebook_scan_wizard;
-	Gtk::Label*							label_scan_information;
 	Gtk::ProgressBar*					progress_bar_scan;
 	Gtk::TreeView*						tree_view_scanned_channels;
 	ScanThread*							scan_thread;
