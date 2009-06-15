@@ -452,7 +452,7 @@ void ScanDialog::on_signal_progress(guint step, gsize total)
 	else
 	{
 		progress_bar_scan->set_fraction(fraction);
-		Glib::ustring text = Glib::ustring::compose(_("%1/%2 (%3 channels)"), step + 1, total, channel_count);
+		Glib::ustring text = Glib::ustring::compose(_("%1/%2 (%3 channels)"), step, total, channel_count);
 		progress_bar_scan->set_text(text);
 	}
 }

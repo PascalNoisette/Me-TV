@@ -224,7 +224,7 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
 	{
 		tune_to(frontend, *i);
-		signal_progress(transponder_count++, transponders.size());
+		signal_progress(++transponder_count, transponders.size());
 	}
 	
 	g_debug("Scanner loop exited");
