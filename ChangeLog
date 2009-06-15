@@ -1,3 +1,8 @@
+2009-06-15  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.9.3
+	* Added extra logging for character set conversion
+
 2009-06-14  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.9.2
