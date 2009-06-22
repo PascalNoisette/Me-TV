@@ -62,21 +62,27 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		demuxer_sds.stop();
 		demuxer_nis.stop();
 		
-		guint number_of_services = sds.services.size();
-		if (number_of_services > 0)
+		for (guint i = 0; i < sds.services.size(); i++)
 		{
-			for (guint i = 0; i < number_of_services; i++)
-			{
-				signal_service(transponder.frontend_parameters, sds.services[i].id, sds.services[i].name, transponder.polarisation);
-			}
+			signal_service(
+				transponder.frontend_parameters,
+				sds.services[i].id,
+				sds.services[i].name,
+				transponder.polarisation);
 		}
-		
-		guint number_of_transponders = nis.transponders.size();
-		if (number_of_transponders > 0)
+
+		g_debug("Got %d transponders from NIT", nis.transponders.size());
+		for (guint i = 0; i < nis.transponders.size(); i++)
 		{
-			for(guint i = 0; i < number_of_transponders; i++ )
+			Transponder& transponder = nis.transponders[i];
+			if (!transponders.exists(transponder))
 			{
-				transponders.add(nis.transponders[i]);
+				g_debug("%d: Adding %d", i + 1, transponder.frontend_parameters.frequency);
+				transponders.push_back(transponder);
+			}
+			else
+			{
+				g_debug("%d: Skipping %d", i + 1, transponder.frontend_parameters.frequency);
 			}
 		}
 	}

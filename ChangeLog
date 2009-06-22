@@ -2,6 +2,8 @@
 
 	* 0.9.4
 	* Fixed xine audio/video driver saving in preferences dialog
+	* Added logging to NIT code 
+	* Added scrolled window to scan results tree
 
 2009-06-15  Michael Lamothe <michael.lamothe@gmail.com>
 
@@ -114,6 +116,11 @@
 2009-04-05  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.1
+	* Creating ~/.me-tv directory on startup (LP: #353796) 
+	* Fix for extended EPG events so that descriptions make sense
+
+2009-03-28  Michael Lamothe <michael.lamothe@gmail.com>
+
 	* Creating ~/.me-tv directory on startup (LP: #353796) 
 	* Fix for extended EPG events so that descriptions make sense
 
@@ -278,8 +285,3 @@
 	* 0.6.1
 	* Several fixes to resolve crash bugs
 	* Fixed issue with scheduled recordings selecting first channel
-
-2008-09-14  Michael Lamothe <michael.lamothe@gmail.com>
-
-	* Me TV 0.6, initial version
-	* Complete code rewrite in C++ using C++ libraries
