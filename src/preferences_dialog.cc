@@ -96,12 +96,14 @@ void PreferencesDialog::run()
 	combo_box_engine_type->append_text("mplayer");
 #endif
 
+	combo_box_entry_preferred_language->clear_items();
 	combo_box_entry_preferred_language->append_text("eng");
 	combo_box_entry_preferred_language->append_text("fin");
 	combo_box_entry_preferred_language->append_text("ger");
 	combo_box_entry_preferred_language->append_text("swe");
 	combo_box_entry_preferred_language->append_text("fre");
-	
+
+	combo_box_entry_xine_video_driver->clear_items();
 	combo_box_entry_xine_video_driver->append_text("dxr3");
 	combo_box_entry_xine_video_driver->append_text("aadxr3");
 	combo_box_entry_xine_video_driver->append_text("xv");
@@ -116,6 +118,7 @@ void PreferencesDialog::run()
 	combo_box_entry_xine_video_driver->append_text("fb");
 	combo_box_entry_xine_video_driver->append_text("xvmc");
 
+	combo_box_entry_xine_audio_driver->clear_items();
 	combo_box_entry_xine_audio_driver->append_text("null");
 	combo_box_entry_xine_audio_driver->append_text("pulseaudio");
 	combo_box_entry_xine_audio_driver->append_text("alsa");
@@ -124,6 +127,7 @@ void PreferencesDialog::run()
 	combo_box_entry_xine_audio_driver->append_text("file");
 	combo_box_entry_xine_audio_driver->append_text("none");
 
+	combo_box_entry_text_encoding->clear_items();
 	combo_box_entry_text_encoding->append_text("auto");
 	combo_box_entry_text_encoding->append_text("iso6937");
 	
@@ -156,11 +160,11 @@ void PreferencesDialog::run()
 		application.set_int_configuration_value("epg_page_size", (int)spin_button_epg_page_size->get_value());
 		application.set_string_configuration_value("broadcast_address", entry_broadcast_address->get_text());
 		application.set_int_configuration_value("broadcast_port", (int)spin_button_broadcast_port->get_value());
-		application.set_string_configuration_value("preferred_language", combo_box_entry_preferred_language->get_active_text());
 		application.set_string_configuration_value("engine_type", combo_box_engine_type->get_active_text());
-		application.set_string_configuration_value("xine.video_driver", combo_box_entry_xine_video_driver->get_active_text());
-		application.set_string_configuration_value("xine.audio_driver", combo_box_entry_xine_audio_driver->get_active_text());
-		application.set_string_configuration_value("text_encoding", combo_box_entry_text_encoding->get_active_text());
+		application.set_string_configuration_value("preferred_language", combo_box_entry_preferred_language->get_entry()->get_text());
+		application.set_string_configuration_value("xine.video_driver", combo_box_entry_xine_video_driver->get_entry()->get_text());
+		application.set_string_configuration_value("xine.audio_driver", combo_box_entry_xine_audio_driver->get_entry()->get_text());
+		application.set_string_configuration_value("text_encoding", combo_box_entry_text_encoding->get_entry()->get_text());
 		application.set_boolean_configuration_value("keep_above", check_button_keep_above->get_active());
 		application.set_boolean_configuration_value("show_epg_header", check_button_show_epg_header->get_active());
 		application.set_boolean_configuration_value("show_epg_time", check_button_show_epg_time->get_active());

@@ -92,9 +92,10 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	
 	Data::TableAdapter adapter(connection, table);
 	adapter.replace_rows(data_table);
-	
-	g_debug("Deleting old scheduled recordings");
-	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1", time(NULL));
+
+	guint now = time(NULL);
+	g_debug("Deleting old scheduled recordings ending before %d", now);
+	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1", now);
 	adapter.delete_rows(clause);
 
 	g_debug("Scheduled recordings saved");
@@ -167,7 +168,7 @@ void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recor
 guint ScheduledRecordingManager::check_scheduled_recordings()
 {
 	g_debug("Checking scheduled recordings");
-	guint active_scheduled_recording_id = NULL;
+	guint active_scheduled_recording_id = 0;
 	Glib::RecMutex::Lock lock(mutex);
 
 	Application& application = get_application();
