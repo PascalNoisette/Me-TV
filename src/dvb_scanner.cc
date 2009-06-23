@@ -42,6 +42,8 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		return;
 	}
 	
+	g_debug("Tuning to transponder at %d Hz", transponder.frontend_parameters.frequency);
+	
 	try
 	{
 		SI::SectionParser parser;
@@ -74,21 +76,21 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		g_debug("Got %d transponders from NIT", nis.transponders.size());
 		for (guint i = 0; i < nis.transponders.size(); i++)
 		{
-			Transponder& transponder = nis.transponders[i];
-			if (!transponders.exists(transponder))
+			Transponder& new_transponder = nis.transponders[i];
+			if (!transponders.exists(new_transponder))
 			{
-				g_debug("%d: Adding %d", i + 1, transponder.frontend_parameters.frequency);
-				transponders.push_back(transponder);
+				g_debug("%d: Adding %d Hz", i + 1, new_transponder.frontend_parameters.frequency);
+				transponders.push_back(new_transponder);
 			}
 			else
 			{
-				g_debug("%d: Skipping %d", i + 1, transponder.frontend_parameters.frequency);
+				g_debug("%d: Skipping %d Hz", i + 1, new_transponder.frontend_parameters.frequency);
 			}
 		}
 	}
 	catch(const Exception& exception)
 	{
-		g_debug("Failed to tune to transponder at '%d'", transponder.frontend_parameters.frequency);
+		g_debug("Failed to tune to transponder at %d Hz", transponder.frontend_parameters.frequency);
 	}
 }
 

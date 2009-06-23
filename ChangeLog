@@ -1,9 +1,10 @@
-2009-06-22  Michael Lamothe <michael.lamothe@gmail.com>
+2009-06-23  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.9.4
 	* Fixed xine audio/video driver saving in preferences dialog
 	* Added logging to NIT code 
 	* Added scrolled window to scan results tree
+	* Added Terrestrial/Cable delivery system descriptor parser
 
 2009-06-15  Michael Lamothe <michael.lamothe@gmail.com>
 
