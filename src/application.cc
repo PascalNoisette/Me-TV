@@ -55,7 +55,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	record_state			= false;
 	broadcast_state			= false;
 	scheduled_recording_id	= 0;
-	save_thread				= NULL;
 	
 	// Remove all other handlers first
 	get_signal_error().clear();
@@ -149,12 +148,9 @@ Application::~Application()
 		main_window = NULL;
 	}
 
-	start_save_thread(true);
-	while (!save_thread->is_terminated())
-	{
-		g_debug("Waiting for stream thread to exit");
-		usleep(500000);
-	}
+	scheduled_recording_manager.save(connection);
+	channel_manager.save(connection);
+
 	g_debug("Application destructor complete");
 }
 
@@ -630,27 +626,8 @@ gboolean Application::on_timeout()
 	if (last_seconds > seconds)
 	{
 		check_scheduled_recordings();
-		
-		if (save_thread == NULL)
-		{
-			start_save_thread(false);
-		}
-		else
-		{
-			g_debug("Save thread already running");
-			if (save_thread->is_terminated())
-			{
-				g_debug("Save thread has terminated, deleting");
-
-				delete save_thread;
-				save_thread = NULL;
-
-				g_debug("Save thread deleted");
-				
-				start_save_thread(false);
-			}
-		}
-		
+		scheduled_recording_manager.save(connection);
+		channel_manager.save(connection);				
 		update();
 	}
 	last_seconds = seconds;
@@ -851,35 +828,4 @@ void Application::restart_stream()
 	{
 		set_display_channel(channel->channel_id);
 	}
-}
-
-void Application::start_save_thread(gboolean block)
-{	
-	if (block)
-	{
-		while (save_thread != NULL)
-		{
-			if (save_thread->is_terminated())
-			{
-				delete save_thread;
-				save_thread = NULL;
-			}
-			else
-			{
-				g_debug("Waiting for existing save thread to exit");
-				usleep(500000);
-			}
-		}
-	}
-	else
-	{
-		if (save_thread != NULL)
-		{
-			throw Exception(_("Save thread is already running"));
-		}
-	}
-
-	g_debug("Creating save thread");
-	save_thread = new SaveThread();
-	save_thread->start();
 }

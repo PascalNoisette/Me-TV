@@ -108,8 +108,6 @@ me_tv_SOURCES = \
 	channel_manager.h \
 	scheduled_recording_manager.cc \
 	scheduled_recording_manager.h \
-	save_thread.cc \
-	save_thread.h \
 	scan_dialog.cc \
 	scan_dialog.h
 
