@@ -37,12 +37,10 @@ gboolean TransponderList::exists(const Transponder& transponder)
 	{
 		if (transponder.frontend_parameters.frequency == (*i).frontend_parameters.frequency)
 		{
-			g_debug("Returning true");
 			return true;
 		}
 	}
 	
-	g_debug("Returning false");
 	return false;
 }
 
