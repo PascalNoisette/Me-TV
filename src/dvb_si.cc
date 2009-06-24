@@ -920,7 +920,6 @@ guint SectionParser::get_bits(const guchar* b, guint bitpos, gsize bitcount)
 	return val;
 }
 
-
 gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 {
 	gsize length = text_buffer[0];
@@ -934,7 +933,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 		// Skip over length byte
 		index++;
 
-		if (text_encoding != "auto")
+		if (text_encoding.length() > 0 && text_encoding != "auto")
 		{
 			codeset = text_encoding.c_str();
 		}
@@ -1039,7 +1038,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 				gsize bytes_read;
 				gsize bytes_written;
 				GError* error = NULL;
-
+				
 				gchar* result = g_convert(
 					text,
 					text_index,
@@ -1048,7 +1047,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 					&bytes_read,
 					&bytes_written,
 					&error);
-
+				
 				if (error != NULL || result == NULL)
 				{
 					const gchar* error_message = _("No message");
@@ -1066,11 +1065,11 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 						gchar ch = text_buffer[i];
 						if (!isprint(ch))
 						{
-							g_debug("text_buffer[%d]\t= 0x%02X", i, text_buffer[i]);
+							g_debug("text_buffer[%d]\t= 0x%02X", i, ch);
 						}
 						else
 						{
-							g_debug("text_buffer[%d]\t= 0x%02X '%c'", i, text_buffer[i], text_buffer[i]);
+							g_debug("text_buffer[%d]\t= 0x%02X '%c'", i, ch, ch);
 						}
 					}
 					throw Exception(message);

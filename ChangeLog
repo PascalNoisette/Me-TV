@@ -7,6 +7,7 @@
 	* Added Terrestrial/Cable delivery system descriptor parser
 	* Wrapping database updates in a BEGIN/END transaction block for better performance
 	* Removed SaveThread code, no longer required
+	* Accepting empty text encoding as 'auto'
 
 2009-06-15  Michael Lamothe <michael.lamothe@gmail.com>
 

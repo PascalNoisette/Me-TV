@@ -295,7 +295,7 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel, guint table_
 							text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
 						}
 						text += encode_xml(epg_event.get_title());
-					
+						
 						Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
 						button.signal_clicked().connect(
 							sigc::bind<EpgEvent>
