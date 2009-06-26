@@ -2249,7 +2249,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <child>
                   <object class="GtkDrawingArea" id="drawing_area_video">
                     <property name="visible">True</property>
-                    <property name="events">GDK_EXPOSURE_MASK | GDK_STRUCTURE_MASK</property>
+                    <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_STRUCTURE_MASK</property>
                   </object>
                 </child>
               </object>
