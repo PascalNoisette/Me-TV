@@ -8,6 +8,7 @@
 	* Wrapping database updates in a BEGIN/END transaction block for better performance
 	* Removed SaveThread code, no longer required
 	* Accepting empty text encoding as 'auto'
+	* Fixed hidden cursor not being made visible over drawing area
 
 2009-06-15  Michael Lamothe <michael.lamothe@gmail.com>
 
