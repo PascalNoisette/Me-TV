@@ -1,5 +1,10 @@
 2009-06-24  Michael Lamothe <michael.lamothe@gmail.com>
 
+	* 0.9.5
+	* Using xshm as default xine video driver
+
+2009-06-24  Michael Lamothe <michael.lamothe@gmail.com>
+
 	* 0.9.4
 	* Fixed xine audio/video driver saving in preferences dialog
 	* Added logging to NIT code 
