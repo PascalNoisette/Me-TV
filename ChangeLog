@@ -3,6 +3,7 @@
 	* 0.9.5
 	* Using xshm as default xine video driver
 	* Added conditional compile for recent DVB parameters (not available in Debian stable)
+	* Fix for "GtkSpinButton: setting an adjustment with non-zero page size is deprecated"
 
 2009-06-24  Michael Lamothe <michael.lamothe@gmail.com>
 
