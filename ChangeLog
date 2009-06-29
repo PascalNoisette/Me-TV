@@ -2,6 +2,7 @@
 
 	* 0.9.5
 	* Using xshm as default xine video driver
+	* Added conditional compile for recent DVB parameters (not available in Debian stable)
 
 2009-06-24  Michael Lamothe <michael.lamothe@gmail.com>
 
