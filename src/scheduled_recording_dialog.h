@@ -21,7 +21,6 @@
 #ifndef __SCHEDULED_RECORDING_DIALOG_H__
 #define __SCHEDULED_RECORDING_DIALOG_H__
 
-#include <libgnomeuimm.h>
 #include "epg_event.h"
 #include "me-tv-ui.h"
 #include "scheduled_recording.h"
@@ -31,11 +30,15 @@ class ScheduledRecordingDialog : public Gtk::Dialog
 private:
 	const Glib::RefPtr<Gtk::Builder> builder;
 
-	Gnome::UI::DateEdit*	date_edit_start_time;
-	Gtk::SpinButton*		spinbutton_duration;
-	Gtk::Entry*				entry_description;
-	ChannelComboBox*		channel_combo_box;
-	guint					scheduled_recording_id;
+	ComboBoxText*		combo_box_start_time_hour;
+	ComboBoxText*		combo_box_start_time_minute;
+	Gtk::Calendar*		calendar_start_time_date;
+	Gtk::SpinButton*	spinbutton_duration;
+	Gtk::Entry*			entry_description;
+	ChannelComboBox*	channel_combo_box;
+	guint				scheduled_recording_id;
+
+	void set_date_time(time_t t);
 
 public:
 	ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);

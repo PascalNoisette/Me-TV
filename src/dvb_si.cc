@@ -342,7 +342,7 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 					case 7: transponder.frontend_parameters.u.qam.fec_inner = FEC_3_5; break;
 #endif
 					case 8: transponder.frontend_parameters.u.qam.fec_inner = FEC_4_5; break;
-ifdef FEC_9_10
+#ifdef FEC_9_10
 					case 9: transponder.frontend_parameters.u.qam.fec_inner = FEC_9_10; break;
 #endif
 					default: transponder.frontend_parameters.u.qam.fec_inner = FEC_AUTO;
