@@ -37,26 +37,13 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 	channel_combo_box = NULL;
 	scheduled_recording_id = 0;
 	
-	builder->get_widget_derived("combo_box_start_time_hour", combo_box_start_time_hour);
-	builder->get_widget_derived("combo_box_start_time_minute", combo_box_start_time_minute);
-	builder->get_widget("calendar_start_time_date", calendar_start_time_date);
-
 	builder->get_widget("entry_description", entry_description);
 	builder->get_widget_derived("combo_box_channel", channel_combo_box);
 	channel_combo_box->load(get_application().channel_manager.get_channels());
-	builder->get_widget("spinbutton_duration", spinbutton_duration);
-
-	for (guint hour = 0; hour < 24; hour++)
-	{
-		Glib::ustring text = Glib::ustring::format(hour);
-		combo_box_start_time_hour->append_text(text);
-	}
-
-	for (guint minute = 0; minute < 60; minute++)
-	{
-		Glib::ustring text = Glib::ustring::format(std::setfill(L'0'), std::setw(2), minute);
-		combo_box_start_time_minute->append_text(text);
-	}
+	builder->get_widget("calendar_start_time_date", calendar_start_time_date);
+	builder->get_widget("spin_button_start_time_hour", spin_button_start_time_hour);
+	builder->get_widget("spin_button_start_time_minute", spin_button_start_time_minute);
+	builder->get_widget("spinbutton_duration", spin_button_duration);
 }
 
 void ScheduledRecordingDialog::set_date_time(time_t t)
@@ -67,8 +54,8 @@ void ScheduledRecordingDialog::set_date_time(time_t t)
 	}
 	
 	struct tm* start_time = localtime(t == 0 ? NULL : &t);
-	combo_box_start_time_hour->set_active(start_time->tm_hour);
-	combo_box_start_time_minute->set_active(start_time->tm_min);
+	spin_button_start_time_hour->set_value(start_time->tm_hour);
+	spin_button_start_time_minute->set_value(start_time->tm_min);
 
 	calendar_start_time_date->property_day() = start_time->tm_mday;
 	calendar_start_time_date->property_month() = start_time->tm_mon;
@@ -86,7 +73,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, ScheduledRecordin
 	scheduled_recording_id = scheduled_recording.scheduled_recording_id;
 	entry_description->set_text(scheduled_recording.description);
 	set_date_time((time_t)scheduled_recording.start_time);
-	spinbutton_duration->set_value(scheduled_recording.duration/60);
+	spin_button_duration->set_value(scheduled_recording.duration/60);
 	
 	return run(transient_for, false);
 }
@@ -105,7 +92,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_eve
 	channel_combo_box->set_selected_channel_id(epg_event.channel_id);
 	entry_description->set_text(epg_event.get_title());
 	set_date_time((time_t)(epg_event.start_time - (before * 60)));
-	spinbutton_duration->set_value((epg_event.duration/60) + before + after);
+	spin_button_duration->set_value((epg_event.duration/60) + before + after);
 	
 	return run(transient_for, false);
 }
@@ -130,7 +117,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 
 		set_date_time(0);
 
-		spinbutton_duration->set_value(30);
+		spin_button_duration->set_value(30);
 	}
 	
 	gint dialog_response = Gtk::Dialog::run();
@@ -152,8 +139,8 @@ ScheduledRecording ScheduledRecordingDialog::get_scheduled_recording()
 
 	calendar_start_time_date->get_date(date);
 	date.to_struct_tm(start_time);
-	start_time.tm_hour = combo_box_start_time_hour->get_active();
-	start_time.tm_min = combo_box_start_time_minute->get_active();
+	start_time.tm_hour = spin_button_start_time_hour->get_value();
+	start_time.tm_min = spin_button_start_time_minute->get_value();
 	
 	ScheduledRecording scheduled_recording;
 	scheduled_recording.scheduled_recording_id	= scheduled_recording_id;
@@ -161,7 +148,7 @@ ScheduledRecording ScheduledRecordingDialog::get_scheduled_recording()
 	scheduled_recording.type					= 0;
 	scheduled_recording.channel_id				= channel_combo_box->get_selected_channel_id();
 	scheduled_recording.start_time				= mktime(&start_time);
-	scheduled_recording.duration				= (int)spinbutton_duration->get_value() * 60;
+	scheduled_recording.duration				= (int)spin_button_duration->get_value() * 60;
 	scheduled_recording.device					= get_application().device_manager.get_frontend().get_path();
 	return scheduled_recording;
 }

@@ -405,9 +405,13 @@ found in /usr/share/common-licenses/GPL file.</property>
               <object class="GtkHBox" id="hbox_start_time">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkComboBox" id="combo_box_start_time_hour">
+                  <object class="GtkSpinButton" id="spin_button_start_time_hour">
                     <property name="visible">True</property>
-                    <property name="model">liststore_combo</property>
+                    <property name="can_focus">True</property>
+                    <property name="max_length">2</property>
+                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="width_chars">2</property>
+                    <property name="adjustment">adjustment_hour</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -425,8 +429,13 @@ found in /usr/share/common-licenses/GPL file.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkComboBox" id="combo_box_start_time_minute">
+                  <object class="GtkSpinButton" id="spin_button_start_time_minute">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="max_length">2</property>
+                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="width_chars">2</property>
+                    <property name="adjustment">adjustment_minute</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -2464,6 +2473,17 @@ If you've just upgraded Me TV then this is probably what you want to do.
   <object class="GtkAdjustment" id="adjustment_duration">
     <property name="lower">1</property>
     <property name="upper">1000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_hour">
+    <property name="value">12</property>
+    <property name="upper">23</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">12</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_minute">
+    <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>

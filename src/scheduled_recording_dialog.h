@@ -30,10 +30,10 @@ class ScheduledRecordingDialog : public Gtk::Dialog
 private:
 	const Glib::RefPtr<Gtk::Builder> builder;
 
-	ComboBoxText*		combo_box_start_time_hour;
-	ComboBoxText*		combo_box_start_time_minute;
 	Gtk::Calendar*		calendar_start_time_date;
-	Gtk::SpinButton*	spinbutton_duration;
+	Gtk::SpinButton*	spin_button_start_time_hour;
+	Gtk::SpinButton*	spin_button_start_time_minute;
+	Gtk::SpinButton*	spin_button_duration;
 	Gtk::Entry*			entry_description;
 	ChannelComboBox*	channel_combo_box;
 	guint				scheduled_recording_id;
