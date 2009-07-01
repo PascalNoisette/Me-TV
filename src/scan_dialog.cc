@@ -24,16 +24,35 @@
 #include "application.h"
 #include "channels_conf_line.h"
 
+void show_error(const Glib::ustring& message)
+{
+	GdkLock gdk_lock;
+	Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+	dialog.set_title(_("Me TV - Error"));
+	dialog.run();
+}
+
 ScanThread::ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file) :
 	Thread("Scan"), scanner(), initial_tuning_file(file), frontend(scan_frontend)
 {
 }
-		
+
 void ScanThread::run()
 {
-	scanner.start(frontend, initial_tuning_file);
+	try
+	{
+		scanner.start(frontend, initial_tuning_file);
+	}
+	catch(const Exception& exception)
+	{
+		show_error(exception.what());
+	}
+	catch(...)
+	{
+		show_error(_("An unhandled error occurred"));
+	}
 }
-	
+
 void ScanThread::stop()
 {
 	scanner.terminate();
@@ -52,7 +71,7 @@ Glib::ustring ScanDialog::get_initial_tuning_dir()
 	gboolean done = false;
 	guint i = 0;
 	
-	StringSplitter splitter(SCAN_DIRECTORIES, ":", 100);
+	StringSplitter splitter(SCAN_DIRECTORIES, ":", false, 100);
 
 	while (!done)
 	{

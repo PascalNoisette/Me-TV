@@ -219,6 +219,7 @@ gboolean XineEngine::is_running()
 
 void XineEngine::set_mute_state(gboolean state)
 {
+	g_debug("XineEngine::set_mute_state(%s)", state ? "true" : "false");
 	if (pid != -1)
 	{
 		if (state != actual_mute_state)
@@ -227,6 +228,10 @@ void XineEngine::set_mute_state(gboolean state)
 			write("mute\n");
 			actual_mute_state = state;
 		}
+	}
+	else
+	{
+		g_debug("No PID - recording requested mute state: %s", state ? "true" : "false");
 	}
 	requested_mute_state = state;
 }

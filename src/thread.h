@@ -47,6 +47,8 @@ public:
 	void join(gboolean set_terminate = false);
 	void terminate();
 	gboolean is_terminated();
+	gboolean was_successful();
+	const Glib::ustring& get_message() const;
 };
 
 #endif

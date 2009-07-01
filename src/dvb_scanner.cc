@@ -179,7 +179,25 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	Glib::IOStatus status = initial_tuning_file->read_line(line);
 	while (status == Glib::IO_STATUS_NORMAL && !terminated)
 	{
-		if (Glib::str_has_prefix(line, "#") || line.empty())
+		// Remove comments
+		Glib::ustring::size_type index = line.find("#");
+		if (index != Glib::ustring::npos)
+		{
+			line = line.substr(0, index);
+		}
+		
+		// Remove trailing whitespace
+		index = line.find_last_not_of(" \t");
+		if (index == Glib::ustring::npos)
+		{
+			line.clear();
+		}
+		else
+		{
+			line = line.substr(0, index);
+		}
+
+		if (line.empty())
 		{
 			// Ignore empty lines or comments
 		}
