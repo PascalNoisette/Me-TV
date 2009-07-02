@@ -187,14 +187,14 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 		}
 		
 		// Remove trailing whitespace
-		index = line.find_last_not_of(" \t");
+		index = line.find_last_not_of(" \t\r\n");
 		if (index == Glib::ustring::npos)
 		{
 			line.clear();
 		}
 		else
 		{
-			line = line.substr(0, index);
+			line = line.substr(0, index + 1);
 		}
 
 		if (line.empty())
