@@ -627,7 +627,8 @@ gboolean Application::on_timeout()
 	{
 		check_scheduled_recordings();
 		scheduled_recording_manager.save(connection);
-		channel_manager.save(connection);				
+		channel_manager.prune_epg();
+		channel_manager.save(connection);
 		update();
 	}
 	last_seconds = seconds;

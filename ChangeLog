@@ -6,6 +6,7 @@
 	* Fix for "GtkSpinButton: setting an adjustment with non-zero page size is deprecated"
 	* Removed g_error() calls from THREAD_CATCH which forced the application to abort
 	* Made initial tuning file parser a little more robust
+	* Added periodical prune() call for the EPG events held in memory
 
 2009-06-24  Michael Lamothe <michael.lamothe@gmail.com>
 

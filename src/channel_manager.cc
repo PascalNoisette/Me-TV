@@ -191,8 +191,7 @@ void ChannelManager::save(Data::Connection& connection)
 		g_debug("Saving EPG events for '%s'", channel.name.c_str());
 		channel.epg_events.save(
 			connection,
-			channel.channel_id,
-			get_channel(channel.channel_id).epg_events);
+			channel.channel_id);
 	}
 
 	g_debug("EPG events saved");	
@@ -437,5 +436,16 @@ void ChannelManager::previous_channel()
 				iterator++;
 			}
 		}
+	}
+}
+
+void ChannelManager::prune_epg()
+{
+	ChannelList::iterator iterator = channels.begin();
+	while (iterator != channels.end())
+	{
+		Channel& channel = *iterator;
+		channel.epg_events.prune();
+		iterator++;
 	}
 }

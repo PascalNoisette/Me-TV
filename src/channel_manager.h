@@ -35,6 +35,7 @@ public:
 		
 	void load(Data::Connection& connection);
 	void save(Data::Connection& connection);
+	void prune_epg();
 	
 	Glib::StaticRecMutex& get_mutex() { return mutex; }
 		
