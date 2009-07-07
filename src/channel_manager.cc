@@ -182,6 +182,22 @@ void ChannelManager::save(Data::Connection& connection)
 	// Delete channels that are not used
 	adapter_channel.delete_rows("sort_order = 0");
 
+	Data::Table table_scheduled_recording = application.get_schema().tables["scheduled_recording"];
+	Data::Table table_epg_event = application.get_schema().tables["epg_event"];
+	Data::Table table_epg_event_text = application.get_schema().tables["epg_event_text"];
+
+	// Delete orphaned scheduled recordings
+	Data::TableAdapter adapter_scheduled_recording(connection, table_scheduled_recording);
+	adapter_scheduled_recording.delete_rows("CHANNEL_ID NOT IN (SELECT CHANNEL_ID FROM CHANNEL)");
+	
+	// Delete orphaned epg_events
+	Data::TableAdapter adapter_epg_event(connection, table_epg_event);
+	adapter_epg_event.delete_rows("CHANNEL_ID NOT IN (SELECT CHANNEL_ID FROM CHANNEL)");
+
+	// Delete orphaned epg_events_texts
+	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
+	adapter_epg_event_text.delete_rows("EPG_EVENT_ID NOT IN (SELECT EPG_EVENT_ID FROM EPG_EVENT)");
+
 	g_debug("Channels saved");
 
 	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
