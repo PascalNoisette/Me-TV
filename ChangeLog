@@ -2,6 +2,7 @@
 
 	* 0.9.6
 	* Scheduled recordings/EPG events are now deleted when the channel is deleted
+	* An attempt to make the scan/import more friendly to duplicate channel names
 	
 2009-07-02  Michael Lamothe <michael.lamothe@gmail.com>
 

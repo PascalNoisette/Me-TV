@@ -228,6 +228,9 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 	Glib::ustring line;
 	guint line_count = 0;
 
+	progress_bar_scan->set_fraction(0);
+	progress_bar_scan->set_text(_("Importing channels"));
+
 	Gtk::Button* button = NULL;
 	builder->get_widget("button_scan_wizard_next", button);
 	button->hide();
@@ -343,38 +346,18 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 }
 
 void ScanDialog::add_channel_row(const Channel& channel)
-{
-	gboolean found = false;
+{	
+	Gtk::TreeModel::iterator iterator = list_store->append();
 	
-	Gtk::TreeModel::Children children = tree_view_scanned_channels->get_model()->children();	
-	for (Gtk::TreeIter iterator = children.begin(); iterator != children.end(); iterator++)
-	{
-		Gtk::TreeModel::Row row(*iterator);
-		if (row.get_value(columns.column_name) == channel.name)
-		{
-			found = true;
-		}
-	}
+	Gtk::TreeModel::Row row					= *iterator;
+	row[columns.column_id]					= channel.service_id;
+	row[columns.column_name]				= channel.name;
+	row[columns.column_frontend_parameters]	= channel.transponder.frontend_parameters;
+	row[columns.column_polarisation]		= channel.transponder.polarisation;
+	tree_view_scanned_channels->get_selection()->select(row);
 
-	if (found)
-	{
-		g_debug("Ignoring %d '%s', already got a channel with that name",
-			channel.service_id, channel.name.c_str());
-	}
-	else
-	{
-		Gtk::TreeModel::iterator iterator = list_store->append();
-		
-		Gtk::TreeModel::Row row					= *iterator;
-		row[columns.column_id]					= channel.service_id;
-		row[columns.column_name]				= channel.name;
-		row[columns.column_frontend_parameters]	= channel.transponder.frontend_parameters;
-		row[columns.column_polarisation]		= channel.transponder.polarisation;
-		tree_view_scanned_channels->get_selection()->select(row);
-
-		channel_count++;
-		g_debug("Found channel %d : %s", channel.service_id, channel.name.c_str());
-	}
+	channel_count++;
+	g_debug("Added channel %d : %s", channel.service_id, channel.name.c_str());
 }
 
 void ScanDialog::on_button_scan_wizard_next_clicked()

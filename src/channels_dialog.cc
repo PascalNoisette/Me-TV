@@ -54,6 +54,21 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
 }
 
+gboolean ChannelsDialog::channel_exists(const Glib::ustring& channel_name)
+{
+	const Gtk::TreeModel::Children& children = list_store->children();
+	for (Gtk::TreeModel::Children::const_iterator iterator = children.begin(); iterator != children.end(); iterator++)
+	{
+		Gtk::TreeModel::Row row	= *iterator;
+		if (row[columns.column_name] == channel_name)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void ChannelsDialog::show_scan_dialog()
 {
 	// Check for a valid frontend device
@@ -65,15 +80,45 @@ void ChannelsDialog::show_scan_dialog()
 	scan_dialog.show();
 	Gtk::Main::run(scan_dialog);
 
+	gboolean abort = false;
+	
 	ChannelList channels = scan_dialog.get_channels();	
-	for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+	for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end() && !abort; iterator++)
 	{
 		const Channel& channel = *iterator;
 
-		Gtk::TreeModel::iterator row_iterator = list_store->append();
-		Gtk::TreeModel::Row row		= *row_iterator;
-		row[columns.column_name]	= channel.name;
-		row[columns.column_channel]	= channel;
+		gboolean add = true;
+		
+		if (channel_exists(channel.name))
+		{
+			Glib::ustring message = Glib::ustring::compose(
+				_("A channel named '%1' already exists.  Do you want to overwrite it?"),
+				channel.name);
+			
+			Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE, true);
+			dialog.add_button("Overwrite existing channel", Gtk::RESPONSE_ACCEPT);
+			dialog.add_button("Keep existing channel", Gtk::RESPONSE_REJECT);
+			dialog.add_button("Cancel scan/import", Gtk::RESPONSE_CANCEL);
+			dialog.set_title(PACKAGE_NAME " - Channel conflict");
+			dialog.set_icon_from_file("me-tv.xpm");
+			int response = dialog.run();
+
+			switch (response)
+			{
+				case Gtk::RESPONSE_ACCEPT: break;
+				case Gtk::RESPONSE_REJECT: add = false; break;
+				case Gtk::RESPONSE_CANCEL: abort = true; break;
+				default: throw Exception("Invalid response");
+			}
+		}
+
+		if (add && !abort)
+		{
+			Gtk::TreeModel::iterator row_iterator = list_store->append();
+			Gtk::TreeModel::Row row		= *row_iterator;
+			row[columns.column_name]	= channel.name;
+			row[columns.column_channel]	= channel;
+		}
 	}
 }
 
