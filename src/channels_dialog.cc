@@ -107,12 +107,12 @@ void ChannelsDialog::show_scan_dialog()
 			{
 				case Gtk::RESPONSE_ACCEPT: break;
 				case Gtk::RESPONSE_REJECT: add = false; break;
-				case Gtk::RESPONSE_CANCEL: abort = true; break;
+				case Gtk::RESPONSE_CANCEL: add = false; abort = true; break;
 				default: throw Exception("Invalid response");
 			}
 		}
 
-		if (add && !abort)
+		if (add)
 		{
 			Gtk::TreeModel::iterator row_iterator = list_store->append();
 			Gtk::TreeModel::Row row		= *row_iterator;
