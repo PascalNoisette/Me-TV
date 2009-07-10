@@ -1583,7 +1583,7 @@ found in /usr/share/common-licenses/GPL file.</property>
     <property name="title" translatable="yes">Me TV - Scan Wizard</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
-    <property name="icon_name">me-tv.xpm</property>
+    <property name="icon">me-tv.xpm</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
@@ -1869,7 +1869,7 @@ your package management system.</property>
     <property name="title" translatable="yes">Me TV - Devices</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
-    <property name="icon_name">me-tv.xpm</property>
+    <property name="icon">me-tv.xpm</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
@@ -1968,6 +1968,7 @@ your package management system.</property>
   <object class="GtkDialog" id="dialog_database_version">
     <property name="border_width">5</property>
     <property name="window_position">center-on-parent</property>
+    <property name="icon">me-tv.xpm</property>
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">

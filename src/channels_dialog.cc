@@ -100,7 +100,7 @@ void ChannelsDialog::show_scan_dialog()
 			dialog.add_button("Keep existing channel", Gtk::RESPONSE_REJECT);
 			dialog.add_button("Cancel scan/import", Gtk::RESPONSE_CANCEL);
 			dialog.set_title(PACKAGE_NAME " - Channel conflict");
-			dialog.set_icon_from_file("me-tv.xpm");
+			dialog.set_icon_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv.xpm");
 			int response = dialog.run();
 
 			switch (response)
