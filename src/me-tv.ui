@@ -1723,7 +1723,9 @@ some initial parameters to help it find DVB services.
 Many popular initial scan files are available from the 
 LinuxTV dvb-apps package which is included in 
 most Linux distributions.  Look for &lt;i&gt;dvb-apps&lt;/i&gt; in
-your package management system.</property>
+your package management system.
+
+&lt;i&gt;Scanning is only available for DVB-T/S/C, not ATSC. &lt;/i&gt;</property>
                     <property name="use_markup">True</property>
                   </object>
                   <packing>
