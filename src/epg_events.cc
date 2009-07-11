@@ -170,15 +170,6 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id)
 	Data::DataTable data_table_epg_event(table_epg_event);
 	Data::DataTable data_table_epg_event_text(table_epg_event_text);
 
-	g_debug("Deleting old EPG events");
-	Glib::ustring clause_epg_event = Glib::ustring::compose("(START_TIME+DURATION)<%1", convert_to_local_time(time(NULL)));
-	adapter_epg_event.delete_rows(clause_epg_event);
-
-	g_debug("Deleting old EPG event texts");
-	Glib::ustring clause_epg_event_text =
-		"NOT EXISTS (SELECT epg_event_id FROM epg_event WHERE epg_event.epg_event_id = epg_event_text.epg_event_id)";
-	adapter_epg_event_text.delete_rows(clause_epg_event_text);
-
 	Glib::RecMutex::Lock lock(mutex);
 
 	g_debug("Saving %d EPG events", list.size());

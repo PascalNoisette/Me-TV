@@ -194,10 +194,6 @@ void ChannelManager::save(Data::Connection& connection)
 	Data::TableAdapter adapter_epg_event(connection, table_epg_event);
 	adapter_epg_event.delete_rows("CHANNEL_ID NOT IN (SELECT CHANNEL_ID FROM CHANNEL)");
 
-	// Delete orphaned epg_events_texts
-	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
-	adapter_epg_event_text.delete_rows("EPG_EVENT_ID NOT IN (SELECT EPG_EVENT_ID FROM EPG_EVENT)");
-
 	g_debug("Channels saved");
 
 	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
@@ -209,6 +205,14 @@ void ChannelManager::save(Data::Connection& connection)
 			connection,
 			channel.channel_id);
 	}
+
+	g_debug("Deleting old EPG events");
+	Glib::ustring clause_epg_event = Glib::ustring::compose("(START_TIME+DURATION)<%1", convert_to_local_time(time(NULL)));
+	adapter_epg_event.delete_rows(clause_epg_event);
+
+	// Delete orphaned epg_events_texts
+	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
+	adapter_epg_event_text.delete_rows("EPG_EVENT_ID NOT IN (SELECT EPG_EVENT_ID FROM EPG_EVENT)");
 
 	g_debug("EPG events saved");	
 }
