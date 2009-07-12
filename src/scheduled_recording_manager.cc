@@ -165,6 +165,11 @@ void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recor
 	get_application().check_scheduled_recordings();
 }
 
+guint is_old(ScheduledRecording& scheduled_recording)
+{
+	return (scheduled_recording.get_end_time() < convert_to_local_time(time(NULL)));
+}
+
 guint ScheduledRecordingManager::check_scheduled_recordings()
 {
 	g_debug("Checking scheduled recordings");
@@ -173,15 +178,7 @@ guint ScheduledRecordingManager::check_scheduled_recordings()
 
 	Application& application = get_application();
 
-	guint now = convert_to_local_time(time(NULL));
-	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
-	{
-		ScheduledRecording& scheduled_recording = *i;
-		if (scheduled_recording.get_end_time() < now)
-		{
-			scheduled_recordings.erase(i);
-		}
-	}
+	scheduled_recordings.remove_if(is_old);
 	
 	gboolean got_recording = false;
 
