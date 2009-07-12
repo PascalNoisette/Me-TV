@@ -4,6 +4,7 @@
 	* Scheduled recordings/EPG events are now deleted when the channel is deleted
 	* An attempt to make the scan/import more friendly to duplicate channel names
 	* Made EPG save more efficient
+	* Fixed crash when adding a scheduled recording
 	
 2009-07-02  Michael Lamothe <michael.lamothe@gmail.com>
 

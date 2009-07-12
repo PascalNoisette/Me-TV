@@ -48,12 +48,16 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 
 void ScheduledRecordingDialog::set_date_time(time_t t)
 {
-	if (t != 0)
+	if (t == 0)
+	{
+		t = time(NULL);
+	}
+	else
 	{
 		t = convert_to_utc_time(t);
 	}
 	
-	struct tm* start_time = localtime(t == 0 ? NULL : &t);
+	struct tm* start_time = localtime(&t);
 	spin_button_start_time_hour->set_value(start_time->tm_hour);
 	spin_button_start_time_minute->set_value(start_time->tm_min);
 
