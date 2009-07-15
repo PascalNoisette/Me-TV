@@ -37,8 +37,7 @@ public:
 
 private:
 	gint				pid;
-	gboolean			requested_mute_state;
-	gboolean			actual_mute_state;
+	gboolean			mute_state;
 	AudioChannelState	audio_channel_state;
 	guint				audio_stream;
 	gint				subtitle_stream;
@@ -47,7 +46,6 @@ private:
 	Window				window;
 
 	void sendKeyEvent(int keycode, int modifiers);
-	void restart();
 
 public:
 	void play(const Glib::ustring& mrl);

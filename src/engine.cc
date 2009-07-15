@@ -31,8 +31,7 @@
 Engine::Engine(const Glib::ustring& engine_type)
 {
 	pid = -1;
-	requested_mute_state = false;
-	actual_mute_state = false;
+	mute_state = false;
 	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
 	audio_stream = 0;
 	subtitle_stream = -1;
@@ -66,7 +65,7 @@ void Engine::play(const Glib::ustring& mrl)
 	argv.push_back(Glib::ustring::compose("%1", window));
 	argv.push_back(application.get_string_configuration_value("xine.video_driver"));
 	argv.push_back(application.get_string_configuration_value("xine.audio_driver"));
-	argv.push_back(requested_mute_state ? "mute" : "unmute");
+	argv.push_back(mute_state ? "mute" : "unmute");
 
 	g_debug("=================================================");
 	for (StringList::iterator i = argv.begin(); i != argv.end(); i++)
@@ -86,7 +85,7 @@ void Engine::play(const Glib::ustring& mrl)
 			NULL,
 			NULL);
 
-		set_mute_state(requested_mute_state);
+		set_mute_state(mute_state);
 		g_debug("Spawned engine on pid %d", pid);
 	}
 	catch (const Exception& exception)
@@ -188,28 +187,17 @@ void Engine::sendKeyEvent(int keycode, int modifiers)
 void Engine::set_mute_state(gboolean state)
 {
 	g_debug("Engine::set_mute_state(%s)", state ? "true" : "false");
-	if (pid != -1)
+	if (state != mute_state)
 	{
-		if (state != actual_mute_state)
+		mute_state = state;
+		if (pid != -1)
 		{
 			g_debug(state ? "Sending mute" : "Sending unmuting");
 			sendKeyEvent(
 				state ? XK_m : XK_m,
 				state ? 0 : XK_Shift_L);
-			actual_mute_state = state;
 		}
 	}
-	else
-	{
-		g_debug("No PID - storing requested mute state: %s", state ? "true" : "false");
-	}
-	requested_mute_state = state;
-}
-
-void Engine::restart()
-{
-	stop();
-	play(mrl);
 }
 
 void Engine::set_audio_channel_state(AudioChannelState state)
@@ -219,7 +207,22 @@ void Engine::set_audio_channel_state(AudioChannelState state)
 		audio_channel_state = state;
 		if (pid != -1)
 		{
-			restart();
+			int modifiers = 0;
+			switch(state)
+			{					
+			case AUDIO_CHANNEL_STATE_LEFT:
+				modifiers &= XK_Shift_L;
+				break;
+				
+			case AUDIO_CHANNEL_STATE_RIGHT:
+				modifiers &= XK_Shift_R;
+				break;
+
+			default:
+				modifiers &= XK_Shift_L & XK_Shift_R;
+				break;
+			}
+			sendKeyEvent(XK_a, modifiers);
 		}
 	}
 }
@@ -231,7 +234,7 @@ void Engine::set_audio_stream(guint stream)
 		audio_stream = stream;
 		if (pid != -1)
 		{
-			restart();
+			sendKeyEvent(XK_1 + stream, XK_Shift_L);
 		}
 	}
 }
@@ -243,7 +246,7 @@ void Engine::set_subtitle_stream(gint stream)
 		subtitle_stream = stream;
 		if (pid != -1)
 		{
-			restart();
+			sendKeyEvent(XK_1 + stream, XK_Shift_R);
 		}
 	}
 }

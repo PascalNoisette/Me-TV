@@ -911,10 +911,6 @@ void MainWindow::create_engine()
 	else
 	{
 		engine = new Engine(engine_type);
-	}
-
-	if (engine != NULL)
-	{
 		engine->set_mute_state(mute_state);
 		engine->set_audio_channel_state(audio_channel_state);
 		engine->set_audio_stream(audio_stream_index);
