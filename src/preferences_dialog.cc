@@ -80,21 +80,7 @@ void PreferencesDialog::run()
 	
 	combo_box_engine_type->clear_items();
 	combo_box_engine_type->append_text("none");
-#ifdef ENABLE_XINE_ENGINE
 	combo_box_engine_type->append_text("xine");
-#endif
-#ifdef ENABLE_LIBGSTREAMER_ENGINE
-	combo_box_engine_type->append_text("libgstreamer");
-#endif
-#ifdef ENABLE_XINE_LIB_ENGINE
-	combo_box_engine_type->append_text("xine-lib");
-#endif
-#ifdef ENABLE_LIBVLC_ENGINE
-	combo_box_engine_type->append_text("libvlc");
-#endif
-#ifdef ENABLE_MPLAYER_ENGINE
-	combo_box_engine_type->append_text("mplayer");
-#endif
 
 	combo_box_entry_preferred_language->clear_items();
 	combo_box_entry_preferred_language->append_text("eng");

@@ -22,7 +22,16 @@ AM_CFLAGS =\
 	 -Wall\
 	 -g
 
-bin_PROGRAMS = me-tv
+bin_PROGRAMS = me-tv \
+	me-tv-xine
+
+me_tv_xine_SOURCES = \
+	me-tv-xine.cc
+
+me_tv_xine_LDADD =        \
+	$(ME_TV_XINE_LIBS) \
+	$(XINE_LIB_LIBS) \
+	-lX11
 
 me_tv_SOURCES = \
 	main.cc\
@@ -82,10 +91,6 @@ me_tv_SOURCES = \
 	scheduled_recording.cc \
 	epg_thread.cc \
 	epg_thread.h \
-	xine_engine.cc \
-	xine_engine.h \
-	mplayer_engine.cc \
-	mplayer_engine.h \
 	exception.cc \
 	string_splitter.cc \
 	string_splitter.h \
@@ -93,15 +98,9 @@ me_tv_SOURCES = \
 	channels_conf_line.h \
 	initial_scan_line.cc \
 	initial_scan_line.h \
-	lib_vlc_engine.cc \
-	lib_vlc_engine.h \
 	me-tv-i18n.h \
 	epg_events.cc \
 	epg_events.h \
-	lib_gstreamer_engine.cc \
-	lib_gstreamer_engine.h \
-	xine_lib_engine.cc \
-	xine_lib_engine.h \
 	devices_dialog.cc \
 	devices_dialog.h \
 	channel_manager.cc \
@@ -124,3 +123,4 @@ me_tv_LDADD = \
 	$(LIBGSTREAMER_LIBS)
 
 EXTRA_DIST = $(glade_DATA)
+

@@ -23,12 +23,10 @@
 
 #include "me-tv.h"
 #include <libgnomeuimm.h>
+#include <X11/X.h>
 
 class Engine
 {
-private:
-	int					window_id;
-	Gtk::DrawingArea*	drawing_area_video;
 public:
 	typedef enum
 	{
@@ -37,19 +35,32 @@ public:
 		AUDIO_CHANNEL_STATE_RIGHT = 2
 	} AudioChannelState;
 
-	Engine();
-	virtual ~Engine() {};
-	
-	virtual void play(const Glib::ustring& mrl) = 0;
-	virtual void stop() = 0;
-	virtual void set_mute_state(gboolean state) = 0;
-	virtual void set_audio_stream(guint stream) = 0;
-	virtual void set_audio_channel_state(AudioChannelState state) = 0;
-	virtual void set_subtitle_stream(gint stream) = 0;
-	virtual gboolean is_running() = 0;
+private:
+	gint				pid;
+	gboolean			requested_mute_state;
+	gboolean			actual_mute_state;
+	AudioChannelState	audio_channel_state;
+	guint				audio_stream;
+	gint				subtitle_stream;
+	Glib::ustring		mrl;
+	Glib::ustring		type;
+	Window				window;
 
-	gint get_window_id();
-	Gtk::DrawingArea* get_drawing_area_video();
+	void sendKeyEvent(int keycode, int modifiers);
+	void restart();
+
+public:
+	void play(const Glib::ustring& mrl);
+	void stop();
+	void set_mute_state(gboolean state);
+	void set_audio_stream(guint stream);
+	void set_audio_channel_state(AudioChannelState state);
+	void set_subtitle_stream(gint stream);
+	gboolean is_running();
+
+	Engine(const Glib::ustring& type);
+	~Engine();
 };
 
 #endif
+

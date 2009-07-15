@@ -531,7 +531,7 @@ void StreamThread::setup_dvb()
 			g_debug("PMT ID found");
 		}
 	}
-	
+
 	if (pmt_pid == 0)
 	{
 		throw Exception(_("Failed to find PMT ID for service"));

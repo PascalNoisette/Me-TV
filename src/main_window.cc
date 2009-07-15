@@ -27,11 +27,7 @@
 #include "preferences_dialog.h"
 #include "application.h"
 #include "scheduled_recordings_dialog.h"
-#include "xine_engine.h"
-#include "mplayer_engine.h"
-#include "lib_vlc_engine.h"
-#include "xine_lib_engine.h"
-#include "lib_gstreamer_engine.h"
+#include "engine.h"
 #include <libgnome/libgnome.h>
 #include <gdk/gdkx.h>
 
@@ -912,40 +908,9 @@ void MainWindow::create_engine()
 	{
 		engine = NULL;
 	}
-#ifdef ENABLE_XINE_ENGINE
-	else if (engine_type == "xine")
-	{
-		engine = new XineEngine();
-	}
-#endif
-#ifdef ENABLE_MPLAYER_ENGINE
-	else if (engine_type == "mplayer")
-	{
-		engine = new MplayerEngine();
-	}
-#endif
-#ifdef ENABLE_XINE_LIB_ENGINE
-	else if (engine_type == "xine-lib")
-	{
-		engine = new XineLibEngine();
-	}
-#endif
-#ifdef ENABLE_LIBVLC_ENGINE
-	else if (engine_type == "libvlc")
-	{
-		engine = new LibVlcEngine();
-	}
-#endif
-#ifdef ENABLE_LIBGSTREAMER_ENGINE
-	else if (engine_type == "libgstreamer")
-	{
-		engine = new LibGStreamerEngine();
-	}
-#endif
 	else
 	{
-		Glib::ustring message = Glib::ustring::compose(_("Unknown engine type '%1'"), engine_type);
-		throw Exception(message);
+		engine = new Engine(engine_type);
 	}
 
 	if (engine != NULL)

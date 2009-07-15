@@ -42,3 +42,5 @@ dist-hook:
 CLEANFILES = $(desktop_DATA)
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
+
+AM_CPPFLAGS = 
