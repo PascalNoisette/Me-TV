@@ -182,6 +182,8 @@ int main(int argc, char **argv)
 	x11_visual_t	vis;
 	double			res_h, res_v;
 	char			*mrl = NULL;
+	char*			video_driver = "auto";
+	char*			audio_driver = "auto";
 
 	if (argc != 6)
 	{
@@ -191,6 +193,14 @@ int main(int argc, char **argv)
 	
 	mrl = argv[1];
 	window = atoi(argv[2]);
+	if (strlen(argv[3]) > 0)
+	{
+		video_driver = argv[3];
+	}
+	if (strlen(argv[4]) > 0)
+	{
+		video_driver = argv[4];
+	}
 
 	if (!XInitThreads())
 	{
@@ -237,13 +247,13 @@ int main(int argc, char **argv)
 		pixel_aspect = 1.0;
 	}
 
-	if ((video_port = xine_open_video_driver(xine, argv[3], XINE_VISUAL_TYPE_X11, (void *) &vis)) == NULL)
+	if ((video_port = xine_open_video_driver(xine, video_driver, XINE_VISUAL_TYPE_X11, (void *) &vis)) == NULL)
 	{
-		fprintf(stderr, "Failed to initialise video driver '%s'\n", argv[3]);
+		fprintf(stderr, "Failed to initialise video driver '%s'\n", video_driver);
 		return -1;
 	}
 
-	audio_port	= xine_open_audio_driver(xine , argv[4], NULL);
+	audio_port	= xine_open_audio_driver(xine , audio_driver, NULL);
 	stream		= xine_stream_new(xine, audio_port, video_port);
 	event_queue	= xine_event_new_queue(stream);
 	xine_event_create_listener_thread(event_queue, event_listener, NULL);
