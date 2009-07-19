@@ -33,11 +33,15 @@ ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, co
 	Gtk::Dialog(cobject), builder(builder)
 {
 	Gtk::Button* button = NULL;
+	
 	builder->get_widget("button_scheduled_recordings_add", button);
 	button->signal_clicked().connect(sigc::mem_fun(*this, &ScheduledRecordingsDialog::on_button_scheduled_recordings_add_clicked));
 
 	builder->get_widget("button_scheduled_recordings_delete", button);
 	button->signal_clicked().connect(sigc::mem_fun(*this, &ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked));
+
+	builder->get_widget("button_scheduled_recordings_edit", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &ScheduledRecordingsDialog::on_button_scheduled_recordings_edit_clicked));
 
 	builder->get_widget("tree_view_scheduled_recordings", tree_view_scheduled_recordings);
 	tree_view_scheduled_recordings->signal_row_activated().connect(sigc::mem_fun(*this, &ScheduledRecordingsDialog::on_row_activated));
@@ -50,6 +54,19 @@ ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, co
 	tree_view_scheduled_recordings->append_column(_("Device"), columns.column_device);
 	
 	list_store->set_sort_column(columns.column_sort, Gtk::SORT_ASCENDING);
+}
+
+guint ScheduledRecordingsDialog::get_selected_scheduled_recording_id()
+{
+	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scheduled_recordings->get_selection();	
+	if (selection->count_selected_rows() == 0)
+	{
+		throw Exception(_("No scheduled recording selected"));
+	}
+	
+	Gtk::TreeModel::Row row = *(selection->get_selected());
+
+	return row[columns.column_scheduled_recording_id];
 }
 
 void ScheduledRecordingsDialog::on_button_scheduled_recordings_add_clicked()
@@ -65,17 +82,16 @@ void ScheduledRecordingsDialog::on_button_scheduled_recordings_add_clicked()
 void ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked()
 {
 	TRY
-	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scheduled_recordings->get_selection();	
-	if (selection->count_selected_rows() == 0)
-	{
-		throw Exception(_("No scheduled recording selected"));
-	}
-	
-	Gtk::TreeModel::Row row = *(selection->get_selected());
-
-	guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
-	get_application().scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
+	get_application().scheduled_recording_manager.remove_scheduled_recording(
+		get_selected_scheduled_recording_id());
 	update();
+	CATCH
+}
+
+void ScheduledRecordingsDialog::on_button_scheduled_recordings_edit_clicked()
+{
+	TRY
+	show_scheduled_recording(get_selected_scheduled_recording_id());
 	CATCH
 }
 
@@ -98,13 +114,8 @@ void ScheduledRecordingsDialog::update()
 	}
 }
 
-void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column)
+void ScheduledRecordingsDialog::show_scheduled_recording(guint scheduled_recording_id)
 {
-	TRY
-	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scheduled_recordings->get_selection();
-	Gtk::TreeModel::Row row = *(selection->get_selected());
-	guint scheduled_recording_id = row[columns.column_scheduled_recording_id];
-
 	ScheduledRecording scheduled_recording = get_application().scheduled_recording_manager.get_scheduled_recording(scheduled_recording_id);
 
 	ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
@@ -112,6 +123,12 @@ void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& tre
 	scheduled_recording_dialog.hide();
 
 	update();
+}
+
+void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column)
+{
+	TRY
+	show_scheduled_recording(get_selected_scheduled_recording_id());
 	CATCH
 }
 

@@ -57,9 +57,13 @@ private:
 		
 	void on_button_scheduled_recordings_add_clicked();
 	void on_button_scheduled_recordings_delete_clicked();
-	void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
-		
+	void on_button_scheduled_recordings_edit_clicked();
+
+	void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);		
 	void on_show();
+
+	void show_scheduled_recording(guint scheduled_recording_id);
+	guint get_selected_scheduled_recording_id();
 
 public:	
 	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
