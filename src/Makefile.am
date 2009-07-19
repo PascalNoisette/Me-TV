@@ -12,8 +12,6 @@ AM_CPPFLAGS = \
 	$(ME_TV_CFLAGS) \
 	$(SQLITE_CFLAGS) \
 	$(XINE_LIB_CFLAGS) \
-	$(LIBVLC_CFLAGS) \
-	$(LIBGSTREAMER_CFLAGS) \
 	$(WARN_CXXFLAGS) \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" 
@@ -118,9 +116,7 @@ me_tv_LDFLAGS = \
 me_tv_LDADD = \
 	$(ME_TV_LIBS) \
 	$(SQLITE_LIBS) \
-	$(XINE_LIB_LIBS) \
-	$(LIBVLC_LIBS) \
-	$(LIBGSTREAMER_LIBS)
+	$(XINE_LIB_LIBS)
 
 EXTRA_DIST = $(glade_DATA)
 
