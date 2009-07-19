@@ -21,7 +21,7 @@ AM_CFLAGS =\
 	 -g
 
 bin_PROGRAMS = me-tv \
-	me-tv-xine
+	 me-tv-xine
 
 me_tv_xine_SOURCES = \
 	me-tv-xine.cc
