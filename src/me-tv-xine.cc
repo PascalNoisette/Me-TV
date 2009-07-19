@@ -182,8 +182,8 @@ int main(int argc, char **argv)
 	x11_visual_t	vis;
 	double			res_h, res_v;
 	char			*mrl = NULL;
-	char*			video_driver = "auto";
-	char*			audio_driver = "auto";
+	const char*		video_driver = "auto";
+	const char*		audio_driver = "auto";
 
 	if (argc != 6)
 	{
@@ -338,7 +338,7 @@ int main(int argc, char **argv)
 
 			case ConfigureNotify:
 				{
-					XConfigureEvent* configure_event = (XConfigureEvent*)&xevent;
+					XConfigureEvent* configure_event = (XConfigureEvent*)(void*)&xevent;
 					Window tmp_win;
 
 					width  = configure_event->width;
@@ -358,7 +358,7 @@ int main(int argc, char **argv)
 
 			case KeyPress:
 				{
-					XKeyEvent* key_event = (XKeyEvent*)&xevent;
+					XKeyEvent* key_event = (XKeyEvent*)(void*)&xevent;
 					int keysym = XKeycodeToKeysym(display, key_event->keycode, 0);
 					switch(keysym)
 					{

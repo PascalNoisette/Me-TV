@@ -178,10 +178,10 @@ void Engine::sendKeyEvent(int keycode, int modifiers)
 	event.state       = modifiers;
 
 	event.type = KeyPress;
-	XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent *)&event);
+	XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent*)(void*)&event);
 
 	event.type = KeyRelease;
-	XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent *)&event);
+	XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent*)(void*)&event);
 }
 
 void Engine::set_mute_state(gboolean state)
