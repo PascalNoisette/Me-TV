@@ -58,6 +58,8 @@ private:
 	guint									audio_stream_index;
 	guint									subtitle_stream_index;
 	gboolean								maximise_forced;
+	guint									channel_change_timeout;
+	guint									temp_channel_number;
 
 	void stop();
 	void toggle_fullscreen();
@@ -67,6 +69,7 @@ private:
 	void load_devices();
 	void show_scheduled_recordings_dialog();
 	void set_state(const Glib::ustring& name, gboolean state);
+	void set_channelnumber(guint channel_row);
 		
 	bool on_delete_event(GdkEventAny* event);
 	bool on_motion_notify_event(GdkEventMotion* event);

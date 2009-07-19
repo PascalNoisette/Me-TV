@@ -53,6 +53,7 @@ public:
 	Channel& get_channel(guint channel_id);
 	Channel* find_channel(guint frequency, guint service_id);
 	Channel* find_channel(guint channel_id);
+	Channel* find_channel_by_row(guint channel_row);
 };
 
 #endif
