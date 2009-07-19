@@ -49,7 +49,7 @@ private:
 		
 	void clear();
 	void update_pages();
-	void update_table();
+	
 	Gtk::ToggleButton& attach_toggle_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	Gtk::Button& attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	Gtk::Label& attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
@@ -59,6 +59,7 @@ private:
 public:
 	GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	
+	void update_table();
 	void update();
 	void set_offset(gint value);
 	void set_epg_page(gint value);

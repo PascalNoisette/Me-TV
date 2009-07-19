@@ -25,6 +25,7 @@
 
 Channel::Channel()
 {
+	channel_row	= 0;
 	channel_id	= 0;
 	flags		= 0;
 	service_id	= 0;

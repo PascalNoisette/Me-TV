@@ -235,6 +235,24 @@ Channel* ChannelManager::find_channel(guint channel_id)
 	return channel;
 }
 
+Channel* ChannelManager::find_channel_by_row(guint channel_row)
+{
+	Channel* channel = NULL;
+
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	
+	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end() && channel == NULL; iterator++)
+	{
+		Channel* current_channel = &(*iterator);
+		if (current_channel->channel_row == channel_row)
+		{
+			channel = current_channel;
+		}
+	}
+	
+	return channel;
+}
+
 Channel& ChannelManager::get_channel(guint channel_id)
 {
 	Channel* channel = find_channel(channel_id);

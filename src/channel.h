@@ -36,6 +36,7 @@ class Channel
 public:
 	Channel();
 
+	guint			channel_row;
 	guint			channel_id;
 	Glib::ustring	name;
 	guint			flags;

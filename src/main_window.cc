@@ -33,6 +33,7 @@
 
 #define POKE_INTERVAL 		30
 #define UPDATE_INTERVAL		60
+#define SECOUNDS_UNTIL_CHANNEL_CHANGE	3
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : Gtk::Window(cobject), builder(builder)
@@ -45,6 +46,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	last_update_time		= 0;
 	last_poke_time			= 0;
 	timeout_source			= 0;
+	channel_change_timeout		= 0;
+	temp_channel_number		= 0;
 	engine					= NULL;
 	output_fd				= -1;
 	mute_state				= false;
@@ -149,7 +152,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	Application& application = get_application();
 	set_keep_above(application.get_boolean_configuration_value("keep_above"));
-
 	Gtk::MenuItem* menu_item_audio_streams = NULL;
 	builder->get_widget("menu_item_audio_streams", menu_item_audio_streams);
 	menu_item_audio_streams->set_submenu(audio_streams_menu);
@@ -459,6 +461,32 @@ void MainWindow::on_timeout()
 	
 	TRY
 	guint now = time(NULL);
+	
+	
+	if(channel_change_timeout > 1)
+		channel_change_timeout--;
+	else if(channel_change_timeout == 1)
+	{
+		//Deactivate the countdown
+		channel_change_timeout = 0;
+
+		Channel* channel = get_application().channel_manager.find_channel_by_row(temp_channel_number);
+		if(channel == NULL)
+			g_debug("Channel not found.");
+		else
+		{
+			TRY
+			get_application().set_display_channel(channel->channel_id);
+			CATCH
+
+			TRY
+			widget_epg->update_table();
+			CATCH
+		}
+
+		//Reset the temporary channel number for the next run
+		temp_channel_number		= 0;		
+	}
 	
 	// Hide the mouse
 	if (now - last_motion_time > 3 && is_cursor_visible)
@@ -823,6 +851,16 @@ void MainWindow::toggle_visibility()
 	property_visible() = !property_visible();
 }
 
+void MainWindow::set_channelnumber(guint channel_row)
+{
+	temp_channel_number *= 10;
+	temp_channel_number += channel_row;
+
+	//Start the timer with setting the time until change
+	if(channel_change_timeout == 0)
+		channel_change_timeout = SECOUNDS_UNTIL_CHANNEL_CHANGE;
+}
+
 bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 {
 	gboolean result = true;
@@ -833,6 +871,56 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 		case GDK_E:
 		case GDK_Mode_switch:
 			set_next_display_mode();
+			break;
+		
+		case GDK_0:
+			g_debug("Key 0 pressed");
+			set_channelnumber(0);
+			break;
+
+		case GDK_1:
+			g_debug("Key 1 pressed");
+			set_channelnumber(1);
+			break;
+
+		case GDK_2:
+			g_debug("Key 2 pressed");
+			set_channelnumber(2);
+			break;
+
+		case GDK_3:
+			g_debug("Key 3 pressed");
+			set_channelnumber(3);
+			break;
+
+		case GDK_4:
+			g_debug("Key 4 pressed");
+			set_channelnumber(4);
+			break;
+
+		case GDK_5:
+			g_debug("Key 5 pressed");
+			set_channelnumber(5);
+			break;
+
+		case GDK_6:
+			g_debug("Key 6 pressed");
+			set_channelnumber(6);
+			break;
+
+		case GDK_7:
+			g_debug("Key 7 pressed");
+			set_channelnumber(7);
+			break;
+
+		case GDK_8:
+			g_debug("Key 8 pressed");
+			set_channelnumber(8);
+			break;
+
+		case GDK_9:
+			g_debug("Key 9 pressed");
+			set_channelnumber(9);
 			break;
 			
 		case GDK_f:
