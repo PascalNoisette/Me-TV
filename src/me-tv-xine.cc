@@ -199,7 +199,7 @@ int main(int argc, char **argv)
 	}
 	if (strlen(argv[4]) > 0)
 	{
-		video_driver = argv[4];
+		audio_driver = argv[4];
 	}
 
 	if (!XInitThreads())
