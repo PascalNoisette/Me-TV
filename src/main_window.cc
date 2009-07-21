@@ -840,10 +840,12 @@ void MainWindow::toggle_visibility()
 	property_visible() = !property_visible();
 }
 
-void MainWindow::set_channelnumber(guint channel_row)
+void MainWindow::set_channel_number(guint channel_number)
 {
+	g_debug("Key %2 pressed", channel_number);
+
 	temp_channel_number *= 10;
-	temp_channel_number += channel_row;
+	temp_channel_number += channel_number;
 
 	//Start the timer with setting the time until change
 	if(channel_change_timeout == 0)
@@ -864,55 +866,16 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 			set_next_display_mode();
 			break;
 		
-		case GDK_0:
-			g_debug("Key 0 pressed");
-			set_channelnumber(0);
-			break;
-
-		case GDK_1:
-			g_debug("Key 1 pressed");
-			set_channelnumber(1);
-			break;
-
-		case GDK_2:
-			g_debug("Key 2 pressed");
-			set_channelnumber(2);
-			break;
-
-		case GDK_3:
-			g_debug("Key 3 pressed");
-			set_channelnumber(3);
-			break;
-
-		case GDK_4:
-			g_debug("Key 4 pressed");
-			set_channelnumber(4);
-			break;
-
-		case GDK_5:
-			g_debug("Key 5 pressed");
-			set_channelnumber(5);
-			break;
-
-		case GDK_6:
-			g_debug("Key 6 pressed");
-			set_channelnumber(6);
-			break;
-
-		case GDK_7:
-			g_debug("Key 7 pressed");
-			set_channelnumber(7);
-			break;
-
-		case GDK_8:
-			g_debug("Key 8 pressed");
-			set_channelnumber(8);
-			break;
-
-		case GDK_9:
-			g_debug("Key 9 pressed");
-			set_channelnumber(9);
-			break;
+		case GDK_0: set_channel_number(0); break;
+		case GDK_1: set_channel_number(1); break;
+		case GDK_2: set_channel_number(2); break;
+		case GDK_3: set_channel_number(3); break;
+		case GDK_4: set_channel_number(4); break;
+		case GDK_5: set_channel_number(5); break;
+		case GDK_6: set_channel_number(6); break;
+		case GDK_7: set_channel_number(7); break;
+		case GDK_8: set_channel_number(8); break;
+		case GDK_9: set_channel_number(9); break;
 			
 		case GDK_f:
 		case GDK_F:
