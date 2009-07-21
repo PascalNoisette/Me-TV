@@ -69,7 +69,7 @@ private:
 	void load_devices();
 	void show_scheduled_recordings_dialog();
 	void set_state(const Glib::ustring& name, gboolean state);
-	void set_channel_number(guint channel_row);
+	void add_channel_number(guint channel_number);
 		
 	bool on_delete_event(GdkEventAny* event);
 	bool on_motion_notify_event(GdkEventMotion* event);

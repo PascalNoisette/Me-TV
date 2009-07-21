@@ -521,7 +521,21 @@ void Application::set_display_channel_index(guint display_channel_index)
 	set_display_channel(channel_manager.get_channel_by_index(display_channel_index));
 }
 
-void Application::set_display_channel(const Channel& channel)
+void Application::previous_channel()
+{
+	stop_stream();
+	channel_manager.previous_channel();
+	start_stream();
+}
+
+void Application::next_channel()
+{
+	stop_stream();
+	channel_manager.next_channel();
+	start_stream();
+}
+
+void Application::stop_stream()
 {
 	if (is_recording())
 	{
@@ -530,9 +544,11 @@ void Application::set_display_channel(const Channel& channel)
 
 	main_window->stop_engine();
 	stop_stream_thread();
+}
 
-	channel_manager.set_display_channel(channel);
-	
+void Application::start_stream()
+{
+	Channel& channel = channel_manager.get_display_channel();
 	stream_thread = new StreamThread(channel);
 	try
 	{
@@ -557,6 +573,13 @@ void Application::set_display_channel(const Channel& channel)
 	set_int_configuration_value("last_channel", channel.channel_id);
 
 	update();
+}
+
+void Application::set_display_channel(const Channel& channel)
+{
+	stop_stream();
+	channel_manager.set_display_channel(channel);
+	start_stream();
 }
 
 MainWindow& Application::get_main_window()

@@ -466,12 +466,12 @@ void MainWindow::on_timeout()
 	{
 		channel_change_timeout--;
 	}
-	else if(channel_change_timeout == 1)
+	else if (channel_change_timeout == 1)
 	{
 		// Deactivate the countdown
 		channel_change_timeout = 0;
 
-		get_application().set_display_channel_index(temp_channel_number);
+		get_application().set_display_channel_index(temp_channel_number-1);
 
 		// Reset the temporary channel number for the next run
 		temp_channel_number = 0;		
@@ -840,15 +840,15 @@ void MainWindow::toggle_visibility()
 	property_visible() = !property_visible();
 }
 
-void MainWindow::set_channel_number(guint channel_number)
+void MainWindow::add_channel_number(guint channel_number)
 {
-	g_debug("Key %2 pressed", channel_number);
+	g_debug("Key %d pressed", channel_number);
 
 	temp_channel_number *= 10;
 	temp_channel_number += channel_number;
 
-	//Start the timer with setting the time until change
-	if(channel_change_timeout == 0)
+	// Start the timer with setting the time until change
+	if (channel_change_timeout == 0)
 	{
 		channel_change_timeout = SECONDS_UNTIL_CHANNEL_CHANGE;
 	}
@@ -866,16 +866,16 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 			set_next_display_mode();
 			break;
 		
-		case GDK_0: set_channel_number(0); break;
-		case GDK_1: set_channel_number(1); break;
-		case GDK_2: set_channel_number(2); break;
-		case GDK_3: set_channel_number(3); break;
-		case GDK_4: set_channel_number(4); break;
-		case GDK_5: set_channel_number(5); break;
-		case GDK_6: set_channel_number(6); break;
-		case GDK_7: set_channel_number(7); break;
-		case GDK_8: set_channel_number(8); break;
-		case GDK_9: set_channel_number(9); break;
+		case GDK_0: add_channel_number(0); break;
+		case GDK_1: add_channel_number(1); break;
+		case GDK_2: add_channel_number(2); break;
+		case GDK_3: add_channel_number(3); break;
+		case GDK_4: add_channel_number(4); break;
+		case GDK_5: add_channel_number(5); break;
+		case GDK_6: add_channel_number(6); break;
+		case GDK_7: add_channel_number(7); break;
+		case GDK_8: add_channel_number(8); break;
+		case GDK_9: add_channel_number(9); break;
 			
 		case GDK_f:
 		case GDK_F:
@@ -905,12 +905,12 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 		
 		case GDK_Up:
 		case GDK_minus:
-			get_application().channel_manager.previous_channel();
+			get_application().previous_channel();
 			break;
 			
 		case GDK_plus:
 		case GDK_Down:
-			get_application().channel_manager.next_channel();
+			get_application().next_channel();
 			break;
 
 		default:
