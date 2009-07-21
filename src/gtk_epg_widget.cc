@@ -167,7 +167,11 @@ void GtkEpgWidget::update_table()
 		widget->set_sensitive(offset > 0);
 		
 		ChannelManager& channel_manager = get_application().channel_manager;
-		guint display_channel_index = channel_manager.get_display_channel_index();
+		guint display_channel_index = -1;
+		if (channel_manager.has_display_channel())
+		{
+			display_channel_index = channel_manager.get_display_channel_index();
+		}
 		ChannelArray& channels = channel_manager.get_channels();
 
 		table_epg->resize(epg_span_hours * COLUMNS_PER_HOUR + 1, channels.size() + 1);
@@ -221,7 +225,7 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel, guint table_
 {	
 	Channel channel = const_channel;
 	
-	Glib::ustring channel_text = Glib::ustring::compose("<i>%2.</i> <b>%1</b>", encode_xml(channel.name), table_row);
+	Glib::ustring channel_text = Glib::ustring::compose("<i>%1.</i> <b>%2</b>", table_row + 1, encode_xml(channel.name));
 	Gtk::ToggleButton& channel_button = attach_toggle_button( channel_text, 0, 1, table_row, table_row + 1);
 	gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
 	gboolean show_epg_tooltips = get_application().get_boolean_configuration_value("show_epg_tooltips");
