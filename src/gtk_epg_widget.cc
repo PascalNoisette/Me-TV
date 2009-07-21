@@ -195,6 +195,7 @@ void GtkEpgWidget::update_table()
 		start_time += timezone;
 
 		guint epg_page_size = get_application().get_int_configuration_value("epg_page_size");
+		guint show_channel_index = get_application().get_boolean_configuration_value("show_channel_index");
 		guint channel_count = 0;
 		guint channel_start = (epg_page-1) * epg_page_size;
 		guint channel_end = channel_start + epg_page_size;
@@ -210,7 +211,7 @@ void GtkEpgWidget::update_table()
 				}
 				
 				gboolean selected = channel_count == display_channel_index;
-				create_channel_row(channel, row++, selected, start_time);
+				create_channel_row(channel, row++, show_channel_index, selected, start_time);
 			}
 			
 			channel_count++;
@@ -221,11 +222,16 @@ void GtkEpgWidget::update_table()
 	vadjustment->set_value(vvalue);
 }
 
-void GtkEpgWidget::create_channel_row(const Channel& const_channel, guint table_row, gboolean selected, guint start_time)
+void GtkEpgWidget::create_channel_row(const Channel& const_channel, guint table_row, gboolean show_channel_index, gboolean selected, guint start_time)
 {	
 	Channel channel = const_channel;
-	
+
 	Glib::ustring channel_text = Glib::ustring::compose("<i>%1.</i> <b>%2</b>", table_row + 1, encode_xml(channel.name));
+	if (show_channel_index)
+	{
+		channel_text = Glib::ustring::compose("<i>%1.</i> ", table_row + 1) + channel_text;
+	}
+	
 	Gtk::ToggleButton& channel_button = attach_toggle_button( channel_text, 0, 1, table_row, table_row + 1);
 	gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
 	gboolean show_epg_tooltips = get_application().get_boolean_configuration_value("show_epg_tooltips");

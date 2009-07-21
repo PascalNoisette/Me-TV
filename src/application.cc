@@ -92,17 +92,13 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_boolean_configuration_default("use_24_hour_workaround", true);
 	set_boolean_configuration_default("fullscreen_bug_workaround", false);
 	set_boolean_configuration_default("display_status_icon", true);
+	set_boolean_configuration_default("show_channel_index", false);
 	set_int_configuration_default("x", 10);
 	set_int_configuration_default("y", 10);
 	set_int_configuration_default("width", 500);
 	set_int_configuration_default("height", 500);
 	set_int_configuration_default("epg_page_size", 20);
 	set_string_configuration_default("screensaver_poke_command", "gnome-screensaver-command --poke");
-	set_string_configuration_default ("gstreamer_command_line",
-		"filesrc location=\"%1\" ! queue ! decodebin name=decoder " \
-		"decoder. ! queue ! deinterlace name=deinterlace ! queue ! " \
-		"xvimagesink name=videosink force-aspect-ratio=true " \
-		"decoder. ! queue ! volume name=volume ! gconfaudiosink");
 
 	if (get_int_configuration_value("epg_span_hours") == 0)
 	{
