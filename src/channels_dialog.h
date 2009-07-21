@@ -54,7 +54,7 @@ private:
 public:
 	ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 		
-	ChannelList get_channels();
+	ChannelArray get_channels();
 
 	static ChannelsDialog& create(Glib::RefPtr<Gtk::Builder> builder);
 };

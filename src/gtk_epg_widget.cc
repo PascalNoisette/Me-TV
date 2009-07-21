@@ -124,7 +124,7 @@ void GtkEpgWidget::update_pages()
 		return;
 	}
 	
-	const ChannelList& channels = application.channel_manager.get_channels();
+	const ChannelArray& channels = application.channel_manager.get_channels();
 	guint channel_count = channels.size();
 	guint new_epg_page_count = channel_count == 0 ? 1 : ((channel_count-1) / epg_page_size) + 1;
 	
@@ -167,8 +167,8 @@ void GtkEpgWidget::update_table()
 		widget->set_sensitive(offset > 0);
 		
 		ChannelManager& channel_manager = get_application().channel_manager;
-		const Channel* display_channel = channel_manager.get_display_channel();
-		ChannelList& channels = channel_manager.get_channels();
+		guint display_channel_index = channel_manager.get_display_channel_index();
+		ChannelArray& channels = channel_manager.get_channels();
 
 		table_epg->resize(epg_span_hours * COLUMNS_PER_HOUR + 1, channels.size() + 1);
 
@@ -194,20 +194,18 @@ void GtkEpgWidget::update_table()
 		guint channel_count = 0;
 		guint channel_start = (epg_page-1) * epg_page_size;
 		guint channel_end = channel_start + epg_page_size;
-		for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+		for (ChannelArray::iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
 			if (channel_start <= channel_count && channel_count < channel_end)
 			{
 				Channel& channel = *iterator;
-
-				channel.channel_row = row;
 				
 				if (channel.channel_id == 0)
 				{
 					throw Exception(_("Failed to a create channel row because the channel ID was 0"));
 				}
 				
-				gboolean selected = display_channel != NULL && channel.channel_id == display_channel->channel_id;
+				gboolean selected = channel_count == display_channel_index;
 				create_channel_row(channel, row++, selected, start_time);
 			}
 			
@@ -370,7 +368,7 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 {
 	TRY
-	get_application().set_display_channel(channel_id);
+	get_application().set_display_channel_by_id(channel_id);
 	CATCH
 
 	TRY

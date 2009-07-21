@@ -259,7 +259,7 @@ void MainWindow::show_channels_dialog()
 
 	if (dialog_result == Gtk::RESPONSE_OK)
 	{
-		const ChannelList& channels = channels_dialog.get_channels();
+		const ChannelArray& channels = channels_dialog.get_channels();
 		ChannelManager& channel_manager = get_application().channel_manager;
 		channel_manager.set_channels(channels);
 		get_application().select_channel_to_play();
@@ -462,30 +462,19 @@ void MainWindow::on_timeout()
 	TRY
 	guint now = time(NULL);
 	
-	
-	if(channel_change_timeout > 1)
+	if (channel_change_timeout > 1)
+	{
 		channel_change_timeout--;
+	}
 	else if(channel_change_timeout == 1)
 	{
-		//Deactivate the countdown
+		// Deactivate the countdown
 		channel_change_timeout = 0;
 
-		Channel* channel = get_application().channel_manager.find_channel_by_row(temp_channel_number);
-		if(channel == NULL)
-			g_debug("Channel not found.");
-		else
-		{
-			TRY
-			get_application().set_display_channel(channel->channel_id);
-			CATCH
+		get_application().set_display_channel_index(temp_channel_number);
 
-			TRY
-			widget_epg->update_table();
-			CATCH
-		}
-
-		//Reset the temporary channel number for the next run
-		temp_channel_number		= 0;		
+		// Reset the temporary channel number for the next run
+		temp_channel_number = 0;		
 	}
 	
 	// Hide the mouse
@@ -633,21 +622,21 @@ void MainWindow::on_menu_item_subtitle_stream_activate(guint index)
 void MainWindow::update()
 {	
 	Application& application = get_application();
-	Channel* channel = application.channel_manager.get_display_channel();
 	Glib::ustring window_title;
 	Glib::ustring status_text;
 
 	set_state("record", application.is_recording());
 	set_state("broadcast", application.is_broadcasting());
 
-	if (channel == NULL)
+	if (!application.channel_manager.has_display_channel())
 	{
 		window_title = _("Me TV - It's TV for me computer");
 	}
 	else
 	{
-		window_title = "Me TV - " + channel->get_text();
-		status_text = channel->get_text();
+		Channel& channel = application.channel_manager.get_display_channel();
+		window_title = "Me TV - " + channel.get_text();
+		status_text = channel.get_text();
 	}
 	
 	if (application.is_recording())

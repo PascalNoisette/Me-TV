@@ -24,6 +24,7 @@
 #include "application.h"
 
 #define MAX_CHANNELS	10000
+#define NO_CHANNEL		-1
 
 class LockLogger
 {
@@ -47,7 +48,7 @@ public:
 
 ChannelManager::ChannelManager()
 {
-	display_channel = NULL;
+	display_channel_index = NO_CHANNEL;
 	g_static_rec_mutex_init(mutex.gobj());
 }
 
@@ -128,7 +129,7 @@ void ChannelManager::save(Data::Connection& connection)
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	int channel_count = 0;
-	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
+	for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
 	{
 		Channel& channel = *i;
 		
@@ -196,7 +197,7 @@ void ChannelManager::save(Data::Connection& connection)
 
 	g_debug("Channels saved");
 
-	for (ChannelList::iterator i = channels.begin(); i != channels.end(); i++)
+	for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
 	{
 		Channel& channel = *i;
 
@@ -223,7 +224,7 @@ Channel* ChannelManager::find_channel(guint channel_id)
 
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 	
-	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end() && channel == NULL; iterator++)
+	for (ChannelArray::iterator iterator = channels.begin(); iterator != channels.end() && channel == NULL; iterator++)
 	{
 		Channel* current_channel = &(*iterator);
 		if (current_channel->channel_id == channel_id)
@@ -235,25 +236,17 @@ Channel* ChannelManager::find_channel(guint channel_id)
 	return channel;
 }
 
-Channel* ChannelManager::find_channel_by_row(guint channel_row)
+Channel& ChannelManager::get_channel_by_index(guint index)
 {
-	Channel* channel = NULL;
-
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-	
-	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end() && channel == NULL; iterator++)
+	if (index >= channels.size())
 	{
-		Channel* current_channel = &(*iterator);
-		if (current_channel->channel_row == channel_row)
-		{
-			channel = current_channel;
-		}
+		throw Exception(_("Invalid channel index"));
 	}
 	
-	return channel;
+	return channels[index];
 }
 
-Channel& ChannelManager::get_channel(guint channel_id)
+Channel& ChannelManager::get_channel_by_id(guint channel_id)
 {
 	Channel* channel = find_channel(channel_id);
 
@@ -265,29 +258,11 @@ Channel& ChannelManager::get_channel(guint channel_id)
 	return *channel;
 }
 
-void ChannelManager::set_display_channel(guint channel_id)
-{
-	set_display_channel(get_channel(channel_id));
-}
-
-void ChannelManager::set_display_channel(const Channel& channel)
+void ChannelManager::add_channels(const ChannelArray& c)
 {
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
-	g_message("Setting display channel to '%s' (%d)", channel.name.c_str(), channel.channel_id);
-	Channel* new_display_channel = find_channel(channel.channel_id);
-	if (new_display_channel == NULL)
-	{
-		throw Exception(_("Failed to set display channel: channel not found"));
-	}
-	display_channel = new_display_channel;
-}
-
-void ChannelManager::add_channels(const ChannelList& c)
-{
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-
-	for (ChannelList::const_iterator iterator = c.begin(); iterator != c.end(); iterator++)
+	for (ChannelArray::const_iterator iterator = c.begin(); iterator != c.end(); iterator++)
 	{
 		add_channel(*iterator);
 	}
@@ -306,7 +281,7 @@ void ChannelManager::add_channel(const Channel& channel)
 		throw Exception(message);
 	}
 	
-	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+	for (ChannelArray::iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 	{
 		if ((*iterator).name == channel.name)
 		{
@@ -323,19 +298,19 @@ void ChannelManager::add_channel(const Channel& channel)
 	g_debug("Channel '%s' added", channel.name.c_str());
 }
 
-ChannelList& ChannelManager::get_channels()
+ChannelArray& ChannelManager::get_channels()
 {
 	return channels;
 }
 
-const ChannelList& ChannelManager::get_channels() const
+const ChannelArray& ChannelManager::get_channels() const
 {
 	return channels;
 }
 
-Channel* ChannelManager::get_display_channel()
+Channel& ChannelManager::get_display_channel()
 {
-	return display_channel;
+	return channels[display_channel_index];
 }
 
 void ChannelManager::clear()
@@ -350,7 +325,7 @@ Channel* ChannelManager::find_channel(guint frequency, guint service_id)
 	Channel* result = NULL;
 	
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-	for (ChannelList::iterator iterator = channels.begin(); iterator != channels.end() && result == NULL; iterator++)
+	for (ChannelArray::iterator iterator = channels.begin(); iterator != channels.end() && result == NULL; iterator++)
 	{
 		Channel& channel = *iterator;
 		if (channel.get_transponder_frequency() == frequency && channel.service_id == service_id)
@@ -362,7 +337,7 @@ Channel* ChannelManager::find_channel(guint frequency, guint service_id)
 	return result;
 }
 
-void ChannelManager::set_channels(const ChannelList& new_channels)
+void ChannelManager::set_channels(const ChannelArray& new_channels)
 {
 	g_debug("Setting channels");
 	
@@ -371,11 +346,11 @@ void ChannelManager::set_channels(const ChannelList& new_channels)
 	guint display_channel_frequency = 0;
 	guint display_channel_service_id = 0;
 
-	if (display_channel != NULL)
+	if (display_channel_index != NO_CHANNEL)
 	{
-		display_channel_frequency = display_channel->get_transponder_frequency();
-		display_channel_service_id = display_channel->service_id;
-		display_channel = NULL; // Will be destroyed by clear, so flag it
+		Channel& display_channel = channels[display_channel_index];
+		display_channel_frequency = display_channel.get_transponder_frequency();
+		display_channel_service_id = display_channel.service_id;
 	}
 	
 	clear();
@@ -404,36 +379,9 @@ void ChannelManager::next_channel()
 {
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
-	if (channels.empty())
+	if (display_channel_index != NO_CHANNEL && (guint)display_channel_index < (channels.size()-1))
 	{
-		throw Exception(_("No channels"));
-	}
-	else if (display_channel == NULL)
-	{
-		set_display_channel(*(channels.begin()));
-	}
-	else
-	{
-		gboolean done = false;
-		
-		ChannelList::iterator iterator = channels.begin();
-		while (iterator != channels.end() && !done)
-		{
-			Channel& channel = *iterator;
-			if (channel.get_transponder_frequency() == display_channel->get_transponder_frequency() && channel.service_id == display_channel->service_id)
-			{
-				iterator++;
-				if (iterator != channels.end())
-				{
-					set_display_channel(*iterator);
-				}
-				done = true;
-			}
-			else
-			{
-				iterator++;
-			}			
-		}
+		display_channel_index++;
 	}
 }
 
@@ -441,49 +389,55 @@ void ChannelManager::previous_channel()
 {
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
-	if (channels.empty())
+	if (display_channel_index != NO_CHANNEL && (guint)display_channel_index > 0)
 	{
-		throw Exception(_("No channels"));
+		display_channel_index--;
 	}
-	else if (display_channel == NULL)
+}
+
+void ChannelManager::set_display_channel(const Channel& channel)
+{
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+
+	gboolean found = false;
+	for (guint index = 0; index < channels.size(); index++)
 	{
-		ChannelList::iterator iterator = channels.end();
-		iterator--;
-		set_display_channel(*iterator);
-	}
-	else
-	{
-		gboolean done = false;
-		
-		ChannelList::iterator iterator = channels.begin();
-		ChannelList::iterator previous_iterator = iterator;
-		while (iterator != channels.end() && !done)
+		if (channel.channel_id == channels[index].channel_id)
 		{
-			Channel& channel = *iterator;
-			if (channel.get_transponder_frequency() == display_channel->get_transponder_frequency() && channel.service_id == display_channel->service_id)
-			{
-				if (previous_iterator != iterator)
-				{
-					set_display_channel(*previous_iterator);
-				}
-				done = true;
-			}
-			else
-			{
-				previous_iterator = iterator;
-				iterator++;
-			}
+			display_channel_index = index;
+			found = true;
 		}
 	}
 }
 
 void ChannelManager::prune_epg()
 {
-	ChannelList::iterator iterator = channels.begin();
+	ChannelArray::iterator iterator = channels.begin();
 	while (iterator != channels.end())
 	{
 		Channel& channel = *iterator;
 		channel.epg_events.prune();
 		iterator++;
+	}
+}
+
+gboolean ChannelManager::has_display_channel()
+{
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	return display_channel_index != NO_CHANNEL || (guint)display_channel_index <= channels.size();
+}
+
+guint ChannelManager::get_display_channel_index()
+{
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	check_display_channel();
+	return display_channel_index;
+}
+
+void ChannelManager::check_display_channel()
+{
+	if (!has_display_channel())
+	{
+		throw Exception(_("Invalid display channel index"));
 	}
 }

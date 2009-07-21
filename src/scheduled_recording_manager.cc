@@ -199,7 +199,7 @@ guint ScheduledRecordingManager::check_scheduled_recordings()
 				scheduled_recording.start_time,
 				scheduled_recording.duration,
 				record ? "true  " : "false ",
-				application.channel_manager.get_channel(scheduled_recording.channel_id).name.c_str(),
+				application.channel_manager.get_channel_by_id(scheduled_recording.channel_id).name.c_str(),
 				scheduled_recording.device.c_str(),
 				scheduled_recording.description.c_str());
 			

@@ -106,7 +106,7 @@ private:
 		
 public:
 	ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
-	void load(const ChannelList& channels);
+	void load(const ChannelArray& channels);
 	guint get_selected_channel_id();
 	void set_selected_channel_id(guint channel_id);
 };

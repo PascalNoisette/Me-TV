@@ -82,8 +82,8 @@ void ChannelsDialog::show_scan_dialog()
 
 	gboolean abort = false;
 	
-	ChannelList channels = scan_dialog.get_channels();	
-	for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end() && !abort; iterator++)
+	ChannelArray channels = scan_dialog.get_channels();	
+	for (ChannelArray::const_iterator iterator = channels.begin(); iterator != channels.end() && !abort; iterator++)
 	{
 		const Channel& channel = *iterator;
 
@@ -142,9 +142,9 @@ void ChannelsDialog::on_button_remove_selected_channels_clicked()
 	get_window()->thaw_updates();
 }
 
-ChannelList ChannelsDialog::get_channels()
+ChannelArray ChannelsDialog::get_channels()
 {
-	ChannelList result;
+	ChannelArray result;
 	Glib::RefPtr<Gtk::TreeModel> model = tree_view_displayed_channels->get_model();
 	Gtk::TreeModel::Children children = model->children();
 	Gtk::TreeIter iterator = children.begin();
@@ -167,14 +167,14 @@ void ChannelsDialog::on_show()
 	
 	Application& application = get_application();
 
-	ChannelList& channels = application.channel_manager.get_channels();
+	ChannelArray& channels = application.channel_manager.get_channels();
 	if (channels.empty() && !application.device_manager.get_frontends().empty())
 	{
 		show_scan_dialog();
 	}
 	else
 	{
-		for (ChannelList::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+		for (ChannelArray::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 		{
 			const Channel& channel = *iterator;
 

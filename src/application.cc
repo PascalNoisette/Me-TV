@@ -372,7 +372,7 @@ void Application::set_boolean_configuration_value(const Glib::ustring& key, gboo
 
 void Application::select_channel_to_play()
 {
-	const ChannelList& channels = channel_manager.get_channels();
+	const ChannelArray& channels = channel_manager.get_channels();
 	if (channels.size() > 0)
 	{
 		gint last_channel = get_application().get_int_configuration_value("last_channel");
@@ -385,7 +385,7 @@ void Application::select_channel_to_play()
 		{
 			last_channel = (*channels.begin()).channel_id;
 		}
-		set_display_channel(last_channel);
+		set_display_channel_by_id(last_channel);
 	}
 }
 
@@ -441,7 +441,7 @@ void Application::run()
 		TRY		
 		scheduled_recording_manager.load(connection);
 
-		const ChannelList& channels = channel_manager.get_channels();
+		const ChannelArray& channels = channel_manager.get_channels();
 		if (channels.empty())
 		{
 			main_window->show_channels_dialog();
@@ -515,6 +515,16 @@ void Application::update()
 	}
 }
 
+void Application::set_display_channel_by_id(guint display_channel_index)
+{
+	set_display_channel(channel_manager.get_channel_by_id(display_channel_index));
+}
+
+void Application::set_display_channel_index(guint display_channel_index)
+{
+	set_display_channel(channel_manager.get_channel_by_index(display_channel_index));
+}
+
 void Application::set_display_channel(const Channel& channel)
 {
 	if (is_recording())
@@ -553,11 +563,6 @@ void Application::set_display_channel(const Channel& channel)
 	update();
 }
 
-void Application::set_display_channel(guint channel_id)
-{
-	set_display_channel(channel_manager.get_channel(channel_id));
-}
-
 MainWindow& Application::get_main_window()
 {
 	if (main_window == NULL)
@@ -576,15 +581,15 @@ void Application::check_scheduled_recordings()
 		scheduled_recording_id = id;
 		ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(id);
 
-		const Channel* channel = channel_manager.get_display_channel();
-		if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
+		const Channel& channel = channel_manager.get_display_channel();
+		if (channel.channel_id == scheduled_recording.channel_id)
 		{
 			g_debug("Already tuned to correct channel");
 		}
 		else
 		{			
 			g_debug("Changing channel for scheduled recording");
-			set_display_channel(scheduled_recording.channel_id);
+			set_display_channel_by_id(scheduled_recording.channel_id);
 		}
 		
 		if (record_state == true)
@@ -640,12 +645,7 @@ gboolean Application::on_timeout()
 
 Glib::ustring Application::make_recording_filename(const Glib::ustring& description)
 {
-	Channel* channel = channel_manager.get_display_channel();
-		
-	if (channel == NULL)
-	{
-		throw Exception(_("No channel to make recording filename"));
-	}
+	Channel& channel = channel_manager.get_display_channel();
 	
 	Glib::ustring start_time = get_local_time_text("%c");
 	Glib::ustring filename;
@@ -654,7 +654,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	if (title.empty())
 	{
 		EpgEvent epg_event;
-		if (channel->epg_events.get_current(epg_event))
+		if (channel.epg_events.get_current(epg_event))
 		{
 			title = epg_event.get_title();
 		}
@@ -665,7 +665,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		filename = Glib::ustring::compose
 		(
 			"%1 - %2.mpeg",
-			channel->name,
+			channel.name,
 			start_time
 		);
 	}
@@ -675,7 +675,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		(
 			"%1 - %2 - %3.mpeg",
 			title,
-			channel->name,
+			channel.name,
 			start_time
 		);
 	}
@@ -824,9 +824,5 @@ void Application::on_error(const Glib::ustring& message)
 
 void Application::restart_stream()
 {
-	Channel* channel = channel_manager.get_display_channel();
-	if (channel != NULL)
-	{
-		set_display_channel(channel->channel_id);
-	}
+	set_display_channel(channel_manager.get_display_channel());
 }

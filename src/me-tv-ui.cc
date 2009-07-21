@@ -83,13 +83,13 @@ ChannelComboBox::ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk
 	list_store = Gtk::ListStore::create(columns);
 }
 
-void ChannelComboBox::load(const ChannelList& channels)
+void ChannelComboBox::load(const ChannelArray& channels)
 {
 	clear();
 	set_model(list_store);
 	pack_start(columns.column_name);
 	list_store->clear();
-	for (ChannelList::const_iterator i = channels.begin(); i != channels.end(); i++)
+	for (ChannelArray::const_iterator i = channels.begin(); i != channels.end(); i++)
 	{
 		const Channel& channel = *i;
 		Gtk::TreeModel::Row row = *list_store->append();

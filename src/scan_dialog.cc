@@ -479,9 +479,9 @@ void ScanDialog::on_signal_complete()
 	}
 }
 
-ChannelList ScanDialog::get_channels()
+ChannelArray ScanDialog::get_channels()
 {
-	ChannelList result;
+	ChannelArray result;
 	std::list<Gtk::TreeModel::Path> selected_services = tree_view_scanned_channels->get_selection()->get_selected_rows();		
 	std::list<Gtk::TreeModel::Path>::iterator iterator = selected_services.begin();
 	while (iterator != selected_services.end())

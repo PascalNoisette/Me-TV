@@ -36,7 +36,6 @@ class Channel
 public:
 	Channel();
 
-	guint			channel_row;
 	guint			channel_id;
 	Glib::ustring	name;
 	guint			flags;
@@ -52,7 +51,7 @@ public:
 	Glib::ustring get_text();
 };
 
-class ChannelList : public std::list<Channel>
+class ChannelArray : public std::vector<Channel>
 {
 public:
 	gboolean contains(guint channel_id);

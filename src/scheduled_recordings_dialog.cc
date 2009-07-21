@@ -107,7 +107,7 @@ void ScheduledRecordingsDialog::update()
 		row[columns.column_sort]					= scheduled_recording.start_time;
 		row[columns.column_scheduled_recording_id]	= scheduled_recording.scheduled_recording_id;
 		row[columns.column_description]				= scheduled_recording.description;
-		row[columns.column_channel]					= channel_manager.get_channel(scheduled_recording.channel_id).name;
+		row[columns.column_channel]					= channel_manager.get_channel_by_id(scheduled_recording.channel_id).name;
 		row[columns.column_start_time]				= scheduled_recording.get_start_time_text();
 		row[columns.column_duration]				= scheduled_recording.get_duration_text();
 		row[columns.column_device]					= scheduled_recording.device;
