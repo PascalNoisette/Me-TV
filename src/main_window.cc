@@ -31,9 +31,9 @@
 #include <libgnome/libgnome.h>
 #include <gdk/gdkx.h>
 
-#define POKE_INTERVAL 		30
-#define UPDATE_INTERVAL		60
-#define SECOUNDS_UNTIL_CHANNEL_CHANGE	3
+#define POKE_INTERVAL 					30
+#define UPDATE_INTERVAL					60
+#define SECONDS_UNTIL_CHANNEL_CHANGE	3
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : Gtk::Window(cobject), builder(builder)
@@ -46,7 +46,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	last_update_time		= 0;
 	last_poke_time			= 0;
 	timeout_source			= 0;
-	channel_change_timeout		= 0;
+	channel_change_timeout	= 0;
 	temp_channel_number		= 0;
 	engine					= NULL;
 	output_fd				= -1;
@@ -847,7 +847,9 @@ void MainWindow::set_channelnumber(guint channel_row)
 
 	//Start the timer with setting the time until change
 	if(channel_change_timeout == 0)
-		channel_change_timeout = SECOUNDS_UNTIL_CHANNEL_CHANGE;
+	{
+		channel_change_timeout = SECONDS_UNTIL_CHANNEL_CHANGE;
+	}
 }
 
 bool MainWindow::on_key_press_event(GdkEventKey* event_key)
