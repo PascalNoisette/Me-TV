@@ -332,7 +332,6 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 				
 				default:
 					throw Exception(_("Failed to import: importing a channels.conf is only supported with DVB-T, DVB-C, DVB-S and ATSC"));
-					break;
 			}
 
 			add_channel_row(channel);
@@ -402,6 +401,8 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		notebook_scan_wizard->next_page();
 
 		g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
+
+		progress_bar_scan->set_text(_("Starting scanner"));
 		scan_thread = new ScanThread(frontend, initial_tuning_file);
 		Dvb::Scanner& scanner = scan_thread->get_scanner();
 		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));

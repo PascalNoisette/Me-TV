@@ -239,6 +239,7 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	}
 
 	guint transponder_count = 0;
+	signal_progress(0, transponders.size());
 	for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
 	{
 		tune_to(frontend, *i);
