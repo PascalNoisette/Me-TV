@@ -1,9 +1,10 @@
-2009-07-07  Michael Lamothe <michael.lamothe@gmail.com>
+2009-07-22  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.10.0
 	* Now using a custom xine player
 	* Fixed mute on channel change issue
 	* Fixed video size issues on startup
+	* Added channel changing by key bindings
 
 2009-07-07  Michael Lamothe <michael.lamothe@gmail.com>
 
