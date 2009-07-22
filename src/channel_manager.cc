@@ -400,13 +400,23 @@ void ChannelManager::set_display_channel(const Channel& channel)
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	gboolean found = false;
-	for (guint index = 0; index < channels.size(); index++)
+	for (guint index = 0; index < channels.size() && !found; index++)
 	{
 		if (channel.channel_id == channels[index].channel_id)
 		{
 			display_channel_index = index;
 			found = true;
 		}
+	}
+
+	if (!found)
+	{
+		throw Exception(
+			Glib::ustring::compose(
+				_("Failed to set display channel: channel ID %d not found"),
+				channel.channel_id
+			)
+		);
 	}
 }
 

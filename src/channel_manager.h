@@ -56,7 +56,7 @@ public:
 	void set_channels(const ChannelArray& channels);
 	void clear();
 	Channel& get_channel_by_id(guint channel_id);
-	Channel& get_channel_by_index(guint index);
+	Channel& get_channel_by_index(guint number);
 	Channel* find_channel(guint frequency, guint service_id);
 	Channel* find_channel(guint channel_id);
 };

@@ -55,6 +55,7 @@ void PreferencesDialog::run()
 	Gtk::CheckButton* check_button_24_hour_workaround = NULL;
 	Gtk::CheckButton* check_button_fullscreen_bug_workaround = NULL;
 	Gtk::CheckButton* check_button_display_status_icon = NULL;
+	Gtk::CheckButton* check_button_show_channel_number = NULL;
 
 	builder->get_widget("file_chooser_button_recording_directory", file_chooser_button_recording_directory);
 	builder->get_widget("spin_button_record_extra_before", spin_button_record_extra_before);
@@ -74,6 +75,7 @@ void PreferencesDialog::run()
 	builder->get_widget("check_button_24_hour_workaround", check_button_24_hour_workaround);
 	builder->get_widget("check_button_fullscreen_bug_workaround", check_button_fullscreen_bug_workaround);
 	builder->get_widget("check_button_display_status_icon", check_button_display_status_icon);
+	builder->get_widget("check_button_show_channel_number", check_button_show_channel_number);
 
 	ComboBoxText* combo_box_engine_type = NULL;
 	builder->get_widget_derived("combo_box_engine_type", combo_box_engine_type);
@@ -136,6 +138,7 @@ void PreferencesDialog::run()
 	check_button_24_hour_workaround->set_active(application.get_boolean_configuration_value("use_24_hour_workaround"));
 	check_button_fullscreen_bug_workaround->set_active(application.get_boolean_configuration_value("fullscreen_bug_workaround"));
 	check_button_display_status_icon->set_active(application.get_boolean_configuration_value("display_status_icon"));
+	check_button_show_channel_number->set_active(application.get_boolean_configuration_value("show_channel_number"));
 	
 	if (Dialog::run() == Gtk::RESPONSE_OK)
 	{
@@ -158,6 +161,7 @@ void PreferencesDialog::run()
 		application.set_boolean_configuration_value("use_24_hour_workaround", check_button_24_hour_workaround->get_active());
 		application.set_boolean_configuration_value("fullscreen_bug_workaround", check_button_fullscreen_bug_workaround->get_active());
 		application.set_boolean_configuration_value("display_status_icon", check_button_display_status_icon->get_active());
+		application.set_boolean_configuration_value("show_channel_number", check_button_show_channel_number->get_active());
 
 		get_application().update();
 	}

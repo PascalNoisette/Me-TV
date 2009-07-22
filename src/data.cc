@@ -356,10 +356,6 @@ void TableAdapter::replace_rows(DataTable& data_table)
 				g_debug("%s row replaced for id %d",
 					data_table.table.name.c_str(), *(row.auto_increment));
 			}
-			else
-			{
-				g_debug("%s row replaced", data_table.table.name.c_str());
-			}
 			
 			statement.reset();
 		}

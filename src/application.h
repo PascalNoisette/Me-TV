@@ -95,7 +95,7 @@ public:
 	
 	void set_display_channel(const Channel& channel);
 	void set_display_channel_by_id(guint channel_id);
-	void set_display_channel_index(guint display_channel_index);
+	void set_display_channel_number(guint display_channel_number);
 	void previous_channel();
 	void next_channel();
 	void stop_stream();

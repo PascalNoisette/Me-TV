@@ -92,7 +92,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_boolean_configuration_default("use_24_hour_workaround", true);
 	set_boolean_configuration_default("fullscreen_bug_workaround", false);
 	set_boolean_configuration_default("display_status_icon", true);
-	set_boolean_configuration_default("show_channel_index", false);
+	set_boolean_configuration_default("show_channel_number", false);
 	set_int_configuration_default("x", 10);
 	set_int_configuration_default("y", 10);
 	set_int_configuration_default("width", 500);
@@ -511,14 +511,14 @@ void Application::update()
 	}
 }
 
-void Application::set_display_channel_by_id(guint display_channel_index)
+void Application::set_display_channel_by_id(guint channel_id)
 {
-	set_display_channel(channel_manager.get_channel_by_id(display_channel_index));
+	set_display_channel(channel_manager.get_channel_by_id(channel_id));
 }
 
-void Application::set_display_channel_index(guint display_channel_index)
+void Application::set_display_channel_number(guint channel_index)
 {
-	set_display_channel(channel_manager.get_channel_by_index(display_channel_index));
+	set_display_channel(channel_manager.get_channel_by_index(channel_index));
 }
 
 void Application::previous_channel()

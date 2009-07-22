@@ -471,7 +471,7 @@ void MainWindow::on_timeout()
 		// Deactivate the countdown
 		channel_change_timeout = 0;
 
-		get_application().set_display_channel_index(temp_channel_number-1);
+		get_application().set_display_channel_number(temp_channel_number-1);
 
 		// Reset the temporary channel number for the next run
 		temp_channel_number = 0;		
@@ -860,6 +860,15 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 	
 	switch(event_key->keyval)
 	{
+		case GDK_b:
+		case GDK_B:
+			{
+				Gtk::ToggleToolButton* toggle_button = NULL;
+				builder->get_widget("tool_button_broadcast", toggle_button);
+				gboolean broadcast = toggle_button->get_active();
+			}
+			break;
+			
 		case GDK_e:
 		case GDK_E:
 		case GDK_Mode_switch:
