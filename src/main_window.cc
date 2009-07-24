@@ -847,7 +847,6 @@ void MainWindow::add_channel_number(guint channel_number)
 	temp_channel_number *= 10;
 	temp_channel_number += channel_number;
 
-	// Start the timer with setting the time until change
 	if (channel_change_timeout == 0)
 	{
 		channel_change_timeout = SECONDS_UNTIL_CHANNEL_CHANGE;
@@ -866,6 +865,7 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 				Gtk::ToggleToolButton* toggle_button = NULL;
 				builder->get_widget("tool_button_broadcast", toggle_button);
 				gboolean broadcast = toggle_button->get_active();
+				get_application().set_broadcast_state(!broadcast);
 			}
 			break;
 			
