@@ -22,12 +22,11 @@
 #define __STATUS_ICON_H__
 
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 
 class StatusIcon
 {
 private:
-	Glib::RefPtr<Gnome::Glade::Xml> glade;
+	Glib::RefPtr<Gtk::Builder>		builder;
 	Glib::RefPtr<Gtk::StatusIcon>	status_icon;
 	Gtk::Menu*						popup_menu;
 		
@@ -37,7 +36,7 @@ private:
 	void on_activate();
 
 public:
-	StatusIcon(Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	StatusIcon(Glib::RefPtr<Gtk::Builder>& builder);
 	void update();
 };
 

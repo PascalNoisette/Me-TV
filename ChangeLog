@@ -1,3 +1,69 @@
+2009-07-22  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.10.0
+	* Now using a custom xine player
+	* Fixed mute on channel change issue
+	* Fixed video size issues on startup
+	* Added channel changing by key bindings
+
+2009-07-07  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.9.6
+	* Scheduled recordings/EPG events are now deleted when the channel is deleted
+	* An attempt to make the scan/import more friendly to duplicate channel names
+	* Made EPG save more efficient
+	* Fixed crash when adding a scheduled recording
+	
+2009-07-02  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.9.5
+	* Using xshm as default xine video driver
+	* Added conditional compile for recent DVB parameters (not available in Debian stable)
+	* Fix for "GtkSpinButton: setting an adjustment with non-zero page size is deprecated"
+	* Removed g_error() calls from THREAD_CATCH which forced the application to abort
+	* Made initial tuning file parser a little more robust
+	* Added periodical prune() call for the EPG events held in memory
+
+2009-06-24  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.9.4
+	* Fixed xine audio/video driver saving in preferences dialog
+	* Added logging to NIT code 
+	* Added scrolled window to scan results tree
+	* Added Terrestrial/Cable delivery system descriptor parser
+	* Wrapping database updates in a BEGIN/END transaction block for better performance
+	* Removed SaveThread code, no longer required
+	* Accepting empty text encoding as 'auto'
+	* Fixed hidden cursor not being made visible over drawing area
+
+2009-06-15  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.9.3
+	* Added extra logging for character set conversion
+	* Updated Channel Editor and Scan Dialog
+	* Fixed hang when cancelling the scan dialog
+	* Fixed issue with selecting new channel after Channel Editor/Scan Dialog
+
+2009-06-14  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.9.2
+	* Patched some more code that might potentially hang
+	* Fixed debug information when searching for service ID
+	* Fullscreen workaround is now turned off by default
+
+2009-06-02  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.9.1
+	* Fix to stop EPG update crashing the application after faulty save (LP: #72872)
+	* Fixed spin buttons from GtkBuilder conversion (LP: #382197)
+	* Fixed ComboBoxs in preferences dialog
+	* Application can now start without a device.
+
+2009-05-24  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 0.9.0
+	* Converted to GtkBuilder
+
 2009-05-24  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.14
@@ -81,6 +147,11 @@
 2009-04-05  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.8.1
+	* Creating ~/.me-tv directory on startup (LP: #353796) 
+	* Fix for extended EPG events so that descriptions make sense
+
+2009-03-28  Michael Lamothe <michael.lamothe@gmail.com>
+
 	* Creating ~/.me-tv directory on startup (LP: #353796) 
 	* Fix for extended EPG events so that descriptions make sense
 
@@ -245,8 +316,3 @@
 	* 0.6.1
 	* Several fixes to resolve crash bugs
 	* Fixed issue with scheduled recordings selecting first channel
-
-2008-09-14  Michael Lamothe <michael.lamothe@gmail.com>
-
-	* Me TV 0.6, initial version
-	* Complete code rewrite in C++ using C++ libraries

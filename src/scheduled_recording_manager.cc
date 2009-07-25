@@ -92,9 +92,10 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	
 	Data::TableAdapter adapter(connection, table);
 	adapter.replace_rows(data_table);
-	
-	g_debug("Deleting old scheduled recordings");
-	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1", time(NULL));
+
+	guint now = time(NULL);
+	g_debug("Deleting old scheduled recordings ending before %d", now);
+	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1", now);
 	adapter.delete_rows(clause);
 
 	g_debug("Scheduled recordings saved");
@@ -164,23 +165,20 @@ void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recor
 	get_application().check_scheduled_recordings();
 }
 
+guint is_old(ScheduledRecording& scheduled_recording)
+{
+	return (scheduled_recording.get_end_time() < convert_to_local_time(time(NULL)));
+}
+
 guint ScheduledRecordingManager::check_scheduled_recordings()
 {
 	g_debug("Checking scheduled recordings");
-	guint active_scheduled_recording_id = NULL;
+	guint active_scheduled_recording_id = 0;
 	Glib::RecMutex::Lock lock(mutex);
 
 	Application& application = get_application();
 
-	guint now = convert_to_local_time(time(NULL));
-	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
-	{
-		ScheduledRecording& scheduled_recording = *i;
-		if (scheduled_recording.get_end_time() < now)
-		{
-			scheduled_recordings.erase(i);
-		}
-	}
+	scheduled_recordings.remove_if(is_old);
 	
 	gboolean got_recording = false;
 
@@ -201,7 +199,7 @@ guint ScheduledRecordingManager::check_scheduled_recordings()
 				scheduled_recording.start_time,
 				scheduled_recording.duration,
 				record ? "true  " : "false ",
-				application.channel_manager.get_channel(scheduled_recording.channel_id).name.c_str(),
+				application.channel_manager.get_channel_by_id(scheduled_recording.channel_id).name.c_str(),
 				scheduled_recording.device.c_str(),
 				scheduled_recording.description.c_str());
 			

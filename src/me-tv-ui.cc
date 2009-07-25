@@ -19,12 +19,11 @@
  */
 
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 #include <gdk/gdk.h>
 #include "application.h"
 #include "me-tv-ui.h"
 
-ComboBoxText::ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
+ComboBoxText::ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml)
 	: Gtk::ComboBox(cobject)
 {
 	list_store = Gtk::ListStore::create(columns);
@@ -73,24 +72,24 @@ Glib::ustring ComboBoxText::get_active_text()
 	throw Exception(_("Failed to get active text value"));
 }
 
-ComboBoxEntryText::ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
+ComboBoxEntryText::ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml)
 	: Gtk::ComboBoxEntryText(cobject)
 {
 }
 
-ChannelComboBox::ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
+ChannelComboBox::ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml)
 	: Gtk::ComboBox(cobject)
 {
 	list_store = Gtk::ListStore::create(columns);
 }
 
-void ChannelComboBox::load(const ChannelList& channels)
+void ChannelComboBox::load(const ChannelArray& channels)
 {
 	clear();
 	set_model(list_store);
 	pack_start(columns.column_name);
 	list_store->clear();
-	for (ChannelList::const_iterator i = channels.begin(); i != channels.end(); i++)
+	for (ChannelArray::const_iterator i = channels.begin(); i != channels.end(); i++)
 	{
 		const Channel& channel = *i;
 		Gtk::TreeModel::Row row = *list_store->append();
@@ -139,7 +138,7 @@ GdkUnlock::~GdkUnlock()
 	gdk_threads_enter();
 }
 
-IntComboBox::IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml)
+IntComboBox::IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml)
 	: Gtk::ComboBox(cobject)
 {
 	list_store = Gtk::ListStore::create(columns);
@@ -216,27 +215,5 @@ FullscreenBugWorkaround::~FullscreenBugWorkaround()
 	{
 		MainWindow& main_window = get_application().get_main_window();
 		main_window.fullscreen(false);
-	}
-}
-
-Gtk::Widget* get_widget(Glib::RefPtr<Gnome::Glade::Xml> glade, const Glib::ustring& name)
-{
-	Gtk::Widget* widget = glade->get_widget(name);
-	
-	if (widget == NULL)
-	{
-		Glib::ustring message = Glib::ustring::compose(_("Failed to load widget '%1'"), name);
-		throw Exception(message);
-	}
-	
-	return widget;
-}
-
-void check_glade(Gtk::Widget* widget, const Glib::ustring& name)
-{
-	if (widget == NULL)
-	{
-		Glib::ustring message = Glib::ustring::compose(_("Failed to load widget '%1'"), name);
-		throw Exception(message);
 	}
 }

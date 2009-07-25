@@ -28,28 +28,35 @@ class ChannelManager
 {
 private:
 	Glib::StaticRecMutex mutex;
-	ChannelList channels;
-	Channel* display_channel;
+	ChannelArray channels;
+	gint display_channel_index;
+
+	void check_display_channel();
 public:
 	ChannelManager();
 		
 	void load(Data::Connection& connection);
 	void save(Data::Connection& connection);
+	void prune_epg();
 	
 	Glib::StaticRecMutex& get_mutex() { return mutex; }
 		
-	const ChannelList& get_channels() const;
-	ChannelList& get_channels();
+	const ChannelArray& get_channels() const;
+	ChannelArray& get_channels();
 	void next_channel();
 	void previous_channel();
 	void set_display_channel(const Channel& channel);
-	void set_display_channel(guint channel_id);
-	Channel* get_display_channel();
+	void set_display_channel_by_id(guint channel_id);
+	void set_display_channel_index(guint channel_index);
+	gboolean has_display_channel();
+	Channel& get_display_channel();
+	guint get_display_channel_index();
 	void add_channel(const Channel& channel);
-	void add_channels(const ChannelList& channels);
-	void set_channels(const ChannelList& channels);
+	void add_channels(const ChannelArray& channels);
+	void set_channels(const ChannelArray& channels);
 	void clear();
-	Channel& get_channel(guint channel_id);
+	Channel& get_channel_by_id(guint channel_id);
+	Channel& get_channel_by_index(guint number);
 	Channel* find_channel(guint frequency, guint service_id);
 	Channel* find_channel(guint channel_id);
 };

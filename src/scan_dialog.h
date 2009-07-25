@@ -22,7 +22,6 @@
 #define __SCAN_DIALOG_H__
 
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 #include "device_manager.h"
 #include "dvb_scanner.h"
 #include "thread.h"
@@ -40,18 +39,10 @@ public:
 	Dvb::Frontend& frontend;
 				
 public:
-	ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file) :
-		Thread("Scan"), scanner(2), initial_tuning_file(file), frontend(scan_frontend) {}
+	ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file);
 		
-	void run()
-	{
-		scanner.start(frontend, initial_tuning_file);
-	}
-		
-	void stop()
-	{
-		scanner.terminate();
-	}
+	void run();
+	void stop();
 
 	Dvb::Scanner& get_scanner() { return scanner; }
 };
@@ -59,16 +50,15 @@ public:
 class ScanDialog : public Gtk::Window
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
-	Gtk::Notebook*							notebook_scan_wizard;
-	Gtk::Label*								label_scan_information;
-	Gtk::ProgressBar*						progress_bar_scan;
-	Gtk::TreeView*							tree_view_scanned_channels;
-	ScanThread*								scan_thread;
-	StringList								system_files;
-	guint									channel_count;
-	Dvb::Frontend&							frontend;
-	Glib::ustring							scan_directory_path;
+	const Glib::RefPtr<Gtk::Builder>	builder;
+	Gtk::Notebook*						notebook_scan_wizard;
+	Gtk::ProgressBar*					progress_bar_scan;
+	Gtk::TreeView*						tree_view_scanned_channels;
+	ScanThread*							scan_thread;
+	StringList							system_files;
+	guint								channel_count;
+	Dvb::Frontend&						frontend;
+	Glib::ustring						scan_directory_path;
 
 	class ModelColumns : public Gtk::TreeModelColumnRecord
 	{
@@ -106,15 +96,16 @@ private:
 	void stop_scan();
 	void update_channel_count();
 	void add_channel_row(const Channel& channel);
+
+	void on_show();
 		
 public:
-	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	~ScanDialog();
 		
-	void on_show();
-	ChannelList get_channels();
+	ChannelArray get_channels();
 
-	static ScanDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static ScanDialog& create(Glib::RefPtr<Gtk::Builder> builder);
 };
 
 #endif

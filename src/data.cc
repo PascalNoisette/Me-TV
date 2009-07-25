@@ -316,11 +316,14 @@ TableAdapter::TableAdapter(Connection& connection, Table& table)
 void TableAdapter::replace_rows(DataTable& data_table)
 {
 	Glib::ustring primary_key = data_table.table.primary_key;
-			
+	
 	Statement statement(connection, replace_command);
 
 	if (data_table.rows.size() > 0)
 	{
+		Statement statementBegin(connection, "BEGIN");
+		statementBegin.step();
+
 		for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 		{
 			Data::Row& row = *i;
@@ -353,13 +356,12 @@ void TableAdapter::replace_rows(DataTable& data_table)
 				g_debug("%s row replaced for id %d",
 					data_table.table.name.c_str(), *(row.auto_increment));
 			}
-			else
-			{
-				g_debug("%s row replaced", data_table.table.name.c_str());
-			}
 			
 			statement.reset();
 		}
+
+		Statement statementEnd(connection, "End");
+		statementEnd.step();
 	}
 }
 

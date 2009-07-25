@@ -36,7 +36,7 @@ typedef enum
 class MainWindow : public Gtk::Window
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
+	const Glib::RefPtr<Gtk::Builder>		builder;
 	Gtk::DrawingArea*						drawing_area_video;
 	GtkEpgWidget*							widget_epg;
 	guint									last_motion_time;
@@ -58,6 +58,8 @@ private:
 	guint									audio_stream_index;
 	guint									subtitle_stream_index;
 	gboolean								maximise_forced;
+	guint									channel_change_timeout;
+	guint									temp_channel_number;
 
 	void stop();
 	void toggle_fullscreen();
@@ -67,6 +69,7 @@ private:
 	void load_devices();
 	void show_scheduled_recordings_dialog();
 	void set_state(const Glib::ustring& name, gboolean state);
+	void add_channel_number(guint channel_number);
 		
 	bool on_delete_event(GdkEventAny* event);
 	bool on_motion_notify_event(GdkEventMotion* event);
@@ -103,10 +106,10 @@ private:
 		
 	void create_engine();
 public:
-	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	virtual ~MainWindow();
 		
-	static MainWindow* create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static MainWindow* create(Glib::RefPtr<Gtk::Builder> builder);
 		
 	void show_devices_dialog();
 	void show_channels_dialog();

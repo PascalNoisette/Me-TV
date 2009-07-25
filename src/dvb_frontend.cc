@@ -105,9 +105,8 @@ void Frontend::tune_to(const Transponder& transponder)
 	do {} while (ioctl(fd, FE_GET_EVENT, &ev) != -1);
 		
 	gint return_code = ioctl ( fd, FE_SET_FRONTEND, &parameters );
-	if (return_code  < 0 )
+	if (return_code < 0)
 	{
-		g_debug("return code: %d", return_code);
 		throw SystemException(_("Failed to tune device") );
 	}
 	

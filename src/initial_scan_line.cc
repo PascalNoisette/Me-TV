@@ -106,7 +106,7 @@ struct StringTable InitialScanLine::polarisation_table[] =
 	{ NULL, 0 }
 };
 
-InitialScanLine::InitialScanLine(const Glib::ustring& line) : splitter(line, " ", 20)
+InitialScanLine::InitialScanLine(const Glib::ustring& line) : splitter(line, " \t", true, 20)
 {
 }
 

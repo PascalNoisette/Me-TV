@@ -30,7 +30,7 @@
 
 using namespace Dvb;
 
-Scanner::Scanner(guint timeout) : wait_timeout(timeout)
+Scanner::Scanner()
 {
 	terminated = false;
 }
@@ -41,6 +41,8 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 	{
 		return;
 	}
+	
+	g_debug("Tuning to transponder at %d Hz", transponder.frontend_parameters.frequency);
 	
 	try
 	{
@@ -62,27 +64,33 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		demuxer_sds.stop();
 		demuxer_nis.stop();
 		
-		guint number_of_services = sds.services.size();
-		if (number_of_services > 0)
+		for (guint i = 0; i < sds.services.size(); i++)
 		{
-			for (guint i = 0; i < number_of_services; i++)
-			{
-				signal_service(transponder.frontend_parameters, sds.services[i].id, sds.services[i].name, transponder.polarisation);
-			}
+			signal_service(
+				transponder.frontend_parameters,
+				sds.services[i].id,
+				sds.services[i].name,
+				transponder.polarisation);
 		}
-		
-		guint number_of_transponders = nis.transponders.size();
-		if (number_of_transponders > 0)
+
+		g_debug("Got %d transponders from NIT", nis.transponders.size());
+		for (guint i = 0; i < nis.transponders.size(); i++)
 		{
-			for(guint i = 0; i < number_of_transponders; i++ )
+			Transponder& new_transponder = nis.transponders[i];
+			if (!transponders.exists(new_transponder))
 			{
-				transponders.add(nis.transponders[i]);
+				g_debug("%d: Adding %d Hz", i + 1, new_transponder.frontend_parameters.frequency);
+				transponders.push_back(new_transponder);
+			}
+			else
+			{
+				g_debug("%d: Skipping %d Hz", i + 1, new_transponder.frontend_parameters.frequency);
 			}
 		}
 	}
 	catch(const Exception& exception)
 	{
-		g_debug("Failed to tune to transponder at '%d'", transponder.frontend_parameters.frequency);
+		g_debug("Failed to tune to transponder at %d Hz", transponder.frontend_parameters.frequency);
 	}
 }
 
@@ -171,16 +179,26 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	Glib::IOStatus status = initial_tuning_file->read_line(line);
 	while (status == Glib::IO_STATUS_NORMAL && !terminated)
 	{
-		if (Glib::str_has_prefix(line, "#") || line.empty())
+		// Remove comments
+		Glib::ustring::size_type index = line.find("#");
+		if (index != Glib::ustring::npos)
 		{
-			// Ignore empty lines or comments
+			line = line.substr(0, index);
+		}
+		
+		// Remove trailing whitespace
+		index = line.find_last_not_of(" \t\r\n");
+		if (index == Glib::ustring::npos)
+		{
+			line.clear();
 		}
 		else
 		{
-			if (Glib::str_has_suffix(line, "\n"))
-			{
-				line = line.substr(0, line.length()-1);
-			}
+			line = line.substr(0, index + 1);
+		}
+
+		if (!line.empty()) // Ignore empty lines or comments
+		{
 			lines.push_back(line);
 		}
 		
@@ -221,10 +239,11 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	}
 
 	guint transponder_count = 0;
+	signal_progress(0, transponders.size());
 	for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
 	{
 		tune_to(frontend, *i);
-		signal_progress(transponder_count++, transponders.size());
+		signal_progress(++transponder_count, transponders.size());
 	}
 	
 	g_debug("Scanner loop exited");

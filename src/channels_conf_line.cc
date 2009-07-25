@@ -101,7 +101,7 @@ struct StringTable ChannelsConfLine::polarisation_table[] =
 	{ NULL, 0 }
 };
 
-ChannelsConfLine::ChannelsConfLine(const Glib::ustring& line) : splitter(line, ":", 20)
+ChannelsConfLine::ChannelsConfLine(const Glib::ustring& line) : splitter(line, ":", false, 20)
 {
 }
 

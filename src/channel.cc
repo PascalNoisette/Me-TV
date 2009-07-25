@@ -25,9 +25,9 @@
 
 Channel::Channel()
 {
-	channel_id	= 0;
-	flags		= 0;
-	service_id	= 0;
+	channel_id		= 0;
+	flags			= 0;
+	service_id		= 0;
 }
 
 Glib::ustring Channel::get_text()
@@ -49,7 +49,7 @@ guint Channel::get_transponder_frequency()
 	return transponder.frontend_parameters.frequency;
 }
 
-gboolean ChannelList::contains(guint channel_id)
+gboolean ChannelArray::contains(guint channel_id)
 {
 	for (const_iterator i = begin(); i != end(); i++)
 	{

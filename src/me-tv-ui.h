@@ -22,7 +22,6 @@
 #define __ME_TV_UI_H__
 
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 #include "me-tv.h"
 #include "dvb_frontend.h"
 #include "channel.h"
@@ -48,7 +47,7 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 	
 public:
-	ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
+	ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
 	
 	void clear_items();
 	void append_text(const Glib::ustring& text);
@@ -74,7 +73,7 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 		
 public:
-	IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
+	IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
 	void set_size(guint size);
 	guint get_size();
 	guint get_active_value();
@@ -83,7 +82,7 @@ public:
 class ComboBoxEntryText : public Gtk::ComboBoxEntryText
 {
 public:
-	ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
+	ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
 };
 
 class ChannelComboBox : public Gtk::ComboBox
@@ -106,8 +105,8 @@ private:
 	Glib::RefPtr<Gtk::ListStore> list_store;
 		
 public:
-	ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& xml);
-	void load(const ChannelList& channels);
+	ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
+	void load(const ChannelArray& channels);
 	guint get_selected_channel_id();
 	void set_selected_channel_id(guint channel_id);
 };
@@ -134,10 +133,5 @@ public:
 	FullscreenBugWorkaround();
 	~FullscreenBugWorkaround();
 };
-
-Gtk::Widget* get_widget(Glib::RefPtr<Gnome::Glade::Xml> glade,
-	const Glib::ustring& name);
-
-void check_glade(Gtk::Widget* widget, const Glib::ustring& name);
 
 #endif

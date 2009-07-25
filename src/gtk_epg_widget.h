@@ -22,25 +22,23 @@
 #define __GTK_EPG_WIDGET__
 
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 #include "data.h"
 #include "me-tv-ui.h"
 
 class GtkEpgWidget : public Gtk::ScrolledWindow
 {
 private:
-	gint									offset;
-	gsize									span_hours;
-	gsize									span_minutes;
-	gsize									span_seconds;
-	const Glib::RefPtr<Gnome::Glade::Xml>	glade;
-	guint									epg_span_hours;
-	guint									epg_page;
-	IntComboBox*							combo_box_epg_page;
-	Gtk::Label*								label_epg_page;
-	
-	Gtk::Table* table_epg;
-	Gtk::ScrolledWindow* scrolled_window_epg;
+	gint								offset;
+	gsize								span_hours;
+	gsize								span_minutes;
+	gsize								span_seconds;
+	const Glib::RefPtr<Gtk::Builder>	builder;
+	guint								epg_span_hours;
+	guint								epg_page;
+	IntComboBox*						combo_box_epg_page;
+	Gtk::Label*							label_epg_page;
+	Gtk::Table*							table_epg;
+	Gtk::ScrolledWindow*				scrolled_window_epg;
 	
 	void previous();
 	void next();
@@ -51,16 +49,19 @@ private:
 		
 	void clear();
 	void update_pages();
-	void update_table();
+	
 	Gtk::ToggleButton& attach_toggle_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	Gtk::Button& attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	Gtk::Label& attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	void attach_widget(Gtk::Widget& widget, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
-	void create_channel_row(const Channel& channel, guint row, gboolean selected, guint start_time);
+	void create_channel_row(const Channel& const_channel,
+		guint table_row, gboolean selected, guint start_time, guint channel_number,
+		gboolean show_channel_number, gboolean show_epg_time, gboolean show_epg_tooltips);
 
 public:
-	GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	
+	void update_table();
 	void update();
 	void set_offset(gint value);
 	void set_epg_page(gint value);

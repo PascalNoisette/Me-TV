@@ -21,20 +21,22 @@
 #include "meters_dialog.h"
 #include "application.h"
 
-MetersDialog& MetersDialog::create(Glib::RefPtr<Gnome::Glade::Xml> glade)
+MetersDialog& MetersDialog::create(Glib::RefPtr<Gtk::Builder> builder)
 {
 	MetersDialog* meters_dialog = NULL;
-	glade->get_widget_derived("dialog_meters", meters_dialog);
-	check_glade(meters_dialog, "dialog_meters");
+	builder->get_widget_derived("dialog_meters", meters_dialog);
 	return *meters_dialog;
 }
 
-MetersDialog::MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade_xml) :
-	Gtk::Dialog(cobject), glade(glade_xml), meters_thread(*this), frontend(get_application().device_manager.get_frontend())
+MetersDialog::MetersDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
+	Gtk::Dialog(cobject), builder(builder), meters_thread(*this), frontend(get_application().device_manager.get_frontend())
 {
-	progress_bar_signal_strength = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_strength"));
-	progress_bar_signal_noise = dynamic_cast<Gtk::ProgressBar*>(glade->get_widget("progress_bar_signal_noise"));
-	glade->connect_clicked("button_meters_close", sigc::mem_fun(*this, &Gtk::Widget::hide));
+	builder->get_widget("progress_bar_signal_strength", progress_bar_signal_strength);
+	builder->get_widget("progress_bar_signal_noise", progress_bar_signal_noise);
+
+	Gtk::Button* button = NULL;
+	builder->get_widget("button_meters_close", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &Gtk::Widget::hide));
 	set_meters(0, 0);
 }
 

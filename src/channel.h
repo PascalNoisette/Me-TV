@@ -21,15 +21,15 @@
 #ifndef __CHANNEL_H__
 #define __CHANNEL_H__
 
+#include <linux/dvb/frontend.h>
+#include "epg_events.h"
+#include "dvb_transponder.h"
+
 #define CHANNEL_FLAG_NONE		0
 #define CHANNEL_FLAG_DVB_T		0x01
 #define CHANNEL_FLAG_DVB_C		0x02
 #define CHANNEL_FLAG_DVB_S		0x04
 #define CHANNEL_FLAG_ATSC		0x08
-
-#include <linux/dvb/frontend.h>
-#include "epg_events.h"
-#include "dvb_transponder.h"
 
 class Channel
 {
@@ -51,7 +51,7 @@ public:
 	Glib::ustring get_text();
 };
 
-class ChannelList : public std::list<Channel>
+class ChannelArray : public std::vector<Channel>
 {
 public:
 	gboolean contains(guint channel_id);

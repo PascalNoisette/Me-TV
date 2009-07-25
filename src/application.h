@@ -22,7 +22,6 @@
 #define __APPLICATION_H__
 
 #include "me-tv.h"
-#include <libglademm.h>
 #include <libgnomemm.h>
 #include "device_manager.h"
 #include "channel_manager.h"
@@ -30,13 +29,12 @@
 #include "main_window.h"
 #include "status_icon.h"
 #include "stream_thread.h"
-#include "save_thread.h"
 
 class Application : public Gnome::Main
 {
 private:
 	static Application*					current;
-	Glib::RefPtr<Gnome::Glade::Xml>		glade;
+	Glib::RefPtr<Gtk::Builder>			builder;
 	MainWindow*							main_window;
 	StatusIcon*							status_icon;
 	Glib::RefPtr<Gnome::Conf::Client>	client;
@@ -50,7 +48,6 @@ private:
 	Data::Schema						schema;
 	guint								scheduled_recording_id;
 	Glib::ustring						database_filename;
-	SaveThread*							save_thread;
 
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
@@ -59,7 +56,6 @@ private:
 		
 	Glib::ustring make_application_directory();
 		
-	bool on_quit();
 	void on_display_channel_changed(const Channel& channel);
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
@@ -72,10 +68,10 @@ public:
 	void run();
 	static Application& get_current();
 	
-	ChannelManager						channel_manager;
-	ScheduledRecordingManager			scheduled_recording_manager;
-	DeviceManager						device_manager;
-	Data::Connection					connection;
+	ChannelManager				channel_manager;
+	ScheduledRecordingManager	scheduled_recording_manager;
+	DeviceManager				device_manager;
+	Data::Connection			connection;
 
 	Glib::StaticRecMutex&	get_mutex();
 	StreamThread*			get_stream_thread();
@@ -95,11 +91,16 @@ public:
 	void set_int_configuration_value(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_value(const Glib::ustring& key, gboolean value);
 	
-	Glib::RefPtr<Gnome::Glade::Xml> get_glade() { return glade; }
+	Glib::RefPtr<Gtk::Builder> get_builder() { return builder; }
 	
 	void set_display_channel(const Channel& channel);
-	void set_display_channel(guint channel_id);
-
+	void set_display_channel_by_id(guint channel_id);
+	void set_display_channel_number(guint display_channel_number);
+	void previous_channel();
+	void next_channel();
+	void stop_stream();
+	void start_stream();
+	
 	gboolean is_recording();
 	void start_recording(const Glib::ustring& filename = "");
 	void stop_recording();
@@ -117,7 +118,7 @@ public:
 	
 	MainWindow& get_main_window();
 
-	void start_save_thread(gboolean block);
+	void select_channel_to_play();
 };
 
 Application& get_application();

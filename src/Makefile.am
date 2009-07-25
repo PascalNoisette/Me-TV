@@ -3,7 +3,7 @@
 ## Created by Anjuta
 
 gladedir = $(datadir)/me-tv/glade
-glade_DATA = me-tv.glade \
+glade_DATA = me-tv.ui \
 	me-tv.xpm
 
 AM_CPPFLAGS = \
@@ -12,8 +12,6 @@ AM_CPPFLAGS = \
 	$(ME_TV_CFLAGS) \
 	$(SQLITE_CFLAGS) \
 	$(XINE_LIB_CFLAGS) \
-	$(LIBVLC_CFLAGS) \
-	$(LIBGSTREAMER_CFLAGS) \
 	$(WARN_CXXFLAGS) \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" 
@@ -22,7 +20,16 @@ AM_CFLAGS =\
 	 -Wall\
 	 -g
 
-bin_PROGRAMS = me-tv
+bin_PROGRAMS = me-tv \
+	 me-tv-xine
+
+me_tv_xine_SOURCES = \
+	me-tv-xine.cc
+
+me_tv_xine_LDADD =        \
+	$(ME_TV_XINE_LIBS) \
+	$(XINE_LIB_LIBS) \
+	-lX11
 
 me_tv_SOURCES = \
 	main.cc\
@@ -82,10 +89,6 @@ me_tv_SOURCES = \
 	scheduled_recording.cc \
 	epg_thread.cc \
 	epg_thread.h \
-	xine_engine.cc \
-	xine_engine.h \
-	mplayer_engine.cc \
-	mplayer_engine.h \
 	exception.cc \
 	string_splitter.cc \
 	string_splitter.h \
@@ -93,23 +96,15 @@ me_tv_SOURCES = \
 	channels_conf_line.h \
 	initial_scan_line.cc \
 	initial_scan_line.h \
-	lib_vlc_engine.cc \
-	lib_vlc_engine.h \
 	me-tv-i18n.h \
 	epg_events.cc \
 	epg_events.h \
-	lib_gstreamer_engine.cc \
-	lib_gstreamer_engine.h \
-	xine_lib_engine.cc \
-	xine_lib_engine.h \
 	devices_dialog.cc \
 	devices_dialog.h \
 	channel_manager.cc \
 	channel_manager.h \
 	scheduled_recording_manager.cc \
 	scheduled_recording_manager.h \
-	save_thread.cc \
-	save_thread.h \
 	scan_dialog.cc \
 	scan_dialog.h
 
@@ -121,8 +116,7 @@ me_tv_LDFLAGS = \
 me_tv_LDADD = \
 	$(ME_TV_LIBS) \
 	$(SQLITE_LIBS) \
-	$(XINE_LIB_LIBS) \
-	$(LIBVLC_LIBS) \
-	$(LIBGSTREAMER_LIBS)
+	$(XINE_LIB_LIBS)
 
 EXTRA_DIST = $(glade_DATA)
+

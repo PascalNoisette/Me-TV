@@ -243,25 +243,27 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 	offset += 2;
 	
 	// loop through all transport descriptors and pick out 0x43 descriptors, as they contain new frequencies.
-	while(offset < section_length - 4)
+	while (offset < section_length - 4)
 	{
 		offset += 4;
 		guint descriptors_loop_length = get_bits(buffer + offset, 4, 12);
 		offset += 2;
 		guint descriptors_end_offset = offset + descriptors_loop_length;
 		
-		while(offset < descriptors_end_offset)
+		while (offset < descriptors_end_offset)
 		{
-			guint descriptor_tag = buffer[offset];
-			guint descriptor_length = buffer[offset+1];
-			offset += 2;
-			if(descriptor_tag == 0x43)
+			guint descriptor_tag = buffer[offset++];
+			guint descriptor_length = buffer[offset++];
+
+			if (descriptor_tag == 0x43)
 			{
+				g_debug("Found Satellite Delivery System Descriptor");
+
 				struct dvb_frontend_parameters frontend_parameters;
 				
 				// extract data for new transponder, according to EN 300 468: dvb-s
 				frontend_parameters.frequency = 0;
-				for(int i=0; i<8; i++)
+				for (int i=0; i<8; i++)
 				{
 					frontend_parameters.frequency = frontend_parameters.frequency*10 + get_bits(buffer + offset, i*4, 4);
 				}
@@ -283,9 +285,169 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 				transponder.frontend_parameters = frontend_parameters;
 				transponder.polarisation = polarisation;
 				section.transponders.push_back(transponder);
-				g_debug("new frequency: %d, new polarisation: %d, symbol rate %d, fec_inner %d", frontend_parameters.frequency, transponder.polarisation, frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner);
+				
+				g_debug("New frequency: %d, New polarisation: %d, Symbol rate %d, fec_inner %d",
+					frontend_parameters.frequency, transponder.polarisation,
+					frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner);
 			}
-			else g_debug("bad descriptor tag %d", descriptor_tag);
+			else if (descriptor_tag == 0x44)
+			{
+				Transponder transponder;
+
+				g_debug("Found Cable Delivery System Descriptor");
+
+				guint frequency = 0;
+				for (int i=0; i<8; i++)
+				{
+					frequency = frequency*10 + get_bits(buffer + offset, i*4, 4);
+				}
+				frequency *= 10;
+
+				// reserved_future_use (12)
+				guint fec_outer = get_bits(buffer + offset, 44, 4);
+				guint modulation = get_bits(buffer + offset, 48, 8);
+				guint symbol_rate = get_bits(buffer + offset, 56, 28);
+				guint fec_inner = get_bits(buffer + offset, 84, 4);
+
+				g_debug("frequency: %d", frequency);
+				g_debug("FEC_outer: %d", fec_outer);
+				g_debug("modulation: %d", modulation);
+				g_debug("symbol_rate: %d", symbol_rate);
+				g_debug("FEC_inner: %d", fec_inner);
+
+				transponder.frontend_parameters.frequency = frequency;
+				transponder.frontend_parameters.inversion = INVERSION_AUTO;
+
+				transponder.frontend_parameters.u.qam.symbol_rate = symbol_rate;
+
+				switch (modulation)
+				{
+					case 1: transponder.frontend_parameters.u.qam.modulation = QAM_16; break;
+					case 2: transponder.frontend_parameters.u.qam.modulation = QAM_32; break;
+					case 3: transponder.frontend_parameters.u.qam.modulation = QAM_64; break;
+					case 4: transponder.frontend_parameters.u.qam.modulation = QAM_128; break;
+					case 5: transponder.frontend_parameters.u.qam.modulation = QAM_256; break;
+					default: transponder.frontend_parameters.u.qam.modulation = QAM_AUTO;
+				}
+
+				switch (fec_inner)
+				{
+					case 1: transponder.frontend_parameters.u.qam.fec_inner = FEC_1_2; break;
+					case 2: transponder.frontend_parameters.u.qam.fec_inner = FEC_2_3; break;
+					case 3: transponder.frontend_parameters.u.qam.fec_inner = FEC_3_4; break;
+					case 4: transponder.frontend_parameters.u.qam.fec_inner = FEC_5_6; break;
+					case 5: transponder.frontend_parameters.u.qam.fec_inner = FEC_7_8; break;
+					case 6: transponder.frontend_parameters.u.qam.fec_inner = FEC_8_9; break;
+#ifdef FEC_3_5
+					case 7: transponder.frontend_parameters.u.qam.fec_inner = FEC_3_5; break;
+#endif
+					case 8: transponder.frontend_parameters.u.qam.fec_inner = FEC_4_5; break;
+#ifdef FEC_9_10
+					case 9: transponder.frontend_parameters.u.qam.fec_inner = FEC_9_10; break;
+#endif
+					default: transponder.frontend_parameters.u.qam.fec_inner = FEC_AUTO;
+				}
+
+				section.transponders.push_back(transponder);
+			}
+			else if (descriptor_tag == 0x5A)
+			{
+				Transponder transponder;
+
+				g_debug("Found Terrestrial Delivery System Descriptor");
+				guint centre_frequency = get_bits(buffer + offset, 0, 32) * 10;
+				offset += 4;
+
+				guint bandwidth = get_bits(buffer + offset, 0, 3);
+				// priority (1)
+				// Time_Slicing_indicator (1)
+				// MPE-FEC_indicator (1)
+				// reserved_future_use (2)
+				guint constellation = get_bits(buffer + offset, 9, 2);
+				guint hierarchy_information = get_bits(buffer + offset, 11, 3);
+				guint code_rate_HP = get_bits(buffer + offset, 14, 3);
+				guint code_rate_LP = get_bits(buffer + offset, 17, 3);
+				guint guard_interval = get_bits(buffer + offset, 20, 2);
+				guint transmission_mode = get_bits(buffer + offset, 22, 2);
+
+				g_debug("centre_frequency: %d", centre_frequency);
+				g_debug("bandwidth: %d", bandwidth);
+				g_debug("constellation: %d", constellation);
+				g_debug("hierarchy_information: %d", hierarchy_information);				
+				g_debug("code_rate_HP: %d", code_rate_HP);
+				g_debug("code_rate_LP: %d", code_rate_LP);
+				g_debug("guard_interval: %d", guard_interval);
+				g_debug("transmission_mode: %d", transmission_mode);
+
+				transponder.frontend_parameters.frequency = centre_frequency;
+				transponder.frontend_parameters.inversion = INVERSION_AUTO;
+					
+				switch (bandwidth)
+				{
+					case 0: transponder.frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ; break;
+					case 1: transponder.frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_7_MHZ; break;
+					case 2: transponder.frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_6_MHZ; break;
+					default: transponder.frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_AUTO;
+				}
+
+				switch (constellation)
+				{
+					case 1: transponder.frontend_parameters.u.ofdm.constellation = QAM_16; break;
+					case 2: transponder.frontend_parameters.u.ofdm.constellation = QAM_64; break;
+					default: transponder.frontend_parameters.u.ofdm.constellation = QAM_AUTO;
+				}
+
+				switch (hierarchy_information)
+				{
+					case 0: case 4: transponder.frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_NONE; break;
+					case 1: case 5: transponder.frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_1; break;
+					case 2: case 6: transponder.frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_2; break;
+					case 3: case 7: transponder.frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_4; break;
+					default: transponder.frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_AUTO;
+				}
+
+				switch (code_rate_HP)
+				{
+					case 0: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_1_2; break;
+					case 1: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_2_3; break;
+					case 2: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_3_4; break;
+					case 3: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_5_6; break;
+					case 4: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_7_8; break;
+					default: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_AUTO;
+				}
+
+				switch (code_rate_LP)
+				{
+					case 0: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_1_2; break;
+					case 1: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_2_3; break;
+					case 2: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_3_4; break;
+					case 3: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_5_6; break;
+					case 4: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_7_8; break;
+					default: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_AUTO;
+				}
+
+				switch (guard_interval)
+				{
+					case 0: transponder.frontend_parameters.u.ofdm.guard_interval = GUARD_INTERVAL_1_32; break;
+					case 1: transponder.frontend_parameters.u.ofdm.guard_interval = GUARD_INTERVAL_1_16; break;
+					case 2: transponder.frontend_parameters.u.ofdm.guard_interval = GUARD_INTERVAL_1_8; break;
+					case 3: transponder.frontend_parameters.u.ofdm.guard_interval = GUARD_INTERVAL_1_4; break;
+					default: transponder.frontend_parameters.u.ofdm.guard_interval = GUARD_INTERVAL_AUTO;
+				}
+
+				switch (transmission_mode)
+				{
+					case 0: transponder.frontend_parameters.u.ofdm.transmission_mode = TRANSMISSION_MODE_2K; break;
+					case 1: transponder.frontend_parameters.u.ofdm.transmission_mode = TRANSMISSION_MODE_8K; break;
+					default: transponder.frontend_parameters.u.ofdm.transmission_mode = TRANSMISSION_MODE_AUTO;
+				}
+
+				section.transponders.push_back(transponder);
+			}
+			else
+			{
+				g_debug("Ignoring descriptor tag 0x%02X", descriptor_tag);
+			}
 			offset += descriptor_length;
 		}
 	}
@@ -762,7 +924,6 @@ guint SectionParser::get_bits(const guchar* b, guint bitpos, gsize bitcount)
 	return val;
 }
 
-
 gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 {
 	gsize length = text_buffer[0];
@@ -776,7 +937,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 		// Skip over length byte
 		index++;
 
-		if (text_encoding != "auto")
+		if (text_encoding.length() > 0 && text_encoding != "auto")
 		{
 			codeset = text_encoding.c_str();
 		}
@@ -881,7 +1042,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 				gsize bytes_read;
 				gsize bytes_written;
 				GError* error = NULL;
-
+				
 				gchar* result = g_convert(
 					text,
 					text_index,
@@ -890,10 +1051,18 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 					&bytes_read,
 					&bytes_written,
 					&error);
-
-				if (error != NULL)
+				
+				if (error != NULL || result == NULL)
 				{
-					Glib::ustring message = Glib::ustring::compose(_("Failed to convert to UTF-8: %1"), error->message);
+					const gchar* error_message = _("No message");
+					if (error != NULL)
+					{
+						error_message = error->message;
+					}
+					
+					Glib::ustring message = Glib::ustring::compose(
+						_("Failed to convert to UTF-8: %1"),
+						Glib::ustring(error_message));
 					g_debug("%s", message.c_str());
 					g_debug("Codeset: %s", codeset);
 					g_debug("Length: %zu", length);
@@ -902,20 +1071,16 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 						gchar ch = text_buffer[i];
 						if (!isprint(ch))
 						{
-							g_debug("text_buffer[%d]\t= 0x%02X", i, text_buffer[i]);
+							g_debug("text_buffer[%d]\t= 0x%02X", i, ch);
 						}
 						else
 						{
-							g_debug("text_buffer[%d]\t= 0x%02X '%c'", i, text_buffer[i], text_buffer[i]);
+							g_debug("text_buffer[%d]\t= 0x%02X '%c'", i, ch, ch);
 						}
 					}
 					throw Exception(message);
 				}
 				
-				if (result == NULL)
-				{
-					throw Exception(_("Failed to convert to UTF-8"));
-				}
 				s = result;
 				g_free(result);
 			}

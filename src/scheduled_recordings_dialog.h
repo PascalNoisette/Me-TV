@@ -21,7 +21,6 @@
 #ifndef __SCHEDULED_RECORDINGS_DIALOG_H__
 #define __SCHEDULED_RECORDINGS_DIALOG_H__
 
-#include <libglademm.h>
 #include <libgnomeuimm.h>
 #include "data.h"
 
@@ -51,21 +50,25 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring>	column_device;
 	};
 	
-	ModelColumns columns;
-	Glib::RefPtr<Gtk::ListStore> list_store;
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
-	Gtk::TreeView* tree_view_scheduled_recordings;
+	ModelColumns						columns;
+	Glib::RefPtr<Gtk::ListStore>		list_store;
+	const Glib::RefPtr<Gtk::Builder>	builder;
+	Gtk::TreeView*						tree_view_scheduled_recordings;
 		
 	void on_button_scheduled_recordings_add_clicked();
 	void on_button_scheduled_recordings_delete_clicked();
-	void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
-		
+	void on_button_scheduled_recordings_edit_clicked();
+
+	void on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);		
 	void on_show();
 
+	void show_scheduled_recording(guint scheduled_recording_id);
+	guint get_selected_scheduled_recording_id();
+
 public:	
-	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	ScheduledRecordingsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	
-	static ScheduledRecordingsDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static ScheduledRecordingsDialog& create(Glib::RefPtr<Gtk::Builder> builder);
 
 	void update();
 };

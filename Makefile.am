@@ -16,7 +16,8 @@ pixmaps_DATA = \
         src/me-tv-recording.xpm
 
 man_MANS = \
-	me-tv.1
+	me-tv.1 \
+	me-tv-xine.1
 
 EXTRA_DIST = \
 	README\
@@ -25,6 +26,7 @@ EXTRA_DIST = \
 	INSTALL\
 	NEWS \
 	me-tv.1 \
+	me-tv-xine.1 \
 	$(desktop_in_files) \
 	$(pixmaps_DATA) \
 	intltool-update.in \
@@ -42,3 +44,5 @@ dist-hook:
 CLEANFILES = $(desktop_DATA)
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
+
+AM_CPPFLAGS = 

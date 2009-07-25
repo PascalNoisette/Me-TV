@@ -22,7 +22,6 @@
 #define __DEVICES_DIALOG_H__
 
 #include <libgnomeuimm.h>
-#include <libglademm.h>
 
 class DevicesDialog : public Gtk::Dialog
 {
@@ -44,16 +43,16 @@ private:
 		
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
+	const Glib::RefPtr<Gtk::Builder> builder;
 	Gtk::TreeView* tree_view_devices;
 
 	void on_show();
 	void on_response(int response_id);
 
 public:
-	DevicesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	DevicesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 
-	static DevicesDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static DevicesDialog& create(Glib::RefPtr<Gtk::Builder> builder);
 };
 
 #endif

@@ -21,8 +21,6 @@
 #ifndef __SCHEDULED_RECORDING_DIALOG_H__
 #define __SCHEDULED_RECORDING_DIALOG_H__
 
-#include <libglademm.h>
-#include <libgnomeuimm.h>
 #include "epg_event.h"
 #include "me-tv-ui.h"
 #include "scheduled_recording.h"
@@ -30,18 +28,22 @@
 class ScheduledRecordingDialog : public Gtk::Dialog
 {
 private:
-	const Glib::RefPtr<Gnome::Glade::Xml> glade;
+	const Glib::RefPtr<Gtk::Builder> builder;
 
-	Gnome::UI::DateEdit*	date_edit_start_time;
-	Gtk::SpinButton*		spinbutton_duration;
-	Gtk::Entry*				entry_description;
-	ChannelComboBox*		channel_combo_box;
-	guint					scheduled_recording_id;
+	Gtk::Calendar*		calendar_start_time_date;
+	Gtk::SpinButton*	spin_button_start_time_hour;
+	Gtk::SpinButton*	spin_button_start_time_minute;
+	Gtk::SpinButton*	spin_button_duration;
+	Gtk::Entry*			entry_description;
+	ChannelComboBox*	channel_combo_box;
+	guint				scheduled_recording_id;
+
+	void set_date_time(time_t t);
 
 public:
-	ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gnome::Glade::Xml>& glade);
+	ScheduledRecordingDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 
-	static ScheduledRecordingDialog& create(Glib::RefPtr<Gnome::Glade::Xml> glade);
+	static ScheduledRecordingDialog& create(Glib::RefPtr<Gtk::Builder> builder);
 
 	gint run(Gtk::Window* transient_for, ScheduledRecording& scheduled_recording);
 	gint run(Gtk::Window* transient_for, EpgEvent& epg_event);

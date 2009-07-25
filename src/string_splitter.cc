@@ -22,14 +22,19 @@
 #include "exception.h"
 #include "me-tv-i18n.h"
 
-StringSplitter::StringSplitter(const Glib::ustring& text, const char* deliminator, gsize max_length)
+StringSplitter::StringSplitter(const Glib::ustring& text, const char* delimiter, gboolean squeeze_repeats, gsize max_length)
 {
-	parts = g_strsplit(text.c_str(), deliminator, max_length);
+	parts = g_strsplit_set(text.c_str(), delimiter, max_length);
 	count = 0;
 	gchar** iterator = parts;
-	while (*iterator++ != NULL && count < max_length)
+	while (*iterator != NULL && count < max_length)
 	{
-		count++;
+		parts[count] = *iterator;
+		if (!squeeze_repeats || g_utf8_strlen(*iterator, -1) > 0)
+		{
+			count++;
+		}
+		iterator++;
 	}
 }
 	
@@ -52,4 +57,7 @@ gint StringSplitter::get_int_value(guint index)
 	return atoi(get_value(index));
 }
 
-gsize StringSplitter::get_count() const { return count; }
+gsize StringSplitter::get_count() const
+{
+	return count;
+}

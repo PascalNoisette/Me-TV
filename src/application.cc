@@ -55,10 +55,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	record_state			= false;
 	broadcast_state			= false;
 	scheduled_recording_id	= 0;
-	save_thread				= NULL;
 	
-	signal_quit().connect(sigc::mem_fun(this, &Application::on_quit));
-
 	// Remove all other handlers first
 	get_signal_error().clear();
 	get_signal_error().connect(sigc::mem_fun(*this, &Application::on_error));
@@ -83,7 +80,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_boolean_configuration_default("show_epg_header", true);
 	set_boolean_configuration_default("show_epg_time", true);
 	set_boolean_configuration_default("show_epg_tooltips", false);
-	set_string_configuration_default("xine.video_driver", "xv");
+	set_string_configuration_default("xine.video_driver", "xshm");
 	set_string_configuration_default("xine.audio_driver", "alsa");
 	set_string_configuration_default("mplayer.video_driver", "xv");
 	set_string_configuration_default("mplayer.audio_driver", "alsa");
@@ -93,20 +90,26 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_string_configuration_default("preferred_language", "");
 	set_string_configuration_default("text_encoding", "auto");
 	set_boolean_configuration_default("use_24_hour_workaround", true);
-	set_boolean_configuration_default("fullscreen_bug_workaround", true);
+	set_boolean_configuration_default("fullscreen_bug_workaround", false);
 	set_boolean_configuration_default("display_status_icon", true);
+	set_boolean_configuration_default("show_channel_number", false);
 	set_int_configuration_default("x", 10);
 	set_int_configuration_default("y", 10);
 	set_int_configuration_default("width", 500);
 	set_int_configuration_default("height", 500);
 	set_int_configuration_default("epg_page_size", 20);
 	set_string_configuration_default("screensaver_poke_command", "gnome-screensaver-command --poke");
-	set_string_configuration_default ("gstreamer_command_line",
-		"filesrc location=\"%1\" ! queue ! decodebin name=decoder " \
-		"decoder. ! queue ! deinterlace name=deinterlace ! queue ! " \
-		"xvimagesink name=videosink force-aspect-ratio=true " \
-		"decoder. ! queue ! volume name=volume ! gconfaudiosink");
 
+	if (get_int_configuration_value("epg_span_hours") == 0)
+	{
+		set_int_configuration_value("epg_span_hours", 1);
+	}
+
+	if (get_int_configuration_value("epg_page_size") == 0)
+	{
+		set_int_configuration_value("epg_page_size", 1);
+	}
+	
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);
 	if (!file->query_exists())
 	{
@@ -114,15 +117,15 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	}
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
-	Glib::ustring glade_path = current_directory + "/me-tv.glade";
+	Glib::ustring ui_path = current_directory + "/me-tv.ui";
 
-	if (!Gio::File::create_for_path(glade_path)->query_exists())
+	if (!Gio::File::create_for_path(ui_path)->query_exists())
 	{
-		glade_path = PACKAGE_DATA_DIR"/me-tv/glade/me-tv.glade";
+		ui_path = PACKAGE_DATA_DIR"/me-tv/glade/me-tv.ui";
 	}
 	
-	g_debug("Loading Glade file '%s' ...", glade_path.c_str());
-	glade = Gnome::Glade::Xml::create(glade_path);
+	g_debug("Loading GtkBuilder file '%s' ...", ui_path.c_str());
+	builder = Gtk::Builder::create_from_file(ui_path);
 	
 	g_debug("Application constructed");
 }
@@ -141,12 +144,9 @@ Application::~Application()
 		main_window = NULL;
 	}
 
-	start_save_thread(true);
-	while (!save_thread->is_terminated())
-	{
-		g_debug("Waiting for stream thread to exit");
-		usleep(500000);
-	}
+	scheduled_recording_manager.save(connection);
+	channel_manager.save(connection);
+
 	g_debug("Application destructor complete");
 }
 
@@ -267,7 +267,8 @@ gboolean Application::initialise_database()
 		}
 		else
 		{
-			Gtk::Dialog* dialog_database_version = (Gtk::Dialog*)glade->get_widget("dialog_database_version");
+			Gtk::Dialog* dialog_database_version = NULL;
+			builder->get_widget("dialog_database_version", dialog_database_version);
 			int response = dialog_database_version->run();
 			dialog_database_version->hide();
 			if (response == 0)
@@ -365,6 +366,25 @@ void Application::set_boolean_configuration_value(const Glib::ustring& key, gboo
 	client->set(get_configuration_path(key), (bool)value);
 }
 
+void Application::select_channel_to_play()
+{
+	const ChannelArray& channels = channel_manager.get_channels();
+	if (channels.size() > 0)
+	{
+		gint last_channel = get_application().get_int_configuration_value("last_channel");
+		if (channel_manager.find_channel(last_channel) == NULL)
+		{
+			g_debug("Last channel '%d' not found", last_channel);
+			last_channel = -1;
+		}
+		if (last_channel == -1)
+		{
+			last_channel = (*channels.begin()).channel_id;
+		}
+		set_display_channel_by_id(last_channel);
+	}
+}
+
 void Application::run()
 {
 	TRY
@@ -398,10 +418,9 @@ void Application::run()
 		}
 
 		channel_manager.load(connection);
-		scheduled_recording_manager.load(connection);
 
-		status_icon = new StatusIcon(glade);
-		main_window = MainWindow::create(glade);
+		status_icon = new StatusIcon(builder);
+		main_window = MainWindow::create(builder);
 
 		if (!minimised_mode)
 		{
@@ -415,28 +434,16 @@ void Application::run()
 
 		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 
-		TRY
-		device_manager.get_frontend();
-		
-		const ChannelList& channels = channel_manager.get_channels();
+		TRY		
+		scheduled_recording_manager.load(connection);
+
+		const ChannelArray& channels = channel_manager.get_channels();
 		if (channels.empty())
 		{
 			main_window->show_channels_dialog();
 		}
-		if (channels.size() > 0)
-		{
-			gint last_channel = get_application().get_int_configuration_value("last_channel");
-			if (channel_manager.find_channel(last_channel) == NULL)
-			{
-				g_debug("Last channel '%d' not found", last_channel);
-				last_channel = -1;
-			}
-			if (last_channel == -1)
-			{
-				last_channel = (*channels.begin()).channel_id;
-			}
-			set_display_channel(last_channel);
-		}
+
+		select_channel_to_play();
 		CATCH
 		
 		Gnome::Main::run();
@@ -504,7 +511,31 @@ void Application::update()
 	}
 }
 
-void Application::set_display_channel(const Channel& channel)
+void Application::set_display_channel_by_id(guint channel_id)
+{
+	set_display_channel(channel_manager.get_channel_by_id(channel_id));
+}
+
+void Application::set_display_channel_number(guint channel_index)
+{
+	set_display_channel(channel_manager.get_channel_by_index(channel_index));
+}
+
+void Application::previous_channel()
+{
+	stop_stream();
+	channel_manager.previous_channel();
+	start_stream();
+}
+
+void Application::next_channel()
+{
+	stop_stream();
+	channel_manager.next_channel();
+	start_stream();
+}
+
+void Application::stop_stream()
 {
 	if (is_recording())
 	{
@@ -513,9 +544,11 @@ void Application::set_display_channel(const Channel& channel)
 
 	main_window->stop_engine();
 	stop_stream_thread();
+}
 
-	channel_manager.set_display_channel(channel);
-	
+void Application::start_stream()
+{
+	Channel& channel = channel_manager.get_display_channel();
 	stream_thread = new StreamThread(channel);
 	try
 	{
@@ -542,9 +575,11 @@ void Application::set_display_channel(const Channel& channel)
 	update();
 }
 
-void Application::set_display_channel(guint channel_id)
+void Application::set_display_channel(const Channel& channel)
 {
-	set_display_channel(channel_manager.get_channel(channel_id));
+	stop_stream();
+	channel_manager.set_display_channel(channel);
+	start_stream();
 }
 
 MainWindow& Application::get_main_window()
@@ -565,15 +600,15 @@ void Application::check_scheduled_recordings()
 		scheduled_recording_id = id;
 		ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(id);
 
-		const Channel* channel = channel_manager.get_display_channel();
-		if (channel == NULL || channel->channel_id == scheduled_recording.channel_id)
+		const Channel& channel = channel_manager.get_display_channel();
+		if (channel.channel_id == scheduled_recording.channel_id)
 		{
 			g_debug("Already tuned to correct channel");
 		}
 		else
 		{			
 			g_debug("Changing channel for scheduled recording");
-			set_display_channel(scheduled_recording.channel_id);
+			set_display_channel_by_id(scheduled_recording.channel_id);
 		}
 		
 		if (record_state == true)
@@ -615,27 +650,9 @@ gboolean Application::on_timeout()
 	if (last_seconds > seconds)
 	{
 		check_scheduled_recordings();
-		
-		if (save_thread == NULL)
-		{
-			start_save_thread(false);
-		}
-		else
-		{
-			g_debug("Save thread already running");
-			if (save_thread->is_terminated())
-			{
-				g_debug("Save thread has terminated, deleting");
-
-				delete save_thread;
-				save_thread = NULL;
-
-				g_debug("Save thread deleted");
-				
-				start_save_thread(false);
-			}
-		}
-		
+		scheduled_recording_manager.save(connection);
+		channel_manager.prune_epg();
+		channel_manager.save(connection);
 		update();
 	}
 	last_seconds = seconds;
@@ -647,12 +664,7 @@ gboolean Application::on_timeout()
 
 Glib::ustring Application::make_recording_filename(const Glib::ustring& description)
 {
-	Channel* channel = channel_manager.get_display_channel();
-		
-	if (channel == NULL)
-	{
-		throw Exception(_("No channel to make recording filename"));
-	}
+	Channel& channel = channel_manager.get_display_channel();
 	
 	Glib::ustring start_time = get_local_time_text("%c");
 	Glib::ustring filename;
@@ -661,7 +673,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	if (title.empty())
 	{
 		EpgEvent epg_event;
-		if (channel->epg_events.get_current(epg_event))
+		if (channel.epg_events.get_current(epg_event))
 		{
 			title = epg_event.get_title();
 		}
@@ -672,7 +684,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		filename = Glib::ustring::compose
 		(
 			"%1 - %2.mpeg",
-			channel->name,
+			channel.name,
 			start_time
 		);
 	}
@@ -682,7 +694,7 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		(
 			"%1 - %2 - %3.mpeg",
 			title,
-			channel->name,
+			channel.name,
 			start_time
 		);
 	}
@@ -812,16 +824,6 @@ Glib::StaticRecMutex& Application::get_mutex()
 	return mutex;
 }
 
-bool Application::on_quit()
-{
-	if (main_window != NULL)
-	{
-		main_window->stop_engine();
-	}
-	
-	return true;
-}
-
 void Application::on_error(const Glib::ustring& message)
 {
 	if (main_window != NULL)
@@ -841,40 +843,5 @@ void Application::on_error(const Glib::ustring& message)
 
 void Application::restart_stream()
 {
-	Channel* channel = channel_manager.get_display_channel();
-	if (channel != NULL)
-	{
-		set_display_channel(channel->channel_id);
-	}
-}
-
-void Application::start_save_thread(gboolean block)
-{	
-	if (block)
-	{
-		while (save_thread != NULL)
-		{
-			if (save_thread->is_terminated())
-			{
-				delete save_thread;
-				save_thread = NULL;
-			}
-			else
-			{
-				g_debug("Waiting for existing save thread to exit");
-				usleep(500000);
-			}
-		}
-	}
-	else
-	{
-		if (save_thread != NULL)
-		{
-			throw Exception(_("Save thread is already running"));
-		}
-	}
-
-	g_debug("Creating save thread");
-	save_thread = new SaveThread();
-	save_thread->start();
+	set_display_channel(channel_manager.get_display_channel());
 }

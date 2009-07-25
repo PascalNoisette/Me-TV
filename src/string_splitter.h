@@ -29,7 +29,8 @@ private:
 	gchar** parts;
 	gsize	count;
 public:
-	StringSplitter(const Glib::ustring& text, const char* deliminator, gsize max_length);
+	StringSplitter(const Glib::ustring& text, const char* delimiter,
+		gboolean squeeze_repeats, gsize max_length);
 	~StringSplitter();
 
 	const gchar* get_value(guint index);
