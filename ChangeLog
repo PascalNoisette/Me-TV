@@ -1,3 +1,8 @@
+2009-07-28  Scott Evans <scott@vk7hse.hobby-site.org>
+
+	* 0.10.2
+	* Fix for Lenny compile
+
 2009-07-22  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.10.0
