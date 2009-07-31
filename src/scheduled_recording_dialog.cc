@@ -61,9 +61,8 @@ void ScheduledRecordingDialog::set_date_time(time_t t)
 	spin_button_start_time_hour->set_value(start_time->tm_hour);
 	spin_button_start_time_minute->set_value(start_time->tm_min);
 
-	calendar_start_time_date->property_day() = start_time->tm_mday;
-	calendar_start_time_date->property_month() = start_time->tm_mon;
-	calendar_start_time_date->property_year() = 1900 + start_time->tm_year;
+	calendar_start_time_date->select_day(start_time->tm_mday);
+	calendar_start_time_date->select_month(start_time->tm_mon, 1900 + start_time->tm_year);
 }
 
 gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, ScheduledRecording& scheduled_recording)
