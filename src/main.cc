@@ -82,7 +82,7 @@ int main (int argc, char *argv[])
 
 	Glib::OptionEntry read_timeout_option_entry;
 	read_timeout_option_entry.set_long_name("read-timeout");
-	read_timeout_option_entry.set_description(_("How long to wait (in seconds) before timing out while waiting for data from demuxer (default 5)."));
+	read_timeout_option_entry.set_description(_("How long to wait (in seconds) before timing out while waiting for data from demuxer (default 15)."));
 	
 	Glib::OptionGroup option_group(PACKAGE_NAME, "", _("Show Me TV help options"));
 	option_group.add_entry(verbose_option_entry, verbose_logging);
