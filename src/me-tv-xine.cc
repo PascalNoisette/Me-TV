@@ -166,12 +166,12 @@ void set_mute_state(bool mute)
 	xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, mute ? 0 : 100);
 }
   
-void set_audio_channel(int channel)
+void set_audio_stream(int channel)
 {
 	xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
 }
 
-void set_subtitle_channel(int channel)
+void set_subtitle_stream(int channel)
 {
 	xine_set_param(stream, XINE_PARAM_SPU_CHANNEL, channel);
 }
@@ -387,11 +387,11 @@ int main(int argc, char **argv)
 						{
 							if (key_event->state == XK_Shift_L)
 							{
-								set_audio_channel(keysym - XK_1);
+								set_audio_stream(keysym - XK_1);
 							}
 							else if (key_event->state == XK_Shift_R)
 							{
-								set_subtitle_channel(keysym - XK_1);
+								set_subtitle_stream(keysym - XK_1);
 							}
 						}
 						break;
