@@ -62,70 +62,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_expose_event));
 	
 	builder->get_widget_derived("scrolled_window_epg", widget_epg);
-
-	Gtk::MenuItem* menu_item = NULL;
-
-	builder->get_widget("menu_item_record", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_record_clicked));
-
-	builder->get_widget("menu_item_broadcast", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_broadcast_clicked));
-
-	builder->get_widget("menu_item_quit", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_quit_clicked));
-
-	builder->get_widget("menu_item_meters", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_meters_clicked));
-
-	builder->get_widget("menu_item_channels", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
-
-	builder->get_widget("menu_item_devices", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_devices_clicked));
-
-	builder->get_widget("menu_item_preferences", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
-
-	builder->get_widget("menu_item_fullscreen", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_fullscreen_clicked));	
-
-	builder->get_widget("menu_item_schedule", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
-
-	builder->get_widget("menu_item_mute", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_mute_clicked));	
-
-	builder->get_widget("menu_item_about", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
-
-	Gtk::ToolButton* tool_button = NULL;
-	
-	builder->get_widget("tool_button_record", tool_button);
-	tool_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_tool_button_record_clicked));	
-	
-	builder->get_widget("tool_button_mute", tool_button);
-	tool_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_tool_button_mute_clicked));	
-	
-	builder->get_widget("tool_button_schedule", tool_button);
-	tool_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
-	
-	builder->get_widget("tool_button_broadcast", tool_button);
-	tool_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_tool_button_broadcast_clicked));	
-
-	Gtk::RadioMenuItem* radio_menu_item = NULL;
-
-	builder->get_widget("radio_menu_item_audio_channels_both", radio_menu_item);
-	radio_menu_item->signal_toggled().connect(sigc::mem_fun(*this, &MainWindow::on_radio_menu_item_audio_channels_both));
-
-	builder->get_widget("radio_menu_item_audio_channels_left", radio_menu_item);
-	radio_menu_item->signal_toggled().connect(sigc::mem_fun(*this, &MainWindow::on_radio_menu_item_audio_channels_left));
-
-	builder->get_widget("radio_menu_item_audio_channels_right", radio_menu_item);
-	radio_menu_item->signal_toggled().connect(sigc::mem_fun(*this, &MainWindow::on_radio_menu_item_audio_channels_right));
-
-	signal_motion_notify_event().connect(sigc::mem_fun(*this, &MainWindow::on_motion_notify_event));
-	signal_delete_event().connect(sigc::mem_fun(*this, &MainWindow::on_delete_event));
-
+		
 	Gtk::EventBox* event_box_video = NULL;
 	builder->get_widget("event_box_video", event_box_video);
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
@@ -144,25 +81,51 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	GdkColor  color = {0, 0, 0, 0};
 	GdkPixmap* pixmap = gdk_bitmap_create_from_data(NULL, bits, 1, 1);
 	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
+	
+	Application& application = get_application();
+	set_keep_above(application.get_boolean_configuration_value("keep_above"));
+
+	action_group = Gtk::ActionGroup::create();
+	action_group->add(Gtk::Action::create("file", "_File"));
+	action_group->add(Gtk::Action::create("record", Gtk::Stock::MEDIA_RECORD),
+		sigc::mem_fun(*this, &MainWindow::on_record) );
+	action_group->add(Gtk::Action::create("broadcast", Gtk::Stock::NETWORK),
+		sigc::mem_fun(*this, &MainWindow::on_broadcast) );
+	action_group->add(Gtk::Action::create("quit", Gtk::Stock::QUIT),
+		sigc::mem_fun(*this, &MainWindow::on_quit) );
+	action_group->add(Gtk::Action::create("view", "_View"));
+	action_group->add(Gtk::Action::create("devices", "_Devices"));
+	action_group->add(Gtk::Action::create("channels", "_Channels"));
+	action_group->add(Gtk::Action::create("schedule", "_Schedule"));
+	action_group->add(Gtk::Action::create("meters", "_Meters"));
+	action_group->add(Gtk::Action::create("preferences", Gtk::Stock::PREFERENCES));
+	action_group->add(Gtk::Action::create("video", "Video"));
+	action_group->add(Gtk::Action::create("fullscreen", Gtk::Stock::FULLSCREEN));
+	action_group->add(Gtk::Action::create("subtitle_streams", "_Subtitles"));
+	action_group->add(Gtk::Action::create("audio", "Audio"));
+	action_group->add(Gtk::Action::create("mute", "_Mute"));
+	action_group->add(Gtk::Action::create("audio_streams", "_Streams"));
+	action_group->add(Gtk::Action::create("audio_channels", "_Channels"));
+	action_group->add(Gtk::Action::create("help", "_Help"));
+	action_group->add(Gtk::Action::create("about", Gtk::Stock::ABOUT));
+
+	ui_manager = Gtk::UIManager::create();
+	ui_manager->add_ui_from_file("me-tv-menu.ui");
+	ui_manager->insert_action_group(action_group);
+	add_accel_group(ui_manager->get_accel_group());
+
+	Gtk::Widget* menu_bar = ui_manager->get_widget("/menu_bar");
+
+	Gtk::VBox* vbox_main_window = NULL;
+	builder->get_widget("vbox_main_window", vbox_main_window);
+	vbox_main_window->pack_start(*menu_bar, Gtk::PACK_SHRINK);
+	vbox_main_window->reorder_child(*menu_bar, 0);
+
+	menu_bar->show_all();
+	set_display_mode(display_mode);
 
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
-	
-	set_display_mode(display_mode);
-
-	Application& application = get_application();
-	set_keep_above(application.get_boolean_configuration_value("keep_above"));
-	Gtk::MenuItem* menu_item_audio_streams = NULL;
-	builder->get_widget("menu_item_audio_streams", menu_item_audio_streams);
-	menu_item_audio_streams->set_submenu(audio_streams_menu);
-
-	Gtk::RadioMenuItem* menu_item_audio_channels_both = NULL;
-	builder->get_widget("radio_menu_item_audio_channels_both", menu_item_audio_channels_both);
-	menu_item_audio_channels_both->set_active(true);
-
-	Gtk::MenuItem* menu_item_subtitle_streams = NULL;
-	builder->get_widget("menu_item_subtitle_streams", menu_item_subtitle_streams);
-	menu_item_subtitle_streams->set_submenu(subtitle_streams_menu);
 
 	g_debug("MainWindow constructed");
 }
@@ -187,10 +150,11 @@ MainWindow* MainWindow::create(Glib::RefPtr<Gtk::Builder> builder)
 void MainWindow::on_menu_item_record_clicked()
 {
 	TRY
-	Gtk::CheckMenuItem* menu_item = NULL;
+/*	Gtk::CheckMenuItem* menu_item = NULL;
 	builder->get_widget("menu_item_record", menu_item);
 	gboolean record = menu_item->get_active();
 	get_application().set_record_state(record);
+	*/
 	CATCH
 }
 
@@ -541,7 +505,7 @@ void MainWindow::set_display_mode(DisplayMode mode)
 {
 	Gtk::Widget* widget = NULL;
 
-	builder->get_widget("menubar", widget);
+	widget = ui_manager->get_widget("/menu_bar");
 	widget->property_visible() = (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
 	
 	builder->get_widget("toolbar", widget);
@@ -625,8 +589,8 @@ void MainWindow::update()
 	Glib::ustring window_title;
 	Glib::ustring status_text;
 
-	set_state("record", application.is_recording());
-	set_state("broadcast", application.is_broadcasting());
+//	set_state("record", application.is_recording());
+	//set_state("broadcast", application.is_broadcasting());
 
 	if (!application.channel_manager.has_display_channel())
 	{
@@ -1055,4 +1019,18 @@ void MainWindow::on_radio_menu_item_audio_channels_right()
 	{
 		engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_RIGHT);
 	}
+}
+
+void MainWindow::on_record()
+{
+}
+
+void MainWindow::on_broadcast()
+{
+}
+
+void MainWindow::on_quit()
+{
+	hide();
+	Gnome::Main::quit();
 }

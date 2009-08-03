@@ -419,7 +419,7 @@ void Application::run()
 
 		channel_manager.load(connection);
 
-		status_icon = new StatusIcon(builder);
+		status_icon = new StatusIcon();
 		main_window = MainWindow::create(builder);
 
 		if (!minimised_mode)

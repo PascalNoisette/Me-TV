@@ -61,6 +61,9 @@ private:
 	guint									channel_change_timeout;
 	guint									temp_channel_number;
 
+	Glib::RefPtr<Gtk::ActionGroup>			action_group;
+	Glib::RefPtr<Gtk::UIManager>			ui_manager;
+	
 	void stop();
 	void toggle_fullscreen();
 	void toggle_mute();
@@ -98,6 +101,10 @@ private:
 	void on_radio_menu_item_audio_channels_both();
 	void on_radio_menu_item_audio_channels_left();
 	void on_radio_menu_item_audio_channels_right();
+
+	void on_record();
+	void on_broadcast();
+	void on_quit();
 
 	void on_show();
 	void on_hide();

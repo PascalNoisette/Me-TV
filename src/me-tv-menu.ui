@@ -1,0 +1,29 @@
+<ui>
+	<menubar name="menu_bar">
+		<menu action="file">
+			<menuitem action="record"/>
+			<menuitem action="broadcast"/>
+			<separator/>
+			<menuitem action="quit"/>
+		</menu>
+		<menu action="view">
+			<menuitem action="devices"/>
+			<menuitem action="schedule"/>
+			<menuitem action="channels"/>
+			<menuitem action="meters"/>
+			<menuitem action="preferences"/>
+		</menu>
+		<menu action="video">
+			<menuitem action="fullscreen"/>
+			<menuitem action="subtitle_streams"/>
+		</menu>
+		<menu action="audio">
+			<menuitem action="mute"/>
+			<menuitem action="audio_streams"/>
+			<menuitem action="audio_channels"/>
+		</menu>
+		<menu action="help">
+			<menuitem action="about"/>
+		</menu>
+	</menubar>
+</ui>

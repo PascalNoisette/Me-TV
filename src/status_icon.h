@@ -26,17 +26,16 @@
 class StatusIcon
 {
 private:
-	Glib::RefPtr<Gtk::Builder>		builder;
 	Glib::RefPtr<Gtk::StatusIcon>	status_icon;
-	Gtk::Menu*						popup_menu;
+	Gtk::Menu*						menu_status;
 		
 	void on_popup_menu(guint button, guint32 activate_time);
-	void on_menu_item_me_tv_clicked();
-	void on_menu_item_popup_quit_clicked();
+	void on_menu_item_status_quit_clicked();
+	void on_menu_item_status_me_tv_clicked();
 	void on_activate();
 
 public:
-	StatusIcon(Glib::RefPtr<Gtk::Builder>& builder);
+	StatusIcon();
 	void update();
 };
 

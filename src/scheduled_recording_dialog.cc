@@ -20,7 +20,6 @@
 
 #include "scheduled_recording_dialog.h"
 #include "scheduled_recordings_dialog.h"
-#include "main_window.h"
 #include "application.h"
 #include <iomanip>
 
