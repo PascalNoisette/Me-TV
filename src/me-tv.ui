@@ -2285,4 +2285,42 @@ If you've just upgraded Me TV then this is probably what you want to do.
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkUIManager" id="ui_manager">
+	<ui>
+		<menubar name="menubar">
+			<menu action="file">
+				<menuitem action="record"/>
+				<menuitem action="broadcast"/>
+				<separator/>
+				<menuitem action="quit"/>
+			</menu>
+			<menu action="view">
+				<menuitem action="devices"/>
+				<menuitem action="scheduled_recordings"/>
+				<menuitem action="channels"/>
+				<menuitem action="meters"/>
+				<menuitem action="preferences"/>
+			</menu>
+			<menu action="video">
+				<menuitem action="fullscreen"/>
+				<menu action="subtitle_streams"/>
+			</menu>
+			<menu action="audio">
+				<menuitem action="mute"/>
+				<menu action="audio_streams"/>
+				<menu action="audio_channels"/>
+			</menu>
+			<menu action="help">
+				<menuitem action="about"/>
+			</menu>
+		</menubar>
+		<toolbar name='toolbar'>
+			<toolitem action='record'/>
+			<toolitem action='mute'/>
+			<toolitem action='scheduled_recordings'/>
+			<toolitem action='broadcast'/>
+			<toolitem action='fullscreen'/>
+		</toolbar>
+	</ui>
+  </object>
 </interface>

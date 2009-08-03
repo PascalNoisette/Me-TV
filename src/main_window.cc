@@ -117,9 +117,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_group->add(Gtk::Action::create("about", Gtk::Stock::ABOUT),
 		sigc::mem_fun(*this, &MainWindow::on_about));
 
-	g_debug("Loading menu ...");
-	ui_manager = Gtk::UIManager::create();
-	ui_manager->add_ui_from_file("me-tv-menu.ui");
+	ui_manager = Glib::RefPtr<Gtk::UIManager>::cast_dynamic(builder->get_object("ui_manager"));
 	ui_manager->insert_action_group(action_group);
 	add_accel_group(ui_manager->get_accel_group());
 
