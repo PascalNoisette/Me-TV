@@ -105,10 +105,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_group->add(Gtk::Action::create("preferences", Gtk::Stock::PREFERENCES),
 		sigc::mem_fun(*this, &MainWindow::on_preferences));
 	action_group->add(Gtk::Action::create("video", "Video"));
-	action_group->add(Gtk::ToggleAction::create("fullscreen", Gtk::Stock::FULLSCREEN));
+	action_group->add(Gtk::ToggleAction::create("fullscreen", Gtk::Stock::FULLSCREEN),
+		sigc::mem_fun(*this, &MainWindow::on_fullscreen));
 	action_group->add(Gtk::Action::create("subtitle_streams", "_Subtitles"));
 	action_group->add(Gtk::Action::create("audio", "Audio"));
-	action_group->add(Gtk::ToggleAction::create("mute", Gnome::UI::Stock::VOLUME, "_Mute"));
+	action_group->add(Gtk::ToggleAction::create("mute", Gnome::UI::Stock::VOLUME, "_Mute"),
+		sigc::mem_fun(*this, &MainWindow::on_mute));
 	action_group->add(Gtk::Action::create("audio_streams", "_Streams"));
 	action_group->add(Gtk::Action::create("audio_channels", "_Channels"));
 	action_group->add(Gtk::Action::create("help", "_Help"));
@@ -159,16 +161,6 @@ MainWindow* MainWindow::create(Glib::RefPtr<Gtk::Builder> builder)
 	return main_window;
 }
 
-void MainWindow::on_menu_item_broadcast_clicked()
-{
-	TRY
-	Gtk::CheckMenuItem* menu_item = NULL;
-	builder->get_widget("menu_item_broadcast", menu_item);
-	gboolean broadcast = menu_item->get_active();
-	get_application().set_broadcast_state(broadcast);
-	CATCH
-}
-
 void MainWindow::show_devices_dialog()
 {
 	FullscreenBugWorkaround fullscreen_bug_workaround;
@@ -210,55 +202,6 @@ void MainWindow::show_preferences_dialog()
 	preferences_dialog.run();
 	preferences_dialog.hide();
 	update();
-}
-
-void MainWindow::on_menu_item_preferences_clicked()
-{
-	TRY
-	show_preferences_dialog();
-	CATCH
-}
-
-void MainWindow::on_menu_item_fullscreen_clicked()
-{
-	TRY
-	toggle_fullscreen();
-	CATCH
-}
-
-void MainWindow::on_menu_item_mute_clicked()
-{
-	TRY
-	Gtk::CheckMenuItem* menu_item = NULL;
-	builder->get_widget("menu_item_mute", menu_item);
-	gboolean mute = menu_item->get_active();
-	set_mute_state(mute);
-	CATCH
-}
-
-// This method should only be called by UI interactions
-void MainWindow::toggle_fullscreen()
-{
-	if (is_fullscreen())
-	{
-		unfullscreen();
-
-		if (maximise_forced)
-		{
-			get_window()->unmaximize();
-			maximise_forced = false;
-		}
-	}
-	else
-	{
-		if (get_application().get_boolean_configuration_value("fullscreen_bug_workaround"))
-		{
-			maximise_forced = true;
-			get_window()->maximize();
-		}	
-
-		fullscreen();
-	}
 }
 
 void MainWindow::set_next_display_mode()
@@ -464,36 +407,6 @@ void MainWindow::show_scheduled_recordings_dialog()
 	scheduled_recordings_dialog.hide();
 }
 
-void MainWindow::on_tool_button_record_clicked()
-{
-	TRY
-	Gtk::ToggleToolButton* toggle_button = NULL;
-	builder->get_widget("tool_button_record", toggle_button);
-	gboolean record = toggle_button->get_active();
-	get_application().set_record_state(record);
-	CATCH
-}
-
-void MainWindow::on_tool_button_mute_clicked()
-{
-	TRY
-	Gtk::ToggleToolButton* toggle_button = NULL;
-	builder->get_widget("tool_button_mute", toggle_button);
-	gboolean mute = toggle_button->get_active();
-	set_mute_state(mute);
-	CATCH
-}
-
-void MainWindow::on_tool_button_broadcast_clicked()
-{
-	TRY
-	Gtk::ToggleToolButton* toggle_button = NULL;
-	builder->get_widget("tool_button_broadcast", toggle_button);
-	gboolean broadcast = toggle_button->get_active();
-	get_application().set_broadcast_state(broadcast);
-	CATCH
-}
-
 void MainWindow::on_menu_item_audio_stream_activate(guint index)
 {
 	Glib::RecMutex::Lock lock(mutex);
@@ -523,9 +436,6 @@ void MainWindow::update()
 	Application& application = get_application();
 	Glib::ustring window_title;
 	Glib::ustring status_text;
-
-//	set_state("record", application.is_recording());
-	//set_state("broadcast", application.is_broadcasting());
 
 	if (!application.channel_manager.has_display_channel())
 	{
@@ -643,25 +553,6 @@ void MainWindow::update()
 		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("None available"));
 		menu_item->show_all();
 		audio_streams_menu.items().push_back(*menu_item);
-	}
-}
-
-void MainWindow::set_state(const Glib::ustring& name, gboolean state)
-{
-	Glib::ustring tool_button_name = "tool_button_" + name;
-	Gtk::ToggleToolButton* tool_button = NULL;
-	builder->get_widget(tool_button_name, tool_button);
-	if (tool_button->get_active() != state)
-	{
-		tool_button->set_active(state);
-	}
-
-	Glib::ustring menu_item_name = "menu_item_" + name;
-	Gtk::CheckMenuItem* menu_item = NULL;
-	builder->get_widget(menu_item_name, menu_item);
-	if (menu_item->get_active() != state)
-	{
-		menu_item->set_active(state);
 	}
 }
 
@@ -803,7 +694,7 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 
 		case GDK_m:
 		case GDK_M:
-			toggle_mute();
+			set_mute_state(!mute_state);
 			break;
 
 		case GDK_r:
@@ -907,31 +798,6 @@ void MainWindow::stop_engine()
 	g_debug("Engine stopped");
 }
 
-void MainWindow::toggle_mute()
-{
-	set_mute_state(!mute_state);
-}
-
-void MainWindow::set_mute_state(gboolean state)
-{
-	if (mute_state != state)
-	{
-		mute_state = state;
-		g_message("Setting mute to %s", mute_state ? "true" : "false");	
-		set_state("mute", mute_state);
-
-		{
-			Glib::RecMutex::Lock lock(mutex);
-			if (engine != NULL)
-			{
-				engine->set_mute_state(mute_state);
-			}
-		}
-
-		update();
-	}
-}
-
 void MainWindow::on_radio_menu_item_audio_channels_both()
 {
 	if (engine != NULL)
@@ -959,15 +825,21 @@ void MainWindow::on_radio_menu_item_audio_channels_right()
 void MainWindow::on_record()
 {
 	TRY
-	Gtk::CheckMenuItem* menu_item = NULL;
-	builder->get_widget("menu_item_record", menu_item);
-	gboolean record = menu_item->get_active();
+	Gtk::ToggleToolButton* toggle_button =
+		(Gtk::ToggleToolButton*)ui_manager->get_widget("/toolbar/record");
+	gboolean record = toggle_button->get_active();
 	get_application().set_record_state(record);
 	CATCH
 }
 
 void MainWindow::on_broadcast()
 {
+	TRY
+	Gtk::ToggleToolButton* toggle_button =
+		(Gtk::ToggleToolButton*)ui_manager->get_widget("/toolbar/broadcast");
+	gboolean broadcast = toggle_button->get_active();
+	get_application().set_broadcast_state(broadcast);
+	CATCH
 }
 
 void MainWindow::on_quit()
@@ -1027,4 +899,51 @@ void MainWindow::on_about()
 	about_dialog->run();
 	about_dialog->hide();
 	CATCH
+}
+
+void MainWindow::on_mute()
+{
+	TRY
+	Gtk::ToggleToolButton* mute_button =
+		(Gtk::ToggleToolButton*)ui_manager->get_widget("/toolbar/mute");
+	set_mute_state(mute_button->get_active());
+	CATCH
+}
+
+void MainWindow::set_mute_state(gboolean state)
+{
+	mute_state = state;
+	if (engine != NULL)
+	{
+		engine->set_mute_state(mute_state);
+	}
+}
+
+void MainWindow::toggle_fullscreen()
+{
+	if (is_fullscreen())
+	{
+		unfullscreen();
+
+		if (maximise_forced)
+		{
+			get_window()->unmaximize();
+			maximise_forced = false;
+		}
+	}
+	else
+	{
+		if (get_application().get_boolean_configuration_value("fullscreen_bug_workaround"))
+		{
+			maximise_forced = true;
+			get_window()->maximize();
+		}	
+
+		fullscreen();
+	}
+}
+
+void MainWindow::on_fullscreen()
+{
+	toggle_fullscreen();
 }
