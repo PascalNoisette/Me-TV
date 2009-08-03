@@ -87,41 +87,53 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	action_group = Gtk::ActionGroup::create();
 	action_group->add(Gtk::Action::create("file", "_File"));
-	action_group->add(Gtk::Action::create("record", Gtk::Stock::MEDIA_RECORD),
-		sigc::mem_fun(*this, &MainWindow::on_record) );
-	action_group->add(Gtk::Action::create("broadcast", Gtk::Stock::NETWORK),
+	action_group->add(Gtk::ToggleAction::create("record", Gtk::Stock::MEDIA_RECORD),
+		sigc::mem_fun(*this, &MainWindow::on_record));
+	action_group->add(Gtk::ToggleAction::create("broadcast", Gtk::Stock::NETWORK, "_Broadcast"),
 		sigc::mem_fun(*this, &MainWindow::on_broadcast) );
 	action_group->add(Gtk::Action::create("quit", Gtk::Stock::QUIT),
-		sigc::mem_fun(*this, &MainWindow::on_quit) );
+		sigc::mem_fun(*this, &MainWindow::on_quit));
 	action_group->add(Gtk::Action::create("view", "_View"));
-	action_group->add(Gtk::Action::create("devices", "_Devices"));
-	action_group->add(Gtk::Action::create("channels", "_Channels"));
-	action_group->add(Gtk::Action::create("schedule", "_Schedule"));
-	action_group->add(Gtk::Action::create("meters", "_Meters"));
-	action_group->add(Gtk::Action::create("preferences", Gtk::Stock::PREFERENCES));
+	action_group->add(Gtk::Action::create("devices", "_Devices"),
+		sigc::mem_fun(*this, &MainWindow::on_devices));
+	action_group->add(Gtk::Action::create("channels", "_Channels"),
+		sigc::mem_fun(*this, &MainWindow::on_channels));
+	action_group->add(Gtk::Action::create("scheduled_recordings", "_Scheduled Recordings"),
+		sigc::mem_fun(*this, &MainWindow::on_schedule));
+	action_group->add(Gtk::Action::create("meters", "_Meters"),
+		sigc::mem_fun(*this, &MainWindow::on_meters));
+	action_group->add(Gtk::Action::create("preferences", Gtk::Stock::PREFERENCES),
+		sigc::mem_fun(*this, &MainWindow::on_preferences));
 	action_group->add(Gtk::Action::create("video", "Video"));
-	action_group->add(Gtk::Action::create("fullscreen", Gtk::Stock::FULLSCREEN));
+	action_group->add(Gtk::ToggleAction::create("fullscreen", Gtk::Stock::FULLSCREEN));
 	action_group->add(Gtk::Action::create("subtitle_streams", "_Subtitles"));
 	action_group->add(Gtk::Action::create("audio", "Audio"));
-	action_group->add(Gtk::Action::create("mute", "_Mute"));
+	action_group->add(Gtk::ToggleAction::create("mute", "_Mute"));
 	action_group->add(Gtk::Action::create("audio_streams", "_Streams"));
 	action_group->add(Gtk::Action::create("audio_channels", "_Channels"));
 	action_group->add(Gtk::Action::create("help", "_Help"));
-	action_group->add(Gtk::Action::create("about", Gtk::Stock::ABOUT));
+	action_group->add(Gtk::Action::create("about", Gtk::Stock::ABOUT),
+		sigc::mem_fun(*this, &MainWindow::on_about));
 
+	g_debug("Loading menu ...");
 	ui_manager = Gtk::UIManager::create();
 	ui_manager->add_ui_from_file("me-tv-menu.ui");
 	ui_manager->insert_action_group(action_group);
 	add_accel_group(ui_manager->get_accel_group());
 
-	Gtk::Widget* menu_bar = ui_manager->get_widget("/menu_bar");
+	Gtk::Widget* menubar = ui_manager->get_widget("/menubar");
+	Gtk::Widget* toolbar = ui_manager->get_widget("/toolbar");
 
 	Gtk::VBox* vbox_main_window = NULL;
 	builder->get_widget("vbox_main_window", vbox_main_window);
-	vbox_main_window->pack_start(*menu_bar, Gtk::PACK_SHRINK);
-	vbox_main_window->reorder_child(*menu_bar, 0);
 
-	menu_bar->show_all();
+	vbox_main_window->pack_start(*menubar, Gtk::PACK_SHRINK);
+	vbox_main_window->reorder_child(*menubar, 0);
+	
+	vbox_main_window->pack_start(*toolbar, Gtk::PACK_SHRINK);
+	vbox_main_window->reorder_child(*toolbar, 1);
+
+	menubar->show_all();
 	set_display_mode(display_mode);
 
 	last_motion_time = time(NULL);
@@ -165,42 +177,6 @@ void MainWindow::on_menu_item_broadcast_clicked()
 	builder->get_widget("menu_item_broadcast", menu_item);
 	gboolean broadcast = menu_item->get_active();
 	get_application().set_broadcast_state(broadcast);
-	CATCH
-}
-
-void MainWindow::on_menu_item_quit_clicked()
-{
-	TRY
-	hide();
-	Gnome::Main::quit();
-	CATCH
-}
-	
-void MainWindow::on_menu_item_meters_clicked()
-{
-	TRY
-	
-	// Check that there is a device
-	get_application().device_manager.get_frontend();
-	
-	MetersDialog& meters_dialog = MetersDialog::create(builder);
-	meters_dialog.stop();
-	meters_dialog.start();
-	meters_dialog.show();
-	CATCH
-}
-
-void MainWindow::on_menu_item_channels_clicked()
-{
-	TRY
-	show_channels_dialog();
-	CATCH
-}
-
-void MainWindow::on_menu_item_devices_clicked()
-{
-	TRY
-	show_devices_dialog();
 	CATCH
 }
 
@@ -294,36 +270,6 @@ void MainWindow::toggle_fullscreen()
 
 		fullscreen();
 	}
-}
-
-void MainWindow::on_menu_item_help_contents_clicked()
-{
-	TRY
-	GError* error = NULL;
-	if (!gnome_help_display("me-tv", NULL, &error))
-	{
-		if (error == NULL)
-		{
-			throw Exception(_("Failed to launch help"));
-		}
-		else
-		{
-			throw Exception(Glib::ustring::compose(_("Failed to launch help: %1"), error->message));
-		}
-	}
-	CATCH
-}
-
-void MainWindow::on_menu_item_about_clicked()
-{
-	TRY
-	FullscreenBugWorkaround fullscreen_bug_workaround;
-
-	Gtk::Dialog* about_dialog = NULL;
-	builder->get_widget("dialog_about", about_dialog);
-	about_dialog->run();
-	about_dialog->hide();
-	CATCH
 }
 
 void MainWindow::set_next_display_mode()
@@ -505,10 +451,10 @@ void MainWindow::set_display_mode(DisplayMode mode)
 {
 	Gtk::Widget* widget = NULL;
 
-	widget = ui_manager->get_widget("/menu_bar");
+	widget = ui_manager->get_widget("/menubar");
 	widget->property_visible() = (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
 	
-	builder->get_widget("toolbar", widget);
+	widget = ui_manager->get_widget("/toolbar");
 	widget->property_visible() = (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
 	
 	builder->get_widget("statusbar", widget);
@@ -1033,4 +979,57 @@ void MainWindow::on_quit()
 {
 	hide();
 	Gnome::Main::quit();
+}
+
+void MainWindow::on_devices()
+{
+	TRY
+	show_devices_dialog();
+	CATCH
+}
+
+void MainWindow::on_channels()
+{
+	TRY
+	show_channels_dialog();
+	CATCH
+}
+
+void MainWindow::on_schedule()
+{
+	TRY
+	show_scheduled_recordings_dialog();
+	CATCH
+}
+
+void MainWindow::on_meters()
+{
+	TRY	
+	// Check that there is a device
+	get_application().device_manager.get_frontend();
+	
+	MetersDialog& meters_dialog = MetersDialog::create(builder);
+	meters_dialog.stop();
+	meters_dialog.start();
+	meters_dialog.show();
+	CATCH
+}
+
+void MainWindow::on_preferences()
+{
+	TRY
+	show_preferences_dialog();
+	CATCH
+}
+
+void MainWindow::on_about()
+{
+	TRY
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
+	Gtk::Dialog* about_dialog = NULL;
+	builder->get_widget("dialog_about", about_dialog);
+	about_dialog->run();
+	about_dialog->hide();
+	CATCH
 }

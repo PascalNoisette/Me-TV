@@ -1,5 +1,5 @@
 <ui>
-	<menubar name="menu_bar">
+	<menubar name="menubar">
 		<menu action="file">
 			<menuitem action="record"/>
 			<menuitem action="broadcast"/>
@@ -8,22 +8,30 @@
 		</menu>
 		<menu action="view">
 			<menuitem action="devices"/>
-			<menuitem action="schedule"/>
+			<menuitem action="scheduled_recordings"/>
 			<menuitem action="channels"/>
 			<menuitem action="meters"/>
 			<menuitem action="preferences"/>
 		</menu>
 		<menu action="video">
 			<menuitem action="fullscreen"/>
-			<menuitem action="subtitle_streams"/>
+			<menu action="subtitle_streams"/>
 		</menu>
 		<menu action="audio">
 			<menuitem action="mute"/>
-			<menuitem action="audio_streams"/>
-			<menuitem action="audio_channels"/>
+			<menu action="audio_streams"/>
+			<menu action="audio_channels"/>
 		</menu>
 		<menu action="help">
 			<menuitem action="about"/>
 		</menu>
 	</menubar>
+	<toolbar name='toolbar'>
+		<toolitem action='record'/>
+		<toolitem action='mute'/>
+		<toolitem action='scheduled_recordings'/>
+		<toolitem action='broadcast'/>
+		<toolitem action='fullscreen'/>
+	</toolbar>
 </ui>
+

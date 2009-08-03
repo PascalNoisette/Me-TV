@@ -106,6 +106,14 @@ private:
 	void on_broadcast();
 	void on_quit();
 
+	void on_devices();
+	void on_channels();
+	void on_schedule();
+	void on_meters();
+	void on_preferences();
+	
+	void on_about();
+
 	void on_show();
 	void on_hide();
 	
@@ -121,6 +129,7 @@ public:
 	void show_devices_dialog();
 	void show_channels_dialog();
 	void show_preferences_dialog();
+	
 	void toggle_visibility();
 	void update();
 	void save_geometry();
