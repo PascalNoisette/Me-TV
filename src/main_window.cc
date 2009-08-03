@@ -98,7 +98,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 		sigc::mem_fun(*this, &MainWindow::on_devices));
 	action_group->add(Gtk::Action::create("channels", "_Channels"),
 		sigc::mem_fun(*this, &MainWindow::on_channels));
-	action_group->add(Gtk::Action::create("scheduled_recordings", "_Scheduled Recordings"),
+	action_group->add(Gtk::Action::create("scheduled_recordings", Gnome::UI::Stock::TIMER, "_Schedule"),
 		sigc::mem_fun(*this, &MainWindow::on_schedule));
 	action_group->add(Gtk::Action::create("meters", "_Meters"),
 		sigc::mem_fun(*this, &MainWindow::on_meters));
@@ -108,7 +108,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_group->add(Gtk::ToggleAction::create("fullscreen", Gtk::Stock::FULLSCREEN));
 	action_group->add(Gtk::Action::create("subtitle_streams", "_Subtitles"));
 	action_group->add(Gtk::Action::create("audio", "Audio"));
-	action_group->add(Gtk::ToggleAction::create("mute", "_Mute"));
+	action_group->add(Gtk::ToggleAction::create("mute", Gnome::UI::Stock::VOLUME, "_Mute"));
 	action_group->add(Gtk::Action::create("audio_streams", "_Streams"));
 	action_group->add(Gtk::Action::create("audio_channels", "_Channels"));
 	action_group->add(Gtk::Action::create("help", "_Help"));
@@ -157,17 +157,6 @@ MainWindow* MainWindow::create(Glib::RefPtr<Gtk::Builder> builder)
 	MainWindow* main_window = NULL;
 	builder->get_widget_derived("window_main", main_window);
 	return main_window;
-}
-
-void MainWindow::on_menu_item_record_clicked()
-{
-	TRY
-/*	Gtk::CheckMenuItem* menu_item = NULL;
-	builder->get_widget("menu_item_record", menu_item);
-	gboolean record = menu_item->get_active();
-	get_application().set_record_state(record);
-	*/
-	CATCH
 }
 
 void MainWindow::on_menu_item_broadcast_clicked()
@@ -969,6 +958,12 @@ void MainWindow::on_radio_menu_item_audio_channels_right()
 
 void MainWindow::on_record()
 {
+	TRY
+	Gtk::CheckMenuItem* menu_item = NULL;
+	builder->get_widget("menu_item_record", menu_item);
+	gboolean record = menu_item->get_active();
+	get_application().set_record_state(record);
+	CATCH
 }
 
 void MainWindow::on_broadcast()
