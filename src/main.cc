@@ -105,6 +105,7 @@ int main (int argc, char *argv[])
 	}
 	catch (const Glib::Exception& exception)
 	{
+		g_debug("Error message: '%s'", exception.what().c_str());
 		Gtk::MessageDialog dialog(exception.what(),
 			false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
 		dialog.set_title(PACKAGE_NAME);
@@ -112,6 +113,7 @@ int main (int argc, char *argv[])
 	}
 	catch (...)
 	{
+		g_debug(_("An unhandled error occurred"));
 		Gtk::MessageDialog dialog(_("An unhandled error occurred"),
 			false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
 		dialog.set_title(PACKAGE_NAME);

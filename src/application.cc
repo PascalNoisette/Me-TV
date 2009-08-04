@@ -826,6 +826,7 @@ Glib::StaticRecMutex& Application::get_mutex()
 
 void Application::on_error(const Glib::ustring& message)
 {
+	g_debug("Error message: '%s'", message.c_str());
 	if (main_window != NULL)
 	{
 		FullscreenBugWorkaround fullscreen_bug_workaround;

@@ -111,7 +111,7 @@ me_tv_SOURCES = \
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \
 	LFS_LDFLAGS` `getconf \
-	LFS64_LDFLAGS`
+	LFS64_LDFLAGS` --export-dynamic
 
 me_tv_LDADD = \
 	$(ME_TV_LIBS) \

@@ -35,6 +35,110 @@
 #define UPDATE_INTERVAL					60
 #define SECONDS_UNTIL_CHANNEL_CHANGE	3
 
+G_BEGIN_DECLS
+void on_record(GtkObject *object, gpointer user_data)
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_record();
+}
+
+void on_broadcast(GtkObject *object, gpointer user_data)
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_broadcast();
+}
+
+void on_quit(GtkObject *object, gpointer user_data)
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_quit();
+}
+
+void on_next_channel(GtkObject *object, gpointer user_data)
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().next_channel();
+}
+
+void on_previous_channel(GtkObject *object, gpointer user_data)
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().previous_channel();
+}
+
+void on_change_view_mode(GtkObject *object, gpointer user_data)
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_change_view_mode();
+}
+
+void on_devices(GtkObject *object, gpointer user_data)
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_devices();
+}
+
+void on_channels()
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_channels();
+}
+
+void on_scheduled_recordings()
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_scheduled_recordings();
+}
+
+void on_meters()
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_meters();
+}
+
+void on_preferences(GtkObject *object, gpointer user_data)
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_preferences();
+}
+
+void on_fullscreen()
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_fullscreen();
+}
+
+void on_mute()
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_mute();
+}
+
+void on_audio_channel_both()
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_audio_channel_both();
+}
+
+void on_audio_channel_left()
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_audio_channel_left();
+}
+
+void on_audio_channel_right()
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_audio_channel_right();
+}
+
+void on_about()
+{
+	g_debug(__PRETTY_FUNCTION__);
+	get_application().get_main_window().on_about();
+}
+G_END_DECLS
+
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : Gtk::Window(cobject), builder(builder)
 {
@@ -42,7 +146,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	g_static_rec_mutex_init(mutex.gobj());
 
-	display_mode			= DISPLAY_MODE_EPG;
+	view_mode				= VIEW_MODE_EPG;
+	prefullscreen_view_mode	= VIEW_MODE_EPG;
 	last_update_time		= 0;
 	last_poke_time			= 0;
 	timeout_source			= 0;
@@ -85,50 +190,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	Application& application = get_application();
 	set_keep_above(application.get_boolean_configuration_value("keep_above"));
 
-	Gtk::RadioButtonGroup group_audio_channel;
-	
-	action_group = Gtk::ActionGroup::create();
-	action_group->add(Gtk::Action::create("file", "_File"));
-	action_group->add(Gtk::ToggleAction::create("record", Gtk::Stock::MEDIA_RECORD),
-		sigc::mem_fun(*this, &MainWindow::on_record));
-	action_group->add(Gtk::ToggleAction::create("broadcast", Gtk::Stock::NETWORK, "_Broadcast"),
-		sigc::mem_fun(*this, &MainWindow::on_broadcast) );
-	action_group->add(Gtk::Action::create("quit", Gtk::Stock::QUIT),
-		sigc::mem_fun(*this, &MainWindow::on_quit));
-	action_group->add(Gtk::Action::create("view", "_View"));
-	action_group->add(Gtk::Action::create("devices", "_Devices"),
-		sigc::mem_fun(*this, &MainWindow::on_devices));
-	action_group->add(Gtk::Action::create("channels", "_Channels"),
-		sigc::mem_fun(*this, &MainWindow::on_channels));
-	action_group->add(Gtk::Action::create("scheduled_recordings", Gnome::UI::Stock::TIMER, "_Schedule"),
-		sigc::mem_fun(*this, &MainWindow::on_schedule));
-	action_group->add(Gtk::Action::create("meters", "_Meters"),
-		sigc::mem_fun(*this, &MainWindow::on_meters));
-	action_group->add(Gtk::Action::create("preferences", Gtk::Stock::PREFERENCES),
-		sigc::mem_fun(*this, &MainWindow::on_preferences));
-	action_group->add(Gtk::Action::create("video", "Video"));
-	action_group->add(Gtk::ToggleAction::create("fullscreen", Gtk::Stock::FULLSCREEN),
-		sigc::mem_fun(*this, &MainWindow::on_fullscreen));
-	action_group->add(Gtk::Action::create("subtitle_streams", "_Subtitles"));
-	action_group->add(Gtk::Action::create("audio", "Audio"));
-	action_group->add(Gtk::ToggleAction::create("mute", Gnome::UI::Stock::VOLUME, "_Mute"),
-		sigc::mem_fun(*this, &MainWindow::on_mute));
-	action_group->add(Gtk::Action::create("audio_streams", "_Streams"));
-	action_group->add(Gtk::Action::create("audio_channels", "_Channels"));
-	action_group->add(Gtk::RadioAction::create(group_audio_channel, "audio_channel_both", "_Both"),
-		sigc::mem_fun(*this, &MainWindow::on_audio_channel_both));
-	action_group->add(Gtk::RadioAction::create(group_audio_channel, "audio_channel_left", "_Left"),
-		sigc::mem_fun(*this, &MainWindow::on_audio_channel_left));
-	action_group->add(Gtk::RadioAction::create(group_audio_channel, "audio_channel_right", "_Right"),
-		sigc::mem_fun(*this, &MainWindow::on_audio_channel_right));
-	action_group->add(Gtk::Action::create("help", "_Help"));
-	action_group->add(Gtk::Action::create("about", Gtk::Stock::ABOUT),
-		sigc::mem_fun(*this, &MainWindow::on_about));
-
-	action_group->add(Gtk::Action::create("none", _("Not Available")));
-
+	gtk_builder_connect_signals(builder->gobj(), NULL);
+		
 	ui_manager = Glib::RefPtr<Gtk::UIManager>::cast_dynamic(builder->get_object("ui_manager"));
-	ui_manager->insert_action_group(action_group);
 	add_accel_group(ui_manager->get_accel_group());
 
 	Gtk::Widget* menubar = ui_manager->get_widget("/menubar");
@@ -144,7 +208,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	vbox_main_window->reorder_child(*toolbar, 1);
 
 	menubar->show_all();
-	set_display_mode(display_mode);
+	set_view_mode(view_mode);
 
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
@@ -212,19 +276,19 @@ void MainWindow::show_preferences_dialog()
 	update();
 }
 
-void MainWindow::set_next_display_mode()
+void MainWindow::on_change_view_mode()
 {
-	if (display_mode == DISPLAY_MODE_VIDEO)
+	if (view_mode == VIEW_MODE_VIDEO)
 	{
-		set_display_mode(DISPLAY_MODE_EPG);
+		set_view_mode(VIEW_MODE_EPG);
 	}
-	else if (display_mode == DISPLAY_MODE_EPG)
+	else if (view_mode == VIEW_MODE_EPG)
 	{
-		set_display_mode(DISPLAY_MODE_CONTROLS);
+		set_view_mode(VIEW_MODE_CONTROLS);
 	}
 	else
 	{
-		set_display_mode(DISPLAY_MODE_VIDEO);
+		set_view_mode(VIEW_MODE_VIDEO);
 	}
 	update();
 }
@@ -242,12 +306,12 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event_button)
 	{
 		if (event_button->type == GDK_2BUTTON_PRESS)
 		{
-			toggle_fullscreen();
+			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("fullscreen"))->activate();
 		}
 	}
 	else if (event_button->button == 3)
 	{
-		set_next_display_mode();
+		on_change_view_mode();
 	}
 	CATCH
 	
@@ -278,16 +342,16 @@ void MainWindow::unfullscreen(gboolean restore_mode)
 	
 	if (restore_mode)
 	{
-		set_display_mode(prefullscreen);
+		set_view_mode(prefullscreen_view_mode);
 	}
 }
 
 void MainWindow::fullscreen(gboolean change_mode)
 {
-	prefullscreen = display_mode;
+	prefullscreen_view_mode = view_mode;
 	if (change_mode)
 	{
-		set_display_mode(DISPLAY_MODE_VIDEO);
+		set_view_mode(VIEW_MODE_VIDEO);
 	}
 	
 	Gtk::Window::fullscreen();
@@ -387,23 +451,23 @@ void MainWindow::on_timeout()
 	CATCH
 }
 
-void MainWindow::set_display_mode(DisplayMode mode)
+void MainWindow::set_view_mode(ViewMode mode)
 {
 	Gtk::Widget* widget = NULL;
 
 	widget = ui_manager->get_widget("/menubar");
-	widget->property_visible() = (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	widget->property_visible() = (mode == VIEW_MODE_EPG) || (mode == VIEW_MODE_CONTROLS);
 	
 	widget = ui_manager->get_widget("/toolbar");
-	widget->property_visible() = (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	widget->property_visible() = (mode == VIEW_MODE_EPG) || (mode == VIEW_MODE_CONTROLS);
 	
 	builder->get_widget("statusbar", widget);
-	widget->property_visible() = (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	widget->property_visible() = (mode == VIEW_MODE_EPG) || (mode == VIEW_MODE_CONTROLS);
 	
 	builder->get_widget("vbox_epg", widget);
-	widget->property_visible() = (mode == DISPLAY_MODE_EPG);
+	widget->property_visible() = (mode == VIEW_MODE_EPG);
 	
-	display_mode = mode;
+	view_mode = mode;
 }
 
 void MainWindow::show_scheduled_recordings_dialog()
@@ -663,26 +727,8 @@ void MainWindow::add_channel_number(guint channel_number)
 
 bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 {
-	gboolean result = true;
-	
 	switch(event_key->keyval)
-	{
-		case GDK_b:
-		case GDK_B:
-			{
-				Gtk::ToggleToolButton* toggle_button = NULL;
-				builder->get_widget("tool_button_broadcast", toggle_button);
-				gboolean broadcast = toggle_button->get_active();
-				get_application().set_broadcast_state(!broadcast);
-			}
-			break;
-			
-		case GDK_e:
-		case GDK_E:
-		case GDK_Mode_switch:
-			set_next_display_mode();
-			break;
-		
+	{		
 		case GDK_0: add_channel_number(0); break;
 		case GDK_1: add_channel_number(1); break;
 		case GDK_2: add_channel_number(2); break;
@@ -694,48 +740,11 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 		case GDK_8: add_channel_number(8); break;
 		case GDK_9: add_channel_number(9); break;
 			
-		case GDK_f:
-		case GDK_F:
-			toggle_fullscreen();
-			break;
-
-		case GDK_Escape:
-			if (is_fullscreen())
-			{
-				unfullscreen();
-			}
-			else
-			{
-				result = false;
-			}
-			break;
-
-		case GDK_m:
-		case GDK_M:
-			set_mute_state(!mute_state);
-			break;
-
-		case GDK_r:
-		case GDK_R:
-			get_application().toggle_recording();
-			break;
-		
-		case GDK_Up:
-		case GDK_minus:
-			get_application().previous_channel();
-			break;
-			
-		case GDK_plus:
-		case GDK_Down:
-			get_application().next_channel();
-			break;
-
-		default:
-			result = false;
+ 		default:
 			break;
 	}
 	
-	return result;
+	return Gtk::Window::on_key_press_event(event_key);
 }
 
 bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event_expose)
@@ -880,7 +889,7 @@ void MainWindow::on_channels()
 	CATCH
 }
 
-void MainWindow::on_schedule()
+void MainWindow::on_scheduled_recordings()
 {
 	TRY
 	show_scheduled_recordings_dialog();
