@@ -48,8 +48,6 @@ private:
 	guint									last_update_time;
 	guint									last_poke_time;
 	guint									timeout_source;
-	Gtk::Menu								subtitle_streams_menu;
-	Gtk::Menu								audio_streams_menu;
 	Engine*									engine;
 	gint									output_fd;
 	Glib::StaticRecMutex					mutex;

@@ -1352,7 +1352,6 @@ found in /usr/share/common-licenses/GPL file.</property>
         <child>
           <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
-            <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="label_channel_dialog_information">
                 <property name="visible">True</property>
@@ -1394,7 +1393,6 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <child>
                   <object class="GtkVBox" id="vbox2">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkButton" id="button_scan">
                         <property name="label">gtk-add</property>
@@ -2303,12 +2301,18 @@ If you've just upgraded Me TV then this is probably what you want to do.
 			</menu>
 			<menu action="video">
 				<menuitem action="fullscreen"/>
-				<menu action="subtitle_streams"/>
+				<menu action="subtitle_streams">
+					<menuitem action="none"/>
+				</menu>
 			</menu>
 			<menu action="audio">
 				<menuitem action="mute"/>
-				<menu action="audio_streams"/>
-				<menu action="audio_channels"/>
+				<menu action="audio_streams">
+					<menuitem action="none"/>
+				</menu>
+				<menu action="audio_channels">
+					<menuitem action="none"/>
+				</menu>
 			</menu>
 			<menu action="help">
 				<menuitem action="about"/>

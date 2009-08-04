@@ -117,6 +117,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_group->add(Gtk::Action::create("about", Gtk::Stock::ABOUT),
 		sigc::mem_fun(*this, &MainWindow::on_about));
 
+	action_group->add(Gtk::Action::create("none", _("Not Available")));
+
 	ui_manager = Glib::RefPtr<Gtk::UIManager>::cast_dynamic(builder->get_object("ui_manager"));
 	ui_manager->insert_action_group(action_group);
 	add_accel_group(ui_manager->get_accel_group());
@@ -458,10 +460,13 @@ void MainWindow::update()
 
 	widget_epg->update();
 
-	Gtk::Menu_Helpers::MenuList& audio_items = audio_streams_menu.items();
+	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menubar/audio/audio_streams"))->get_submenu();
+	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menubar/video/subtitle_streams"))->get_submenu();
+	
+	Gtk::Menu_Helpers::MenuList& audio_items = audio_streams_menu->items();
 	audio_items.erase(audio_items.begin(), audio_items.end());
 
-	Gtk::Menu_Helpers::MenuList& subtitle_items = subtitle_streams_menu.items();
+	Gtk::Menu_Helpers::MenuList& subtitle_items = subtitle_streams_menu->items();
 	subtitle_items.erase(subtitle_items.begin(), subtitle_items.end());
 
 	Gtk::RadioMenuItem::Group audio_streams_menu_group;
@@ -487,7 +492,7 @@ void MainWindow::update()
 			}
 			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
 			menu_item->show_all();
-			audio_streams_menu.items().push_back(*menu_item);
+			audio_streams_menu->items().push_back(*menu_item);
 			
 			if (count == audio_stream_index)
 			{
@@ -511,7 +516,7 @@ void MainWindow::update()
 		
 		Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
 		menu_item_subtitle_none->show_all();
-		subtitle_streams_menu.items().push_back(*menu_item_subtitle_none);
+		subtitle_streams_menu->items().push_back(*menu_item_subtitle_none);
 		menu_item_subtitle_none->signal_activate().connect(
 			sigc::bind<guint>
 			(
@@ -527,7 +532,7 @@ void MainWindow::update()
 			Glib::ustring text = Glib::ustring::compose("%1: %2", count, subtitle_stream.language);
 			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
 			menu_item->show_all();
-			subtitle_streams_menu.items().push_back(*menu_item);
+			subtitle_streams_menu->items().push_back(*menu_item);
 			
 			if (count == subtitle_stream_index)
 			{
@@ -546,11 +551,18 @@ void MainWindow::update()
 		}
 	}
 	
-	if (audio_streams_menu.items().empty())
+	if (audio_streams_menu->items().empty())
 	{
-		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("None available"));
+		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("Not available"));
 		menu_item->show_all();
-		audio_streams_menu.items().push_back(*menu_item);
+		audio_streams_menu->items().push_back(*menu_item);
+	}
+
+	if (subtitle_streams_menu->items().empty())
+	{
+		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("Not available"));
+		menu_item->show_all();
+		subtitle_streams_menu->items().push_back(*menu_item);
 	}
 }
 
