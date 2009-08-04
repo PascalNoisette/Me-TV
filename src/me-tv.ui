@@ -2311,7 +2311,9 @@ If you've just upgraded Me TV then this is probably what you want to do.
 					<menuitem action="none"/>
 				</menu>
 				<menu action="audio_channels">
-					<menuitem action="none"/>
+					<menuitem action="audio_channel_both"/>
+					<menuitem action="audio_channel_left"/>
+					<menuitem action="audio_channel_right"/>
 				</menu>
 			</menu>
 			<menu action="help">

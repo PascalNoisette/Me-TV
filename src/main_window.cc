@@ -85,6 +85,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	Application& application = get_application();
 	set_keep_above(application.get_boolean_configuration_value("keep_above"));
 
+	Gtk::RadioButtonGroup group_audio_channel;
+	
 	action_group = Gtk::ActionGroup::create();
 	action_group->add(Gtk::Action::create("file", "_File"));
 	action_group->add(Gtk::ToggleAction::create("record", Gtk::Stock::MEDIA_RECORD),
@@ -113,6 +115,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 		sigc::mem_fun(*this, &MainWindow::on_mute));
 	action_group->add(Gtk::Action::create("audio_streams", "_Streams"));
 	action_group->add(Gtk::Action::create("audio_channels", "_Channels"));
+	action_group->add(Gtk::RadioAction::create(group_audio_channel, "audio_channel_both", "_Both"),
+		sigc::mem_fun(*this, &MainWindow::on_audio_channel_both));
+	action_group->add(Gtk::RadioAction::create(group_audio_channel, "audio_channel_left", "_Left"),
+		sigc::mem_fun(*this, &MainWindow::on_audio_channel_left));
+	action_group->add(Gtk::RadioAction::create(group_audio_channel, "audio_channel_right", "_Right"),
+		sigc::mem_fun(*this, &MainWindow::on_audio_channel_right));
 	action_group->add(Gtk::Action::create("help", "_Help"));
 	action_group->add(Gtk::Action::create("about", Gtk::Stock::ABOUT),
 		sigc::mem_fun(*this, &MainWindow::on_about));
@@ -808,7 +816,7 @@ void MainWindow::stop_engine()
 	g_debug("Engine stopped");
 }
 
-void MainWindow::on_radio_menu_item_audio_channels_both()
+void MainWindow::on_audio_channel_both()
 {
 	if (engine != NULL)
 	{
@@ -816,7 +824,7 @@ void MainWindow::on_radio_menu_item_audio_channels_both()
 	}
 }
 
-void MainWindow::on_radio_menu_item_audio_channels_left()
+void MainWindow::on_audio_channel_left()
 {
 	if (engine != NULL)
 	{
@@ -824,7 +832,7 @@ void MainWindow::on_radio_menu_item_audio_channels_left()
 	}
 }
 
-void MainWindow::on_radio_menu_item_audio_channels_right()
+void MainWindow::on_audio_channel_right()
 {
 	if (engine != NULL)
 	{

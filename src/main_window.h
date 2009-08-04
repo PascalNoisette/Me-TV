@@ -81,9 +81,9 @@ private:
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
 	void on_menu_item_audio_stream_activate(guint audio_stream_index);
 	void on_menu_item_subtitle_stream_activate(guint audio_stream_index);
-	void on_radio_menu_item_audio_channels_both();
-	void on_radio_menu_item_audio_channels_left();
-	void on_radio_menu_item_audio_channels_right();
+	void on_audio_channel_both();
+	void on_audio_channel_left();
+	void on_audio_channel_right();
 
 	void on_record();
 	void on_broadcast();
