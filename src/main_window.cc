@@ -156,9 +156,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	engine					= NULL;
 	output_fd				= -1;
 	mute_state				= false;
-	audio_channel_state		= Engine::AUDIO_CHANNEL_STATE_BOTH;
-	audio_stream_index		= 0;
-	subtitle_stream_index	= -1;
 	maximise_forced			= false;
 
 	builder->get_widget("statusbar", statusbar);
@@ -486,8 +483,7 @@ void MainWindow::on_menu_item_audio_stream_activate(guint index)
 	g_debug("MainWindow::on_menu_item_audio_stream_activate(%d)", index);
 	if (engine != NULL)
 	{
-		audio_stream_index = index;
-		engine->set_audio_stream(audio_stream_index);
+		engine->set_audio_stream(index);
 	}
 }
 
@@ -498,8 +494,7 @@ void MainWindow::on_menu_item_subtitle_stream_activate(guint index)
 	g_debug("MainWindow::on_menu_item_subtitle_stream_activate(%d)", index);
 	if (engine != NULL)
 	{
-		subtitle_stream_index = index;
-		engine->set_subtitle_stream(subtitle_stream_index);
+		engine->set_subtitle_stream(index);
 	}
 }
 
@@ -675,8 +670,6 @@ void MainWindow::create_engine()
 	{
 		engine = new Engine(engine_type);
 		engine->set_mute_state(mute_state);
-		engine->set_audio_channel_state(audio_channel_state);
-		engine->set_audio_stream(audio_stream_index);
 	}
 	
 	g_debug("%s engine created", engine_type.c_str());
@@ -686,8 +679,6 @@ void MainWindow::play(const Glib::ustring& mrl)
 {
 	Application& application = get_application();
 
-	audio_channel_state	= Engine::AUDIO_CHANNEL_STATE_BOTH;
-	audio_stream_index = 0;
 	create_engine();
 	if (engine != NULL)
 	{
@@ -728,11 +719,6 @@ void MainWindow::play(const Glib::ustring& mrl)
 			menu_item->show_all();
 			audio_streams_menu->items().push_back(*menu_item);
 			
-			if (count == audio_stream_index)
-			{
-				menu_item->set_active(true);
-			}
-			
 			menu_item->signal_activate().connect(
 				sigc::bind<guint>
 				(
@@ -767,12 +753,7 @@ void MainWindow::play(const Glib::ustring& mrl)
 			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
 			menu_item->show_all();
 			subtitle_streams_menu->items().push_back(*menu_item);
-			
-			if (count == subtitle_stream_index)
-			{
-				menu_item->set_active(true);
-			}
-			
+						
 			menu_item->signal_activate().connect(
 				sigc::bind<guint>
 				(

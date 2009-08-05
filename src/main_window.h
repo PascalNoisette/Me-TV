@@ -53,9 +53,6 @@ private:
 	gint									output_fd;
 	Glib::StaticRecMutex					mutex;
 	gboolean								mute_state;
-	Engine::AudioChannelState				audio_channel_state;
-	guint									audio_stream_index;
-	guint									subtitle_stream_index;
 	gboolean								maximise_forced;
 	guint									channel_change_timeout;
 	guint									temp_channel_number;

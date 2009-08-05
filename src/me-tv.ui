@@ -2422,7 +2422,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                <property name="label" translatable="yes">_Both</property>
 	       <property name="value">0</property>
 	       <property name="current-value">0</property>
-               <signal name="changed" handler="on_audio_channel_both"/>
+               <signal name="activate" handler="on_audio_channel_both"/>
             </object>
          </child>
          <child>
@@ -2430,7 +2430,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                <property name="label" translatable="yes">_Left</property>
 	       <property name="group">audio_channel_both</property>
 	       <property name="value">1</property>
-               <signal name="changed" handler="on_audio_channel_left"/>
+               <signal name="activate" handler="on_audio_channel_left"/>
             </object>
          </child>
          <child>
@@ -2438,7 +2438,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                <property name="label" translatable="yes">_Right</property>
 	       <property name="group">audio_channel_both</property>
 	       <property name="value">2</property>
-               <signal name="changed" handler="on_audio_channel_right"/>
+               <signal name="activate" handler="on_audio_channel_right"/>
             </object>
          </child>
          <child>
