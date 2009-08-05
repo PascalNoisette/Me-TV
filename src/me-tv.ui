@@ -2384,7 +2384,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
          </child>
          <child>
             <object class="GtkAction" id="subtitle_streams">
-               <property name="label" translatable="yes">_Streams</property>
+               <property name="label" translatable="yes">_Subtitle Streams</property>
             </object>
          </child>
          <child>
@@ -2409,12 +2409,12 @@ If you've just upgraded Me TV then this is probably what you want to do.
          </child>
          <child>
             <object class="GtkAction" id="audio_streams">
-               <property name="label" translatable="yes">_Streams</property>
+               <property name="label" translatable="yes">Audio _Streams</property>
             </object>
          </child>
          <child>
             <object class="GtkAction" id="audio_channels">
-               <property name="label" translatable="yes">_Audio Channels</property>
+               <property name="label" translatable="yes">Audio _Channels</property>
             </object>
          </child>
          <child>
