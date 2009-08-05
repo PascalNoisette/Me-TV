@@ -382,10 +382,12 @@ void MainWindow::on_timeout()
 		// Deactivate the countdown
 		channel_change_timeout = 0;
 
-		get_application().set_display_channel_number(temp_channel_number-1);
+		guint channel_index = temp_channel_number - 1;
 
 		// Reset the temporary channel number for the next run
 		temp_channel_number = 0;		
+
+		get_application().set_display_channel_number(channel_index);
 	}
 	
 	// Hide the mouse
