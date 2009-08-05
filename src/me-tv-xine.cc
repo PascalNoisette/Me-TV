@@ -257,7 +257,7 @@ int main(int argc, char **argv)
 	stream		= xine_stream_new(xine, audio_port, video_port);
 	event_queue	= xine_event_new_queue(stream);
 	xine_event_create_listener_thread(event_queue, event_listener, NULL);
-
+/*
 	if (video_port != NULL)
 	{
 		xine_post_wire_video_port(xine_get_video_source(stream), video_port);
@@ -293,9 +293,10 @@ int main(int argc, char **argv)
 
 		xine_set_param(stream, XINE_PARAM_VO_DEINTERLACE, true);
 	}
-	
+	*/
 	xine_port_send_gui_data(video_port, XINE_GUI_SEND_DRAWABLE_CHANGED, (void *) window);
 	xine_port_send_gui_data(video_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, (void *) 1);
+	xine_set_param(stream, XINE_PARAM_VO_DEINTERLACE, 0);
 
 	set_mute_state(strcmp(argv[5], "mute") == 0);
 	
