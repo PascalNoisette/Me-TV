@@ -2323,20 +2323,20 @@ If you've just upgraded Me TV then this is probably what you want to do.
             </object>
          </child>
          <child>
-            <object class="GtkAction" id="next_channel">
-               <property name="label" translatable="yes">_Next Channel</property>
-               <property name="stock-id">gtk-media-next</property>
-               <signal name="activate" handler="on_next_channel"/>
-            </object>
-            <accelerator key="Down" modifiers="GDK_CONTROL_MASK"/>
-         </child>
-         <child>
             <object class="GtkAction" id="previous_channel">
                <property name="label" translatable="yes">_Previous Channel</property>
-               <property name="stock-id">gtk-media-previous</property>
+               <property name="stock-id">gtk-go-up</property>
                <signal name="activate" handler="on_previous_channel"/>
             </object>
             <accelerator key="Up" modifiers="GDK_CONTROL_MASK"/>
+         </child>
+         <child>
+            <object class="GtkAction" id="next_channel">
+               <property name="label" translatable="yes">_Next Channel</property>
+               <property name="stock-id">gtk-go-down</property>
+               <signal name="activate" handler="on_next_channel"/>
+            </object>
+            <accelerator key="Down" modifiers="GDK_CONTROL_MASK"/>
          </child>
          <child>
             <object class="GtkAction" id="change_view_mode">
@@ -2463,8 +2463,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
         <menuitem action="quit"/>
       </menu>
       <menu action="view">
-        <menuitem action="next_channel"/>
         <menuitem action="previous_channel"/>
+        <menuitem action="next_channel"/>
         <separator/>
         <menuitem action="change_view_mode"/>
         <separator/>
