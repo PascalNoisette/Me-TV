@@ -38,103 +38,103 @@
 G_BEGIN_DECLS
 void on_record(GtkObject *object, gpointer user_data)
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_record();
 }
 
 void on_broadcast(GtkObject *object, gpointer user_data)
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_broadcast();
 }
 
 void on_quit(GtkObject *object, gpointer user_data)
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_quit();
 }
 
 void on_next_channel(GtkObject *object, gpointer user_data)
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().next_channel();
 }
 
 void on_previous_channel(GtkObject *object, gpointer user_data)
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().previous_channel();
 }
 
 void on_change_view_mode(GtkObject *object, gpointer user_data)
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_change_view_mode();
 }
 
 void on_devices(GtkObject *object, gpointer user_data)
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_devices();
 }
 
 void on_channels()
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_channels();
 }
 
 void on_scheduled_recordings()
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_scheduled_recordings();
 }
 
 void on_meters()
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_meters();
 }
 
 void on_preferences(GtkObject *object, gpointer user_data)
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_preferences();
 }
 
 void on_fullscreen()
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_fullscreen();
 }
 
 void on_mute()
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_mute();
 }
 
 void on_audio_channel_both()
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_audio_channel_both();
 }
 
 void on_audio_channel_left()
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_audio_channel_left();
 }
 
 void on_audio_channel_right()
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_audio_channel_right();
 }
 
 void on_about()
 {
-	g_debug(__PRETTY_FUNCTION__);
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_about();
 }
 G_END_DECLS

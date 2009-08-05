@@ -670,7 +670,7 @@ found in /usr/share/common-licenses/GPL file.</property>
           <object class="GtkTable" id="table_preferences">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-            <property name="n_rows">20</property>
+            <property name="n_rows">19</property>
             <property name="n_columns">2</property>
             <child>
               <object class="GtkHBox" id="hbox8">
@@ -863,8 +863,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">9</property>
-                <property name="bottom_attach">10</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
               </packing>
             </child>
             <child>
@@ -873,8 +873,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="label" translatable="yes">Xine video driver:</property>
               </object>
               <packing>
-                <property name="top_attach">9</property>
-                <property name="bottom_attach">10</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
               </packing>
             </child>
             <child>
@@ -898,8 +898,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">10</property>
-                <property name="bottom_attach">11</property>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
               </packing>
             </child>
             <child>
@@ -908,8 +908,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="label" translatable="yes">Xine audio driver:</property>
               </object>
               <packing>
-                <property name="top_attach">10</property>
-                <property name="bottom_attach">11</property>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
               </packing>
             </child>
             <child>
@@ -918,8 +918,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="label" translatable="yes">Text encoding:</property>
               </object>
               <packing>
-                <property name="top_attach">11</property>
-                <property name="bottom_attach">12</property>
+                <property name="top_attach">10</property>
+                <property name="bottom_attach">11</property>
               </packing>
             </child>
             <child>
@@ -943,8 +943,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">11</property>
-                <property name="bottom_attach">12</property>
+                <property name="top_attach">10</property>
+                <property name="bottom_attach">11</property>
               </packing>
             </child>
             <child>
@@ -960,8 +960,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">12</property>
-                <property name="bottom_attach">13</property>
+                <property name="top_attach">11</property>
+                <property name="bottom_attach">12</property>
               </packing>
             </child>
             <child>
@@ -975,8 +975,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">13</property>
-                <property name="bottom_attach">14</property>
+                <property name="top_attach">12</property>
+                <property name="bottom_attach">13</property>
               </packing>
             </child>
             <child>
@@ -990,8 +990,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">14</property>
-                <property name="bottom_attach">15</property>
+                <property name="top_attach">13</property>
+                <property name="bottom_attach">14</property>
               </packing>
             </child>
             <child>
@@ -1005,8 +1005,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">15</property>
-                <property name="bottom_attach">16</property>
+                <property name="top_attach">14</property>
+                <property name="bottom_attach">15</property>
               </packing>
             </child>
             <child>
@@ -1020,8 +1020,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">16</property>
-                <property name="bottom_attach">17</property>
+                <property name="top_attach">15</property>
+                <property name="bottom_attach">16</property>
               </packing>
             </child>
             <child>
@@ -1176,56 +1176,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label_engine_type">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Engine type:</property>
-              </object>
-              <packing>
-                <property name="top_attach">8</property>
-                <property name="bottom_attach">9</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkHBox" id="hbox9">
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkComboBox" id="combo_box_engine_type">
-                    <property name="visible">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">8</property>
-                <property name="bottom_attach">9</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkCheckButton" id="check_button_display_status_icon">
                 <property name="label" translatable="yes">Show a status icon in the notification area</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="draw_indicator">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">18</property>
-                <property name="bottom_attach">19</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkCheckButton" id="check_button_fullscreen_bug_workaround">
-                <property name="label" translatable="yes">Fullscreen workaround</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -1239,6 +1191,21 @@ found in /usr/share/common-licenses/GPL file.</property>
               </packing>
             </child>
             <child>
+              <object class="GtkCheckButton" id="check_button_fullscreen_bug_workaround">
+                <property name="label" translatable="yes">Fullscreen workaround</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">16</property>
+                <property name="bottom_attach">17</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkCheckButton" id="check_button_show_channel_number">
                 <property name="label" translatable="yes">Show channel number</property>
                 <property name="visible">True</property>
@@ -1249,8 +1216,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">19</property>
-                <property name="bottom_attach">20</property>
+                <property name="top_attach">18</property>
+                <property name="bottom_attach">19</property>
               </packing>
             </child>
             <child>
@@ -2283,225 +2250,5 @@ If you've just upgraded Me TV then this is probably what you want to do.
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkUIManager" id="ui_manager">
-    <child>
-      <object class="GtkActionGroup" id="main-action-group">
-         <child>
-            <object class="GtkAction" id="not_available">
-               <property name="label" translatable="yes">Not Available</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="file">
-               <property name="label" translatable="yes">_File</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkToggleAction" id="record">
-               <property name="stock-id">gtk-media-record</property>
-               <signal name="activate" handler="on_record"/>
-            </object>
-            <accelerator key="R"/>
-         </child>
-         <child>
-            <object class="GtkToggleAction" id="broadcast">
-               <property name="stock-id">gtk-network</property>
-               <property name="label" translatable="yes">_Broadcast</property>
-               <signal name="activate" handler="on_broadcast"/>
-            </object>
-            <accelerator key="B"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="quit">
-               <property name="stock-id">gtk-quit</property>
-               <signal name="activate" handler="on_quit"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="view">
-               <property name="label" translatable="yes">_View</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="previous_channel">
-               <property name="label" translatable="yes">_Previous Channel</property>
-               <property name="stock-id">gtk-go-up</property>
-               <signal name="activate" handler="on_previous_channel"/>
-            </object>
-            <accelerator key="Up" modifiers="GDK_CONTROL_MASK"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="next_channel">
-               <property name="label" translatable="yes">_Next Channel</property>
-               <property name="stock-id">gtk-go-down</property>
-               <signal name="activate" handler="on_next_channel"/>
-            </object>
-            <accelerator key="Down" modifiers="GDK_CONTROL_MASK"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="change_view_mode">
-               <property name="label" translatable="yes">_Change View</property>
-               <property name="stock-id">gtk-convert</property>
-               <signal name="activate" handler="on_change_view_mode"/>
-            </object>
-            <accelerator key="V"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="devices">
-               <property name="label" translatable="yes">_Devices</property>
-               <signal name="activate" handler="on_devices"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="channels">
-               <property name="label" translatable="yes">_Channels</property>
-               <signal name="activate" handler="on_channels"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="scheduled_recordings">
-               <property name="label" translatable="yes">_Schedule</property>
-               <property name="stock-id">gnome-stock-timer</property>
-               <signal name="activate" handler="on_scheduled_recordings"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="meters">
-               <property name="label" translatable="yes">_Meters</property>
-               <signal name="activate" handler="on_meters"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="preferences">
-               <property name="stock-id">gtk-preferences</property>
-               <signal name="activate" handler="on_preferences"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="video">
-               <property name="label" translatable="yes">Video</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="subtitle_streams">
-               <property name="label" translatable="yes">_Subtitle Streams</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkToggleAction" id="fullscreen">
-               <property name="stock-id">gtk-fullscreen</property>
-               <signal name="activate" handler="on_fullscreen"/>
-            </object>
-            <accelerator key="F"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="audio">
-               <property name="label" translatable="yes">Audio</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkToggleAction" id="mute">
-               <property name="label" translatable="yes">_Mute</property>
-               <property name="stock-id">gnome-stock-volume</property>
-               <signal name="activate" handler="on_mute"/>
-            </object>
-            <accelerator key="M"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="audio_streams">
-               <property name="label" translatable="yes">Audio _Streams</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="audio_channels">
-               <property name="label" translatable="yes">Audio _Channels</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkRadioAction" id="audio_channel_both">
-               <property name="label" translatable="yes">_Both</property>
-	       <property name="value">0</property>
-	       <property name="current-value">0</property>
-               <signal name="activate" handler="on_audio_channel_both"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkRadioAction" id="audio_channel_left">
-               <property name="label" translatable="yes">_Left</property>
-	       <property name="group">audio_channel_both</property>
-	       <property name="value">1</property>
-               <signal name="activate" handler="on_audio_channel_left"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkRadioAction" id="audio_channel_right">
-               <property name="label" translatable="yes">_Right</property>
-	       <property name="group">audio_channel_both</property>
-	       <property name="value">2</property>
-               <signal name="activate" handler="on_audio_channel_right"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="help">
-               <property name="label" translatable="yes">_Help</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="about">
-               <property name="stock-id">gtk-about</property>
-               <signal name="activate" handler="on_about"/>
-            </object>
-         </child>
-      </object>
-    </child>
-  <ui>
-    <menubar name="menubar">
-      <menu action="file">
-        <menuitem action="record"/>
-        <menuitem action="broadcast"/>
-        <separator/>
-        <menuitem action="quit"/>
-      </menu>
-      <menu action="view">
-        <menuitem action="previous_channel"/>
-        <menuitem action="next_channel"/>
-        <separator/>
-        <menuitem action="change_view_mode"/>
-        <separator/>
-        <menuitem action="devices"/>
-        <menuitem action="scheduled_recordings"/>
-        <menuitem action="channels"/>
-        <menuitem action="meters"/>
-        <menuitem action="preferences"/>
-      </menu>
-      <menu action="video">
-        <menuitem action="fullscreen"/>
-        <menu action="subtitle_streams">
-          <menuitem action="not_available"/>
-        </menu>
-      </menu>
-      <menu action="audio">
-        <menuitem action="mute"/>
-        <menu action="audio_streams">
-          <menuitem action="not_available"/>
-        </menu>
-        <menu action="audio_channels">
-          <menuitem action="audio_channel_both"/>
-          <menuitem action="audio_channel_left"/>
-          <menuitem action="audio_channel_right"/>
-        </menu>
-      </menu>
-      <menu action="help">
-        <menuitem action="about"/>
-      </menu>
-    </menubar>
-    <toolbar name='toolbar'>
-      <toolitem action='record'/>
-      <toolitem action='mute'/>
-      <toolitem action='scheduled_recordings'/>
-      <toolitem action='broadcast'/>
-      <toolitem action='fullscreen'/>
-    </toolbar>
-  </ui>
-  </object>
+  <object class="GtkUIManager" id="ui_manager"/>
 </interface>
