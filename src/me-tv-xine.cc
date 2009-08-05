@@ -166,6 +166,11 @@ void set_mute_state(bool mute)
 	xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, mute ? 0 : 100);
 }
   
+void set_deinterlacer_state(bool deinterlace)
+{
+	xine_set_param(stream, XINE_PARAM_VO_DEINTERLACE, deinterlace);
+}
+
 void set_audio_stream(int channel)
 {
 	xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
@@ -185,7 +190,7 @@ int main(int argc, char **argv)
 	const char*		video_driver = "auto";
 	const char*		audio_driver = "auto";
 
-	if (argc != 6)
+	if (argc != 7)
 	{
 		fprintf(stderr, "Invalid number of parameters\n");
 		return -1;
@@ -257,48 +262,12 @@ int main(int argc, char **argv)
 	stream		= xine_stream_new(xine, audio_port, video_port);
 	event_queue	= xine_event_new_queue(stream);
 	xine_event_create_listener_thread(event_queue, event_listener, NULL);
-/*
-	if (video_port != NULL)
-	{
-		xine_post_wire_video_port(xine_get_video_source(stream), video_port);
 
-		xine_post_t* plugin = xine_post_init(xine, "tvtime", 0, &audio_port, &video_port);
-		if (plugin == NULL)
-		{
-			fprintf(stderr, "Failed to create tvtime plugin\n");
-			return -1;
-		}
-
-		xine_post_out_t* plugin_output = xine_post_output (plugin, "video out")
-				? : xine_post_output (plugin, "video")
-				? : xine_post_output (plugin, xine_post_list_outputs (plugin)[0]);
-		if (plugin_output == NULL)
-		{
-			fprintf(stderr, "Failed to get xine plugin output for deinterlacing\n");
-			return -1;
-		}
-
-		xine_post_in_t* plugin_input = xine_post_input (plugin, "video")
-				? : xine_post_input (plugin, "video in")
-				? : xine_post_input (plugin, xine_post_list_inputs (plugin)[0]);
-
-		if (plugin_input == NULL)
-		{
-			fprintf(stderr, "Failed to get xine plugin input for deinterlacing\n");
-			return -1;
-		}
-
-		xine_post_wire(xine_get_video_source (stream), plugin_input);
-		xine_post_wire_video_port(plugin_output, video_port);
-
-		xine_set_param(stream, XINE_PARAM_VO_DEINTERLACE, true);
-	}
-	*/
 	xine_port_send_gui_data(video_port, XINE_GUI_SEND_DRAWABLE_CHANGED, (void *) window);
 	xine_port_send_gui_data(video_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, (void *) 1);
-	xine_set_param(stream, XINE_PARAM_VO_DEINTERLACE, 0);
 
-	set_mute_state(strcmp(argv[5], "mute") == 0);
+	set_deinterlacer_state(strcmp(argv[5], "true") == 0);
+	set_mute_state(strcmp(argv[6], "true") == 0);
 	
 	if ((!xine_open(stream, mrl)) || (!xine_play(stream, 0, 0)))
 	{
@@ -367,6 +336,10 @@ int main(int argc, char **argv)
 						set_mute_state(key_event->state != XK_Shift_L);
 						break;
 							
+					case XK_d:
+						set_deinterlacer_state(key_event->state != XK_Shift_L);
+						break;
+
 					case XK_a:
 						if (key_event->state == (XK_Shift_L & XK_Shift_R))
 						{

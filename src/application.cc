@@ -93,6 +93,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_boolean_configuration_default("fullscreen_bug_workaround", false);
 	set_boolean_configuration_default("display_status_icon", true);
 	set_boolean_configuration_default("show_channel_number", false);
+	set_boolean_configuration_default("deinterlace", true);
 	set_int_configuration_default("x", 10);
 	set_int_configuration_default("y", 10);
 	set_int_configuration_default("width", 500);

@@ -38,6 +38,7 @@ public:
 private:
 	gint				pid;
 	gboolean			mute_state;
+	gboolean			deinterlacer_state;
 	AudioChannelState	audio_channel_state;
 	guint				audio_stream;
 	gint				subtitle_stream;
@@ -50,6 +51,7 @@ private:
 public:
 	void play(const Glib::ustring& mrl);
 	void stop();
+	void set_deinterlacer_state(gboolean state);
 	void set_mute_state(gboolean state);
 	void set_audio_stream(guint stream);
 	void set_audio_channel_state(AudioChannelState state);
