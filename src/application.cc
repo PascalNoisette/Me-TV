@@ -578,9 +578,11 @@ void Application::start_stream()
 
 void Application::set_display_channel(const Channel& channel)
 {
+	g_message(_("Changing channel to %s"), channel.name.c_str());
 	stop_stream();
 	channel_manager.set_display_channel(channel);
 	start_stream();
+	g_message(_("Channel changed to %s"), channel.name.c_str());
 }
 
 MainWindow& Application::get_main_window()
