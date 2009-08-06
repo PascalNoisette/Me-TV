@@ -96,10 +96,13 @@ void ChannelsDialog::show_scan_dialog()
 				channel.name);
 			
 			Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE, true);
-			dialog.add_button("Overwrite existing channel", Gtk::RESPONSE_ACCEPT);
-			dialog.add_button("Keep existing channel", Gtk::RESPONSE_REJECT);
-			dialog.add_button("Cancel scan/import", Gtk::RESPONSE_CANCEL);
-			dialog.set_title(PACKAGE_NAME " - Channel conflict");
+			dialog.add_button(_("Overwrite existing channel"), Gtk::RESPONSE_ACCEPT);
+			dialog.add_button(_("Keep existing channel"), Gtk::RESPONSE_REJECT);
+			dialog.add_button(_("Cancel scan/import"), Gtk::RESPONSE_CANCEL);
+
+			Glib::ustring title = PACKAGE_NAME " - ";
+			title +=  _("Channel conflict");
+			dialog.set_title(title);
 			dialog.set_icon_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv.xpm");
 			int response = dialog.run();
 
@@ -107,8 +110,10 @@ void ChannelsDialog::show_scan_dialog()
 			{
 				case Gtk::RESPONSE_ACCEPT: break;
 				case Gtk::RESPONSE_REJECT: add = false; break;
-				case Gtk::RESPONSE_CANCEL: add = false; abort = true; break;
-				default: throw Exception("Invalid response");
+				default: // Cancel
+					add = false;
+					abort = true;
+					break;
 			}
 		}
 
