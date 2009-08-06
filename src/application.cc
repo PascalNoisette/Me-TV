@@ -851,27 +851,40 @@ void Application::on_record()
 {
 	TRY
 	if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->get_active())
-	{		
-		if (stream_thread == NULL)
+	{
+		try
 		{
-			throw Exception(_("There is no stream to record"));
+			if (stream_thread == NULL)
+			{
+				throw Exception(_("There is no stream to record"));
+			}
+
+			Glib::ustring recording_filename;
+
+			Glib::RecMutex::Lock lock(mutex);
+			if (scheduled_recording_id != 0)
+			{
+				ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(scheduled_recording_id);
+				recording_filename = scheduled_recording.description;
+			}
+			
+			recording_filename = make_recording_filename(recording_filename);
+			
+			stream_thread->start_recording(recording_filename);
+			update();
+
+			g_debug("Recording started");
 		}
-
-		Glib::ustring recording_filename;
-
-		Glib::RecMutex::Lock lock(mutex);
-		if (scheduled_recording_id != 0)
+		catch (const Glib::Exception& exception)
 		{
-			ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(scheduled_recording_id);
-			recording_filename = scheduled_recording.description;
+			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->set_active(false);
+			throw Exception(exception.what());
 		}
-		
-		recording_filename = make_recording_filename(recording_filename);
-		
-		stream_thread->start_recording(recording_filename);
-		update();
-		
-		g_debug("Recording started");
+		catch (...)
+		{
+			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->set_active(false);
+			throw Exception(_("Failed to start recording"));
+		}
 	}
 	else
 	{
@@ -898,13 +911,31 @@ void Application::on_broadcast()
 {
 	TRY
 	Glib::RecMutex::Lock lock(mutex);
-	if (stream_thread != NULL)
+	if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->get_active())
 	{
-		if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->get_active())
+		try
 		{
+			if (stream_thread == NULL)
+			{
+				throw Exception(_("There is no stream to broadcast"));
+			}
+			
 			stream_thread->start_broadcasting();
 		}
-		else
+		catch (const Glib::Exception& exception)
+		{
+			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->set_active(false);
+			throw Exception(exception.what());
+		}
+		catch (...)
+		{
+			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->set_active(false);
+			throw Exception(_("Failed to start broadcasting"));
+		}
+	}
+	else
+	{
+		if (stream_thread != NULL)
 		{
 			stream_thread->stop_broadcasting();
 		}
