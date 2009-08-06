@@ -25,6 +25,110 @@
 #define GCONF_PATH					"/apps/me-tv"
 #define CURRENT_DATABASE_VERSION	2
 
+G_BEGIN_DECLS
+void on_record(GtkObject *object, gpointer user_data)
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().on_record();
+}
+
+void on_broadcast(GtkObject *object, gpointer user_data)
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().on_broadcast();
+}
+
+void on_quit()
+{
+	get_application().get_main_window().hide();
+	Gnome::Main::quit();
+}
+
+void on_next_channel(GtkObject *object, gpointer user_data)
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().next_channel();
+}
+
+void on_previous_channel(GtkObject *object, gpointer user_data)
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().previous_channel();
+}
+
+void on_change_view_mode(GtkObject *object, gpointer user_data)
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_change_view_mode();
+}
+
+void on_devices(GtkObject *object, gpointer user_data)
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_devices();
+}
+
+void on_channels()
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_channels();
+}
+
+void on_scheduled_recordings()
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_scheduled_recordings();
+}
+
+void on_meters()
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_meters();
+}
+
+void on_preferences(GtkObject *object, gpointer user_data)
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_preferences();
+}
+
+void on_fullscreen()
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_fullscreen();
+}
+
+void on_mute()
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_mute();
+}
+
+void on_audio_channel_both()
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_audio_channel_both();
+}
+
+void on_audio_channel_left()
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_audio_channel_left();
+}
+
+void on_audio_channel_right()
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_audio_channel_right();
+}
+
+void on_about()
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_about();
+}
+G_END_DECLS
+
 Application* Application::current = NULL;
 
 Application& get_application()
@@ -52,8 +156,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	status_icon				= NULL;
 	stream_thread			= NULL;
 	timeout_source			= 0;
-	record_state			= false;
-	broadcast_state			= false;
 	scheduled_recording_id	= 0;
 	
 	// Remove all other handlers first
@@ -607,27 +709,26 @@ void Application::check_scheduled_recordings()
 			g_debug("Changing channel for scheduled recording");
 			set_display_channel_by_id(scheduled_recording.channel_id);
 		}
-		
-		if (record_state == true)
+
+		if (is_recording())
 		{
 			g_debug("Already recording");
 		}
 		else
 		{
 			g_debug("Starting recording due to scheduled recording");
-			Glib::ustring filename = make_recording_filename(scheduled_recording.description);
-			start_recording(filename);
+			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->set_active();
 		}
 	}
 
 	// Check if the SR has just finished
 	if (stream_thread != NULL &&			// If there's a stream
-		record_state &&						// and it's recording
+		is_recording() &&					// and it's recording
 		scheduled_recording_id != 0 &&		// and there is an existing SR running
 		id == 0)							// but the recording manager has just told us that there's no SR
 	{										// then we need to stop recording
 		g_debug("Record stopped by scheduled recording");
-		stop_recording();
+		Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->set_active(false);
 	}
 }
 
@@ -715,105 +816,7 @@ StreamThread* Application::get_stream_thread()
 
 gboolean Application::is_recording()
 {
-	return record_state;
-}
-
-void Application::set_record_state(gboolean state)
-{
-	if (record_state != state)
-	{
-		if (state == false)
-		{
-			stop_recording();
-		}
-		else
-		{
-			start_recording();
-		}
-	}
-}
-
-void Application::start_recording(const Glib::ustring& filename)
-{
-	if (record_state == false)
-	{
-		Glib::RecMutex::Lock lock(mutex);
-		
-		if (stream_thread == NULL)
-		{
-			throw Exception(_("There is no stream to record"));
-		}
-		
-		Glib::ustring recording_filename = filename;
-
-		if (recording_filename.empty())
-		{
-			recording_filename = make_recording_filename();
-		}
-		
-		stream_thread->start_recording(recording_filename);
-		record_state = true;
-		update();
-		
-		g_debug("Recording started");
-	}
-}
-
-void Application::stop_recording()
-{
-	if (record_state == true)
-	{
-		Glib::RecMutex::Lock lock(mutex);
-
-		stream_thread->stop_recording();
-		record_state = false;
-		
-		if (scheduled_recording_id != 0)
-		{
-			scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
-		}
-		scheduled_recording_id = 0;
-	
-		update();
-		g_debug("Recording stopped");
-	}
-}
-
-void Application::toggle_recording()
-{
-	set_record_state(!record_state);
-}
-
-void Application::toggle_broadcast()
-{
-	set_broadcast_state(!broadcast_state);
-}
-
-gboolean Application::is_broadcasting()
-{
-	return broadcast_state;
-}
-
-void Application::set_broadcast_state(gboolean state)
-{
-	if (broadcast_state != state)
-	{
-		broadcast_state = state;
-		
-		Glib::RecMutex::Lock lock(mutex);
-		if (stream_thread != NULL)
-		{
-			if (broadcast_state)
-			{
-				stream_thread->start_broadcasting();
-			}
-			else
-			{
-				stream_thread->stop_broadcasting();
-			}
-		}
-		update();
-	}
+	return Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->get_active();
 }
 
 Glib::StaticRecMutex& Application::get_mutex()
@@ -842,4 +845,67 @@ void Application::on_error(const Glib::ustring& message)
 void Application::restart_stream()
 {
 	set_display_channel(channel_manager.get_display_channel());
+}
+
+void Application::on_record()
+{
+	TRY
+	if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->get_active())
+	{		
+		if (stream_thread == NULL)
+		{
+			throw Exception(_("There is no stream to record"));
+		}
+
+		Glib::ustring recording_filename;
+
+		Glib::RecMutex::Lock lock(mutex);
+		if (scheduled_recording_id != 0)
+		{
+			ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(scheduled_recording_id);
+			recording_filename = scheduled_recording.description;
+		}
+		
+		recording_filename = make_recording_filename(recording_filename);
+		
+		stream_thread->start_recording(recording_filename);
+		update();
+		
+		g_debug("Recording started");
+	}
+	else
+	{
+		Glib::RecMutex::Lock lock(mutex);
+
+		stream_thread->stop_recording();
+		
+		if (scheduled_recording_id != 0)
+		{
+			scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
+		}
+		scheduled_recording_id = 0;
+	
+		update();
+		g_debug("Recording stopped");
+	}
+	CATCH
+}
+
+void Application::on_broadcast()
+{
+	TRY
+	Glib::RecMutex::Lock lock(mutex);
+	if (stream_thread != NULL)
+	{
+		if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->get_active())
+		{
+			stream_thread->start_broadcasting();
+		}
+		else
+		{
+			stream_thread->stop_broadcasting();
+		}
+	}
+	update();
+	CATCH
 }

@@ -89,9 +89,6 @@ public:
 		
 	static MainWindow* create(Glib::RefPtr<Gtk::Builder> builder);
 		
-	void on_record();
-	void on_broadcast();
-	void on_quit();
 	void on_next_channel();
 	void on_previous_channel();
 	void on_change_view_mode();
