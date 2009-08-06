@@ -877,16 +877,19 @@ void Application::on_record()
 	{
 		Glib::RecMutex::Lock lock(mutex);
 
-		stream_thread->stop_recording();
-		
-		if (scheduled_recording_id != 0)
+		if (stream_thread != NULL)
 		{
-			scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
+			stream_thread->stop_recording();
+			
+			if (scheduled_recording_id != 0)
+			{
+				scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
+			}
+			scheduled_recording_id = 0;
+		
+			update();
+			g_debug("Recording stopped");
 		}
-		scheduled_recording_id = 0;
-	
-		update();
-		g_debug("Recording stopped");
 	}
 	CATCH
 }
