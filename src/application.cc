@@ -72,7 +72,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_int_configuration_default("last_channel", -1);
 	set_string_configuration_default("recording_directory", Glib::get_home_dir());
 	set_string_configuration_default("engine_type", "xine");
-	set_string_configuration_default("deinterlace_type", "true");
+	set_string_configuration_default("deinterlace_type", "standard");
 	set_boolean_configuration_default("keep_above", true);
 	set_int_configuration_default("record_extra_before", 5);
 	set_int_configuration_default("record_extra_after", 10);
@@ -83,7 +83,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	set_boolean_configuration_default("show_epg_tooltips", false);
 	set_string_configuration_default("xine.video_driver", "xshm");
 	set_string_configuration_default("xine.audio_driver", "alsa");
-	set_string_configuration_default("xine.deinterlace_type", "tvtime");
 	set_string_configuration_default("preferred_language", "");
 	set_string_configuration_default("text_encoding", "auto");
 	set_boolean_configuration_default("fullscreen_bug_workaround", false);

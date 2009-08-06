@@ -672,7 +672,6 @@ void MainWindow::create_engine()
 	{
 		engine = new Engine(engine_type);
 		engine->set_mute_state(mute_state);
-		engine->set_deinterlacer_state(application.get_boolean_configuration_value("deinterlace"));
 	}
 	
 	g_debug("%s engine created", engine_type.c_str());
