@@ -45,7 +45,7 @@ private:
 	Gtk::TreeView*						tree_view_displayed_channels;
 	
 	void show_scan_dialog();
-	gboolean channel_exists(const Glib::ustring& channel_name);
+	gboolean import_channel(const Channel& channel);
 	
 	void on_show();
 	void on_button_scan_clicked();

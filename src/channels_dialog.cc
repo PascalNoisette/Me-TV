@@ -54,43 +54,21 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
 }
 
-gboolean ChannelsDialog::channel_exists(const Glib::ustring& channel_name)
+gboolean ChannelsDialog::import_channel(const Channel& channel)
 {
+	gboolean abort_import = false;
+	gboolean add = true;
+
 	const Gtk::TreeModel::Children& children = list_store->children();
 	for (Gtk::TreeModel::Children::const_iterator iterator = children.begin(); iterator != children.end(); iterator++)
-	{
+	{		
 		Gtk::TreeModel::Row row	= *iterator;
-		if (row[columns.column_name] == channel_name)
+		if (row[columns.column_name] == channel.name)
 		{
-			return true;
-		}
-	}
+			g_debug("Channel import: conflict with '%s'", channel.name.c_str());
+			
+			add = false;
 
-	return false;
-}
-
-void ChannelsDialog::show_scan_dialog()
-{
-	// Check for a valid frontend device
-	get_application().device_manager.get_frontend();
-	
-	FullscreenBugWorkaround fullscreen_bug_workaround;
-
-	ScanDialog& scan_dialog = ScanDialog::create(builder);
-	scan_dialog.show();
-	Gtk::Main::run(scan_dialog);
-
-	gboolean abort = false;
-	
-	ChannelArray channels = scan_dialog.get_channels();	
-	for (ChannelArray::const_iterator iterator = channels.begin(); iterator != channels.end() && !abort; iterator++)
-	{
-		const Channel& channel = *iterator;
-
-		gboolean add = true;
-		
-		if (channel_exists(channel.name))
-		{
 			Glib::ustring message = Glib::ustring::compose(
 				_("A channel named '%1' already exists.  Do you want to overwrite it?"),
 				channel.name);
@@ -108,21 +86,50 @@ void ChannelsDialog::show_scan_dialog()
 
 			switch (response)
 			{
-				case Gtk::RESPONSE_ACCEPT: break;
-				case Gtk::RESPONSE_REJECT: add = false; break;
+				case Gtk::RESPONSE_ACCEPT: // Overwrite
+					g_debug("Channel accepted");
+					row[columns.column_name]	= channel.name;
+					row[columns.column_channel]	= channel;
+					break;
+				case Gtk::RESPONSE_REJECT:
+					g_debug("Channel rejected");
+					break;
 				default: // Cancel
-					add = false;
-					abort = true;
+					g_debug("Import cancelled");
+					abort_import = true;
 					break;
 			}
-		}
+		}		
+	}
 
-		if (add)
+	if (add && !abort_import)
+	{
+		Gtk::TreeModel::iterator row_iterator = list_store->append();
+		Gtk::TreeModel::Row row		= *row_iterator;
+		row[columns.column_name]	= channel.name;
+		row[columns.column_channel]	= channel;
+	}
+
+	return !abort_import;
+}
+
+void ChannelsDialog::show_scan_dialog()
+{
+	// Check for a valid frontend device
+	get_application().device_manager.get_frontend();
+	
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
+	ScanDialog& scan_dialog = ScanDialog::create(builder);
+	scan_dialog.show();
+	Gtk::Main::run(scan_dialog);
+	
+	ChannelArray channels = scan_dialog.get_channels();	
+	for (ChannelArray::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
+	{
+		if (!import_channel(*iterator))
 		{
-			Gtk::TreeModel::iterator row_iterator = list_store->append();
-			Gtk::TreeModel::Row row		= *row_iterator;
-			row[columns.column_name]	= channel.name;
-			row[columns.column_channel]	= channel;
+			break;
 		}
 	}
 }
