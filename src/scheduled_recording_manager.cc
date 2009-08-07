@@ -146,19 +146,11 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 				current.description);
 			throw Exception(message);
 		}
-	}	
-
+	}
+	
 	// If the scheduled recording is new then add it
-	if (scheduled_recording.scheduled_recording_id != 0)
+	if (scheduled_recording.scheduled_recording_id == 0)
 	{
-		if (!updated)
-		{
-			Glib::ustring message = Glib::ustring::compose(
-				_("Failed to update a scheduled recording: scheduled recording ID '%1' does not exist"),
-				scheduled_recording.scheduled_recording_id);
-			throw Exception(message);
-		}
-		
 		g_debug("Adding scheduled recording");
 		scheduled_recordings.push_back(scheduled_recording);
 	}
