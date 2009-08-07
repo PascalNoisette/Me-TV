@@ -104,9 +104,9 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& scheduled_recording)
 {
 	Glib::RecMutex::Lock lock(mutex);
-	gboolean done = false;
+	gboolean updated = false;
 	
-	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !done; i++)
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !updated; i++)
 	{
 		ScheduledRecording& current = *i;
 
@@ -132,7 +132,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 			current.start_time = scheduled_recording.start_time;
 			current.duration = scheduled_recording.duration;
 
-			done = true;
+			updated = true;
 		}
 
 		// Check if we are scheduling the same program
@@ -149,8 +149,16 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 	}	
 
 	// If the scheduled recording is new then add it
-	if (scheduled_recording.scheduled_recording_id == 0)
+	if (scheduled_recording.scheduled_recording_id != 0)
 	{
+		if (!updated)
+		{
+			Glib::ustring message = Glib::ustring::compose(
+				_("Failed to update a scheduled recording: scheduled recording ID '%1' does not exist"),
+				scheduled_recording.scheduled_recording_id);
+			throw Exception(message);
+		}
+		
 		g_debug("Adding scheduled recording");
 		scheduled_recordings.push_back(scheduled_recording);
 	}
