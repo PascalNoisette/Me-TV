@@ -123,7 +123,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	if (dialog_response == Gtk::RESPONSE_OK)
 	{
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
-		get_application().scheduled_recording_manager.add_scheduled_recording(scheduled_recording);
+		get_application().scheduled_recording_manager.set_scheduled_recording(scheduled_recording);
 	}
 	
 	return dialog_response;
