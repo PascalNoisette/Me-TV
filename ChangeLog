@@ -1,10 +1,10 @@
 2009-08-10  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.0.0
-	* Reimplemented menus in UIManager
+	* Reimplemented menus/toolbars in UIManager
 	* Added menu accelerators
 	* Added Channel Up/Down and "Change View Mode" menu items 
-	* Using xine's default interlacer rather than the tvtime one
+	* Using a configurable deinterlacer rather than the hard-coded tvtime
 
 2009-08-01  Scott Evans <scott@vk7hse.hobby-site.org>
 
