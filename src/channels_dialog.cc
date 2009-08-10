@@ -54,19 +54,63 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
 }
 
-gboolean ChannelsDialog::channel_exists(const Glib::ustring& channel_name)
+gboolean ChannelsDialog::import_channel(const Channel& channel)
 {
+	gboolean abort_import = false;
+	gboolean add = true;
+
 	const Gtk::TreeModel::Children& children = list_store->children();
 	for (Gtk::TreeModel::Children::const_iterator iterator = children.begin(); iterator != children.end(); iterator++)
-	{
+	{		
 		Gtk::TreeModel::Row row	= *iterator;
-		if (row[columns.column_name] == channel_name)
+		if (row[columns.column_name] == channel.name)
 		{
-			return true;
-		}
+			g_debug("Channel import: conflict with '%s'", channel.name.c_str());
+			
+			add = false;
+
+			Glib::ustring message = Glib::ustring::compose(
+				_("A channel named '%1' already exists.  Do you want to overwrite it?"),
+				channel.name);
+			
+			Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE, true);
+			dialog.add_button(_("Overwrite existing channel"), Gtk::RESPONSE_ACCEPT);
+			dialog.add_button(_("Keep existing channel"), Gtk::RESPONSE_REJECT);
+			dialog.add_button(_("Cancel scan/import"), Gtk::RESPONSE_CANCEL);
+
+			Glib::ustring title = PACKAGE_NAME " - ";
+			title +=  _("Channel conflict");
+			dialog.set_title(title);
+			dialog.set_icon_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv.xpm");
+			int response = dialog.run();
+
+			switch (response)
+			{
+				case Gtk::RESPONSE_ACCEPT: // Overwrite
+					g_debug("Channel accepted");
+					row[columns.column_name]	= channel.name;
+					row[columns.column_channel]	= channel;
+					break;
+				case Gtk::RESPONSE_REJECT:
+					g_debug("Channel rejected");
+					break;
+				default: // Cancel
+					g_debug("Import cancelled");
+					abort_import = true;
+					break;
+			}
+		}		
 	}
 
-	return false;
+	if (add && !abort_import)
+	{
+		Gtk::TreeModel::iterator row_iterator = list_store->append();
+		Gtk::TreeModel::Row row		= *row_iterator;
+		row[columns.column_name]	= channel.name;
+		row[columns.column_channel]	= channel;
+	}
+
+	return !abort_import;
 }
 
 void ChannelsDialog::show_scan_dialog()
@@ -79,45 +123,13 @@ void ChannelsDialog::show_scan_dialog()
 	ScanDialog& scan_dialog = ScanDialog::create(builder);
 	scan_dialog.show();
 	Gtk::Main::run(scan_dialog);
-
-	gboolean abort = false;
 	
 	ChannelArray channels = scan_dialog.get_channels();	
-	for (ChannelArray::const_iterator iterator = channels.begin(); iterator != channels.end() && !abort; iterator++)
+	for (ChannelArray::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 	{
-		const Channel& channel = *iterator;
-
-		gboolean add = true;
-		
-		if (channel_exists(channel.name))
+		if (!import_channel(*iterator))
 		{
-			Glib::ustring message = Glib::ustring::compose(
-				_("A channel named '%1' already exists.  Do you want to overwrite it?"),
-				channel.name);
-			
-			Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE, true);
-			dialog.add_button("Overwrite existing channel", Gtk::RESPONSE_ACCEPT);
-			dialog.add_button("Keep existing channel", Gtk::RESPONSE_REJECT);
-			dialog.add_button("Cancel scan/import", Gtk::RESPONSE_CANCEL);
-			dialog.set_title(PACKAGE_NAME " - Channel conflict");
-			dialog.set_icon_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv.xpm");
-			int response = dialog.run();
-
-			switch (response)
-			{
-				case Gtk::RESPONSE_ACCEPT: break;
-				case Gtk::RESPONSE_REJECT: add = false; break;
-				case Gtk::RESPONSE_CANCEL: add = false; abort = true; break;
-				default: throw Exception("Invalid response");
-			}
-		}
-
-		if (add)
-		{
-			Gtk::TreeModel::iterator row_iterator = list_store->append();
-			Gtk::TreeModel::Row row		= *row_iterator;
-			row[columns.column_name]	= channel.name;
-			row[columns.column_channel]	= channel;
+			break;
 		}
 	}
 }

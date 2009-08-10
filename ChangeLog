@@ -1,3 +1,22 @@
+2009-08-10  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.0.0
+	* Reimplemented menus/toolbars in UIManager
+	* Added menu accelerators
+	* Added Channel Up/Down and "Change View Mode" menu items 
+	* Using a configurable deinterlacer rather than the hard-coded tvtime
+	* Added French translation
+
+2009-08-01  Scott Evans <scott@vk7hse.hobby-site.org>
+
+	* 0.10.3
+	* Changed default read timeout to 15 seconds
+
+2009-07-28  Scott Evans <scott@vk7hse.hobby-site.org>
+
+	* 0.10.2
+	* Fix for Lenny compile
+
 2009-07-22  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 0.10.0

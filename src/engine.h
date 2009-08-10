@@ -38,6 +38,7 @@ public:
 private:
 	gint				pid;
 	gboolean			mute_state;
+	gboolean			deinterlacer_state;
 	AudioChannelState	audio_channel_state;
 	guint				audio_stream;
 	gint				subtitle_stream;

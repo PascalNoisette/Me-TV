@@ -42,8 +42,6 @@ private:
 	StreamThread*						stream_thread;
 	Glib::StaticRecMutex				mutex;
 	guint								timeout_source;
-	gboolean							record_state;
-	gboolean							broadcast_state;
 	Glib::ustring						application_dir;
 	Data::Schema						schema;
 	guint								scheduled_recording_id;
@@ -102,15 +100,11 @@ public:
 	void start_stream();
 	
 	gboolean is_recording();
-	void start_recording(const Glib::ustring& filename = "");
-	void stop_recording();
-	void toggle_recording();
-	void set_record_state(gboolean state);
 	void check_scheduled_recordings();
+	void on_record();
 	
 	gboolean is_broadcasting();
-	void set_broadcast_state(gboolean state);
-	void toggle_broadcast();
+	void on_broadcast();
 	
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 	Glib::ustring make_recording_filename(const Glib::ustring& description = "");

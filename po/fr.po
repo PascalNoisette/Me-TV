@@ -1,4 +1,4 @@
-# German translation for me-tv
+# French translation for me-tv
 # Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
 # This file is distributed under the same license as the me-tv package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
@@ -8,19 +8,19 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-08-05 14:41+1000\n"
-"PO-Revision-Date: 2009-08-08 10:56+0000\n"
-"Last-Translator: Florian W. <Unknown>\n"
-"Language-Team: German <de@li.org>\n"
+"PO-Revision-Date: 2009-08-07 22:06+0000\n"
+"Last-Translator: cenwen <eolinwen@gmail.com>\n"
+"Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2009-08-09 09:08+0000\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Launchpad-Export-Date: 2009-08-09 09:12+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
-msgstr "Ein Programm für digitales Fernsehen (DVB) für GNOME"
+msgstr "Un poste de télévision numérique (TNT) pour GNOME"
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
@@ -28,11 +28,11 @@ msgstr "Me TV"
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
-msgstr " Stunden"
+msgstr " heures"
 
 #: ../src/me-tv.ui.h:2
 msgid " minutes"
-msgstr " Minuten"
+msgstr " minutes"
 
 #: ../src/me-tv.ui.h:3
 msgid "192.168.0.255"
@@ -40,31 +40,27 @@ msgstr "192.168.0.255"
 
 #: ../src/me-tv.ui.h:22
 msgid "Broadcast address:"
-msgstr "Ausstrahlungsadresse:"
+msgstr "Adresse de diffusion:"
 
 #: ../src/me-tv.ui.h:23
 msgid "Broadcast port:"
-msgstr "Ausstrahlungsport:"
+msgstr "Port de diffusion:"
 
 #: ../src/me-tv.ui.h:24
 msgid "Channel:"
-msgstr "Sender:"
+msgstr "Chaîne:"
 
 #: ../src/me-tv.ui.h:26
 msgid "Description:"
-msgstr "Beschreibung:"
-
-#: ../src/me-tv.ui.h:27
-msgid "Device Text"
-msgstr "Gerätetext"
+msgstr "Description:"
 
 #: ../src/me-tv.ui.h:29
 msgid "Duration:"
-msgstr "Dauer:"
+msgstr "Durée:"
 
 #: ../src/me-tv.ui.h:31
 msgid "EPG span: "
-msgstr "EPG - Zeitspanne: "
+msgstr "Source EPG: "
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:35
@@ -88,470 +84,343 @@ msgid ""
 "be\n"
 "found in /usr/share/common-licenses/GPL file."
 msgstr ""
-"Dieses Programm ist freie Software. Sie können es unter\n"
-"den Bedingungen der GNU General Public License, wie von\n"
-"der Free Software Foundation veröffentlicht, weitergeben\n"
-"und/oder modifizieren, entweder gemäß Version 2 der Lizenz\n"
-"oder (nach Ihrer Option) jeder späteren Version.\n"
+"Copy text   \t\n"
+"GNU General Public License:\n"
 "\n"
-"Die Veröffentlichung dieses Programms erfolgt in der Hoffnung,\n"
-"dass es Ihnen von Nutzen sein wird, aber OHNE IRGENDEINE\n"
-"GARANTIE, sogar ohne die implizite Garantie der MARKTREIFE\n"
-"oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK.\n"
-"Details finden Sie in der GNU General Public License.\n"
+"This program is free software; you can redistribute it and/or modify it "
+"under\n"
+"the terms of the GNU General Public License as published by the Free "
+"Software\n"
+"Foundation; either version 2 of the License, or (at your option) any later\n"
+"version.\n"
 "\n"
-"Sie sollten ein Exemplar der GNU General Public License\n"
-"zusammen mit diesem Programm erhalten haben. Falls nicht,\n"
-"schreiben Sie an die Free Software Foundation,Inc.,\n"
-"51 Franklin St, Fifth Floor, Boston, MA 02110, USA.\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY\n"
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A\n"
+"PARTICULAR PURPOSE. See the GNU General Public License for more details.\n"
 "\n"
-"Auf aktuellen Debian-Systemen kann der komplette Lizenztext\n"
-"der GPLv2 in /usr/share/common-licenses/GPL-2 gefunden werden."
+"On Debian systems, the complete text of the GNU General Public License can "
+"be\n"
+"found in /usr/share/common-licenses/GPL file."
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - About"
-msgstr "Informationen zu Me TV"
+msgstr "Me TV - A propos"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channels Editor"
-msgstr "Me TV - Sendereditor"
+msgstr "Me TV - Editeur de chaînes"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - Main Window"
-msgstr "Me TV - Hauptfenster"
-
-#: ../src/me-tv.ui.h:53
-msgid "Me TV - Meters Window"
-msgstr "Me TV - Messwerte"
+msgstr "Me TV - Fenêtre principale"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - Preferences Window"
-msgstr "Me TV - Einstellungen"
+msgstr "Me TV - Fenêtre de préférence"
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Program Details"
-msgstr "Me TV - Programmedetails"
+msgstr "Me TV - Détails du programme"
 
 #: ../src/me-tv.ui.h:56
 msgid "Me TV - Scan Wizard"
-msgstr "Me TV - Sender hinzufügen"
+msgstr "Me TV - Utilitaire de recherche"
 
 #: ../src/me-tv.ui.h:57
 msgid "Me TV - Scheduled Recording"
-msgstr "Me TV - Geplante Aufnahme"
+msgstr "Me TV - Enregistrement Programmé"
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scheduled Recordings"
-msgstr "Me TV - Zeitgesteuerte Aufnahmen"
+msgstr "Me TV - Enregistrements programmés"
 
 #: ../src/me-tv.ui.h:59
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
-msgstr "Me TV ist eine GNOME-Anwendung für digitales Fernsehen (DVB)"
+msgstr "Me TV est un logiciel pour la télévision numérique pour GNOME"
 
 #: ../src/me-tv.ui.h:60
 msgid "Me TV project website"
-msgstr "Projektseite von Me TV"
+msgstr "Site du projet Me TV"
 
 #: ../src/me-tv.ui.h:65
 msgid "Preferred language:"
-msgstr "Bevorzugte Sprache:"
+msgstr "Langue préférée:"
 
 #: ../src/me-tv.ui.h:66
 msgid "Record extra after: "
-msgstr "Puffer nach Aufnahme "
+msgstr "Enregistrement supplémentaire après: "
 
 #: ../src/me-tv.ui.h:67
 msgid "Record extra before: "
-msgstr "Puffer vor Aufnahme "
-
-#: ../src/me-tv.ui.h:68
-msgid "Recording directory: "
-msgstr "Aufnahmeverzeichnis: "
-
-#: ../src/me-tv.ui.h:69
-msgid "S/N Ratio"
-msgstr "Rauschabstand"
+msgstr "Enregistrement supplémentaire avant: "
 
 #: ../src/me-tv.ui.h:70
 msgid "Scan Progress"
-msgstr "Suchfortschritt"
+msgstr "Progression du scan"
 
 #: ../src/me-tv.ui.h:73
 msgid "See https://launchpad.net/me-tv"
-msgstr "Besuchen Sie https://launchpad.net/me-tv"
+msgstr "Voire https://launchpad.net/me-tv"
 
 #: ../src/me-tv.ui.h:74
 msgid "Select A Recording Directory"
-msgstr "Aufnahmeverzeichnis wählen"
+msgstr "Choisissez un répertoire d'enregistrement"
 
 #: ../src/me-tv.ui.h:75
 msgid "Select Scan File"
-msgstr "eine Datei zum Überprüfen aussuchen"
+msgstr "Sélectionnez le fichier scanné"
 
 #: ../src/me-tv.ui.h:77
 msgid "Select a file"
-msgstr "Datei auswählen"
-
-#: ../src/me-tv.ui.h:79
-msgid "Show EPG header"
-msgstr "Zeige EPG-Header"
-
-#: ../src/me-tv.ui.h:82
-msgid "Show time on EPG event buttons"
-msgstr "Zeige Zeit auf den EPG Eventbuttons"
-
-#: ../src/me-tv.ui.h:83
-msgid "Show tooltips for EPG event buttons"
-msgstr "Zeige Tooltips für die EPG Eventbuttons"
-
-#: ../src/me-tv.ui.h:84
-msgid "Signal Strength"
-msgstr "Signalstärke"
+msgstr "Choisissez un fichier"
 
 #: ../src/me-tv.ui.h:85
 msgid "Start Date:"
-msgstr "Startdatum:"
+msgstr "Date de début:"
 
 #: ../src/me-tv.ui.h:86
 msgid "Start Time:"
-msgstr "Startzeit:"
-
-#: ../src/me-tv.ui.h:87
-msgid "Text encoding:"
-msgstr "Textkodierung:"
+msgstr "Heure de début:"
 
 #: ../src/me-tv.ui.h:88
 msgid "Title:"
-msgstr "Titel:"
-
-#: ../src/me-tv.ui.h:89
-msgid "Use 24 hour workaround for GnomeDateEdit"
-msgstr "Nutze 24-Stunden-Workaround für GnomeDateEdit"
+msgstr "Titre:"
 
 #: ../src/me-tv.ui.h:91
 msgid "Xine audio driver:"
-msgstr "Xine Audiotreiber:"
+msgstr "Driver audio Xine"
 
 #: ../src/me-tv.ui.h:92
 msgid "Xine video driver:"
-msgstr "Xine Videotreiber:"
-
-#: ../src/me-tv.ui.h:99
-msgid "_Broadcast"
-msgstr "_Ausstrahlung"
+msgstr "Driver video Xine"
 
 #: ../src/me-tv.ui.h:103
 msgid "_Devices"
-msgstr "_Geräte"
+msgstr "_Périphériques"
 
 #: ../src/me-tv.ui.h:104
 msgid "_File"
-msgstr "_Datei"
+msgstr "_Fichier"
 
 #: ../src/me-tv.ui.h:105
 msgid "_Help"
-msgstr "_Hilfe"
+msgstr "_Aide"
 
 #: ../src/me-tv.ui.h:108
 msgid "_Mute"
-msgstr "_Stumm schalten"
+msgstr "_Muet"
 
 #: ../src/me-tv.ui.h:114
 msgid "_View"
-msgstr "_Ansicht"
+msgstr "_Vue"
 
 #: ../src/application.cc:45
 msgid "Application has already been initialised"
-msgstr "Die Anwendung wurde bereits initialisiert"
+msgstr "L'application a déjà été initialisée"
 
 #: ../src/application.cc:471
 msgid "Application has not been initialised"
-msgstr "Anwendung wurde nicht initialisiert"
+msgstr "L'application n'a pas été initialisée"
 
 #: ../src/application.cc:589
 msgid "Main window has not been created"
-msgstr "Das Hauptfenster wurde nicht erstellt"
+msgstr "La fenêtre principale n'a pas encore été crée"
 
 #: ../src/channel_manager.cc:255
 msgid "Channel '%1' not found"
-msgstr "Sender '%1' nicht gefunden"
+msgstr "Chaine '%1' non trouvée"
 
 #: ../src/channels_dialog.cc:51
 msgid "Channel Name"
-msgstr "Sendername"
-
-#: ../src/data.cc:50 ../src/data.cc:55
-msgid "Failed to prepare statement: %1"
-msgstr "Fehler: Failed to prepare statement: %1"
-
-#: ../src/data.cc:67
-msgid "Failed to create statement"
-msgstr "Fehler: Failed to create statement"
-
-#: ../src/data.cc:75
-msgid "Failed to finalise statement"
-msgstr "Fehler: Failed to finalise statement"
+msgstr "Nom de la chaîne"
 
 #: ../src/dvb_demuxer.cc:37
 msgid "Failed to open demux device"
-msgstr "Öffnen des Demux-Geräts fehlgeschlagen"
+msgstr "Erreur à l'ouverture du dispostif de démultiplexage"
 
 #: ../src/dvb_demuxer.cc:68
 msgid "Failed to set PES filter"
-msgstr "Setzen des PES-Filters fehlgeschlagen"
+msgstr "Impossible de configurer le filtre PES"
 
 #: ../src/dvb_demuxer.cc:86
 msgid "Failed to set section filter for demuxer"
-msgstr "Setzen des Sektionsfilters für den Demuxer fehlgeschlagen"
+msgstr "Impossible de configurer le filtre de section du démultiplexeur"
 
 #: ../src/dvb_demuxer.cc:94
 msgid "Failed to set demuxer buffer size"
-msgstr "Setzen der Puffergröße des Demuxers fehlgeschlagen"
-
-#: ../src/dvb_demuxer.cc:102
-msgid "Timeout while reading"
-msgstr "Zeitüberschreitung beim Lesen"
+msgstr "Impossible de fixer la taille du tampon du démultiplexeur"
 
 #: ../src/dvb_demuxer.cc:108
 msgid "Failed to read data from demuxer"
-msgstr "Lesen der Daten vom Demuxer fehlgeschlagen"
+msgstr "Impossible de lire les données du démultiplexeur"
 
 #: ../src/dvb_demuxer.cc:118
 msgid "Failed to stop demuxer"
-msgstr "Beenden des Demuxers fehlgeschlagen"
-
-#: ../src/dvb_demuxer.cc:133
-msgid "Failed to poll"
-msgstr "Abfragen gescheitert"
+msgstr "Impossible d'arrêter le démultiplexeur"
 
 #: ../src/dvb_frontend.cc:51
 msgid "Failed to open tuner"
-msgstr "Empfänger konnte nicht geöffnet werden"
+msgstr "Echec à l'ouverture du tuner"
 
 #: ../src/dvb_frontend.cc:56
 msgid "Failed to get tuner info"
-msgstr "Keine Empfängerinformationen gefunden"
+msgstr "Echec pour récupérer les infos du tuner"
 
 #: ../src/dvb_frontend.cc:110
 msgid "Failed to tune device"
-msgstr "Empfangsgerät konnte nicht eingestellt werden"
+msgstr "Echec du réglage du périphérique"
 
 #: ../src/dvb_frontend.cc:113
 msgid "Waiting for signal lock ..."
-msgstr "Auf Signalsperre warten …"
+msgstr "En attente du blocage du signal"
 
 #: ../src/dvb_frontend.cc:115
 msgid "Got signal lock"
-msgstr "Signalsperre erhalten"
+msgstr "Signal Bloqué"
 
 #: ../src/dvb_frontend.cc:131
 msgid "Failed to set tone off"
-msgstr "Stummschalten fehlgeschlagen"
+msgstr "Impossible de couper le son"
 
 #: ../src/dvb_frontend.cc:136
 msgid "Failed to set voltage"
-msgstr "Anlegen der Spannung fehlgeschlagen"
+msgstr "Impossible de fixer le voltage"
 
 #: ../src/dvb_frontend.cc:142
 msgid "Failed to send master command"
-msgstr "Senden des Master-Befehls fehlgeschlagen"
+msgstr "Impossible d'envoyer la commande principale"
 
 #: ../src/dvb_frontend.cc:148
 msgid "Failed to send burst"
-msgstr "Senden des Impuls fehlgeschlagen"
+msgstr "Impossible d'envoyer en raffale"
 
 #: ../src/dvb_frontend.cc:154
 msgid "Failed to set tone"
-msgstr "Setzen der Lautstärke fehlgeschlagen"
+msgstr "Impossible de mettre le son"
 
 #: ../src/dvb_frontend.cc:189
 msgid "Failed to lock to channel"
-msgstr "Sperren des Kanals fehlgeschlagen"
-
-#: ../src/dvb_frontend.cc:198
-msgid "Failed to get signal strength"
-msgstr "Konnte Signalstärke nicht ermitteln"
+msgstr "Impossible de verrouiller la chaîne"
 
 #: ../src/dvb_frontend.cc:208
 msgid "Failed to get signal to noise ratio"
-msgstr "Konnte Rauschabstand nicht ermitteln"
-
-#: ../src/dvb_scanner.cc:236
-msgid "Me TV cannot process a line in the initial tuning file"
-msgstr "Me TV konnte eine Zeile in der Scan-Startdatei nicht verarbeiten"
+msgstr "Impossible d'obtenir le taux de bruit"
 
 #: ../src/dvb_si.cc:129
 msgid "Failed to read header"
-msgstr "Auslesen des Headers fehlgeschlagen"
+msgstr "Impossible de lire l'entête"
 
 #: ../src/dvb_si.cc:138
 msgid "Failed to read section"
-msgstr "Auslesen des Abschnitts fehlgeschlagen"
+msgstr "Impossible de lire la section"
 
 #: ../src/dvb_si.cc:145
 msgid "CRC32 check failed"
-msgstr "CRC32-Prüfung fehlgeschlagen"
-
-#: ../src/dvb_si.cc:799
-msgid "ASSERT: offset > end_descriptor_offset"
-msgstr "ASSERT: offset > end_descriptor_offset"
-
-#: ../src/dvb_si.cc:810
-msgid "ASSERT: offset > end_section_offset"
-msgstr "ASSERT: offset > end_section_offset"
+msgstr "Contrôle CRC32 non réussi"
 
 #: ../src/dvb_si.cc:1064
 msgid "Failed to convert to UTF-8: %1"
-msgstr "Konnte nicht zu UTF-8 konvertieren: %1"
+msgstr "Impossible de convertir en UTF-8: %1"
 
 #: ../src/engine.cc:46
 msgid "Window ID was 0"
-msgstr "Fenster-ID ist 0"
+msgstr "L'ID de la fenêtre est de 0"
 
 #: ../src/epg_event.cc:99 ../src/scheduled_recording.cc:46
 msgid "1 hour"
 msgid_plural "%1 hours"
-msgstr[0] "1 Stunde"
-msgstr[1] "%1 Stunden"
+msgstr[0] "1 heure"
+msgstr[1] "%1 heures"
 
 #: ../src/epg_event.cc:107 ../src/scheduled_recording.cc:54
 msgid "1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] "1 Minute"
-msgstr[1] "%1 Minuten"
+msgstr[0] "1 minute"
+msgstr[1] "%1 minutes"
 
 #: ../src/epg_thread.cc:70
 msgid "No demuxers"
-msgstr "Keine Demuxer"
-
-#: ../src/epg_thread.cc:90
-msgid "Failed to poll EIT demuxers"
-msgstr "Fehler beim Abfragen der EIT Demuxer"
+msgstr "Pas de démultiplexeurs"
 
 #: ../src/epg_thread.cc:106
 msgid "Failed to get an EIT demuxer with events"
-msgstr "Konnte keinen EIT Demuxer mit Ereignissen ermitteln"
+msgstr "Impossible d'obtenir un démultiplexeur EIT avec évènements"
 
 #: ../src/epg_thread.cc:222
 msgid "Exiting EPG thread"
-msgstr "EPG-Thread wird verlassen"
+msgstr "Fermeture du processus de GEP"
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
-msgstr "Konnte keine Fehlermeldung erhalten"
+msgstr "Impossible de recevoir un méssage d'érreur"
 
 #: ../src/main.cc:28
 msgid "Me TV is a digital television viewer for the GNOME desktop"
-msgstr "Me TV ist ein Programm zum digitalen Fernsehen für den GNOME Desktop"
-
-#: ../src/main.cc:29
-msgid ""
-"Me TV was developed for the modern digital lounge room with a PC for a media "
-"centre that is capable of normal PC tasks (web surfing, word processing and "
-"watching TV). It is not designed to be a full-blown media centre such as "
-"MythTV but will integrate well with an existing GNOME desktop.\n"
 msgstr ""
-"Me TV wurde für das moderne, digitale Wohnzimmer mit einem PC als Media "
-"Center entworfen, welcher auch für normale PC-Aufgaben ( Websurfing, "
-"Textverarbeitung und Fernsehen) genutzt wird. Es wurde nicht als "
-"vollwertiges Media Center wie beispielsweise MythTV konzipiert, sondern soll "
-"sich gut in einen vorhandenen GNOME Desktop einfügen.\n"
+"Me TV est un visionneur de télévision numérique (TNT) pour l'environnement "
+"de bureau Gnome"
 
 #: ../src/main.cc:58
 msgid "Enable verbose messages"
-msgstr "Aktiviere ausführliche Meldungen"
+msgstr "Activer le mode bavard"
 
 #: ../src/main.cc:87
 msgid "Show Me TV help options"
-msgstr "Zeige Me TV Hilfeoptionen"
+msgstr "Afficher l'aide des options de Me TV"
 
 #: ../src/main_window.cc:509
 msgid "Me TV - It's TV for me computer"
-msgstr "Me TV - It's TV for me computer"
+msgstr "Me TV - C'est la télévision pour mon ordinateur"
 
 #: ../src/main_window.cc:520 ../src/main_window.cc:521
 msgid " [Recording]"
-msgstr " [Aufnahme läuft]"
-
-#: ../src/main_window.cc:659
-msgid "Failed to start engine: Engine has already been started"
-msgstr "Konnte Engine nicht starten: Engine läuft bereits"
+msgstr " [Enregistrement en cours]"
 
 #: ../src/meters_dialog.cc:74
 msgid "Signal Strength (%1%%)"
-msgstr "Signalstärke (%1%%)"
+msgstr "Puissance du signal (%1%%)"
 
 #: ../src/meters_dialog.cc:75
 msgid "S/N Ratio (%1%%)"
-msgstr "Rauschabstand (%1%%)"
+msgstr "Signal/Bruit Ratio (%1%%)"
 
 #: ../src/me-tv.cc:63
 msgid "Failed to get time"
-msgstr "Konnte Zeit nicht ermitteln"
+msgstr "Impossible de recevoir l'heure"
 
 #: ../src/me-tv.cc:126
 msgid "Failed to find a value for '%1'"
-msgstr "Für '%1' konnte kein Wert gefunden werden."
+msgstr "Impossible de trouver une valeur pour '%1'"
 
 #: ../src/me-tv.cc:151
 msgid "Failed to find a text value for '%1'"
-msgstr "Konnten keinen textuellen Wert finden für '%1'"
-
-#: ../src/scan_dialog.cc:99
-msgid "Unknown frontend type"
-msgstr "Unbekannter Frontend-Typ"
+msgstr "Impossible de trouver une valeur textuelle pour '%1'"
 
 #: ../src/scan_dialog.cc:143
 msgid "Service Name"
-msgstr "Dienstname"
-
-#: ../src/scan_dialog.cc:395
-msgid "No tuning file has been selected"
-msgstr "Es wurde keine Scan-Startdatei ausgewählt"
-
-#: ../src/scan_dialog.cc:518
-msgid "Invalid frontend type"
-msgstr "Ungültiger Frontend-Typ"
+msgstr "Nom du service"
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
-msgstr "Beschreibung"
+msgstr "Description"
 
 #: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
-msgstr "Kanal"
+msgstr "Chaîne"
 
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr "Startzeit"
+msgstr "Heure de début"
 
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr "Dauer"
-
-#: ../src/stream_thread.cc:81
-msgid "Failed to create FIFO '%1'"
-msgstr "Fehler beim Erstellen des FIFO '%1'"
+msgstr "Durée"
 
 #: ../src/stream_thread.cc:537
 msgid "Failed to find PMT ID for service"
-msgstr "PMT ID für Dienst nicht gefunden"
-
-#: ../src/stream_thread.cc:656
-msgid "Failed to create internet address"
-msgstr "Konnte Internetadresse nicht erstellen"
-
-#: ../src/stream_thread.cc:662
-msgid "Failed to create socket"
-msgstr "Konnte Socket nicht erzeugen"
-
-#: ../src/string_splitter.cc:50
-msgid "Index out of bounds"
-msgstr "Index ausserhalb des gültigen Bereichs"
-
-#: ../src/thread.cc:49
-msgid " thread has already been started"
-msgstr " Thread wurde schon gestartet"
+msgstr "PMT Id non trouvé pour ce service"
 
 #: ../src/me-tv.ui.h:4
 msgid ":"
@@ -559,7 +428,7 @@ msgstr ":"
 
 #: ../src/me-tv.ui.h:5
 msgid "<b>Device:</b>"
-msgstr "<b>Gerät:</b>"
+msgstr "<b>Périphérique:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid ""
@@ -569,11 +438,11 @@ msgid ""
 "The <i>scan</i> command line application is the most\n"
 "common way to generate a channels.conf file."
 msgstr ""
-"channels.conf ist ein verbreitetes Dateiformat zum Speichern\n"
-"von Fernsehsendern und kann von vielen Anwendungen\n"
-"eingelesen werden. Sie haben möglicherweise schon eine\n"
-"channels.conf von einer anderen DVB-Anwendung. Mit dem\n"
-"<i>scan</i>-Befehl kann auch eine solche Datei erzeugt werden."
+"Un fichier channels.conf est un format courant de fichier pour stocker\n"
+"les chaînes et peut-être lue par beaucoup d'applications. Vous\n"
+"devriez peut-être en avoir un pour d'autres applications DVB.\n"
+"L'application de la ligne de commande <i>scan </i> est le moyen le plus "
+"courant pour générer un fichier channels.conf."
 
 #: ../src/me-tv.ui.h:11
 msgid ""
@@ -586,97 +455,138 @@ msgid ""
 "\n"
 "<i>Scanning is only available for DVB-T/S/C, not ATSC. </i>"
 msgstr ""
-"Mit einer Scan-Startdatei kann deine TV-Karte auf\n"
-"Anfangsparameter für einen Sendersuchlauf gestellt\n"
-"werden. Installiere das <i>dvb-apps</i> -Paket aus der\n"
-"Paketverwaltung, um einige gängige Startdateien zu\n"
-"erhalten.\n"
+"Un premier fichier de scan  est utilisé pour initialiser le tuner avec\n"
+"des paramètres pré-configurés pour l'aider à trouver les services DVB.\n"
+"Beaucoup de fichiers scannés pré-configurés sont disponibles à partir du "
+"paquetage LinuxTV dvbtapps lequel est inclus dans\n"
+"la plupart des distributions Linux. Regarder à <i>dvb-apps</i> dans\n"
+"votre gestionnaire de paquets.\n"
 "\n"
-"<i>Ein Sendersuchlauf ist nicht mit ATSC möglich!</i>"
+"<i>Le balayage est seulement disponible pour DVB-T/S/C, pas pour ATSC. </i>"
 
 #: ../src/me-tv.ui.h:19
 msgid "Audio"
-msgstr "_Ton"
+msgstr "Audio"
 
 #: ../src/me-tv.ui.h:20
 msgid "Audio _Channels"
-msgstr "Ton_kanal"
+msgstr "Chaines Audio"
 
 #: ../src/me-tv.ui.h:21
 msgid "Audio _Streams"
-msgstr "Ton_spur"
+msgstr "Flux audio"
 
 #: ../src/me-tv.ui.h:25
 msgid "Copyright &#xA9; Michael Lamothe"
-msgstr "Copyright &#xA9; Michael Lamothe"
+msgstr "Copyright &#xA9;Michael Lamothe"
+
+#: ../src/me-tv.ui.h:27
+msgid "Device Text"
+msgstr "Périphérique texte"
 
 #: ../src/me-tv.ui.h:28
 msgid "Drag and drop the channels to reorder them."
-msgstr "Sie können Sender mit der Maus verschieben."
+msgstr "Glisser et déposser les chaines afin de les réorganiser."
 
 #: ../src/me-tv.ui.h:30
 msgid "EPG page size: "
-msgstr "EPG - Sender je Seite: "
+msgstr "Taille de la page GEP "
 
 #: ../src/me-tv.ui.h:32
 msgid "Engine type:"
-msgstr "Engine:"
+msgstr "Type de moteur"
 
 #: ../src/me-tv.ui.h:33
 msgid "Fullscreen workaround"
-msgstr "Provisorische Vollbildfunktion"
+msgstr ""
 
 #: ../src/me-tv.ui.h:48
 msgid "Import a channels.conf:"
-msgstr "channels.conf importieren:"
+msgstr "Importer un fichier channels.conf"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Devices"
-msgstr "Me TV - Geräte"
+msgstr "Dispositifs - Me TV"
+
+#: ../src/me-tv.ui.h:53
+msgid "Me TV - Meters Window"
+msgstr ""
 
 #: ../src/me-tv.ui.h:61
 msgid "Not Available"
-msgstr "Nicht verfügbar"
+msgstr "Pas disponible"
 
 #: ../src/me-tv.ui.h:62
 msgid "Now"
-msgstr "Jetzt"
+msgstr "Maintenant"
 
 #: ../src/me-tv.ui.h:63
 msgid "Page:"
-msgstr "Seite:"
+msgstr "Page"
 
 #: ../src/me-tv.ui.h:64
 msgid "Please select a device:"
-msgstr "Bitte ein Gerät auswählen:"
+msgstr "S'il vous plait, selectionnez un dispositif:"
+
+#: ../src/me-tv.ui.h:68
+msgid "Recording directory: "
+msgstr "Répertoire d'enregistrement "
+
+#: ../src/me-tv.ui.h:69
+msgid "S/N Ratio"
+msgstr "Ratio S/N"
 
 #: ../src/me-tv.ui.h:71
 msgid "Scan using an initial scan file:"
-msgstr "Sendersuchlauf durchführen:"
+msgstr "Balayage en utilisant un fichier pré-configuré"
 
 #: ../src/me-tv.ui.h:72
 msgid "Scanning/Importing"
-msgstr "Sendersuchlauf / Import"
+msgstr "Balayer/Importer"
 
 #: ../src/me-tv.ui.h:76
 msgid "Select a channels.conf file"
-msgstr "Wähle eine channels.conf-Datei"
+msgstr "Selectionner un fichier channel.conf"
 
 #: ../src/me-tv.ui.h:78
 msgid "Set \"Always on Top\" at startup"
-msgstr "Beim Start \"im Vordergrund\" aktivieren"
+msgstr "Afficher \"Toujours en haut\" au démarrage"
+
+#: ../src/me-tv.ui.h:79
+msgid "Show EPG header"
+msgstr ""
 
 #: ../src/me-tv.ui.h:80
 msgid "Show a status icon in the notification area"
-msgstr "Zeige ein Symbol im Benachrichtigungsfeld"
+msgstr "Montrer une icône de statut dans l'aire de notification"
 
 #: ../src/me-tv.ui.h:81
 msgid "Show channel number"
-msgstr "Zeige Sendernummer"
+msgstr "Montrer le nombre de chaînes"
+
+#: ../src/me-tv.ui.h:82
+msgid "Show time on EPG event buttons"
+msgstr "Montrer la durée sur le bouton d'évenements du GEP"
+
+#: ../src/me-tv.ui.h:83
+msgid "Show tooltips for EPG event buttons"
+msgstr ""
+
+#: ../src/me-tv.ui.h:84
+msgid "Signal Strength"
+msgstr "Force du signal"
+
+#: ../src/me-tv.ui.h:87
+msgid "Text encoding:"
+msgstr "Encodage du texte :"
+
+#: ../src/me-tv.ui.h:89
+msgid "Use 24 hour workaround for GnomeDateEdit"
+msgstr ""
 
 #: ../src/me-tv.ui.h:90
 msgid "Video"
-msgstr "_Bild"
+msgstr "Vidéo"
 
 #: ../src/me-tv.ui.h:93
 msgid ""
@@ -688,61 +598,62 @@ msgid ""
 "\n"
 "<i>The Me TV database is located at ~/.me-tv/me-tv.db.</i>"
 msgstr ""
-"Die Me TV-Datenbank ist veraltet. Möchten Sie die Datenbank löschen? Alle "
-"Sender, EPG-Einträge und geplanten Aufnahmen werden dabei <b>gelöscht</b>.\n"
-"\n"
-"Wenn Me TV gerade auf eine neue Version aktualisiert wurde, muss dieser "
-"Schritt durchgeführt werden.\n"
-"\n"
-"<i>Die Me TV-Datenbank ist unter ~/.me-tv/me-tv.db gespeichert.</i>"
+"Votre base de données Me TV est trop vieille pour utiliser cette version de "
+"Me TV. Voulez-vous rafraichir cette base de données Me TV? Toutes vos "
+"chaînes, informations de l'GEP et les enregistrements programmés seront "
+"<b>détruits</b>."
 
 #: ../src/me-tv.ui.h:98
 msgid "_Both"
-msgstr "_Beide"
+msgstr ""
+
+#: ../src/me-tv.ui.h:99
+msgid "_Broadcast"
+msgstr "_Emission"
 
 #: ../src/me-tv.ui.h:100
 msgid "_Change View"
-msgstr "_Ansicht ändern"
+msgstr "_Vue changée"
 
 #: ../src/me-tv.ui.h:101
 msgid "_Channels"
-msgstr "_Senderliste bearbeiten"
+msgstr "_Chaînes"
 
 #: ../src/me-tv.ui.h:102
 msgid "_Delete my old Me TV data!"
-msgstr "_Lösche meine alten Me TV-Daten!"
+msgstr "_Détruisez mes vieilles données Me TV!"
 
 #: ../src/me-tv.ui.h:106
 msgid "_Left"
-msgstr "_Linker"
+msgstr "_Gauche"
 
 #: ../src/me-tv.ui.h:107
 msgid "_Meters"
-msgstr "_Messwerte"
+msgstr "_Mètres"
 
 #: ../src/me-tv.ui.h:109
 msgid "_Next Channel"
-msgstr "Nächster Sender"
+msgstr "_Prochaine chaîne"
 
 #: ../src/me-tv.ui.h:110
 msgid "_Previous Channel"
-msgstr "Vorheriger Sender"
+msgstr "_Chaîne précédente"
 
 #: ../src/me-tv.ui.h:111
 msgid "_Right"
-msgstr "_Rechter"
+msgstr "_Droite"
 
 #: ../src/me-tv.ui.h:112
 msgid "_Schedule"
-msgstr "Aufnahme_planung"
+msgstr "_Enregistrement"
 
 #: ../src/me-tv.ui.h:113
 msgid "_Subtitle Streams"
-msgstr "_Untertitel"
+msgstr "_Sous-titres"
 
 #: ../src/me-tv.ui.h:115
 msgid "channels"
-msgstr "Sender pro Seite"
+msgstr "Chaînes"
 
 #: ../src/me-tv.ui.h:116
 msgid "gtk-cancel"
@@ -770,98 +681,136 @@ msgstr "gtk-quit"
 
 #: ../src/application.cc:66
 msgid "The SQLite version is not thread-safe"
-msgstr "SQLite-Version ist nicht thread-safe"
+msgstr "La version SQLite n'a  pas de processus de  sauvegarde"
 
 #: ../src/application.cc:406
 msgid "Failed to load default device '%1'"
-msgstr "Standardgerät '%1' konnte nicht geladen werden"
+msgstr "Echec du chargement de péripherique par défault"
 
 #: ../src/application.cc:542
 msgid "You cannot change channels because you are recording."
-msgstr ""
-"Es kann nicht auf einen anderen Sender gewechselt werden, weil eine Aufnahme "
-"aktiv ist."
+msgstr "Vous ne pouvez pas changer de chaînes parce que vous enregistrez"
 
 #: ../src/application.cc:747
 msgid "There is no stream to record"
-msgstr "Fehler: There is no stream to record"
+msgstr "Il n'y a pas de flux à enregistrer"
 
 #: ../src/application.cc:834 ../src/application.cc:840
 msgid "Me TV - Error Message"
-msgstr "Me TV - Fehlermeldung"
+msgstr "Message d'erreur - Me TV"
 
 #: ../src/channel_manager.cc:243
 msgid "Invalid channel index"
-msgstr "Fehler: Invalid channel index"
+msgstr "Index invalide de chaînes"
 
 #: ../src/channel_manager.cc:278
 msgid "Failed to add channel: You cannot have more than %1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
 msgstr[0] ""
-"Kann Sender nicht hinzufügen: Es kann nicht mehr als %1 Sender gespeichert "
-"werden"
+"Echec lors de l'ajout de chaînes: Vous ne pouvez pas avoir plus de %1 de "
+"chaîne"
 msgstr[1] ""
-"Kann Sender nicht hinzufügen: Es können nicht mehr als %1 Sender gespeichert "
-"werden"
+"Echec lors de l'ajout de chaînes: Voous ne pouvez pas avoir plus de %1 de "
+"chaînes"
 
 #: ../src/channel_manager.cc:416
 #, c-format
 msgid "Failed to set display channel: channel ID %d not found"
-msgstr "Fehler: Failed to set display channel: channel ID %d not found"
+msgstr ""
+"Echec lors de l'attribution de chaîne: l'ID de la chaîne  %d n'a pas été "
+"trouvé"
 
 #: ../src/channel_manager.cc:451
 msgid "Invalid display channel index"
-msgstr "Fehler: Invalid display channel index"
+msgstr "Index invalide d'attribution de chaîne"
 
 #: ../src/channels_dialog.cc:95
 msgid "A channel named '%1' already exists.  Do you want to overwrite it?"
-msgstr ""
-"Ein Sender mit dem Namen '%1' existiert bereits. Möchten Sie ihn "
-"überschreiben?"
+msgstr "Une chaîne nommée '%1' existe toujours. Voulez-vous l'éffacer?"
+
+#: ../src/data.cc:50 ../src/data.cc:55
+msgid "Failed to prepare statement: %1"
+msgstr "Echec lors de l'initialisation: %1"
 
 #: ../src/data.cc:62
 msgid "Prepared statement had remaining data: %1"
-msgstr "Fehler: Prepared statement had remaining data: %1"
+msgstr "La préparation de l'initialisation des données est resté à:%1"
+
+#: ../src/data.cc:67
+msgid "Failed to create statement"
+msgstr "Echec lors de l'initialisation"
+
+#: ../src/data.cc:75
+msgid "Failed to finalise statement"
+msgstr "Echec lors de la finalisation de l'initialisation"
 
 #: ../src/data.cc:105
 msgid "Failed to execute statement: %1"
-msgstr "Fehler: Failed to execute statement: %1"
+msgstr "Echec lors de l'exécution de l'initialisation"
 
 #: ../src/data.cc:160
 msgid "Failed to connect to Me TV database '%1'"
-msgstr "Konnte nicht mit der Me TV-Datenbank '%1' verbinden"
+msgstr "Echec lors de la connection à la base de données Me TV '%1'"
 
 #: ../src/data.cc:230
 msgid "Only integers can be primary keys"
-msgstr "Fehler: Only integers can be primary keys"
+msgstr "Seulement les integrers peuvent être des clés primaires"
 
 #: ../src/device_manager.cc:24
 msgid "There are no available DVB tuner devices"
-msgstr "Es gibt keine verfügbaren DVB-Empfangsgeräte"
+msgstr "Il n'y a pas de tuners de périphériques disponibles"
 
 #: ../src/devices_dialog.cc:40
 msgid "Device Name"
-msgstr "Gerätename"
+msgstr "Nom du périphériques"
 
 #: ../src/devices_dialog.cc:41
 msgid "Frontend Path"
-msgstr "Frontend-Pfad"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:102
+msgid "Timeout while reading"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:133
+msgid "Failed to poll"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:198
+msgid "Failed to get signal strength"
+msgstr "Echec lors de la réception d'un  signal fort"
+
+#: ../src/dvb_scanner.cc:236
+msgid "Me TV cannot process a line in the initial tuning file"
+msgstr ""
+
+#: ../src/dvb_si.cc:799
+msgid "ASSERT: offset > end_descriptor_offset"
+msgstr ""
+
+#: ../src/dvb_si.cc:810
+msgid "ASSERT: offset > end_section_offset"
+msgstr ""
 
 #: ../src/dvb_si.cc:1057
 msgid "No message"
-msgstr "Keine Meldung"
+msgstr "Pas de message"
 
 #: ../src/dvb_si.h:177 ../src/dvb_si.h:190 ../src/dvb_si.h:223
 msgid "Unknown language"
-msgstr "Unbekannte Sprache"
+msgstr "Language inconnu"
 
 #: ../src/epg_event.cc:58
 msgid "Unknown title"
-msgstr "Unbekannter Titel"
+msgstr "TItre inconnu"
 
 #: ../src/epg_event.cc:80 ../src/scheduled_recording_dialog.cc:113
 msgid "Unknown description"
-msgstr "Unbekannte Beschreibung"
+msgstr "Description inconnue"
+
+#: ../src/epg_thread.cc:90
+msgid "Failed to poll EIT demuxers"
+msgstr ""
 
 #: ../src/gtk_epg_widget.cc:288 ../src/gtk_epg_widget.cc:334
 msgid "-"
@@ -870,133 +819,181 @@ msgstr "-"
 #: ../src/gtk_epg_widget.cc:288 ../src/gtk_epg_widget.cc:334
 #: ../src/status_icon.cc:78
 msgid "Unknown program"
-msgstr "Unbekanntes Programm"
+msgstr "Programme inconnu"
+
+#: ../src/main.cc:29
+msgid ""
+"Me TV was developed for the modern digital lounge room with a PC for a media "
+"centre that is capable of normal PC tasks (web surfing, word processing and "
+"watching TV). It is not designed to be a full-blown media centre such as "
+"MythTV but will integrate well with an existing GNOME desktop.\n"
+msgstr ""
+"Me TV a été développé pour les salons modernes avec un PC en centre "
+"multimédia qui est capable de réaliser des taches courantes des PC (surf "
+"internet, traitement de texte et regarder la TV). Il n'est pas créer pour "
+"être un centre complet multimédia comme MythTV mais s'intégrera bien dans un "
+"bureau GNOME existant.\n"
 
 #: ../src/main.cc:63
 msgid "Start in safe mode"
-msgstr "Im sicheren Modus starten"
+msgstr "Démarrer en mode sécurité"
 
 #: ../src/main.cc:68
 msgid "Start minimised in notification area"
-msgstr "Minimiert im Benachrichtigungsfeld starten"
+msgstr "Démarrage minimaliste dans l'aire de notification"
 
 #: ../src/main.cc:73
 msgid ""
 "Set the default DVB frontend device (e.g. /dev/dvb/adapter0/frontend0)"
-msgstr ""
-"Legt das Standard-DVB-Frontendgerät fest (z.B. /dev/dvb/adapter0/frontend0)"
+msgstr "Choisir le périphérique DVB par défault"
 
 #: ../src/main.cc:77
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
 msgstr ""
-"EPG-Thread deaktivieren. Me TV wird den elektronischen Programmführer nicht "
-"mehr aktualisieren."
+"Désactivez l'EGP. Me TV arrêtera de stocker les informations de l'EPG."
 
 #: ../src/main.cc:81
 msgid "Stops the rendering of the EPG event buttons on the UI."
-msgstr "Deaktiviert die Anzeige des aktuellen Fernsehprogramms."
+msgstr ""
 
 #: ../src/main.cc:85
 msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 15)."
 msgstr ""
-"Wie viele Sekunden auf Daten vom Demuxer gewartet werden soll "
-"(Voreinstellung ist 15)."
+"Combien d'attente (en secondes) avant la fin du temps tandis que l'on attend "
+"les données du demuxer (default 15)."
 
 #: ../src/main.cc:116 ../src/main.cc:117 ../src/scan_dialog.cc:52
 msgid "An unhandled error occurred"
-msgstr "Ein unbehandelter Fehler ist aufgetreten"
+msgstr "Une erreur non-prévue est survenue"
 
 #: ../src/main_window.cc:441
 msgid "Failed to poke screensaver"
-msgstr "Auslösung des Bildschirmschoners konnte nicht verzögert werden"
+msgstr ""
+
+#: ../src/main_window.cc:659
+msgid "Failed to start engine: Engine has already been started"
+msgstr ""
+"Echec lors du démarrage du programme: le programme est toujours en activité"
 
 #: ../src/main_window.cc:737
 msgid "None"
-msgstr "Keine"
+msgstr "Aucun"
 
 #: ../src/main_window.cc:771 ../src/main_window.cc:778
 msgid "Not available"
-msgstr "Nicht verfügbar"
+msgstr "Pas disponible"
 
 #: ../src/me-tv-ui.cc:72
 msgid "Failed to get active text value"
-msgstr "Fehler: Failed to get active text value"
+msgstr "Echec lors de l'obtention d'une valeur texte"
 
 #: ../src/me-tv-ui.cc:194
 msgid "Failed to get active integer value"
-msgstr "Fehler: Failed to get active integer value"
+msgstr "Echec lors de l'obtention d'une valeur integrer"
 
 #: ../src/scan_dialog.cc:31
 msgid "Me TV - Error"
-msgstr "Me TV - Fehler"
+msgstr "Erreur - Me TV"
+
+#: ../src/scan_dialog.cc:99
+msgid "Unknown frontend type"
+msgstr "Interface de type inconnue"
 
 #: ../src/scan_dialog.cc:232
 msgid "Importing channels"
-msgstr "Importiere Sender"
+msgstr "Importation des chaînes"
 
 #: ../src/scan_dialog.cc:257 ../src/scan_dialog.cc:280
 #: ../src/scan_dialog.cc:299 ../src/scan_dialog.cc:319
 msgid "Invalid parameter count on line %1"
-msgstr "Fehler: Invalid parameter count on line %1"
+msgstr ""
 
 #: ../src/scan_dialog.cc:334
 msgid ""
 "Failed to import: importing a channels.conf is only supported with DVB-T, "
 "DVB-C, DVB-S and ATSC"
 msgstr ""
-"Konnte nicht importieren: Eine channels.conf-Datei kann nur mit DVB-T, DVB-"
-"C, DVB-S und ATSC importiert werden."
+"Echec lors de l'importation: Importer un channels.conf est seulement "
+"supporté avec DVB-T, DVB-C, DVB-S et ATSC"
 
 #: ../src/scan_dialog.cc:390
 msgid ""
 "Failed to scan: scanning is only supported for DVB-T, DVB-S and DVB-C devices"
 msgstr ""
-"Konnte keinen Sendersuchlauf durchführen: Dies wird nur für DVB-T, DVB-S und "
-"DVB-C unterstützt."
+"Echec lors du balayage: Le balayage est seulement supporté pour les "
+"périphériques DVB-T,DVB-S et DVB-C"
+
+#: ../src/scan_dialog.cc:395
+msgid "No tuning file has been selected"
+msgstr ""
 
 #: ../src/scan_dialog.cc:405
 msgid "Starting scanner"
-msgstr "Starte Sendersuchlauf"
+msgstr "Démarrage du balayage"
 
 #: ../src/scan_dialog.cc:463
 msgid "%1/%2 (%3 channels)"
-msgstr "%1/%2 (%3 Sender gefunden)"
+msgstr "%1/%2 (%3 chaînes)"
 
 #: ../src/scan_dialog.cc:479
 msgid "Scan complete"
-msgstr "Sendersuchlauf abgeschlossen"
+msgstr "Balayage complet"
+
+#: ../src/scan_dialog.cc:518
+msgid "Invalid frontend type"
+msgstr "Type d'interface invalide"
 
 #: ../src/scheduled_recording_manager.cc:114
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
 msgstr ""
-"Die geplante Aufnahme konnte nicht gespeichert werden, weil ein Konflikt mit "
-"der geplanten Aufnahme '%1' entsteht."
+"Echec lors de la sauvegarde de l'enregistrement programmé parce qu'il entre "
+"en conflict avec un autre enregistrement programmé appelé '%1'."
 
 #: ../src/scheduled_recording_manager.cc:122
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which starts at the same time on the same channel."
 msgstr ""
-"Die geplante Aufnahme konnte nicht gespeichert werden, weil es bereits eine "
-"geplante Aufnahme '%1' gibt, die zur gleichen Zeit auf dem gleichen Sender "
-"beginnt."
+"Echec lors de la sauvegarde de l'enregistrement programmé parce que vous "
+"avez toujours un enregistrement programmé appelé '%1' lequel démarre en même "
+"temps sur la même chaîne."
 
 #: ../src/scheduled_recording_manager.cc:241
 msgid "Scheduled recording '%1' not found"
-msgstr "Geplante Aufnahme '%1' wurde nicht gefunden."
+msgstr "Enregistrement programmé '%1' pas trouvé"
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Device"
-msgstr "Gerät"
+msgstr "Périphérique"
 
 #: ../src/scheduled_recordings_dialog.cc:64
 msgid "No scheduled recording selected"
-msgstr "Keine geplante Aufnahme ausgewählt."
+msgstr "Pas d'enregistrement programmé selectionné"
+
+#: ../src/stream_thread.cc:81
+msgid "Failed to create FIFO '%1'"
+msgstr "Echec lors de la création FIFO '%1'"
 
 #: ../src/stream_thread.cc:88
 msgid "Failed to open FIFO for reading '%1'"
-msgstr "Fehler: Failed to open FIFO for reading '%1'"
+msgstr "Echec lors de l'ouverture de la lecture de FIFO '%1'"
+
+#: ../src/stream_thread.cc:656
+msgid "Failed to create internet address"
+msgstr "Echec lors de la création de l'adresse internet"
+
+#: ../src/stream_thread.cc:662
+msgid "Failed to create socket"
+msgstr "Echec lors de la création du socket"
+
+#: ../src/string_splitter.cc:50
+msgid "Index out of bounds"
+msgstr ""
+
+#: ../src/thread.cc:49
+msgid " thread has already been started"
+msgstr " Ce processus est toujours démarré"

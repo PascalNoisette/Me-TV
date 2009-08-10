@@ -42,7 +42,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	g_static_rec_mutex_init(mutex.gobj());
 
-	display_mode			= DISPLAY_MODE_EPG;
+	view_mode				= VIEW_MODE_EPG;
+	prefullscreen_view_mode	= VIEW_MODE_EPG;
 	last_update_time		= 0;
 	last_poke_time			= 0;
 	timeout_source			= 0;
@@ -51,9 +52,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	engine					= NULL;
 	output_fd				= -1;
 	mute_state				= false;
-	audio_channel_state		= Engine::AUDIO_CHANNEL_STATE_BOTH;
-	audio_stream_index		= 0;
-	subtitle_stream_index	= -1;
 	maximise_forced			= false;
 
 	builder->get_widget("statusbar", statusbar);
@@ -62,70 +60,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_expose_event));
 	
 	builder->get_widget_derived("scrolled_window_epg", widget_epg);
-
-	Gtk::MenuItem* menu_item = NULL;
-
-	builder->get_widget("menu_item_record", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_record_clicked));
-
-	builder->get_widget("menu_item_broadcast", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_broadcast_clicked));
-
-	builder->get_widget("menu_item_quit", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_quit_clicked));
-
-	builder->get_widget("menu_item_meters", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_meters_clicked));
-
-	builder->get_widget("menu_item_channels", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_channels_clicked));
-
-	builder->get_widget("menu_item_devices", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_devices_clicked));
-
-	builder->get_widget("menu_item_preferences", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_preferences_clicked));
-
-	builder->get_widget("menu_item_fullscreen", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_fullscreen_clicked));	
-
-	builder->get_widget("menu_item_schedule", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
-
-	builder->get_widget("menu_item_mute", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_mute_clicked));	
-
-	builder->get_widget("menu_item_about", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_menu_item_about_clicked));	
-
-	Gtk::ToolButton* tool_button = NULL;
-	
-	builder->get_widget("tool_button_record", tool_button);
-	tool_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_tool_button_record_clicked));	
-	
-	builder->get_widget("tool_button_mute", tool_button);
-	tool_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_tool_button_mute_clicked));	
-	
-	builder->get_widget("tool_button_schedule", tool_button);
-	tool_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));	
-	
-	builder->get_widget("tool_button_broadcast", tool_button);
-	tool_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_tool_button_broadcast_clicked));	
-
-	Gtk::RadioMenuItem* radio_menu_item = NULL;
-
-	builder->get_widget("radio_menu_item_audio_channels_both", radio_menu_item);
-	radio_menu_item->signal_toggled().connect(sigc::mem_fun(*this, &MainWindow::on_radio_menu_item_audio_channels_both));
-
-	builder->get_widget("radio_menu_item_audio_channels_left", radio_menu_item);
-	radio_menu_item->signal_toggled().connect(sigc::mem_fun(*this, &MainWindow::on_radio_menu_item_audio_channels_left));
-
-	builder->get_widget("radio_menu_item_audio_channels_right", radio_menu_item);
-	radio_menu_item->signal_toggled().connect(sigc::mem_fun(*this, &MainWindow::on_radio_menu_item_audio_channels_right));
-
-	signal_motion_notify_event().connect(sigc::mem_fun(*this, &MainWindow::on_motion_notify_event));
-	signal_delete_event().connect(sigc::mem_fun(*this, &MainWindow::on_delete_event));
-
+		
 	Gtk::EventBox* event_box_video = NULL;
 	builder->get_widget("event_box_video", event_box_video);
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
@@ -144,25 +79,32 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	GdkColor  color = {0, 0, 0, 0};
 	GdkPixmap* pixmap = gdk_bitmap_create_from_data(NULL, bits, 1, 1);
 	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
+	
+	Application& application = get_application();
+	set_keep_above(application.get_boolean_configuration_value("keep_above"));
+
+	gtk_builder_connect_signals(builder->gobj(), NULL);
+		
+	ui_manager = Glib::RefPtr<Gtk::UIManager>::cast_dynamic(builder->get_object("ui_manager"));
+	add_accel_group(ui_manager->get_accel_group());
+
+	Gtk::Widget* menubar = ui_manager->get_widget("/menubar");
+	Gtk::Widget* toolbar = ui_manager->get_widget("/toolbar");
+
+	Gtk::VBox* vbox_main_window = NULL;
+	builder->get_widget("vbox_main_window", vbox_main_window);
+
+	vbox_main_window->pack_start(*menubar, Gtk::PACK_SHRINK);
+	vbox_main_window->reorder_child(*menubar, 0);
+	
+	vbox_main_window->pack_start(*toolbar, Gtk::PACK_SHRINK);
+	vbox_main_window->reorder_child(*toolbar, 1);
+
+	menubar->show_all();
+	set_view_mode(view_mode);
 
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
-	
-	set_display_mode(display_mode);
-
-	Application& application = get_application();
-	set_keep_above(application.get_boolean_configuration_value("keep_above"));
-	Gtk::MenuItem* menu_item_audio_streams = NULL;
-	builder->get_widget("menu_item_audio_streams", menu_item_audio_streams);
-	menu_item_audio_streams->set_submenu(audio_streams_menu);
-
-	Gtk::RadioMenuItem* menu_item_audio_channels_both = NULL;
-	builder->get_widget("radio_menu_item_audio_channels_both", menu_item_audio_channels_both);
-	menu_item_audio_channels_both->set_active(true);
-
-	Gtk::MenuItem* menu_item_subtitle_streams = NULL;
-	builder->get_widget("menu_item_subtitle_streams", menu_item_subtitle_streams);
-	menu_item_subtitle_streams->set_submenu(subtitle_streams_menu);
 
 	g_debug("MainWindow constructed");
 }
@@ -182,62 +124,6 @@ MainWindow* MainWindow::create(Glib::RefPtr<Gtk::Builder> builder)
 	MainWindow* main_window = NULL;
 	builder->get_widget_derived("window_main", main_window);
 	return main_window;
-}
-
-void MainWindow::on_menu_item_record_clicked()
-{
-	TRY
-	Gtk::CheckMenuItem* menu_item = NULL;
-	builder->get_widget("menu_item_record", menu_item);
-	gboolean record = menu_item->get_active();
-	get_application().set_record_state(record);
-	CATCH
-}
-
-void MainWindow::on_menu_item_broadcast_clicked()
-{
-	TRY
-	Gtk::CheckMenuItem* menu_item = NULL;
-	builder->get_widget("menu_item_broadcast", menu_item);
-	gboolean broadcast = menu_item->get_active();
-	get_application().set_broadcast_state(broadcast);
-	CATCH
-}
-
-void MainWindow::on_menu_item_quit_clicked()
-{
-	TRY
-	hide();
-	Gnome::Main::quit();
-	CATCH
-}
-	
-void MainWindow::on_menu_item_meters_clicked()
-{
-	TRY
-	
-	// Check that there is a device
-	get_application().device_manager.get_frontend();
-	
-	MetersDialog& meters_dialog = MetersDialog::create(builder);
-	meters_dialog.stop();
-	meters_dialog.start();
-	meters_dialog.show();
-	CATCH
-}
-
-void MainWindow::on_menu_item_channels_clicked()
-{
-	TRY
-	show_channels_dialog();
-	CATCH
-}
-
-void MainWindow::on_menu_item_devices_clicked()
-{
-	TRY
-	show_devices_dialog();
-	CATCH
 }
 
 void MainWindow::show_devices_dialog()
@@ -283,98 +169,19 @@ void MainWindow::show_preferences_dialog()
 	update();
 }
 
-void MainWindow::on_menu_item_preferences_clicked()
+void MainWindow::on_change_view_mode()
 {
-	TRY
-	show_preferences_dialog();
-	CATCH
-}
-
-void MainWindow::on_menu_item_fullscreen_clicked()
-{
-	TRY
-	toggle_fullscreen();
-	CATCH
-}
-
-void MainWindow::on_menu_item_mute_clicked()
-{
-	TRY
-	Gtk::CheckMenuItem* menu_item = NULL;
-	builder->get_widget("menu_item_mute", menu_item);
-	gboolean mute = menu_item->get_active();
-	set_mute_state(mute);
-	CATCH
-}
-
-// This method should only be called by UI interactions
-void MainWindow::toggle_fullscreen()
-{
-	if (is_fullscreen())
+	if (view_mode == VIEW_MODE_VIDEO)
 	{
-		unfullscreen();
-
-		if (maximise_forced)
-		{
-			get_window()->unmaximize();
-			maximise_forced = false;
-		}
+		set_view_mode(VIEW_MODE_EPG);
+	}
+	else if (view_mode == VIEW_MODE_EPG)
+	{
+		set_view_mode(VIEW_MODE_CONTROLS);
 	}
 	else
 	{
-		if (get_application().get_boolean_configuration_value("fullscreen_bug_workaround"))
-		{
-			maximise_forced = true;
-			get_window()->maximize();
-		}	
-
-		fullscreen();
-	}
-}
-
-void MainWindow::on_menu_item_help_contents_clicked()
-{
-	TRY
-	GError* error = NULL;
-	if (!gnome_help_display("me-tv", NULL, &error))
-	{
-		if (error == NULL)
-		{
-			throw Exception(_("Failed to launch help"));
-		}
-		else
-		{
-			throw Exception(Glib::ustring::compose(_("Failed to launch help: %1"), error->message));
-		}
-	}
-	CATCH
-}
-
-void MainWindow::on_menu_item_about_clicked()
-{
-	TRY
-	FullscreenBugWorkaround fullscreen_bug_workaround;
-
-	Gtk::Dialog* about_dialog = NULL;
-	builder->get_widget("dialog_about", about_dialog);
-	about_dialog->run();
-	about_dialog->hide();
-	CATCH
-}
-
-void MainWindow::set_next_display_mode()
-{
-	if (display_mode == DISPLAY_MODE_VIDEO)
-	{
-		set_display_mode(DISPLAY_MODE_EPG);
-	}
-	else if (display_mode == DISPLAY_MODE_EPG)
-	{
-		set_display_mode(DISPLAY_MODE_CONTROLS);
-	}
-	else
-	{
-		set_display_mode(DISPLAY_MODE_VIDEO);
+		set_view_mode(VIEW_MODE_VIDEO);
 	}
 	update();
 }
@@ -392,12 +199,12 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event_button)
 	{
 		if (event_button->type == GDK_2BUTTON_PRESS)
 		{
-			toggle_fullscreen();
+			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("fullscreen"))->activate();
 		}
 	}
 	else if (event_button->button == 3)
 	{
-		set_next_display_mode();
+		on_change_view_mode();
 	}
 	CATCH
 	
@@ -428,16 +235,16 @@ void MainWindow::unfullscreen(gboolean restore_mode)
 	
 	if (restore_mode)
 	{
-		set_display_mode(prefullscreen);
+		set_view_mode(prefullscreen_view_mode);
 	}
 }
 
 void MainWindow::fullscreen(gboolean change_mode)
 {
-	prefullscreen = display_mode;
+	prefullscreen_view_mode = view_mode;
 	if (change_mode)
 	{
-		set_display_mode(DISPLAY_MODE_VIDEO);
+		set_view_mode(VIEW_MODE_VIDEO);
 	}
 	
 	Gtk::Window::fullscreen();
@@ -471,10 +278,12 @@ void MainWindow::on_timeout()
 		// Deactivate the countdown
 		channel_change_timeout = 0;
 
-		get_application().set_display_channel_number(temp_channel_number-1);
+		guint channel_index = temp_channel_number - 1;
 
 		// Reset the temporary channel number for the next run
 		temp_channel_number = 0;		
+
+		get_application().set_display_channel_number(channel_index);
 	}
 	
 	// Hide the mouse
@@ -537,23 +346,23 @@ void MainWindow::on_timeout()
 	CATCH
 }
 
-void MainWindow::set_display_mode(DisplayMode mode)
+void MainWindow::set_view_mode(ViewMode mode)
 {
 	Gtk::Widget* widget = NULL;
 
-	builder->get_widget("menubar", widget);
-	widget->property_visible() = (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	widget = ui_manager->get_widget("/menubar");
+	widget->property_visible() = (mode == VIEW_MODE_EPG) || (mode == VIEW_MODE_CONTROLS);
 	
-	builder->get_widget("toolbar", widget);
-	widget->property_visible() = (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	widget = ui_manager->get_widget("/toolbar");
+	widget->property_visible() = (mode == VIEW_MODE_EPG) || (mode == VIEW_MODE_CONTROLS);
 	
 	builder->get_widget("statusbar", widget);
-	widget->property_visible() = (mode == DISPLAY_MODE_EPG) || (mode == DISPLAY_MODE_CONTROLS);
+	widget->property_visible() = (mode == VIEW_MODE_EPG) || (mode == VIEW_MODE_CONTROLS);
 	
 	builder->get_widget("vbox_epg", widget);
-	widget->property_visible() = (mode == DISPLAY_MODE_EPG);
+	widget->property_visible() = (mode == VIEW_MODE_EPG);
 	
-	display_mode = mode;
+	view_mode = mode;
 }
 
 void MainWindow::show_scheduled_recordings_dialog()
@@ -565,36 +374,6 @@ void MainWindow::show_scheduled_recordings_dialog()
 	scheduled_recordings_dialog.hide();
 }
 
-void MainWindow::on_tool_button_record_clicked()
-{
-	TRY
-	Gtk::ToggleToolButton* toggle_button = NULL;
-	builder->get_widget("tool_button_record", toggle_button);
-	gboolean record = toggle_button->get_active();
-	get_application().set_record_state(record);
-	CATCH
-}
-
-void MainWindow::on_tool_button_mute_clicked()
-{
-	TRY
-	Gtk::ToggleToolButton* toggle_button = NULL;
-	builder->get_widget("tool_button_mute", toggle_button);
-	gboolean mute = toggle_button->get_active();
-	set_mute_state(mute);
-	CATCH
-}
-
-void MainWindow::on_tool_button_broadcast_clicked()
-{
-	TRY
-	Gtk::ToggleToolButton* toggle_button = NULL;
-	builder->get_widget("tool_button_broadcast", toggle_button);
-	gboolean broadcast = toggle_button->get_active();
-	get_application().set_broadcast_state(broadcast);
-	CATCH
-}
-
 void MainWindow::on_menu_item_audio_stream_activate(guint index)
 {
 	Glib::RecMutex::Lock lock(mutex);
@@ -602,8 +381,7 @@ void MainWindow::on_menu_item_audio_stream_activate(guint index)
 	g_debug("MainWindow::on_menu_item_audio_stream_activate(%d)", index);
 	if (engine != NULL)
 	{
-		audio_stream_index = index;
-		engine->set_audio_stream(audio_stream_index);
+		engine->set_audio_stream(index);
 	}
 }
 
@@ -614,8 +392,7 @@ void MainWindow::on_menu_item_subtitle_stream_activate(guint index)
 	g_debug("MainWindow::on_menu_item_subtitle_stream_activate(%d)", index);
 	if (engine != NULL)
 	{
-		subtitle_stream_index = index;
-		engine->set_subtitle_stream(subtitle_stream_index);
+		engine->set_subtitle_stream(index);
 	}
 }
 
@@ -624,9 +401,6 @@ void MainWindow::update()
 	Application& application = get_application();
 	Glib::ustring window_title;
 	Glib::ustring status_text;
-
-	set_state("record", application.is_recording());
-	set_state("broadcast", application.is_broadcasting());
 
 	if (!application.channel_manager.has_display_channel())
 	{
@@ -650,120 +424,6 @@ void MainWindow::update()
 	statusbar->push(status_text);
 
 	widget_epg->update();
-
-	Gtk::Menu_Helpers::MenuList& audio_items = audio_streams_menu.items();
-	audio_items.erase(audio_items.begin(), audio_items.end());
-
-	Gtk::Menu_Helpers::MenuList& subtitle_items = subtitle_streams_menu.items();
-	subtitle_items.erase(subtitle_items.begin(), subtitle_items.end());
-
-	Gtk::RadioMenuItem::Group audio_streams_menu_group;
-	
-	// Acquire stream thread lock
-	Glib::RecMutex::Lock application_lock(application.get_mutex());
-
-	StreamThread* stream_thread = application.get_stream_thread();
-	if (stream_thread != NULL)
-	{
-		const Stream& stream = stream_thread->get_stream();
-		std::vector<Dvb::SI::AudioStream> audio_streams = stream.audio_streams;
-		guint count = 0;
-		
-		g_debug("Audio streams: %zu", audio_streams.size());
-		for (std::vector<Dvb::SI::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
-		{
-			Dvb::SI::AudioStream audio_stream = *i;
-			Glib::ustring text = Glib::ustring::compose("%1: %2", count, audio_stream.language);
-			if (audio_stream.is_ac3)
-			{
-				text += " (AC3)";
-			}
-			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
-			menu_item->show_all();
-			audio_streams_menu.items().push_back(*menu_item);
-			
-			if (count == audio_stream_index)
-			{
-				menu_item->set_active(true);
-			}
-			
-			menu_item->signal_activate().connect(
-				sigc::bind<guint>
-				(
-					sigc::mem_fun(*this, &MainWindow::on_menu_item_audio_stream_activate),
-					count
-				)
-			);
-
-			count++;
-		}
-
-		std::vector<Dvb::SI::SubtitleStream> subtitle_streams = stream.subtitle_streams;
-		Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
-		count = 0;
-		
-		Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
-		menu_item_subtitle_none->show_all();
-		subtitle_streams_menu.items().push_back(*menu_item_subtitle_none);
-		menu_item_subtitle_none->signal_activate().connect(
-			sigc::bind<guint>
-			(
-				sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
-				-1
-			)
-		);
-		
-		g_debug("Subtitle streams: %zu", subtitle_streams.size());
-		for (std::vector<Dvb::SI::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); i++)
-		{
-			Dvb::SI::SubtitleStream subtitle_stream = *i;
-			Glib::ustring text = Glib::ustring::compose("%1: %2", count, subtitle_stream.language);
-			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
-			menu_item->show_all();
-			subtitle_streams_menu.items().push_back(*menu_item);
-			
-			if (count == subtitle_stream_index)
-			{
-				menu_item->set_active(true);
-			}
-			
-			menu_item->signal_activate().connect(
-				sigc::bind<guint>
-				(
-					sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
-					count
-				)
-			);
-			
-			count++;
-		}
-	}
-	
-	if (audio_streams_menu.items().empty())
-	{
-		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("None available"));
-		menu_item->show_all();
-		audio_streams_menu.items().push_back(*menu_item);
-	}
-}
-
-void MainWindow::set_state(const Glib::ustring& name, gboolean state)
-{
-	Glib::ustring tool_button_name = "tool_button_" + name;
-	Gtk::ToggleToolButton* tool_button = NULL;
-	builder->get_widget(tool_button_name, tool_button);
-	if (tool_button->get_active() != state)
-	{
-		tool_button->set_active(state);
-	}
-
-	Glib::ustring menu_item_name = "menu_item_" + name;
-	Gtk::CheckMenuItem* menu_item = NULL;
-	builder->get_widget(menu_item_name, menu_item);
-	if (menu_item->get_active() != state)
-	{
-		menu_item->set_active(state);
-	}
 }
 
 void MainWindow::on_show()
@@ -855,26 +515,8 @@ void MainWindow::add_channel_number(guint channel_number)
 
 bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 {
-	gboolean result = true;
-	
 	switch(event_key->keyval)
-	{
-		case GDK_b:
-		case GDK_B:
-			{
-				Gtk::ToggleToolButton* toggle_button = NULL;
-				builder->get_widget("tool_button_broadcast", toggle_button);
-				gboolean broadcast = toggle_button->get_active();
-				get_application().set_broadcast_state(!broadcast);
-			}
-			break;
-			
-		case GDK_e:
-		case GDK_E:
-		case GDK_Mode_switch:
-			set_next_display_mode();
-			break;
-		
+	{		
 		case GDK_0: add_channel_number(0); break;
 		case GDK_1: add_channel_number(1); break;
 		case GDK_2: add_channel_number(2); break;
@@ -886,48 +528,11 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 		case GDK_8: add_channel_number(8); break;
 		case GDK_9: add_channel_number(9); break;
 			
-		case GDK_f:
-		case GDK_F:
-			toggle_fullscreen();
-			break;
-
-		case GDK_Escape:
-			if (is_fullscreen())
-			{
-				unfullscreen();
-			}
-			else
-			{
-				result = false;
-			}
-			break;
-
-		case GDK_m:
-		case GDK_M:
-			toggle_mute();
-			break;
-
-		case GDK_r:
-		case GDK_R:
-			get_application().toggle_recording();
-			break;
-		
-		case GDK_Up:
-		case GDK_minus:
-			get_application().previous_channel();
-			break;
-			
-		case GDK_plus:
-		case GDK_Down:
-			get_application().next_channel();
-			break;
-
-		default:
-			result = false;
+ 		default:
 			break;
 	}
 	
-	return result;
+	return Gtk::Window::on_key_press_event(event_key);
 }
 
 bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event_expose)
@@ -963,8 +568,6 @@ void MainWindow::create_engine()
 	{
 		engine = new Engine(engine_type);
 		engine->set_mute_state(mute_state);
-		engine->set_audio_channel_state(audio_channel_state);
-		engine->set_audio_stream(audio_stream_index);
 	}
 	
 	g_debug("%s engine created", engine_type.c_str());
@@ -972,12 +575,107 @@ void MainWindow::create_engine()
 
 void MainWindow::play(const Glib::ustring& mrl)
 {
-	audio_channel_state	= Engine::AUDIO_CHANNEL_STATE_BOTH;
-	audio_stream_index = 0;
+	Application& application = get_application();
+
 	create_engine();
 	if (engine != NULL)
 	{
 		engine->play(mrl);
+	}
+
+	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menubar/audio/audio_streams"))->get_submenu();
+	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menubar/video/subtitle_streams"))->get_submenu();
+	
+	Gtk::Menu_Helpers::MenuList& audio_items = audio_streams_menu->items();
+	audio_items.erase(audio_items.begin(), audio_items.end());
+
+	Gtk::Menu_Helpers::MenuList& subtitle_items = subtitle_streams_menu->items();
+	subtitle_items.erase(subtitle_items.begin(), subtitle_items.end());
+
+	Gtk::RadioMenuItem::Group audio_streams_menu_group;
+	
+	// Acquire stream thread lock
+	Glib::RecMutex::Lock application_lock(application.get_mutex());
+
+	StreamThread* stream_thread = application.get_stream_thread();
+	if (stream_thread != NULL)
+	{
+		const Stream& stream = stream_thread->get_stream();
+		std::vector<Dvb::SI::AudioStream> audio_streams = stream.audio_streams;
+		guint count = 0;
+		
+		g_debug("Audio streams: %zu", audio_streams.size());
+		for (std::vector<Dvb::SI::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
+		{
+			Dvb::SI::AudioStream audio_stream = *i;
+			Glib::ustring text = Glib::ustring::compose("%1: %2", count, audio_stream.language);
+			if (audio_stream.is_ac3)
+			{
+				text += " (AC3)";
+			}
+			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
+			menu_item->show_all();
+			audio_streams_menu->items().push_back(*menu_item);
+			
+			menu_item->signal_activate().connect(
+				sigc::bind<guint>
+				(
+					sigc::mem_fun(*this, &MainWindow::on_menu_item_audio_stream_activate),
+					count
+				)
+			);
+
+			count++;
+		}
+
+		std::vector<Dvb::SI::SubtitleStream> subtitle_streams = stream.subtitle_streams;
+		Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
+		count = 0;
+		
+		Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
+		menu_item_subtitle_none->show_all();
+		subtitle_streams_menu->items().push_back(*menu_item_subtitle_none);
+		menu_item_subtitle_none->signal_activate().connect(
+			sigc::bind<guint>
+			(
+				sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
+				-1
+			)
+		);
+		
+		g_debug("Subtitle streams: %zu", subtitle_streams.size());
+		for (std::vector<Dvb::SI::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); i++)
+		{
+			Dvb::SI::SubtitleStream subtitle_stream = *i;
+			Glib::ustring text = Glib::ustring::compose("%1: %2", count, subtitle_stream.language);
+			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
+			menu_item->show_all();
+			subtitle_streams_menu->items().push_back(*menu_item);
+						
+			menu_item->signal_activate().connect(
+				sigc::bind<guint>
+				(
+					sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
+					count
+				)
+			);
+			
+			count++;
+		}
+	}
+	
+	if (audio_streams_menu->items().empty())
+	{
+		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("Not available"));
+		menu_item->show_all();
+		audio_streams_menu->items().push_back(*menu_item);
+	}
+
+	if (subtitle_streams_menu->items().empty())
+	{
+		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("Not available"));
+		menu_item->show_all();
+		subtitle_streams_menu->items().push_back(*menu_item);
 	}
 }
 
@@ -1008,32 +706,7 @@ void MainWindow::stop_engine()
 	g_debug("Engine stopped");
 }
 
-void MainWindow::toggle_mute()
-{
-	set_mute_state(!mute_state);
-}
-
-void MainWindow::set_mute_state(gboolean state)
-{
-	if (mute_state != state)
-	{
-		mute_state = state;
-		g_message("Setting mute to %s", mute_state ? "true" : "false");	
-		set_state("mute", mute_state);
-
-		{
-			Glib::RecMutex::Lock lock(mutex);
-			if (engine != NULL)
-			{
-				engine->set_mute_state(mute_state);
-			}
-		}
-
-		update();
-	}
-}
-
-void MainWindow::on_radio_menu_item_audio_channels_both()
+void MainWindow::on_audio_channel_both()
 {
 	if (engine != NULL)
 	{
@@ -1041,7 +714,7 @@ void MainWindow::on_radio_menu_item_audio_channels_both()
 	}
 }
 
-void MainWindow::on_radio_menu_item_audio_channels_left()
+void MainWindow::on_audio_channel_left()
 {
 	if (engine != NULL)
 	{
@@ -1049,10 +722,110 @@ void MainWindow::on_radio_menu_item_audio_channels_left()
 	}
 }
 
-void MainWindow::on_radio_menu_item_audio_channels_right()
+void MainWindow::on_audio_channel_right()
 {
 	if (engine != NULL)
 	{
 		engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_RIGHT);
 	}
+}
+
+void MainWindow::on_devices()
+{
+	TRY
+	show_devices_dialog();
+	CATCH
+}
+
+void MainWindow::on_channels()
+{
+	TRY
+	show_channels_dialog();
+	CATCH
+}
+
+void MainWindow::on_scheduled_recordings()
+{
+	TRY
+	show_scheduled_recordings_dialog();
+	CATCH
+}
+
+void MainWindow::on_meters()
+{
+	TRY	
+	// Check that there is a device
+	get_application().device_manager.get_frontend();
+	
+	MetersDialog& meters_dialog = MetersDialog::create(builder);
+	meters_dialog.stop();
+	meters_dialog.start();
+	meters_dialog.show();
+	CATCH
+}
+
+void MainWindow::on_preferences()
+{
+	TRY
+	show_preferences_dialog();
+	CATCH
+}
+
+void MainWindow::on_about()
+{
+	TRY
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
+	Gtk::Dialog* about_dialog = NULL;
+	builder->get_widget("dialog_about", about_dialog);
+	about_dialog->run();
+	about_dialog->hide();
+	CATCH
+}
+
+void MainWindow::on_mute()
+{
+	TRY
+	Gtk::ToggleToolButton* mute_button =
+		(Gtk::ToggleToolButton*)ui_manager->get_widget("/toolbar/mute");
+	set_mute_state(mute_button->get_active());
+	CATCH
+}
+
+void MainWindow::set_mute_state(gboolean state)
+{
+	mute_state = state;
+	if (engine != NULL)
+	{
+		engine->set_mute_state(mute_state);
+	}
+}
+
+void MainWindow::toggle_fullscreen()
+{
+	if (is_fullscreen())
+	{
+		unfullscreen();
+
+		if (maximise_forced)
+		{
+			get_window()->unmaximize();
+			maximise_forced = false;
+		}
+	}
+	else
+	{
+		if (get_application().get_boolean_configuration_value("fullscreen_bug_workaround"))
+		{
+			maximise_forced = true;
+			get_window()->maximize();
+		}	
+
+		fullscreen();
+	}
+}
+
+void MainWindow::on_fullscreen()
+{
+	toggle_fullscreen();
 }

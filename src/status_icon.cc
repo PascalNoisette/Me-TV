@@ -23,38 +23,46 @@
 #include "channel.h"
 #include "me-tv.h"
 
-StatusIcon::StatusIcon(Glib::RefPtr<Gtk::Builder>& builder)
-	: builder(builder)
+StatusIcon::StatusIcon()
 {
 	g_debug("StatusIcon constructor started");
 	
 	status_icon = Gtk::StatusIcon::create("me-tv");
-	builder->get_widget("menu_application_popup", popup_menu);
 	status_icon->signal_activate().connect(sigc::mem_fun(*this, &StatusIcon::on_activate));
 	status_icon->signal_popup_menu().connect(sigc::mem_fun(*this, &StatusIcon::on_popup_menu));
 
-//	builder->get_widget("application_menu_item_me_tv");
-//	builder->connect_clicked(sigc::mem_fun(*this, &StatusIcon::on_menu_item_me_tv_clicked));
-
 	Gtk::MenuItem* menu_item = NULL;
-	builder->get_widget("menu_item_popup_quit", menu_item);
-	menu_item->signal_activate().connect(sigc::mem_fun(*this, &StatusIcon::on_menu_item_popup_quit_clicked));
+	Gtk::ImageMenuItem* image_menu_item = NULL;
+	
+	menu_status = new Gtk::Menu();
+
+	image_menu_item = new Gtk::ImageMenuItem("Me TV");
+	menu_status->append(*image_menu_item);
+	image_menu_item->signal_activate().connect(
+		sigc::mem_fun(*this, &StatusIcon::on_menu_item_status_me_tv_clicked));
+
+	menu_item = new Gtk::ImageMenuItem(Gtk::Stock::QUIT);
+	menu_status->append(*menu_item);
+	menu_item->signal_activate().connect(
+		sigc::mem_fun(*this, &StatusIcon::on_menu_item_status_quit_clicked));
+
+	menu_status->show_all();
 
 	g_debug("StatusIcon constructed");
 }
 
 void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
 {
-	popup_menu->popup(button, activate_time);
+	menu_status->popup(button, activate_time);
 }
 
-void StatusIcon::on_menu_item_popup_quit_clicked()
+void StatusIcon::on_menu_item_status_quit_clicked()
 {
 	get_application().get_main_window().hide();
 	Gnome::Main::quit();
 }
 
-void StatusIcon::on_menu_item_me_tv_clicked()
+void StatusIcon::on_menu_item_status_me_tv_clicked()
 {
 	get_application().get_main_window().toggle_visibility();
 }

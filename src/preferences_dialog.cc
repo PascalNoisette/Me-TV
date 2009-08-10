@@ -47,12 +47,12 @@ void PreferencesDialog::run()
 	ComboBoxEntryText* combo_box_entry_preferred_language = NULL;
 	ComboBoxEntryText* combo_box_entry_xine_video_driver = NULL;
 	ComboBoxEntryText* combo_box_entry_xine_audio_driver = NULL;
+	ComboBoxText* combo_box_deinterlace_type = NULL;
 	ComboBoxEntryText* combo_box_entry_text_encoding = NULL;
 	Gtk::CheckButton* check_button_keep_above = NULL;
 	Gtk::CheckButton* check_button_show_epg_header = NULL;
 	Gtk::CheckButton* check_button_show_epg_time = NULL;
 	Gtk::CheckButton* check_button_show_epg_tooltips = NULL;
-	Gtk::CheckButton* check_button_24_hour_workaround = NULL;
 	Gtk::CheckButton* check_button_fullscreen_bug_workaround = NULL;
 	Gtk::CheckButton* check_button_display_status_icon = NULL;
 	Gtk::CheckButton* check_button_show_channel_number = NULL;
@@ -67,22 +67,15 @@ void PreferencesDialog::run()
 	builder->get_widget_derived("combo_box_entry_preferred_language", combo_box_entry_preferred_language);
 	builder->get_widget_derived("combo_box_entry_xine_video_driver", combo_box_entry_xine_video_driver);
 	builder->get_widget_derived("combo_box_entry_xine_audio_driver", combo_box_entry_xine_audio_driver);
+	builder->get_widget_derived("combo_box_deinterlace_type", combo_box_deinterlace_type);
 	builder->get_widget_derived("combo_box_entry_text_encoding", combo_box_entry_text_encoding);
 	builder->get_widget("check_button_keep_above", check_button_keep_above);
 	builder->get_widget("check_button_show_epg_header", check_button_show_epg_header);
 	builder->get_widget("check_button_show_epg_time", check_button_show_epg_time);
 	builder->get_widget("check_button_show_epg_tooltips", check_button_show_epg_tooltips);
-	builder->get_widget("check_button_24_hour_workaround", check_button_24_hour_workaround);
 	builder->get_widget("check_button_fullscreen_bug_workaround", check_button_fullscreen_bug_workaround);
 	builder->get_widget("check_button_display_status_icon", check_button_display_status_icon);
 	builder->get_widget("check_button_show_channel_number", check_button_show_channel_number);
-
-	ComboBoxText* combo_box_engine_type = NULL;
-	builder->get_widget_derived("combo_box_engine_type", combo_box_engine_type);
-	
-	combo_box_engine_type->clear_items();
-	combo_box_engine_type->append_text("none");
-	combo_box_engine_type->append_text("xine");
 
 	combo_box_entry_preferred_language->clear_items();
 	combo_box_entry_preferred_language->append_text("eng");
@@ -118,6 +111,11 @@ void PreferencesDialog::run()
 	combo_box_entry_text_encoding->clear_items();
 	combo_box_entry_text_encoding->append_text("auto");
 	combo_box_entry_text_encoding->append_text("iso6937");
+
+	combo_box_deinterlace_type->clear_items();
+	combo_box_deinterlace_type->append("none");
+	combo_box_deinterlace_type->append("standard");
+	combo_box_deinterlace_type->append("tvtime");
 	
 	file_chooser_button_recording_directory->set_filename(application.get_string_configuration_value("recording_directory"));
 	spin_button_record_extra_before->set_value(application.get_int_configuration_value("record_extra_before"));
@@ -126,16 +124,15 @@ void PreferencesDialog::run()
 	spin_button_epg_page_size->set_value(application.get_int_configuration_value("epg_page_size"));
 	entry_broadcast_address->set_text(application.get_string_configuration_value("broadcast_address"));
 	spin_button_broadcast_port->set_value(application.get_int_configuration_value("broadcast_port"));
-	combo_box_engine_type->set_active_text(application.get_string_configuration_value("engine_type"));
 	combo_box_entry_preferred_language->get_entry()->set_text(application.get_string_configuration_value("preferred_language"));
 	combo_box_entry_xine_video_driver->get_entry()->set_text(application.get_string_configuration_value("xine.video_driver"));
 	combo_box_entry_xine_audio_driver->get_entry()->set_text(application.get_string_configuration_value("xine.audio_driver"));
+	combo_box_deinterlace_type->set_text(application.get_string_configuration_value("deinterlace_type"));
 	combo_box_entry_text_encoding->get_entry()->set_text(application.get_string_configuration_value("text_encoding"));
 	check_button_keep_above->set_active(application.get_boolean_configuration_value("keep_above"));
 	check_button_show_epg_header->set_active(application.get_boolean_configuration_value("show_epg_header"));
 	check_button_show_epg_time->set_active(application.get_boolean_configuration_value("show_epg_time"));
 	check_button_show_epg_tooltips->set_active(application.get_boolean_configuration_value("show_epg_tooltips"));
-	check_button_24_hour_workaround->set_active(application.get_boolean_configuration_value("use_24_hour_workaround"));
 	check_button_fullscreen_bug_workaround->set_active(application.get_boolean_configuration_value("fullscreen_bug_workaround"));
 	check_button_display_status_icon->set_active(application.get_boolean_configuration_value("display_status_icon"));
 	check_button_show_channel_number->set_active(application.get_boolean_configuration_value("show_channel_number"));
@@ -149,16 +146,15 @@ void PreferencesDialog::run()
 		application.set_int_configuration_value("epg_page_size", (int)spin_button_epg_page_size->get_value());
 		application.set_string_configuration_value("broadcast_address", entry_broadcast_address->get_text());
 		application.set_int_configuration_value("broadcast_port", (int)spin_button_broadcast_port->get_value());
-		application.set_string_configuration_value("engine_type", combo_box_engine_type->get_active_text());
 		application.set_string_configuration_value("preferred_language", combo_box_entry_preferred_language->get_entry()->get_text());
 		application.set_string_configuration_value("xine.video_driver", combo_box_entry_xine_video_driver->get_entry()->get_text());
 		application.set_string_configuration_value("xine.audio_driver", combo_box_entry_xine_audio_driver->get_entry()->get_text());
+		application.set_string_configuration_value("deinterlace_type", combo_box_deinterlace_type->get_text());
 		application.set_string_configuration_value("text_encoding", combo_box_entry_text_encoding->get_entry()->get_text());
 		application.set_boolean_configuration_value("keep_above", check_button_keep_above->get_active());
 		application.set_boolean_configuration_value("show_epg_header", check_button_show_epg_header->get_active());
 		application.set_boolean_configuration_value("show_epg_time", check_button_show_epg_time->get_active());
 		application.set_boolean_configuration_value("show_epg_tooltips", check_button_show_epg_tooltips->get_active());
-		application.set_boolean_configuration_value("use_24_hour_workaround", check_button_24_hour_workaround->get_active());
 		application.set_boolean_configuration_value("fullscreen_bug_workaround", check_button_fullscreen_bug_workaround->get_active());
 		application.set_boolean_configuration_value("display_status_icon", check_button_display_status_icon->get_active());
 		application.set_boolean_configuration_value("show_channel_number", check_button_show_channel_number->get_active());

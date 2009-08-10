@@ -34,6 +34,7 @@ me_tv_xine_LDADD =        \
 me_tv_SOURCES = \
 	main.cc\
 	../config.h \
+	main_window.cc \
 	stream_thread.cc \
 	stream_thread.h \
 	application.h \
@@ -62,7 +63,6 @@ me_tv_SOURCES = \
 	meters_dialog.h \
 	channels_dialog.cc \
 	thread.cc \
-	main_window.cc \
 	gtk_epg_widget.cc \
 	gtk_epg_widget.h \
 	me-tv-ui.h \
@@ -111,7 +111,7 @@ me_tv_SOURCES = \
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \
 	LFS_LDFLAGS` `getconf \
-	LFS64_LDFLAGS`
+	LFS64_LDFLAGS` --export-dynamic
 
 me_tv_LDADD = \
 	$(ME_TV_LIBS) \

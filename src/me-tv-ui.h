@@ -50,9 +50,9 @@ public:
 	ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
 	
 	void clear_items();
-	void append_text(const Glib::ustring& text);
-	void set_active_text(const Glib::ustring& text);
-	Glib::ustring get_active_text();
+	void append(const Glib::ustring& text);
+	void set_text(const Glib::ustring& text);
+	Glib::ustring get_text();
 };
 
 class IntComboBox : public Gtk::ComboBox

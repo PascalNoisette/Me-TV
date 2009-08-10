@@ -28,10 +28,10 @@
 
 typedef enum
 {
-	DISPLAY_MODE_VIDEO,
-	DISPLAY_MODE_CONTROLS,
-	DISPLAY_MODE_EPG
-} DisplayMode;
+	VIEW_MODE_VIDEO,
+	VIEW_MODE_CONTROLS,
+	VIEW_MODE_EPG
+} ViewMode;
 
 class MainWindow : public Gtk::Window
 {
@@ -44,32 +44,30 @@ private:
 	gboolean								is_cursor_visible;
 	Gtk::HScale*							h_scale_position;
 	Gtk::Statusbar*							statusbar;
-	DisplayMode								display_mode, prefullscreen;
+	ViewMode								view_mode;
+	ViewMode								prefullscreen_view_mode;
 	guint									last_update_time;
 	guint									last_poke_time;
 	guint									timeout_source;
-	Gtk::Menu								subtitle_streams_menu;
-	Gtk::Menu								audio_streams_menu;
 	Engine*									engine;
 	gint									output_fd;
 	Glib::StaticRecMutex					mutex;
 	gboolean								mute_state;
-	Engine::AudioChannelState				audio_channel_state;
-	guint									audio_stream_index;
-	guint									subtitle_stream_index;
 	gboolean								maximise_forced;
 	guint									channel_change_timeout;
 	guint									temp_channel_number;
 
+	Glib::RefPtr<Gtk::UIManager>			ui_manager;
+	
 	void stop();
-	void toggle_fullscreen();
-	void toggle_mute();
-	void set_mute_state(gboolean mute_state);
-	void set_display_mode(DisplayMode display_mode);
+	void set_view_mode(ViewMode display_mode);
 	void load_devices();
 	void show_scheduled_recordings_dialog();
 	void set_state(const Glib::ustring& name, gboolean state);
 	void add_channel_number(guint channel_number);
+	void toggle_fullscreen();
+	void toggle_mute();
+	void set_mute_state(gboolean state);
 		
 	bool on_delete_event(GdkEventAny* event);
 	bool on_motion_notify_event(GdkEventMotion* event);
@@ -77,33 +75,13 @@ private:
 	static gboolean on_timeout(gpointer data);
 	void on_timeout();
 	bool on_key_press_event(GdkEventKey* event);
-	void on_menu_item_record_clicked();
-	void on_menu_item_broadcast_clicked();
-	void on_menu_item_quit_clicked();
-	void on_menu_item_meters_clicked();
-	void on_menu_item_schedule_clicked();
-	void on_menu_item_channels_clicked();
-	void on_menu_item_devices_clicked();
-	void on_menu_item_preferences_clicked();
-	void on_menu_item_fullscreen_clicked();
-	void on_menu_item_mute_clicked();
-	void on_menu_item_help_contents_clicked();
-	void on_menu_item_about_clicked();
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
-	void on_tool_button_record_clicked();
-	void on_tool_button_mute_clicked();
-	void on_tool_button_broadcast_clicked();
 	void on_menu_item_audio_stream_activate(guint audio_stream_index);
 	void on_menu_item_subtitle_stream_activate(guint audio_stream_index);
-	void on_radio_menu_item_audio_channels_both();
-	void on_radio_menu_item_audio_channels_left();
-	void on_radio_menu_item_audio_channels_right();
 
 	void on_show();
 	void on_hide();
-	
-	void set_next_display_mode();
-		
+			
 	void create_engine();
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
@@ -111,9 +89,25 @@ public:
 		
 	static MainWindow* create(Glib::RefPtr<Gtk::Builder> builder);
 		
+	void on_next_channel();
+	void on_previous_channel();
+	void on_change_view_mode();
+	void on_devices();
+	void on_channels();
+	void on_scheduled_recordings();
+	void on_meters();
+	void on_preferences();
+	void on_fullscreen();
+	void on_mute();
+	void on_audio_channel_both();
+	void on_audio_channel_left();
+	void on_audio_channel_right();
+	void on_about();
+
 	void show_devices_dialog();
 	void show_channels_dialog();
 	void show_preferences_dialog();
+	
 	void toggle_visibility();
 	void update();
 	void save_geometry();

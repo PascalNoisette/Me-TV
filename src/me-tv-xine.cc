@@ -166,12 +166,17 @@ void set_mute_state(bool mute)
 	xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, mute ? 0 : 100);
 }
   
-void set_audio_channel(int channel)
+void set_deinterlacer_state(bool deinterlace)
+{
+	xine_set_param(stream, XINE_PARAM_VO_DEINTERLACE, deinterlace);
+}
+
+void set_audio_stream(int channel)
 {
 	xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
 }
 
-void set_subtitle_channel(int channel)
+void set_subtitle_stream(int channel)
 {
 	xine_set_param(stream, XINE_PARAM_SPU_CHANNEL, channel);
 }
@@ -185,7 +190,7 @@ int main(int argc, char **argv)
 	const char*		video_driver = "auto";
 	const char*		audio_driver = "auto";
 
-	if (argc != 6)
+	if (argc != 7)
 	{
 		fprintf(stderr, "Invalid number of parameters\n");
 		return -1;
@@ -258,7 +263,11 @@ int main(int argc, char **argv)
 	event_queue	= xine_event_new_queue(stream);
 	xine_event_create_listener_thread(event_queue, event_listener, NULL);
 
-	if (video_port != NULL)
+	xine_port_send_gui_data(video_port, XINE_GUI_SEND_DRAWABLE_CHANGED, (void *) window);
+	xine_port_send_gui_data(video_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, (void *) 1);
+
+
+	if (video_port != NULL && strcmp(argv[5], "tvtime") == 0)
 	{
 		xine_post_wire_video_port(xine_get_video_source(stream), video_port);
 
@@ -291,13 +300,18 @@ int main(int argc, char **argv)
 		xine_post_wire(xine_get_video_source (stream), plugin_input);
 		xine_post_wire_video_port(plugin_output, video_port);
 
-		xine_set_param(stream, XINE_PARAM_VO_DEINTERLACE, true);
+		set_deinterlacer_state(true);
 	}
-	
-	xine_port_send_gui_data(video_port, XINE_GUI_SEND_DRAWABLE_CHANGED, (void *) window);
-	xine_port_send_gui_data(video_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, (void *) 1);
+	else if (strcmp(argv[5], "standard") == 0)
+	{
+		set_deinterlacer_state(true);
+	}
+	else
+	{
+		set_deinterlacer_state(false);
+	}
 
-	set_mute_state(strcmp(argv[5], "mute") == 0);
+	set_mute_state(strcmp(argv[6], "true") == 0);
 	
 	if ((!xine_open(stream, mrl)) || (!xine_play(stream, 0, 0)))
 	{
@@ -387,11 +401,11 @@ int main(int argc, char **argv)
 						{
 							if (key_event->state == XK_Shift_L)
 							{
-								set_audio_channel(keysym - XK_1);
+								set_audio_stream(keysym - XK_1);
 							}
 							else if (key_event->state == XK_Shift_R)
 							{
-								set_subtitle_channel(keysym - XK_1);
+								set_subtitle_stream(keysym - XK_1);
 							}
 						}
 						break;

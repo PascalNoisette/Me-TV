@@ -32,6 +32,7 @@ Engine::Engine(const Glib::ustring& engine_type)
 {
 	pid = -1;
 	mute_state = false;
+	deinterlacer_state = false;
 	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
 	audio_stream = 0;
 	subtitle_stream = -1;
@@ -65,7 +66,8 @@ void Engine::play(const Glib::ustring& mrl)
 	argv.push_back(Glib::ustring::compose("%1", window));
 	argv.push_back(application.get_string_configuration_value("xine.video_driver"));
 	argv.push_back(application.get_string_configuration_value("xine.audio_driver"));
-	argv.push_back(mute_state ? "mute" : "unmute");
+	argv.push_back(application.get_string_configuration_value("deinterlace_type"));
+	argv.push_back(mute_state ? "true" : "false");
 
 	g_debug("=================================================");
 	for (StringList::iterator i = argv.begin(); i != argv.end(); i++)
@@ -192,7 +194,7 @@ void Engine::set_mute_state(gboolean state)
 		mute_state = state;
 		if (pid != -1)
 		{
-			g_debug(state ? "Sending mute" : "Sending unmuting");
+			g_debug(state ? "Sending mute" : "Sending unmute");
 			sendKeyEvent(
 				state ? XK_m : XK_m,
 				state ? 0 : XK_Shift_L);

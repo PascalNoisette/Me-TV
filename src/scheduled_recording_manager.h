@@ -38,7 +38,7 @@ public:
 	void load(Data::Connection& connection);
 	void save(Data::Connection& connection);
 
-	void add_scheduled_recording(ScheduledRecording& scheduled_recording);
+	void set_scheduled_recording(ScheduledRecording& scheduled_recording);
 	void remove_scheduled_recording(guint scheduled_recording_id);		
 	ScheduledRecording get_scheduled_recording(guint scheduled_recording_id);
 	guint check_scheduled_recordings();

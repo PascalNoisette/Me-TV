@@ -101,13 +101,16 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	g_debug("Scheduled recordings saved");
 }
 
-void ScheduledRecordingManager::add_scheduled_recording(ScheduledRecording& scheduled_recording)
+void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& scheduled_recording)
 {
 	Glib::RecMutex::Lock lock(mutex);
+	gboolean updated = false;
 	
-	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !updated; i++)
 	{
 		ScheduledRecording& current = *i;
+
+		// Check for conflict
 		if (current.channel_id != scheduled_recording.channel_id && scheduled_recording.overlaps(current))
 		{
 			Glib::ustring message =  Glib::ustring::compose(
@@ -116,22 +119,46 @@ void ScheduledRecordingManager::add_scheduled_recording(ScheduledRecording& sche
 			throw Exception(message);
 		}
 
-		if (current.channel_id == scheduled_recording.channel_id && current.start_time == scheduled_recording.start_time)
+		// If it's an existing scheduled recording then update it
+		if (scheduled_recording.scheduled_recording_id != 0 &&
+		    scheduled_recording.scheduled_recording_id == current.scheduled_recording_id)
+		{
+			g_debug("Updating scheduled recording");
+
+			current.device = scheduled_recording.device;
+			current.type = scheduled_recording.type;
+			current.description = scheduled_recording.description;
+			current.channel_id = scheduled_recording.channel_id;
+			current.start_time = scheduled_recording.start_time;
+			current.duration = scheduled_recording.duration;
+
+			updated = true;
+		}
+
+		// Check if we are scheduling the same program
+		if (scheduled_recording.scheduled_recording_id == 0 &&
+		    current.channel_id == scheduled_recording.channel_id &&
+		    current.start_time == scheduled_recording.start_time &&
+		    current.duration == scheduled_recording.duration)
 		{
 			Glib::ustring message =  Glib::ustring::compose(
-				_("Failed to save scheduled recording because you have already have a scheduled recording called '%1' which starts at the same time on the same channel."),
+				_("Failed to save scheduled recording because you have already have a scheduled recording called '%1' which is scheduled for the same time on the same channel."),
 				current.description);
 			throw Exception(message);
 		}
-	}	
+	}
 	
-	scheduled_recordings.push_back(scheduled_recording);
+	// If the scheduled recording is new then add it
+	if (scheduled_recording.scheduled_recording_id == 0)
+	{
+		g_debug("Adding scheduled recording");
+		scheduled_recordings.push_back(scheduled_recording);
+	}
 
 	// Have to save to update the scheduled recording ID
 	Application& application = get_application();
 	Data::Connection connection(application.get_database_filename());
 	save(connection);
-
 	application.check_scheduled_recordings();
 }
 
@@ -165,9 +192,11 @@ void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recor
 	get_application().check_scheduled_recordings();
 }
 
+guint scheduled_recording_now = 0;
+
 guint is_old(ScheduledRecording& scheduled_recording)
 {
-	return (scheduled_recording.get_end_time() < convert_to_local_time(time(NULL)));
+	return (scheduled_recording.get_end_time() < scheduled_recording_now);
 }
 
 guint ScheduledRecordingManager::check_scheduled_recordings()
@@ -178,6 +207,8 @@ guint ScheduledRecordingManager::check_scheduled_recordings()
 
 	Application& application = get_application();
 
+	scheduled_recording_now = time(NULL);
+	g_debug("Removing scheduled recordings older than %d", scheduled_recording_now);
 	scheduled_recordings.remove_if(is_old);
 	
 	gboolean got_recording = false;
