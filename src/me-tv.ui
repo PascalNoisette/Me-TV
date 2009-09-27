@@ -1216,7 +1216,7 @@ found in /usr/share/common-licenses/GPL file.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox1">
+              <object class="GtkHBox" id="hbox9">
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkComboBox" id="combo_box_deinterlace_type">
@@ -1866,7 +1866,7 @@ your package management system.
         <property name="visible">True</property>
         <property name="spacing">2</property>
         <child>
-          <object class="GtkVBox" id="vbox2">
+          <object class="GtkVBox" id="vbox8">
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label_select_devic">

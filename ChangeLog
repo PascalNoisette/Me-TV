@@ -1,5 +1,11 @@
 2009-08-10  Michael Lamothe <michael.lamothe@gmail.com>
 
+	* 1.1.0
+	* Updated intltool
+	* Applied Martin Pitt's patch for duplicate ids
+
+2009-08-10  Michael Lamothe <michael.lamothe@gmail.com>
+
 	* 1.0.0
 	* Reimplemented menus/toolbars in UIManager
 	* Added menu accelerators
