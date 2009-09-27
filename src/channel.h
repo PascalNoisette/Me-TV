@@ -21,9 +21,9 @@
 #ifndef __CHANNEL_H__
 #define __CHANNEL_H__
 
-#include <linux/dvb/frontend.h>
 #include "epg_events.h"
 #include "dvb_transponder.h"
+#include <linux/dvb/frontend.h>
 
 #define CHANNEL_FLAG_NONE		0
 #define CHANNEL_FLAG_DVB_T		0x01
