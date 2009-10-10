@@ -162,11 +162,13 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	get_signal_error().clear();
 	get_signal_error().connect(sigc::mem_fun(*this, &Application::on_error));
 
+#ifndef IGNORE_SQLITE3_THREADSAFE_CHECK
 	g_debug("sqlite3_threadsafe() = %d", sqlite3_threadsafe());
 	if (sqlite3_threadsafe() == 0)
 	{
 		throw Exception(_("The SQLite version is not thread-safe"));
 	}
+#endif
 	
 	client = Gnome::Conf::Client::get_default_client();
 	
