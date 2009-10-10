@@ -172,7 +172,7 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id)
 
 	Glib::RecMutex::Lock lock(mutex);
 
-	g_debug("Saving %d EPG events", list.size());
+	g_debug("Saving %d EPG events", (int)list.size());
 	for (EpgEventList::iterator j = list.begin(); j != list.end(); j++)
 	{
 		EpgEvent& epg_event = *j;
