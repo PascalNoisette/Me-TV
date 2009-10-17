@@ -169,9 +169,6 @@ void StreamThread::run()
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
 	input_channel->set_encoding("");
-
-	build_pat(pat);
-	build_pmt(pmt);
 		
 	guint last_insert_time = 0;
 	gsize bytes_read;
@@ -181,10 +178,13 @@ void StreamThread::run()
 	{
 		// Insert PAT/PMT every second
 		time_t now = time(NULL);
-		if (now - last_insert_time > 1)
+		if (now - last_insert_time > 2)
 		{
 			g_debug("Writing PAT/PMT header");
 			
+			build_pat(pat);
+			build_pmt(pmt);
+
 			write(pat, TS_PACKET_SIZE);
 			write(pmt, TS_PACKET_SIZE);
 			last_insert_time = now;
@@ -266,10 +266,13 @@ gboolean StreamThread::is_pid_used(guint pid)
 
 void StreamThread::build_pat(gchar* buffer)
 {
-	buffer[0x00] = 0x47; // sync_byte
+	static guint counter = 0;
+	
+	buffer[0x00] = 0x47;
 	buffer[0x01] = 0x40;
 	buffer[0x02] = 0x00; // PID = 0x0000
-	buffer[0x03] = 0x10; // | (ps->pat_counter & 0x0f);
+	buffer[0x03] = 0x10 | (counter++ & 0xf); // | (ps->pat_counter & 0x0f);
+	g_debug("PAT counter = 0x%02X", counter);
 	buffer[0x04] = 0x00; // CRC calculation begins here
 	buffer[0x05] = 0x00; // 0x00: Program association section
 	buffer[0x06] = 0xb0;
@@ -285,7 +288,7 @@ void StreamThread::build_pat(gchar* buffer)
 	buffer[0x10] = 0x10;
 	
 	// Program Map PID
-	pmt_pid = 0x64;
+	pmt_pid = 0xff;
 	while (is_pid_used(pmt_pid))
 	{
 		pmt_pid--;
@@ -308,6 +311,7 @@ void StreamThread::build_pat(gchar* buffer)
 
 void StreamThread::build_pmt(gchar* buffer)
 {
+	static guint counter = 0;
 	int i, off=0;
 	
 	Dvb::SI::VideoStream video_stream;
@@ -317,10 +321,10 @@ void StreamThread::build_pmt(gchar* buffer)
 		video_stream = stream.video_streams[0];
 	}
 
-	buffer[0x00] = 0x47; //sync_byte
+	buffer[0x00] = 0x47;
 	buffer[0x01] = 0x40;
 	buffer[0x02] = pmt_pid;
-	buffer[0x03] = 0x10;
+	buffer[0x03] = 0x10 | (counter++ & 0xf);
 	buffer[0x04] = 0x00; // CRC calculation begins here
 	buffer[0x05] = 0x02; // 0x02: Program map section
 	buffer[0x06] = 0xb0;
@@ -353,7 +357,7 @@ void StreamThread::build_pmt(gchar* buffer)
 	buffer[0x1d] = 0x01;
 	buffer[0x1e] = 0xfe;
 	off = 0x1e;
-	
+
 	// Audio streams
 	for (guint index = 0; index < stream.audio_streams.size(); index++)
 	{
@@ -457,7 +461,7 @@ void StreamThread::build_pmt(gchar* buffer)
 	// needed stuffing bytes
 	for (i=off+5 ; i < 188 ; i++)
 	{
-		buffer[i]=0xff;
+		buffer[i] = 0xff;
 	}
 }
 
@@ -547,6 +551,7 @@ void StreamThread::setup_dvb()
 	gsize video_streams_size = pms.video_streams.size();
 	for (guint i = 0; i < video_streams_size; i++)
 	{
+		g_message("Adding video stream");
 		add_pes_demuxer(demux_path, pms.video_streams[i].pid, DMX_PES_OTHER, "video");
 		stream.video_streams.push_back(pms.video_streams[i]);
 	}
