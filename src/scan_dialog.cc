@@ -380,16 +380,6 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		builder->get_widget("file_chooser_button_scan", file_chooser_button);
 		initial_tuning_file = file_chooser_button->get_filename();
 
-		switch(frontend.get_frontend_info().type)
-		{
-			case FE_OFDM:
-			case FE_QAM:
-			case FE_QPSK:
-				break;
-			default:
-				throw Exception(_("Failed to scan: scanning is only supported for DVB-T, DVB-S and DVB-C devices"));
-		}
-
 		if (initial_tuning_file.empty())
 		{
 			throw Exception(_("No tuning file has been selected"));
