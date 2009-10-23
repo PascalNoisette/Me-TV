@@ -657,6 +657,26 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 	}
 }
 
+void SectionParser::parse_psip_tvct(Demuxer& demuxer, VirtualChannelTable& table)
+{
+ read_section(demuxer);
+ guint offset = 9;
+ guint num_channels_in_section = buffer[offset++];
+
+ for (guint i = 0; i < num_channels_in_section; i++)
+ {
+ VirtualChannelTableTable vctt;
+ offset += 24;
+ vctt.program_number = get_bits(&buffer[offset], 0, 16);
+ offset += 4;
+ vctt.source_id = get_bits(&buffer[offset], 0, 16);
+ table.tables.push_back(vctt);
+ offset += 2;
+ guint table_type_descriptors_length = get_bits(&buffer[offset], 6, 10);
+ offset += table_type_descriptors_length + 2;
+ }
+}
+
 void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table)
 {
 	read_section(demuxer);
