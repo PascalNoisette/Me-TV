@@ -657,27 +657,27 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 	}
 }
 
-void SectionParser::parse_psip_tvct(Demuxer& demuxer, VirtualChannelTable& table)
+void SectionParser::parse_psip_tvct(Demuxer& demuxer, VirtualChannelTableArray& tables)
 {
- read_section(demuxer);
- guint offset = 9;
- guint num_channels_in_section = buffer[offset++];
+	read_section(demuxer);
+	guint offset = 9;
+	guint num_channels_in_section = buffer[offset++];
 
- for (guint i = 0; i < num_channels_in_section; i++)
- {
- VirtualChannelTableTable vctt;
- offset += 24;
- vctt.program_number = get_bits(&buffer[offset], 0, 16);
- offset += 4;
- vctt.source_id = get_bits(&buffer[offset], 0, 16);
- table.tables.push_back(vctt);
- offset += 2;
- guint table_type_descriptors_length = get_bits(&buffer[offset], 6, 10);
- offset += table_type_descriptors_length + 2;
- }
+	for (guint i = 0; i < num_channels_in_section; i++)
+	{
+		VirtualChannelTable vct;
+		offset += 24;
+		vct.program_number = get_bits(&buffer[offset], 0, 16);
+		offset += 4;
+		vct.source_id = get_bits(&buffer[offset], 0, 16);
+		tables.push_back(vct);
+		offset += 2;
+		guint table_type_descriptors_length = get_bits(&buffer[offset], 6, 10);
+		offset += table_type_descriptors_length + 2;
+	}
 }
 
-void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table)
+void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTableArray& tables)
 {
 	read_section(demuxer);
 	guint offset = 9;
@@ -686,11 +686,11 @@ void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table)
 	
 	for (guint i = 0; i < tables_defined; i++)
 	{
-		MasterGuideTableTable mgtt;
-		mgtt.type = get_bits(&buffer[offset], 0, 16);
+		MasterGuideTable mgt;
+		mgt.type = get_bits(&buffer[offset], 0, 16);
 		offset += 2;
-		mgtt.pid = get_bits(&buffer[offset], 3, 13);
-		table.tables.push_back(mgtt);	
+		mgt.pid = get_bits(&buffer[offset], 3, 13);
+		tables.push_back(mgt);
 		offset += 7;
 		guint table_type_descriptors_length = get_bits(&buffer[offset], 4, 12);
 		offset += table_type_descriptors_length + 2;

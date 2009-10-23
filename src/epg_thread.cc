@@ -125,29 +125,34 @@ void EpgThread::run()
 {
 	TRY;
 
-	Application&				application				= get_application();
-	ChannelManager&				channel_manager			= application.channel_manager;
-	Dvb::Frontend&				frontend				= application.device_manager.get_frontend();
-	Glib::ustring				demux_path				= frontend.get_adapter().get_demux_path();
-	EITDemuxers					demuxers(demux_path);
-	Dvb::SI::SectionParser		parser;
-	Dvb::SI::MasterGuideTable	master_guide_table;
+	Application&						application				= get_application();
+	ChannelManager&						channel_manager			= application.channel_manager;
+	Dvb::Frontend&						frontend				= application.device_manager.get_frontend();
+	Glib::ustring						demux_path				= frontend.get_adapter().get_demux_path();
+	EITDemuxers							demuxers(demux_path);
+	Dvb::SI::SectionParser				parser;
+	Dvb::SI::MasterGuideTableArray		master_guide_tables;
+	Dvb::SI::VirtualChannelTableArray	virtual_channel_tables;
 
 	gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
 	if (is_atsc)
 	{
+		Dvb::Demuxer demuxer_tvct(demux_path);
+		demuxer_tvct.set_filter(PSIP_PID, TVCT_ID, 0xFF);
+		parser.parse_psip_tvct(demuxer_tvct, virtual_channel_tables);
+
 		Dvb::Demuxer demuxer_mgt(demux_path);
 		demuxer_mgt.set_filter(PSIP_PID, MGT_ID, 0xFF);
-		parser.parse_psip_mgt(demuxer_mgt, master_guide_table);
+		parser.parse_psip_mgt(demuxer_mgt, master_guide_tables);
 		
-		gsize size = master_guide_table.tables.size();
+		gsize size = master_guide_tables.size();
 		for (guint i = 0; i < size; i++)
 		{
-			Dvb::SI::MasterGuideTableTable mgtt = master_guide_table.tables[i];
-			if (mgtt.type >= 0x0100 && mgtt.type <= 0x017F)
+			Dvb::SI::MasterGuideTable mgt = master_guide_tables[i];
+			if (mgt.type >= 0x0100 && mgt.type <= 0x017F)
 			{		
-				demuxers.add()->set_filter(mgtt.pid, PSIP_EIT_ID, 0);
-				g_debug("Set up PID 0x%02X for events", mgtt.pid);
+				demuxers.add()->set_filter(mgt.pid, PSIP_EIT_ID, 0);
+				g_debug("Set up PID 0x%02X for events", mgt.pid);
 			}
 		}
 	}
@@ -166,6 +171,28 @@ void EpgThread::run()
 			demuxers.get_next_eit(parser, section, is_atsc);
 
 			guint service_id = section.service_id;
+			if (is_atsc)
+			{
+				bool found = false;
+				gsize size = virtual_channel_tables.size();
+				
+				for (guint i = 0; i < size && !found; i++)
+				{
+					Dvb::SI::VirtualChannelTable& vct = virtual_channel_tables[i];
+					if (vct.source_id == service_id)
+					{
+						service_id = vct.program_number;
+						found = true;
+					}
+				}
+
+				if (!found)
+				{
+					g_message(_("Unknown source_id %u"), service_id);
+					service_id = 0;
+				}
+			}
+
 			Channel* channel = channel_manager.find_channel(frequency, service_id);
 			if (channel != NULL)
 			{

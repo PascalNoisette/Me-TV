@@ -73,7 +73,7 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 				transponder.polarisation);
 		}
 
-		g_debug("Got %d transponders from NIT", nis.transponders.size());
+		g_debug("Got %d transponders from NIT", (int)nis.transponders.size());
 		for (guint i = 0; i < nis.transponders.size(); i++)
 		{
 			Transponder& new_transponder = nis.transponders[i];
