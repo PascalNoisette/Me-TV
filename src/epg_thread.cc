@@ -89,16 +89,19 @@ void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInf
 	{
 		throw SystemException (_("Failed to poll EIT demuxers"));
 	}
-	
-	eit_demuxer = eit_demuxers;
-	while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
-	{
-		Dvb::Demuxer* current = (Dvb::Demuxer*)eit_demuxer->data;
-		if (current->poll())
+
+	if (result > 0) {
+		count = 0;
+		eit_demuxer = eit_demuxers;
+		while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
 		{
-			selected_eit_demuxer = current;
+			if ((fds[count].revents&POLLIN) != 0)
+			{
+				selected_eit_demuxer = (Dvb::Demuxer*)eit_demuxer->data;
+			}
+			count++;
+			eit_demuxer = g_slist_next(eit_demuxer);
 		}
-		eit_demuxer = g_slist_next(eit_demuxer);				
 	}
 
 	if (selected_eit_demuxer == NULL)
@@ -137,24 +140,29 @@ void EpgThread::run()
 	gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
 	if (is_atsc)
 	{
-		Dvb::Demuxer demuxer_tvct(demux_path);
-		demuxer_tvct.set_filter(PSIP_PID, TVCT_ID, 0xFF);
-		parser.parse_psip_tvct(demuxer_tvct, virtual_channel_tables);
-
-		Dvb::Demuxer demuxer_mgt(demux_path);
-		demuxer_mgt.set_filter(PSIP_PID, MGT_ID, 0xFF);
-		parser.parse_psip_mgt(demuxer_mgt, master_guide_tables);
-		
-		gsize size = master_guide_tables.size();
-		for (guint i = 0; i < size; i++)
 		{
+			Dvb::Demuxer demuxer_tvct(demux_path);
+			demuxer_tvct.set_filter(PSIP_PID, TVCT_ID, 0xFF);
+			parser.parse_psip_tvct(demuxer_tvct, virtual_channel_tables);
+		}
+
+		{
+			Dvb::Demuxer demuxer_mgt(demux_path);
+			demuxer_mgt.set_filter(PSIP_PID, MGT_ID, 0xFF);
+			parser.parse_psip_mgt(demuxer_mgt, master_guide_tables);
+		}
+		
+		guint i = master_guide_tables.size();
+		if (i > 0) do
+		{
+			--i;
 			Dvb::SI::MasterGuideTable mgt = master_guide_tables[i];
 			if (mgt.type >= 0x0100 && mgt.type <= 0x017F)
-			{		
+			{
 				demuxers.add()->set_filter(mgt.pid, PSIP_EIT_ID, 0);
 				g_debug("Set up PID 0x%02X for events", mgt.pid);
 			}
-		}
+		} while (i > 0);
 	}
 	else
 	{
