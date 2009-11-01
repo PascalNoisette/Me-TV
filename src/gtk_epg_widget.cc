@@ -293,7 +293,7 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 				
 					if (column_count > 0)
 					{
-						guint converted_start_time = convert_to_utc_time (epg_event.start_time);
+						guint converted_start_time = convert_to_utc_time(epg_event.start_time)+30;
 
 						Glib::ustring text;
 						if (show_epg_time)

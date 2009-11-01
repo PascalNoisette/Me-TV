@@ -135,15 +135,23 @@ void EpgThread::run()
 	EITDemuxers							demuxers(demux_path);
 	Dvb::SI::SectionParser				parser;
 	Dvb::SI::MasterGuideTableArray		master_guide_tables;
-	Dvb::SI::VirtualChannelTableArray	virtual_channel_tables;
+	Dvb::SI::VirtualChannelTable	virtual_channel_table;
+	Dvb::SI::SystemTimeTable	system_time_table;
 
 	gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
 	if (is_atsc)
 	{
+		system_time_table.GPS_UTC_offset = 15;
+		{
+			Dvb::Demuxer demuxer_stt(demux_path);
+			demuxer_stt.set_filter(PSIP_PID, STT_ID, 0xFF);
+			parser.parse_psip_stt(demuxer_stt, system_time_table);
+		}
+
 		{
 			Dvb::Demuxer demuxer_tvct(demux_path);
 			demuxer_tvct.set_filter(PSIP_PID, TVCT_ID, 0xFF);
-			parser.parse_psip_tvct(demuxer_tvct, virtual_channel_tables);
+			parser.parse_psip_tvct(demuxer_tvct, virtual_channel_table);
 		}
 
 		{
@@ -182,14 +190,14 @@ void EpgThread::run()
 			if (is_atsc)
 			{
 				bool found = false;
-				gsize size = virtual_channel_tables.size();
+				gsize size = virtual_channel_table.channels.size();
 				
 				for (guint i = 0; i < size && !found; i++)
 				{
-					Dvb::SI::VirtualChannelTable& vct = virtual_channel_tables[i];
-					if (vct.source_id == service_id)
+					Dvb::SI::VirtualChannel& vc = virtual_channel_table.channels[i];
+					if (vc.source_id == service_id)
 					{
-						service_id = vct.program_number;
+						service_id = vc.program_number;
 						found = true;
 					}
 				}
@@ -213,6 +221,7 @@ void EpgThread::run()
 					epg_event.channel_id	= channel->channel_id;
 					epg_event.event_id		= event.event_id;
 					epg_event.start_time	= event.start_time;
+					if (is_atsc) epg_event.start_time	-= system_time_table.GPS_UTC_offset;
 					epg_event.duration		= event.duration;
 					
 					for (Dvb::SI::EventTextMap::iterator i = event.texts.begin(); i != event.texts.end(); i++)

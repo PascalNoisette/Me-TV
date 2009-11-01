@@ -94,6 +94,46 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 	}
 }
 
+void Scanner::atsc_tune_to(Frontend& frontend, const Transponder& transponder)
+{
+	if (terminated)
+	{
+		return;
+	}
+	
+	g_debug("Tuning to transponder at %d Hz", transponder.frontend_parameters.frequency);
+	
+	try
+	{
+		SI::SectionParser parser;
+		SI::VirtualChannelTable virtual_channel_table;
+		
+		Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
+		Demuxer demuxer_tvct(demux_path);
+		
+		frontend.tune_to(transponder);
+		
+		demuxer_tvct.set_filter(PSIP_PID, TVCT_ID, 0xFF);
+		parser.parse_psip_tvct(demuxer_tvct, virtual_channel_table);
+	
+		demuxer_tvct.stop();
+		
+		for (guint i = 0; i < virtual_channel_table.channels.size(); i++)
+		{
+			SI::VirtualChannel* vc = &virtual_channel_table.channels[i];
+			if (vc->channel_TSID == virtual_channel_table.transport_stream_id && vc->service_type == 0x02) signal_service(
+				transponder.frontend_parameters,
+				vc->program_number,
+				Glib::ustring::compose("%1-%2 %3", vc->major_channel_number, vc->minor_channel_number, vc->short_name),
+				transponder.polarisation);
+		}
+	}
+	catch(const Exception& exception)
+	{
+		g_debug("Failed to tune to transponder at %d Hz", transponder.frontend_parameters.frequency);
+	}
+}
+
 void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& line)
 {
 	struct dvb_frontend_parameters frontend_parameters;
@@ -238,11 +278,13 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 		}
 	}
 
+	gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
 	guint transponder_count = 0;
 	signal_progress(0, transponders.size());
 	for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
 	{
-		tune_to(frontend, *i);
+		if (is_atsc) atsc_tune_to(frontend, *i);
+		else tune_to(frontend, *i);
 		signal_progress(++transponder_count, transponders.size());
 	}
 	

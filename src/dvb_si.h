@@ -48,6 +48,7 @@
 #define MGT_ID		0xC7
 #define TVCT_ID		0xC8
 #define PSIP_EIT_ID	0xCB
+#define STT_ID		0xCD
 
 #define STREAM_TYPE_MPEG1		0x01
 #define STREAM_TYPE_MPEG2		0x02
@@ -142,6 +143,14 @@ namespace Dvb
 			std::vector<ProgramAssociation> program_associations;
 		};
 
+		class SystemTimeTable
+		{
+		public:
+			gulong system_time;
+			guint GPS_UTC_offset;
+			guint daylight_savings;
+		};
+
 		class MasterGuideTable
 		{
 		public:
@@ -151,14 +160,24 @@ namespace Dvb
 
 		typedef std::vector<MasterGuideTable> MasterGuideTableArray;
 
-		class VirtualChannelTable
+		class VirtualChannel
 		{
 		public:
+			Glib::ustring short_name;
+			guint major_channel_number;
+			guint minor_channel_number;
+			guint channel_TSID;
 			guint program_number;
+			guint service_type;
 			guint source_id;
 		};
 
-		typedef std::vector<VirtualChannelTable> VirtualChannelTableArray;
+		class VirtualChannelTable
+		{
+		public:
+			guint transport_stream_id;
+			std::vector<VirtualChannel> channels;
+		};
 
 		class VideoStream
 		{
@@ -270,7 +289,8 @@ namespace Dvb
 			void parse_eis (Demuxer& demuxer, EventInformationSection& section);
 			void parse_psip_eis (Demuxer& demuxer, EventInformationSection& section);
 			void parse_psip_mgt(Demuxer& demuxer, MasterGuideTableArray& tables);
-			void parse_psip_tvct(Demuxer& demuxer, VirtualChannelTableArray& tables);
+			void parse_psip_tvct(Demuxer& demuxer, VirtualChannelTable& section);
+			void parse_psip_stt(Demuxer& demuxer, SystemTimeTable& table);
 			void parse_sds (Demuxer& demuxer, ServiceDescriptionSection& section);
 			void parse_nis (Demuxer& demuxer, NetworkInformationSection& section);
 		};
