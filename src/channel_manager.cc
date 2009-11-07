@@ -283,11 +283,6 @@ void ChannelManager::add_channel(const Channel& channel)
 	
 	for (ChannelArray::iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 	{
-		if ((*iterator).name == channel.name)
-		{
-			throw Exception("Failed to add channel: channel name already exists");
-		}
-
 		if (channel.channel_id != 0 && (*iterator).channel_id == channel.channel_id)
 		{
 			throw Exception("Failed to add channel: channel id already exists");

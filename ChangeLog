@@ -6,6 +6,7 @@
 	* Updated include order in channels.h to allow compile in recent kernel
 	* Ignoring scheduled recording check for same scheduled recording (LP: #437142)
 	* Added iIGNORE_SQLITE3_THREADSAFE_CHECK to disable sqlite3_threadsafe check for Hardy compile (LP: #433996)
+	* Added support for EPG in Hong Kong from Raymond Tau (LP: #477388)
 
 2009-08-10  Michael Lamothe <michael.lamothe@gmail.com>
 

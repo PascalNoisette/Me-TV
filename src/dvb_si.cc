@@ -225,7 +225,6 @@ void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& sect
 	}
 }
 
-
 void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& section)
 {
 	gsize section_length = read_section(demuxer);
@@ -958,6 +957,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 				case 0x09: codeset = "ISO-8859-13"; break;
 				case 0x0A: codeset = "ISO-8859-14"; break;
 				case 0x0B: codeset = "ISO-8859-15"; break;
+				case 0x11: codeset = "UTF-16BE"; break;
 				case 0x14: codeset = "UTF-16BE"; break;
 
 				case 0x10:
