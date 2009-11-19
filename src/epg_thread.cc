@@ -42,7 +42,7 @@ public:
 		delete_all();
 	}
 		
-	void get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInformationSection& section, gboolean is_atsc);
+	gboolean get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInformationSection& section, gboolean is_atsc, guint timeout);
 	
 	Dvb::Demuxer* add()
 	{
@@ -63,7 +63,7 @@ public:
 	}
 };
 
-void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInformationSection& section, gboolean is_atsc)
+gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInformationSection& section, gboolean is_atsc, guint timeout)
 {
 	if (eit_demuxers == NULL)
 	{
@@ -84,36 +84,36 @@ void EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInf
 		eit_demuxer = g_slist_next(eit_demuxer);
 	}
 
-	gint result = ::poll(fds, demuxer_count, read_timeout * 1000);
-	if (result < 0)
-	{
-		throw SystemException (_("Failed to poll EIT demuxers"));
-	}
-	
-	eit_demuxer = eit_demuxers;
-	while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
-	{
-		Dvb::Demuxer* current = (Dvb::Demuxer*)eit_demuxer->data;
-		if (current->poll())
+	gint result = ::poll(fds, demuxer_count, timeout * 1000);
+	if (result >= 0)
+	{		
+		eit_demuxer = eit_demuxers;
+		while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
 		{
-			selected_eit_demuxer = current;
+			Dvb::Demuxer* current = (Dvb::Demuxer*)eit_demuxer->data;
+			if (current->poll())
+			{
+				selected_eit_demuxer = current;
+			}
+			eit_demuxer = g_slist_next(eit_demuxer);				
 		}
-		eit_demuxer = g_slist_next(eit_demuxer);				
+
+		if (selected_eit_demuxer == NULL)
+		{
+			throw Exception(_("Failed to get an EIT demuxer with events"));
+		}
+	
+		if (is_atsc)
+		{
+			parser.parse_psip_eis(*selected_eit_demuxer, section);
+		}
+		else
+		{
+			parser.parse_eis(*selected_eit_demuxer, section);
+		}
 	}
 
-	if (selected_eit_demuxer == NULL)
-	{
-		throw Exception(_("Failed to get an EIT demuxer with events"));
-	}
-	
-	if (is_atsc)
-	{
-		parser.parse_psip_eis(*selected_eit_demuxer, section);
-	}
-	else
-	{
-		parser.parse_eis(*selected_eit_demuxer, section);
-	}
+	return result >= 0;
 }
 
 EpgThread::EpgThread() : Thread("EPG Thread")
@@ -163,45 +163,52 @@ void EpgThread::run()
 		{
 			Dvb::SI::EventInformationSection section;
 			
-			demuxers.get_next_eit(parser, section, is_atsc);
+			gboolean got_event = demuxers.get_next_eit(parser, section, is_atsc, 1000);
 
-			guint service_id = section.service_id;
-			Channel* channel = channel_manager.find_channel(frequency, service_id);
-			if (channel != NULL)
+			if (!got_event)
 			{
-				for (unsigned int k = 0; section.events.size() > k; k++)
+				terminate();
+			}
+			else
+			{
+				guint service_id = section.service_id;
+				Channel* channel = channel_manager.find_channel(frequency, service_id);
+				if (channel != NULL)
 				{
-					Dvb::SI::Event& event	= section.events[k];
-					EpgEvent epg_event;
+					for (unsigned int k = 0; section.events.size() > k; k++)
+					{
+						Dvb::SI::Event& event	= section.events[k];
+						EpgEvent epg_event;
 
-					epg_event.epg_event_id	= 0;
-					epg_event.channel_id	= channel->channel_id;
-					epg_event.event_id		= event.event_id;
-					epg_event.start_time	= event.start_time;
-					epg_event.duration		= event.duration;
+						epg_event.epg_event_id	= 0;
+						epg_event.channel_id	= channel->channel_id;
+						epg_event.event_id		= event.event_id;
+						epg_event.start_time	= event.start_time;
+						epg_event.duration		= event.duration;
 					
-					for (Dvb::SI::EventTextMap::iterator i = event.texts.begin(); i != event.texts.end(); i++)
-					{
-						EpgEventText epg_event_text;
-						const Dvb::SI::EventText& event_text = i->second;
+						for (Dvb::SI::EventTextMap::iterator i = event.texts.begin(); i != event.texts.end(); i++)
+						{
+							EpgEventText epg_event_text;
+							const Dvb::SI::EventText& event_text = i->second;
 						
-						epg_event_text.epg_event_text_id	= 0;
-						epg_event_text.epg_event_id			= 0;
-						epg_event_text.is_extended			= event_text.is_extended;
-						epg_event_text.language				= event_text.language;
-						epg_event_text.title				= event_text.title;
-						epg_event_text.description			= event_text.description;
+							epg_event_text.epg_event_text_id	= 0;
+							epg_event_text.epg_event_id			= 0;
+							epg_event_text.is_extended			= event_text.is_extended;
+							epg_event_text.language				= event_text.language;
+							epg_event_text.title				= event_text.title;
+							epg_event_text.description			= event_text.description;
 						
-						epg_event.texts.push_back(epg_event_text);
-					}
+							epg_event.texts.push_back(epg_event_text);
+						}
 					
-					if (epg_event.get_end_time() < convert_to_local_time(time(NULL)))
-					{
-						g_debug("Ignoring EPG event %d (%s), too old", epg_event.event_id, epg_event.get_title().c_str());
-					}
-					else if (channel->epg_events.add_epg_event(epg_event))
-					{
-						last_update_time = time(NULL)+1;
+						if (epg_event.get_end_time() < convert_to_local_time(time(NULL)))
+						{
+							g_debug("Ignoring EPG event %d (%s), too old", epg_event.event_id, epg_event.get_title().c_str());
+						}
+						else if (channel->epg_events.add_epg_event(epg_event))
+						{
+							last_update_time = time(NULL)+1;
+						}
 					}
 				}
 			}
