@@ -8,6 +8,7 @@
 	* Added iIGNORE_SQLITE3_THREADSAFE_CHECK to disable sqlite3_threadsafe check for Hardy compile (LP: #433996)
 	* Added support for EPG in Hong Kong from Raymond Tau (LP: #477388)
 	* Set timeout for EPG events to 1 second (LP: #434994) 
+	* Moved DB to .local/share (LP: #486247)
 
 2009-08-10  Michael Lamothe <michael.lamothe@gmail.com>
 

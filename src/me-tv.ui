@@ -1982,7 +1982,7 @@ your package management system.
 
 If you've just upgraded Me TV then this is probably what you want to do.
 
-&lt;i&gt;The Me TV database is located at ~/.me-tv/me-tv.db.&lt;/i&gt;</property>
+&lt;i&gt;The Me TV database is located at ~/.local/share/me-tv.db.&lt;/i&gt;</property>
                 <property name="use_markup">True</property>
                 <property name="wrap">True</property>
               </object>
