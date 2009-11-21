@@ -124,9 +124,9 @@ int Demuxer::get_fd() const
 	return fd;
 }
 
-gboolean Demuxer::poll()
+gboolean Demuxer::poll(gint timeout)
 {
-	gint result = ::poll(pfd, 1, read_timeout * 1000);
+	gint result = ::poll(pfd, 1, timeout);
 	
 	if (result == -1)
 	{

@@ -84,11 +84,9 @@ gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::Even
 		eit_demuxer = g_slist_next(eit_demuxer);
 	}
 
-	g_debug("Polling for EPG event");
 	gint result = ::poll(fds, demuxer_count, timeout * 1000);
 	if (result >= 0)
 	{		
-		g_debug("Got EPG event");
 		eit_demuxer = eit_demuxers;
 		while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
 		{
@@ -102,7 +100,8 @@ gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::Even
 
 		if (selected_eit_demuxer == NULL)
 		{
-			throw Exception(_("Failed to get an EIT demuxer with events"));
+			g_debug("Failed to get an EIT demuxer with events");
+			return false;
 		}
 	
 		if (is_atsc)
@@ -134,8 +133,6 @@ void EpgThread::run()
 	EITDemuxers					demuxers(demux_path);
 	Dvb::SI::SectionParser		parser;
 	Dvb::SI::MasterGuideTable	master_guide_table;
-
-	g_debug("In EpgThread::run()");
 	
 	gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
 	if (is_atsc)
@@ -160,8 +157,6 @@ void EpgThread::run()
 		demuxers.add()->set_filter(EIT_PID, EIT_ID, 0);
 	}
 	
-	g_debug("EPG demuxers configured");
-
 	guint frequency = frontend.get_frontend_parameters().frequency;
 	while (!is_terminated())
 	{
@@ -169,11 +164,10 @@ void EpgThread::run()
 		{
 			Dvb::SI::EventInformationSection section;
 			
-			gboolean got_event = demuxers.get_next_eit(parser, section, is_atsc, 1000);
+			gboolean got_event = demuxers.get_next_eit(parser, section, is_atsc, 1);
 
 			if (!got_event)
 			{
-				g_debug("Failed to get an EPG event, terminating EPG thread");
 				terminate();
 			}
 			else

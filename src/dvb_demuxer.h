@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <glibmm.h>
 #include <linux/dvb/dmx.h>
+#include "me-tv.h"
 
 namespace Dvb
 {
@@ -43,7 +44,7 @@ namespace Dvb
 		void set_filter(ushort pid, ushort table_id, ushort mask = 0);
 		void set_buffer_size(unsigned int buffer_size);
 		gint read(unsigned char* buffer, size_t length);
-		gboolean poll();
+		gboolean poll(gint timeout = read_timeout * 1000);
 		void stop();
 		int get_fd() const;
 	};
