@@ -168,33 +168,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 #endif
 	
 	client = Gnome::Conf::Client::get_default_client();
-	
-	set_int_configuration_default("epg_span_hours", 3);
-	set_int_configuration_default("last_channel", -1);
-	set_string_configuration_default("recording_directory", Glib::get_home_dir());
-	set_string_configuration_default("engine_type", "xine");
-	set_string_configuration_default("deinterlace_type", "standard");
-	set_boolean_configuration_default("keep_above", true);
-	set_int_configuration_default("record_extra_before", 5);
-	set_int_configuration_default("record_extra_after", 10);
-	set_string_configuration_default("broadcast_address", "192.168.0.255");
-	set_int_configuration_default("broadcast_port", 2005);
-	set_boolean_configuration_default("show_epg_header", true);
-	set_boolean_configuration_default("show_epg_time", true);
-	set_boolean_configuration_default("show_epg_tooltips", false);
-	set_string_configuration_default("xine.video_driver", "xshm");
-	set_string_configuration_default("xine.audio_driver", "alsa");
-	set_string_configuration_default("preferred_language", "");
-	set_string_configuration_default("text_encoding", "auto");
-	set_boolean_configuration_default("fullscreen_bug_workaround", false);
-	set_boolean_configuration_default("display_status_icon", true);
-	set_boolean_configuration_default("show_channel_number", false);
-	set_int_configuration_default("x", 10);
-	set_int_configuration_default("y", 10);
-	set_int_configuration_default("width", 500);
-	set_int_configuration_default("height", 500);
-	set_int_configuration_default("epg_page_size", 20);
-	set_string_configuration_default("screensaver_poke_command", "gnome-screensaver-command --poke");
 
 	if (get_int_configuration_value("epg_span_hours") == 0)
 	{

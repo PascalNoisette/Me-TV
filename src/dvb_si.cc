@@ -523,13 +523,22 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 {	
 	const guchar* desc = NULL;
 	gsize section_length = read_section(demuxer);
+	dump(buffer, section_length);
+	
 	guint offset = 8;
 	gsize program_info_length = ((buffer[10] & 0x0f) << 8) | buffer[11];
 
 	offset += program_info_length + 4;
-	
+
+	g_debug("==============================================================");
+	g_debug("Parsing PMS");
+	g_debug("==============================================================");
+	g_debug("section_length: %u", (guint)section_length);
 	while ((section_length - offset) >= 5)
 	{
+		g_debug("loop section_length: %u", (guint)section_length);
+		g_debug("offset: %u", (guint)offset);
+			
 		guint pid_type = buffer[offset];
 		guint elementary_pid = ((buffer[offset+1] & 0x1f) << 8) | buffer[offset+2];
 	    gsize descriptor_length = ((buffer[offset+3] & 0x0f) << 8) | buffer[offset+4];
@@ -654,6 +663,7 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 		
 		offset += descriptor_length + 5;
 	}
+	g_debug("==============================================================");
 }
 
 void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table)

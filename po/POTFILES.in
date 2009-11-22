@@ -2,6 +2,7 @@
 
 [encoding: UTF-8]
 
+me-tv.schemas.in
 me-tv.desktop.in
 [type: gettext/glade] src/me-tv.ui
 src/application.cc

@@ -145,6 +145,15 @@ libgnomemm-2.6 >= $LIBGNOMEMM_REQUIRED libgnomeuimm-2.6 >= $LIBGNOMEUI_REQUIRED 
 AC_SUBST(ME_TV_CFLAGS)
 AC_SUBST(ME_TV_LIBS)
 
+# GConf
+AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
+
+if test x"$GCONFTOOL" = xno; then
+  AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
+fi
+
+AM_GCONF_SOURCE_2
+
 ##################################################
 # Check for gtk-doc.
 ##################################################
