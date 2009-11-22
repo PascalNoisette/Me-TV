@@ -149,8 +149,24 @@ void Statement::set_string_parameter(const Glib::ustring& name, const Glib::ustr
 	set_string_parameter(get_parameter_index(name), value);
 }
 
+Connection::Connection()
+{
+	connection = NULL;
+}
+
 Connection::Connection(const Glib::ustring& filename)
 {
+	connection = NULL;
+	open(filename);
+}
+
+void Connection::open(const Glib::ustring& filename)
+{
+	if (connection != NULL)
+	{
+		throw Exception("Database connection already open");
+	}
+	
 	gboolean database_exists = Gio::File::create_for_path(filename)->query_exists();
 	
 	g_debug("Database '%s' ", database_exists ? "exists" : "does not exist");

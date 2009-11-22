@@ -137,10 +137,7 @@ Application& get_application()
 }
 
 Application::Application(int argc, char *argv[], Glib::OptionContext& option_context) :
-	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context),
-	application_dir(make_application_directory()),
-	database_filename(Glib::build_filename(get_application_dir(), "/me-tv.db")),
-	connection(get_database_filename())
+	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context)
 {
 	g_debug("Application constructor");
 
@@ -209,11 +206,14 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 		set_int_configuration_value("epg_page_size", 1);
 	}
 	
-	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);
-	if (!file->query_exists())
-	{
-		file->make_directory();
-	}
+	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
+	ensure_directory_exists (application_dir);
+
+	Glib::ustring data_directory = Glib::get_home_dir() + "/.local/share/me-tv";
+	ensure_directory_exists (data_directory);
+	
+	database_filename = Glib::build_filename(data_directory, "me-tv.db");
+	connection.open(database_filename);
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
 	Glib::ustring ui_path = current_directory + "/me-tv.ui";
@@ -247,6 +247,16 @@ Application::~Application()
 	channel_manager.save(connection);
 
 	g_debug("Application destructor complete");
+}
+
+void Application::ensure_directory_exists(const Glib::ustring& path)
+{
+	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
+	if (!file->query_exists())
+	{
+		g_debug("Creating directory '%s'", path.c_str());
+		file->make_directory_with_parents();
+	}
 }
 
 const Glib::ustring& Application::get_database_filename()
@@ -571,18 +581,6 @@ Application& Application::get_current()
 	}
 	
 	return *current;
-}
-
-Glib::ustring Application::make_application_directory()
-{
-	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
-	if (!file->query_exists())
-	{
-		g_debug("Creating directory '%s'", path.c_str());
-		file->make_directory();
-	}
-	return path;
 }
 
 void Application::stop_stream_thread()
