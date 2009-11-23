@@ -142,7 +142,7 @@ void DeviceManager::set_frontend(Dvb::Frontend& new_frontend)
 		}
 		frontend = &new_frontend;
 		frontend->open();
-
+		
 		Glib::ustring frontend_type = "Unknown";
 
 		switch(frontend->get_frontend_type())
@@ -154,9 +154,7 @@ void DeviceManager::set_frontend(Dvb::Frontend& new_frontend)
 		default: break;
 		}
 		
-		g_debug("Using %s/%s (%s) ",
-		    frontend->get_frontend_info().name,
-		    frontend_type.c_str(),
-		    frontend->get_path().c_str());
+		g_message("Using %s", frontend->get_path().c_str());
+		g_message("Device: '%s' (%s)", frontend->get_frontend_info().name, frontend_type.c_str());
 	}
 }
