@@ -609,7 +609,7 @@ void Application::stop_stream()
 {
 	if (is_recording())
 	{
-		throw Exception(_("You cannot change channels because you are recording."));
+		throw Exception(_("You cannot stop the current stream because you are recording."));
 	}
 
 	main_window->stop_engine();
