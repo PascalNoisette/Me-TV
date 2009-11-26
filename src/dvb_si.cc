@@ -534,7 +534,7 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 	g_debug("Parsing PMS");
 	g_debug("==============================================================");
 	g_debug("section_length: %u", (guint)section_length);
-	while ((section_length - offset) >= 5)
+	while (section_length >= (5 + offset))
 	{
 		g_debug("loop section_length: %u", (guint)section_length);
 		g_debug("offset: %u", (guint)offset);
