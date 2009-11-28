@@ -173,9 +173,6 @@ void StreamThread::run()
 	guint last_insert_time = 0;
 	gsize bytes_read;
 	
-	build_pat(pat);
-	build_pmt(pmt);
-
 	TRY
 	while (!is_terminated())
 	{
@@ -185,6 +182,9 @@ void StreamThread::run()
 		{
 			g_debug("Writing PAT/PMT header");
 			
+			build_pat(pat);
+			build_pmt(pmt);
+
 			write(pat, TS_PACKET_SIZE);
 			write(pmt, TS_PACKET_SIZE);
 			last_insert_time = now;
