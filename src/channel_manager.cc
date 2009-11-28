@@ -71,7 +71,7 @@ void ChannelManager::load(Data::Connection& connection)
 
 		channel.channel_id									= row_channel["channel_id"].int_value;
 		channel.name										= row_channel["name"].string_value;
-		channel.flags										= row_channel["flags"].int_value;
+		channel.type										= row_channel["type"].int_value;
 		channel.sort_order									= row_channel["sort_order"].int_value;
 		channel.mrl											= row_channel["mrl"].string_value;
 		channel.service_id									= row_channel["service_id"].int_value;
@@ -80,7 +80,7 @@ void ChannelManager::load(Data::Connection& connection)
 		
 		g_debug("Loading channel '%s'", channel.name.c_str());
 
-		if (channel.flags & CHANNEL_FLAG_DVB_T)
+		if (channel.type == FE_OFDM)
 		{
 			channel.transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth)row_channel["bandwidth"].int_value;
 			channel.transponder.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate)row_channel["code_rate_hp"].int_value;
@@ -90,19 +90,19 @@ void ChannelManager::load(Data::Connection& connection)
 			channel.transponder.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval)row_channel["guard_interval"].int_value;
 			channel.transponder.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy)row_channel["hierarchy_information"].int_value;
 		}
-		else if (channel.flags & CHANNEL_FLAG_DVB_C)
+		else if (channel.type == FE_QAM)
 		{
 			channel.transponder.frontend_parameters.u.qam.symbol_rate	= row_channel["symbol_rate"].int_value;
 			channel.transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate)row_channel["fec_inner"].int_value;
 			channel.transponder.frontend_parameters.u.qam.modulation	= (fe_modulation)row_channel["modulation"].int_value;
 		}
-		else if (channel.flags & CHANNEL_FLAG_DVB_S)
+		else if (channel.type == FE_QPSK)
 		{
 			channel.transponder.frontend_parameters.u.qpsk.symbol_rate	= row_channel["symbol_rate"].int_value;
 			channel.transponder.frontend_parameters.u.qpsk.fec_inner	= (fe_code_rate)row_channel["fec_inner"].int_value;
 			channel.transponder.polarisation							= row_channel["polarisation"].int_value;
 		}
-		else if (channel.flags & CHANNEL_FLAG_ATSC)
+		else if (channel.type == FE_ATSC)
 		{
 			channel.transponder.frontend_parameters.u.vsb.modulation	= (fe_modulation)row_channel["modulation"].int_value;
 		}
@@ -141,14 +141,14 @@ void ChannelManager::save(Data::Connection& connection)
 
 		row["channel_id"].int_value		= channel.channel_id;		
 		row["name"].string_value		= channel.name;
-		row["flags"].int_value			= channel.flags;
+		row["type"].int_value			= channel.type;
 		row["sort_order"].int_value		= ++channel_count;
 		row["mrl"].string_value			= channel.mrl;
 		row["service_id"].int_value		= channel.service_id;
 		row["frequency"].int_value		= channel.transponder.frontend_parameters.frequency;
 		row["inversion"].int_value		= channel.transponder.frontend_parameters.inversion;
 
-		if (channel.flags & CHANNEL_FLAG_DVB_T)
+		if (channel.type == FE_OFDM)
 		{
 			row["bandwidth"].int_value				= channel.transponder.frontend_parameters.u.ofdm.bandwidth;
 			row["code_rate_hp"].int_value			= channel.transponder.frontend_parameters.u.ofdm.code_rate_HP;
@@ -158,19 +158,19 @@ void ChannelManager::save(Data::Connection& connection)
 			row["guard_interval"].int_value			= channel.transponder.frontend_parameters.u.ofdm.guard_interval;
 			row["hierarchy_information"].int_value	= channel.transponder.frontend_parameters.u.ofdm.hierarchy_information;
 		}
-		else if (channel.flags & CHANNEL_FLAG_DVB_C)
+		else if (channel.type == FE_QAM)
 		{
 			row["symbol_rate"].int_value			= channel.transponder.frontend_parameters.u.qam.symbol_rate;
 			row["fec_inner"].int_value				= channel.transponder.frontend_parameters.u.qam.fec_inner;
 			row["modulation"].int_value				= channel.transponder.frontend_parameters.u.qam.modulation;
 		}
-		else if (channel.flags & CHANNEL_FLAG_DVB_S)
+		else if (channel.type == FE_QPSK)
 		{
 			row["symbol_rate"].int_value			= channel.transponder.frontend_parameters.u.qpsk.symbol_rate;
 			row["fec_inner"].int_value				= channel.transponder.frontend_parameters.u.qpsk.fec_inner;
 			row["polarisation"].int_value			= channel.transponder.polarisation;
 		}
-		else if (channel.flags & CHANNEL_FLAG_ATSC)
+		else if (channel.type == FE_ATSC)
 		{
 			row["modulation"].int_value				= channel.transponder.frontend_parameters.u.vsb.modulation;
 		}
@@ -311,6 +311,7 @@ Channel& ChannelManager::get_display_channel()
 void ChannelManager::clear()
 {
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	display_channel_index = NO_CHANNEL;
 	channels.clear();
 	g_debug("Channels cleared");
 }
@@ -338,35 +339,12 @@ void ChannelManager::set_channels(const ChannelArray& new_channels)
 	
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
-	guint display_channel_frequency = 0;
-	guint display_channel_service_id = 0;
-
-	if (display_channel_index != NO_CHANNEL)
-	{
-		Channel& display_channel = channels[display_channel_index];
-		display_channel_frequency = display_channel.get_transponder_frequency();
-		display_channel_service_id = display_channel.service_id;
-	}
-	
 	clear();
 	add_channels(new_channels);
 	
 	// Force save to get updated channel IDs
 	save(get_application().connection);
-	
-	if (display_channel_frequency != 0)
-	{
-		Channel* channel = find_channel(display_channel_frequency, display_channel_service_id);
-		if (channel == NULL && channels.size() > 0)
-		{
-			channel = &(*(channels.begin()));
-		}
-		
-		if (channel != NULL)
-		{
-			set_display_channel(*channel);
-		}
-	}
+
 	g_debug("Finished setting channels");
 }
 
@@ -388,6 +366,21 @@ void ChannelManager::previous_channel()
 	{
 		display_channel_index--;
 	}
+}
+
+void ChannelManager::select_display_channel()
+{
+	guint frontend_type = get_application().device_manager.get_frontend().get_frontend_type();
+	
+	for (guint index = 0; index < channels.size(); index++)
+	{
+		Channel& channel = channels[index];
+		if (channel.type == frontend_type)
+		{
+			display_channel_index = index;
+			return;
+		}
+	}	
 }
 
 void ChannelManager::set_display_channel(const Channel& channel)

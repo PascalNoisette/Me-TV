@@ -10,6 +10,7 @@
 	* Set timeout for EPG events to 1 second (LP: #434994) 
 	* Moved DB to .local/share/me-tv (LP: #486247) 
 	* Added schema file for GConf (LP: #460612)
+	* Default channel on startup and device change is now device specific (LP: #486838)
 
 2009-08-10  Michael Lamothe <michael.lamothe@gmail.com>
 

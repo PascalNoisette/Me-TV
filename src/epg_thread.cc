@@ -202,7 +202,7 @@ void EpgThread::run()
 							epg_event.texts.push_back(epg_event_text);
 						}
 					
-						if (epg_event.get_end_time() < convert_to_local_time(time(NULL)))
+						if ((epg_event.get_end_time() + 24*60*60) < convert_to_local_time(time(NULL)))
 						{
 							g_debug("Ignoring EPG event %d (%s), too old", epg_event.event_id, epg_event.get_title().c_str());
 						}

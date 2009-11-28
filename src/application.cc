@@ -23,7 +23,7 @@
 #include "devices_dialog.h"
 
 #define GCONF_PATH					"/apps/me-tv"
-#define CURRENT_DATABASE_VERSION	2
+#define CURRENT_DATABASE_VERSION	3
 
 G_BEGIN_DECLS
 void on_record(GtkObject *object, gpointer user_data)
@@ -245,7 +245,7 @@ gboolean Application::initialise_database()
 	table_channel.name = "channel";
 	table_channel.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_channel.columns.add("name",					Data::DATA_TYPE_STRING, 50, false);
-	table_channel.columns.add("flags",					Data::DATA_TYPE_INTEGER, 0, false);
+	table_channel.columns.add("type",					Data::DATA_TYPE_INTEGER, 0, false);
 	table_channel.columns.add("sort_order",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_channel.columns.add("mrl",					Data::DATA_TYPE_STRING, 1024, true);
 	table_channel.columns.add("service_id",				Data::DATA_TYPE_INTEGER, 0, true);
@@ -453,17 +453,18 @@ void Application::select_channel_to_play()
 	const ChannelArray& channels = channel_manager.get_channels();
 	if (channels.size() > 0)
 	{
-		gint last_channel = get_application().get_int_configuration_value("last_channel");
-		if (channel_manager.find_channel(last_channel) == NULL)
+		gint last_channel_id = get_application().get_int_configuration_value("last_channel");
+		Channel* last_channel = channel_manager.find_channel(last_channel_id);
+		if (last_channel != NULL)
 		{
-			g_debug("Last channel '%d' not found", last_channel);
-			last_channel = -1;
+			g_debug("Last channel '%d' found", last_channel_id);
+			set_display_channel_by_id(last_channel_id);
 		}
-		if (last_channel == -1)
+		else
 		{
-			last_channel = (*channels.begin()).channel_id;
+			g_debug("Last channel '%d' not found", last_channel_id);
+			channel_manager.select_display_channel();
 		}
-		set_display_channel_by_id(last_channel);
 	}
 }
 
@@ -618,6 +619,11 @@ void Application::stop_stream()
 
 void Application::start_stream()
 {
+	if (!channel_manager.has_display_channel())
+	{
+		throw Exception("Failed to start stream because there is no display channel");
+	}
+	
 	Channel& channel = channel_manager.get_display_channel();
 	stream_thread = new StreamThread(channel);
 	try

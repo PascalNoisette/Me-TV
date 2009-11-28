@@ -93,7 +93,11 @@ void DevicesDialog::on_response(int response_id)
 				application.stop_stream();
 				application.set_string_configuration_value("default_device", frontend->get_path());
 				application.device_manager.set_frontend(*frontend);
-				application.start_stream();
+				application.channel_manager.select_display_channel();
+				if (application.channel_manager.has_display_channel())
+				{
+					application.start_stream();
+				}
 			}
 		}
 	}
