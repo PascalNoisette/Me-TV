@@ -168,7 +168,6 @@ void StreamThread::run()
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
-	input_channel->set_flags(input_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
 	input_channel->set_encoding("");
 		
 	guint last_insert_time = 0;
