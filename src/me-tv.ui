@@ -1709,7 +1709,7 @@ LinuxTV dvb-apps package which is included in
 most Linux distributions.  Look for &lt;i&gt;dvb-apps&lt;/i&gt; in
 your package management system.
 
-&lt;i&gt;Scanning is only available for DVB-T/S/C, not ATSC. &lt;/i&gt;</property>
+&lt;i&gt;Scanning is only supported on DVB-T/C, not DVB-S or ATSC. &lt;/i&gt;</property>
                     <property name="use_markup">True</property>
                   </object>
                   <packing>
