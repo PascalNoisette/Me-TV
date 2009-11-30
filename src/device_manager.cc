@@ -43,7 +43,7 @@ DeviceManager::DeviceManager()
 	Glib::ustring adapter_path = get_adapter_path(adapter_count);
 	while (Gio::File::create_for_path(adapter_path)->query_exists())
 	{
-		// TODO: This leaks
+		// NB: This leaks but is low in memory and does not accumulate over time
 		Dvb::Adapter* adapter = new Dvb::Adapter(adapter_count);
 		
 		guint frontend_count = 0;
@@ -142,7 +142,19 @@ void DeviceManager::set_frontend(Dvb::Frontend& new_frontend)
 		}
 		frontend = &new_frontend;
 		frontend->open();
+		
+		Glib::ustring frontend_type = "Unknown";
 
-		g_debug("Using '%s' (%s) ", frontend->get_frontend_info().name, frontend->get_path().c_str());
+		switch(frontend->get_frontend_type())
+		{
+		case FE_ATSC: frontend_type = "ATSC"; break;
+		case FE_OFDM: frontend_type = "DVB-T"; break;
+		case FE_QAM: frontend_type = "DVB-C"; break;
+		case FE_QPSK: frontend_type = "DVB-S"; break;
+		default: break;
+		}
+		
+		g_message("Using %s", frontend->get_path().c_str());
+		g_message("Device: '%s' (%s)", frontend->get_frontend_info().name, frontend_type.c_str());
 	}
 }

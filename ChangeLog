@@ -1,3 +1,17 @@
+2009-11-29  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.0.1
+	* Updated intltool
+	* Applied Martin Pitt's patch for duplicate ids
+	* Updated include order in channels.h to allow compile in recent kernel
+	* Ignoring scheduled recording check for same scheduled recording (LP: #437142)
+	* Added iIGNORE_SQLITE3_THREADSAFE_CHECK to disable sqlite3_threadsafe check for Hardy compile (LP: #433996)
+	* Added support for EPG in Hong Kong from Raymond Tau (LP: #477388)
+	* Set timeout for EPG events to 1 second (LP: #434994) 
+	* Moved DB to .local/share/me-tv (LP: #486247) 
+	* Added schema file for GConf (LP: #460612)
+	* Default channel on startup and device change is now device specific (LP: #486838)
+
 2009-08-10  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.0.0

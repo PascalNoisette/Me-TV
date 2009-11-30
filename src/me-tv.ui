@@ -1216,7 +1216,7 @@ found in /usr/share/common-licenses/GPL file.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox1">
+              <object class="GtkHBox" id="hbox9">
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkComboBox" id="combo_box_deinterlace_type">
@@ -1709,7 +1709,7 @@ LinuxTV dvb-apps package which is included in
 most Linux distributions.  Look for &lt;i&gt;dvb-apps&lt;/i&gt; in
 your package management system.
 
-&lt;i&gt;Scanning is only available for DVB-T/S/C, not ATSC. &lt;/i&gt;</property>
+&lt;i&gt;Scanning is only supported on DVB-T/C, not DVB-S or ATSC. &lt;/i&gt;</property>
                     <property name="use_markup">True</property>
                   </object>
                   <packing>
@@ -1866,7 +1866,7 @@ your package management system.
         <property name="visible">True</property>
         <property name="spacing">2</property>
         <child>
-          <object class="GtkVBox" id="vbox2">
+          <object class="GtkVBox" id="vbox8">
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label_select_devic">
@@ -1982,7 +1982,7 @@ your package management system.
 
 If you've just upgraded Me TV then this is probably what you want to do.
 
-&lt;i&gt;The Me TV database is located at ~/.me-tv/me-tv.db.&lt;/i&gt;</property>
+&lt;i&gt;The Me TV database is located at ~/.local/share/me-tv.db.&lt;/i&gt;</property>
                 <property name="use_markup">True</property>
                 <property name="wrap">True</property>
               </object>

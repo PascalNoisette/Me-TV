@@ -266,7 +266,6 @@ int main(int argc, char **argv)
 	xine_port_send_gui_data(video_port, XINE_GUI_SEND_DRAWABLE_CHANGED, (void *) window);
 	xine_port_send_gui_data(video_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, (void *) 1);
 
-
 	if (video_port != NULL && strcmp(argv[5], "tvtime") == 0)
 	{
 		xine_post_wire_video_port(xine_get_video_source(stream), video_port);

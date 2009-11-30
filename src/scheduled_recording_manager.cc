@@ -64,7 +64,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-	g_debug("Saving %d scheduled recordings", scheduled_recordings.size());
+	g_debug("Saving %d scheduled recordings", (int)scheduled_recordings.size());
 	
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];	
 	Data::DataTable data_table(table);
@@ -111,7 +111,9 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 		ScheduledRecording& current = *i;
 
 		// Check for conflict
-		if (current.channel_id != scheduled_recording.channel_id && scheduled_recording.overlaps(current))
+		if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
+		    current.channel_id != scheduled_recording.channel_id &&
+		    scheduled_recording.overlaps(current))
 		{
 			Glib::ustring message =  Glib::ustring::compose(
 				_("Failed to save scheduled recording because it conflicts with another scheduled recording called '%1'."),

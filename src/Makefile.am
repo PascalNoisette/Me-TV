@@ -115,8 +115,7 @@ me_tv_LDFLAGS = \
 
 me_tv_LDADD = \
 	$(ME_TV_LIBS) \
-	$(SQLITE_LIBS) \
-	$(XINE_LIB_LIBS)
+	$(SQLITE_LIBS)
 
 EXTRA_DIST = $(glade_DATA)
 

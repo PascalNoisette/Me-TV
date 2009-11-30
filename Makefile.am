@@ -15,6 +15,10 @@ pixmaps_DATA = \
         src/me-tv.xpm \
         src/me-tv-recording.xpm
 
+schemasdir = $(GCONF_SCHEMA_FILE_DIR)
+schemas_in_files = me-tv.schemas.in
+schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
+
 man_MANS = \
 	me-tv.1 \
 	me-tv-xine.1
@@ -28,10 +32,18 @@ EXTRA_DIST = \
 	me-tv.1 \
 	me-tv-xine.1 \
 	$(desktop_in_files) \
+	$(schema_in_files) \
 	$(pixmaps_DATA) \
 	intltool-update.in \
 	intltool-merge.in \
 	intltool-extract.in
+
+@INTLTOOL_SCHEMAS_RULE@
+
+if GCONF_SCHEMAS_INSTALL
+install-data-local: $(schemas_DATA)
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schemas_DATA)
+endif
 
 # Copy all the spec files. Of course, only one is actually used.
 dist-hook:
@@ -41,7 +53,7 @@ dist-hook:
 		fi \
 	done
 
-CLEANFILES = $(desktop_DATA)
+CLEANFILES = $(desktop_DATA) $(schema_DATA)
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
 

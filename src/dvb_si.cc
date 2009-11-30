@@ -225,7 +225,6 @@ void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& sect
 	}
 }
 
-
 void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& section)
 {
 	gsize section_length = read_section(demuxer);
@@ -524,16 +523,18 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 {	
 	const guchar* desc = NULL;
 	gsize section_length = read_section(demuxer);
+	//dump(buffer, section_length);
+	
 	guint offset = 8;
 	gsize program_info_length = ((buffer[10] & 0x0f) << 8) | buffer[11];
 
 	offset += program_info_length + 4;
-	
-	while ((section_length - offset) >= 5)
+
+	while (section_length >= (5 + offset))
 	{
 		guint pid_type = buffer[offset];
 		guint elementary_pid = ((buffer[offset+1] & 0x1f) << 8) | buffer[offset+2];
-	    gsize descriptor_length = ((buffer[offset+3] & 0x0f) << 8) | buffer[offset+4];
+		gsize descriptor_length = ((buffer[offset+3] & 0x0f) << 8) | buffer[offset+4];
 		
 		switch (pid_type)
 		{
@@ -655,6 +656,7 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 		
 		offset += descriptor_length + 5;
 	}
+	g_debug("==============================================================");
 }
 
 void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table)
@@ -958,6 +960,7 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 				case 0x09: codeset = "ISO-8859-13"; break;
 				case 0x0A: codeset = "ISO-8859-14"; break;
 				case 0x0B: codeset = "ISO-8859-15"; break;
+				case 0x11: codeset = "UTF-16BE"; break;
 				case 0x14: codeset = "UTF-16BE"; break;
 
 				case 0x10:

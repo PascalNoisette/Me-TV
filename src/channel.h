@@ -21,15 +21,9 @@
 #ifndef __CHANNEL_H__
 #define __CHANNEL_H__
 
-#include <linux/dvb/frontend.h>
 #include "epg_events.h"
 #include "dvb_transponder.h"
-
-#define CHANNEL_FLAG_NONE		0
-#define CHANNEL_FLAG_DVB_T		0x01
-#define CHANNEL_FLAG_DVB_C		0x02
-#define CHANNEL_FLAG_DVB_S		0x04
-#define CHANNEL_FLAG_ATSC		0x08
+#include <linux/dvb/frontend.h>
 
 class Channel
 {
@@ -38,7 +32,7 @@ public:
 
 	guint			channel_id;
 	Glib::ustring	name;
-	guint			flags;
+	guint			type;
 	guint			sort_order;
 	Glib::ustring	mrl;
 	EpgEvents		epg_events;

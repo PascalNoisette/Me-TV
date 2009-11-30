@@ -23,7 +23,7 @@
 #include "devices_dialog.h"
 
 #define GCONF_PATH					"/apps/me-tv"
-#define CURRENT_DATABASE_VERSION	2
+#define CURRENT_DATABASE_VERSION	3
 
 G_BEGIN_DECLS
 void on_record(GtkObject *object, gpointer user_data)
@@ -137,10 +137,7 @@ Application& get_application()
 }
 
 Application::Application(int argc, char *argv[], Glib::OptionContext& option_context) :
-	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context),
-	application_dir(make_application_directory()),
-	database_filename(Glib::build_filename(get_application_dir(), "/me-tv.db")),
-	connection(get_database_filename())
+	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context)
 {
 	g_debug("Application constructor");
 
@@ -162,40 +159,15 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	get_signal_error().clear();
 	get_signal_error().connect(sigc::mem_fun(*this, &Application::on_error));
 
+#ifndef IGNORE_SQLITE3_THREADSAFE_CHECK
 	g_debug("sqlite3_threadsafe() = %d", sqlite3_threadsafe());
 	if (sqlite3_threadsafe() == 0)
 	{
 		throw Exception(_("The SQLite version is not thread-safe"));
 	}
+#endif
 	
 	client = Gnome::Conf::Client::get_default_client();
-	
-	set_int_configuration_default("epg_span_hours", 3);
-	set_int_configuration_default("last_channel", -1);
-	set_string_configuration_default("recording_directory", Glib::get_home_dir());
-	set_string_configuration_default("engine_type", "xine");
-	set_string_configuration_default("deinterlace_type", "standard");
-	set_boolean_configuration_default("keep_above", true);
-	set_int_configuration_default("record_extra_before", 5);
-	set_int_configuration_default("record_extra_after", 10);
-	set_string_configuration_default("broadcast_address", "192.168.0.255");
-	set_int_configuration_default("broadcast_port", 2005);
-	set_boolean_configuration_default("show_epg_header", true);
-	set_boolean_configuration_default("show_epg_time", true);
-	set_boolean_configuration_default("show_epg_tooltips", false);
-	set_string_configuration_default("xine.video_driver", "xshm");
-	set_string_configuration_default("xine.audio_driver", "alsa");
-	set_string_configuration_default("preferred_language", "");
-	set_string_configuration_default("text_encoding", "auto");
-	set_boolean_configuration_default("fullscreen_bug_workaround", false);
-	set_boolean_configuration_default("display_status_icon", true);
-	set_boolean_configuration_default("show_channel_number", false);
-	set_int_configuration_default("x", 10);
-	set_int_configuration_default("y", 10);
-	set_int_configuration_default("width", 500);
-	set_int_configuration_default("height", 500);
-	set_int_configuration_default("epg_page_size", 20);
-	set_string_configuration_default("screensaver_poke_command", "gnome-screensaver-command --poke");
 
 	if (get_int_configuration_value("epg_span_hours") == 0)
 	{
@@ -207,11 +179,14 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 		set_int_configuration_value("epg_page_size", 1);
 	}
 	
-	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(application_dir);
-	if (!file->query_exists())
-	{
-		file->make_directory();
-	}
+	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
+	ensure_directory_exists (application_dir);
+
+	Glib::ustring data_directory = Glib::get_home_dir() + "/.local/share/me-tv";
+	ensure_directory_exists (data_directory);
+	
+	database_filename = Glib::build_filename(data_directory, "me-tv.db");
+	connection.open(database_filename);
 	
 	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
 	Glib::ustring ui_path = current_directory + "/me-tv.ui";
@@ -247,6 +222,16 @@ Application::~Application()
 	g_debug("Application destructor complete");
 }
 
+void Application::ensure_directory_exists(const Glib::ustring& path)
+{
+	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
+	if (!file->query_exists())
+	{
+		g_debug("Creating directory '%s'", path.c_str());
+		file->make_directory_with_parents();
+	}
+}
+
 const Glib::ustring& Application::get_database_filename()
 {
 	return database_filename;
@@ -260,7 +245,7 @@ gboolean Application::initialise_database()
 	table_channel.name = "channel";
 	table_channel.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_channel.columns.add("name",					Data::DATA_TYPE_STRING, 50, false);
-	table_channel.columns.add("flags",					Data::DATA_TYPE_INTEGER, 0, false);
+	table_channel.columns.add("type",					Data::DATA_TYPE_INTEGER, 0, false);
 	table_channel.columns.add("sort_order",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_channel.columns.add("mrl",					Data::DATA_TYPE_STRING, 1024, true);
 	table_channel.columns.add("service_id",				Data::DATA_TYPE_INTEGER, 0, true);
@@ -468,17 +453,18 @@ void Application::select_channel_to_play()
 	const ChannelArray& channels = channel_manager.get_channels();
 	if (channels.size() > 0)
 	{
-		gint last_channel = get_application().get_int_configuration_value("last_channel");
-		if (channel_manager.find_channel(last_channel) == NULL)
+		gint last_channel_id = get_application().get_int_configuration_value("last_channel");
+		Channel* last_channel = channel_manager.find_channel(last_channel_id);
+		if (last_channel != NULL)
 		{
-			g_debug("Last channel '%d' not found", last_channel);
-			last_channel = -1;
+			g_debug("Last channel '%d' found", last_channel_id);
+			set_display_channel_by_id(last_channel_id);
 		}
-		if (last_channel == -1)
+		else
 		{
-			last_channel = (*channels.begin()).channel_id;
+			g_debug("Last channel '%d' not found", last_channel_id);
+			channel_manager.select_display_channel();
 		}
-		set_display_channel_by_id(last_channel);
 	}
 }
 
@@ -571,18 +557,6 @@ Application& Application::get_current()
 	return *current;
 }
 
-Glib::ustring Application::make_application_directory()
-{
-	Glib::ustring path = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
-	if (!file->query_exists())
-	{
-		g_debug("Creating directory '%s'", path.c_str());
-		file->make_directory();
-	}
-	return path;
-}
-
 void Application::stop_stream_thread()
 {	
 	Glib::RecMutex::Lock lock(mutex);
@@ -636,7 +610,7 @@ void Application::stop_stream()
 {
 	if (is_recording())
 	{
-		throw Exception(_("You cannot change channels because you are recording."));
+		throw Exception(_("You cannot stop the current stream because you are recording."));
 	}
 
 	main_window->stop_engine();
@@ -645,6 +619,11 @@ void Application::stop_stream()
 
 void Application::start_stream()
 {
+	if (!channel_manager.has_display_channel())
+	{
+		throw Exception("Failed to start stream because there is no display channel");
+	}
+	
 	Channel& channel = channel_manager.get_display_channel();
 	stream_thread = new StreamThread(channel);
 	try

@@ -42,9 +42,11 @@ namespace Data
 		sqlite3*	connection;
 		gboolean	database_created;
 	public:
+		Connection();
 		Connection(const Glib::ustring& filename);
 		~Connection();
 
+		void open(const Glib::ustring& filename);
 		guint get_last_insert_rowid();
 		gboolean get_database_created() const { return database_created; }
 		void vacuum();

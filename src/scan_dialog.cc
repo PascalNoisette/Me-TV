@@ -260,7 +260,7 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 
 					channel.name = channels_conf_line.get_name(0);
 					channel.sort_order = line_count;
-					channel.flags = CHANNEL_FLAG_DVB_T;
+					channel.type = FE_OFDM;
 			
 					channel.transponder.frontend_parameters.frequency						= channels_conf_line.get_int(1);
 					channel.transponder.frontend_parameters.inversion						= channels_conf_line.get_inversion(2);
@@ -283,7 +283,7 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 
 					channel.name = channels_conf_line.get_name(0);
 					channel.sort_order = line_count;
-					channel.flags = CHANNEL_FLAG_DVB_C;
+					channel.type = FE_QAM;
 			
 					channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1);
 					channel.transponder.frontend_parameters.inversion			= channels_conf_line.get_inversion(2);
@@ -302,7 +302,7 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 
 					channel.name = channels_conf_line.get_name(0);
 					channel.sort_order = line_count;
-					channel.flags = CHANNEL_FLAG_DVB_S;
+					channel.type = FE_QPSK;
 			
 					channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1)*1000;
 					channel.transponder.polarisation							= channels_conf_line.get_polarisation(2);
@@ -322,7 +322,7 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 
 					channel.name = channels_conf_line.get_name(0);
 					channel.sort_order = line_count;
-					channel.flags = CHANNEL_FLAG_ATSC;
+					channel.type = FE_ATSC;
 			
 					channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1);
 					channel.transponder.frontend_parameters.inversion			= INVERSION_AUTO;
@@ -493,31 +493,9 @@ ChannelArray ScanDialog::get_channels()
 
 		channel.service_id			= row.get_value(columns.column_id);
 		channel.name				= row.get_value(columns.column_name);
+		channel.type				= frontend.get_frontend_info().type;
 		channel.transponder.frontend_parameters = row.get_value(columns.column_frontend_parameters);
 		channel.transponder.polarisation = row.get_value(columns.column_polarisation);
-
-		switch(frontend.get_frontend_info().type)
-		{
-			case FE_OFDM:
-				channel.flags = CHANNEL_FLAG_DVB_T;
-				break;
-				
-			case FE_QPSK:
-				channel.flags = CHANNEL_FLAG_DVB_S;
-				break;
-
-			case FE_QAM:
-				channel.flags = CHANNEL_FLAG_DVB_C;
-				break;
-				
-			case FE_ATSC:
-				channel.flags = CHANNEL_FLAG_ATSC;
-				break;
-
-			default:
-				throw Exception(_("Invalid frontend type"));
-				break;
-		}
 		
 		result.push_back(channel);
 		
