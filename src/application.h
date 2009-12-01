@@ -46,6 +46,7 @@ private:
 	Data::Schema						schema;
 	guint								scheduled_recording_id;
 	Glib::ustring						database_filename;
+	gboolean							database_initialised;
 
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);

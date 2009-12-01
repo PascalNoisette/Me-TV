@@ -32,7 +32,7 @@ EXTRA_DIST = \
 	me-tv.1 \
 	me-tv-xine.1 \
 	$(desktop_in_files) \
-	$(schema_in_files) \
+	$(schemas_in_files) \
 	$(pixmaps_DATA) \
 	intltool-update.in \
 	intltool-merge.in \
