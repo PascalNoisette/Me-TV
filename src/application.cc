@@ -154,6 +154,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	stream_thread			= NULL;
 	timeout_source			= 0;
 	scheduled_recording_id	= 0;
+	database_initialised	= false;
 	
 	// Remove all other handlers first
 	get_signal_error().clear();
@@ -216,8 +217,11 @@ Application::~Application()
 		main_window = NULL;
 	}
 
-	scheduled_recording_manager.save(connection);
-	channel_manager.save(connection);
+	if (database_initialised)
+	{
+		scheduled_recording_manager.save(connection);
+		channel_manager.save(connection);
+	}
 
 	g_debug("Application destructor complete");
 }
@@ -376,6 +380,8 @@ gboolean Application::initialise_database()
 			}
 		}
 	}
+
+	database_initialised = true;
 		
 	return result;
 }

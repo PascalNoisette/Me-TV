@@ -524,6 +524,11 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 	const guchar* desc = NULL;
 	gsize section_length = read_section(demuxer);
 	//dump(buffer, section_length);
+
+	if (buffer[0] != 2)
+	{
+		throw Exception("Section is not a Program Mapping Section");
+	}
 	
 	guint offset = 8;
 	gsize program_info_length = ((buffer[10] & 0x0f) << 8) | buffer[11];
@@ -656,7 +661,6 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 		
 		offset += descriptor_length + 5;
 	}
-	g_debug("==============================================================");
 }
 
 void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table)
