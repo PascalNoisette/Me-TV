@@ -782,13 +782,21 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		);
 	}
 
-	// Remove forward slashes in the filename, if any
+	// Clean filename
 	Glib::ustring::size_type position = Glib::ustring::npos;
 	while ((position = filename.find('/')) != Glib::ustring::npos)
 	{
-		filename.erase(position, 1);
+		filename.replace(position, 1, "_");
 	}
-	
+
+	if (get_boolean_configuration_value("remove_colon"))
+	{
+		while ((position = filename.find(':')) != Glib::ustring::npos )
+		{
+			filename.replace(position, 1, "_");
+		}
+	}
+
 	Glib::ustring fixed_filename = Glib::filename_from_utf8(filename);
 	
 	return Glib::build_filename(get_string_configuration_value("recording_directory"), fixed_filename);

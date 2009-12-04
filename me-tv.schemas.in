@@ -358,6 +358,20 @@
 				</long>
 			</locale>
 		</schema>
+
+		<schema>
+			<key>/schemas/apps/me-tv/remove_colon</key>
+			<applyto>/apps/me-tv/remove_colon</applyto>
+			<owner>me-tv</owner>
+			<type>bool</type>
+			<default>false</default>
+			<locale name="C">
+				<short>Remove the colon ':' from the recording filename</short>
+				<long>
+					Some file systems do not support a colon in a filename (e.g. FAT32). This option tells Me TV to remove it from the recording filename.
+				</long>
+			</locale>
+		</schema>
 	</schemalist>
 
 </gconfschemafile>
