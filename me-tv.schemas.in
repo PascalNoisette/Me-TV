@@ -293,8 +293,8 @@
 			<key>/schemas/apps/me-tv/show_epg_tooltips</key>
 			<applyto>/apps/me-tv/show_epg_tooltips</applyto>
 			<owner>me-tv</owner>
-			<type>int</type>
-			<default>20</default>
+			<type>bool</type>
+			<default>false</default>
 			<locale name="C">
 				<short>Show a tool tip when hovering over an EPG event.</short>
 				<long>
