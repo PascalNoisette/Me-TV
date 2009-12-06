@@ -53,7 +53,7 @@ dist-hook:
 		fi \
 	done
 
-CLEANFILES = $(desktop_DATA) $(schema_DATA)
+CLEANFILES = $(desktop_DATA) $(schemas_DATA)
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
 
