@@ -2,6 +2,7 @@
 
 	* 1.0.3
 	* Fixed faulty clean rule for new schemas file: (LP: #493132)
+	* Better ATSC support
 
 2009-12-06  Michael Lamothe <michael.lamothe@gmail.com>
 

@@ -470,10 +470,17 @@ gsize get_atsc_text(Glib::ustring& string, const guchar* buffer)
 			
 			uint8_t* text = NULL;
 			size_t text_length = 0;
+			offset += 2;
+			offset += buffer[offset];
+			offset++;
 			
 			atsc_text_segment_decode(segment, &text, &text_length, &text_position);
 
-			string.append((const gchar*)text, text_position);
+			if (text)
+			{
+				string.append((const gchar*)text, g_utf8_strlen((const gchar*)text, (gssize)text_position));
+				free(text);
+			}
 		}
 	}
 	
@@ -663,7 +670,48 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 	}
 }
 
-void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table)
+void SectionParser::parse_psip_stt(Demuxer& demuxer, SystemTimeTable& table)
+{
+	read_section(demuxer);
+	guint offset = 9;
+	table.system_time = get_bits (&buffer[offset], 0, 32); offset += 4;
+	table.GPS_UTC_offset = buffer[offset++];
+	table.daylight_savings = get_bits(&buffer[offset], 0, 16);
+}
+
+void SectionParser::parse_psip_tvct(Demuxer& demuxer, VirtualChannelTable& section)
+{
+	read_section(demuxer);
+	guint offset = 3;
+	section.transport_stream_id = get_bits(&buffer[offset], 0, 16);
+	offset += 6;
+	guint num_channels_in_section = buffer[offset++];
+
+	for (guint i = 0; i < num_channels_in_section; i++)
+	{
+		VirtualChannel vc;
+		gchar* result = g_convert((const gchar*)&buffer[offset], 14, "UTF-8", "UTF-16BE", NULL, NULL, NULL);
+		if (!result) throw Exception(_("Failed to convert channel name"));
+		vc.short_name = result;
+		g_free(result);
+		offset += 14;
+		vc.major_channel_number = get_bits(&buffer[offset], 4, 10);
+		vc.minor_channel_number = get_bits(&buffer[offset], 14, 10);
+		offset += 8;
+		vc.channel_TSID = get_bits(&buffer[offset], 0, 16);
+		offset += 2;
+		vc.program_number = get_bits(&buffer[offset], 0, 16);
+		offset += 3;
+		vc.service_type = buffer[offset++]&0x3f;
+		vc.source_id = get_bits(&buffer[offset], 0, 16);
+		section.channels.push_back(vc);
+		offset += 2;
+		guint table_type_descriptors_length = get_bits(&buffer[offset], 6, 10);
+		offset += table_type_descriptors_length + 2;
+	}
+}
+
+void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTableArray& tables)
 {
 	read_section(demuxer);
 	guint offset = 9;
@@ -672,11 +720,11 @@ void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table)
 	
 	for (guint i = 0; i < tables_defined; i++)
 	{
-		MasterGuideTableTable mgtt;
-		mgtt.type = get_bits(&buffer[offset], 0, 16);
+		MasterGuideTable mgt;
+		mgt.type = get_bits(&buffer[offset], 0, 16);
 		offset += 2;
-		mgtt.pid = get_bits(&buffer[offset], 3, 13);
-		table.tables.push_back(mgtt);	
+		mgt.pid = get_bits(&buffer[offset], 3, 13);
+		tables.push_back(mgt);
 		offset += 7;
 		guint table_type_descriptors_length = get_bits(&buffer[offset], 4, 12);
 		offset += table_type_descriptors_length + 2;
@@ -708,13 +756,13 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 		if (title_length > 0)
 		{
 			EventText event_text;
-			get_atsc_text (event_text.title, &buffer[offset++]);
+			get_atsc_text(event_text.title, &buffer[offset]);
 			event.texts[event_text.language] = event_text;
 			offset += title_length;
 		}
 		
-		guint descriptors_length = buffer[offset++];
-		offset += descriptors_length;
+		guint descriptors_length = get_bits(&buffer[offset], 4, 12);
+		offset += 2 + descriptors_length;
 		
 		section.events.push_back(event);
 	}
