@@ -91,7 +91,8 @@ gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::Even
 		while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
 		{
 			Dvb::Demuxer* current = (Dvb::Demuxer*)eit_demuxer->data;
-			if ((fds[count].revents&POLLIN) != 0)
+			//if ((fds[count].revents&POLLIN) != 0)
+			if (current->poll(100))
 			{
 				selected_eit_demuxer = current;
 			}
