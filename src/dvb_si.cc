@@ -573,6 +573,7 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 				if (find_descriptor(0x0A, buffer + offset + 5, descriptor_length, &desc, NULL))
 				{
 					stream.language = get_lang_desc (desc);
+					g_debug("Language: %s", stream.language.c_str());
 				}
 
 				section.audio_streams.push_back(stream);
@@ -642,9 +643,26 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 					if (find_descriptor(0x0A, buffer + offset + 5, descriptor_length, &desc, NULL))
 					{
 						stream.language = get_lang_desc (desc);
+						g_debug("Language: %s", stream.language.c_str());
 					}
 					section.audio_streams.push_back(stream);
 				}
+			}
+			break;
+		case 0x11:
+			g_debug("14496-3 Audio PID: %d", elementary_pid);
+			{
+				AudioStream stream;
+				stream.pid = elementary_pid;
+				stream.is_ac3 = false;
+			
+				desc = NULL;
+				if (find_descriptor(0x0A, buffer + offset + 5, descriptor_length, &desc, NULL))
+				{
+					stream.language = get_lang_desc (desc);
+					g_debug("Language: %s", stream.language.c_str());
+				}
+				section.audio_streams.push_back(stream);
 			}
 			break;
 		case 0x81:
@@ -658,11 +676,13 @@ void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
 				if (find_descriptor(0x0A, buffer + offset + 5, descriptor_length, &desc, NULL))
 				{
 					stream.language = get_lang_desc (desc);
+					g_debug("Language: %s", stream.language.c_str());
 				}
 				section.audio_streams.push_back(stream);
 			}
 			break;
 		default:
+			g_debug("Unknown stream type: 0x%02X", pid_type);
 			break;
 		}
 		
