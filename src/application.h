@@ -53,7 +53,7 @@ private:
 	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);	
 	Glib::ustring get_configuration_path(const Glib::ustring& key);
 
-	void ensure_directory_exists(const Glib::ustring& path);
+	void make_directory_with_parents(const Glib::ustring& path);
 		
 	void on_display_channel_changed(const Channel& channel);
 	static gboolean on_timeout(gpointer data);

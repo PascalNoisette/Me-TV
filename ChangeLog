@@ -1,9 +1,10 @@
-2009-12-15  Michael Lamothe <michael.lamothe@gmail.com>
+2009-12-16  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.0.3
 	* Fixed faulty clean rule for new schemas file: (LP: #493132)
 	* Better ATSC support
 	* Added audio stream type 0x11 to PMS parser
+	* Implemented make_directory_with_parents to remove dependency on GLib 2.18
 
 2009-12-06  Michael Lamothe <michael.lamothe@gmail.com>
 

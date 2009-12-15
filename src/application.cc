@@ -181,10 +181,10 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	}
 	
 	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-	ensure_directory_exists (application_dir);
+	make_directory_with_parents (application_dir);
 
 	Glib::ustring data_directory = Glib::get_home_dir() + "/.local/share/me-tv";
-	ensure_directory_exists (data_directory);
+	make_directory_with_parents (data_directory);
 	
 	database_filename = Glib::build_filename(data_directory, "me-tv.db");
 	connection.open(database_filename);
@@ -226,13 +226,21 @@ Application::~Application()
 	g_debug("Application destructor complete");
 }
 
-void Application::ensure_directory_exists(const Glib::ustring& path)
+void Application::make_directory_with_parents(const Glib::ustring& path)
 {
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
 	if (!file->query_exists())
 	{
-		g_debug("Creating directory '%s'", path.c_str());
-		file->make_directory_with_parents();
+		Glib::RefPtr<Gio::File> parent = file->get_parent();
+		if (parent->query_exists())
+		{
+			g_debug("Creating directory '%s'", path.c_str());
+			file->make_directory_with_parents();
+		}
+		else
+		{
+			make_directory_with_parents(parent->get_path());
+		}
 	}
 }
 
