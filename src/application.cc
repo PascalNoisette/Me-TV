@@ -235,7 +235,7 @@ void Application::make_directory_with_parents(const Glib::ustring& path)
 		if (parent->query_exists())
 		{
 			g_debug("Creating directory '%s'", path.c_str());
-			file->make_directory_with_parents();
+			file->make_directory();
 		}
 		else
 		{
