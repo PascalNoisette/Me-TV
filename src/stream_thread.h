@@ -38,7 +38,6 @@ private:
 	Channel					channel;
 	DemuxerList				demuxers;
 	Glib::ustring			fifo_path;
-	gint					CRC32[256];
 	Glib::StaticRecMutex	mutex;
 	Dvb::Frontend&			frontend;
 	Engine*					engine;
