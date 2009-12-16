@@ -183,11 +183,12 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 		
 		strncpy(language_code, audio_stream.language.c_str(), 3);
 
+		buffer[++off] = audio_stream.type;
+		buffer[++off] = audio_stream.pid>>8;
+		buffer[++off] = audio_stream.pid&0xff;
+
 		if ( audio_stream.is_ac3 )
 		{
-			buffer[++off] = 0x81; // stream type = xine see this as ac3
-			buffer[++off] = audio_stream.pid>>8;
-			buffer[++off] = audio_stream.pid&0xff;
 			buffer[++off] = 0xf0;
 			buffer[++off] = 0x0c; // es info length
 			buffer[++off] = 0x05;
@@ -199,9 +200,6 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 		}
 		else
 		{
-			buffer[++off] = 0x04; // stream type = audio
-			buffer[++off] = audio_stream.pid>>8;
-			buffer[++off] = audio_stream.pid&0xff;
 			buffer[++off] = 0xf0;
 			buffer[++off] = 0x06; // es info length
 		}
@@ -222,7 +220,7 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 		
 		strncpy(language_code, subtitle_stream.language.c_str(), 3);
 		
-		buffer[++off] = 0x06; // stream type = ISO_13818_PES_PRIVATE
+		buffer[++off] = subtitle_stream.type;
 		buffer[++off] = subtitle_stream.pid>>8;
 		buffer[++off] = subtitle_stream.pid&0xff;
 		buffer[++off] = 0xf0;
@@ -246,13 +244,13 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 						
 		gint language_count = teletext_stream.languages.size();
 
-		buffer[++off] = 0x06; // stream type = ISO_13818_PES_PRIVATE
+		buffer[++off] = teletext_stream.type;
 		buffer[++off] = teletext_stream.pid>>8;
 		buffer[++off] = teletext_stream.pid&0xff;
 		buffer[++off] = 0xf0;
-		buffer[++off] = (language_count * 5) + 4; // es info length
-		buffer[++off] = 0x56; // DVB teletext tag
-		buffer[++off] = language_count * 5; // descriptor length
+		buffer[++off] = (language_count * 5) + 4;	// es info length
+		buffer[++off] = 0x56;						// DVB teletext tag
+		buffer[++off] = language_count * 5;			// descriptor length
 
 		for (gint language_index = 0; language_index < language_count; language_index++)
 		{
@@ -358,6 +356,7 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 			{				
 				AudioStream stream;
 				stream.pid = elementary_pid;
+				stream.type = pid_type;
 				stream.is_ac3 = false;
 
 				if (find_descriptor(0x0A, buffer.get_buffer() + offset + 5, descriptor_length, &desc, NULL))
@@ -376,6 +375,7 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 				{
 					g_debug("Teletext PID: %d", elementary_pid);					
 					TeletextStream stream;
+					stream.type = pid_type;
 					stream.pid = elementary_pid;
 
 					gint descriptor_offset = desc - buffer.get_buffer();
@@ -406,6 +406,7 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 					g_debug("Subtitle PID: %d", elementary_pid);
 					SubtitleStream stream;
 					stream.pid = elementary_pid;
+					stream.type = pid_type;
 
 					gint descriptor_offest = desc - buffer.get_buffer();
 					if (descriptor_length > 0)
@@ -446,6 +447,7 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 			{
 				AudioStream stream;
 				stream.pid = elementary_pid;
+				stream.type = pid_type;
 				stream.is_ac3 = false;
 			
 				desc = NULL;
@@ -462,6 +464,7 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 			{
 				AudioStream stream;
 				stream.pid = elementary_pid;
+				stream.type = pid_type;
 				stream.is_ac3 = true;
 			
 				desc = NULL;

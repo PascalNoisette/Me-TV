@@ -34,30 +34,37 @@
 
 namespace Mpeg
 {
-	class VideoStream
+	class PesStream
 	{
 	public:
-		VideoStream()
+		PesStream()
 		{
-			pid		= 0;
-			type	= 2; // Default to MPEG 2
+			pid	= 0;
+			type = 0;
 		}
 		
 		guint pid;
 		guint type;
 	};
+	
+	class VideoStream : public PesStream
+	{
+	public:
+		VideoStream()
+		{
+			type	= 2; // Default to MPEG 2
+		}
+	};
 
-	class AudioStream
+	class AudioStream : public PesStream
 	{
 	public:
 		AudioStream()
 		{
-			pid		= 0;
 			is_ac3	= false;
 			language = _("Unknown language");
 		}
 		
-		guint			pid;
 		Glib::ustring	language;
 		gboolean		is_ac3;
 	};
@@ -67,43 +74,35 @@ namespace Mpeg
 	public:
 		TeletextLanguageDescriptor()
 		{
-			language		= _("Unknown language");
 			type			= 0;
+			language		= _("Unknown language");
 			magazine_number	= 0;
 			page_number		= 0;
 		}
 
-		Glib::ustring	language;
 		guint			type;
+		Glib::ustring	language;
 		guint			magazine_number;
 		guint			page_number;
 	};
 
-	class TeletextStream
+	class TeletextStream : public PesStream
 	{
 	public:
-		TeletextStream()
-		{
-			pid				= 0;
-		}
-		
-		guint	pid;
 		std::vector<TeletextLanguageDescriptor> languages;
 	};
 
-	class SubtitleStream
+	class SubtitleStream : public PesStream
 	{
 	public:
 		SubtitleStream()
 		{
-			pid					= 0;
 			subtitling_type		= 0;
 			ancillary_page_id	= 0;
 			composition_page_id	= 0;
 			language			= _("Unknown language");
 		}
-		
-		guint pid;
+
 		guint subtitling_type;
 		guint ancillary_page_id;
 		guint composition_page_id;
