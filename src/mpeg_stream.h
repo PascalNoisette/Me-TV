@@ -113,10 +113,8 @@ namespace Mpeg
 	class Stream
 	{
 	private:
-		gint CRC32[256];
 		guint program_map_pid;
 
-		void calculate_crc(guchar *p_begin, guchar *p_end);
 		gboolean is_pid_used(guint pid);
 		gboolean find_descriptor(guchar tag, const unsigned char *buf, int descriptors_loop_len, const unsigned char **desc, int *desc_len);
 		Glib::ustring get_lang_desc(const guchar* buffer);
@@ -129,6 +127,7 @@ namespace Mpeg
 		std::vector<SubtitleStream>	subtitle_streams;
 		std::vector<TeletextStream>	teletext_streams;
 
+		guint get_program_map_pid() const { return program_map_pid; }
 		void set_program_map_pid(const Buffer& buffer, guint service_id);
 		void parse_pms(const Buffer& buffer);
 		void build_pat(guchar* buffer);

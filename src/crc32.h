@@ -18,34 +18,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __BUFFER_H__
-#define __BUFFER_H__
+#ifndef __CRC32_H__
+#define __CRC32_H__
 
 #include <glib.h>
 
-class Buffer
+class Crc32
 {
 private:
-	guchar* buffer;
-	gsize length;
-
-	static guint get_bits(guchar* buffer, guint position, gsize count);
-
+	static guint crc_table[256];
+	static gboolean initialised;
 public:
-	Buffer();
-	Buffer(gsize length);
-	~Buffer();
-
-	void dump() const;
-	void clear();
-	void set_length(gsize length);
-	gsize get_length() const { return length; }
-	guchar* get_buffer() const { return buffer; }
-	guint get_bits(guint offset, guint position, gsize count) const;
-	guint get_bits(guint position, gsize count) const;
-	guint32 crc32() const;
-
-	guchar operator[](int index) const { return buffer[index]; };
+	static void init();
+	static guint32 calculate(const guchar* begin, const guchar* end);
+	static guint32 calculate(const guchar* data, gsize length);
 };
 
 #endif

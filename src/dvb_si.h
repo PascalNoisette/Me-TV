@@ -31,7 +31,6 @@
 #include "me-tv.h"
 #include "me-tv-i18n.h"
 
-#define CRC_BYTE_SIZE			4
 #define DVB_SECTION_BUFFER_SIZE	16*1024
 
 #define PAT_PID		0x00

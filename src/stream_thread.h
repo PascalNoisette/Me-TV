@@ -44,7 +44,6 @@ private:
 	Engine*					engine;
 	EpgThread*				epg_thread;
 	Mpeg::Stream			stream;
-	guint					pmt_pid;
 	GUdpSocket*				socket;
 	GInetAddr*				inet_address;
 	gboolean				broadcast_failure_message;

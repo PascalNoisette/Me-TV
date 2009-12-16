@@ -19,6 +19,7 @@
  */
  
 #include "buffer.h"
+#include "crc32.h"
 
 Buffer::Buffer()
 {
@@ -95,4 +96,9 @@ guint Buffer::get_bits(guint offset, guint position, gsize count) const
 guint Buffer::get_bits(guint position, gsize count) const
 {
 	return get_bits(buffer, position, count);
+}
+
+guint32 Buffer::crc32() const
+{
+	return Crc32::calculate(buffer, length);
 }

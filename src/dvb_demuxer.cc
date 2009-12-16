@@ -81,6 +81,7 @@ void Demuxer::set_filter(ushort pid, ushort table_id, ushort mask)
 	parameters.filter.mask[0] = mask;
 	parameters.flags = DMX_IMMEDIATE_START | DMX_CHECK_CRC;
 
+	g_debug("Demuxer::set_filter(%d,%d,%d)", pid, table_id, mask);
 	if (ioctl(fd, DMX_SET_FILTER, &parameters) < 0)
 	{
 		throw SystemException(_("Failed to set section filter for demuxer"));
@@ -132,14 +133,10 @@ void Demuxer::read_section(Buffer& buffer)
 		throw Exception(_("Failed to read section"));
 	}
 
-	/* TODO: CRC32
-	guint32 crc = crc32((const char *)buffer, section_length);
-	
-	if (crc != 0)
+	if (buffer.crc32() != 0)
 	{
 		throw Exception(_("CRC32 check failed"));
 	}
-	*/
 }
 
 void Demuxer::stop()

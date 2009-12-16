@@ -21,6 +21,7 @@
 #include "application.h"
 #include "data.h"
 #include "devices_dialog.h"
+#include "crc32.h"
 
 #define GCONF_PATH					"/apps/me-tv"
 #define CURRENT_DATABASE_VERSION	3
@@ -167,6 +168,8 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 		throw Exception(_("The SQLite version is not thread-safe"));
 	}
 #endif
+
+	Crc32::init();
 	
 	client = Gnome::Conf::Client::get_default_client();
 

@@ -110,7 +110,9 @@ me_tv_SOURCES = \
 	scheduled_recording_manager.cc \
 	scheduled_recording_manager.h \
 	scan_dialog.cc \
-	scan_dialog.h
+	scan_dialog.h \
+	crc32.cc \
+	crc32.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \

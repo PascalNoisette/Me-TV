@@ -21,40 +21,12 @@
 #include <glibmm.h>
 #include "mpeg_stream.h"
 #include "application.h"
+#include "crc32.h"
 
 Mpeg::Stream::Stream()
 {
 	g_debug("Creating MpegStream");
-
-	for (gint i = 0 ; i < 256 ; i++ )
-	{
-		guint k = 0;
-		for (guint j = (i << 24) | 0x800000 ; j != 0x80000000 ; j <<= 1)
-		{
-			k = (k << 1) ^ (((k ^ j) & 0x80000000) ? 0x04c11db7 : 0);
-		}
-		CRC32[i] = k;
-	}
-
 	program_map_pid = 0;
-}
-
-void Mpeg::Stream::calculate_crc(guchar *p_begin, guchar *p_end)
-{
-	unsigned int i_crc = 0xffffffff;
-
-	// Calculate the CRC
-	while( p_begin < p_end )
-	{
-		i_crc = (i_crc<<8) ^ CRC32[ (i_crc>>24) ^ ((unsigned int)*p_begin) ];
-		p_begin++;
-	}
-
-	// Store it after the data
-	p_end[0] = (i_crc >> 24) & 0xff;
-	p_end[1] = (i_crc >> 16) & 0xff;
-	p_end[2] = (i_crc >>  8) & 0xff;
-	p_end[3] = (i_crc >>  0) & 0xff;
 }
 
 void Mpeg::Stream::clear()
@@ -139,8 +111,13 @@ void Mpeg::Stream::build_pat(guchar* buffer)
 	buffer[0x14] = program_map_pid;
 	
 	// Put CRC in buffer[0x15...0x18]
-	calculate_crc( (guchar*)buffer + 0x05, (guchar*)buffer + 0x15 );
+	guint crc32 = Crc32::calculate( (guchar*)buffer + 0x05, (guchar*)buffer + 0x15 );
 	
+	buffer[0x15] = (crc32 >> 24) & 0xff;
+	buffer[0x16] = (crc32 >> 16) & 0xff;
+	buffer[0x17] = (crc32 >>  8) & 0xff;
+	buffer[0x18] = (crc32 >>  0) & 0xff;
+
 	// needed stuffing bytes
 	for (gint i=0x19; i < 188; i++)
 	{
@@ -295,8 +272,13 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 	buffer[0x07] = off-3; // update section_length
 
 	// Put CRC in ts[0x29...0x2c]
-	calculate_crc( (guchar*)buffer+0x05, (guchar*)buffer+off+1 );
-	
+	guint crc32 = Crc32::calculate( (guchar*)buffer+0x05, (guchar*)buffer+off+1 );
+		
+	buffer[off+1] = (crc32 >> 24) & 0xff;
+	buffer[off+2] = (crc32 >> 16) & 0xff;
+	buffer[off+3] = (crc32 >>  8) & 0xff;
+	buffer[off+4] = (crc32 >>  0) & 0xff;
+
 	// needed stuffing bytes
 	for (i=off+5 ; i < 188 ; i++)
 	{

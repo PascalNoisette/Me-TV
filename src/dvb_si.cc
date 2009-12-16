@@ -23,6 +23,7 @@
 #include "exception.h"
 #include "atsc_text.h"
 
+#define CRC_BYTE_SIZE		4
 #define SHORT_EVENT			0x4D
 #define EXTENDED_EVENT		0x4E
 
