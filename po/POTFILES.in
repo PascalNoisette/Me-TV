@@ -9,6 +9,8 @@ src/application.cc
 src/application.h
 src/atsc_text.cc
 src/atsc_text.h
+src/buffer.cc
+src/buffer.h
 src/channel.cc
 src/channel.h
 src/channel_manager.cc
@@ -17,6 +19,8 @@ src/channels_conf_line.cc
 src/channels_conf_line.h
 src/channels_dialog.cc
 src/channels_dialog.h
+src/crc32.cc
+src/crc32.h
 src/data.cc
 src/data.h
 src/device_manager.cc
@@ -60,6 +64,8 @@ src/me-tv-i18n.h
 src/me-tv-ui.cc
 src/me-tv-ui.h
 src/me-tv-xine.cc
+src/mpeg_stream.cc
+src/mpeg_stream.h
 src/preferences_dialog.cc
 src/preferences_dialog.h
 src/scan_dialog.cc
