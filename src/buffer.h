@@ -17,41 +17,34 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
-#ifndef __DVB_DEMUXER_H__
-#define __DVB_DEMUXER_H__
 
-#include <sys/poll.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <glibmm.h>
-#include <linux/dvb/dmx.h>
-#include "me-tv.h"
-#include "buffer.h"
+#ifndef __BUFFER_H__
+#define __BUFFER_H__
 
-namespace Dvb
+#include <glib.h>
+
+class Buffer
 {
-	class Demuxer
-	{
-	private:
-		int fd;
-		struct pollfd pfd[1];
+private:
+	guchar* buffer;
+	gsize length;
 
-	public:
-		Demuxer(const Glib::ustring& device_path);
-		~Demuxer();
+	static guint get_bits(guchar* buffer, guint position, gsize count);
 
-		void set_pes_filter(uint16_t pid, dmx_pes_type_t pestype);		
-		void set_filter(ushort pid, ushort table_id, ushort mask = 0);
-		void set_buffer_size(unsigned int buffer_size);
-		gint read(unsigned char* buffer, size_t length);
-		void read_section(Buffer& buffer);
-		gboolean poll(gint timeout = read_timeout * 1000);
-		void stop();
-		int get_fd() const;
-	};
-}
+public:
+	Buffer();
+	Buffer(gsize length);
+	~Buffer();
 
-typedef std::list<Dvb::Demuxer*> DemuxerList;
+	void dump() const;
+	void clear();
+	void set_length(gsize length);
+	gsize get_length() const { return length; }
+	guchar* get_buffer() const { return buffer; }
+	guint get_bits(guint offset, guint position, gsize count) const;
+	guint get_bits(guint position, gsize count) const;
+
+	guchar operator[](int index) const { return buffer[index]; };
+};
 
 #endif

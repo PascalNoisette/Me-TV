@@ -31,81 +31,6 @@
 using namespace Dvb;
 using namespace Dvb::SI;
 
-void dump(guchar* buffer, gsize length)
-{
-	for (guint i = 0; i < length; i++)
-	{
-		guchar ch = buffer[i];
-		if (g_ascii_isalnum(ch))
-		{
-			g_debug ("buffer[%d] = 0x%02X; // (%c)", i, ch, ch);
-		}
-		else
-		{
-			g_debug ("buffer[%d] = 0x%02X;", i, ch);
-		}
-	}
-}
-
-static guint32 crc_table[256] = {
-    0x00000000, 0x04c11db7, 0x09823b6e, 0x0d4326d9, 0x130476dc, 0x17c56b6b,
-    0x1a864db2, 0x1e475005, 0x2608edb8, 0x22c9f00f, 0x2f8ad6d6, 0x2b4bcb61,
-    0x350c9b64, 0x31cd86d3, 0x3c8ea00a, 0x384fbdbd, 0x4c11db70, 0x48d0c6c7,
-    0x4593e01e, 0x4152fda9, 0x5f15adac, 0x5bd4b01b, 0x569796c2, 0x52568b75,
-    0x6a1936c8, 0x6ed82b7f, 0x639b0da6, 0x675a1011, 0x791d4014, 0x7ddc5da3,
-    0x709f7b7a, 0x745e66cd, 0x9823b6e0, 0x9ce2ab57, 0x91a18d8e, 0x95609039,
-    0x8b27c03c, 0x8fe6dd8b, 0x82a5fb52, 0x8664e6e5, 0xbe2b5b58, 0xbaea46ef,
-    0xb7a96036, 0xb3687d81, 0xad2f2d84, 0xa9ee3033, 0xa4ad16ea, 0xa06c0b5d,
-    0xd4326d90, 0xd0f37027, 0xddb056fe, 0xd9714b49, 0xc7361b4c, 0xc3f706fb,
-    0xceb42022, 0xca753d95, 0xf23a8028, 0xf6fb9d9f, 0xfbb8bb46, 0xff79a6f1,
-    0xe13ef6f4, 0xe5ffeb43, 0xe8bccd9a, 0xec7dd02d, 0x34867077, 0x30476dc0,
-    0x3d044b19, 0x39c556ae, 0x278206ab, 0x23431b1c, 0x2e003dc5, 0x2ac12072,
-    0x128e9dcf, 0x164f8078, 0x1b0ca6a1, 0x1fcdbb16, 0x018aeb13, 0x054bf6a4,
-    0x0808d07d, 0x0cc9cdca, 0x7897ab07, 0x7c56b6b0, 0x71159069, 0x75d48dde,
-    0x6b93dddb, 0x6f52c06c, 0x6211e6b5, 0x66d0fb02, 0x5e9f46bf, 0x5a5e5b08,
-    0x571d7dd1, 0x53dc6066, 0x4d9b3063, 0x495a2dd4, 0x44190b0d, 0x40d816ba,
-    0xaca5c697, 0xa864db20, 0xa527fdf9, 0xa1e6e04e, 0xbfa1b04b, 0xbb60adfc,
-    0xb6238b25, 0xb2e29692, 0x8aad2b2f, 0x8e6c3698, 0x832f1041, 0x87ee0df6,
-    0x99a95df3, 0x9d684044, 0x902b669d, 0x94ea7b2a, 0xe0b41de7, 0xe4750050,
-    0xe9362689, 0xedf73b3e, 0xf3b06b3b, 0xf771768c, 0xfa325055, 0xfef34de2,
-    0xc6bcf05f, 0xc27dede8, 0xcf3ecb31, 0xcbffd686, 0xd5b88683, 0xd1799b34,
-    0xdc3abded, 0xd8fba05a, 0x690ce0ee, 0x6dcdfd59, 0x608edb80, 0x644fc637,
-    0x7a089632, 0x7ec98b85, 0x738aad5c, 0x774bb0eb, 0x4f040d56, 0x4bc510e1,
-    0x46863638, 0x42472b8f, 0x5c007b8a, 0x58c1663d, 0x558240e4, 0x51435d53,
-    0x251d3b9e, 0x21dc2629, 0x2c9f00f0, 0x285e1d47, 0x36194d42, 0x32d850f5,
-    0x3f9b762c, 0x3b5a6b9b, 0x0315d626, 0x07d4cb91, 0x0a97ed48, 0x0e56f0ff,
-    0x1011a0fa, 0x14d0bd4d, 0x19939b94, 0x1d528623, 0xf12f560e, 0xf5ee4bb9,
-    0xf8ad6d60, 0xfc6c70d7, 0xe22b20d2, 0xe6ea3d65, 0xeba91bbc, 0xef68060b,
-    0xd727bbb6, 0xd3e6a601, 0xdea580d8, 0xda649d6f, 0xc423cd6a, 0xc0e2d0dd,
-    0xcda1f604, 0xc960ebb3, 0xbd3e8d7e, 0xb9ff90c9, 0xb4bcb610, 0xb07daba7,
-    0xae3afba2, 0xaafbe615, 0xa7b8c0cc, 0xa379dd7b, 0x9b3660c6, 0x9ff77d71,
-    0x92b45ba8, 0x9675461f, 0x8832161a, 0x8cf30bad, 0x81b02d74, 0x857130c3,
-    0x5d8a9099, 0x594b8d2e, 0x5408abf7, 0x50c9b640, 0x4e8ee645, 0x4a4ffbf2,
-    0x470cdd2b, 0x43cdc09c, 0x7b827d21, 0x7f436096, 0x7200464f, 0x76c15bf8,
-    0x68860bfd, 0x6c47164a, 0x61043093, 0x65c52d24, 0x119b4be9, 0x155a565e,
-    0x18197087, 0x1cd86d30, 0x029f3d35, 0x065e2082, 0x0b1d065b, 0x0fdc1bec,
-    0x3793a651, 0x3352bbe6, 0x3e119d3f, 0x3ad08088, 0x2497d08d, 0x2056cd3a,
-    0x2d15ebe3, 0x29d4f654, 0xc5a92679, 0xc1683bce, 0xcc2b1d17, 0xc8ea00a0,
-    0xd6ad50a5, 0xd26c4d12, 0xdf2f6bcb, 0xdbee767c, 0xe3a1cbc1, 0xe760d676,
-    0xea23f0af, 0xeee2ed18, 0xf0a5bd1d, 0xf464a0aa, 0xf9278673, 0xfde69bc4,
-    0x89b8fd09, 0x8d79e0be, 0x803ac667, 0x84fbdbd0, 0x9abc8bd5, 0x9e7d9662,
-    0x933eb0bb, 0x97ffad0c, 0xafb010b1, 0xab710d06, 0xa6322bdf, 0xa2f33668,
-    0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4
-};
-
-static guint32 crc32(const char *data, int len)
-{
-    register int i;
-    u_long crc = 0xffffffff;
-
-    for (i=0; i<len; i++)
-	{
-        crc = (crc << 8) ^ crc_table[((crc >> 24) ^ *data++) & 0xff];
-	}
-	
-    return crc;
-}
-
 Dvb::SI::Event::Event()
 {
 	event_id = 0;
@@ -118,34 +43,6 @@ Dvb::SI::Event::Event()
 SectionParser::SectionParser()
 {
 	text_encoding = get_application().get_string_configuration_value("text_encoding");
-}
-
-gsize SectionParser::read_section(Demuxer& demuxer)
-{
-	gsize bytes_read = demuxer.read(buffer, 3);
-	
-	if (bytes_read != 3)
-	{
-		throw Exception(_("Failed to read header"));
-	}
-		
-	gsize remaining_section_length = get_bits (buffer, 12, 12);
-	gsize section_length = remaining_section_length + 3;
-	bytes_read = demuxer.read(buffer + 3, remaining_section_length);
-	
-	if (bytes_read != remaining_section_length)
-	{
-		throw Exception(_("Failed to read section"));
-	}
-	
-	guint32 crc = crc32((const char *)buffer, section_length);
-	
-	if (crc != 0)
-	{
-		throw Exception(_("CRC32 check failed"));
-	}
-	
-	return section_length;
 }
 
 // this method takes a bitmask as supplied by the NIT-section (satellite delivery system descriptor) for the FEC_INNER and converts them to a linux-style FEC value according to EN 300 468, v 1.9.1
@@ -175,36 +72,22 @@ fe_code_rate_t SectionParser::parse_fec_inner(guint bitmask)
 	return FEC_AUTO; // this should never happen. but it wouldn't hurt.
 }
 
-void SectionParser::parse_pas(Demuxer& demuxer, ProgramAssociationSection& section)
-{
-	gsize section_length = read_section(demuxer);
-	guint offset = 8;
-	
-	while (offset < (section_length - 4))
-	{
-		ProgramAssociation program_association;
-		program_association.program_number = get_bits(&buffer[offset], 0, 16);
-		offset += 2;
-		program_association.program_map_pid = get_bits(&buffer[offset], 3, 13);
-		offset += 2;	
-		section.program_associations.push_back(program_association);
-	}
-}
-
 void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& section)
 {
-	gsize section_length = read_section(demuxer);
+	Buffer buffer;
+	demuxer.read_section(buffer);
+	gsize section_length = buffer.get_length();
 	
 	guint offset = 3;
-	section.transport_stream_id = get_bits(buffer + offset, 0, 16);
+	section.transport_stream_id = buffer.get_bits(offset, 0, 16);
 	offset += 8;
 	
 	while (offset < section_length - 4)
 	{
 		Service service;
-		service.id = get_bits(buffer + offset, 0, 16);
+		service.id = buffer.get_bits(offset, 0, 16);
 		offset += 3;
-		guint descriptors_loop_length = get_bits(buffer + offset, 4, 12);
+		guint descriptors_loop_length = buffer.get_bits(offset, 4, 12);
 		offset += 2;
 		guint descriptors_end_offset = offset + descriptors_loop_length;
 		while (offset < descriptors_end_offset)
@@ -214,8 +97,8 @@ void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& sect
 			if (descriptor_tag == 0x48)
 			{
 				service.type = buffer[offset + 2];
-				guint service_provider_name_length = get_text(service.provider_name, buffer + offset + 3);
-				get_text(service.name, buffer + offset + 3 + service_provider_name_length);
+				guint service_provider_name_length = get_text(service.provider_name, buffer.get_buffer() + offset + 3);
+				get_text(service.name, buffer.get_buffer() + offset + 3 + service_provider_name_length);
 			}
 
 			offset += descriptor_length + 2;
@@ -227,25 +110,26 @@ void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& sect
 
 void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& section)
 {
-	gsize section_length = read_section(demuxer);
-	//dump(buffer, section_length);
+	Buffer buffer;
+	demuxer.read_section(buffer);
+	gsize section_length = buffer.get_length();
 	
 	guint offset = 8;
-	guint network_descriptor_length = get_bits(buffer + offset, 4, 12);
+	guint network_descriptor_length = buffer.get_bits(offset, 4, 12);
 	offset += 2;
 	
 	// We don't care for the network descriptors, as we only want to get new frequencies out of the stream, and they are saved in the "Transport stream descriptor" section.
 	offset += network_descriptor_length;
 	
 	// Now offset is at "transport_stream_loop_length" position.
-	guint transport_stream_length = get_bits(buffer + offset, 4, 12);
+	guint transport_stream_length = buffer.get_bits(offset, 4, 12);
 	offset += 2;
 	
 	// loop through all transport descriptors and pick out 0x43 descriptors, as they contain new frequencies.
 	while (offset < section_length - 4)
 	{
 		offset += 4;
-		guint descriptors_loop_length = get_bits(buffer + offset, 4, 12);
+		guint descriptors_loop_length = buffer.get_bits(offset, 4, 12);
 		offset += 2;
 		guint descriptors_end_offset = offset + descriptors_loop_length;
 		
@@ -264,20 +148,20 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 				frontend_parameters.frequency = 0;
 				for (int i=0; i<8; i++)
 				{
-					frontend_parameters.frequency = frontend_parameters.frequency*10 + get_bits(buffer + offset, i*4, 4);
+					frontend_parameters.frequency = frontend_parameters.frequency*10 + buffer.get_bits(offset, i*4, 4);
 				}
 				frontend_parameters.frequency *= 10;
 				
-				guint polarisation = (get_bits(buffer + offset + 6, 2, 1) == 1) ?POLARISATION_VERTICAL :POLARISATION_HORIZONTAL;
+				guint polarisation = (buffer.get_bits(offset + 6, 2, 1) == 1) ?POLARISATION_VERTICAL :POLARISATION_HORIZONTAL;
 				
 				frontend_parameters.u.qpsk.symbol_rate = 0;
 				for(int i=0; i<7; i++)
 				{
-					frontend_parameters.u.qpsk.symbol_rate = frontend_parameters.u.qpsk.symbol_rate*10 + get_bits(buffer + offset + 7, i*4, 4);
+					frontend_parameters.u.qpsk.symbol_rate = frontend_parameters.u.qpsk.symbol_rate*10 + buffer.get_bits(offset + 7, i*4, 4);
 				}
 				frontend_parameters.u.qpsk.symbol_rate *= 100;
 				
-				frontend_parameters.u.qpsk.fec_inner = parse_fec_inner(get_bits(buffer + offset + 7, 28, 4));
+				frontend_parameters.u.qpsk.fec_inner = parse_fec_inner(buffer.get_bits(offset + 7, 28, 4));
 				frontend_parameters.inversion = INVERSION_AUTO;
 				
 				Transponder transponder;
@@ -298,15 +182,15 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 				guint frequency = 0;
 				for (int i=0; i<8; i++)
 				{
-					frequency = frequency*10 + get_bits(buffer + offset, i*4, 4);
+					frequency = frequency*10 + buffer.get_bits(offset, i*4, 4);
 				}
 				frequency *= 10;
 
 				// reserved_future_use (12)
-				guint fec_outer = get_bits(buffer + offset, 44, 4);
-				guint modulation = get_bits(buffer + offset, 48, 8);
-				guint symbol_rate = get_bits(buffer + offset, 56, 28);
-				guint fec_inner = get_bits(buffer + offset, 84, 4);
+				guint fec_outer = buffer.get_bits(offset, 44, 4);
+				guint modulation = buffer.get_bits(offset, 48, 8);
+				guint symbol_rate = buffer.get_bits(offset, 56, 28);
+				guint fec_inner = buffer.get_bits(offset, 84, 4);
 
 				g_debug("frequency: %d", frequency);
 				g_debug("FEC_outer: %d", fec_outer);
@@ -354,20 +238,20 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 				Transponder transponder;
 
 				g_debug("Found Terrestrial Delivery System Descriptor");
-				guint centre_frequency = get_bits(buffer + offset, 0, 32) * 10;
+				guint centre_frequency = buffer.get_bits(offset, 0, 32) * 10;
 				offset += 4;
 
-				guint bandwidth = get_bits(buffer + offset, 0, 3);
+				guint bandwidth = buffer.get_bits(offset, 0, 3);
 				// priority (1)
 				// Time_Slicing_indicator (1)
 				// MPE-FEC_indicator (1)
 				// reserved_future_use (2)
-				guint constellation = get_bits(buffer + offset, 9, 2);
-				guint hierarchy_information = get_bits(buffer + offset, 11, 3);
-				guint code_rate_HP = get_bits(buffer + offset, 14, 3);
-				guint code_rate_LP = get_bits(buffer + offset, 17, 3);
-				guint guard_interval = get_bits(buffer + offset, 20, 2);
-				guint transmission_mode = get_bits(buffer + offset, 22, 2);
+				guint constellation = buffer.get_bits(offset, 9, 2);
+				guint hierarchy_information = buffer.get_bits(offset, 11, 3);
+				guint code_rate_HP = buffer.get_bits(offset, 14, 3);
+				guint code_rate_LP = buffer.get_bits(offset, 17, 3);
+				guint guard_interval = buffer.get_bits(offset, 20, 2);
+				guint transmission_mode = buffer.get_bits(offset, 22, 2);
 
 				g_debug("centre_frequency: %d", centre_frequency);
 				g_debug("bandwidth: %d", bandwidth);
@@ -487,276 +371,85 @@ gsize get_atsc_text(Glib::ustring& string, const guchar* buffer)
 	return offset;
 }
 
-gboolean SectionParser::find_descriptor(uint8_t tag, const unsigned char *buf, int descriptors_loop_len, 
-	const unsigned char **desc, int *desc_len)
-{
-	while (descriptors_loop_len > 0)
-	{
-		unsigned char descriptor_tag = buf[0];
-		unsigned char descriptor_len = buf[1] + 2;
-
-		if (!descriptor_len)
-		{
-			break;
-		}
-
-		if (tag == descriptor_tag)
-		{
-			if (desc)
-				*desc = buf;
-
-			if (desc_len)
-				*desc_len = descriptor_len;
-			return true;
-		}
-
-		buf += descriptor_len;
-		descriptors_loop_len -= descriptor_len;
-	}
-	
-	return false;
-}
-
-Glib::ustring SectionParser::get_lang_desc(const guchar* b)
-{
-	char c[4];
-	Glib::ustring s;
-	memset( mempcpy( c, b+2, 3 ), 0, 1 );
-	s = c;
-	return s;
-}
-
-void SectionParser::parse_pms(Demuxer& demuxer, ProgramMapSection& section)
-{	
-	const guchar* desc = NULL;
-	gsize section_length = read_section(demuxer);
-	//dump(buffer, section_length);
-
-	if (buffer[0] != 2)
-	{
-		throw Exception("Section is not a Program Mapping Section");
-	}
-	
-	guint offset = 8;
-	gsize program_info_length = ((buffer[10] & 0x0f) << 8) | buffer[11];
-
-	offset += program_info_length + 4;
-
-	while (section_length >= (5 + offset))
-	{
-		guint pid_type = buffer[offset];
-		guint elementary_pid = ((buffer[offset+1] & 0x1f) << 8) | buffer[offset+2];
-		gsize descriptor_length = ((buffer[offset+3] & 0x0f) << 8) | buffer[offset+4];
-		
-		switch (pid_type)
-		{
-		case STREAM_TYPE_MPEG1:
-		case STREAM_TYPE_MPEG2:
-		case STREAM_TYPE_MPEG4:
-		case STREAM_TYPE_H264:
-			g_debug("Video PID: %d", elementary_pid);
-			{
-				VideoStream video_stream;
-				video_stream.pid = elementary_pid;
-				video_stream.type = pid_type;
-				section.video_streams.push_back(video_stream);
-			}
-			break;
-		case 0x03:
-		case 0x04:
-			g_debug("Audio PID: %d", elementary_pid);
-			{				
-				AudioStream stream;
-				stream.pid = elementary_pid;
-				stream.is_ac3 = false;
-
-				if (find_descriptor(0x0A, buffer + offset + 5, descriptor_length, &desc, NULL))
-				{
-					stream.language = get_lang_desc (desc);
-					g_debug("Language: %s", stream.language.c_str());
-				}
-
-				section.audio_streams.push_back(stream);
-			}
-			break;
-		case 0x06:
-			{
-				int descriptor_loop_length = 0;
-				if (find_descriptor(0x56, buffer + offset + 5, descriptor_length, &desc, &descriptor_loop_length))
-				{
-					g_debug("Teletext PID: %d", elementary_pid);
-
-					TeletextStream stream;
-					stream.pid = elementary_pid;
-
-					int descriptor_index = 0;
-					while (descriptor_index < descriptor_loop_length - 4)
-					{
-						TeletextLanguageDescriptor descriptor;
-						
-						descriptor.language			= get_lang_desc(desc + descriptor_index);
-						descriptor.type				= get_bits(desc + descriptor_index + 6, 0, 5);
-						descriptor.magazine_number	= get_bits(desc + descriptor_index + 6, 5, 3);
-						descriptor.page_number		= get_bits(desc + descriptor_index + 7, 0, 8);
-						
-						g_debug("TeleText: Language: '%s', Type: %d, Magazine Number: %d, Page Number: %d",
-							descriptor.language.c_str(),
-							descriptor.type,
-							descriptor.magazine_number,
-							descriptor.page_number);
-						
-						stream.languages.push_back(descriptor);
-						
-						descriptor_index += 5;
-					}
-					section.teletext_streams.push_back(stream);
-				}
-				else if (find_descriptor (0x59, buffer + offset + 5, descriptor_length, &desc, NULL))
-				{
-					g_debug("Subtitle PID: %d", elementary_pid);
-					SubtitleStream stream;
-					stream.pid = elementary_pid;
-					if (descriptor_length > 0)
-					{
-						stream.subtitling_type = get_bits(desc + 5, 0, 8);
-						if (stream.subtitling_type>=0x10 && stream.subtitling_type<=0x23)
-						{
-							stream.language				= get_lang_desc(desc);
-							stream.composition_page_id	= get_bits(desc + 6, 0, 16);
-							stream.ancillary_page_id	= get_bits(desc + 8, 0, 16);
-							
-							g_debug(
-								"Subtitle composition_page_id: %d, ancillary_page_id: %d, language: %s",
-								stream.composition_page_id, stream.ancillary_page_id, stream.language.c_str() );
-						}
-					}
-					section.subtitle_streams.push_back(stream);
-				}
-				else if (find_descriptor (0x6A, buffer + offset + 5, descriptor_length, NULL, NULL))
-				{
-					g_debug("AC3 PID: %d", elementary_pid);
-					AudioStream stream;
-					stream.pid = elementary_pid;
-					stream.is_ac3 = true;
-
-					desc = NULL;
-					if (find_descriptor(0x0A, buffer + offset + 5, descriptor_length, &desc, NULL))
-					{
-						stream.language = get_lang_desc (desc);
-						g_debug("Language: %s", stream.language.c_str());
-					}
-					section.audio_streams.push_back(stream);
-				}
-			}
-			break;
-		case 0x11:
-			g_debug("14496-3 Audio PID: %d", elementary_pid);
-			{
-				AudioStream stream;
-				stream.pid = elementary_pid;
-				stream.is_ac3 = false;
-			
-				desc = NULL;
-				if (find_descriptor(0x0A, buffer + offset + 5, descriptor_length, &desc, NULL))
-				{
-					stream.language = get_lang_desc (desc);
-					g_debug("Language: %s", stream.language.c_str());
-				}
-				section.audio_streams.push_back(stream);
-			}
-			break;
-		case 0x81:
-			g_debug("AC3 PID: %d", elementary_pid);
-			{
-				AudioStream stream;
-				stream.pid = elementary_pid;
-				stream.is_ac3 = true;
-			
-				desc = NULL;
-				if (find_descriptor(0x0A, buffer + offset + 5, descriptor_length, &desc, NULL))
-				{
-					stream.language = get_lang_desc (desc);
-					g_debug("Language: %s", stream.language.c_str());
-				}
-				section.audio_streams.push_back(stream);
-			}
-			break;
-		default:
-			g_debug("Unknown stream type: 0x%02X", pid_type);
-			break;
-		}
-		
-		offset += descriptor_length + 5;
-	}
-}
-
 void SectionParser::parse_psip_stt(Demuxer& demuxer, SystemTimeTable& table)
 {
-	read_section(demuxer);
+	Buffer buffer;
+	demuxer.read_section(buffer);
+	gsize section_length = buffer.get_length();
+
 	guint offset = 9;
-	table.system_time = get_bits (&buffer[offset], 0, 32); offset += 4;
+	table.system_time = buffer.get_bits(offset, 0, 32); offset += 4;
 	table.GPS_UTC_offset = buffer[offset++];
-	table.daylight_savings = get_bits(&buffer[offset], 0, 16);
+	table.daylight_savings = buffer.get_bits(offset, 0, 16);
 }
 
 void SectionParser::parse_psip_tvct(Demuxer& demuxer, VirtualChannelTable& section)
 {
-	read_section(demuxer);
+	Buffer buffer;
+	demuxer.read_section(buffer);
+	gsize section_length = buffer.get_length();
+
 	guint offset = 3;
-	section.transport_stream_id = get_bits(&buffer[offset], 0, 16);
+	section.transport_stream_id = buffer.get_bits(offset, 0, 16);
 	offset += 6;
 	guint num_channels_in_section = buffer[offset++];
 
 	for (guint i = 0; i < num_channels_in_section; i++)
 	{
 		VirtualChannel vc;
-		gchar* result = g_convert((const gchar*)&buffer[offset], 14, "UTF-8", "UTF-16BE", NULL, NULL, NULL);
+		gchar* result = g_convert((const gchar*)buffer.get_buffer() + offset, 14, "UTF-8", "UTF-16BE", NULL, NULL, NULL);
 		if (!result) throw Exception(_("Failed to convert channel name"));
 		vc.short_name = result;
 		g_free(result);
 		offset += 14;
-		vc.major_channel_number = get_bits(&buffer[offset], 4, 10);
-		vc.minor_channel_number = get_bits(&buffer[offset], 14, 10);
+		vc.major_channel_number = buffer.get_bits(offset, 4, 10);
+		vc.minor_channel_number = buffer.get_bits(offset, 14, 10);
 		offset += 8;
-		vc.channel_TSID = get_bits(&buffer[offset], 0, 16);
+		vc.channel_TSID = buffer.get_bits(offset, 0, 16);
 		offset += 2;
-		vc.program_number = get_bits(&buffer[offset], 0, 16);
+		vc.program_number = buffer.get_bits(offset, 0, 16);
 		offset += 3;
 		vc.service_type = buffer[offset++]&0x3f;
-		vc.source_id = get_bits(&buffer[offset], 0, 16);
+		vc.source_id = buffer.get_bits(offset, 0, 16);
 		section.channels.push_back(vc);
 		offset += 2;
-		guint table_type_descriptors_length = get_bits(&buffer[offset], 6, 10);
+		guint table_type_descriptors_length = buffer.get_bits(offset, 6, 10);
 		offset += table_type_descriptors_length + 2;
 	}
 }
 
 void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTableArray& tables)
 {
-	read_section(demuxer);
+	Buffer buffer;
+	demuxer.read_section(buffer);
+	gsize section_length = buffer.get_length();
+
 	guint offset = 9;
-	guint tables_defined = get_bits(&buffer[offset], 0, 16);
+	guint tables_defined = buffer.get_bits(offset, 0, 16);
 	offset += 2;
 	
 	for (guint i = 0; i < tables_defined; i++)
 	{
 		MasterGuideTable mgt;
-		mgt.type = get_bits(&buffer[offset], 0, 16);
+		mgt.type = buffer.get_bits(offset, 0, 16);
 		offset += 2;
-		mgt.pid = get_bits(&buffer[offset], 3, 13);
+		mgt.pid = buffer.get_bits(offset, 3, 13);
 		tables.push_back(mgt);
 		offset += 7;
-		guint table_type_descriptors_length = get_bits(&buffer[offset], 4, 12);
+		guint table_type_descriptors_length = buffer.get_bits(offset, 4, 12);
 		offset += table_type_descriptors_length + 2;
 	}
 }
 
 void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& section)
 {
-	read_section(demuxer);
+	Buffer buffer;
+	demuxer.read_section(buffer);
+	gsize section_length = buffer.get_length();
+
 	guint offset = 3;
 
-	section.service_id = get_bits(&buffer[offset], 0, 16);
+	section.service_id = buffer.get_bits(offset, 0, 16);
 	
 	offset += 6;
 	guint num_events_in_section = buffer[offset++];
@@ -765,9 +458,9 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 	{
 		Event event;
 
-		event.event_id		= get_bits (&buffer[offset], 2, 14); offset += 2;
-		event.start_time	= get_bits (&buffer[offset], 0, 32); offset += 4;
-		event.duration		= get_bits (&buffer[offset], 4, 20); offset += 3;
+		event.event_id		= buffer.get_bits(offset, 2, 14); offset += 2;
+		event.start_time	= buffer.get_bits(offset, 0, 32); offset += 4;
+		event.duration		= buffer.get_bits(offset, 4, 20); offset += 3;
 
 		event.start_time += GPS_EPOCH;
 		event.start_time += timezone;
@@ -776,12 +469,12 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 		if (title_length > 0)
 		{
 			EventText event_text;
-			get_atsc_text(event_text.title, &buffer[offset]);
+			get_atsc_text(event_text.title, buffer.get_buffer() + offset);
 			event.texts[event_text.language] = event_text;
 			offset += title_length;
 		}
 		
-		guint descriptors_length = get_bits(&buffer[offset], 4, 12);
+		guint descriptors_length = buffer.get_bits(offset, 4, 12);
 		offset += 2 + descriptors_length;
 		
 		section.events.push_back(event);
@@ -790,19 +483,21 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 
 void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section)
 {
-	gsize section_length = read_section(demuxer);
+	Buffer buffer;
+	demuxer.read_section(buffer);
+	gsize section_length = buffer.get_length();
 	
 	section.table_id =						buffer[0];
-	section.section_syntax_indicator =		get_bits (buffer, 8, 1);
-	section.service_id =					get_bits (buffer, 24, 16);
-	section.version_number =				get_bits (buffer, 42, 5);
-	section.current_next_indicator =		get_bits (buffer, 47, 1);
-	section.section_number =				get_bits (buffer, 48, 8);
-	section.last_section_number =			get_bits (buffer, 56, 8);
-	section.transport_stream_id =			get_bits (buffer, 64, 16);
-	section.original_network_id =			get_bits (buffer, 80, 16);
-	section.segment_last_section_number =	get_bits (buffer, 96, 8);
-	section.last_table_id =					get_bits (buffer, 104, 8);
+	section.section_syntax_indicator =		buffer.get_bits(8, 1);
+	section.service_id =					buffer.get_bits(24, 16);
+	section.version_number =				buffer.get_bits(42, 5);
+	section.current_next_indicator =		buffer.get_bits(47, 1);
+	section.section_number =				buffer.get_bits(48, 8);
+	section.last_section_number =			buffer.get_bits(56, 8);
+	section.transport_stream_id =			buffer.get_bits(64, 16);
+	section.original_network_id =			buffer.get_bits(80, 16);
+	section.segment_last_section_number =	buffer.get_bits(96, 8);
+	section.last_table_id =					buffer.get_bits(104, 8);
 
 	unsigned int offset = 14;
 
@@ -814,14 +509,14 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 		gulong	start_time_UTC;  // 24
 		gulong	duration;
 
-		event.event_id			= get_bits (&buffer[offset], 0, 16);
-		start_time_MJD			= get_bits (&buffer[offset], 16, 16);
-		start_time_UTC			= get_bits (&buffer[offset], 32, 24);
-		duration				= get_bits (&buffer[offset], 56, 24);
-		event.running_status	= get_bits (&buffer[offset], 80, 3);
-		event.free_CA_mode		= get_bits (&buffer[offset], 83, 1);
+		event.event_id			= buffer.get_bits(offset, 0, 16);
+		start_time_MJD			= buffer.get_bits(offset, 16, 16);
+		start_time_UTC			= buffer.get_bits(offset, 32, 24);
+		duration				= buffer.get_bits(offset, 56, 24);
+		event.running_status	= buffer.get_bits(offset, 80, 3);
+		event.free_CA_mode		= buffer.get_bits(offset, 83, 1);
 		
-		unsigned int descriptors_loop_length  = get_bits (&buffer[offset], 84, 12);
+		unsigned int descriptors_loop_length  = buffer.get_bits(offset, 84, 12);
 		offset += 12;
 		unsigned int end_descriptor_offset = descriptors_loop_length + offset;
 
@@ -865,7 +560,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 
 			while (offset < end_descriptor_offset)
 			{
-				offset += decode_event_descriptor(&buffer[offset], event);
+				offset += decode_event_descriptor(buffer.get_buffer() + offset, event);
 			}
 
 			if (offset > end_descriptor_offset)
@@ -876,13 +571,22 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 			section.events.push_back(event);
 		}
 	}
-	section.crc = get_bits (&buffer[offset], 0, 32);
+	section.crc = buffer.get_bits(offset, 0, 32);
 	offset += 4;
 	
 	if (offset > section_length)
 	{
 		throw Exception(_("ASSERT: offset > end_section_offset"));
 	}
+}
+
+Glib::ustring get_lang_desc(const guchar* b)
+{
+	char c[4];
+	Glib::ustring s;
+	memset( mempcpy( c, b+2, 3 ), 0, 1 );
+	s = c;
+	return s;
 }
 
 gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event& event)

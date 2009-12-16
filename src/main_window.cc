@@ -600,14 +600,14 @@ void MainWindow::play(const Glib::ustring& mrl)
 	StreamThread* stream_thread = application.get_stream_thread();
 	if (stream_thread != NULL)
 	{
-		const Stream& stream = stream_thread->get_stream();
-		std::vector<Dvb::SI::AudioStream> audio_streams = stream.audio_streams;
+		const Mpeg::Stream& stream = stream_thread->get_stream();
+		std::vector<Mpeg::AudioStream> audio_streams = stream.audio_streams;
 		guint count = 0;
 		
 		g_debug("Audio streams: %zu", audio_streams.size());
-		for (std::vector<Dvb::SI::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
+		for (std::vector<Mpeg::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
 		{
-			Dvb::SI::AudioStream audio_stream = *i;
+			Mpeg::AudioStream audio_stream = *i;
 			Glib::ustring text = Glib::ustring::compose("%1: %2", count, audio_stream.language);
 			if (audio_stream.is_ac3)
 			{
@@ -628,7 +628,7 @@ void MainWindow::play(const Glib::ustring& mrl)
 			count++;
 		}
 
-		std::vector<Dvb::SI::SubtitleStream> subtitle_streams = stream.subtitle_streams;
+		std::vector<Mpeg::SubtitleStream> subtitle_streams = stream.subtitle_streams;
 		Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
 		count = 0;
 		
@@ -644,9 +644,9 @@ void MainWindow::play(const Glib::ustring& mrl)
 		);
 		
 		g_debug("Subtitle streams: %zu", subtitle_streams.size());
-		for (std::vector<Dvb::SI::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); i++)
+		for (std::vector<Mpeg::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); i++)
 		{
-			Dvb::SI::SubtitleStream subtitle_stream = *i;
+			Mpeg::SubtitleStream subtitle_stream = *i;
 			Glib::ustring text = Glib::ustring::compose("%1: %2", count, subtitle_stream.language);
 			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
 			menu_item->show_all();

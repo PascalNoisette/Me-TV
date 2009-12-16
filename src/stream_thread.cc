@@ -26,18 +26,6 @@
 
 #define TS_PACKET_SIZE 188
 
-Stream::~Stream()
-{
-}
-
-void Stream::clear()
-{
-	video_streams.clear();
-	audio_streams.clear();
-	subtitle_streams.clear();
-	teletext_streams.clear();
-}
-
 class Lock : public Glib::RecMutex::Lock
 {
 public:
@@ -57,16 +45,6 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	epg_thread = NULL;
 	socket = NULL;
 	broadcast_failure_message = true;
-	
-	for (gint i = 0 ; i < 256 ; i++ )
-	{
-		guint k = 0;
-		for (guint j = (i << 24) | 0x800000 ; j != 0x80000000 ; j <<= 1)
-		{
-			k = (k << 1) ^ (((k ^ j) & 0x80000000) ? 0x04c11db7 : 0);
-		}
-		CRC32[i] = k;
-	}
 
 	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
 	fifo_path = Glib::build_filename(get_application().get_application_dir(), filename);
@@ -115,14 +93,14 @@ void StreamThread::start()
 	start_epg_thread();
 }
 
-void StreamThread::write(gchar* buffer, gsize length)
+void StreamThread::write(guchar* buffer, gsize length)
 {
 	if (output_channel)
 	{
 		try
 		{
 			gsize bytes_written = 0;
-			output_channel->write(buffer, length, bytes_written);
+			output_channel->write((const gchar*)buffer, length, bytes_written);
 		}
 		catch(...)
 		{
@@ -139,12 +117,12 @@ void StreamThread::write(gchar* buffer, gsize length)
 	if (recording_channel)
 	{
 		gsize bytes_written = 0;
-		recording_channel->write(buffer, length, bytes_written);
+		recording_channel->write((const gchar*)buffer, length, bytes_written);
 	}
 	
 	if (socket != NULL)
 	{
-		if (gnet_udp_socket_send(socket, buffer, length, inet_address) != 0)
+		if (gnet_udp_socket_send(socket, (const gchar*)buffer, length, inet_address) != 0)
 		{
 			if (broadcast_failure_message)
 			{
@@ -162,9 +140,9 @@ const Glib::ustring& StreamThread::get_fifo_path() const
 
 void StreamThread::run()
 {
-	gchar buffer[TS_PACKET_SIZE * 10];
-	gchar pat[TS_PACKET_SIZE];
-	gchar pmt[TS_PACKET_SIZE];
+	guchar buffer[TS_PACKET_SIZE * 10];
+	guchar pat[TS_PACKET_SIZE];
+	guchar pmt[TS_PACKET_SIZE];
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
@@ -182,15 +160,15 @@ void StreamThread::run()
 		{
 			g_debug("Writing PAT/PMT header");
 			
-			build_pat(pat);
-			build_pmt(pmt);
+			stream.build_pat(pat);
+			stream.build_pmt(pmt);
 
 			write(pat, TS_PACKET_SIZE);
 			write(pmt, TS_PACKET_SIZE);
 			last_insert_time = now;
 		}
 				
-		input_channel->read(buffer, TS_PACKET_SIZE * 10, bytes_read);
+		input_channel->read((gchar*)buffer, TS_PACKET_SIZE * 10, bytes_read);
 		write(buffer, bytes_read);
 	}
 	THREAD_CATCH
@@ -206,263 +184,6 @@ void StreamThread::run()
 	
 	output_channel.reset();
 	g_debug("Output channel reset");
-}
-
-void StreamThread::calculate_crc(guchar *p_begin, guchar *p_end)
-{
-	unsigned int i_crc = 0xffffffff;
-
-	// Calculate the CRC
-	while( p_begin < p_end )
-	{
-		i_crc = (i_crc<<8) ^ CRC32[ (i_crc>>24) ^ ((unsigned int)*p_begin) ];
-		p_begin++;
-	}
-
-	// Store it after the data
-	p_end[0] = (i_crc >> 24) & 0xff;
-	p_end[1] = (i_crc >> 16) & 0xff;
-	p_end[2] = (i_crc >>  8) & 0xff;
-	p_end[3] = (i_crc >>  0) & 0xff;
-}
-
-gboolean StreamThread::is_pid_used(guint pid)
-{
-	gboolean used = false;
-	guint index = 0;
-	
-	if (stream.video_streams.size() > 0)
-	{
-		used = (pid==stream.video_streams[0].pid);
-	}
-	
-	while (index < stream.audio_streams.size() && !used)
-	{
-		if (pid==stream.audio_streams[index].pid)
-		{
-			used = true;
-		}
-		else
-		{
-			index++;
-		}
-	}
-
-	index = 0;
-	while (index < stream.subtitle_streams.size() && !used)
-	{
-		if (pid==stream.subtitle_streams[index].pid)
-		{
-			used = true;
-		}
-		else
-		{
-			index++;
-		}
-	}
-	
-	return used;
-}
-
-void StreamThread::build_pat(gchar* buffer)
-{
-	static guint counter = 0;
-	
-	buffer[0x00] = 0x47;
-	buffer[0x01] = 0x40;
-	buffer[0x02] = 0x00; // PID = 0x0000
-	buffer[0x03] = 0x10 | (counter++ & 0xf); // | (ps->pat_counter & 0x0f);
-	g_debug("PAT counter = 0x%02X", counter);
-	buffer[0x04] = 0x00; // CRC calculation begins here
-	buffer[0x05] = 0x00; // 0x00: Program association section
-	buffer[0x06] = 0xb0;
-	buffer[0x07] = 0x11; // section_length = 0x011
-	buffer[0x08] = 0x00;
-	buffer[0x09] = 0xbb; // TS id = 0x00b0 (what the vlc calls "Stream ID")
-	buffer[0x0a] = 0xc1;
-	// section # and last section #
-	buffer[0x0b] = buffer[0x0c] = 0x00;
-	// Network PID (useless)
-	buffer[0x0d] = buffer[0x0e] = 0x00;
-	buffer[0x0f] = 0xe0;
-	buffer[0x10] = 0x10;
-	
-	// Program Map PID
-	pmt_pid = 0xff;
-	while (is_pid_used(pmt_pid))
-	{
-		pmt_pid--;
-	}
-	
-	buffer[0x11] = 0x03;
-	buffer[0x12] = 0xe8;
-	buffer[0x13] = 0xe0;
-	buffer[0x14] = pmt_pid;
-	
-	// Put CRC in buffer[0x15...0x18]
-	calculate_crc( (guchar*)buffer + 0x05, (guchar*)buffer + 0x15 );
-	
-	// needed stuffing bytes
-	for (gint i=0x19; i < 188; i++)
-	{
-		buffer[i]=0xff;
-	}
-}
-
-void StreamThread::build_pmt(gchar* buffer)
-{
-	static guint counter = 0;
-	int i, off=0;
-	
-	Dvb::SI::VideoStream video_stream;
-	
-	if (stream.video_streams.size() > 0)
-	{
-		video_stream = stream.video_streams[0];
-	}
-
-	buffer[0x00] = 0x47;
-	buffer[0x01] = 0x40;
-	buffer[0x02] = pmt_pid;
-	buffer[0x03] = 0x10 | (counter++ & 0xf);
-	buffer[0x04] = 0x00; // CRC calculation begins here
-	buffer[0x05] = 0x02; // 0x02: Program map section
-	buffer[0x06] = 0xb0;
-	buffer[0x07] = 0x20; // section_length
-	buffer[0x08] = 0x03;
-	buffer[0x09] = 0xe8; // prog number
-	buffer[0x0a] = 0xc1;
-	// section # and last section #
-	buffer[0x0b] = buffer[0x0c] = 0x00;
-	// PCR PID
-	buffer[0x0d] = video_stream.pid>>8;
-	buffer[0x0e] = video_stream.pid&0xff;
-	// program_info_length == 0
-	buffer[0x0f] = 0xf0;
-	buffer[0x10] = 0x00;
-	// Program Map / Video PID
-	buffer[0x11] = video_stream.type; // video stream type
-	buffer[0x12] = video_stream.pid>>8;
-	buffer[0x13] = video_stream.pid&0xff;
-	buffer[0x14] = 0xf0;
-	buffer[0x15] = 0x09; // es info length
-	// useless info
-	buffer[0x16] = 0x07;
-	buffer[0x17] = 0x04;
-	buffer[0x18] = 0x08;
-	buffer[0x19] = 0x80;
-	buffer[0x1a] = 0x24;
-	buffer[0x1b] = 0x02;
-	buffer[0x1c] = 0x11;
-	buffer[0x1d] = 0x01;
-	buffer[0x1e] = 0xfe;
-	off = 0x1e;
-
-	// Audio streams
-	for (guint index = 0; index < stream.audio_streams.size(); index++)
-	{
-		Dvb::SI::AudioStream audio_stream = stream.audio_streams[index];
-		
-		gchar language_code[4] = { 0 };
-		
-		strncpy(language_code, audio_stream.language.c_str(), 3);
-
-		if ( audio_stream.is_ac3 )
-		{
-			buffer[++off] = 0x81; // stream type = xine see this as ac3
-			buffer[++off] = audio_stream.pid>>8;
-			buffer[++off] = audio_stream.pid&0xff;
-			buffer[++off] = 0xf0;
-			buffer[++off] = 0x0c; // es info length
-			buffer[++off] = 0x05;
-			buffer[++off] = 0x04;
-			buffer[++off] = 0x41;
-			buffer[++off] = 0x43;
-			buffer[++off] = 0x2d;
-			buffer[++off] = 0x33;
-		}
-		else
-		{
-			buffer[++off] = 0x04; // stream type = audio
-			buffer[++off] = audio_stream.pid>>8;
-			buffer[++off] = audio_stream.pid&0xff;
-			buffer[++off] = 0xf0;
-			buffer[++off] = 0x06; // es info length
-		}
-		buffer[++off] = 0x0a; // iso639 descriptor tag
-		buffer[++off] = 0x04; // descriptor length
-		buffer[++off] = language_code[0];
-		buffer[++off] = language_code[1];
-		buffer[++off] = language_code[2];
-		buffer[++off] = 0x00; // audio type
-	}
-	
-	// Subtitle streams
-	for (guint index = 0; index < stream.subtitle_streams.size(); index++)
-	{
-		Dvb::SI::SubtitleStream subtitle_stream = stream.subtitle_streams[index];
-		
-		gchar language_code[4] = { 0 };
-		
-		strncpy(language_code, subtitle_stream.language.c_str(), 3);
-		
-		buffer[++off] = 0x06; // stream type = ISO_13818_PES_PRIVATE
-		buffer[++off] = subtitle_stream.pid>>8;
-		buffer[++off] = subtitle_stream.pid&0xff;
-		buffer[++off] = 0xf0;
-		buffer[++off] = 0x0a; // es info length
-		buffer[++off] = 0x59; // DVB sub tag
-		buffer[++off] = 0x08; // descriptor length
-		buffer[++off] = language_code[0];
-		buffer[++off] = language_code[1];
-		buffer[++off] = language_code[2];
-		buffer[++off] = subtitle_stream.subtitling_type;
-		buffer[++off] = subtitle_stream.composition_page_id>>8;
-		buffer[++off] = subtitle_stream.composition_page_id&0xff;
-		buffer[++off] = subtitle_stream.ancillary_page_id>>8;
-		buffer[++off] = subtitle_stream.ancillary_page_id&0xff;
-	}
-	
-	// TeleText streams
-	for (guint index = 0; index < stream.teletext_streams.size(); index++)
-	{
-		Dvb::SI::TeletextStream teletext_stream = stream.teletext_streams[index];
-						
-		gint language_count = teletext_stream.languages.size();
-
-		buffer[++off] = 0x06; // stream type = ISO_13818_PES_PRIVATE
-		buffer[++off] = teletext_stream.pid>>8;
-		buffer[++off] = teletext_stream.pid&0xff;
-		buffer[++off] = 0xf0;
-		buffer[++off] = (language_count * 5) + 4; // es info length
-		buffer[++off] = 0x56; // DVB teletext tag
-		buffer[++off] = language_count * 5; // descriptor length
-
-		for (gint language_index = 0; language_index < language_count; language_index++)
-		{
-			Dvb::SI::TeletextLanguageDescriptor descriptor = teletext_stream.languages[language_index];
-			gchar language_code[4] = { 0 };
-			strncpy(language_code, descriptor.language.c_str(), 3);
-			
-			buffer[++off] = language_code[0];
-			buffer[++off] = language_code[1];
-			buffer[++off] = language_code[2];
-			//buffer[++off] = (descriptor.type & 0x1F) | ((descriptor.magazine_number << 5) & 0xE0);
-			buffer[++off] = (descriptor.magazine_number & 0x06) | ((descriptor.type << 3) & 0xF8);
-			buffer[++off] = descriptor.page_number;
-		}
-	}
-
-	buffer[0x07] = off-3; // update section_length
-
-	// Put CRC in ts[0x29...0x2c]
-	calculate_crc( (guchar*)buffer+0x05, (guchar*)buffer+off+1 );
-	
-	// needed stuffing bytes
-	for (i=off+5 ; i < 188 ; i++)
-	{
-		buffer[i] = 0xff;
-	}
 }
 
 void StreamThread::remove_all_demuxers()
@@ -508,74 +229,45 @@ void StreamThread::setup_dvb()
 	remove_all_demuxers();
 	
 	frontend.tune_to(channel.transponder);
-	
+
+	Buffer buffer;	
 	Dvb::Demuxer demuxer_pat(demux_path);
 	demuxer_pat.set_filter(PAT_PID, PAT_ID);
-	Dvb::SI::SectionParser parser;
-	
-	Dvb::SI::ProgramAssociationSection pas;
-	parser.parse_pas(demuxer_pat, pas);
+	demuxer_pat.read_section(buffer);
 	demuxer_pat.stop();
 
-	guint length = pas.program_associations.size();
-	pmt_pid = 0;
-	
-	g_debug("Found %d associations", length);
-	g_debug("Searching for service ID %d", channel.service_id);
-	for (guint i = 0; i < length; i++)
-	{
-		Dvb::SI::ProgramAssociation program_association = pas.program_associations[i];
-
-		g_debug("%d: Service ID: %d, PMT ID: %d", i,
-		        program_association.program_number,
-		        program_association.program_map_pid);
-		if (program_association.program_number == channel.service_id)
-		{
-			pmt_pid = program_association.program_map_pid;
-			g_debug("PMT ID found");
-		}
-	}
-
-	if (pmt_pid == 0)
-	{
-		throw Exception(_("Failed to find PMT ID for service"));
-	}
+	stream.set_program_map_pid(buffer, channel.service_id);
 	
 	Dvb::Demuxer demuxer_pmt(demux_path);
 	demuxer_pmt.set_filter(pmt_pid, PMT_ID);
-
-	Dvb::SI::ProgramMapSection pms;
-	parser.parse_pms(demuxer_pmt, pms);
+	demuxer_pmt.read_section(buffer);
 	demuxer_pmt.stop();
+
+	stream.parse_pms(buffer);
 			
-	gsize video_streams_size = pms.video_streams.size();
+	gsize video_streams_size = stream.video_streams.size();
 	for (guint i = 0; i < video_streams_size; i++)
 	{
-		g_message("Adding video stream");
-		add_pes_demuxer(demux_path, pms.video_streams[i].pid, DMX_PES_OTHER, "video");
-		stream.video_streams.push_back(pms.video_streams[i]);
+		add_pes_demuxer(demux_path, stream.video_streams[i].pid, DMX_PES_OTHER, "video");
 	}
 
-	gsize audio_streams_size = pms.audio_streams.size();
+	gsize audio_streams_size = stream.audio_streams.size();
 	for (guint i = 0; i < audio_streams_size; i++)
 	{
-		add_pes_demuxer(demux_path, pms.audio_streams[i].pid, DMX_PES_OTHER,
-			pms.audio_streams[i].is_ac3 ? "AC3" : "audio");
-		stream.audio_streams.push_back(pms.audio_streams[i]);
+		add_pes_demuxer(demux_path, stream.audio_streams[i].pid, DMX_PES_OTHER,
+			stream.audio_streams[i].is_ac3 ? "AC3" : "audio");
 	}
 				
-	gsize subtitle_streams_size = pms.subtitle_streams.size();
+	gsize subtitle_streams_size = stream.subtitle_streams.size();
 	for (guint i = 0; i < subtitle_streams_size; i++)
 	{
-		add_pes_demuxer(demux_path, pms.subtitle_streams[i].pid, DMX_PES_OTHER, "subtitle");
-		stream.subtitle_streams.push_back(pms.subtitle_streams[i]);
+		add_pes_demuxer(demux_path, stream.subtitle_streams[i].pid, DMX_PES_OTHER, "subtitle");
 	}
 
-	gsize teletext_streams_size = pms.teletext_streams.size();
+	gsize teletext_streams_size = stream.teletext_streams.size();
 	for (guint i = 0; i < teletext_streams_size; i++)
 	{
-		add_pes_demuxer(demux_path, pms.teletext_streams[i].pid, DMX_PES_OTHER, "teletext");
-		stream.teletext_streams.push_back(pms.teletext_streams[i]);
+		add_pes_demuxer(demux_path, stream.teletext_streams[i].pid, DMX_PES_OTHER, "teletext");
 	}
 
 	g_debug("Finished setting up DVB");
@@ -610,7 +302,7 @@ void StreamThread::stop_epg_thread()
 	}
 }
 
-const Stream& StreamThread::get_stream() const
+const Mpeg::Stream& StreamThread::get_stream() const
 {
 	return stream;
 }

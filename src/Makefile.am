@@ -32,8 +32,12 @@ me_tv_xine_LDADD =        \
 	-lX11
 
 me_tv_SOURCES = \
-	main.cc\
 	../config.h \
+	main.cc\
+	mpeg_stream.cc \
+	mpeg_stream.h \
+	buffer.cc \
+	buffer.h \
 	main_window.cc \
 	stream_thread.cc \
 	stream_thread.h \

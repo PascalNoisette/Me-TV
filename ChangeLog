@@ -5,6 +5,7 @@
 	* Better ATSC support
 	* Added audio stream type 0x11 to PMS parser
 	* Implemented make_directory_with_parents to remove dependency on GLib 2.18
+	* Split out MPEG tables from DVB SI tables
 
 2009-12-06  Michael Lamothe <michael.lamothe@gmail.com>
 

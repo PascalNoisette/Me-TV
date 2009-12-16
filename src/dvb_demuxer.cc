@@ -111,6 +111,37 @@ gint Demuxer::read(unsigned char* buffer, size_t length)
 	return bytes_read;
 }
 
+void Demuxer::read_section(Buffer& buffer)
+{
+	guchar header[3];
+	gsize bytes_read = read(header, 3);
+	
+	if (bytes_read != 3)
+	{
+		throw Exception(_("Failed to read header"));
+	}
+		
+	gsize remaining_section_length = ((header[1] & 0x0f) << 8) + header[2];
+	gsize section_length = remaining_section_length + 3;
+	buffer.set_length(section_length);
+	memcpy(buffer.get_buffer(), header, 3);
+	bytes_read = read(buffer.get_buffer() + 3, remaining_section_length);
+	
+	if (bytes_read != remaining_section_length)
+	{
+		throw Exception(_("Failed to read section"));
+	}
+
+	/* TODO: CRC32
+	guint32 crc = crc32((const char *)buffer, section_length);
+	
+	if (crc != 0)
+	{
+		throw Exception(_("CRC32 check failed"));
+	}
+	*/
+}
+
 void Demuxer::stop()
 {
 	if (ioctl(fd, DMX_STOP) < 0)

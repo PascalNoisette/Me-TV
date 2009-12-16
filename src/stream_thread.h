@@ -29,20 +29,8 @@
 #include "channel.h"
 #include "dvb_si.h"
 #include "me-tv-ui.h"
+#include "mpeg_stream.h"
 #include <gnet.h>
-
-class Stream
-{
-public:
-	~Stream();
-
-	void clear();
-	
-	std::vector<Dvb::SI::VideoStream>		video_streams;
-	std::vector<Dvb::SI::AudioStream>		audio_streams;
-	std::vector<Dvb::SI::SubtitleStream>	subtitle_streams;
-	std::vector<Dvb::SI::TeletextStream>	teletext_streams;
-};
 
 class StreamThread : public Thread
 {
@@ -55,7 +43,7 @@ private:
 	Dvb::Frontend&			frontend;
 	Engine*					engine;
 	EpgThread*				epg_thread;
-	Stream					stream;
+	Mpeg::Stream			stream;
 	guint					pmt_pid;
 	GUdpSocket*				socket;
 	GInetAddr*				inet_address;
@@ -64,11 +52,7 @@ private:
 	Glib::RefPtr<Glib::IOChannel> recording_channel;
 
 	void run();
-	gboolean is_pid_used(guint pid);
-	void build_pat(gchar* buffer);
-	void build_pmt(gchar* buffer);
-	void calculate_crc(guchar *p_begin, guchar *p_end);
-	void write(gchar* buffer, gsize length);
+	void write(guchar* buffer, gsize length);
 
 	static gboolean on_timeout(gpointer data);
 	void on_timeout();
@@ -87,7 +71,7 @@ public:
 	~StreamThread();
 
 	void start();
-	const Stream& get_stream() const;
+	const Mpeg::Stream& get_stream() const;
 	guint get_last_epg_update_time();
 
 	void start_recording(const Glib::ustring& filename);
