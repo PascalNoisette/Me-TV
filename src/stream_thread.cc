@@ -163,17 +163,22 @@ void StreamThread::run()
 	
 	Lock lock(mutex, "StreamThread::run() - exit");
 
+	g_debug("About to close output channels ...");
+	std::list<StreamOutput>::iterator iterator = outputs.begin();
+	while (iterator != outputs.end())
+	{
+		(*iterator).output_channel.reset();
+		outputs.pop_back();
+		iterator = outputs.begin();
+	}
+	g_debug("Output channels reset");
+
 	g_debug("About to close input channel ...");
 	input_channel->close(true);
 	input_channel.reset();
 	g_debug("Input channel reset");
-	
-	for (std::list<StreamOutput>::iterator iterator = outputs.begin(); iterator != outputs.end(); iterator++)
-	{
-		(*iterator).output_channel.reset();
-	}
-	
-	g_debug("Stream Output channels reset");
+		
+	g_debug("Stream output channels reset");
 }
 
 void StreamThread::remove_all_demuxers()
@@ -216,10 +221,12 @@ void StreamThread::setup_dvb(const Channel& channel, Mpeg::Stream& stream)
 	stop_epg_thread();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 	
-	remove_all_demuxers();
+	if (channel.transponder.frontend_parameters.frequency != frontend.get_frontend_parameters().frequency)
+	{
+		remove_all_demuxers();
+		frontend.tune_to(channel.transponder);
+	}
 	
-	frontend.tune_to(channel.transponder);
-
 	Buffer buffer;	
 	Dvb::Demuxer demuxer_pat(demux_path);
 	demuxer_pat.set_filter(PAT_PID, PAT_ID);
@@ -390,7 +397,7 @@ StreamThread::StreamOutput::StreamOutput(const Channel& c, const Glib::ustring& 
 	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
 	output_channel->set_buffer_size(TS_PACKET_SIZE * 100);
 
-	g_debug("Creating new recording output '%s' -> '%s'", channel.name.c_str(), filename.c_str());
+	g_debug("Added new output stream '%s' -> '%s'", channel.name.c_str(), filename.c_str());
 }
 
 void StreamThread::StreamOutput::write(guchar* buffer, gsize length)

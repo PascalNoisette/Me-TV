@@ -25,7 +25,7 @@
 
 Mpeg::Stream::Stream()
 {
-	g_debug("Creating MpegStream");
+	g_debug("Creating MPEG stream");
 	program_map_pid = 0;
 }
 
