@@ -24,7 +24,8 @@
 #include "device_manager.h"
 #include "dvb_transponder.h"
 
-#define TS_PACKET_SIZE 188
+#define TS_PACKET_SIZE		188
+#define PACKET_BUFFER_SIZE	100
 
 class Lock : public Glib::RecMutex::Lock
 {
@@ -96,7 +97,7 @@ const Glib::ustring& StreamThread::get_fifo_path() const
 
 void StreamThread::run()
 {
-	guchar buffer[TS_PACKET_SIZE * 10];
+	guchar buffer[TS_PACKET_SIZE * PACKET_BUFFER_SIZE];
 	guchar pat[TS_PACKET_SIZE];
 	guchar pmt[TS_PACKET_SIZE];
 
@@ -132,7 +133,7 @@ void StreamThread::run()
 			last_insert_time = now;
 		}
 				
-		input_channel->read((gchar*)buffer, TS_PACKET_SIZE * 10, bytes_read);
+		input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read);
 
 		guint pid = buffer[2];
 
@@ -309,6 +310,7 @@ void StreamThread::start_recording(const Channel& channel, const Glib::ustring& 
 	Lock lock(mutex, "StreamThread::start_recording()");
 	
 	StreamOutput stream_output(channel, filename);
+	setup_dvb(channel, stream_output.stream);
 	outputs.push_back(stream_output);
 	
 	g_debug("New recording channel created");
@@ -389,14 +391,15 @@ guint StreamThread::get_last_epg_update_time()
 	return result;
 }
 
-StreamThread::StreamOutput::StreamOutput(const Channel& c, const Glib::ustring& filename)
+StreamThread::StreamOutput::StreamOutput(const Channel& c, const Glib::ustring& f)
 {
 	channel = c;
+	filename = f;
 	output_channel = Glib::IOChannel::create_from_file(filename, "w");
 	output_channel->set_encoding("");
 	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
-	output_channel->set_buffer_size(TS_PACKET_SIZE * 100);
-
+	output_channel->set_buffer_size(TS_PACKET_SIZE * PACKET_BUFFER_SIZE);
+	
 	g_debug("Added new output stream '%s' -> '%s'", channel.name.c_str(), filename.c_str());
 }
 
@@ -408,6 +411,8 @@ void StreamThread::StreamOutput::write(guchar* buffer, gsize length)
 		{
 			gsize bytes_written = 0;
 			output_channel->write((const gchar*)buffer, length, bytes_written);
+
+			//g_debug("%d bytes written to '%s'", (int)bytes_written, filename.c_str());
 		}
 		catch(...)
 		{

@@ -43,6 +43,7 @@ private:
 		Channel							channel;			
 		Mpeg::Stream					stream;
 		Glib::RefPtr<Glib::IOChannel>	output_channel;
+		Glib::ustring					filename;
 
 		void write(guchar* buffer, gsize length);
 	};

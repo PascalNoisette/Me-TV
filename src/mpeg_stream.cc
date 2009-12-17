@@ -540,5 +540,5 @@ gboolean Mpeg::Stream::contains_pid(guint pid)
 	for (index = 0; index < teletext_streams.size(); index++)
 	{ if (teletext_streams[index].pid == pid) return true; }
 
-	return true;
+	return false;
 }
