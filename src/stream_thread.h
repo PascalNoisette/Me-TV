@@ -35,22 +35,32 @@
 class StreamThread : public Thread
 {
 private:
-	Channel					channel;
+	class StreamOutput
+	{
+	public:
+		StreamOutput(const Channel& channel, const Glib::ustring& filename);
+	
+		Channel							channel;			
+		Mpeg::Stream					stream;
+		Glib::RefPtr<Glib::IOChannel>	output_channel;
+
+		void write(guchar* buffer, gsize length);
+	};
+
+	Channel					display_channel;
 	DemuxerList				demuxers;
 	Glib::ustring			fifo_path;
 	Glib::StaticRecMutex	mutex;
 	Dvb::Frontend&			frontend;
 	Engine*					engine;
 	EpgThread*				epg_thread;
-	Mpeg::Stream			stream;
 	GUdpSocket*				socket;
 	GInetAddr*				inet_address;
 	gboolean				broadcast_failure_message;
-	Glib::RefPtr<Glib::IOChannel> output_channel;
-	Glib::RefPtr<Glib::IOChannel> recording_channel;
+	std::list<StreamOutput>	outputs;
 
 	void run();
-	void write(guchar* buffer, gsize length);
+	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
 
 	static gboolean on_timeout(gpointer data);
 	void on_timeout();
@@ -59,7 +69,7 @@ private:
 	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
 		guint pid, dmx_pes_type_t pid_type, const gchar* type_text);
 	Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
-	void setup_dvb();
+	void setup_dvb(const Channel& channel, Mpeg::Stream& stream);
 
 	void start_epg_thread();
 	void stop_epg_thread();
@@ -72,8 +82,8 @@ public:
 	const Mpeg::Stream& get_stream() const;
 	guint get_last_epg_update_time();
 
-	void start_recording(const Glib::ustring& filename);
-	void stop_recording();
+	void start_recording(const Channel& channel, const Glib::ustring& filename);
+	void stop_recording(const Channel& channel);
 	
 	void start_broadcasting();
 	void stop_broadcasting();

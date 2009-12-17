@@ -30,19 +30,20 @@ class Channel
 public:
 	Channel();
 
-	guint			channel_id;
-	Glib::ustring	name;
-	guint			type;
-	guint			sort_order;
-	Glib::ustring	mrl;
-	EpgEvents		epg_events;
-
-	// DVB Specific
+	guint				channel_id;
+	Glib::ustring		name;
+	guint				type;
+	guint				sort_order;
+	Glib::ustring		mrl;
+	EpgEvents			epg_events;
+	
 	guint				service_id;
 	Dvb::Transponder	transponder;
-	guint get_transponder_frequency();
+	
+	guint				get_transponder_frequency();
+	Glib::ustring		get_text();
 
-	Glib::ustring get_text();
+	bool operator==(const Channel& channel) const;
 };
 
 class ChannelArray : public std::vector<Channel>

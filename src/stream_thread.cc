@@ -36,7 +36,7 @@ public:
 
 StreamThread::StreamThread(const Channel& active_channel) :
 	Thread("Stream"),
-	channel(active_channel),
+	display_channel(active_channel),
 	frontend(get_application().device_manager.get_frontend())
 {
 	g_debug("Creating StreamThread");
@@ -65,11 +65,9 @@ StreamThread::StreamThread(const Channel& active_channel) :
 	{
 		throw SystemException(Glib::ustring::compose(_("Failed to open FIFO for reading '%1'"), fifo_path));
 	}
-	
-	output_channel = Glib::IOChannel::create_from_file(fifo_path, "w");
-	output_channel->set_encoding("");
-	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
-	output_channel->set_buffer_size(TS_PACKET_SIZE * 100);
+
+	StreamOutput stream_output(active_channel, fifo_path);
+	outputs.push_back(stream_output);
 
 	close(fd);
 
@@ -87,50 +85,8 @@ StreamThread::~StreamThread()
 
 void StreamThread::start()
 {
-	setup_dvb();
 	g_debug("Starting stream thread");
 	Thread::start();
-	start_epg_thread();
-}
-
-void StreamThread::write(guchar* buffer, gsize length)
-{
-	if (output_channel)
-	{
-		try
-		{
-			gsize bytes_written = 0;
-			output_channel->write((const gchar*)buffer, length, bytes_written);
-		}
-		catch(...)
-		{
-			static time_t previous = 0;
-			time_t now = time(NULL);
-			if (now != previous)
-			{
-				g_debug("No output connected");
-				previous = now;
-			}
-		}
-	}
-		
-	if (recording_channel)
-	{
-		gsize bytes_written = 0;
-		recording_channel->write((const gchar*)buffer, length, bytes_written);
-	}
-	
-	if (socket != NULL)
-	{
-		if (gnet_udp_socket_send(socket, (const gchar*)buffer, length, inet_address) != 0)
-		{
-			if (broadcast_failure_message)
-			{
-				g_message("Failed to send to UDP socket");
-			}
-			broadcast_failure_message = false;
-		}
-	}
 }
 
 const Glib::ustring& StreamThread::get_fifo_path() const
@@ -143,6 +99,9 @@ void StreamThread::run()
 	guchar buffer[TS_PACKET_SIZE * 10];
 	guchar pat[TS_PACKET_SIZE];
 	guchar pmt[TS_PACKET_SIZE];
+
+	setup_dvb(display_channel, (*(outputs.begin())).stream);
+	start_epg_thread();
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
@@ -160,16 +119,43 @@ void StreamThread::run()
 		{
 			g_debug("Writing PAT/PMT header");
 			
-			stream.build_pat(pat);
-			stream.build_pmt(pmt);
+			for (std::list<StreamOutput>::iterator iterator = outputs.begin(); iterator != outputs.end(); iterator++)
+			{
+				StreamOutput& stream_output = *iterator;
 
-			write(pat, TS_PACKET_SIZE);
-			write(pmt, TS_PACKET_SIZE);
+				stream_output.stream.build_pat(pat);
+				stream_output.stream.build_pmt(pmt);
+
+				stream_output.write(pat, TS_PACKET_SIZE);
+				stream_output.write(pmt, TS_PACKET_SIZE);
+			}
 			last_insert_time = now;
 		}
 				
 		input_channel->read((gchar*)buffer, TS_PACKET_SIZE * 10, bytes_read);
-		write(buffer, bytes_read);
+
+		guint pid = buffer[2];
+
+		for (std::list<StreamOutput>::iterator iterator = outputs.begin(); iterator != outputs.end(); iterator++)
+		{
+			StreamOutput& stream_output = *iterator;
+			if (stream_output.stream.contains_pid(pid))
+			{
+				stream_output.write(buffer, bytes_read);
+			}
+		}
+
+		if (socket != NULL)
+		{
+			if (gnet_udp_socket_send(socket, (const gchar*)buffer, bytes_read, inet_address) != 0)
+			{
+				if (broadcast_failure_message)
+				{
+					g_message("Failed to send to UDP socket");
+				}
+				broadcast_failure_message = false;
+			}
+		}
 	}
 	THREAD_CATCH
 		
@@ -182,8 +168,12 @@ void StreamThread::run()
 	input_channel.reset();
 	g_debug("Input channel reset");
 	
-	output_channel.reset();
-	g_debug("Output channel reset");
+	for (std::list<StreamOutput>::iterator iterator = outputs.begin(); iterator != outputs.end(); iterator++)
+	{
+		(*iterator).output_channel.reset();
+	}
+	
+	g_debug("Stream Output channels reset");
 }
 
 void StreamThread::remove_all_demuxers()
@@ -219,7 +209,7 @@ Dvb::Demuxer& StreamThread::add_section_demuxer(const Glib::ustring& demux_path,
 	return *demuxer;
 }
 
-void StreamThread::setup_dvb()
+void StreamThread::setup_dvb(const Channel& channel, Mpeg::Stream& stream)
 {
 	Lock lock(mutex, "StreamThread::setup_dvb()");
 	
@@ -304,35 +294,39 @@ void StreamThread::stop_epg_thread()
 
 const Mpeg::Stream& StreamThread::get_stream() const
 {
-	return stream;
+	return (*(outputs.begin())).stream;
 }
 
-void StreamThread::start_recording(const Glib::ustring& filename)
+void StreamThread::start_recording(const Channel& channel, const Glib::ustring& filename)
 {
 	Lock lock(mutex, "StreamThread::start_recording()");
-	if (recording_channel)
-	{
-		g_debug("Already recording!");
-	}
-	else
-	{
-		g_debug("Creating new recording channel (%s)", filename.c_str());
-		Glib::RefPtr<Glib::IOChannel> channel = Glib::IOChannel::create_from_file(filename, "w");
-		channel->set_encoding("");
-		channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
-		channel->set_buffer_size(TS_PACKET_SIZE * 100);
-		recording_channel = channel;
-		g_debug("New recording channel created");
-	}
+	
+	StreamOutput stream_output(channel, filename);
+	outputs.push_back(stream_output);
+	
+	g_debug("New recording channel created");
 }
 
-void StreamThread::stop_recording()
+void StreamThread::stop_recording(const Channel& channel)
 {
 	Lock lock(mutex, "StreamThread::stop_recording()");
-	if (recording_channel)
+
+	std::list<StreamOutput>::iterator iterator = outputs.begin();
+
+	// Skip the first output because it's the display one
+	if (iterator != outputs.end())
 	{
-		recording_channel.reset();
-		g_debug("Recording channel cleared");
+		iterator++;
+	}
+	
+	while (iterator != outputs.end())
+	{
+		StreamOutput& stream_output = *iterator;
+		if (stream_output.channel == channel)
+		{
+			stream_output.output_channel.reset();
+		}
+		iterator++;
 	}
 }
 
@@ -386,4 +380,37 @@ guint StreamThread::get_last_epg_update_time()
 	}
 	
 	return result;
+}
+
+StreamThread::StreamOutput::StreamOutput(const Channel& c, const Glib::ustring& filename)
+{
+	channel = c;
+	output_channel = Glib::IOChannel::create_from_file(filename, "w");
+	output_channel->set_encoding("");
+	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
+	output_channel->set_buffer_size(TS_PACKET_SIZE * 100);
+
+	g_debug("Creating new recording output '%s' -> '%s'", channel.name.c_str(), filename.c_str());
+}
+
+void StreamThread::StreamOutput::write(guchar* buffer, gsize length)
+{
+	if (output_channel)
+	{
+		try
+		{
+			gsize bytes_written = 0;
+			output_channel->write((const gchar*)buffer, length, bytes_written);
+		}
+		catch(...)
+		{
+			static time_t previous = 0;
+			time_t now = time(NULL);
+			if (now != previous)
+			{
+				g_debug("No output connected");
+				previous = now;
+			}
+		}
+	}
 }

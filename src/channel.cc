@@ -61,3 +61,9 @@ gboolean ChannelArray::contains(guint channel_id)
 	
 	return false;
 }
+
+bool Channel::operator==(const Channel& channel) const
+{
+	return channel.service_id == service_id &&
+		channel.transponder.frontend_parameters.frequency == transponder.frontend_parameters.frequency;
+}

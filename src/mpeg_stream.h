@@ -131,6 +131,7 @@ namespace Mpeg
 		void parse_pms(const Buffer& buffer);
 		void build_pat(guchar* buffer);
 		void build_pmt(guchar* buffer);
+		gboolean contains_pid(guint pid);
 
 		void clear();
 	};

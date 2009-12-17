@@ -523,3 +523,22 @@ Glib::ustring Mpeg::Stream::get_lang_desc(const guchar* b)
 	s = c;
 	return s;
 }
+
+gboolean Mpeg::Stream::contains_pid(guint pid)
+{
+	guint index = 0;
+	
+	for (index = 0; index < video_streams.size(); index++)
+	{ if (video_streams[index].pid == pid) return true; }
+	
+	for (index = 0; index < audio_streams.size(); index++)
+	{ if (audio_streams[index].pid == pid) return true; }
+
+	for (index = 0; index < subtitle_streams.size(); index++)
+	{ if (subtitle_streams[index].pid == pid) return true; }
+
+	for (index = 0; index < teletext_streams.size(); index++)
+	{ if (teletext_streams[index].pid == pid) return true; }
+
+	return true;
+}

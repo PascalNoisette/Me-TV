@@ -874,7 +874,7 @@ void Application::on_record()
 			
 			recording_filename = make_recording_filename(recording_filename);
 			
-			stream_thread->start_recording(recording_filename);
+			stream_thread->start_recording(channel_manager.get_display_channel(), recording_filename);
 			update();
 
 			g_debug("Recording started");
@@ -896,7 +896,7 @@ void Application::on_record()
 
 		if (stream_thread != NULL)
 		{
-			stream_thread->stop_recording();
+			stream_thread->stop_recording(channel_manager.get_display_channel());
 			
 			if (scheduled_recording_id != 0)
 			{
