@@ -186,6 +186,18 @@ void Engine::sendKeyEvent(int keycode, int modifiers)
 	XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent*)(void*)&event);
 }
 
+void Engine::pause(gboolean state)
+{
+	g_debug("Engine::pause(%s)", state ? "true" : "false");
+	if (pid != -1)
+	{
+		g_debug(state ? "Sending pause" : "Sending unpause");
+		sendKeyEvent(
+			XK_space,
+			state ? XK_Shift_L : 0);
+	}
+}
+
 void Engine::set_mute_state(gboolean state)
 {
 	g_debug("Engine::set_mute_state(%s)", state ? "true" : "false");
@@ -196,7 +208,7 @@ void Engine::set_mute_state(gboolean state)
 		{
 			g_debug(state ? "Sending mute" : "Sending unmute");
 			sendKeyEvent(
-				state ? XK_m : XK_m,
+				XK_m,
 				state ? 0 : XK_Shift_L);
 		}
 	}

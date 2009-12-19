@@ -107,7 +107,7 @@ void StreamThread::run()
 		{
 			g_debug("Writing PAT/PMT header");
 			
-			for (std::list<ChannelStream>::iterator iterator = outputs.begin(); iterator != outputs.end(); iterator++)
+			for (std::list<ChannelStream>::iterator iterator = streams.begin(); iterator != streams.end(); iterator++)
 			{
 				ChannelStream& channel_stream = *iterator;
 
@@ -124,7 +124,7 @@ void StreamThread::run()
 
 		guint pid = buffer[2];
 
-		for (std::list<ChannelStream>::iterator iterator = outputs.begin(); iterator != outputs.end(); iterator++)
+		for (std::list<ChannelStream>::iterator iterator = streams.begin(); iterator != streams.end(); iterator++)
 		{
 			ChannelStream& channel_stream = *iterator;
 			if (channel_stream.stream.contains_pid(pid))
@@ -151,22 +151,20 @@ void StreamThread::run()
 	
 	Lock lock(mutex, "StreamThread::run() - exit");
 
-	g_debug("About to close output channels ...");
-	std::list<ChannelStream>::iterator iterator = outputs.begin();
-	while (iterator != outputs.end())
+	g_debug("Removing streams ...");
+	std::list<ChannelStream>::iterator iterator = streams.begin();
+	while (iterator != streams.end())
 	{
 		(*iterator).output_channel.reset();
-		outputs.pop_back();
-		iterator = outputs.begin();
+		streams.pop_back();
+		iterator = streams.begin();
 	}
-	g_debug("Output channels reset");
+	g_debug("Streams removed");
 
 	g_debug("About to close input channel ...");
 	input_channel->close(true);
 	input_channel.reset();
 	g_debug("Input channel reset");
-		
-	g_debug("Stream output channels reset");
 }
 
 void StreamThread::ChannelStream::clear_demuxers()
@@ -292,16 +290,16 @@ void StreamThread::stop_epg_thread()
 	}
 }
 
-const Mpeg::Stream& StreamThread::get_stream() const
+const StreamThread::ChannelStream& StreamThread::get_display_stream() const
 {
-	return (*(outputs.begin())).stream;
+	return (*(streams.begin()));
 }
 
 void StreamThread::set_display(const Channel& channel)
 {
 	g_debug("StreamThread::set_display(%s)", channel.name.c_str());
 	
-	if (outputs.size() == 0)
+	if (streams.size() == 0)
 	{
 		g_debug("Creating new stream output");
 		
@@ -313,7 +311,7 @@ void StreamThread::set_display(const Channel& channel)
 		}
 
 		ChannelStream channel_stream(channel, fifo_path);
-		outputs.push_back(channel_stream);
+		streams.push_back(channel_stream);
 
 		close(fd);
 	}
@@ -322,8 +320,7 @@ void StreamThread::set_display(const Channel& channel)
 		g_debug("Stream output exists");
 	}
 
-	ChannelStream& first_channel_stream = (*(outputs.begin()));
-	setup_dvb(channel, first_channel_stream);
+	setup_dvb(channel, *(streams.begin()));
 }
 
 void StreamThread::start_recording(const Channel& channel, const Glib::ustring& filename)
@@ -332,7 +329,7 @@ void StreamThread::start_recording(const Channel& channel, const Glib::ustring& 
 	
 	ChannelStream channel_stream(channel, filename);
 	setup_dvb(channel, channel_stream);
-	outputs.push_back(channel_stream);
+	streams.push_back(channel_stream);
 	
 	g_debug("New recording channel created");
 }
@@ -341,15 +338,15 @@ void StreamThread::stop_recording(const Channel& channel)
 {
 	Lock lock(mutex, "StreamThread::stop_recording()");
 
-	std::list<ChannelStream>::iterator iterator = outputs.begin();
+	std::list<ChannelStream>::iterator iterator = streams.begin();
 
 	// Skip the first output because it's the display one
-	if (iterator != outputs.end())
+	if (iterator != streams.end())
 	{
 		iterator++;
 	}
 	
-	while (iterator != outputs.end())
+	while (iterator != streams.end())
 	{
 		ChannelStream& channel_stream = *iterator;
 		if (channel_stream.channel == channel)
@@ -452,5 +449,20 @@ void StreamThread::ChannelStream::write(guchar* buffer, gsize length)
 
 gboolean StreamThread::is_recording()
 {
-	return outputs.size() > 1;
+	return streams.size() > 1;
+}
+
+gboolean StreamThread::is_recording(const Channel& channel)
+{
+	std::list<ChannelStream>::iterator iterator = streams.begin();
+	while (iterator != streams.end())
+	{
+		ChannelStream& stream = *iterator;
+		if (stream.channel == channel)
+		{
+			return true;
+		}
+		iterator++;
+	}
+	return false;
 }

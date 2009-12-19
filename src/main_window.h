@@ -115,6 +115,7 @@ public:
 	void save_geometry();
 
 	void play(const Glib::ustring& mrl);
+	void pause(gboolean state);
 
 	void fullscreen(gboolean change_mode = true);
 	void unfullscreen(gboolean restore_mode = true);

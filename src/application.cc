@@ -596,16 +596,6 @@ void Application::update()
 	}
 }
 
-void Application::set_display_channel_by_id(guint channel_id)
-{
-	set_display_channel(channel_manager.get_channel_by_id(channel_id));
-}
-
-void Application::set_display_channel_number(guint channel_index)
-{
-	set_display_channel(channel_manager.get_channel_by_index(channel_index));
-}
-
 void Application::previous_channel()
 {
 	Channel* channel = channel_manager.get_previous_channel();
@@ -622,6 +612,16 @@ void Application::next_channel()
 	{
 		set_display_channel(*channel);
 	}
+}
+
+void Application::set_display_channel_by_id(guint channel_id)
+{
+	set_display_channel(channel_manager.get_channel_by_id(channel_id));
+}
+
+void Application::set_display_channel_number(guint channel_index)
+{
+	set_display_channel(channel_manager.get_channel_by_index(channel_index));
 }
 
 void Application::set_display_channel(const Channel& channel)
@@ -649,7 +649,8 @@ void Application::set_display_channel(const Channel& channel)
 
 	channel_manager.set_display_channel(channel);
 	stream_thread->set_display(channel);
-	
+	main_window->play(device_manager.get_frontend().get_path());
+
 	set_int_configuration_value("last_channel", channel.channel_id);
 
 	update();
@@ -675,7 +676,7 @@ void Application::check_scheduled_recordings()
 		scheduled_recording_id = id;
 		ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(id);
 
-		// TODO: Work out how to do this
+		// TODO: Work out how to do scheduled recordings
 //		set_display_channel_by_id(scheduled_recording.channel_id		
 	}
 

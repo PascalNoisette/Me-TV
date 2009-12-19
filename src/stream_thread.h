@@ -62,7 +62,7 @@ private:
 	GUdpSocket*					socket;
 	GInetAddr*					inet_address;
 	gboolean					broadcast_failure_message;
-	std::list<ChannelStream>	outputs;
+	std::list<ChannelStream>	streams;
 
 	void run();
 	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
@@ -81,12 +81,14 @@ public:
 
 	void set_display(const Channel& channel);
 	void start();
-	const Mpeg::Stream& get_stream() const;
+	void stop();
+	const ChannelStream& get_display_stream() const;
 	guint get_last_epg_update_time();
 
 	void start_recording(const Channel& channel, const Glib::ustring& filename);
 	void stop_recording(const Channel& channel);
 	gboolean is_recording();
+	gboolean is_recording(const Channel& channel);
 	
 	void start_broadcasting();
 	void stop_broadcasting();

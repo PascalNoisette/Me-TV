@@ -346,6 +346,14 @@ void MainWindow::on_timeout()
 	CATCH
 }
 
+void MainWindow::pause(gboolean state)
+{
+	if (engine != NULL)
+	{
+		engine->pause(state);
+	}
+}
+
 void MainWindow::set_view_mode(ViewMode mode)
 {
 	Gtk::Widget* widget = NULL;
@@ -576,13 +584,16 @@ void MainWindow::create_engine()
 void MainWindow::play(const Glib::ustring& mrl)
 {
 	Application& application = get_application();
-
-	create_engine();
-	if (engine != NULL)
+	
+	if (engine == NULL)
 	{
-		engine->play(mrl);
+		create_engine();
+		if (engine != NULL)
+		{
+			engine->play(mrl);
+		}
 	}
-
+	
 	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menubar/audio/audio_streams"))->get_submenu();
 	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menubar/video/subtitle_streams"))->get_submenu();
 	
@@ -593,7 +604,8 @@ void MainWindow::play(const Glib::ustring& mrl)
 	subtitle_items.erase(subtitle_items.begin(), subtitle_items.end());
 
 	Gtk::RadioMenuItem::Group audio_streams_menu_group;
-	
+
+	// TODO: Generate menus
 	// Acquire stream thread lock
 /*	Glib::RecMutex::Lock application_lock(application.get_mutex());
 
