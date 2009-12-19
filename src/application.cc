@@ -147,7 +147,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	main_window				= NULL;
 	status_icon				= NULL;
 	timeout_source			= 0;
-	scheduled_recording_id	= 0;
 	database_initialised	= false;
 	
 	// Remove all other handlers first
@@ -662,7 +661,7 @@ void Application::check_scheduled_recordings()
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
 		const ScheduledRecording& scheduled_recording = *i;
-		Channel* channel = channel_manager.find_channel(scheduled_recording.scheduled_recording_id);
+		Channel* channel = channel_manager.find_channel(scheduled_recording.channel_id);
 		if (channel != NULL)
 		{
 			if (stream_manager.is_recording(*channel))

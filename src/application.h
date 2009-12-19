@@ -43,7 +43,6 @@ private:
 	guint								timeout_source;
 	Glib::ustring						application_dir;
 	Data::Schema						schema;
-	guint								scheduled_recording_id;
 	Glib::ustring						database_filename;
 	gboolean							database_initialised;
 
