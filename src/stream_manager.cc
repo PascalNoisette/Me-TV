@@ -105,18 +105,20 @@ void StreamManager::run()
 
 		for (guint i = 0; i < bytes_read; i += TS_PACKET_SIZE)
 		{
-			guint pid = buffer[i*TS_PACKET_SIZE+2];
+			guint pid = buffer[i+2];
 
 			for (std::list<ChannelStream>::iterator iterator = streams.begin(); iterator != streams.end(); iterator++)
 			{
 				ChannelStream& channel_stream = *iterator;
 				if (channel_stream.stream.contains_pid(pid))
 				{
-					channel_stream.write(buffer+(i*TS_PACKET_SIZE), bytes_read);
+					channel_stream.write(buffer+i, TS_PACKET_SIZE);
 				}
 			}
 		}
-		
+
+		// TODO: Socket send
+		/*
 		if (socket != NULL)
 		{
 			if (gnet_udp_socket_send(socket, (const gchar*)buffer, bytes_read, inet_address) != 0)
@@ -128,6 +130,7 @@ void StreamManager::run()
 				broadcast_failure_message = false;
 			}
 		}
+		 */
 	}
 	THREAD_CATCH
 		
@@ -274,8 +277,10 @@ void StreamManager::stop_epg_thread()
 	}
 }
 
-const StreamManager::ChannelStream& StreamManager::get_display_stream() const
+const StreamManager::ChannelStream& StreamManager::get_display_stream()
 {
+	Lock lock(mutex, "StreamManager::get_display_stream()");
+
 	if (streams.size() == 0)
 	{
 		throw Exception(_("Display stream has not been created"));
@@ -284,9 +289,10 @@ const StreamManager::ChannelStream& StreamManager::get_display_stream() const
 	return (*(streams.begin()));
 }
 
-void StreamManager::set_display(const Channel& channel)
+void StreamManager::set_display_stream(const Channel& channel)
 {
 	g_debug("StreamManager::set_display(%s)", channel.name.c_str());
+	Lock lock(mutex, "StreamManager::set_display_stream()");
 	
 	if (streams.size() == 0)
 	{
@@ -296,7 +302,7 @@ void StreamManager::set_display(const Channel& channel)
 		
 		Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
 		Glib::ustring fifo_path = Glib::build_filename(get_application().get_application_dir(), filename);
-
+ 
 		if (Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
 		{
 			unlink(fifo_path.c_str());
@@ -436,7 +442,7 @@ void StreamManager::ChannelStream::write(guchar* buffer, gsize length)
 			gsize bytes_written = 0;
 			output_channel->write((const gchar*)buffer, length, bytes_written);
 
-			g_debug("%d bytes written to '%s'", (int)bytes_written, filename.c_str());
+			//g_debug("%d bytes written to '%s'", (int)bytes_written, filename.c_str());
 		}
 		catch(...)
 		{

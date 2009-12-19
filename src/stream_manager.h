@@ -75,8 +75,8 @@ public:
 	StreamManager();
 	~StreamManager();
 
-	void set_display(const Channel& channel);
-	const ChannelStream& get_display_stream() const;
+	void set_display_stream(const Channel& channel);
+	const ChannelStream& get_display_stream();
 	void start();
 	void stop();
 	guint get_last_epg_update_time();

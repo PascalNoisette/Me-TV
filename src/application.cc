@@ -520,16 +520,6 @@ void Application::run()
 		status_icon = new StatusIcon();
 		main_window = MainWindow::create(builder);
 
-		if (!minimised_mode)
-		{
-			main_window->show();
-		
-			if (safe_mode)
-			{
-				main_window->show_preferences_dialog();
-			}
-		}
-
 		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 
 		TRY		
@@ -544,6 +534,17 @@ void Application::run()
 		select_channel_to_play();
 		CATCH
 		
+		if (!minimised_mode)
+		{
+			main_window->show();
+		
+			if (safe_mode)
+			{
+				main_window->show_preferences_dialog();
+			}
+		}
+		stream_manager.start();
+
 		Gnome::Main::run();
 			
 		if (status_icon != NULL)
@@ -642,8 +643,7 @@ void Application::set_display_channel(const Channel& channel)
 	}
 
 	channel_manager.set_display_channel(channel);
-	stream_manager.set_display(channel);
-	main_window->play(device_manager.get_frontend().get_path());
+	stream_manager.set_display_stream(channel);
 
 	set_int_configuration_value("last_channel", channel.channel_id);
 
