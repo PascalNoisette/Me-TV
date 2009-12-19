@@ -602,77 +602,69 @@ void MainWindow::play(const Glib::ustring& mrl)
 
 	Gtk::RadioMenuItem::Group audio_streams_menu_group;
 
-	// TODO: Generate menus
-	// Acquire stream thread lock
-/*	Glib::RecMutex::Lock application_lock(application.get_mutex());
+	const Mpeg::Stream stream = application.stream_manager.get_display_stream().stream;
+	std::vector<Mpeg::AudioStream> audio_streams = stream.audio_streams;
+	guint count = 0;
 
-	StreamThread* stream_thread = application.get_stream_thread();
-	if (stream_thread != NULL)
+	g_debug("Audio streams: %zu", audio_streams.size());
+	for (std::vector<Mpeg::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
 	{
-		const Mpeg::Stream& stream = stream_thread->get_stream();
-		std::vector<Mpeg::AudioStream> audio_streams = stream.audio_streams;
-		guint count = 0;
-		
-		g_debug("Audio streams: %zu", audio_streams.size());
-		for (std::vector<Mpeg::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
+		Mpeg::AudioStream audio_stream = *i;
+		Glib::ustring text = Glib::ustring::compose("%1: %2", count, audio_stream.language);
+		if (audio_stream.is_ac3)
 		{
-			Mpeg::AudioStream audio_stream = *i;
-			Glib::ustring text = Glib::ustring::compose("%1: %2", count, audio_stream.language);
-			if (audio_stream.is_ac3)
-			{
-				text += " (AC3)";
-			}
-			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
-			menu_item->show_all();
-			audio_streams_menu->items().push_back(*menu_item);
-			
-			menu_item->signal_activate().connect(
-				sigc::bind<guint>
-				(
-					sigc::mem_fun(*this, &MainWindow::on_menu_item_audio_stream_activate),
-					count
-				)
-			);
-
-			count++;
+			text += " (AC3)";
 		}
-
-		std::vector<Mpeg::SubtitleStream> subtitle_streams = stream.subtitle_streams;
-		Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
-		count = 0;
+		Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
+		menu_item->show_all();
+		audio_streams_menu->items().push_back(*menu_item);
 		
-		Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
-		menu_item_subtitle_none->show_all();
-		subtitle_streams_menu->items().push_back(*menu_item_subtitle_none);
-		menu_item_subtitle_none->signal_activate().connect(
+		menu_item->signal_activate().connect(
+			sigc::bind<guint>
+			(
+				sigc::mem_fun(*this, &MainWindow::on_menu_item_audio_stream_activate),
+				count
+			)
+		);
+
+		count++;
+	}
+
+	std::vector<Mpeg::SubtitleStream> subtitle_streams = stream.subtitle_streams;
+	Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
+	count = 0;
+	
+	Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
+	menu_item_subtitle_none->show_all();
+	subtitle_streams_menu->items().push_back(*menu_item_subtitle_none);
+	menu_item_subtitle_none->signal_activate().connect(
+		sigc::bind<guint>
+		(
+			sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
+			-1
+		)
+	);
+	
+	g_debug("Subtitle streams: %zu", subtitle_streams.size());
+	for (std::vector<Mpeg::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); i++)
+	{
+		Mpeg::SubtitleStream subtitle_stream = *i;
+		Glib::ustring text = Glib::ustring::compose("%1: %2", count, subtitle_stream.language);
+		Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
+		menu_item->show_all();
+		subtitle_streams_menu->items().push_back(*menu_item);
+					
+		menu_item->signal_activate().connect(
 			sigc::bind<guint>
 			(
 				sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
-				-1
+				count
 			)
 		);
 		
-		g_debug("Subtitle streams: %zu", subtitle_streams.size());
-		for (std::vector<Mpeg::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); i++)
-		{
-			Mpeg::SubtitleStream subtitle_stream = *i;
-			Glib::ustring text = Glib::ustring::compose("%1: %2", count, subtitle_stream.language);
-			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
-			menu_item->show_all();
-			subtitle_streams_menu->items().push_back(*menu_item);
-						
-			menu_item->signal_activate().connect(
-				sigc::bind<guint>
-				(
-					sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
-					count
-				)
-			);
-			
-			count++;
-		}
+		count++;
 	}
-	*/
+
 	if (audio_streams_menu->items().empty())
 	{
 		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("Not available"));
