@@ -82,7 +82,7 @@ void StreamManager::run()
 	TRY
 	while (!is_terminated())
 	{
-		// Insert PAT/PMT every secondB
+		// Insert PAT/PMT every second second
 		time_t now = time(NULL);
 		if (now - last_insert_time > 2)
 		{
@@ -103,17 +103,20 @@ void StreamManager::run()
 				
 		input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read);
 
-		guint pid = buffer[2];
-
-		for (std::list<ChannelStream>::iterator iterator = streams.begin(); iterator != streams.end(); iterator++)
+		for (guint i = 0; i < bytes_read; i += TS_PACKET_SIZE)
 		{
-			ChannelStream& channel_stream = *iterator;
-			if (channel_stream.stream.contains_pid(pid))
+			guint pid = buffer[i*TS_PACKET_SIZE+2];
+
+			for (std::list<ChannelStream>::iterator iterator = streams.begin(); iterator != streams.end(); iterator++)
 			{
-				channel_stream.write(buffer, bytes_read);
+				ChannelStream& channel_stream = *iterator;
+				if (channel_stream.stream.contains_pid(pid))
+				{
+					channel_stream.write(buffer+(i*TS_PACKET_SIZE), bytes_read);
+				}
 			}
 		}
-
+		
 		if (socket != NULL)
 		{
 			if (gnet_udp_socket_send(socket, (const gchar*)buffer, bytes_read, inet_address) != 0)
