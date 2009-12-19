@@ -106,11 +106,6 @@ void StreamManager::run()
 		for (guint i = 0; i < bytes_read; i += TS_PACKET_SIZE)
 		{
 			guint pid = ((buffer[i+1] & 0x0f) << 8) + buffer[i+2];
-
-			if (pid != 0)
-			{
-//				g_debug("PID: %d", pid);
-			}
 			
 			for (std::list<ChannelStream>::iterator iterator = streams.begin(); iterator != streams.end(); iterator++)
 			{
@@ -355,7 +350,7 @@ void StreamManager::stop_recording(const Channel& channel)
 
 	std::list<ChannelStream>::iterator iterator = streams.begin();
 
-	// Skip the first output because it's the display one
+	// Skip the first stream because it's the display one
 	if (iterator != streams.end())
 	{
 		iterator++;
@@ -367,6 +362,8 @@ void StreamManager::stop_recording(const Channel& channel)
 		if (channel_stream.channel == channel)
 		{
 			channel_stream.output_channel.reset();
+			streams.erase(iterator);
+			break;
 		}
 		iterator++;
 	}
