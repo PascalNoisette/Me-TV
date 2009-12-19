@@ -35,30 +35,34 @@
 class StreamThread : public Thread
 {
 private:
-	class StreamOutput
+	class ChannelStream
 	{
 	public:
-		StreamOutput(const Channel& channel, const Glib::ustring& filename);
+		ChannelStream(const Channel& channel, const Glib::ustring& filename);
 	
 		Channel							channel;			
 		Mpeg::Stream					stream;
 		Glib::RefPtr<Glib::IOChannel>	output_channel;
 		Glib::ustring					filename;
+		DemuxerList						demuxers;
+		Glib::StaticRecMutex			mutex;
 
+		Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
+			guint pid, dmx_pes_type_t pid_type, const gchar* type_text);
+		Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
+
+		void clear_demuxers();
 		void write(guchar* buffer, gsize length);
 	};
 
-	Channel					display_channel;
-	DemuxerList				demuxers;
-	Glib::ustring			fifo_path;
-	Glib::StaticRecMutex	mutex;
-	Dvb::Frontend&			frontend;
-	Engine*					engine;
-	EpgThread*				epg_thread;
-	GUdpSocket*				socket;
-	GInetAddr*				inet_address;
-	gboolean				broadcast_failure_message;
-	std::list<StreamOutput>	outputs;
+	Glib::StaticRecMutex		mutex;
+	Glib::ustring				fifo_path;
+	Engine*						engine;
+	EpgThread*					epg_thread;
+	GUdpSocket*					socket;
+	GInetAddr*					inet_address;
+	gboolean					broadcast_failure_message;
+	std::list<ChannelStream>	outputs;
 
 	void run();
 	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
@@ -66,19 +70,16 @@ private:
 	static gboolean on_timeout(gpointer data);
 	void on_timeout();
 
-	void remove_all_demuxers();
-	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
-		guint pid, dmx_pes_type_t pid_type, const gchar* type_text);
-	Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
-	void setup_dvb(const Channel& channel, Mpeg::Stream& stream);
+	void setup_dvb(const Channel& channel, StreamThread::ChannelStream& stream_output);
 
 	void start_epg_thread();
 	void stop_epg_thread();
 		
 public:
-	StreamThread(const Channel& channel);
+	StreamThread();
 	~StreamThread();
 
+	void set_display(const Channel& channel);
 	void start();
 	const Mpeg::Stream& get_stream() const;
 	guint get_last_epg_update_time();

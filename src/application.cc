@@ -213,7 +213,11 @@ Application::~Application()
 	{
 		g_source_remove(timeout_source);
 	}
-	stop_stream_thread();
+	if (stream_thread != NULL)
+	{
+		delete stream_thread;
+		stream_thread = NULL;
+	}
 	if (main_window != NULL)
 	{
 		delete main_window;
@@ -495,7 +499,7 @@ void Application::run()
 		g_debug("Me TV database initialised successfully");
 				
 		const FrontendList& frontends = device_manager.get_frontends();
-
+		
 		if (!default_device.empty())
 		{
 			Dvb::Frontend* default_frontend = device_manager.find_frontend_by_path(default_device);
@@ -543,6 +547,9 @@ void Application::run()
 			main_window->show_channels_dialog();
 		}
 
+		stream_thread = new StreamThread();
+		stream_thread->start();
+
 		select_channel_to_play();
 		CATCH
 		
@@ -574,16 +581,6 @@ Application& Application::get_current()
 	return *current;
 }
 
-void Application::stop_stream_thread()
-{	
-	Glib::RecMutex::Lock lock(mutex);
-	if (stream_thread != NULL)
-	{
-		delete stream_thread;
-		stream_thread = NULL;
-	}
-}
-
 void Application::update()
 {
 	preferred_language = get_string_configuration_value("preferred_language");	
@@ -611,69 +608,63 @@ void Application::set_display_channel_number(guint channel_index)
 
 void Application::previous_channel()
 {
-	stop_stream();
-	channel_manager.previous_channel();
-	start_stream();
+	Channel* channel = channel_manager.get_previous_channel();
+	if (channel != NULL)
+	{
+		set_display_channel(*channel);
+	}
 }
 
 void Application::next_channel()
 {
-	stop_stream();
-	channel_manager.next_channel();
-	start_stream();
-}
-
-void Application::stop_stream()
-{
-	if (is_recording())
+	Channel* channel = channel_manager.get_next_channel();
+	if (channel != NULL)
 	{
-		throw Exception(_("You cannot stop the current stream because you are recording."));
+		set_display_channel(*channel);
 	}
-
-	main_window->stop_engine();
-	stop_stream_thread();
-}
-
-void Application::start_stream()
-{
-	if (!channel_manager.has_display_channel())
-	{
-		throw Exception("Failed to start stream because there is no display channel");
-	}
-	
-	Channel& channel = channel_manager.get_display_channel();
-	stream_thread = new StreamThread(channel);
-	try
-	{
-		stream_thread->start();
-
-		try
-		{
-			main_window->start_engine();
-		}
-		catch(const Glib::Exception& exception)
-		{
-			main_window->stop_engine();
-			get_signal_error().emit(exception.what().c_str());
-		}	
-	}
-	catch(const Glib::Exception& exception)
-	{
-		stop_stream_thread();
-		get_signal_error().emit(exception.what().c_str());
-	}
-		
-	set_int_configuration_value("last_channel", channel.channel_id);
-
-	update();
 }
 
 void Application::set_display_channel(const Channel& channel)
 {
+	gboolean retune = true;
+
 	g_message(_("Changing channel to %s"), channel.name.c_str());
-	stop_stream();
+
+	if (!channel_manager.has_display_channel())
+	{
+		Channel& current_channel = channel_manager.get_display_channel();
+		if (current_channel == channel)
+		{
+			g_message(_("Already tuned to correct frequency"));
+			retune = false;
+		}
+		else
+		{
+			if (is_recording())
+			{
+				throw Exception(_("You cannot stop the current stream because you are recording."));
+			}
+		}
+	}
+
+	main_window->stop_engine();
 	channel_manager.set_display_channel(channel);
-	start_stream();
+	stream_thread->set_display(channel);
+
+	try
+	{
+		main_window->start_engine();
+	}
+	catch(const Glib::Exception& exception)
+	{
+		main_window->stop_engine();
+		get_signal_error().emit(exception.what().c_str());
+	}
+	
+	set_int_configuration_value("last_channel", channel.channel_id);
+
+	update();
+
 	g_message(_("Channel changed to %s"), channel.name.c_str());
 }
 
@@ -695,16 +686,7 @@ void Application::check_scheduled_recordings()
 		scheduled_recording_id = id;
 		ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(id);
 
-		const Channel& channel = channel_manager.get_display_channel();
-		if (channel.channel_id == scheduled_recording.channel_id)
-		{
-			g_debug("Already tuned to correct channel");
-		}
-		else
-		{			
-			g_debug("Changing channel for scheduled recording");
-			set_display_channel_by_id(scheduled_recording.channel_id);
-		}
+		set_display_channel_by_id(scheduled_recording.channel_id);
 
 		if (is_recording())
 		{
@@ -844,11 +826,6 @@ void Application::on_error(const Glib::ustring& message)
 		dialog.set_title(_("Me TV - Error Message"));
 		dialog.run();
 	}
-}
-
-void Application::restart_stream()
-{
-	set_display_channel(channel_manager.get_display_channel());
 }
 
 void Application::on_record()

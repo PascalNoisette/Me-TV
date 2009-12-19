@@ -74,8 +74,6 @@ public:
 
 	Glib::StaticRecMutex&	get_mutex();
 	StreamThread*			get_stream_thread();
-	void					stop_stream_thread();
-	void					restart_stream();
 	gboolean				initialise_database();
 	Data::Schema			get_schema() const { return schema; }
 
@@ -97,8 +95,6 @@ public:
 	void set_display_channel_number(guint display_channel_number);
 	void previous_channel();
 	void next_channel();
-	void stop_stream();
-	void start_stream();
 	
 	gboolean is_recording();
 	void check_scheduled_recordings();

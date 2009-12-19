@@ -72,6 +72,8 @@ void Frontend::close()
 
 void Frontend::tune_to(const Transponder& transponder)
 {
+	g_message(_("Frontend::tune_to(%d)"), transponder.frontend_parameters.frequency);
+	
 	struct dvb_frontend_parameters parameters = transponder.frontend_parameters;
 	struct dvb_frontend_event ev;
 	

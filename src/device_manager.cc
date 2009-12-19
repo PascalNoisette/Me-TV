@@ -21,8 +21,6 @@
 #include "me-tv-i18n.h"
 #include "device_manager.h"
 
-#define NO_FRONTEND_MESSAGE _("There are no available DVB tuner devices")
-
 Glib::ustring DeviceManager::get_adapter_path(guint adapter)
 {
 	return Glib::ustring::compose("/dev/dvb/adapter%1", adapter);
@@ -110,7 +108,7 @@ Dvb::Frontend& DeviceManager::get_frontend()
 {
 	if (frontend == NULL)
 	{
-		throw Exception(NO_FRONTEND_MESSAGE);
+		throw Exception(_("No default frontend"));
 	}
 	
 	return *frontend;

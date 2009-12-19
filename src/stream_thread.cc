@@ -35,18 +35,18 @@ public:
 	~Lock() {}
 };
 
-StreamThread::StreamThread(const Channel& active_channel) :
-	Thread("Stream"),
-	display_channel(active_channel),
-	frontend(get_application().device_manager.get_frontend())
+StreamThread::StreamThread() :
+	Thread("Stream")
 {
 	g_debug("Creating StreamThread");
 	g_static_rec_mutex_init(mutex.gobj());
-
+	
 	epg_thread = NULL;
 	socket = NULL;
 	broadcast_failure_message = true;
 
+	Dvb::Frontend& frontend = get_application().device_manager.get_frontend();
+		
 	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
 	fifo_path = Glib::build_filename(get_application().get_application_dir(), filename);
 
@@ -60,18 +60,6 @@ StreamThread::StreamThread(const Channel& active_channel) :
 		throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
 	}
 
-	// Fudge the channel open.  Allows Glib::IO_FLAG_NONBLOCK
-	int fd = open(fifo_path.c_str(), O_RDONLY | O_NONBLOCK);
-	if (fd == -1)
-	{
-		throw SystemException(Glib::ustring::compose(_("Failed to open FIFO for reading '%1'"), fifo_path));
-	}
-
-	StreamOutput stream_output(active_channel, fifo_path);
-	outputs.push_back(stream_output);
-
-	close(fd);
-
 	g_debug("StreamThread created");
 }
 
@@ -80,12 +68,13 @@ StreamThread::~StreamThread()
 	g_debug("Destroying StreamThread");
 	stop_epg_thread();
 	join(true);
-	remove_all_demuxers();
 	g_debug("StreamThread destroyed");
 }
 
 void StreamThread::start()
 {
+	start_epg_thread();
+
 	g_debug("Starting stream thread");
 	Thread::start();
 }
@@ -101,9 +90,7 @@ void StreamThread::run()
 	guchar pat[TS_PACKET_SIZE];
 	guchar pmt[TS_PACKET_SIZE];
 
-	setup_dvb(display_channel, (*(outputs.begin())).stream);
-	start_epg_thread();
-
+	Dvb::Frontend& frontend = get_application().device_manager.get_frontend();
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
 	input_channel->set_encoding("");
@@ -120,15 +107,15 @@ void StreamThread::run()
 		{
 			g_debug("Writing PAT/PMT header");
 			
-			for (std::list<StreamOutput>::iterator iterator = outputs.begin(); iterator != outputs.end(); iterator++)
+			for (std::list<ChannelStream>::iterator iterator = outputs.begin(); iterator != outputs.end(); iterator++)
 			{
-				StreamOutput& stream_output = *iterator;
+				ChannelStream& channel_stream = *iterator;
 
-				stream_output.stream.build_pat(pat);
-				stream_output.stream.build_pmt(pmt);
+				channel_stream.stream.build_pat(pat);
+				channel_stream.stream.build_pmt(pmt);
 
-				stream_output.write(pat, TS_PACKET_SIZE);
-				stream_output.write(pmt, TS_PACKET_SIZE);
+				channel_stream.write(pat, TS_PACKET_SIZE);
+				channel_stream.write(pmt, TS_PACKET_SIZE);
 			}
 			last_insert_time = now;
 		}
@@ -137,12 +124,12 @@ void StreamThread::run()
 
 		guint pid = buffer[2];
 
-		for (std::list<StreamOutput>::iterator iterator = outputs.begin(); iterator != outputs.end(); iterator++)
+		for (std::list<ChannelStream>::iterator iterator = outputs.begin(); iterator != outputs.end(); iterator++)
 		{
-			StreamOutput& stream_output = *iterator;
-			if (stream_output.stream.contains_pid(pid))
+			ChannelStream& channel_stream = *iterator;
+			if (channel_stream.stream.contains_pid(pid))
 			{
-				stream_output.write(buffer, bytes_read);
+				channel_stream.write(buffer, bytes_read);
 			}
 		}
 
@@ -165,7 +152,7 @@ void StreamThread::run()
 	Lock lock(mutex, "StreamThread::run() - exit");
 
 	g_debug("About to close output channels ...");
-	std::list<StreamOutput>::iterator iterator = outputs.begin();
+	std::list<ChannelStream>::iterator iterator = outputs.begin();
 	while (iterator != outputs.end())
 	{
 		(*iterator).output_channel.reset();
@@ -182,9 +169,10 @@ void StreamThread::run()
 	g_debug("Stream output channels reset");
 }
 
-void StreamThread::remove_all_demuxers()
+void StreamThread::ChannelStream::clear_demuxers()
 {
-	Lock lock(mutex, "StreamThread::remove_all_demuxers()");
+	Lock lock(mutex, "ChannelStream::clear_demuxers()");
+	
 	g_debug("Removing demuxers");
 	while (demuxers.size() > 0)
 	{
@@ -195,10 +183,10 @@ void StreamThread::remove_all_demuxers()
 	}
 }
 
-Dvb::Demuxer& StreamThread::add_pes_demuxer(const Glib::ustring& demux_path,
+Dvb::Demuxer& StreamThread::ChannelStream::add_pes_demuxer(const Glib::ustring& demux_path,
 	guint pid, dmx_pes_type_t pid_type, const gchar* type_text)
 {	
-	Lock lock(mutex, "StreamThread::add_pes_demuxer()");
+	Lock lock(mutex, "ChannelStream::add_pes_demuxer()");
 	Dvb::Demuxer* demuxer = new Dvb::Demuxer(demux_path);
 	demuxers.push_back(demuxer);
 	g_debug("Setting %s PID filter to %d (0x%X)", type_text, pid, pid);
@@ -206,7 +194,7 @@ Dvb::Demuxer& StreamThread::add_pes_demuxer(const Glib::ustring& demux_path,
 	return *demuxer;
 }
 
-Dvb::Demuxer& StreamThread::add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id)
+Dvb::Demuxer& StreamThread::ChannelStream::add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id)
 {	
 	Lock lock(mutex, "StreamThread::add_section_demuxer()");
 	Dvb::Demuxer* demuxer = new Dvb::Demuxer(demux_path);
@@ -215,16 +203,17 @@ Dvb::Demuxer& StreamThread::add_section_demuxer(const Glib::ustring& demux_path,
 	return *demuxer;
 }
 
-void StreamThread::setup_dvb(const Channel& channel, Mpeg::Stream& stream)
+void StreamThread::setup_dvb(const Channel& channel, StreamThread::ChannelStream& channel_stream)
 {
 	Lock lock(mutex, "StreamThread::setup_dvb()");
 	
 	stop_epg_thread();
+	Dvb::Frontend& frontend = get_application().device_manager.get_frontend();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
-	
+
+	channel_stream.clear_demuxers();
 	if (channel.transponder.frontend_parameters.frequency != frontend.get_frontend_parameters().frequency)
 	{
-		remove_all_demuxers();
 		frontend.tune_to(channel.transponder);
 	}
 	
@@ -234,6 +223,9 @@ void StreamThread::setup_dvb(const Channel& channel, Mpeg::Stream& stream)
 	demuxer_pat.read_section(buffer);
 	demuxer_pat.stop();
 
+	Mpeg::Stream& stream = channel_stream.stream;
+	stream.clear();
+	
 	stream.set_program_map_pid(buffer, channel.service_id);
 	
 	Dvb::Demuxer demuxer_pmt(demux_path);
@@ -246,26 +238,26 @@ void StreamThread::setup_dvb(const Channel& channel, Mpeg::Stream& stream)
 	gsize video_streams_size = stream.video_streams.size();
 	for (guint i = 0; i < video_streams_size; i++)
 	{
-		add_pes_demuxer(demux_path, stream.video_streams[i].pid, DMX_PES_OTHER, "video");
+		channel_stream.add_pes_demuxer(demux_path, stream.video_streams[i].pid, DMX_PES_OTHER, "video");
 	}
 
 	gsize audio_streams_size = stream.audio_streams.size();
 	for (guint i = 0; i < audio_streams_size; i++)
 	{
-		add_pes_demuxer(demux_path, stream.audio_streams[i].pid, DMX_PES_OTHER,
+		channel_stream.add_pes_demuxer(demux_path, stream.audio_streams[i].pid, DMX_PES_OTHER,
 			stream.audio_streams[i].is_ac3 ? "AC3" : "audio");
 	}
 				
 	gsize subtitle_streams_size = stream.subtitle_streams.size();
 	for (guint i = 0; i < subtitle_streams_size; i++)
 	{
-		add_pes_demuxer(demux_path, stream.subtitle_streams[i].pid, DMX_PES_OTHER, "subtitle");
+		channel_stream.add_pes_demuxer(demux_path, stream.subtitle_streams[i].pid, DMX_PES_OTHER, "subtitle");
 	}
 
 	gsize teletext_streams_size = stream.teletext_streams.size();
 	for (guint i = 0; i < teletext_streams_size; i++)
 	{
-		add_pes_demuxer(demux_path, stream.teletext_streams[i].pid, DMX_PES_OTHER, "teletext");
+		channel_stream.add_pes_demuxer(demux_path, stream.teletext_streams[i].pid, DMX_PES_OTHER, "teletext");
 	}
 
 	g_debug("Finished setting up DVB");
@@ -305,13 +297,42 @@ const Mpeg::Stream& StreamThread::get_stream() const
 	return (*(outputs.begin())).stream;
 }
 
+void StreamThread::set_display(const Channel& channel)
+{
+	g_debug("StreamThread::set_display(%s)", channel.name.c_str());
+	
+	if (outputs.size() == 0)
+	{
+		g_debug("Creating new stream output");
+		
+		// Fudge the channel open.  Allows Glib::IO_FLAG_NONBLOCK
+		int fd = open(fifo_path.c_str(), O_RDONLY | O_NONBLOCK);
+		if (fd == -1)
+		{
+			throw SystemException(Glib::ustring::compose(_("Failed to open FIFO for reading '%1'"), fifo_path));
+		}
+
+		ChannelStream channel_stream(channel, fifo_path);
+		outputs.push_back(channel_stream);
+
+		close(fd);
+	}
+	else
+	{
+		g_debug("Stream output exists");
+	}
+
+	ChannelStream& first_channel_stream = (*(outputs.begin()));
+	setup_dvb(channel, first_channel_stream);
+}
+
 void StreamThread::start_recording(const Channel& channel, const Glib::ustring& filename)
 {
 	Lock lock(mutex, "StreamThread::start_recording()");
 	
-	StreamOutput stream_output(channel, filename);
-	setup_dvb(channel, stream_output.stream);
-	outputs.push_back(stream_output);
+	ChannelStream channel_stream(channel, filename);
+	setup_dvb(channel, channel_stream);
+	outputs.push_back(channel_stream);
 	
 	g_debug("New recording channel created");
 }
@@ -320,7 +341,7 @@ void StreamThread::stop_recording(const Channel& channel)
 {
 	Lock lock(mutex, "StreamThread::stop_recording()");
 
-	std::list<StreamOutput>::iterator iterator = outputs.begin();
+	std::list<ChannelStream>::iterator iterator = outputs.begin();
 
 	// Skip the first output because it's the display one
 	if (iterator != outputs.end())
@@ -330,10 +351,10 @@ void StreamThread::stop_recording(const Channel& channel)
 	
 	while (iterator != outputs.end())
 	{
-		StreamOutput& stream_output = *iterator;
-		if (stream_output.channel == channel)
+		ChannelStream& channel_stream = *iterator;
+		if (channel_stream.channel == channel)
 		{
-			stream_output.output_channel.reset();
+			channel_stream.output_channel.reset();
 		}
 		iterator++;
 	}
@@ -391,8 +412,10 @@ guint StreamThread::get_last_epg_update_time()
 	return result;
 }
 
-StreamThread::StreamOutput::StreamOutput(const Channel& c, const Glib::ustring& f)
+StreamThread::ChannelStream::ChannelStream(const Channel& c, const Glib::ustring& f)
 {
+	g_static_rec_mutex_init(mutex.gobj());
+
 	channel = c;
 	filename = f;
 	output_channel = Glib::IOChannel::create_from_file(filename, "w");
@@ -403,7 +426,7 @@ StreamThread::StreamOutput::StreamOutput(const Channel& c, const Glib::ustring& 
 	g_debug("Added new output stream '%s' -> '%s'", channel.name.c_str(), filename.c_str());
 }
 
-void StreamThread::StreamOutput::write(guchar* buffer, gsize length)
+void StreamThread::ChannelStream::write(guchar* buffer, gsize length)
 {
 	if (output_channel)
 	{
