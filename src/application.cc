@@ -33,12 +33,6 @@ void on_record(GtkObject *object, gpointer user_data)
 	get_application().on_record();
 }
 
-void on_broadcast(GtkObject *object, gpointer user_data)
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().on_broadcast();
-}
-
 void on_quit()
 {
 	get_application().get_main_window().hide();
@@ -794,26 +788,21 @@ void Application::on_error(const Glib::ustring& message)
 
 void Application::on_record()
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	TRY
 	if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->get_active())
 	{
 		try
 		{
-			Glib::ustring recording_filename;
-
-			Glib::RecMutex::Lock lock(mutex);
-			if (scheduled_recording_id != 0)
-			{
-				ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(scheduled_recording_id);
-				recording_filename = scheduled_recording.description;
-			}
-
 			Channel& display_channel = channel_manager.get_display_channel();
-			recording_filename = make_recording_filename(display_channel, recording_filename);
-			
-			stream_manager.start_recording(display_channel, recording_filename, false);
-			update();
 
+			if (!stream_manager.is_recording(display_channel))
+			{
+				Glib::ustring recording_filename = make_recording_filename(display_channel, recording_filename);
+				stream_manager.start_recording(display_channel, recording_filename, false);
+			}
+			
 			g_debug("Recording started");
 		}
 		catch (const Glib::Exception& exception)
@@ -829,47 +818,10 @@ void Application::on_record()
 	}
 	else
 	{
-		Glib::RecMutex::Lock lock(mutex);
-
-		stream_manager.stop_recording(channel_manager.get_display_channel());
-		
-		if (scheduled_recording_id != 0)
-		{
-			scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
-		}
-		scheduled_recording_id = 0;
-	
-		update();
+		stream_manager.stop_recording(channel_manager.get_display_channel());			
 		g_debug("Recording stopped");
 	}
 	CATCH
-}
 
-void Application::on_broadcast()
-{
-	TRY
-	Glib::RecMutex::Lock lock(mutex);
-	if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->get_active())
-	{
-		try
-		{
-			stream_manager.start_broadcasting();
-		}
-		catch (const Glib::Exception& exception)
-		{
-			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->set_active(false);
-			throw Exception(exception.what());
-		}
-		catch (...)
-		{
-			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->set_active(false);
-			throw Exception(_("Failed to start broadcasting"));
-		}
-	}
-	else
-	{
-		stream_manager.stop_broadcasting();
-	}
 	update();
-	CATCH
 }

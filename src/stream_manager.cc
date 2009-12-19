@@ -44,7 +44,6 @@ StreamManager::StreamManager() :
 	
 	epg_thread = NULL;
 	socket = NULL;
-	broadcast_failure_message = true;
 
 	g_debug("StreamManager created");
 }
@@ -116,21 +115,6 @@ void StreamManager::run()
 				}
 			}
 		}
-
-		// TODO: Socket send
-		/*
-		if (socket != NULL)
-		{
-			if (gnet_udp_socket_send(socket, (const gchar*)buffer, bytes_read, inet_address) != 0)
-			{
-				if (broadcast_failure_message)
-				{
-					g_message("Failed to send to UDP socket");
-				}
-				broadcast_failure_message = false;
-			}
-		}
-		 */
 	}
 	THREAD_CATCH
 		
@@ -368,45 +352,6 @@ void StreamManager::stop_recording(const Channel& channel)
 			break;
 		}
 		iterator++;
-	}
-}
-
-void StreamManager::start_broadcasting()
-{
-	Lock lock(mutex, "StreamManager::start_broadcasting()");
-	if (socket == NULL)
-	{
-		Application& application = get_application();
-		Glib::ustring address = application.get_string_configuration_value("broadcast_address");
-		guint port = application.get_int_configuration_value("broadcast_port");
-		
-		g_debug("Creating internet address for '%s:%d'", address.c_str(), port);
-		
-		inet_address = gnet_inetaddr_new(address.c_str(), port);
-		if (inet_address == NULL)
-		{
-			throw Exception(_("Failed to create internet address"));
-		}
-
-		socket = gnet_udp_socket_new_full(inet_address, port);
-		if (socket == NULL)
-		{
-			throw Exception(_("Failed to create socket"));
-		}
-		g_debug("Broadcasting started");
-	}
-}
-
-void StreamManager::stop_broadcasting()
-{
-	Lock lock(mutex, "StreamManager::stop_broadcasting()");
-	if (socket != NULL)
-	{
-		gnet_udp_socket_delete(socket);
-		socket = NULL;
-		gnet_inetaddr_delete(inet_address);
-		inet_address = NULL;
-		g_debug("Broadcasting stopped");
 	}
 }
 

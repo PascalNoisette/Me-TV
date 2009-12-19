@@ -42,8 +42,6 @@ void PreferencesDialog::run()
 	Gtk::SpinButton* spin_button_record_extra_after = NULL;
 	Gtk::SpinButton* spin_button_epg_span_hours = NULL;
 	Gtk::SpinButton* spin_button_epg_page_size = NULL;
-	Gtk::Entry* entry_broadcast_address = NULL;
-	Gtk::SpinButton* spin_button_broadcast_port = NULL;
 	ComboBoxEntryText* combo_box_entry_preferred_language = NULL;
 	ComboBoxEntryText* combo_box_entry_xine_video_driver = NULL;
 	ComboBoxEntryText* combo_box_entry_xine_audio_driver = NULL;
@@ -63,8 +61,6 @@ void PreferencesDialog::run()
 	builder->get_widget("spin_button_record_extra_after", spin_button_record_extra_after);
 	builder->get_widget("spin_button_epg_span_hours", spin_button_epg_span_hours);
 	builder->get_widget("spin_button_epg_page_size", spin_button_epg_page_size);
-	builder->get_widget("entry_broadcast_address", entry_broadcast_address);
-	builder->get_widget("spin_button_broadcast_port", spin_button_broadcast_port);
 	builder->get_widget_derived("combo_box_entry_preferred_language", combo_box_entry_preferred_language);
 	builder->get_widget_derived("combo_box_entry_xine_video_driver", combo_box_entry_xine_video_driver);
 	builder->get_widget_derived("combo_box_entry_xine_audio_driver", combo_box_entry_xine_audio_driver);
@@ -124,8 +120,6 @@ void PreferencesDialog::run()
 	spin_button_record_extra_after->set_value(application.get_int_configuration_value("record_extra_after"));
 	spin_button_epg_span_hours->set_value(application.get_int_configuration_value("epg_span_hours"));
 	spin_button_epg_page_size->set_value(application.get_int_configuration_value("epg_page_size"));
-	entry_broadcast_address->set_text(application.get_string_configuration_value("broadcast_address"));
-	spin_button_broadcast_port->set_value(application.get_int_configuration_value("broadcast_port"));
 	combo_box_entry_preferred_language->get_entry()->set_text(application.get_string_configuration_value("preferred_language"));
 	combo_box_entry_xine_video_driver->get_entry()->set_text(application.get_string_configuration_value("xine.video_driver"));
 	combo_box_entry_xine_audio_driver->get_entry()->set_text(application.get_string_configuration_value("xine.audio_driver"));
@@ -147,8 +141,6 @@ void PreferencesDialog::run()
 		application.set_int_configuration_value("record_extra_after", (int)spin_button_record_extra_after->get_value());
 		application.set_int_configuration_value("epg_span_hours", (int)spin_button_epg_span_hours->get_value());
 		application.set_int_configuration_value("epg_page_size", (int)spin_button_epg_page_size->get_value());
-		application.set_string_configuration_value("broadcast_address", entry_broadcast_address->get_text());
-		application.set_int_configuration_value("broadcast_port", (int)spin_button_broadcast_port->get_value());
 		application.set_string_configuration_value("preferred_language", combo_box_entry_preferred_language->get_entry()->get_text());
 		application.set_string_configuration_value("xine.video_driver", combo_box_entry_xine_video_driver->get_entry()->get_text());
 		application.set_string_configuration_value("xine.audio_driver", combo_box_entry_xine_audio_driver->get_entry()->get_text());

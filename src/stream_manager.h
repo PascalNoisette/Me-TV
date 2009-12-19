@@ -93,9 +93,6 @@ public:
 	void stop_recording(const Channel& channel);
 	gboolean is_recording();
 	gboolean is_recording(const Channel& channel);
-	
-	void start_broadcasting();
-	void stop_broadcasting();
 };
 
 #endif

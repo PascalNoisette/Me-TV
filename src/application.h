@@ -97,10 +97,7 @@ public:
 	
 	void check_scheduled_recordings();
 	void on_record();
-	
-	gboolean is_broadcasting();
-	void on_broadcast();
-	
+		
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 	Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description = "");
 	const Glib::ustring& get_application_dir() const { return application_dir; }
