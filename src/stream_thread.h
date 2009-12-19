@@ -86,6 +86,7 @@ public:
 
 	void start_recording(const Channel& channel, const Glib::ustring& filename);
 	void stop_recording(const Channel& channel);
+	gboolean is_recording();
 	
 	void start_broadcasting();
 	void stop_broadcasting();

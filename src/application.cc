@@ -686,17 +686,8 @@ void Application::check_scheduled_recordings()
 		scheduled_recording_id = id;
 		ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(id);
 
-		set_display_channel_by_id(scheduled_recording.channel_id);
-
-		if (is_recording())
-		{
-			g_debug("Already recording");
-		}
-		else
-		{
-			g_debug("Starting recording due to scheduled recording");
-			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->set_active();
-		}
+		// TODO: Work out how to do this
+//		set_display_channel_by_id(scheduled_recording.channel_id		
 	}
 
 	// Check if the SR has just finished
@@ -802,7 +793,12 @@ StreamThread* Application::get_stream_thread()
 
 gboolean Application::is_recording()
 {
-	return Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->get_active();
+	if (stream_thread != NULL)
+	{
+		return stream_thread->is_recording();
+	}
+	
+	return false;
 }
 
 Glib::StaticRecMutex& Application::get_mutex()

@@ -449,3 +449,8 @@ void StreamThread::ChannelStream::write(guchar* buffer, gsize length)
 		}
 	}
 }
+
+gboolean StreamThread::is_recording()
+{
+	return outputs.size() > 1;
+}
