@@ -73,7 +73,7 @@ public:
 	Data::Connection			connection;
 
 	Glib::StaticRecMutex&	get_mutex();
-	StreamThread*			get_stream_thread();
+	StreamThread&			get_stream_thread();
 	gboolean				initialise_database();
 	Data::Schema			get_schema() const { return schema; }
 
@@ -96,7 +96,6 @@ public:
 	void previous_channel();
 	void next_channel();
 	
-	gboolean is_recording();
 	void check_scheduled_recordings();
 	void on_record();
 	

@@ -101,7 +101,7 @@ void StreamThread::run()
 	TRY
 	while (!is_terminated())
 	{
-		// Insert PAT/PMT every second
+		// Insert PAT/PMT every secondB
 		time_t now = time(NULL);
 		if (now - last_insert_time > 2)
 		{

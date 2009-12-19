@@ -300,15 +300,11 @@ void MainWindow::on_timeout()
 	}
 	
 	// Update EPG
-	StreamThread* stream_thread = get_application().get_stream_thread();
-	if (stream_thread != NULL)
+	guint last_epg_update_time = get_application().get_stream_thread().get_last_epg_update_time();
+	if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 	{
-		guint last_epg_update_time = stream_thread->get_last_epg_update_time();
-		if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
-		{
-			update();
-			last_update_time = now;
-		}
+		update();
+		last_update_time = now;
 	}
 	
 	// Check on engine
@@ -420,8 +416,9 @@ void MainWindow::update()
 		window_title = "Me TV - " + channel.get_text();
 		status_text = channel.get_text();
 	}
+
 	
-	if (application.is_recording())
+	if (application.get_stream_thread().is_recording())
 	{
 		status_text += _(" [Recording]");
 		window_title += _(" [Recording]");
@@ -695,11 +692,9 @@ void MainWindow::start_engine()
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-	Application& application = get_application();
-	StreamThread* stream_thread = application.get_stream_thread();
-	if (property_visible() && stream_thread != NULL)
+	if (property_visible())
 	{
-		play(stream_thread->get_fifo_path());
+		play(get_application().get_stream_thread().get_fifo_path());
 	}
 }
 

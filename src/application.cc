@@ -628,7 +628,7 @@ void Application::set_display_channel(const Channel& channel)
 {
 	gboolean retune = true;
 
-	g_message(_("Changing channel to %s"), channel.name.c_str());
+	g_message(_("Changing channel to'%s'"), channel.name.c_str());
 
 	if (!channel_manager.has_display_channel())
 	{
@@ -640,9 +640,12 @@ void Application::set_display_channel(const Channel& channel)
 		}
 		else
 		{
-			if (is_recording())
+			if (stream_thread->is_recording())
 			{
-				throw Exception(_("You cannot stop the current stream because you are recording."));
+				Glib::ustring message = Glib::ustring::format(
+				    _("You cannot tune to channel '%s' because you are recording."),
+				    channel.name.c_str());
+				throw Exception(message);
 			}
 		}
 	}
@@ -670,24 +673,25 @@ MainWindow& Application::get_main_window()
 
 void Application::check_scheduled_recordings()
 {
-	guint id = scheduled_recording_manager.check_scheduled_recordings();
-	if (id != 0)
+	ScheduledRecordingList scheduled_recordings = scheduled_recording_manager.check_scheduled_recordings();
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
-		scheduled_recording_id = id;
-		ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(id);
+		const ScheduledRecording& scheduled_recording = *i;
+		Channel* channel = channel_manager.find_channel(scheduled_recording.scheduled_recording_id);
+		if (channel != NULL)
+		{
+			if (stream_thread->is_recording(*channel))
+			{
+				g_debug("Channel '%s' is currently being recorded", channel->name.c_str());
+			}
+			else
+			{
+				g_debug("Channel '%s' is currently not being recorded", channel->name.c_str());
+				stream_thread->start_recording(*channel, make_recording_filename(scheduled_recording.description));
+			}
+		}
 
-		// TODO: Work out how to do scheduled recordings
-//		set_display_channel_by_id(scheduled_recording.channel_id		
-	}
-
-	// Check if the SR has just finished
-	if (stream_thread != NULL &&			// If there's a stream
-		is_recording() &&					// and it's recording
-		scheduled_recording_id != 0 &&		// and there is an existing SR running
-		id == 0)							// but the recording manager has just told us that there's no SR
-	{										// then we need to stop recording
-		g_debug("Record stopped by scheduled recording");
-		Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->set_active(false);
+		// TODO: Stop old SRs
 	}
 }
 
@@ -776,19 +780,13 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	return Glib::build_filename(get_string_configuration_value("recording_directory"), fixed_filename);
 }
 
-StreamThread* Application::get_stream_thread()
+StreamThread& Application::get_stream_thread()
 {
-	return stream_thread;
-}
-
-gboolean Application::is_recording()
-{
-	if (stream_thread != NULL)
+	if (stream_thread == NULL)
 	{
-		return stream_thread->is_recording();
-	}
-	
-	return false;
+		throw Exception(_("Stream thread has not been initialised"));
+    }
+	return *stream_thread;
 }
 
 Glib::StaticRecMutex& Application::get_mutex()
