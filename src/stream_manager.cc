@@ -320,7 +320,7 @@ void StreamManager::set_display_stream(const Channel& channel)
 			throw SystemException(Glib::ustring::compose(_("Failed to open FIFO for reading '%1'"), fifo_path));
 		}
 
-		ChannelStream channel_stream(channel, fifo_path);
+		ChannelStream channel_stream(CHANNEL_STREAM_TYPE_DISPLAY, channel, fifo_path);
 		streams.push_back(channel_stream);
 
 		close(fd);
@@ -333,11 +333,13 @@ void StreamManager::set_display_stream(const Channel& channel)
 	setup_dvb(channel, *(streams.begin()));
 }
 
-void StreamManager::start_recording(const Channel& channel, const Glib::ustring& filename)
+void StreamManager::start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled)
 {
 	Lock lock(mutex, "StreamManager::start_recording()");
 	
-	ChannelStream channel_stream(channel, filename);
+	ChannelStream channel_stream(
+	    scheduled ? CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING : CHANNEL_STREAM_TYPE_RECORDING,
+	    channel, filename);
 	setup_dvb(channel, channel_stream);
 	streams.push_back(channel_stream);
 	
@@ -421,10 +423,11 @@ guint StreamManager::get_last_epg_update_time()
 	return result;
 }
 
-StreamManager::ChannelStream::ChannelStream(const Channel& c, const Glib::ustring& f)
+StreamManager::ChannelStream::ChannelStream(ChannelStreamType t, const Channel& c, const Glib::ustring& f)
 {
 	g_static_rec_mutex_init(mutex.gobj());
 
+	type = t;
 	channel = c;
 	filename = f;
 	output_channel = Glib::IOChannel::create_from_file(filename, "w");
@@ -467,6 +470,13 @@ gboolean StreamManager::is_recording()
 gboolean StreamManager::is_recording(const Channel& channel)
 {
 	std::list<ChannelStream>::iterator iterator = streams.begin();
+
+	// Skip over display stream
+	if (iterator != streams.end())
+	{
+		iterator++;
+	}
+
 	while (iterator != streams.end())
 	{
 		ChannelStream& stream = *iterator;

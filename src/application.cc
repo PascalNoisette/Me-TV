@@ -678,7 +678,7 @@ void Application::check_scheduled_recordings()
 			else
 			{
 				g_debug("Channel '%s' is currently not being recorded", channel->name.c_str());
-				stream_manager.start_recording(*channel, make_recording_filename(*channel, scheduled_recording.description));
+				stream_manager.start_recording(*channel, make_recording_filename(*channel, scheduled_recording.description), true);
 			}
 		}
 
@@ -811,7 +811,7 @@ void Application::on_record()
 			Channel& display_channel = channel_manager.get_display_channel();
 			recording_filename = make_recording_filename(display_channel, recording_filename);
 			
-			stream_manager.start_recording(display_channel, recording_filename);
+			stream_manager.start_recording(display_channel, recording_filename, false);
 			update();
 
 			g_debug("Recording started");

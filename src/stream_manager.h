@@ -31,11 +31,18 @@
 
 class StreamManager : public Thread
 {
-public:
+public:	
+	typedef enum 
+	{
+		CHANNEL_STREAM_TYPE_DISPLAY = 0,
+		CHANNEL_STREAM_TYPE_RECORDING = 1,
+		CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING = 2
+	} ChannelStreamType;
+
 	class ChannelStream
 	{
 	public:
-		ChannelStream(const Channel& channel, const Glib::ustring& filename);
+		ChannelStream(ChannelStreamType type, const Channel& channel, const Glib::ustring& filename);
 	
 		Channel							channel;			
 		Mpeg::Stream					stream;
@@ -43,7 +50,8 @@ public:
 		Glib::ustring					filename;
 		Dvb::DemuxerList				demuxers;
 		Glib::StaticRecMutex			mutex;
-
+		ChannelStreamType				type;
+			
 		Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
 			guint pid, dmx_pes_type_t pid_type, const gchar* type_text);
 		Dvb::Demuxer& add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id);
@@ -81,7 +89,7 @@ public:
 	void stop();
 	guint get_last_epg_update_time();
 
-	void start_recording(const Channel& channel, const Glib::ustring& filename);
+	void start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled);
 	void stop_recording(const Channel& channel);
 	gboolean is_recording();
 	gboolean is_recording(const Channel& channel);

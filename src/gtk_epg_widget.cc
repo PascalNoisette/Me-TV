@@ -231,6 +231,11 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 		channel_text = Glib::ustring::compose("<i>%1.</i> ", channel_number) + channel_text;
 	}
 	
+	if (get_application().stream_manager.is_recording(const_channel))
+	{
+		channel_text += " <b><span color='red'>[Rec]</span></b>";
+	}
+	
 	Gtk::ToggleButton& channel_button = attach_toggle_button( channel_text, 0, 1, table_row, table_row + 1);
 	
 	channel_button.set_active(selected);
