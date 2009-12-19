@@ -19,10 +19,11 @@
  */
 
 #include <glibmm.h>
-#include "stream_thread.h"
+#include "stream_manager.h"
 #include "application.h"
 #include "device_manager.h"
 #include "dvb_transponder.h"
+#include "dvb_si.h"
 
 #define TS_PACKET_SIZE		188
 #define PACKET_BUFFER_SIZE	100
@@ -35,43 +36,28 @@ public:
 	~Lock() {}
 };
 
-StreamThread::StreamThread() :
+StreamManager::StreamManager() :
 	Thread("Stream")
 {
-	g_debug("Creating StreamThread");
+	g_debug("Creating StreamManager");
 	g_static_rec_mutex_init(mutex.gobj());
 	
 	epg_thread = NULL;
 	socket = NULL;
 	broadcast_failure_message = true;
 
-	Dvb::Frontend& frontend = get_application().device_manager.get_frontend();
-		
-	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
-	fifo_path = Glib::build_filename(get_application().get_application_dir(), filename);
-
-	if (Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
-	{
-		unlink(fifo_path.c_str());
-	}
-
-	if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
-	{
-		throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
-	}
-
-	g_debug("StreamThread created");
+	g_debug("StreamManager created");
 }
 
-StreamThread::~StreamThread()
+StreamManager::~StreamManager()
 {
-	g_debug("Destroying StreamThread");
+	g_debug("Destroying StreamManager");
 	stop_epg_thread();
 	join(true);
-	g_debug("StreamThread destroyed");
+	g_debug("StreamManager destroyed");
 }
 
-void StreamThread::start()
+void StreamManager::start()
 {
 	start_epg_thread();
 
@@ -79,12 +65,7 @@ void StreamThread::start()
 	Thread::start();
 }
 
-const Glib::ustring& StreamThread::get_fifo_path() const
-{
-	return fifo_path;
-}
-
-void StreamThread::run()
+void StreamManager::run()
 {
 	guchar buffer[TS_PACKET_SIZE * PACKET_BUFFER_SIZE];
 	guchar pat[TS_PACKET_SIZE];
@@ -147,9 +128,9 @@ void StreamThread::run()
 	}
 	THREAD_CATCH
 		
-	g_debug("StreamThread loop exited");
+	g_debug("StreamManager loop exited");
 	
-	Lock lock(mutex, "StreamThread::run() - exit");
+	Lock lock(mutex, "StreamManager::run() - exit");
 
 	g_debug("Removing streams ...");
 	std::list<ChannelStream>::iterator iterator = streams.begin();
@@ -167,7 +148,7 @@ void StreamThread::run()
 	g_debug("Input channel reset");
 }
 
-void StreamThread::ChannelStream::clear_demuxers()
+void StreamManager::ChannelStream::clear_demuxers()
 {
 	Lock lock(mutex, "ChannelStream::clear_demuxers()");
 	
@@ -181,7 +162,7 @@ void StreamThread::ChannelStream::clear_demuxers()
 	}
 }
 
-Dvb::Demuxer& StreamThread::ChannelStream::add_pes_demuxer(const Glib::ustring& demux_path,
+Dvb::Demuxer& StreamManager::ChannelStream::add_pes_demuxer(const Glib::ustring& demux_path,
 	guint pid, dmx_pes_type_t pid_type, const gchar* type_text)
 {	
 	Lock lock(mutex, "ChannelStream::add_pes_demuxer()");
@@ -192,18 +173,18 @@ Dvb::Demuxer& StreamThread::ChannelStream::add_pes_demuxer(const Glib::ustring& 
 	return *demuxer;
 }
 
-Dvb::Demuxer& StreamThread::ChannelStream::add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id)
+Dvb::Demuxer& StreamManager::ChannelStream::add_section_demuxer(const Glib::ustring& demux_path, guint pid, guint id)
 {	
-	Lock lock(mutex, "StreamThread::add_section_demuxer()");
+	Lock lock(mutex, "StreamManager::add_section_demuxer()");
 	Dvb::Demuxer* demuxer = new Dvb::Demuxer(demux_path);
 	demuxers.push_back(demuxer);
 	demuxer->set_filter(pid, id);
 	return *demuxer;
 }
 
-void StreamThread::setup_dvb(const Channel& channel, StreamThread::ChannelStream& channel_stream)
+void StreamManager::setup_dvb(const Channel& channel, StreamManager::ChannelStream& channel_stream)
 {
-	Lock lock(mutex, "StreamThread::setup_dvb()");
+	Lock lock(mutex, "StreamManager::setup_dvb()");
 	
 	stop_epg_thread();
 	Dvb::Frontend& frontend = get_application().device_manager.get_frontend();
@@ -261,11 +242,11 @@ void StreamThread::setup_dvb(const Channel& channel, StreamThread::ChannelStream
 	g_debug("Finished setting up DVB");
 }
 
-void StreamThread::start_epg_thread()
+void StreamManager::start_epg_thread()
 {
 	if (!disable_epg_thread)
 	{
-		Lock lock(mutex, "StreamThread::start_epg_thread()");
+		Lock lock(mutex, "StreamManager::start_epg_thread()");
 
 		stop_epg_thread();
 		epg_thread = new EpgThread();
@@ -274,11 +255,11 @@ void StreamThread::start_epg_thread()
 	}
 }
 
-void StreamThread::stop_epg_thread()
+void StreamManager::stop_epg_thread()
 {
 	if (!disable_epg_thread)
 	{
-		Lock lock(mutex, "StreamThread::stop_epg_thread()");
+		Lock lock(mutex, "StreamManager::stop_epg_thread()");
 
 		if (epg_thread != NULL)
 		{
@@ -290,19 +271,39 @@ void StreamThread::stop_epg_thread()
 	}
 }
 
-const StreamThread::ChannelStream& StreamThread::get_display_stream() const
+const StreamManager::ChannelStream& StreamManager::get_display_stream() const
 {
+	if (streams.size() == 0)
+	{
+		throw Exception(_("Display stream has not been created"));
+	}
+	
 	return (*(streams.begin()));
 }
 
-void StreamThread::set_display(const Channel& channel)
+void StreamManager::set_display(const Channel& channel)
 {
-	g_debug("StreamThread::set_display(%s)", channel.name.c_str());
+	g_debug("StreamManager::set_display(%s)", channel.name.c_str());
 	
 	if (streams.size() == 0)
 	{
 		g_debug("Creating new stream output");
 		
+		Dvb::Frontend& frontend = get_application().device_manager.get_frontend();
+		
+		Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
+		Glib::ustring fifo_path = Glib::build_filename(get_application().get_application_dir(), filename);
+
+		if (Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
+		{
+			unlink(fifo_path.c_str());
+		}
+
+		if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
+		{
+			throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
+		}
+
 		// Fudge the channel open.  Allows Glib::IO_FLAG_NONBLOCK
 		int fd = open(fifo_path.c_str(), O_RDONLY | O_NONBLOCK);
 		if (fd == -1)
@@ -323,9 +324,9 @@ void StreamThread::set_display(const Channel& channel)
 	setup_dvb(channel, *(streams.begin()));
 }
 
-void StreamThread::start_recording(const Channel& channel, const Glib::ustring& filename)
+void StreamManager::start_recording(const Channel& channel, const Glib::ustring& filename)
 {
-	Lock lock(mutex, "StreamThread::start_recording()");
+	Lock lock(mutex, "StreamManager::start_recording()");
 	
 	ChannelStream channel_stream(channel, filename);
 	setup_dvb(channel, channel_stream);
@@ -334,9 +335,9 @@ void StreamThread::start_recording(const Channel& channel, const Glib::ustring& 
 	g_debug("New recording channel created");
 }
 
-void StreamThread::stop_recording(const Channel& channel)
+void StreamManager::stop_recording(const Channel& channel)
 {
-	Lock lock(mutex, "StreamThread::stop_recording()");
+	Lock lock(mutex, "StreamManager::stop_recording()");
 
 	std::list<ChannelStream>::iterator iterator = streams.begin();
 
@@ -357,9 +358,9 @@ void StreamThread::stop_recording(const Channel& channel)
 	}
 }
 
-void StreamThread::start_broadcasting()
+void StreamManager::start_broadcasting()
 {
-	Lock lock(mutex, "StreamThread::start_broadcasting()");
+	Lock lock(mutex, "StreamManager::start_broadcasting()");
 	if (socket == NULL)
 	{
 		Application& application = get_application();
@@ -383,9 +384,9 @@ void StreamThread::start_broadcasting()
 	}
 }
 
-void StreamThread::stop_broadcasting()
+void StreamManager::stop_broadcasting()
 {
-	Lock lock(mutex, "StreamThread::stop_broadcasting()");
+	Lock lock(mutex, "StreamManager::stop_broadcasting()");
 	if (socket != NULL)
 	{
 		gnet_udp_socket_delete(socket);
@@ -396,11 +397,11 @@ void StreamThread::stop_broadcasting()
 	}
 }
 
-guint StreamThread::get_last_epg_update_time()
+guint StreamManager::get_last_epg_update_time()
 {
 	guint result = 0;
 
-	Lock lock(mutex, "StreamThread::get_epg_last_update_time()");
+	Lock lock(mutex, "StreamManager::get_epg_last_update_time()");
 	if (epg_thread != NULL)
 	{
 		result = epg_thread->get_last_epg_update_time();
@@ -409,7 +410,7 @@ guint StreamThread::get_last_epg_update_time()
 	return result;
 }
 
-StreamThread::ChannelStream::ChannelStream(const Channel& c, const Glib::ustring& f)
+StreamManager::ChannelStream::ChannelStream(const Channel& c, const Glib::ustring& f)
 {
 	g_static_rec_mutex_init(mutex.gobj());
 
@@ -423,7 +424,7 @@ StreamThread::ChannelStream::ChannelStream(const Channel& c, const Glib::ustring
 	g_debug("Added new output stream '%s' -> '%s'", channel.name.c_str(), filename.c_str());
 }
 
-void StreamThread::ChannelStream::write(guchar* buffer, gsize length)
+void StreamManager::ChannelStream::write(guchar* buffer, gsize length)
 {
 	if (output_channel)
 	{
@@ -432,7 +433,7 @@ void StreamThread::ChannelStream::write(guchar* buffer, gsize length)
 			gsize bytes_written = 0;
 			output_channel->write((const gchar*)buffer, length, bytes_written);
 
-			//g_debug("%d bytes written to '%s'", (int)bytes_written, filename.c_str());
+			g_debug("%d bytes written to '%s'", (int)bytes_written, filename.c_str());
 		}
 		catch(...)
 		{
@@ -447,12 +448,12 @@ void StreamThread::ChannelStream::write(guchar* buffer, gsize length)
 	}
 }
 
-gboolean StreamThread::is_recording()
+gboolean StreamManager::is_recording()
 {
 	return streams.size() > 1;
 }
 
-gboolean StreamThread::is_recording(const Channel& channel)
+gboolean StreamManager::is_recording(const Channel& channel)
 {
 	std::list<ChannelStream>::iterator iterator = streams.begin();
 	while (iterator != streams.end())

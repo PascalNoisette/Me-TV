@@ -28,7 +28,7 @@
 #include "scheduled_recording_manager.h"
 #include "main_window.h"
 #include "status_icon.h"
-#include "stream_thread.h"
+#include "stream_manager.h"
 
 class Application : public Gnome::Main
 {
@@ -39,7 +39,6 @@ private:
 	StatusIcon*							status_icon;
 	Glib::RefPtr<Gnome::Conf::Client>	client;
 	Glib::ustring						preferred_language;
-	StreamThread*						stream_thread;
 	Glib::StaticRecMutex				mutex;
 	guint								timeout_source;
 	Glib::ustring						application_dir;
@@ -70,10 +69,10 @@ public:
 	ChannelManager				channel_manager;
 	ScheduledRecordingManager	scheduled_recording_manager;
 	DeviceManager				device_manager;
+	StreamManager				stream_manager;
 	Data::Connection			connection;
 
 	Glib::StaticRecMutex&	get_mutex();
-	StreamThread&			get_stream_thread();
 	gboolean				initialise_database();
 	Data::Schema			get_schema() const { return schema; }
 
@@ -103,7 +102,7 @@ public:
 	void on_broadcast();
 	
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
-	Glib::ustring make_recording_filename(const Glib::ustring& description = "");
+	Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description = "");
 	const Glib::ustring& get_application_dir() const { return application_dir; }
 	
 	MainWindow& get_main_window();

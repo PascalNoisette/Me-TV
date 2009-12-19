@@ -300,7 +300,7 @@ void MainWindow::on_timeout()
 	}
 	
 	// Update EPG
-	guint last_epg_update_time = get_application().get_stream_thread().get_last_epg_update_time();
+	guint last_epg_update_time = get_application().stream_manager.get_last_epg_update_time();
 	if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 	{
 		update();
@@ -418,7 +418,7 @@ void MainWindow::update()
 	}
 
 	
-	if (application.get_stream_thread().is_recording())
+	if (application.stream_manager.is_recording())
 	{
 		status_text += _(" [Recording]");
 		window_title += _(" [Recording]");
@@ -694,7 +694,7 @@ void MainWindow::start_engine()
 
 	if (property_visible())
 	{
-		play(get_application().get_stream_thread().get_fifo_path());
+		play(get_application().stream_manager.get_display_stream().filename);
 	}
 }
 

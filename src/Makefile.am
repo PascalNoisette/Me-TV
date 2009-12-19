@@ -39,8 +39,6 @@ me_tv_SOURCES = \
 	buffer.cc \
 	buffer.h \
 	main_window.cc \
-	stream_thread.cc \
-	stream_thread.h \
 	application.h \
 	main_window.h \
 	channels_dialog.h \
@@ -112,7 +110,9 @@ me_tv_SOURCES = \
 	scan_dialog.cc \
 	scan_dialog.h \
 	crc32.cc \
-	crc32.h
+	crc32.h \
+	stream_manager.cc \
+	stream_manager.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \

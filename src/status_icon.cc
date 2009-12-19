@@ -87,7 +87,7 @@ void StatusIcon::update()
 	
 	status_icon->set_tooltip(title);
 
-	if (get_application().get_stream_thread().is_recording())
+	if (get_application().stream_manager.is_recording())
 	{
 		status_icon->set("me-tv-recording");
 	}

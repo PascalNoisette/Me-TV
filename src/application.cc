@@ -152,7 +152,6 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	current					= this;
 	main_window				= NULL;
 	status_icon				= NULL;
-	stream_thread			= NULL;
 	timeout_source			= 0;
 	scheduled_recording_id	= 0;
 	database_initialised	= false;
@@ -212,11 +211,6 @@ Application::~Application()
 	if (timeout_source != 0)
 	{
 		g_source_remove(timeout_source);
-	}
-	if (stream_thread != NULL)
-	{
-		delete stream_thread;
-		stream_thread = NULL;
 	}
 	if (main_window != NULL)
 	{
@@ -523,9 +517,6 @@ void Application::run()
 
 		channel_manager.load(connection);
 
-		stream_thread = new StreamThread();
-		stream_thread->start();
-
 		status_icon = new StatusIcon();
 		main_window = MainWindow::create(builder);
 
@@ -640,7 +631,7 @@ void Application::set_display_channel(const Channel& channel)
 		}
 		else
 		{
-			if (stream_thread->is_recording())
+			if (stream_manager.is_recording())
 			{
 				Glib::ustring message = Glib::ustring::format(
 				    _("You cannot tune to channel '%s' because you are recording."),
@@ -651,7 +642,7 @@ void Application::set_display_channel(const Channel& channel)
 	}
 
 	channel_manager.set_display_channel(channel);
-	stream_thread->set_display(channel);
+	stream_manager.set_display(channel);
 	main_window->play(device_manager.get_frontend().get_path());
 
 	set_int_configuration_value("last_channel", channel.channel_id);
@@ -680,14 +671,14 @@ void Application::check_scheduled_recordings()
 		Channel* channel = channel_manager.find_channel(scheduled_recording.scheduled_recording_id);
 		if (channel != NULL)
 		{
-			if (stream_thread->is_recording(*channel))
+			if (stream_manager.is_recording(*channel))
 			{
 				g_debug("Channel '%s' is currently being recorded", channel->name.c_str());
 			}
 			else
 			{
 				g_debug("Channel '%s' is currently not being recorded", channel->name.c_str());
-				stream_thread->start_recording(*channel, make_recording_filename(scheduled_recording.description));
+				stream_manager.start_recording(*channel, make_recording_filename(*channel, scheduled_recording.description));
 			}
 		}
 
@@ -723,10 +714,8 @@ gboolean Application::on_timeout()
 	return true;
 }
 
-Glib::ustring Application::make_recording_filename(const Glib::ustring& description)
+Glib::ustring Application::make_recording_filename(Channel& channel, const Glib::ustring& description)
 {
-	Channel& channel = channel_manager.get_display_channel();
-	
 	Glib::ustring start_time = get_local_time_text("%c");
 	Glib::ustring filename;
 	Glib::ustring title = description;
@@ -780,15 +769,6 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 	return Glib::build_filename(get_string_configuration_value("recording_directory"), fixed_filename);
 }
 
-StreamThread& Application::get_stream_thread()
-{
-	if (stream_thread == NULL)
-	{
-		throw Exception(_("Stream thread has not been initialised"));
-    }
-	return *stream_thread;
-}
-
 Glib::StaticRecMutex& Application::get_mutex()
 {
 	return mutex;
@@ -819,11 +799,6 @@ void Application::on_record()
 	{
 		try
 		{
-			if (stream_thread == NULL)
-			{
-				throw Exception(_("There is no stream to record"));
-			}
-
 			Glib::ustring recording_filename;
 
 			Glib::RecMutex::Lock lock(mutex);
@@ -832,10 +807,11 @@ void Application::on_record()
 				ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(scheduled_recording_id);
 				recording_filename = scheduled_recording.description;
 			}
+
+			Channel& display_channel = channel_manager.get_display_channel();
+			recording_filename = make_recording_filename(display_channel, recording_filename);
 			
-			recording_filename = make_recording_filename(recording_filename);
-			
-			stream_thread->start_recording(channel_manager.get_display_channel(), recording_filename);
+			stream_manager.start_recording(display_channel, recording_filename);
 			update();
 
 			g_debug("Recording started");
@@ -855,19 +831,16 @@ void Application::on_record()
 	{
 		Glib::RecMutex::Lock lock(mutex);
 
-		if (stream_thread != NULL)
-		{
-			stream_thread->stop_recording(channel_manager.get_display_channel());
-			
-			if (scheduled_recording_id != 0)
-			{
-				scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
-			}
-			scheduled_recording_id = 0;
+		stream_manager.stop_recording(channel_manager.get_display_channel());
 		
-			update();
-			g_debug("Recording stopped");
+		if (scheduled_recording_id != 0)
+		{
+			scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
 		}
+		scheduled_recording_id = 0;
+	
+		update();
+		g_debug("Recording stopped");
 	}
 	CATCH
 }
@@ -880,12 +853,7 @@ void Application::on_broadcast()
 	{
 		try
 		{
-			if (stream_thread == NULL)
-			{
-				throw Exception(_("There is no stream to broadcast"));
-			}
-			
-			stream_thread->start_broadcasting();
+			stream_manager.start_broadcasting();
 		}
 		catch (const Glib::Exception& exception)
 		{
@@ -900,10 +868,7 @@ void Application::on_broadcast()
 	}
 	else
 	{
-		if (stream_thread != NULL)
-		{
-			stream_thread->stop_broadcasting();
-		}
+		stream_manager.stop_broadcasting();
 	}
 	update();
 	CATCH

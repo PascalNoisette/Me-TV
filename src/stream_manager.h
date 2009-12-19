@@ -22,19 +22,16 @@
 #define __STREAM_THREAD_H__
 
 #include "thread.h"
-#include "dvb_frontend.h"
-#include "dvb_demuxer.h"
-#include "engine.h"
 #include "epg_thread.h"
 #include "channel.h"
-#include "dvb_si.h"
+#include "dvb_demuxer.h"
 #include "me-tv-ui.h"
 #include "mpeg_stream.h"
 #include <gnet.h>
 
-class StreamThread : public Thread
+class StreamManager : public Thread
 {
-private:
+public:
 	class ChannelStream
 	{
 	public:
@@ -44,7 +41,7 @@ private:
 		Mpeg::Stream					stream;
 		Glib::RefPtr<Glib::IOChannel>	output_channel;
 		Glib::ustring					filename;
-		DemuxerList						demuxers;
+		Dvb::DemuxerList				demuxers;
 		Glib::StaticRecMutex			mutex;
 
 		Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
@@ -55,9 +52,8 @@ private:
 		void write(guchar* buffer, gsize length);
 	};
 
+private:
 	Glib::StaticRecMutex		mutex;
-	Glib::ustring				fifo_path;
-	Engine*						engine;
 	EpgThread*					epg_thread;
 	GUdpSocket*					socket;
 	GInetAddr*					inet_address;
@@ -70,19 +66,19 @@ private:
 	static gboolean on_timeout(gpointer data);
 	void on_timeout();
 
-	void setup_dvb(const Channel& channel, StreamThread::ChannelStream& stream_output);
+	void setup_dvb(const Channel& channel, ChannelStream& stream);
 
 	void start_epg_thread();
 	void stop_epg_thread();
 		
 public:
-	StreamThread();
-	~StreamThread();
+	StreamManager();
+	~StreamManager();
 
 	void set_display(const Channel& channel);
+	const ChannelStream& get_display_stream() const;
 	void start();
 	void stop();
-	const ChannelStream& get_display_stream() const;
 	guint get_last_epg_update_time();
 
 	void start_recording(const Channel& channel, const Glib::ustring& filename);
@@ -92,8 +88,6 @@ public:
 	
 	void start_broadcasting();
 	void stop_broadcasting();
-
-	const Glib::ustring& get_fifo_path() const;
 };
 
 #endif

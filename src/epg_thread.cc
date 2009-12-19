@@ -21,6 +21,7 @@
 #include "me-tv.h"
 #include "epg_thread.h"
 #include "application.h"
+#include "dvb_si.h"
 
 class EITDemuxers
 {
