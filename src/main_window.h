@@ -81,6 +81,8 @@ private:
 
 	void on_show();
 	void on_hide();
+	void start_engine();
+	void stop_engine();
 			
 	void create_engine();
 public:
@@ -113,8 +115,6 @@ public:
 	void save_geometry();
 
 	void play(const Glib::ustring& mrl);
-	void start_engine();
-	void stop_engine();
 
 	void fullscreen(gboolean change_mode = true);
 	void unfullscreen(gboolean restore_mode = true);

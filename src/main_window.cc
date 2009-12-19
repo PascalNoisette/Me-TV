@@ -595,7 +595,7 @@ void MainWindow::play(const Glib::ustring& mrl)
 	Gtk::RadioMenuItem::Group audio_streams_menu_group;
 	
 	// Acquire stream thread lock
-	Glib::RecMutex::Lock application_lock(application.get_mutex());
+/*	Glib::RecMutex::Lock application_lock(application.get_mutex());
 
 	StreamThread* stream_thread = application.get_stream_thread();
 	if (stream_thread != NULL)
@@ -663,7 +663,7 @@ void MainWindow::play(const Glib::ustring& mrl)
 			count++;
 		}
 	}
-	
+	*/
 	if (audio_streams_menu->items().empty())
 	{
 		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("Not available"));

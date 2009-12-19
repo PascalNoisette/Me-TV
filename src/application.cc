@@ -523,6 +523,9 @@ void Application::run()
 
 		channel_manager.load(connection);
 
+		stream_thread = new StreamThread();
+		stream_thread->start();
+
 		status_icon = new StatusIcon();
 		main_window = MainWindow::create(builder);
 
@@ -546,9 +549,6 @@ void Application::run()
 		{
 			main_window->show_channels_dialog();
 		}
-
-		stream_thread = new StreamThread();
-		stream_thread->start();
 
 		select_channel_to_play();
 		CATCH
@@ -647,19 +647,8 @@ void Application::set_display_channel(const Channel& channel)
 		}
 	}
 
-	main_window->stop_engine();
 	channel_manager.set_display_channel(channel);
 	stream_thread->set_display(channel);
-
-	try
-	{
-		main_window->start_engine();
-	}
-	catch(const Glib::Exception& exception)
-	{
-		main_window->stop_engine();
-		get_signal_error().emit(exception.what().c_str());
-	}
 	
 	set_int_configuration_value("last_channel", channel.channel_id);
 
