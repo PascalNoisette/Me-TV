@@ -105,8 +105,13 @@ void StreamManager::run()
 
 		for (guint i = 0; i < bytes_read; i += TS_PACKET_SIZE)
 		{
-			guint pid = buffer[i+2];
+			guint pid = ((buffer[i+1] & 0x0f) << 8) + buffer[i+2];
 
+			if (pid != 0)
+			{
+//				g_debug("PID: %d", pid);
+			}
+			
 			for (std::list<ChannelStream>::iterator iterator = streams.begin(); iterator != streams.end(); iterator++)
 			{
 				ChannelStream& channel_stream = *iterator;
@@ -442,7 +447,7 @@ void StreamManager::ChannelStream::write(guchar* buffer, gsize length)
 			gsize bytes_written = 0;
 			output_channel->write((const gchar*)buffer, length, bytes_written);
 
-			g_debug("%d bytes written to '%s'", (int)bytes_written, filename.c_str());
+			// g_debug("%d bytes written to '%s'", (int)bytes_written, filename.c_str());
 		}
 		catch(...)
 		{
