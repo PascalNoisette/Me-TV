@@ -677,7 +677,7 @@ void Application::check_scheduled_recordings()
 	}
 
 	// This is because I don't know how to safely remove elements from a list
-	gboolean check = NULL;
+	gboolean check = true;
 	while (check)
 	{
 		check = false;
@@ -686,7 +686,9 @@ void Application::check_scheduled_recordings()
 		for (std::list<StreamManager::ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
 		{
 			StreamManager::ChannelStream& channel_stream = *i;
-			if (channel_stream.type == StreamManager::CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING)
+			if (
+			    channel_stream.type == StreamManager::CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
+				!scheduled_recording_manager.is_recording(channel_stream.channel))
 			{
 				stream_manager.stop_recording(channel_stream.channel);
 				check = true;
