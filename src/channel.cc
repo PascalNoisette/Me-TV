@@ -67,3 +67,8 @@ bool Channel::operator==(const Channel& channel) const
 	return channel.service_id == service_id &&
 		channel.transponder.frontend_parameters.frequency == transponder.frontend_parameters.frequency;
 }
+
+bool Channel::operator!=(const Channel& channel) const
+{
+	return !(*this == channel);
+}

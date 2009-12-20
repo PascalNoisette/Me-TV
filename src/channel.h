@@ -44,6 +44,7 @@ public:
 	Glib::ustring		get_text();
 
 	bool operator==(const Channel& channel) const;
+	bool operator!=(const Channel& channel) const;
 };
 
 class ChannelArray : public std::vector<Channel>

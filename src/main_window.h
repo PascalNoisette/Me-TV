@@ -116,6 +116,7 @@ public:
 
 	void play(const Glib::ustring& mrl);
 	void pause(gboolean state);
+	void restart_engine();
 
 	void fullscreen(gboolean change_mode = true);
 	void unfullscreen(gboolean restore_mode = true);

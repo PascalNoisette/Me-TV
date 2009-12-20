@@ -638,9 +638,13 @@ void Application::set_display_channel(const Channel& channel)
 		}
 	}
 
-	channel_manager.set_display_channel(channel);
-	stream_manager.set_display_stream(channel);
-
+	if (current_channel != channel)
+	{
+		channel_manager.set_display_channel(channel);
+		stream_manager.set_display_stream(channel);
+		main_window->restart_engine();
+	}
+	
 	set_int_configuration_value("last_channel", channel.channel_id);
 
 	update();

@@ -712,6 +712,12 @@ void MainWindow::stop_engine()
 	g_debug("Engine stopped");
 }
 
+void MainWindow::restart_engine()
+{
+	stop_engine();
+	start_engine();
+}
+
 void MainWindow::on_audio_channel_both()
 {
 	if (engine != NULL)
