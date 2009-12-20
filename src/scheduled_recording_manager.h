@@ -44,6 +44,7 @@ public:
 	ScheduledRecording get_scheduled_recording(guint scheduled_recording_id);
 	ScheduledRecordingList check_scheduled_recordings();
 	gboolean is_recording(const Channel& channel);
+	gboolean is_recording(const EpgEvent& epg_event);
 };
 
 #endif

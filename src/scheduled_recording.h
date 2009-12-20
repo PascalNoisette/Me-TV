@@ -43,6 +43,7 @@ public:
 	Glib::ustring get_end_time_text() const;
 		
 	gboolean is_in(guint at) const;
+	gboolean is_in(guint start_time, guint end_time) const;
 	gboolean overlaps(const ScheduledRecording& scheduled_recording) const;
 };
 

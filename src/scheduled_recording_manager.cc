@@ -303,3 +303,20 @@ gboolean ScheduledRecordingManager::is_recording(const Channel& channel)
 	}
 	return false;
 }
+
+gboolean ScheduledRecordingManager::is_recording(const EpgEvent& epg_event)
+{
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	{
+		ScheduledRecording& scheduled_recording = *i;
+		if (scheduled_recording.channel_id == epg_event.channel_id &&
+			scheduled_recording.is_in(
+			    convert_to_utc_time(epg_event.start_time),
+			    convert_to_utc_time(epg_event.get_end_time())))
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}

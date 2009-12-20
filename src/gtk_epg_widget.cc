@@ -298,7 +298,7 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 				
 					if (column_count > 0)
 					{
-						guint converted_start_time = convert_to_utc_time(epg_event.start_time)+30;
+						guint converted_start_time = convert_to_utc_time(epg_event.start_time);
 
 						Glib::ustring text;
 						if (show_epg_time)
@@ -307,6 +307,10 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 							text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
 						}
 						text += encode_xml(epg_event.get_title());
+						if (get_application().scheduled_recording_manager.is_recording(epg_event))
+						{
+							text += " <b><span color='red'>(Rec)</span></b>";
+						}
 						
 						Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
 						button.signal_clicked().connect(

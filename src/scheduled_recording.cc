@@ -72,6 +72,11 @@ gboolean ScheduledRecording::is_in(guint at) const
 	return start_time <= at && start_time+duration > at;
 }
 
+gboolean ScheduledRecording::is_in(guint s, guint e) const
+{
+	return start_time < s && get_end_time() > e;
+}
+
 gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_recording) const
 {
 	return is_in(scheduled_recording.start_time) ||
