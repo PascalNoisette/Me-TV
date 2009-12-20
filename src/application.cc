@@ -611,27 +611,21 @@ void Application::set_display_channel_number(guint channel_index)
 
 void Application::set_display_channel(const Channel& channel)
 {
-	gboolean retune = true;
-
 	g_message(_("Changing channel to'%s'"), channel.name.c_str());
 
-	if (!channel_manager.has_display_channel())
+	Channel& current_channel = channel_manager.get_display_channel();
+	if (current_channel.transponder.frontend_parameters.frequency == channel.transponder.frontend_parameters.frequency)
 	{
-		Channel& current_channel = channel_manager.get_display_channel();
-		if (current_channel == channel)
+		g_message(_("Already tuned to correct frequency"));
+	}
+	else
+	{
+		if (stream_manager.is_recording())
 		{
-			g_message(_("Already tuned to correct frequency"));
-			retune = false;
-		}
-		else
-		{
-			if (stream_manager.is_recording())
-			{
-				Glib::ustring message = Glib::ustring::format(
-				    _("You cannot tune to channel '%s' because you are recording."),
-				    channel.name.c_str());
-				throw Exception(message);
-			}
+			Glib::ustring message = Glib::ustring::compose(
+			    _("You cannot tune to channel '%1' because you are recording."),
+			    channel.name.c_str());
+			throw Exception(message);
 		}
 	}
 
@@ -671,6 +665,13 @@ void Application::check_scheduled_recordings()
 			else
 			{
 				g_debug("Channel '%s' is currently not being recorded", channel->name.c_str());
+
+				if (channel->transponder.frontend_parameters.frequency != channel_manager.get_display_channel().transponder.frontend_parameters.frequency)
+				{
+					g_debug("Need to change transponders to record this channel");
+					set_display_channel(*channel);
+				}
+				
 				stream_manager.start_recording(*channel, make_recording_filename(*channel, scheduled_recording.description), true);
 			}
 		}

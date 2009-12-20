@@ -376,6 +376,8 @@ void MainWindow::show_scheduled_recordings_dialog()
 	ScheduledRecordingsDialog& scheduled_recordings_dialog = ScheduledRecordingsDialog::create(builder);
 	scheduled_recordings_dialog.run();
 	scheduled_recordings_dialog.hide();
+
+	update();
 }
 
 void MainWindow::on_menu_item_audio_stream_activate(guint index)
