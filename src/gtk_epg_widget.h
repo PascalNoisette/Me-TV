@@ -43,6 +43,7 @@ private:
 	void previous();
 	void next();
 		
+	bool on_button_program_press_event(GdkEventButton* event, EpgEvent& epg_event);
 	void on_button_program_clicked(EpgEvent& epg_event);
 	void on_button_channel_name_clicked(guint channel_id);
 	void on_combo_box_epg_page_changed();

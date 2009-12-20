@@ -252,7 +252,7 @@ void MainWindow::fullscreen(gboolean change_mode)
 
 gboolean MainWindow::is_fullscreen()
 {
-	return get_window()->get_state() & Gdk::WINDOW_STATE_FULLSCREEN;
+	return get_window() != NULL && get_window()->get_state() & Gdk::WINDOW_STATE_FULLSCREEN;
 }
 
 gboolean MainWindow::on_timeout(gpointer data)
@@ -415,16 +415,10 @@ void MainWindow::update()
 	}
 	else
 	{
-		for (std::list<StreamManager::ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
-	    {
-			StreamManager::ChannelStream& channel_stream = *i;
-			if (channel_stream.type == StreamManager::CHANNEL_STREAM_TYPE_DISPLAY)
-			{
-				window_title = "Me TV - " + channel_stream.channel.get_text();
-				status_text = channel_stream.channel.get_text();
-			}
-		}
-
+		Channel& channel = application.channel_manager.get_display_channel();
+		window_title = "Me TV - " + channel.get_text();
+		status_text = channel.get_text();
+		
 		gboolean record = application.stream_manager.is_recording(
 		    application.channel_manager.get_display_channel());
 		Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(

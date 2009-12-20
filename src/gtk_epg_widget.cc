@@ -316,6 +316,15 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 								epg_event
 							)
 						);
+						button.signal_button_press_event().connect(
+							sigc::bind<EpgEvent>
+							(
+								sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_press_event),
+								epg_event
+							),
+						    false
+						);
+
 
 						if (show_epg_tooltips)
 						{
@@ -355,19 +364,19 @@ Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text,
 Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
 {
 	Gtk::Button* button = new Gtk::Button(text);
-	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach, attach_options);
 	button->set_alignment(0, 0.5);
 	Gtk::Label* label = dynamic_cast<Gtk::Label*>(button->get_child());
 	label->set_use_markup(true);
+	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach, attach_options);
 	return *button;
 }
 
 Gtk::Label& GtkEpgWidget::attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
 {
 	Gtk::Label* label = new Gtk::Label(text.c_str());
-	attach_widget(*label, left_attach, right_attach, top_attach, bottom_attach, attach_options);
 	label->set_justify(Gtk::JUSTIFY_LEFT);
 	label->set_use_markup(true);
+	attach_widget(*label, left_attach, right_attach, top_attach, bottom_attach, attach_options);
 	return *label;
 }
 
@@ -386,6 +395,27 @@ void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 	TRY
 	update_table();
 	CATCH
+}
+
+bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent& epg_event)
+{
+	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
+	{
+/*		Gtk::Menu menu;
+		Gtk::MenuItem menu_item("Add to scheduled recordings");
+		menu_item.signal_activate().connect(
+			sigc::bind<EpgEvent>
+			(
+				sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
+				epg_event
+			)
+		);
+		menu.append(menu_item);
+		menu.show_all();
+		menu.popup(event->button, event->time);*/
+	}
+
+	return false;
 }
 
 void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
