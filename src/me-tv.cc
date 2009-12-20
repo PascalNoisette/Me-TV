@@ -23,13 +23,13 @@
 #include "exception.h"
 #include <glib/gprintf.h>
 
-bool verbose_logging		= false;
-bool safe_mode				= false;
-bool minimised_mode			= false;
-Glib::ustring default_device;
-bool disable_epg_thread		= false;
-bool disable_epg			= false;
-gint read_timeout			= 15;
+Glib::ustring	default_device;
+bool			verbose_logging		= false;
+bool			safe_mode			= false;
+bool			minimised_mode		= false;
+bool			disable_epg_thread	= false;
+bool			disable_epg			= false;
+gint			read_timeout		= 15;
 
 StringSignal signal_error;
 

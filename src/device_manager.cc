@@ -108,7 +108,7 @@ Dvb::Frontend& DeviceManager::get_frontend()
 {
 	if (frontend == NULL)
 	{
-		throw Exception(_("No default frontend"));
+		throw Exception(_("No frontend has been selected"));
 	}
 	
 	return *frontend;

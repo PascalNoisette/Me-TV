@@ -516,15 +516,20 @@ void Application::run()
 		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 
 		TRY		
-		scheduled_recording_manager.load(connection);
 
-		const ChannelArray& channels = channel_manager.get_channels();
+		if (!device_manager.get_frontends().empty())
+		{
+			scheduled_recording_manager.load(connection);
+		}
+
+		ChannelArray& channels = channel_manager.get_channels();
 		if (channels.empty())
 		{
 			main_window->show_channels_dialog();
 		}
-
+		
 		select_channel_to_play();
+
 		CATCH
 		
 		if (!minimised_mode)
@@ -536,8 +541,12 @@ void Application::run()
 				main_window->show_preferences_dialog();
 			}
 		}
-		stream_manager.start();
 
+		if (channel_manager.has_display_channel())
+		{
+			stream_manager.start();
+		}
+		
 		Gnome::Main::run();
 			
 		if (status_icon != NULL)
