@@ -796,9 +796,11 @@ void Application::on_record()
 		{
 			Channel& display_channel = channel_manager.get_display_channel();
 
+			Glib::ustring recording_filename;
+			
 			if (!stream_manager.is_recording(display_channel))
 			{
-				Glib::ustring recording_filename = make_recording_filename(display_channel, recording_filename);
+				recording_filename = make_recording_filename(display_channel, recording_filename);
 				stream_manager.start_recording(display_channel, recording_filename, false);
 			}
 			

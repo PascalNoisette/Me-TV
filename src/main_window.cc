@@ -406,22 +406,27 @@ void MainWindow::update()
 	Glib::ustring window_title;
 	Glib::ustring status_text;
 
-	if (!application.channel_manager.has_display_channel())
+	std::list<StreamManager::ChannelStream>& streams = application.stream_manager.get_streams();
+	if (streams.size() == 0)
 	{
-		window_title = _("Me TV - It's TV for me computer");
+		window_title = "Me TV - It's TV for me computer";
 	}
 	else
 	{
-		Channel& channel = application.channel_manager.get_display_channel();
-		window_title = "Me TV - " + channel.get_text();
-		status_text = channel.get_text();
-	}
+		for (std::list<StreamManager::ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+	    {
+			StreamManager::ChannelStream& channel_stream = *i;
+			if (channel_stream.type == StreamManager::CHANNEL_STREAM_TYPE_DISPLAY)
+			{
+				window_title = "Me TV - " + channel_stream.channel.get_text();
+				status_text = channel_stream.channel.get_text();
+			}
+		}
 
-	
-	if (application.stream_manager.is_recording())
-	{
-		status_text += _(" [Recording]");
-		window_title += _(" [Recording]");
+		gboolean record = application.stream_manager.is_recording(
+		    application.channel_manager.get_display_channel());
+		Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(
+		    builder->get_object("record"))->set_active(record);
 	}
 	
 	set_title(window_title);
