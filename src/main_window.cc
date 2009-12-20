@@ -752,6 +752,7 @@ void MainWindow::on_scheduled_recordings()
 {
 	TRY
 	show_scheduled_recordings_dialog();
+	update();
 	CATCH
 }
 

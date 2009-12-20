@@ -78,9 +78,10 @@ void StreamManager::run()
 	guint last_insert_time = 0;
 	gsize bytes_read;
 	
-	TRY
 	while (!is_terminated())
 	{
+		TRY
+
 		// Insert PAT/PMT every second second
 		time_t now = time(NULL);
 		if (now - last_insert_time > 2)
@@ -115,8 +116,8 @@ void StreamManager::run()
 				}
 			}
 		}
+		THREAD_CATCH
 	}
-	THREAD_CATCH
 		
 	g_debug("StreamManager loop exited");
 	
