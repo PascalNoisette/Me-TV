@@ -287,3 +287,19 @@ ScheduledRecording ScheduledRecordingManager::get_scheduled_recording(guint sche
 	
 	return *result;
 }
+
+gboolean ScheduledRecordingManager::is_recording(const Channel& channel)
+{
+	Glib::RecMutex::Lock lock(mutex);
+
+	guint now = time(NULL);
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	{			
+		ScheduledRecording& scheduled_recording = *i;
+		if (scheduled_recording.is_in(now) && scheduled_recording.channel_id == channel.channel_id)
+		{
+			return true;
+		}
+	}
+	return false;
+}

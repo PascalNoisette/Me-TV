@@ -23,6 +23,7 @@
 
 #include "scheduled_recording.h"
 #include "data.h"
+#include "channel.h"
 
 typedef std::list<ScheduledRecording> ScheduledRecordingList;
 
@@ -42,6 +43,7 @@ public:
 	void remove_scheduled_recording(guint scheduled_recording_id);		
 	ScheduledRecording get_scheduled_recording(guint scheduled_recording_id);
 	ScheduledRecordingList check_scheduled_recordings();
+	gboolean is_recording(const Channel& channel);
 };
 
 #endif

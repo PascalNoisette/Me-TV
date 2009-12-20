@@ -65,7 +65,6 @@ private:
 	EpgThread*					epg_thread;
 	GUdpSocket*					socket;
 	GInetAddr*					inet_address;
-	gboolean					broadcast_failure_message;
 	std::list<ChannelStream>	streams;
 
 	void run();

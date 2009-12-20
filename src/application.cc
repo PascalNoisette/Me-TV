@@ -674,8 +674,25 @@ void Application::check_scheduled_recordings()
 				stream_manager.start_recording(*channel, make_recording_filename(*channel, scheduled_recording.description), true);
 			}
 		}
+	}
 
-		// TODO: Stop old SRs
+	// This is because I don't know how to safely remove elements from a list
+	gboolean check = NULL;
+	while (check)
+	{
+		check = false;
+
+		std::list<StreamManager::ChannelStream>& streams = stream_manager.get_streams();
+		for (std::list<StreamManager::ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+		{
+			StreamManager::ChannelStream& channel_stream = *i;
+			if (channel_stream.type == StreamManager::CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING)
+			{
+				stream_manager.stop_recording(channel_stream.channel);
+				check = true;
+				break;
+			}
+		}
 	}
 }
 
