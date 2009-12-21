@@ -187,7 +187,7 @@ void GtkEpgWidget::update_table()
 			{
 				guint hour_time = start_time + (hour * 60 * 60);
 				Glib::ustring hour_time_text = get_local_time_text(hour_time, "%c");
-				Gtk::Button& button = attach_button(hour_time_text, hour * COLUMNS_PER_HOUR + 1, (hour+1) * COLUMNS_PER_HOUR + 1, 0, 1, Gtk::FILL | Gtk::EXPAND);
+				Gtk::Button& button = attach_button(hour_time_text, false, hour * COLUMNS_PER_HOUR + 1, (hour+1) * COLUMNS_PER_HOUR + 1, 0, 1, Gtk::FILL | Gtk::EXPAND);
 				button.set_sensitive(false);
 			}
 			row++;
@@ -231,12 +231,9 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 		channel_text = Glib::ustring::compose("<i>%1.</i> ", channel_number) + channel_text;
 	}
 	
-	if (get_application().stream_manager.is_recording(const_channel))
-	{
-		channel_text += " <b><span color='red'>(Rec)</span></b>";
-	}
+	gboolean record_channel = get_application().stream_manager.is_recording(const_channel);
 	
-	Gtk::ToggleButton& channel_button = attach_toggle_button( channel_text, 0, 1, table_row, table_row + 1);
+	Gtk::ToggleButton& channel_button = attach_toggle_button(channel_text, record_channel, 0, 1, table_row, table_row + 1);
 	
 	channel_button.set_active(selected);
 	channel_button.signal_clicked().connect(
@@ -290,7 +287,7 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 					{
 						guint empty_columns = start_column - total_number_columns;
 						Gtk::Button& button = attach_button(
-							empty_columns < 10 ? _("-") : _("Unknown program"),
+							empty_columns < 10 ? _("-") : _("Unknown program"), false,
 							total_number_columns + 1, start_column + 1, table_row, table_row + 1);
 						button.set_sensitive(false);
 						total_number_columns += empty_columns;
@@ -307,12 +304,10 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 							text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
 						}
 						text += encode_xml(epg_event.get_title());
-						if (get_application().scheduled_recording_manager.is_recording(epg_event))
-						{
-							text += " <b><span color='red'>(Rec)</span></b>";
-						}
+
+						gboolean record = get_application().scheduled_recording_manager.is_recording(epg_event);
 						
-						Gtk::Button& button = attach_button(text, start_column + 1, end_column + 1, table_row, table_row + 1);
+						Gtk::Button& button = attach_button(text, record, start_column + 1, end_column + 1, table_row, table_row + 1);
 						button.signal_clicked().connect(
 							sigc::bind<EpgEvent>
 							(
@@ -349,29 +344,62 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 	{
 		guint empty_columns = (number_columns-1) - total_number_columns;
 		Gtk::Button& button = attach_button(
-			empty_columns < 10 ? _("-") : _("Unknown program"),
+			empty_columns < 10 ? _("-") : _("Unknown program"), false,
 			total_number_columns + 1, number_columns, table_row, table_row + 1);
 		button.set_sensitive(false);
 	}
 }
 
-Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
+Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text, gboolean record, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
 {
-	Gtk::ToggleButton* button = new Gtk::ToggleButton(text);
-	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach, attach_options);
+	Gtk::ToggleButton* button = new Gtk::ToggleButton();
 	button->set_alignment(0, 0.5);
-	Gtk::Label* label = dynamic_cast<Gtk::Label*>(button->get_child());
+
+	Gtk::HBox* hbox = Gtk::manage(new Gtk::HBox());
+
+	Gtk::Label* label = Gtk::manage(new Gtk::Label(text));
 	label->set_use_markup(true);
+	label->set_alignment(0, 0.5);
+	hbox->pack_start(*label, true, true);
+
+	if (record == true)
+	{
+		Gtk::Image* image = Gtk::manage(new Gtk::Image(Gtk::Stock::MEDIA_RECORD, Gtk::ICON_SIZE_BUTTON));
+		image->set_alignment(1, 0.5);
+		hbox->pack_end(*image, false, false);
+	}
+		
+	button->add(*hbox);	
+	button->show_all();
+
+	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach, attach_options);
+
 	return *button;
 }
 
-Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
+Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, gboolean record, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
 {
-	Gtk::Button* button = new Gtk::Button(text);
+	Gtk::Button* button = new Gtk::Button();
 	button->set_alignment(0, 0.5);
-	Gtk::Label* label = dynamic_cast<Gtk::Label*>(button->get_child());
+
+	Gtk::HBox* hbox = Gtk::manage(new Gtk::HBox());
+
+	Gtk::Label* label = Gtk::manage(new Gtk::Label(text));
 	label->set_use_markup(true);
+	label->set_alignment(0, 0.5);
+	hbox->pack_start(*label, true, true);
+
+	if (record == true)
+	{
+		Gtk::Image* image = Gtk::manage(new Gtk::Image(Gtk::Stock::MEDIA_RECORD, Gtk::ICON_SIZE_BUTTON));
+		hbox->pack_end(*image, false, false);
+	}
+		
+	button->add(*hbox);	
+	button->show_all();
+
 	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach, attach_options);
+	
 	return *button;
 }
 
