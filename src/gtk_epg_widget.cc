@@ -239,9 +239,17 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 	channel_button.signal_clicked().connect(
 		sigc::bind<guint>
 		(
-			sigc::mem_fun(*this, &GtkEpgWidget::on_button_channel_name_clicked),
+			sigc::mem_fun(*this, &GtkEpgWidget::on_button_channel_clicked),
 			channel.channel_id
 		)
+	);
+	channel_button.signal_button_press_event().connect(
+		sigc::bind<guint>
+		(
+			sigc::mem_fun(*this, &GtkEpgWidget::on_button_channel_press_event),
+			channel.channel_id
+		),
+	    false
 	);
 	
 	guint total_number_columns = 0;
@@ -418,7 +426,7 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 	widget.show();
 }
 
-void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
+void GtkEpgWidget::on_button_channel_clicked(guint channel_id)
 {
 	TRY
 	get_application().set_display_channel_by_id(channel_id);
@@ -429,22 +437,30 @@ void GtkEpgWidget::on_button_channel_name_clicked(guint channel_id)
 	CATCH
 }
 
+bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, guint channel_id)
+{
+	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
+	{
+		TRY
+		get_application().set_display_channel_by_id(channel_id);
+		CATCH
+
+		TRY
+		update_table();
+		CATCH
+	}
+
+	return false;
+}
+
 bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent& epg_event)
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
-/*		Gtk::Menu menu;
-		Gtk::MenuItem menu_item("Add to scheduled recordings");
-		menu_item.signal_activate().connect(
-			sigc::bind<EpgEvent>
-			(
-				sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
-				epg_event
-			)
-		);
-		menu.append(menu_item);
-		menu.show_all();
-		menu.popup(event->button, event->time);*/
+		ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
+		scheduled_recording_dialog.run(MainWindow::create(builder), epg_event);
+		scheduled_recording_dialog.hide();
+		get_application().update();
 	}
 
 	return false;
