@@ -427,7 +427,7 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 				}
 				else if (find_descriptor (0x6A, buffer.get_buffer() + offset + 5, descriptor_length, NULL, NULL))
 				{
-					g_debug("AC3 PID: %d", elementary_pid);
+					g_debug("AC3 PID Descriptor: %d", elementary_pid);
 					AudioStream stream;
 					stream.pid = elementary_pid;
 					stream.is_ac3 = true;
