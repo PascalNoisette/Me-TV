@@ -418,6 +418,14 @@ void MainWindow::update()
 		Channel& channel = application.channel_manager.get_display_channel();
 		window_title = "Me TV - " + channel.get_text();
 		status_text = channel.get_text();
+
+		std::list<StreamManager::ChannelStream> streams = application.stream_manager.get_streams();
+		for (std::list<StreamManager::ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+		{
+			StreamManager::ChannelStream stream = *i;
+			g_debug(" *** TYPE: %d, CHANNEL: %s FILENAME: %s",
+			    stream.type, stream.channel.name.c_str(), stream.filename.c_str());
+		}
 		
 		gboolean record = application.stream_manager.is_recording(
 		    application.channel_manager.get_display_channel());

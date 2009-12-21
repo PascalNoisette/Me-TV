@@ -314,7 +314,9 @@ void StreamManager::set_display_stream(const Channel& channel)
 		g_debug("Stream output exists");
 	}
 
-	setup_dvb(channel, *(streams.begin()));
+	ChannelStream& stream = *(streams.begin());
+	stream.channel = channel;
+	setup_dvb(channel, stream);
 }
 
 void StreamManager::start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled)
