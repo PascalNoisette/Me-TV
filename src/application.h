@@ -96,7 +96,7 @@ public:
 	
 	void check_scheduled_recordings();
 	void on_record();
-	void start_recording(Channel& channel);
+	void start_recording(Channel& channel, const Glib::ustring& description = "", gboolean scheduled = false);
 	void stop_recording(Channel& channel);
 	Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description = "");
 		
