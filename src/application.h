@@ -96,9 +96,11 @@ public:
 	
 	void check_scheduled_recordings();
 	void on_record();
+	void start_recording(Channel& channel);
+	void stop_recording(Channel& channel);
+	Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description = "");
 		
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
-	Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description = "");
 	const Glib::ustring& get_application_dir() const { return application_dir; }
 	
 	MainWindow& get_main_window();

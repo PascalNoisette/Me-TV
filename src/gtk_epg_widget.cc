@@ -244,10 +244,10 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 		)
 	);
 	channel_button.signal_button_press_event().connect(
-		sigc::bind<guint>
+		sigc::bind<Channel>
 		(
 			sigc::mem_fun(*this, &GtkEpgWidget::on_button_channel_press_event),
-			channel.channel_id
+			channel
 		),
 	    false
 	);
@@ -437,12 +437,19 @@ void GtkEpgWidget::on_button_channel_clicked(guint channel_id)
 	CATCH
 }
 
-bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, guint channel_id)
+bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, Channel& channel)
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
 		TRY
-		get_application().set_display_channel_by_id(channel_id);
+		if (get_application().stream_manager.is_recording(channel))
+		{
+			get_application().stop_recording(channel);
+		}
+		else
+		{
+			get_application().start_recording(channel);
+		}
 		CATCH
 
 		TRY

@@ -818,6 +818,26 @@ void Application::on_error(const Glib::ustring& message)
 	}
 }
 
+void Application::start_recording(Channel& channel)
+{
+	Glib::ustring recording_filename;
+
+	if (!stream_manager.is_recording(channel))
+	{
+		recording_filename = make_recording_filename(channel, recording_filename);
+		stream_manager.start_recording(channel, recording_filename, false);
+	}
+	update();
+
+	g_debug("Recording started");
+}
+
+void Application::stop_recording(Channel& channel)
+{
+	stream_manager.stop_recording(channel);
+	update();
+}
+
 void Application::on_record()
 {
 	Glib::RecMutex::Lock lock(mutex);
@@ -827,17 +847,7 @@ void Application::on_record()
 	{
 		try
 		{
-			Channel& display_channel = channel_manager.get_display_channel();
-
-			Glib::ustring recording_filename;
-			
-			if (!stream_manager.is_recording(display_channel))
-			{
-				recording_filename = make_recording_filename(display_channel, recording_filename);
-				stream_manager.start_recording(display_channel, recording_filename, false);
-			}
-			
-			g_debug("Recording started");
+			start_recording(channel_manager.get_display_channel());
 		}
 		catch (const Glib::Exception& exception)
 		{

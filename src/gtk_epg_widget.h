@@ -44,7 +44,7 @@ private:
 	void next();
 		
 	bool on_button_program_press_event(GdkEventButton* event, EpgEvent& epg_event);
-	bool on_button_channel_press_event(GdkEventButton* event, guint channel_id);
+	bool on_button_channel_press_event(GdkEventButton* event, Channel& channel);
 	void on_button_program_clicked(EpgEvent& epg_event);
 	void on_button_channel_clicked(guint channel_id);
 	void on_combo_box_epg_page_changed();
