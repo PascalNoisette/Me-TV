@@ -430,6 +430,7 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 					g_debug("AC3 PID Descriptor: %d", elementary_pid);
 					AudioStream stream;
 					stream.pid = elementary_pid;
+					stream.type = 0x81;
 					stream.is_ac3 = true;
 
 					desc = NULL;
