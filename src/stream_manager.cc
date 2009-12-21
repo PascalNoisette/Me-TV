@@ -58,8 +58,6 @@ StreamManager::~StreamManager()
 
 void StreamManager::start()
 {
-	start_epg_thread();
-
 	g_debug("Starting stream thread");
 	Thread::start();
 }
@@ -177,14 +175,15 @@ void StreamManager::setup_dvb(const Channel& channel, StreamManager::ChannelStre
 {
 	Lock lock(mutex, "StreamManager::setup_dvb()");
 	
-	stop_epg_thread();
 	Dvb::Frontend& frontend = get_application().device_manager.get_frontend();
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 
 	channel_stream.clear_demuxers();
 	if (channel.transponder.frontend_parameters.frequency != frontend.get_frontend_parameters().frequency)
 	{
+		stop_epg_thread();
 		frontend.tune_to(channel.transponder);
+		start_epg_thread();
 	}
 	
 	Buffer buffer;	
