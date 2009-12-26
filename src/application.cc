@@ -620,7 +620,7 @@ void Application::set_display_channel_number(guint channel_index)
 
 void Application::set_display_channel(const Channel& channel)
 {
-	g_message(_("Changing channel to'%s'"), channel.name.c_str());
+	g_message(_("Changing channel to '%s'"), channel.name.c_str());
 
 	Channel& current_channel = channel_manager.get_display_channel();
 	if (current_channel.transponder.frontend_parameters.frequency == channel.transponder.frontend_parameters.frequency)
