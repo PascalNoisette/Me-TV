@@ -105,14 +105,18 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 {
 	Glib::RecMutex::Lock lock(mutex);
 	gboolean updated = false;
+
+	Channel& channel = get_application().channel_manager.get_channel_by_id(scheduled_recording.channel_id);
 	
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !updated; i++)
 	{
 		ScheduledRecording& current = *i;
 
+		Channel& current_channel = get_application().channel_manager.get_channel_by_id(current.channel_id);
+
 		// Check for conflict
 		if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
-		    current.channel_id != scheduled_recording.channel_id &&
+		    current_channel.transponder.frontend_parameters.frequency != channel.transponder.frontend_parameters.frequency &&
 		    scheduled_recording.overlaps(current))
 		{
 			Glib::ustring message =  Glib::ustring::compose(
