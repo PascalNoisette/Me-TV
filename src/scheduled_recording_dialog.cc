@@ -101,6 +101,9 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_eve
 
 gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate_default)
 {
+	gint dialog_response = Gtk::RESPONSE_CANCEL;
+
+	TRY
 	if (transient_for != NULL)
 	{
 		set_transient_for(*transient_for);
@@ -117,15 +120,16 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 		spin_button_duration->set_value(30);
 	}
 	
-	gint dialog_response = Gtk::Dialog::run();
+	dialog_response = Gtk::Dialog::run();
 	hide();
-	
+
 	if (dialog_response == Gtk::RESPONSE_OK)
 	{
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
 		get_application().scheduled_recording_manager.set_scheduled_recording(scheduled_recording);
 	}
-	
+	CATCH
+		
 	return dialog_response;
 }
 
