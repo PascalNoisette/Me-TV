@@ -612,9 +612,13 @@ void MainWindow::play(const Glib::ustring& mrl)
 	{
 		Mpeg::AudioStream audio_stream = *i;
 		Glib::ustring text = Glib::ustring::compose("%1: %2", count, audio_stream.language);
-		if (audio_stream.is_ac3)
+		if (audio_stream.type == STREAM_TYPE_AUDIO_AC3)
 		{
 			text += " (AC3)";
+		}
+		else if (audio_stream.type == STREAM_TYPE_AUDIO_MPEG4)
+		{
+			text += " (MPEG4)";
 		}
 		Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
 		menu_item->show_all();

@@ -213,8 +213,7 @@ void StreamManager::setup_dvb(const Channel& channel, StreamManager::ChannelStre
 	gsize audio_streams_size = stream.audio_streams.size();
 	for (guint i = 0; i < audio_streams_size; i++)
 	{
-		channel_stream.add_pes_demuxer(demux_path, stream.audio_streams[i].pid, DMX_PES_OTHER,
-			stream.audio_streams[i].is_ac3 ? "AC3" : "audio");
+		channel_stream.add_pes_demuxer(demux_path, stream.audio_streams[i].pid, DMX_PES_OTHER, "audio");
 	}
 				
 	gsize subtitle_streams_size = stream.subtitle_streams.size();

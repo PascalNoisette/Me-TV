@@ -80,8 +80,8 @@ src/scheduled_recordings_dialog.cc
 src/scheduled_recordings_dialog.h
 src/status_icon.cc
 src/status_icon.h
-src/stream_thread.cc
-src/stream_thread.h
+src/stream_manager.cc
+src/stream_manager.h
 src/string_splitter.cc
 src/string_splitter.h
 src/thread.cc

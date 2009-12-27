@@ -27,6 +27,8 @@ Mpeg::Stream::Stream()
 {
 	g_debug("Creating MPEG stream");
 	program_map_pid = 0;
+	pat_counter = 0;
+	pmt_counter = 0;
 }
 
 void Mpeg::Stream::clear()
@@ -76,20 +78,17 @@ gboolean Mpeg::Stream::is_pid_used(guint pid)
 }
 
 void Mpeg::Stream::build_pat(guchar* buffer)
-{
-	static guint counter = 0;
-	
+{	
 	buffer[0x00] = 0x47;
 	buffer[0x01] = 0x40;
 	buffer[0x02] = 0x00; // PID = 0x0000
-	buffer[0x03] = 0x10 | (counter++ & 0xf); // | (ps->pat_counter & 0x0f);
-	g_debug("PAT counter = 0x%02X", counter);
+	buffer[0x03] = 0x10 | (pat_counter++ & 0x0f);
 	buffer[0x04] = 0x00; // CRC calculation begins here
 	buffer[0x05] = 0x00; // 0x00: Program association section
 	buffer[0x06] = 0xb0;
-	buffer[0x07] = 0x11; // section_length = 0x011
+	buffer[0x07] = 0x11; // section_length
 	buffer[0x08] = 0x00;
-	buffer[0x09] = 0xbb; // TS id = 0x00b0 (what the vlc calls "Stream ID")
+	buffer[0x09] = 0xbb; // TS id = 0x00b0
 	buffer[0x0a] = 0xc1;
 	// section # and last section #
 	buffer[0x0b] = buffer[0x0c] = 0x00;
@@ -127,7 +126,6 @@ void Mpeg::Stream::build_pat(guchar* buffer)
 
 void Mpeg::Stream::build_pmt(guchar* buffer)
 {
-	static guint counter = 0;
 	int i, off=0;
 	
 	Mpeg::VideoStream video_stream;
@@ -140,7 +138,7 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 	buffer[0x00] = 0x47;
 	buffer[0x01] = 0x40;
 	buffer[0x02] = program_map_pid;
-	buffer[0x03] = 0x10 | (counter++ & 0xf);
+	buffer[0x03] = 0x10 | (pmt_counter++ & 0xf);
 	buffer[0x04] = 0x00; // CRC calculation begins here
 	buffer[0x05] = 0x02; // 0x02: Program map section
 	buffer[0x06] = 0xb0;
@@ -187,7 +185,7 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 		buffer[++off] = audio_stream.pid>>8;
 		buffer[++off] = audio_stream.pid&0xff;
 
-		if ( audio_stream.is_ac3 )
+		if (audio_stream.type == STREAM_TYPE_AUDIO_AC3)
 		{
 			buffer[++off] = 0xf0;
 			buffer[++off] = 0x0c; // es info length
@@ -261,7 +259,6 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 			buffer[++off] = language_code[0];
 			buffer[++off] = language_code[1];
 			buffer[++off] = language_code[2];
-			//buffer[++off] = (descriptor.type & 0x1F) | ((descriptor.magazine_number << 5) & 0xE0);
 			buffer[++off] = (descriptor.magazine_number & 0x06) | ((descriptor.type << 3) & 0xF8);
 			buffer[++off] = descriptor.page_number;
 		}
@@ -368,12 +365,13 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 			break;
 		case 0x03:
 		case 0x04:
-			g_debug("Audio PID: %d", elementary_pid);
+		case STREAM_TYPE_AUDIO_MPEG4:
+		case STREAM_TYPE_AUDIO_AC3:
+			g_debug("Audio PID: %d (Type: 0x%02X)", elementary_pid, pid_type);
 			{
 				AudioStream stream;
 				stream.pid = elementary_pid;
 				stream.type = pid_type;
-				stream.is_ac3 = false;
 
 				dump_descriptors(buffer.get_buffer() + offset + 5, descriptor_length);
 				
@@ -451,8 +449,7 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 					g_debug("AC3 PID Descriptor: %d", elementary_pid);
 					AudioStream stream;
 					stream.pid = elementary_pid;
-					stream.type = 0x81;
-					stream.is_ac3 = true;
+					stream.type = STREAM_TYPE_AUDIO_AC3;
 
 					desc = NULL;
 					if (find_descriptor(0x0A, buffer.get_buffer() + offset + 5, descriptor_length, &desc, NULL))
@@ -462,44 +459,6 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 					}
 					audio_streams.push_back(stream);
 				}
-			}
-			break;
-		case 0x11:
-			g_debug("14496-3 Audio PID: %d", elementary_pid);
-			{
-				AudioStream stream;
-				stream.pid = elementary_pid;
-				stream.type = pid_type;
-				stream.is_ac3 = false;
-			
-				dump_descriptors(buffer.get_buffer() + offset + 5, descriptor_length);
-
-				desc = NULL;
-				if (find_descriptor(0x0A, buffer.get_buffer() + offset + 5, descriptor_length, &desc, NULL))
-				{
-					stream.language = get_lang_desc (desc);
-					g_debug("Language: %s", stream.language.c_str());
-				}
-				audio_streams.push_back(stream);
-			}
-			break;
-		case 0x81:
-			g_debug("AC3 PID: %d", elementary_pid);
-			{
-				AudioStream stream;
-				stream.pid = elementary_pid;
-				stream.type = pid_type;
-				stream.is_ac3 = true;
-			
-				dump_descriptors(buffer.get_buffer() + offset + 5, descriptor_length);
-
-				desc = NULL;
-				if (find_descriptor(0x0A, buffer.get_buffer() + offset + 5, descriptor_length, &desc, NULL))
-				{
-					stream.language = get_lang_desc (desc);
-					g_debug("Language: %s", stream.language.c_str());
-				}
-				audio_streams.push_back(stream);
 			}
 			break;
 		default:
