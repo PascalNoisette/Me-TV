@@ -6,6 +6,12 @@
 	* Added audio stream type 0x11 to PMS parser
 	* Implemented make_directory_with_parents to remove dependency on GLib 2.18
 	* Split out MPEG tables from DVB SI tables
+	* Added recording icon to channel buttons
+	* Added recording icon to EPG buttons
+	* Right-click instant record on channel buttons
+	* Right-click goes to scheduled recording on EPG buttons
+	* Can now schedule/record/watch multiple channels on the same transponder
+	* Removed broadcast feature 
 
 2009-12-06  Michael Lamothe <michael.lamothe@gmail.com>
 
