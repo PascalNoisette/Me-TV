@@ -112,7 +112,8 @@ namespace Mpeg
 	class Stream
 	{
 	private:
-		guint program_map_pid;
+		guint pmt_pid;
+		guint pcr_pid;
 
 		gboolean is_pid_used(guint pid);
 		gboolean find_descriptor(guchar tag, const unsigned char *buf, int descriptors_loop_len, const unsigned char **desc, int *desc_len);
@@ -128,8 +129,9 @@ namespace Mpeg
 		std::vector<SubtitleStream>	subtitle_streams;
 		std::vector<TeletextStream>	teletext_streams;
 
-		guint get_program_map_pid() const { return program_map_pid; }
-		void set_program_map_pid(const Buffer& buffer, guint service_id);
+		guint get_pcr_pid() const { return pcr_pid; }
+		guint get_pmt_pid() const { return pmt_pid; }
+		void set_pmt_pid(const Buffer& buffer, guint service_id);
 		void parse_pms(const Buffer& buffer);
 		void build_pat(guchar* buffer);
 		void build_pmt(guchar* buffer);

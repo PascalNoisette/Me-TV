@@ -26,7 +26,8 @@
 Mpeg::Stream::Stream()
 {
 	g_debug("Creating MPEG stream");
-	program_map_pid = 0;
+	pmt_pid = 0;
+	pcr_pid = 0;
 	pat_counter = 0;
 	pmt_counter = 0;
 }
@@ -98,16 +99,16 @@ void Mpeg::Stream::build_pat(guchar* buffer)
 	buffer[0x10] = 0x10;
 	
 	// Program Map PID
-	program_map_pid = 0xff;
-	while (is_pid_used(program_map_pid))
+	pmt_pid = 0xff;
+	while (is_pid_used(pmt_pid))
 	{
-		program_map_pid--;
+		pmt_pid--;
 	}
 	
 	buffer[0x11] = 0x03;
 	buffer[0x12] = 0xe8;
 	buffer[0x13] = 0xe0;
-	buffer[0x14] = program_map_pid;
+	buffer[0x14] = pmt_pid;
 	
 	// Put CRC in buffer[0x15...0x18]
 	guint crc32 = Crc32::calculate( (guchar*)buffer + 0x05, (guchar*)buffer + 0x15 );
@@ -137,7 +138,7 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 
 	buffer[0x00] = 0x47;
 	buffer[0x01] = 0x40;
-	buffer[0x02] = program_map_pid;
+	buffer[0x02] = pmt_pid;
 	buffer[0x03] = 0x10 | (pmt_counter++ & 0xf);
 	buffer[0x04] = 0x00; // CRC calculation begins here
 	buffer[0x05] = 0x02; // 0x02: Program map section
@@ -148,13 +149,13 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 	buffer[0x0a] = 0xc1;
 	// section # and last section #
 	buffer[0x0b] = buffer[0x0c] = 0x00;
-	// PCR PID
-	buffer[0x0d] = video_stream.pid>>8;
-	buffer[0x0e] = video_stream.pid&0xff;
+	// Program Clock Reference (PCR) PID
+	buffer[0x0d] = pcr_pid>>8;
+	buffer[0x0e] = pcr_pid&0xff;
 	// program_info_length == 0
 	buffer[0x0f] = 0xf0;
 	buffer[0x10] = 0x00;
-	// Program Map / Video PID
+	// Video PID
 	buffer[0x11] = video_stream.type; // video stream type
 	buffer[0x12] = video_stream.pid>>8;
 	buffer[0x13] = video_stream.pid&0xff;
@@ -239,7 +240,7 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 	for (guint index = 0; index < teletext_streams.size(); index++)
 	{
 		Mpeg::TeletextStream teletext_stream = teletext_streams[index];
-						
+		
 		gint language_count = teletext_stream.languages.size();
 
 		buffer[++off] = teletext_stream.type;
@@ -281,13 +282,13 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 	}
 }
 
-void Mpeg::Stream::set_program_map_pid(const Buffer& buffer, guint service_id)
+void Mpeg::Stream::set_pmt_pid(const Buffer& buffer, guint service_id)
 {
 	gsize section_length = buffer.get_length();
 	guint offset = 8;
 	guint i = 0;
 
-	program_map_pid = 0;
+	pmt_pid = 0;
 	g_debug("Searching for service ID %d", service_id);
 	while (offset < (section_length - 4))
 	{
@@ -301,12 +302,12 @@ void Mpeg::Stream::set_program_map_pid(const Buffer& buffer, guint service_id)
 		if (service_id == current_program_number)
 		{
 			g_debug("Program Map ID found");
-			program_map_pid = current_program_map_pid;
+			pmt_pid = current_program_map_pid;
 			break;
 		}
 	}
 
-	if (program_map_pid == 0)
+	if (pmt_pid == 0)
 	{
 		throw Exception(_("Failed to find Program Map PID for service"));
 	}
@@ -338,6 +339,7 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 	}
 	
 	guint offset = 8;
+	pcr_pid = ((buffer[8] & 0x1f) << 8) | buffer[9];
 	gsize program_info_length = ((buffer[10] & 0x0f) << 8) | buffer[11];
 
 	offset += program_info_length + 4;
@@ -509,6 +511,8 @@ Glib::ustring Mpeg::Stream::get_lang_desc(const guchar* b)
 gboolean Mpeg::Stream::contains_pid(guint pid)
 {
 	guint index = 0;
+
+	if (pid == pcr_pid) return true;
 	
 	for (index = 0; index < video_streams.size(); index++)
 	{ if (video_streams[index].pid == pid) return true; }

@@ -12,6 +12,7 @@
 	* Right-click goes to scheduled recording on EPG buttons
 	* Can now schedule/record/watch multiple channels on the same transponder
 	* Removed broadcast feature 
+	* Fixed Program Clock Reference (PCR) in PMT to get VLC support
 
 2009-12-06  Michael Lamothe <michael.lamothe@gmail.com>
 

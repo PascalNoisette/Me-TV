@@ -195,15 +195,21 @@ void StreamManager::setup_dvb(const Channel& channel, StreamManager::ChannelStre
 	Mpeg::Stream& stream = channel_stream.stream;
 	stream.clear();
 	
-	stream.set_program_map_pid(buffer, channel.service_id);
+	stream.set_pmt_pid(buffer, channel.service_id);
 	
 	Dvb::Demuxer demuxer_pmt(demux_path);
-	demuxer_pmt.set_filter(stream.get_program_map_pid(), PMT_ID);
+	demuxer_pmt.set_filter(stream.get_pmt_pid(), PMT_ID);
 	demuxer_pmt.read_section(buffer);
 	demuxer_pmt.stop();
 
 	stream.parse_pms(buffer);
-			
+
+	guint pcr_pid = stream.get_pcr_pid();
+	if (pcr_pid != 0x1FFF)
+	{
+		channel_stream.add_pes_demuxer(demux_path, pcr_pid, DMX_PES_OTHER, "PCR");
+	}
+	
 	gsize video_streams_size = stream.video_streams.size();
 	for (guint i = 0; i < video_streams_size; i++)
 	{
