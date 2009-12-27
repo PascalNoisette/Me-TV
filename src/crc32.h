@@ -27,7 +27,6 @@ class Crc32
 {
 private:
 	static guint crc_table[256];
-	static gboolean initialised;
 public:
 	static void init();
 	static guint32 calculate(const guchar* begin, const guchar* end);
