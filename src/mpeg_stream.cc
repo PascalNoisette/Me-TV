@@ -315,6 +315,22 @@ void Mpeg::Stream::set_program_map_pid(const Buffer& buffer, guint service_id)
 	}
 }
 
+void dump_descriptors(const unsigned char *buffer, int descriptors_loop_length)
+{
+	while (descriptors_loop_length > 0)
+	{
+		guchar descriptor_tag = buffer[0];
+		guchar descriptor_length = buffer[1] + 2;
+
+		if (!descriptor_length) break;
+
+		g_debug("Descriptor tag: %d", descriptor_tag);
+
+		buffer += descriptor_length;
+		descriptors_loop_length -= descriptor_length;
+	}
+}
+
 void Mpeg::Stream::parse_pms(const Buffer& buffer)
 {	
 	const guchar* desc = NULL;
@@ -353,12 +369,14 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 		case 0x03:
 		case 0x04:
 			g_debug("Audio PID: %d", elementary_pid);
-			{				
+			{
 				AudioStream stream;
 				stream.pid = elementary_pid;
 				stream.type = pid_type;
 				stream.is_ac3 = false;
 
+				dump_descriptors(buffer.get_buffer() + offset + 5, descriptor_length);
+				
 				if (find_descriptor(0x0A, buffer.get_buffer() + offset + 5, descriptor_length, &desc, NULL))
 				{
 					stream.language = get_lang_desc (desc);
@@ -371,6 +389,9 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 		case 0x06:
 			{
 				int descriptor_loop_length = 0;
+
+				dump_descriptors(buffer.get_buffer() + offset + 5, descriptor_length);
+
 				if (find_descriptor(0x56, buffer.get_buffer() + offset + 5, descriptor_length, &desc, &descriptor_loop_length))
 				{
 					g_debug("Teletext PID: %d", elementary_pid);					
@@ -451,6 +472,8 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 				stream.type = pid_type;
 				stream.is_ac3 = false;
 			
+				dump_descriptors(buffer.get_buffer() + offset + 5, descriptor_length);
+
 				desc = NULL;
 				if (find_descriptor(0x0A, buffer.get_buffer() + offset + 5, descriptor_length, &desc, NULL))
 				{
@@ -468,6 +491,8 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 				stream.type = pid_type;
 				stream.is_ac3 = true;
 			
+				dump_descriptors(buffer.get_buffer() + offset + 5, descriptor_length);
+
 				desc = NULL;
 				if (find_descriptor(0x0A, buffer.get_buffer() + offset + 5, descriptor_length, &desc, NULL))
 				{
@@ -501,11 +526,8 @@ gboolean Mpeg::Stream::find_descriptor(guchar tag, const unsigned char *buf, int
 
 		if (tag == descriptor_tag)
 		{
-			if (desc)
-				*desc = buf;
-
-			if (desc_len)
-				*desc_len = descriptor_len;
+			if (desc) *desc = buf;
+			if (desc_len) *desc_len = descriptor_len;
 			return true;
 		}
 
