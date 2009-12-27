@@ -39,6 +39,9 @@ namespace Dvb
 	{
 	public:
 		Transponder();
+
+		bool operator==(const Transponder& transponder) const;
+		bool operator!=(const Transponder& transponder) const;
 			
 		struct dvb_frontend_parameters	frontend_parameters;
 		guint							polarisation;

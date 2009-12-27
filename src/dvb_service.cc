@@ -31,7 +31,7 @@ Service::Service(Transponder& service_transponder) : transponder(service_transpo
 
 gboolean Service::operator ==(const Service& service) const
 {
-	return service.id == id && service.transponder.frontend_parameters.frequency == transponder.frontend_parameters.frequency;
+	return service.id == id && service.transponder == transponder;
 }
 
 gboolean Service::operator !=(const Service& service) const

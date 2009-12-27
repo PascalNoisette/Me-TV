@@ -116,7 +116,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 		// Check for conflict
 		if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
-		    current_channel.transponder.frontend_parameters.frequency != channel.transponder.frontend_parameters.frequency &&
+		    current_channel.transponder != channel.transponder &&
 		    scheduled_recording.overlaps(current))
 		{
 			Glib::ustring message =  Glib::ustring::compose(
@@ -246,10 +246,10 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 				{
 					ScheduledRecording& scheduled_recording_test = *i;
 
-					Dvb::Transponder t1 = get_application().channel_manager.get_channel_by_id(scheduled_recording_test.channel_id).transponder;
-					Dvb::Transponder t2 = get_application().channel_manager.get_channel_by_id(scheduled_recording.channel_id).transponder;
+					Dvb::Transponder& t1 = get_application().channel_manager.get_channel_by_id(scheduled_recording_test.channel_id).transponder;
+					Dvb::Transponder& t2 = get_application().channel_manager.get_channel_by_id(scheduled_recording.channel_id).transponder;
 
-					if (t1.frontend_parameters.frequency != t2.frontend_parameters.frequency)
+					if (t1 != t2)
 					{
 						conflict = true;
 						g_debug("Conflict!");

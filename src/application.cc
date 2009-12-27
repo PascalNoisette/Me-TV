@@ -623,7 +623,7 @@ void Application::set_display_channel(const Channel& channel)
 	g_message(_("Changing channel to '%s'"), channel.name.c_str());
 
 	Channel& current_channel = channel_manager.get_display_channel();
-	if (current_channel.transponder.frontend_parameters.frequency == channel.transponder.frontend_parameters.frequency)
+	if (current_channel.transponder == channel.transponder)
 	{
 		g_message(_("Already tuned to correct frequency"));
 	}
@@ -815,7 +815,7 @@ void Application::start_recording(Channel& channel, const Glib::ustring& descrip
 	{
 		g_debug("Channel '%s' is currently not being recorded", channel.name.c_str());
 
-		if (channel.transponder.frontend_parameters.frequency != channel_manager.get_display_channel().transponder.frontend_parameters.frequency)
+		if (channel.transponder != channel_manager.get_display_channel().transponder)
 		{
 			g_debug("Need to change transponders to record this channel");
 			set_display_channel(channel);
