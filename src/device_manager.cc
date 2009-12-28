@@ -106,6 +106,11 @@ gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend
 
 Dvb::Frontend& DeviceManager::get_frontend()
 {
+	if (frontends.empty())
+	{
+		throw Exception(_("There are no digital tuner devices available"));
+	}
+		
 	if (frontend == NULL)
 	{
 		throw Exception(_("No frontend has been selected"));

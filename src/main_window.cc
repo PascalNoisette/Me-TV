@@ -689,9 +689,12 @@ void MainWindow::start_engine()
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-	if (property_visible())
+	if (!get_application().stream_manager.get_streams().empty())
 	{
-		play(get_application().stream_manager.get_display_stream().filename);
+		if (property_visible())
+		{
+			play(get_application().stream_manager.get_display_stream().filename);
+		}
 	}
 }
 

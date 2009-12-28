@@ -398,7 +398,6 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
 		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
 		scanner.signal_complete.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_complete));
-		// TODO: Stop stream thread
 		scan_thread->start();
 	}
 	else if (radio_button_import->get_active())

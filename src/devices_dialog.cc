@@ -91,7 +91,6 @@ void DevicesDialog::on_response(int response_id)
 			{
 				Application& application = get_application();
 				application.set_string_configuration_value("default_device", frontend->get_path());
-				// TODO: Frontend gets destroyed next line, need to stop stream before continuing
 				application.device_manager.set_frontend(*frontend);
 				application.channel_manager.select_display_channel();
 			}
