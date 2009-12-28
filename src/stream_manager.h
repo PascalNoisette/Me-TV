@@ -34,6 +34,7 @@ class StreamManager : public Thread
 public:	
 	typedef enum 
 	{
+		CHANNEL_STREAM_TYPE_NONE = -1,
 		CHANNEL_STREAM_TYPE_DISPLAY = 0,
 		CHANNEL_STREAM_TYPE_RECORDING = 1,
 		CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING = 2

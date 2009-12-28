@@ -106,6 +106,8 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 	Glib::RecMutex::Lock lock(mutex);
 	gboolean updated = false;
 
+	g_debug("Setting scheduled recording");
+	
 	Channel& channel = get_application().channel_manager.get_channel_by_id(scheduled_recording.channel_id);
 	
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !updated; i++)

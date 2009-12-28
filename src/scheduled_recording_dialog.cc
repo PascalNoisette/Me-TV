@@ -87,6 +87,8 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_eve
 		set_transient_for(*transient_for);
 	}
 	
+	scheduled_recording_id = 0;
+
 	Application& application = get_application();
 	guint before = application.get_int_configuration_value("record_extra_before");
 	guint after = application.get_int_configuration_value("record_extra_after");
@@ -125,7 +127,9 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 
 	if (dialog_response == Gtk::RESPONSE_OK)
 	{
+		g_debug("Pressed OK on scheduled recording dialog");
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
+		g_debug("Got SR details for '%s'", scheduled_recording.description.c_str());
 		get_application().scheduled_recording_manager.set_scheduled_recording(scheduled_recording);
 	}
 	CATCH

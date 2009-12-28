@@ -805,24 +805,7 @@ void Application::on_error(const Glib::ustring& message)
 
 void Application::start_recording(Channel& channel, const Glib::ustring& description, gboolean scheduled)
 {
-	Glib::ustring recording_filename;
-
-	if (stream_manager.is_recording(channel))
-	{
-		g_debug("Channel '%s' is currently being recorded", channel.name.c_str());
-	}
-	else
-	{
-		g_debug("Channel '%s' is currently not being recorded", channel.name.c_str());
-
-		if (channel.transponder != channel_manager.get_display_channel().transponder)
-		{
-			g_debug("Need to change transponders to record this channel");
-			set_display_channel(channel);
-		}
-		
-		stream_manager.start_recording(channel, make_recording_filename(channel, description), scheduled);
-	}
+	stream_manager.start_recording(channel, make_recording_filename(channel, description), scheduled);
 	update();
 
 	g_debug("Recording started");

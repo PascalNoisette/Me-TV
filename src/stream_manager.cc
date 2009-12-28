@@ -324,15 +324,76 @@ void StreamManager::set_display_stream(const Channel& channel)
 	setup_dvb(channel, stream);
 }
 
+bool is_recording_stream(StreamManager::ChannelStream& channel_stream)
+{
+	return channel_stream.type == StreamManager::CHANNEL_STREAM_TYPE_RECORDING;
+}
+
 void StreamManager::start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled)
 {
 	Lock lock(mutex, "StreamManager::start_recording()");
 	
-	ChannelStream channel_stream(
-	    scheduled ? CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING : CHANNEL_STREAM_TYPE_RECORDING,
-	    channel, filename);
-	setup_dvb(channel, channel_stream);
-	streams.push_back(channel_stream);
+	ChannelStreamType requested_type = scheduled ? StreamManager::CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING :
+		StreamManager::CHANNEL_STREAM_TYPE_RECORDING;
+	ChannelStreamType current_type = StreamManager::CHANNEL_STREAM_TYPE_NONE;
+
+	std::list<StreamManager::ChannelStream>::iterator iterator = streams.begin();
+		
+	if (iterator != streams.end())
+	{
+		iterator++;
+	}
+	
+	while (iterator != streams.end())
+	{
+		StreamManager::ChannelStream& channel_stream = *iterator;
+		if (channel_stream.channel == channel)
+		{
+			current_type = channel_stream.type;
+			break;
+		}
+		iterator++;
+	}
+
+	// No change required
+	if (current_type == requested_type)
+	{
+		g_debug("Channel '%s' is currently being recorded (%s)",
+		    channel.name.c_str(), scheduled ? "scheduled" : "manual");
+	}
+	else
+	{
+		// If SR requested but recording is currently manual then stop the current manual one
+		if (requested_type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING && current_type == CHANNEL_STREAM_TYPE_RECORDING)
+		{
+			stop_recording(channel);
+		}
+		else if (requested_type == CHANNEL_STREAM_TYPE_RECORDING && current_type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING)
+		{
+			g_debug("Ignoring request to manually record a channel that is currently scheduled for recording");
+		}
+		else
+		{
+			g_debug("Channel '%s' is currently not being recorded via scheduled recording", channel.name.c_str());
+
+			if (channel.transponder != get_application().channel_manager.get_display_channel().transponder)
+			{
+				g_debug("Need to change transponders to record this channel");
+
+				// Need to kill all current recordings
+				streams.remove_if(is_recording_stream);
+				
+				get_application().set_display_channel(channel);
+			}
+	
+			ChannelStream channel_stream(
+			scheduled ? CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING : CHANNEL_STREAM_TYPE_RECORDING,
+				channel, filename);
+			setup_dvb(channel, channel_stream);
+			streams.push_back(channel_stream);
+		}
+	}
+		
 	
 	g_debug("New recording channel created");
 }
@@ -341,24 +402,31 @@ void StreamManager::stop_recording(const Channel& channel)
 {
 	Lock lock(mutex, "StreamManager::stop_recording()");
 
-	std::list<ChannelStream>::iterator iterator = streams.begin();
+	// This is because I don't know how to safely remove elements from a list
+	gboolean check = true;
+	while (check)
+ 	{
+		std::list<ChannelStream>::iterator iterator = streams.begin();
 
-	// Skip the first stream because it's the display one
-	if (iterator != streams.end())
-	{
-		iterator++;
-	}
-	
-	while (iterator != streams.end())
-	{
-		ChannelStream& channel_stream = *iterator;
-		if (channel_stream.channel == channel)
+		// Skip the first stream because it's the display one
+		if (iterator != streams.end())
 		{
-			channel_stream.output_channel.reset();
-			streams.erase(iterator);
-			break;
+			iterator++;
 		}
-		iterator++;
+
+		check = false;
+		while (iterator != streams.end())
+		{
+			ChannelStream& channel_stream = *iterator;
+			if (channel_stream.channel == channel)
+			{
+				channel_stream.output_channel.reset();
+				streams.erase(iterator);
+				check = true;
+				break;
+			}
+			iterator++;
+		}
 	}
 }
 
