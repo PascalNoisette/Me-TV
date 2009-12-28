@@ -234,6 +234,15 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 	gboolean record_channel = get_application().stream_manager.is_recording(const_channel);
 	
 	Gtk::ToggleButton& channel_button = attach_toggle_button(channel_text, record_channel, 0, 1, table_row, table_row + 1);
+
+	if (selected)
+	{
+		Gtk::HBox* hbox = dynamic_cast<Gtk::HBox*>(channel_button.get_child());
+		Gtk::Image* image = Gtk::manage(new Gtk::Image(Gtk::Stock::MEDIA_PLAY, Gtk::ICON_SIZE_BUTTON));
+		image->set_alignment(1, 0.5);
+		hbox->pack_start(*image, false, false);
+		image->show();
+	}
 	
 	channel_button.set_active(selected);
 	channel_button.signal_clicked().connect(
@@ -258,7 +267,7 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 	guint number_columns = epg_span_hours * COLUMNS_PER_HOUR + 1;
 
 	if (!disable_epg)
-	{		
+	{
 		EpgEventList events = channel.epg_events.get_list();
 		for (EpgEventList::const_iterator i = events.begin(); i != events.end(); i++)
 		{
@@ -376,7 +385,7 @@ Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text,
 		image->set_alignment(1, 0.5);
 		hbox->pack_end(*image, false, false);
 	}
-		
+	
 	button->add(*hbox);	
 	button->show_all();
 

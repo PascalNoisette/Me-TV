@@ -12,6 +12,7 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA = \
 	me-tv.png \
+	me-tv-recording.png \
         src/me-tv.xpm \
         src/me-tv-recording.xpm
 
