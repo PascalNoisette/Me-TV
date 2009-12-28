@@ -347,7 +347,12 @@ void StreamManager::start_recording(const Channel& channel, const Glib::ustring&
 	while (iterator != streams.end())
 	{
 		StreamManager::ChannelStream& channel_stream = *iterator;
-		if (channel_stream.channel == channel)
+		if (
+		    channel_stream.channel == channel &&
+		    (
+		        channel_stream.type == StreamManager::CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING ||
+				channel_stream.type == StreamManager::CHANNEL_STREAM_TYPE_RECORDING)
+		    )
 		{
 			current_type = channel_stream.type;
 			break;
@@ -368,24 +373,28 @@ void StreamManager::start_recording(const Channel& channel, const Glib::ustring&
 		{
 			stop_recording(channel);
 		}
-		else if (requested_type == CHANNEL_STREAM_TYPE_RECORDING && current_type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING)
+
+		if (requested_type == CHANNEL_STREAM_TYPE_RECORDING && current_type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING)
 		{
 			g_debug("Ignoring request to manually record a channel that is currently scheduled for recording");
 		}
 		else
 		{
-			g_debug("Channel '%s' is currently not being recorded via scheduled recording", channel.name.c_str());
+			g_debug("Channel '%s' is currently not being recorded", channel.name.c_str());
 
 			if (channel.transponder != get_application().channel_manager.get_display_channel().transponder)
 			{
 				g_debug("Need to change transponders to record this channel");
 
-				// Need to kill all current recordings
-				streams.remove_if(is_recording_stream);
-				
+				if (scheduled)
+				{
+					// Need to kill all current recordings
+					streams.remove_if(is_recording_stream);
+				}
+			
 				get_application().set_display_channel(channel);
 			}
-	
+
 			ChannelStream channel_stream(
 			scheduled ? CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING : CHANNEL_STREAM_TYPE_RECORDING,
 				channel, filename);
