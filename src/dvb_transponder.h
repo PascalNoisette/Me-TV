@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -39,6 +39,9 @@ namespace Dvb
 	{
 	public:
 		Transponder();
+
+		bool operator==(const Transponder& transponder) const;
+		bool operator!=(const Transponder& transponder) const;
 			
 		struct dvb_frontend_parameters	frontend_parameters;
 		guint							polarisation;

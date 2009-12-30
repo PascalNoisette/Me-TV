@@ -4,6 +4,7 @@
 
 gladedir = $(datadir)/me-tv/glade
 glade_DATA = me-tv.ui \
+	me-tv-actions.ui \
 	me-tv.xpm
 
 AM_CPPFLAGS = \
@@ -32,11 +33,13 @@ me_tv_xine_LDADD =        \
 	-lX11
 
 me_tv_SOURCES = \
-	main.cc\
 	../config.h \
+	main.cc\
+	mpeg_stream.cc \
+	mpeg_stream.h \
+	buffer.cc \
+	buffer.h \
 	main_window.cc \
-	stream_thread.cc \
-	stream_thread.h \
 	application.h \
 	main_window.h \
 	channels_dialog.h \
@@ -106,7 +109,11 @@ me_tv_SOURCES = \
 	scheduled_recording_manager.cc \
 	scheduled_recording_manager.h \
 	scan_dialog.cc \
-	scan_dialog.h
+	scan_dialog.h \
+	crc32.cc \
+	crc32.h \
+	stream_manager.cc \
+	stream_manager.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \

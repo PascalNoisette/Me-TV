@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -31,7 +31,7 @@ Service::Service(Transponder& service_transponder) : transponder(service_transpo
 
 gboolean Service::operator ==(const Service& service) const
 {
-	return service.id == id && service.transponder.frontend_parameters.frequency == transponder.frontend_parameters.frequency;
+	return service.id == id && service.transponder == transponder;
 }
 
 gboolean Service::operator !=(const Service& service) const

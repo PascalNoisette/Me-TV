@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -105,14 +105,20 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 {
 	Glib::RecMutex::Lock lock(mutex);
 	gboolean updated = false;
+
+	g_debug("Setting scheduled recording");
+	
+	Channel& channel = get_application().channel_manager.get_channel_by_id(scheduled_recording.channel_id);
 	
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !updated; i++)
 	{
 		ScheduledRecording& current = *i;
 
+		Channel& current_channel = get_application().channel_manager.get_channel_by_id(current.channel_id);
+
 		// Check for conflict
 		if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
-		    current.channel_id != scheduled_recording.channel_id &&
+		    current_channel.transponder != channel.transponder &&
 		    scheduled_recording.overlaps(current))
 		{
 			Glib::ustring message =  Glib::ustring::compose(
@@ -201,10 +207,11 @@ guint is_old(ScheduledRecording& scheduled_recording)
 	return (scheduled_recording.get_end_time() < scheduled_recording_now);
 }
 
-guint ScheduledRecordingManager::check_scheduled_recordings()
+ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 {
+	ScheduledRecordingList results;
+	
 	g_debug("Checking scheduled recordings");
-	guint active_scheduled_recording_id = 0;
 	Glib::RecMutex::Lock lock(mutex);
 
 	Application& application = get_application();
@@ -212,8 +219,6 @@ guint ScheduledRecordingManager::check_scheduled_recordings()
 	scheduled_recording_now = time(NULL);
 	g_debug("Removing scheduled recordings older than %d", scheduled_recording_now);
 	scheduled_recordings.remove_if(is_old);
-	
-	gboolean got_recording = false;
 
 	if (!scheduled_recordings.empty())
 	{
@@ -238,20 +243,31 @@ guint ScheduledRecordingManager::check_scheduled_recordings()
 			
 			if (record)
 			{
-				if (got_recording)
+				gboolean conflict = false;
+				for (ScheduledRecordingList::iterator i = results.begin(); i != results.end(); i++)
 				{
-					g_debug("Conflict!");
+					ScheduledRecording& scheduled_recording_test = *i;
+
+					Dvb::Transponder& t1 = get_application().channel_manager.get_channel_by_id(scheduled_recording_test.channel_id).transponder;
+					Dvb::Transponder& t2 = get_application().channel_manager.get_channel_by_id(scheduled_recording.channel_id).transponder;
+
+					if (t1 != t2)
+					{
+						conflict = true;
+						g_debug("Conflict!");
+						break;
+					}
 				}
-				else
+				
+				if (!conflict)
 				{
-					got_recording = true;
-					active_scheduled_recording_id = scheduled_recording.scheduled_recording_id;
+					results.push_back(scheduled_recording);
 				}
 			}
 		}
 	}
 		
-	return active_scheduled_recording_id;
+	return results;
 }
 
 ScheduledRecording ScheduledRecordingManager::get_scheduled_recording(guint scheduled_recording_id)
@@ -276,4 +292,39 @@ ScheduledRecording ScheduledRecordingManager::get_scheduled_recording(guint sche
 	}
 	
 	return *result;
+}
+
+gboolean ScheduledRecordingManager::is_recording(const Channel& channel)
+{
+	Glib::RecMutex::Lock lock(mutex);
+
+	guint now = time(NULL);
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	{			
+		ScheduledRecording& scheduled_recording = *i;
+		if (scheduled_recording.is_in(now) && scheduled_recording.channel_id == channel.channel_id)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+gboolean ScheduledRecordingManager::is_recording(const EpgEvent& epg_event)
+{
+	Glib::RecMutex::Lock lock(mutex);
+
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	{
+		ScheduledRecording& scheduled_recording = *i;
+		if (scheduled_recording.channel_id == epg_event.channel_id &&
+			scheduled_recording.is_in(
+			    convert_to_utc_time(epg_event.start_time),
+			    convert_to_utc_time(epg_event.get_end_time())))
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }

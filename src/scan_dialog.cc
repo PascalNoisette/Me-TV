@@ -1,5 +1,5 @@
 	/*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -380,16 +380,6 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		builder->get_widget("file_chooser_button_scan", file_chooser_button);
 		initial_tuning_file = file_chooser_button->get_filename();
 
-		switch(frontend.get_frontend_info().type)
-		{
-			case FE_OFDM:
-			case FE_QAM:
-			case FE_QPSK:
-				break;
-			default:
-				throw Exception(_("Failed to scan: scanning is only supported for DVB-T, DVB-S and DVB-C devices"));
-		}
-
 		if (initial_tuning_file.empty())
 		{
 			throw Exception(_("No tuning file has been selected"));
@@ -408,7 +398,6 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
 		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
 		scanner.signal_complete.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_complete));
-		get_application().stop_stream_thread();
 		scan_thread->start();
 	}
 	else if (radio_button_import->get_active())

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -87,6 +87,8 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_eve
 		set_transient_for(*transient_for);
 	}
 	
+	scheduled_recording_id = 0;
+
 	Application& application = get_application();
 	guint before = application.get_int_configuration_value("record_extra_before");
 	guint after = application.get_int_configuration_value("record_extra_after");
@@ -101,6 +103,9 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_eve
 
 gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate_default)
 {
+	gint dialog_response = Gtk::RESPONSE_CANCEL;
+
+	TRY
 	if (transient_for != NULL)
 	{
 		set_transient_for(*transient_for);
@@ -117,15 +122,18 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 		spin_button_duration->set_value(30);
 	}
 	
-	gint dialog_response = Gtk::Dialog::run();
+	dialog_response = Gtk::Dialog::run();
 	hide();
-	
+
 	if (dialog_response == Gtk::RESPONSE_OK)
 	{
+		g_debug("Pressed OK on scheduled recording dialog");
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
+		g_debug("Got SR details for '%s'", scheduled_recording.description.c_str());
 		get_application().scheduled_recording_manager.set_scheduled_recording(scheduled_recording);
 	}
-	
+	CATCH
+		
 	return dialog_response;
 }
 

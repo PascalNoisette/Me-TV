@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -70,6 +70,11 @@ Glib::ustring ScheduledRecording::get_end_time_text() const
 gboolean ScheduledRecording::is_in(guint at) const
 {
 	return start_time <= at && start_time+duration > at;
+}
+
+gboolean ScheduledRecording::is_in(guint s, guint e) const
+{
+	return start_time < s && get_end_time() > e;
 }
 
 gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_recording) const

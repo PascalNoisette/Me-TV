@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -43,8 +43,8 @@ public:
 		
 	const ChannelArray& get_channels() const;
 	ChannelArray& get_channels();
-	void next_channel();
-	void previous_channel();
+	Channel* get_next_channel();
+	Channel* get_previous_channel();
 	void select_display_channel();
 	void set_display_channel(const Channel& channel);
 	void set_display_channel_by_id(guint channel_id);

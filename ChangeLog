@@ -1,3 +1,25 @@
+2010-01-01  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.1.0
+	* Fixed faulty clean rule for new schemas file: (LP: #493132)
+	* Better ATSC support
+	* Added audio stream type 0x11 to PMS parser
+	* Implemented make_directory_with_parents to remove dependency on GLib 2.18
+	* Split out MPEG tables from DVB SI tables
+	* Added recording icon to channel buttons
+	* Added recording icon to EPG buttons
+	* Right-click instant record on channel buttons
+	* Right-click goes to scheduled recording on EPG buttons
+	* Can now schedule/record/watch multiple channels on the same transponder
+	* Removed broadcast feature 
+	* Fixed Program Clock Reference (PCR) in PMT to get VLC support
+
+2009-12-06  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.0.2
+	* Added option to remove colon from recording filenames (LP: #491602)
+	* Fixed type mismatch on show_epg_tooltips
+
 2009-11-29  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.0.1
@@ -5,7 +27,7 @@
 	* Applied Martin Pitt's patch for duplicate ids
 	* Updated include order in channels.h to allow compile in recent kernel
 	* Ignoring scheduled recording check for same scheduled recording (LP: #437142)
-	* Added iIGNORE_SQLITE3_THREADSAFE_CHECK to disable sqlite3_threadsafe check for Hardy compile (LP: #433996)
+	* Added IGNORE_SQLITE3_THREADSAFE_CHECK to disable sqlite3_threadsafe check for Hardy compile (LP: #433996)
 	* Added support for EPG in Hong Kong from Raymond Tau (LP: #477388)
 	* Set timeout for EPG events to 1 second (LP: #434994) 
 	* Moved DB to .local/share/me-tv (LP: #486247) 

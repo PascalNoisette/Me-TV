@@ -6,18 +6,19 @@ SUBDIRS = src po
 desktopdir = $(datadir)/applications
 desktop_in_files = me-tv.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-
 @INTLTOOL_DESKTOP_RULE@
 
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA = \
 	me-tv.png \
+	me-tv-recording.png \
         src/me-tv.xpm \
         src/me-tv-recording.xpm
 
 schemasdir = $(GCONF_SCHEMA_FILE_DIR)
 schemas_in_files = me-tv.schemas.in
 schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
+@INTLTOOL_SCHEMAS_RULE@
 
 man_MANS = \
 	me-tv.1 \
@@ -38,8 +39,6 @@ EXTRA_DIST = \
 	intltool-merge.in \
 	intltool-extract.in
 
-@INTLTOOL_SCHEMAS_RULE@
-
 if GCONF_SCHEMAS_INSTALL
 install-data-local: $(schemas_DATA)
 	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schemas_DATA)
@@ -53,7 +52,7 @@ dist-hook:
 		fi \
 	done
 
-CLEANFILES = $(desktop_DATA) $(schema_DATA)
+CLEANFILES = $(desktop_DATA) $(schemas_DATA)
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
 

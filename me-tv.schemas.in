@@ -293,8 +293,8 @@
 			<key>/schemas/apps/me-tv/show_epg_tooltips</key>
 			<applyto>/apps/me-tv/show_epg_tooltips</applyto>
 			<owner>me-tv</owner>
-			<type>int</type>
-			<default>20</default>
+			<type>bool</type>
+			<default>false</default>
 			<locale name="C">
 				<short>Show a tool tip when hovering over an EPG event.</short>
 				<long>
@@ -304,39 +304,11 @@
 		</schema>
 
 		<schema>
-			<key>/schemas/apps/me-tv/broadcast_address</key>
-			<applyto>/apps/me-tv/broadcast_address</applyto>
-			<owner>me-tv</owner>
-			<type>string</type>
-			<default>192.168.0.255S</default>
-			<locale name="C">
-				<short>The multicast address to use for broadcasting.</short>
-				<long>
-					The multicast address to use for broadcasting.
-				</long>
-			</locale>
-		</schema>
-
-		<schema>
-			<key>/schemas/apps/me-tv/broadcast_port</key>
-			<applyto>/apps/me-tv/broadcast_port</applyto>
-			<owner>me-tv</owner>
-			<type>int</type>
-			<default>2005</default>
-			<locale name="C">
-				<short>The TCP port to use for broadcasting.</short>
-				<long>
-					The TCP port to use for broadcasting.
-				</long>
-			</locale>
-		</schema>
-
-		<schema>
 			<key>/schemas/apps/me-tv/preferred_language</key>
 			<applyto>/apps/me-tv/preferred_language</applyto>
 			<owner>me-tv</owner>
 			<type>string</type>
-			<default>2005</default>
+			<default></default>
 			<locale name="C">
 				<short>Preferred language to us when selecting streams.</short>
 				<long>
@@ -355,6 +327,34 @@
 				<short>The rendering engine to use.</short>
 				<long>
 					When multiple engines are available this can be used to select between them.
+				</long>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/me-tv/remove_colon</key>
+			<applyto>/apps/me-tv/remove_colon</applyto>
+			<owner>me-tv</owner>
+			<type>bool</type>
+			<default>false</default>
+			<locale name="C">
+				<short>Remove the colon ':' from the recording filename</short>
+				<long>
+					Some file systems do not support a colon in a filename (e.g. FAT32). This option tells Me TV to remove it from the recording filename.
+				</long>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/me-tv/fullscreen_bug_workaround</key>
+			<applyto>/apps/me-tv/fullscreen_bug_workaround</applyto>
+			<owner>me-tv</owner>
+			<type>bool</type>
+			<default>false</default>
+			<locale name="C">
+				<short>Drop out of fullscreen mode when showing dialogs</short>
+				<long>
+					Some window managers don't like showing dialogs such as the EPG dialog over a fullscreen, "Always On Top" window such as the main window.  This option tells Me TV to come out of fullscreen mode while those dialogs are shown and return to fullscreen mode when the dialog is closed.
 				</long>
 			</locale>
 		</schema>

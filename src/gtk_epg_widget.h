@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -43,15 +43,17 @@ private:
 	void previous();
 	void next();
 		
+	bool on_button_program_press_event(GdkEventButton* event, EpgEvent& epg_event);
+	bool on_button_channel_press_event(GdkEventButton* event, Channel& channel);
 	void on_button_program_clicked(EpgEvent& epg_event);
-	void on_button_channel_name_clicked(guint channel_id);
+	void on_button_channel_clicked(guint channel_id);
 	void on_combo_box_epg_page_changed();
 		
 	void clear();
 	void update_pages();
 	
-	Gtk::ToggleButton& attach_toggle_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
-	Gtk::Button& attach_button(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
+	Gtk::ToggleButton& attach_toggle_button(const Glib::ustring& text, gboolean record, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
+	Gtk::Button& attach_button(const Glib::ustring& text, gboolean record, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	Gtk::Label& attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	void attach_widget(Gtk::Widget& widget, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	void create_channel_row(const Channel& const_channel,

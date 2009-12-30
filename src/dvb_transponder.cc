@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -35,7 +35,7 @@ gboolean TransponderList::exists(const Transponder& transponder)
 {
 	for (const_iterator i = begin(); i != end(); i++)
 	{
-		if (transponder.frontend_parameters.frequency == (*i).frontend_parameters.frequency)
+		if (transponder == *i)
 		{
 			return true;
 		}
@@ -50,4 +50,14 @@ void TransponderList::add(const Transponder& transponder)
 	{
 		push_back(transponder);
 	}
+}
+
+bool Transponder::operator==(const Transponder& transponder) const
+{
+	return transponder.frontend_parameters.frequency == frontend_parameters.frequency;
+}
+
+bool Transponder::operator!=(const Transponder& transponder) const
+{
+	return transponder.frontend_parameters.frequency != frontend_parameters.frequency;
 }

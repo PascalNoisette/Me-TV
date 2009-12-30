@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -28,7 +28,7 @@
 #include "scheduled_recording_manager.h"
 #include "main_window.h"
 #include "status_icon.h"
-#include "stream_thread.h"
+#include "stream_manager.h"
 
 class Application : public Gnome::Main
 {
@@ -39,12 +39,10 @@ private:
 	StatusIcon*							status_icon;
 	Glib::RefPtr<Gnome::Conf::Client>	client;
 	Glib::ustring						preferred_language;
-	StreamThread*						stream_thread;
 	Glib::StaticRecMutex				mutex;
 	guint								timeout_source;
 	Glib::ustring						application_dir;
 	Data::Schema						schema;
-	guint								scheduled_recording_id;
 	Glib::ustring						database_filename;
 	gboolean							database_initialised;
 
@@ -53,7 +51,7 @@ private:
 	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);	
 	Glib::ustring get_configuration_path(const Glib::ustring& key);
 
-	void ensure_directory_exists(const Glib::ustring& path);
+	void make_directory_with_parents(const Glib::ustring& path);
 		
 	void on_display_channel_changed(const Channel& channel);
 	static gboolean on_timeout(gpointer data);
@@ -70,12 +68,10 @@ public:
 	ChannelManager				channel_manager;
 	ScheduledRecordingManager	scheduled_recording_manager;
 	DeviceManager				device_manager;
+	StreamManager				stream_manager;
 	Data::Connection			connection;
 
 	Glib::StaticRecMutex&	get_mutex();
-	StreamThread*			get_stream_thread();
-	void					stop_stream_thread();
-	void					restart_stream();
 	gboolean				initialise_database();
 	Data::Schema			get_schema() const { return schema; }
 
@@ -97,18 +93,14 @@ public:
 	void set_display_channel_number(guint display_channel_number);
 	void previous_channel();
 	void next_channel();
-	void stop_stream();
-	void start_stream();
 	
-	gboolean is_recording();
 	void check_scheduled_recordings();
 	void on_record();
-	
-	gboolean is_broadcasting();
-	void on_broadcast();
-	
+	void start_recording(Channel& channel, const Glib::ustring& description = "", gboolean scheduled = false);
+	void stop_recording(Channel& channel);
+	Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description = "");
+		
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
-	Glib::ustring make_recording_filename(const Glib::ustring& description = "");
 	const Glib::ustring& get_application_dir() const { return application_dir; }
 	
 	MainWindow& get_main_window();

@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkUIManager" id="ui_manager">
+    <child>
+      <object class="GtkActionGroup" id="main-action-group">
+         <child>
+            <object class="GtkAction" id="not_available">
+               <property name="label" translatable="yes">Not Available</property>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="file">
+               <property name="label" translatable="yes">_File</property>
+            </object>
+         </child>
+         <child>
+            <object class="GtkToggleAction" id="record">
+               <property name="stock-id">gtk-media-record</property>
+               <signal name="activate" handler="on_record"/>
+            </object>
+            <accelerator key="R"/>
+         </child>
+         <child>
+            <object class="GtkAction" id="quit">
+               <property name="stock-id">gtk-quit</property>
+               <signal name="activate" handler="on_quit"/>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="view">
+               <property name="label" translatable="yes">_View</property>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="previous_channel">
+               <property name="label" translatable="yes">_Previous Channel</property>
+               <property name="stock-id">gtk-go-up</property>
+               <signal name="activate" handler="on_previous_channel"/>
+            </object>
+            <accelerator key="Up" modifiers="GDK_CONTROL_MASK"/>
+         </child>
+         <child>
+            <object class="GtkAction" id="next_channel">
+               <property name="label" translatable="yes">_Next Channel</property>
+               <property name="stock-id">gtk-go-down</property>
+               <signal name="activate" handler="on_next_channel"/>
+            </object>
+            <accelerator key="Down" modifiers="GDK_CONTROL_MASK"/>
+         </child>
+         <child>
+            <object class="GtkAction" id="change_view_mode">
+               <property name="label" translatable="yes">_Change View</property>
+               <property name="stock-id">gtk-convert</property>
+               <signal name="activate" handler="on_change_view_mode"/>
+            </object>
+            <accelerator key="V"/>
+         </child>
+         <child>
+            <object class="GtkAction" id="devices">
+               <property name="label" translatable="yes">_Devices</property>
+               <signal name="activate" handler="on_devices"/>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="channels">
+               <property name="label" translatable="yes">_Channels</property>
+               <signal name="activate" handler="on_channels"/>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="scheduled_recordings">
+               <property name="label" translatable="yes">_Schedule</property>
+               <property name="stock-id">gnome-stock-timer</property>
+               <signal name="activate" handler="on_scheduled_recordings"/>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="meters">
+               <property name="label" translatable="yes">_Meters</property>
+               <signal name="activate" handler="on_meters"/>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="preferences">
+               <property name="stock-id">gtk-preferences</property>
+               <signal name="activate" handler="on_preferences"/>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="video">
+               <property name="label" translatable="yes">Video</property>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="subtitle_streams">
+               <property name="label" translatable="yes">_Subtitle Streams</property>
+            </object>
+         </child>
+         <child>
+            <object class="GtkToggleAction" id="fullscreen">
+               <property name="stock-id">gtk-fullscreen</property>
+               <signal name="activate" handler="on_fullscreen"/>
+            </object>
+            <accelerator key="F"/>
+         </child>
+         <child>
+            <object class="GtkAction" id="audio">
+               <property name="label" translatable="yes">Audio</property>
+            </object>
+         </child>
+         <child>
+            <object class="GtkToggleAction" id="mute">
+               <property name="label" translatable="yes">_Mute</property>
+               <property name="stock-id">gnome-stock-volume</property>
+               <signal name="activate" handler="on_mute"/>
+            </object>
+            <accelerator key="M"/>
+         </child>
+         <child>
+            <object class="GtkAction" id="audio_streams">
+               <property name="label" translatable="yes">Audio _Streams</property>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="audio_channels">
+               <property name="label" translatable="yes">Audio _Channels</property>
+            </object>
+         </child>
+         <child>
+            <object class="GtkRadioAction" id="audio_channel_both">
+               <property name="label" translatable="yes">_Both</property>
+	       <property name="value">0</property>
+	       <property name="current-value">0</property>
+               <signal name="activate" handler="on_audio_channel_both"/>
+            </object>
+         </child>
+         <child>
+            <object class="GtkRadioAction" id="audio_channel_left">
+               <property name="label" translatable="yes">_Left</property>
+	       <property name="group">audio_channel_both</property>
+	       <property name="value">1</property>
+               <signal name="activate" handler="on_audio_channel_left"/>
+            </object>
+         </child>
+         <child>
+            <object class="GtkRadioAction" id="audio_channel_right">
+               <property name="label" translatable="yes">_Right</property>
+	       <property name="group">audio_channel_both</property>
+	       <property name="value">2</property>
+               <signal name="activate" handler="on_audio_channel_right"/>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="help">
+               <property name="label" translatable="yes">_Help</property>
+            </object>
+         </child>
+         <child>
+            <object class="GtkAction" id="about">
+               <property name="stock-id">gtk-about</property>
+               <signal name="activate" handler="on_about"/>
+            </object>
+         </child>
+      </object>
+    </child>
+  <ui>
+    <menubar name="menubar">
+      <menu action="file">
+        <menuitem action="record"/>
+        <separator/>
+        <menuitem action="quit"/>
+      </menu>
+      <menu action="view">
+        <menuitem action="previous_channel"/>
+        <menuitem action="next_channel"/>
+        <separator/>
+        <menuitem action="change_view_mode"/>
+        <separator/>
+        <menuitem action="devices"/>
+        <menuitem action="scheduled_recordings"/>
+        <menuitem action="channels"/>
+        <menuitem action="meters"/>
+        <menuitem action="preferences"/>
+      </menu>
+      <menu action="video">
+        <menuitem action="fullscreen"/>
+        <menu action="subtitle_streams">
+          <menuitem action="not_available"/>
+        </menu>
+      </menu>
+      <menu action="audio">
+        <menuitem action="mute"/>
+        <menu action="audio_streams">
+          <menuitem action="not_available"/>
+        </menu>
+        <menu action="audio_channels">
+          <menuitem action="audio_channel_both"/>
+          <menuitem action="audio_channel_left"/>
+          <menuitem action="audio_channel_right"/>
+        </menu>
+      </menu>
+      <menu action="help">
+        <menuitem action="about"/>
+      </menu>
+    </menubar>
+    <toolbar name='toolbar'>
+      <toolitem action='record'/>
+      <toolitem action='mute'/>
+      <toolitem action='scheduled_recordings'/>
+      <toolitem action='fullscreen'/>
+    </toolbar>
+  </ui>
+  </object>
+</interface>

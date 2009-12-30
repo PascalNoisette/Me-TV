@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -20,8 +20,6 @@
 
 #include "me-tv-i18n.h"
 #include "device_manager.h"
-
-#define NO_FRONTEND_MESSAGE _("There are no available DVB tuner devices")
 
 Glib::ustring DeviceManager::get_adapter_path(guint adapter)
 {
@@ -108,9 +106,14 @@ gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend
 
 Dvb::Frontend& DeviceManager::get_frontend()
 {
+	if (frontends.empty())
+	{
+		throw Exception(_("There are no digital tuner devices available"));
+	}
+		
 	if (frontend == NULL)
 	{
-		throw Exception(NO_FRONTEND_MESSAGE);
+		throw Exception(_("No frontend has been selected"));
 	}
 	
 	return *frontend;

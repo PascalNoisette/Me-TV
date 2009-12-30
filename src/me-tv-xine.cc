@@ -395,6 +395,17 @@ int main(int argc, char **argv)
 							
 						break;
 
+					case XK_space:
+						if (key_event->state == XK_Shift_L)
+						{
+							xine_set_param(stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE);
+						}
+						else
+						{
+							xine_set_param(stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
+						}
+						break;
+							
 					default:
 						if (keysym >= XK_1 || keysym <= XK_9)
 						{

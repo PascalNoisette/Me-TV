@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -252,7 +252,7 @@ void MainWindow::fullscreen(gboolean change_mode)
 
 gboolean MainWindow::is_fullscreen()
 {
-	return get_window()->get_state() & Gdk::WINDOW_STATE_FULLSCREEN;
+	return get_window() != NULL && get_window()->get_state() & Gdk::WINDOW_STATE_FULLSCREEN;
 }
 
 gboolean MainWindow::on_timeout(gpointer data)
@@ -300,15 +300,11 @@ void MainWindow::on_timeout()
 	}
 	
 	// Update EPG
-	StreamThread* stream_thread = get_application().get_stream_thread();
-	if (stream_thread != NULL)
+	guint last_epg_update_time = get_application().stream_manager.get_last_epg_update_time();
+	if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 	{
-		guint last_epg_update_time = stream_thread->get_last_epg_update_time();
-		if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
-		{
-			update();
-			last_update_time = now;
-		}
+		update();
+		last_update_time = now;
 	}
 	
 	// Check on engine
@@ -346,6 +342,14 @@ void MainWindow::on_timeout()
 	CATCH
 }
 
+void MainWindow::pause(gboolean state)
+{
+	if (engine != NULL)
+	{
+		engine->pause(state);
+	}
+}
+
 void MainWindow::set_view_mode(ViewMode mode)
 {
 	Gtk::Widget* widget = NULL;
@@ -372,6 +376,8 @@ void MainWindow::show_scheduled_recordings_dialog()
 	ScheduledRecordingsDialog& scheduled_recordings_dialog = ScheduledRecordingsDialog::create(builder);
 	scheduled_recordings_dialog.run();
 	scheduled_recordings_dialog.hide();
+
+	update();
 }
 
 void MainWindow::on_menu_item_audio_stream_activate(guint index)
@@ -402,21 +408,21 @@ void MainWindow::update()
 	Glib::ustring window_title;
 	Glib::ustring status_text;
 
-	if (!application.channel_manager.has_display_channel())
+	std::list<StreamManager::ChannelStream>& streams = application.stream_manager.get_streams();
+	if (streams.size() == 0)
 	{
-		window_title = _("Me TV - It's TV for me computer");
+		window_title = "Me TV - It's TV for me computer";
 	}
 	else
 	{
 		Channel& channel = application.channel_manager.get_display_channel();
 		window_title = "Me TV - " + channel.get_text();
 		status_text = channel.get_text();
-	}
-	
-	if (application.is_recording())
-	{
-		status_text += _(" [Recording]");
-		window_title += _(" [Recording]");
+		
+		gboolean record = application.stream_manager.is_recording(
+		    application.channel_manager.get_display_channel());
+		Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(
+		    builder->get_object("record"))->set_active(record);
 	}
 	
 	set_title(window_title);
@@ -576,13 +582,16 @@ void MainWindow::create_engine()
 void MainWindow::play(const Glib::ustring& mrl)
 {
 	Application& application = get_application();
-
-	create_engine();
-	if (engine != NULL)
+	
+	if (engine == NULL)
 	{
-		engine->play(mrl);
+		create_engine();
+		if (engine != NULL)
+		{
+			engine->play(mrl);
+		}
 	}
-
+	
 	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menubar/audio/audio_streams"))->get_submenu();
 	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menubar/video/subtitle_streams"))->get_submenu();
 	
@@ -593,77 +602,74 @@ void MainWindow::play(const Glib::ustring& mrl)
 	subtitle_items.erase(subtitle_items.begin(), subtitle_items.end());
 
 	Gtk::RadioMenuItem::Group audio_streams_menu_group;
-	
-	// Acquire stream thread lock
-	Glib::RecMutex::Lock application_lock(application.get_mutex());
 
-	StreamThread* stream_thread = application.get_stream_thread();
-	if (stream_thread != NULL)
+	const Mpeg::Stream stream = application.stream_manager.get_display_stream().stream;
+	std::vector<Mpeg::AudioStream> audio_streams = stream.audio_streams;
+	guint count = 0;
+
+	g_debug("Audio streams: %zu", audio_streams.size());
+	for (std::vector<Mpeg::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
 	{
-		const Stream& stream = stream_thread->get_stream();
-		std::vector<Dvb::SI::AudioStream> audio_streams = stream.audio_streams;
-		guint count = 0;
-		
-		g_debug("Audio streams: %zu", audio_streams.size());
-		for (std::vector<Dvb::SI::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
+		Mpeg::AudioStream audio_stream = *i;
+		Glib::ustring text = Glib::ustring::compose("%1: %2", count, audio_stream.language);
+		if (audio_stream.type == STREAM_TYPE_AUDIO_AC3)
 		{
-			Dvb::SI::AudioStream audio_stream = *i;
-			Glib::ustring text = Glib::ustring::compose("%1: %2", count, audio_stream.language);
-			if (audio_stream.is_ac3)
-			{
-				text += " (AC3)";
-			}
-			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
-			menu_item->show_all();
-			audio_streams_menu->items().push_back(*menu_item);
-			
-			menu_item->signal_activate().connect(
-				sigc::bind<guint>
-				(
-					sigc::mem_fun(*this, &MainWindow::on_menu_item_audio_stream_activate),
-					count
-				)
-			);
-
-			count++;
+			text += " (AC3)";
 		}
-
-		std::vector<Dvb::SI::SubtitleStream> subtitle_streams = stream.subtitle_streams;
-		Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
-		count = 0;
+		else if (audio_stream.type == STREAM_TYPE_AUDIO_MPEG4)
+		{
+			text += " (MPEG4)";
+		}
+		Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
+		menu_item->show_all();
+		audio_streams_menu->items().push_back(*menu_item);
 		
-		Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
-		menu_item_subtitle_none->show_all();
-		subtitle_streams_menu->items().push_back(*menu_item_subtitle_none);
-		menu_item_subtitle_none->signal_activate().connect(
+		menu_item->signal_activate().connect(
+			sigc::bind<guint>
+			(
+				sigc::mem_fun(*this, &MainWindow::on_menu_item_audio_stream_activate),
+				count
+			)
+		);
+
+		count++;
+	}
+
+	std::vector<Mpeg::SubtitleStream> subtitle_streams = stream.subtitle_streams;
+	Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
+	count = 0;
+	
+	Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
+	menu_item_subtitle_none->show_all();
+	subtitle_streams_menu->items().push_back(*menu_item_subtitle_none);
+	menu_item_subtitle_none->signal_activate().connect(
+		sigc::bind<guint>
+		(
+			sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
+			-1
+		)
+	);
+	
+	g_debug("Subtitle streams: %zu", subtitle_streams.size());
+	for (std::vector<Mpeg::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); i++)
+	{
+		Mpeg::SubtitleStream subtitle_stream = *i;
+		Glib::ustring text = Glib::ustring::compose("%1: %2", count, subtitle_stream.language);
+		Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
+		menu_item->show_all();
+		subtitle_streams_menu->items().push_back(*menu_item);
+					
+		menu_item->signal_activate().connect(
 			sigc::bind<guint>
 			(
 				sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
-				-1
+				count
 			)
 		);
 		
-		g_debug("Subtitle streams: %zu", subtitle_streams.size());
-		for (std::vector<Dvb::SI::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); i++)
-		{
-			Dvb::SI::SubtitleStream subtitle_stream = *i;
-			Glib::ustring text = Glib::ustring::compose("%1: %2", count, subtitle_stream.language);
-			Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
-			menu_item->show_all();
-			subtitle_streams_menu->items().push_back(*menu_item);
-						
-			menu_item->signal_activate().connect(
-				sigc::bind<guint>
-				(
-					sigc::mem_fun(*this, &MainWindow::on_menu_item_subtitle_stream_activate),
-					count
-				)
-			);
-			
-			count++;
-		}
+		count++;
 	}
-	
+
 	if (audio_streams_menu->items().empty())
 	{
 		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("Not available"));
@@ -683,11 +689,12 @@ void MainWindow::start_engine()
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-	Application& application = get_application();
-	StreamThread* stream_thread = application.get_stream_thread();
-	if (property_visible() && stream_thread != NULL)
+	if (!get_application().stream_manager.get_streams().empty())
 	{
-		play(stream_thread->get_fifo_path());
+		if (property_visible())
+		{
+			play(get_application().stream_manager.get_display_stream().filename);
+		}
 	}
 }
 
@@ -704,6 +711,12 @@ void MainWindow::stop_engine()
 	}
 
 	g_debug("Engine stopped");
+}
+
+void MainWindow::restart_engine()
+{
+	stop_engine();
+	start_engine();
 }
 
 void MainWindow::on_audio_channel_both()
@@ -748,6 +761,7 @@ void MainWindow::on_scheduled_recordings()
 {
 	TRY
 	show_scheduled_recordings_dialog();
+	get_application().update();
 	CATCH
 }
 

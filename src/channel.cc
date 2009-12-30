@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -60,4 +60,14 @@ gboolean ChannelArray::contains(guint channel_id)
 	}
 	
 	return false;
+}
+
+bool Channel::operator==(const Channel& channel) const
+{
+	return channel.service_id == service_id && channel.transponder == transponder;
+}
+
+bool Channel::operator!=(const Channel& channel) const
+{
+	return !(*this == channel);
 }

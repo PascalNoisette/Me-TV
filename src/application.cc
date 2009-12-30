@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -21,6 +21,7 @@
 #include "application.h"
 #include "data.h"
 #include "devices_dialog.h"
+#include "crc32.h"
 
 #define GCONF_PATH					"/apps/me-tv"
 #define CURRENT_DATABASE_VERSION	3
@@ -30,12 +31,6 @@ void on_record(GtkObject *object, gpointer user_data)
 {
 	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().on_record();
-}
-
-void on_broadcast(GtkObject *object, gpointer user_data)
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().on_broadcast();
 }
 
 void on_quit()
@@ -151,9 +146,7 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	current					= this;
 	main_window				= NULL;
 	status_icon				= NULL;
-	stream_thread			= NULL;
 	timeout_source			= 0;
-	scheduled_recording_id	= 0;
 	database_initialised	= false;
 	
 	// Remove all other handlers first
@@ -167,6 +160,8 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 		throw Exception(_("The SQLite version is not thread-safe"));
 	}
 #endif
+
+	Crc32::init();
 	
 	client = Gnome::Conf::Client::get_default_client();
 
@@ -181,24 +176,18 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	}
 	
 	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
-	ensure_directory_exists (application_dir);
+	make_directory_with_parents (application_dir);
 
 	Glib::ustring data_directory = Glib::get_home_dir() + "/.local/share/me-tv";
-	ensure_directory_exists (data_directory);
+	make_directory_with_parents (data_directory);
 	
 	database_filename = Glib::build_filename(data_directory, "me-tv.db");
 	connection.open(database_filename);
 	
-	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
-	Glib::ustring ui_path = current_directory + "/me-tv.ui";
-
-	if (!Gio::File::create_for_path(ui_path)->query_exists())
-	{
-		ui_path = PACKAGE_DATA_DIR"/me-tv/glade/me-tv.ui";
-	}
+	g_debug("Loading UI files");
 	
-	g_debug("Loading GtkBuilder file '%s' ...", ui_path.c_str());
-	builder = Gtk::Builder::create_from_file(ui_path);
+	builder = Gtk::Builder::create_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv.ui");
+	builder->add_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv-actions.ui");
 	
 	g_debug("Application constructed");
 }
@@ -210,7 +199,6 @@ Application::~Application()
 	{
 		g_source_remove(timeout_source);
 	}
-	stop_stream_thread();
 	if (main_window != NULL)
 	{
 		delete main_window;
@@ -226,13 +214,21 @@ Application::~Application()
 	g_debug("Application destructor complete");
 }
 
-void Application::ensure_directory_exists(const Glib::ustring& path)
+void Application::make_directory_with_parents(const Glib::ustring& path)
 {
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
 	if (!file->query_exists())
 	{
-		g_debug("Creating directory '%s'", path.c_str());
-		file->make_directory_with_parents();
+		Glib::RefPtr<Gio::File> parent = file->get_parent();
+		if (parent->query_exists())
+		{
+			g_debug("Creating directory '%s'", path.c_str());
+			file->make_directory();
+		}
+		else
+		{
+			make_directory_with_parents(parent->get_path());
+		}
 	}
 }
 
@@ -484,7 +480,7 @@ void Application::run()
 		g_debug("Me TV database initialised successfully");
 				
 		const FrontendList& frontends = device_manager.get_frontends();
-
+		
 		if (!default_device.empty())
 		{
 			Dvb::Frontend* default_frontend = device_manager.find_frontend_by_path(default_device);
@@ -511,6 +507,21 @@ void Application::run()
 		status_icon = new StatusIcon();
 		main_window = MainWindow::create(builder);
 
+		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
+
+		TRY
+
+		ChannelArray& channels = channel_manager.get_channels();
+		if (channels.empty())
+		{
+			main_window->show_channels_dialog();
+		}
+		
+		if (!device_manager.get_frontends().empty())
+		{
+			scheduled_recording_manager.load(connection);
+		}
+		
 		if (!minimised_mode)
 		{
 			main_window->show();
@@ -521,19 +532,13 @@ void Application::run()
 			}
 		}
 
-		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
-
-		TRY		
-		scheduled_recording_manager.load(connection);
-
-		const ChannelArray& channels = channel_manager.get_channels();
-		if (channels.empty())
-		{
-			main_window->show_channels_dialog();
-		}
-
 		select_channel_to_play();
 		CATCH
+
+		if (channel_manager.has_display_channel())
+		{
+			stream_manager.start();
+		}
 		
 		Gnome::Main::run();
 			
@@ -563,16 +568,6 @@ Application& Application::get_current()
 	return *current;
 }
 
-void Application::stop_stream_thread()
-{	
-	Glib::RecMutex::Lock lock(mutex);
-	if (stream_thread != NULL)
-	{
-		delete stream_thread;
-		stream_thread = NULL;
-	}
-}
-
 void Application::update()
 {
 	preferred_language = get_string_configuration_value("preferred_language");	
@@ -588,6 +583,24 @@ void Application::update()
 	}
 }
 
+void Application::previous_channel()
+{
+	Channel* channel = channel_manager.get_previous_channel();
+	if (channel != NULL)
+	{
+		set_display_channel(*channel);
+	}
+}
+
+void Application::next_channel()
+{
+	Channel* channel = channel_manager.get_next_channel();
+	if (channel != NULL)
+	{
+		set_display_channel(*channel);
+	}
+}
+
 void Application::set_display_channel_by_id(guint channel_id)
 {
 	set_display_channel(channel_manager.get_channel_by_id(channel_id));
@@ -598,71 +611,37 @@ void Application::set_display_channel_number(guint channel_index)
 	set_display_channel(channel_manager.get_channel_by_index(channel_index));
 }
 
-void Application::previous_channel()
+void Application::set_display_channel(const Channel& channel)
 {
-	stop_stream();
-	channel_manager.previous_channel();
-	start_stream();
-}
+	g_message(_("Changing channel to '%s'"), channel.name.c_str());
 
-void Application::next_channel()
-{
-	stop_stream();
-	channel_manager.next_channel();
-	start_stream();
-}
-
-void Application::stop_stream()
-{
-	if (is_recording())
+	Channel& current_channel = channel_manager.get_display_channel();
+	if (current_channel.transponder == channel.transponder)
 	{
-		throw Exception(_("You cannot stop the current stream because you are recording."));
+		g_message(_("Already tuned to correct frequency"));
+	}
+	else
+	{
+		if (stream_manager.is_recording())
+		{
+			Glib::ustring message = Glib::ustring::compose(
+			    _("You cannot tune to channel '%1' because you are recording."),
+			    channel.name.c_str());
+			throw Exception(message);
+		}
 	}
 
-	main_window->stop_engine();
-	stop_stream_thread();
-}
-
-void Application::start_stream()
-{
-	if (!channel_manager.has_display_channel())
+	if (current_channel != channel)
 	{
-		throw Exception("Failed to start stream because there is no display channel");
+		channel_manager.set_display_channel(channel);
+		stream_manager.set_display_stream(channel);
+		main_window->restart_engine();
 	}
 	
-	Channel& channel = channel_manager.get_display_channel();
-	stream_thread = new StreamThread(channel);
-	try
-	{
-		stream_thread->start();
-
-		try
-		{
-			main_window->start_engine();
-		}
-		catch(const Glib::Exception& exception)
-		{
-			main_window->stop_engine();
-			get_signal_error().emit(exception.what().c_str());
-		}	
-	}
-	catch(const Glib::Exception& exception)
-	{
-		stop_stream_thread();
-		get_signal_error().emit(exception.what().c_str());
-	}
-		
 	set_int_configuration_value("last_channel", channel.channel_id);
 
 	update();
-}
 
-void Application::set_display_channel(const Channel& channel)
-{
-	g_message(_("Changing channel to %s"), channel.name.c_str());
-	stop_stream();
-	channel_manager.set_display_channel(channel);
-	start_stream();
 	g_message(_("Channel changed to %s"), channel.name.c_str());
 }
 
@@ -678,42 +657,36 @@ MainWindow& Application::get_main_window()
 
 void Application::check_scheduled_recordings()
 {
-	guint id = scheduled_recording_manager.check_scheduled_recordings();
-	if (id != 0)
+	ScheduledRecordingList scheduled_recordings = scheduled_recording_manager.check_scheduled_recordings();
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
-		scheduled_recording_id = id;
-		ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(id);
-
-		const Channel& channel = channel_manager.get_display_channel();
-		if (channel.channel_id == scheduled_recording.channel_id)
+		const ScheduledRecording& scheduled_recording = *i;
+		Channel* channel = channel_manager.find_channel(scheduled_recording.channel_id);
+		if (channel != NULL)
 		{
-			g_debug("Already tuned to correct channel");
-		}
-		else
-		{			
-			g_debug("Changing channel for scheduled recording");
-			set_display_channel_by_id(scheduled_recording.channel_id);
-		}
-
-		if (is_recording())
-		{
-			g_debug("Already recording");
-		}
-		else
-		{
-			g_debug("Starting recording due to scheduled recording");
-			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->set_active();
+			start_recording(*channel, scheduled_recording.description, true);
 		}
 	}
 
-	// Check if the SR has just finished
-	if (stream_thread != NULL &&			// If there's a stream
-		is_recording() &&					// and it's recording
-		scheduled_recording_id != 0 &&		// and there is an existing SR running
-		id == 0)							// but the recording manager has just told us that there's no SR
-	{										// then we need to stop recording
-		g_debug("Record stopped by scheduled recording");
-		Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->set_active(false);
+	// This is because I don't know how to safely remove elements from a list
+	gboolean check = true;
+	while (check)
+	{
+		check = false;
+
+		std::list<StreamManager::ChannelStream>& streams = stream_manager.get_streams();
+		for (std::list<StreamManager::ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+		{
+			StreamManager::ChannelStream& channel_stream = *i;
+			if (
+			    channel_stream.type == StreamManager::CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
+				!scheduled_recording_manager.is_recording(channel_stream.channel))
+			{
+				stream_manager.stop_recording(channel_stream.channel);
+				check = true;
+				break;
+			}
+		}
 	}
 }
 
@@ -745,10 +718,8 @@ gboolean Application::on_timeout()
 	return true;
 }
 
-Glib::ustring Application::make_recording_filename(const Glib::ustring& description)
+Glib::ustring Application::make_recording_filename(Channel& channel, const Glib::ustring& description)
 {
-	Channel& channel = channel_manager.get_display_channel();
-	
 	Glib::ustring start_time = get_local_time_text("%c");
 	Glib::ustring filename;
 	Glib::ustring title = description;
@@ -782,26 +753,24 @@ Glib::ustring Application::make_recording_filename(const Glib::ustring& descript
 		);
 	}
 
-	// Remove forward slashes in the filename, if any
+	// Clean filename
 	Glib::ustring::size_type position = Glib::ustring::npos;
 	while ((position = filename.find('/')) != Glib::ustring::npos)
 	{
-		filename.erase(position, 1);
+		filename.replace(position, 1, "_");
 	}
-	
+
+	if (get_boolean_configuration_value("remove_colon"))
+	{
+		while ((position = filename.find(':')) != Glib::ustring::npos )
+		{
+			filename.replace(position, 1, "_");
+		}
+	}
+
 	Glib::ustring fixed_filename = Glib::filename_from_utf8(filename);
 	
 	return Glib::build_filename(get_string_configuration_value("recording_directory"), fixed_filename);
-}
-
-StreamThread* Application::get_stream_thread()
-{
-	return stream_thread;
-}
-
-gboolean Application::is_recording()
-{
-	return Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->get_active();
 }
 
 Glib::StaticRecMutex& Application::get_mutex()
@@ -827,38 +796,30 @@ void Application::on_error(const Glib::ustring& message)
 	}
 }
 
-void Application::restart_stream()
+void Application::start_recording(Channel& channel, const Glib::ustring& description, gboolean scheduled)
 {
-	set_display_channel(channel_manager.get_display_channel());
+	stream_manager.start_recording(channel, make_recording_filename(channel, description), scheduled);
+	update();
+
+	g_debug("Recording started");
+}
+
+void Application::stop_recording(Channel& channel)
+{
+	stream_manager.stop_recording(channel);
+	update();
 }
 
 void Application::on_record()
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	TRY
 	if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->get_active())
 	{
 		try
 		{
-			if (stream_thread == NULL)
-			{
-				throw Exception(_("There is no stream to record"));
-			}
-
-			Glib::ustring recording_filename;
-
-			Glib::RecMutex::Lock lock(mutex);
-			if (scheduled_recording_id != 0)
-			{
-				ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(scheduled_recording_id);
-				recording_filename = scheduled_recording.description;
-			}
-			
-			recording_filename = make_recording_filename(recording_filename);
-			
-			stream_thread->start_recording(recording_filename);
-			update();
-
-			g_debug("Recording started");
+			start_recording(channel_manager.get_display_channel());
 		}
 		catch (const Glib::Exception& exception)
 		{
@@ -873,58 +834,10 @@ void Application::on_record()
 	}
 	else
 	{
-		Glib::RecMutex::Lock lock(mutex);
-
-		if (stream_thread != NULL)
-		{
-			stream_thread->stop_recording();
-			
-			if (scheduled_recording_id != 0)
-			{
-				scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
-			}
-			scheduled_recording_id = 0;
-		
-			update();
-			g_debug("Recording stopped");
-		}
+		stream_manager.stop_recording(channel_manager.get_display_channel());			
+		g_debug("Recording stopped");
 	}
 	CATCH
-}
 
-void Application::on_broadcast()
-{
-	TRY
-	Glib::RecMutex::Lock lock(mutex);
-	if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->get_active())
-	{
-		try
-		{
-			if (stream_thread == NULL)
-			{
-				throw Exception(_("There is no stream to broadcast"));
-			}
-			
-			stream_thread->start_broadcasting();
-		}
-		catch (const Glib::Exception& exception)
-		{
-			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->set_active(false);
-			throw Exception(exception.what());
-		}
-		catch (...)
-		{
-			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("broadcast"))->set_active(false);
-			throw Exception(_("Failed to start broadcasting"));
-		}
-	}
-	else
-	{
-		if (stream_thread != NULL)
-		{
-			stream_thread->stop_broadcasting();
-		}
-	}
 	update();
-	CATCH
 }

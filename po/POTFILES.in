@@ -5,10 +5,13 @@
 me-tv.schemas.in
 me-tv.desktop.in
 [type: gettext/glade] src/me-tv.ui
+[type: gettext/glade] src/me-tv-actions.ui
 src/application.cc
 src/application.h
 src/atsc_text.cc
 src/atsc_text.h
+src/buffer.cc
+src/buffer.h
 src/channel.cc
 src/channel.h
 src/channel_manager.cc
@@ -17,6 +20,8 @@ src/channels_conf_line.cc
 src/channels_conf_line.h
 src/channels_dialog.cc
 src/channels_dialog.h
+src/crc32.cc
+src/crc32.h
 src/data.cc
 src/data.h
 src/device_manager.cc
@@ -60,6 +65,8 @@ src/me-tv-i18n.h
 src/me-tv-ui.cc
 src/me-tv-ui.h
 src/me-tv-xine.cc
+src/mpeg_stream.cc
+src/mpeg_stream.h
 src/preferences_dialog.cc
 src/preferences_dialog.h
 src/scan_dialog.cc
@@ -74,8 +81,8 @@ src/scheduled_recordings_dialog.cc
 src/scheduled_recordings_dialog.h
 src/status_icon.cc
 src/status_icon.h
-src/stream_thread.cc
-src/stream_thread.h
+src/stream_manager.cc
+src/stream_manager.h
 src/string_splitter.cc
 src/string_splitter.h
 src/thread.cc

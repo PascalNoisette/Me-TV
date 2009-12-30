@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -23,6 +23,7 @@
 
 #include "scheduled_recording.h"
 #include "data.h"
+#include "channel.h"
 
 typedef std::list<ScheduledRecording> ScheduledRecordingList;
 
@@ -41,7 +42,9 @@ public:
 	void set_scheduled_recording(ScheduledRecording& scheduled_recording);
 	void remove_scheduled_recording(guint scheduled_recording_id);		
 	ScheduledRecording get_scheduled_recording(guint scheduled_recording_id);
-	guint check_scheduled_recordings();
+	ScheduledRecordingList check_scheduled_recordings();
+	gboolean is_recording(const Channel& channel);
+	gboolean is_recording(const EpgEvent& epg_event);
 };
 
 #endif

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
-  <!-- interface-naming-policy toplevel-contextual -->
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
   <object class="GtkDialog" id="dialog_program_details">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="border_width">5</property>
@@ -16,6 +16,7 @@
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog_vbox">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkTable" id="table_event">
@@ -230,6 +231,7 @@ found in /usr/share/common-licenses/GPL file.</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <placeholder/>
@@ -264,6 +266,7 @@ found in /usr/share/common-licenses/GPL file.</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox3">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkTable" id="table_scheduled_recordings">
@@ -529,6 +532,7 @@ found in /usr/share/common-licenses/GPL file.</property>
       <object class="GtkVBox" id="dialog-vbox5">
         <property name="visible">True</property>
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkHBox" id="hbox1">
@@ -561,6 +565,7 @@ found in /usr/share/common-licenses/GPL file.</property>
               <object class="GtkVBox" id="vbox_buttons">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkButton" id="button_scheduled_recordings_add">
                     <property name="label">gtk-add</property>
@@ -593,7 +598,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_scheduled_recordings_edit">
-                    <property name="label" translatable="yes">gtk-edit</property>
+                    <property name="label">gtk-edit</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -665,12 +670,13 @@ found in /usr/share/common-licenses/GPL file.</property>
       <object class="GtkVBox" id="dialog-vbox4">
         <property name="visible">True</property>
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkTable" id="table_preferences">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-            <property name="n_rows">19</property>
+            <property name="n_rows">20</property>
             <property name="n_columns">2</property>
             <child>
               <object class="GtkHBox" id="hbox8">
@@ -728,83 +734,6 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkHBox" id="hbox_broadcast_address">
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkEntry" id="entry_broadcast_address">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="max_length">15</property>
-                    <property name="width_chars">15</property>
-                    <property name="text" translatable="yes">192.168.0.255</property>
-                    <property name="truncate_multiline">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">5</property>
-                <property name="bottom_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label_broadcast_address">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Broadcast address:</property>
-              </object>
-              <packing>
-                <property name="top_attach">5</property>
-                <property name="bottom_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkHBox" id="hbox_broadcast_port">
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkSpinButton" id="spin_button_broadcast_port">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="max_length">5</property>
-                    <property name="width_chars">5</property>
-                    <property name="truncate_multiline">True</property>
-                    <property name="adjustment">adjustment_broadcast_port</property>
-                    <property name="numeric">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">6</property>
-                <property name="bottom_attach">7</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label_broadcast_port">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Broadcast port:</property>
-              </object>
-              <packing>
-                <property name="top_attach">6</property>
-                <property name="bottom_attach">7</property>
               </packing>
             </child>
             <child>
@@ -1206,6 +1135,21 @@ found in /usr/share/common-licenses/GPL file.</property>
               </packing>
             </child>
             <child>
+              <object class="GtkCheckButton" id="check_button_remove_colon">
+                <property name="label" translatable="yes">Remove colon from recording filenames</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">19</property>
+                <property name="bottom_attach">20</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkLabel" id="label_deinterlace_type">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Deinterlace Type:</property>
@@ -1237,6 +1181,21 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="top_attach">10</property>
                 <property name="bottom_attach">11</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -1330,10 +1289,12 @@ found in /usr/share/common-licenses/GPL file.</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox10">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="label_channel_dialog_information">
                 <property name="visible">True</property>
@@ -1375,6 +1336,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <child>
                   <object class="GtkVBox" id="vbox2">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkButton" id="button_scan">
                         <property name="label">gtk-add</property>
@@ -1482,16 +1444,20 @@ found in /usr/share/common-licenses/GPL file.</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox11">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkVBox" id="vbox13">
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkVBox" id="vbox14">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkVBox" id="vbox16">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkProgressBar" id="progress_bar_signal_strength">
                         <property name="visible">True</property>
@@ -1576,6 +1542,7 @@ found in /usr/share/common-licenses/GPL file.</property>
     <child>
       <object class="GtkVBox" id="vbox_scan">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">5</property>
         <child>
           <object class="GtkNotebook" id="notebook_scan_wizard">
@@ -1735,6 +1702,7 @@ your package management system.
             <child>
               <object class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkHBox" id="hbox13">
                     <property name="visible">True</property>
@@ -1864,10 +1832,12 @@ your package management system.
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox9">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkVBox" id="vbox8">
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="label_select_devic">
                 <property name="visible">True</property>
@@ -1911,7 +1881,7 @@ your package management system.
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="button_cancel">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1925,7 +1895,7 @@ your package management system.
             </child>
             <child>
               <object class="GtkButton" id="button_ok">
-                <property name="label" translatable="yes">gtk-ok</property>
+                <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1960,6 +1930,7 @@ your package management system.
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox12">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkHBox" id="hbox10">
@@ -2002,7 +1973,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="button_database_version_quit">
-                <property name="label" translatable="yes">gtk-quit</property>
+                <property name="label">gtk-quit</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2070,6 +2041,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
     <child>
       <object class="GtkVBox" id="vbox_main_window">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <placeholder/>
         </child>
@@ -2080,6 +2052,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
           <object class="GtkVPaned" id="vpaned_main">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkEventBox" id="event_box_video">
                 <property name="width_request">160</property>
@@ -2103,12 +2076,13 @@ If you've just upgraded Me TV then this is probably what you want to do.
               <object class="GtkVBox" id="vbox_epg">
                 <property name="height_request">100</property>
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkHBox" id="hbox_epg">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkButton" id="button_epg_previous">
-                        <property name="label" translatable="yes">gtk-go-back</property>
+                        <property name="label">gtk-go-back</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2131,7 +2105,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                     </child>
                     <child>
                       <object class="GtkButton" id="button_epg_next">
-                        <property name="label" translatable="yes">gtk-go-forward</property>
+                        <property name="label">gtk-go-forward</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2243,11 +2217,6 @@ If you've just upgraded Me TV then this is probably what you want to do.
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="adjustment_broadcast_port">
-    <property name="upper">65535</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
   <object class="GtkAdjustment" id="adjustment_duration">
     <property name="lower">1</property>
     <property name="upper">1000</property>
@@ -2256,236 +2225,13 @@ If you've just upgraded Me TV then this is probably what you want to do.
   </object>
   <object class="GtkAdjustment" id="adjustment_hour">
     <property name="value">12</property>
-    <property name="lower">0</property>
     <property name="upper">23</property>
     <property name="step_increment">1</property>
     <property name="page_increment">12</property>
   </object>
   <object class="GtkAdjustment" id="adjustment_minute">
-    <property name="lower">0</property>
     <property name="upper">59</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
-  </object>
-  <object class="GtkUIManager" id="ui_manager">
-    <child>
-      <object class="GtkActionGroup" id="main-action-group">
-         <child>
-            <object class="GtkAction" id="not_available">
-               <property name="label" translatable="yes">Not Available</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="file">
-               <property name="label" translatable="yes">_File</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkToggleAction" id="record">
-               <property name="stock-id">gtk-media-record</property>
-               <signal name="activate" handler="on_record"/>
-            </object>
-            <accelerator key="R"/>
-         </child>
-         <child>
-            <object class="GtkToggleAction" id="broadcast">
-               <property name="stock-id">gtk-network</property>
-               <property name="label" translatable="yes">_Broadcast</property>
-               <signal name="activate" handler="on_broadcast"/>
-            </object>
-            <accelerator key="B"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="quit">
-               <property name="stock-id">gtk-quit</property>
-               <signal name="activate" handler="on_quit"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="view">
-               <property name="label" translatable="yes">_View</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="previous_channel">
-               <property name="label" translatable="yes">_Previous Channel</property>
-               <property name="stock-id">gtk-go-up</property>
-               <signal name="activate" handler="on_previous_channel"/>
-            </object>
-            <accelerator key="Up" modifiers="GDK_CONTROL_MASK"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="next_channel">
-               <property name="label" translatable="yes">_Next Channel</property>
-               <property name="stock-id">gtk-go-down</property>
-               <signal name="activate" handler="on_next_channel"/>
-            </object>
-            <accelerator key="Down" modifiers="GDK_CONTROL_MASK"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="change_view_mode">
-               <property name="label" translatable="yes">_Change View</property>
-               <property name="stock-id">gtk-convert</property>
-               <signal name="activate" handler="on_change_view_mode"/>
-            </object>
-            <accelerator key="V"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="devices">
-               <property name="label" translatable="yes">_Devices</property>
-               <signal name="activate" handler="on_devices"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="channels">
-               <property name="label" translatable="yes">_Channels</property>
-               <signal name="activate" handler="on_channels"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="scheduled_recordings">
-               <property name="label" translatable="yes">_Schedule</property>
-               <property name="stock-id">gnome-stock-timer</property>
-               <signal name="activate" handler="on_scheduled_recordings"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="meters">
-               <property name="label" translatable="yes">_Meters</property>
-               <signal name="activate" handler="on_meters"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="preferences">
-               <property name="stock-id">gtk-preferences</property>
-               <signal name="activate" handler="on_preferences"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="video">
-               <property name="label" translatable="yes">Video</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="subtitle_streams">
-               <property name="label" translatable="yes">_Subtitle Streams</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkToggleAction" id="fullscreen">
-               <property name="stock-id">gtk-fullscreen</property>
-               <signal name="activate" handler="on_fullscreen"/>
-            </object>
-            <accelerator key="F"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="audio">
-               <property name="label" translatable="yes">Audio</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkToggleAction" id="mute">
-               <property name="label" translatable="yes">_Mute</property>
-               <property name="stock-id">gnome-stock-volume</property>
-               <signal name="activate" handler="on_mute"/>
-            </object>
-            <accelerator key="M"/>
-         </child>
-         <child>
-            <object class="GtkAction" id="audio_streams">
-               <property name="label" translatable="yes">Audio _Streams</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="audio_channels">
-               <property name="label" translatable="yes">Audio _Channels</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkRadioAction" id="audio_channel_both">
-               <property name="label" translatable="yes">_Both</property>
-	       <property name="value">0</property>
-	       <property name="current-value">0</property>
-               <signal name="activate" handler="on_audio_channel_both"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkRadioAction" id="audio_channel_left">
-               <property name="label" translatable="yes">_Left</property>
-	       <property name="group">audio_channel_both</property>
-	       <property name="value">1</property>
-               <signal name="activate" handler="on_audio_channel_left"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkRadioAction" id="audio_channel_right">
-               <property name="label" translatable="yes">_Right</property>
-	       <property name="group">audio_channel_both</property>
-	       <property name="value">2</property>
-               <signal name="activate" handler="on_audio_channel_right"/>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="help">
-               <property name="label" translatable="yes">_Help</property>
-            </object>
-         </child>
-         <child>
-            <object class="GtkAction" id="about">
-               <property name="stock-id">gtk-about</property>
-               <signal name="activate" handler="on_about"/>
-            </object>
-         </child>
-      </object>
-    </child>
-  <ui>
-    <menubar name="menubar">
-      <menu action="file">
-        <menuitem action="record"/>
-        <menuitem action="broadcast"/>
-        <separator/>
-        <menuitem action="quit"/>
-      </menu>
-      <menu action="view">
-        <menuitem action="previous_channel"/>
-        <menuitem action="next_channel"/>
-        <separator/>
-        <menuitem action="change_view_mode"/>
-        <separator/>
-        <menuitem action="devices"/>
-        <menuitem action="scheduled_recordings"/>
-        <menuitem action="channels"/>
-        <menuitem action="meters"/>
-        <menuitem action="preferences"/>
-      </menu>
-      <menu action="video">
-        <menuitem action="fullscreen"/>
-        <menu action="subtitle_streams">
-          <menuitem action="not_available"/>
-        </menu>
-      </menu>
-      <menu action="audio">
-        <menuitem action="mute"/>
-        <menu action="audio_streams">
-          <menuitem action="not_available"/>
-        </menu>
-        <menu action="audio_channels">
-          <menuitem action="audio_channel_both"/>
-          <menuitem action="audio_channel_left"/>
-          <menuitem action="audio_channel_right"/>
-        </menu>
-      </menu>
-      <menu action="help">
-        <menuitem action="about"/>
-      </menu>
-    </menubar>
-    <toolbar name='toolbar'>
-      <toolitem action='record'/>
-      <toolitem action='mute'/>
-      <toolitem action='scheduled_recordings'/>
-      <toolitem action='broadcast'/>
-      <toolitem action='fullscreen'/>
-    </toolbar>
-  </ui>
   </object>
 </interface>

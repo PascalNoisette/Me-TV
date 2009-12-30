@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -35,6 +35,7 @@ namespace Dvb
 		TransponderList transponders;
 			
 		void tune_to(Frontend& frontend, const Transponder& transponder);
+		void atsc_tune_to(Frontend& frontend, const Transponder& transponder);
 		guint convert_string_to_value(const StringTable* table, const gchar* text);
 
 		void process_terrestrial_line(Frontend& frontend, const Glib::ustring& line);

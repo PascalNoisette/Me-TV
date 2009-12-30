@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -31,7 +31,6 @@
 #include "me-tv.h"
 #include "me-tv-i18n.h"
 
-#define CRC_BYTE_SIZE			4
 #define DVB_SECTION_BUFFER_SIZE	16*1024
 
 #define PAT_PID		0x00
@@ -42,16 +41,13 @@
 
 #define PAT_ID		0x00
 #define PMT_ID		0x02
-#define NIT_ID			0x40
+#define NIT_ID		0x40
 #define SDT_ID		0x42
 #define EIT_ID		0x4E
 #define MGT_ID		0xC7
+#define TVCT_ID		0xC8
 #define PSIP_EIT_ID	0xCB
-
-#define STREAM_TYPE_MPEG1		0x01
-#define STREAM_TYPE_MPEG2		0x02
-#define STREAM_TYPE_MPEG4		0x10
-#define STREAM_TYPE_H264		0x1B
+#define STT_ID		0xCD
 
 namespace Dvb
 {
@@ -128,115 +124,40 @@ namespace Dvb
 			std::vector<Dvb::Transponder> transponders;
 		};
 		
-		class ProgramAssociation
+		class SystemTimeTable
 		{
 		public:
-			guint program_number;
-			guint program_map_pid;
-		};
-
-		class ProgramAssociationSection
-		{
-		public:
-			std::vector<ProgramAssociation> program_associations;
-		};
-
-		class MasterGuideTableTable
-		{
-		public:
-			guint type;
-			guint pid;
+			gulong system_time;
+			guint GPS_UTC_offset;
+			guint daylight_savings;
 		};
 
 		class MasterGuideTable
 		{
 		public:
-			std::vector<MasterGuideTableTable> tables;
-		};
-
-		class VideoStream
-		{
-		public:
-			VideoStream()
-			{
-				pid		= 0;
-				type	= 2; // Default to MPEG 2
-			}
-			
-			guint pid;
 			guint type;
-		};
-
-		class AudioStream
-		{
-		public:
-			AudioStream()
-			{
-				pid		= 0;
-				is_ac3	= false;
-				language = _("Unknown language");
-			}
-			
-			guint			pid;
-			Glib::ustring	language;
-			gboolean		is_ac3;
-		};
-
-		class TeletextLanguageDescriptor
-		{
-		public:
-			TeletextLanguageDescriptor()
-			{
-				language		= _("Unknown language");
-				type			= 0;
-				magazine_number	= 0;
-				page_number		= 0;
-			}
-
-			Glib::ustring	language;
-			guint			type;
-			guint			magazine_number;
-			guint			page_number;
-		};
-
-		class TeletextStream
-		{
-		public:
-			TeletextStream()
-			{
-				pid				= 0;
-			}
-			
-			guint	pid;
-			std::vector<TeletextLanguageDescriptor> languages;
-		};
-
-		class SubtitleStream
-		{
-		public:
-			SubtitleStream()
-			{
-				pid					= 0;
-				subtitling_type		= 0;
-				ancillary_page_id	= 0;
-				composition_page_id	= 0;
-				language			= _("Unknown language");
-			}
-			
 			guint pid;
-			guint subtitling_type;
-			guint ancillary_page_id;
-			guint composition_page_id;
-			Glib::ustring language;
 		};
 
-		class ProgramMapSection
+		typedef std::vector<MasterGuideTable> MasterGuideTableArray;
+
+		class VirtualChannel
 		{
 		public:
-			std::vector<VideoStream> video_streams;
-			std::vector<AudioStream> audio_streams;
-			std::vector<SubtitleStream> subtitle_streams;
-			std::vector<TeletextStream> teletext_streams;
+			Glib::ustring short_name;
+			guint major_channel_number;
+			guint minor_channel_number;
+			guint channel_TSID;
+			guint program_number;
+			guint service_type;
+			guint source_id;
+		};
+
+		class VirtualChannelTable
+		{
+		public:
+			guint transport_stream_id;
+			std::vector<VirtualChannel> channels;
 		};
 
 		class SectionParser
@@ -245,8 +166,6 @@ namespace Dvb
 			guchar buffer[DVB_SECTION_BUFFER_SIZE];
 			Glib::ustring text_encoding;
 				
-			Glib::ustring get_lang_desc(const guchar* buffer);
-			gboolean find_descriptor(uint8_t tag, const unsigned char *buf, int descriptors_loop_len, const unsigned char **desc, int *desc_len);
 			guint get_bits(const guchar* buffer, guint bitpos, gsize bitcount);
 			Glib::ustring convert_iso6937(const guchar* buffer, gsize length);
 			gsize decode_event_descriptor (const guchar* buffer, Event& event);
@@ -259,11 +178,11 @@ namespace Dvb
 			gsize get_text(Glib::ustring& s, const guchar* buffer);
 			const guchar* get_buffer() const { return buffer; };
 
-			void parse_pas (Demuxer& demuxer, ProgramAssociationSection& section);
-			void parse_pms (Demuxer& demuxer, ProgramMapSection& section);
 			void parse_eis (Demuxer& demuxer, EventInformationSection& section);
 			void parse_psip_eis (Demuxer& demuxer, EventInformationSection& section);
-			void parse_psip_mgt(Demuxer& demuxer, MasterGuideTable& table);
+			void parse_psip_mgt(Demuxer& demuxer, MasterGuideTableArray& tables);
+			void parse_psip_tvct(Demuxer& demuxer, VirtualChannelTable& section);
+			void parse_psip_stt(Demuxer& demuxer, SystemTimeTable& table);
 			void parse_sds (Demuxer& demuxer, ServiceDescriptionSection& section);
 			void parse_nis (Demuxer& demuxer, NetworkInformationSection& section);
 		};

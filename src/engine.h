@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -51,6 +51,7 @@ private:
 public:
 	void play(const Glib::ustring& mrl);
 	void stop();
+	void pause(gboolean state);
 	void set_mute_state(gboolean state);
 	void set_audio_stream(guint stream);
 	void set_audio_channel_state(AudioChannelState state);

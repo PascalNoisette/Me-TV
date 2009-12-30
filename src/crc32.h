@@ -18,34 +18,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __DEVICE_MANAGER_H__
-#define __DEVICE_MANAGER_H__
+#ifndef __CRC32_H__
+#define __CRC32_H__
 
-#include "me-tv.h"
-#include <glibmm.h>
-#include <giomm.h>
-#include "dvb_frontend.h"
-#include "exception.h"
+#include <glib.h>
 
-typedef std::list<Dvb::Frontend*> FrontendList;
-
-class DeviceManager
+class Crc32
 {
 private:
-	Glib::ustring get_adapter_path(guint adapter);
-	Glib::ustring get_frontend_path(guint adapter, guint frontend);
-	FrontendList frontends;	
-	Dvb::Frontend* frontend;
-	gboolean is_frontend_supported(const Dvb::Frontend& frontend);
-
+	static guint crc_table[256];
 public:
-	DeviceManager();
-	~DeviceManager();
-		
-	void set_frontend(Dvb::Frontend& new_frontend);
-	Dvb::Frontend* find_frontend_by_path(const Glib::ustring& path);
-	Dvb::Frontend& get_frontend();
-	const FrontendList& get_frontends() { return frontends; };
+	static void init();
+	static guint32 calculate(const guchar* begin, const guchar* end);
+	static guint32 calculate(const guchar* data, gsize length);
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -42,8 +42,6 @@ void PreferencesDialog::run()
 	Gtk::SpinButton* spin_button_record_extra_after = NULL;
 	Gtk::SpinButton* spin_button_epg_span_hours = NULL;
 	Gtk::SpinButton* spin_button_epg_page_size = NULL;
-	Gtk::Entry* entry_broadcast_address = NULL;
-	Gtk::SpinButton* spin_button_broadcast_port = NULL;
 	ComboBoxEntryText* combo_box_entry_preferred_language = NULL;
 	ComboBoxEntryText* combo_box_entry_xine_video_driver = NULL;
 	ComboBoxEntryText* combo_box_entry_xine_audio_driver = NULL;
@@ -56,14 +54,13 @@ void PreferencesDialog::run()
 	Gtk::CheckButton* check_button_fullscreen_bug_workaround = NULL;
 	Gtk::CheckButton* check_button_display_status_icon = NULL;
 	Gtk::CheckButton* check_button_show_channel_number = NULL;
+	Gtk::CheckButton* check_button_remove_colon = NULL;
 
 	builder->get_widget("file_chooser_button_recording_directory", file_chooser_button_recording_directory);
 	builder->get_widget("spin_button_record_extra_before", spin_button_record_extra_before);
 	builder->get_widget("spin_button_record_extra_after", spin_button_record_extra_after);
 	builder->get_widget("spin_button_epg_span_hours", spin_button_epg_span_hours);
 	builder->get_widget("spin_button_epg_page_size", spin_button_epg_page_size);
-	builder->get_widget("entry_broadcast_address", entry_broadcast_address);
-	builder->get_widget("spin_button_broadcast_port", spin_button_broadcast_port);
 	builder->get_widget_derived("combo_box_entry_preferred_language", combo_box_entry_preferred_language);
 	builder->get_widget_derived("combo_box_entry_xine_video_driver", combo_box_entry_xine_video_driver);
 	builder->get_widget_derived("combo_box_entry_xine_audio_driver", combo_box_entry_xine_audio_driver);
@@ -76,6 +73,7 @@ void PreferencesDialog::run()
 	builder->get_widget("check_button_fullscreen_bug_workaround", check_button_fullscreen_bug_workaround);
 	builder->get_widget("check_button_display_status_icon", check_button_display_status_icon);
 	builder->get_widget("check_button_show_channel_number", check_button_show_channel_number);
+	builder->get_widget("check_button_remove_colon", check_button_remove_colon);
 
 	combo_box_entry_preferred_language->clear_items();
 	combo_box_entry_preferred_language->append_text("eng");
@@ -122,8 +120,6 @@ void PreferencesDialog::run()
 	spin_button_record_extra_after->set_value(application.get_int_configuration_value("record_extra_after"));
 	spin_button_epg_span_hours->set_value(application.get_int_configuration_value("epg_span_hours"));
 	spin_button_epg_page_size->set_value(application.get_int_configuration_value("epg_page_size"));
-	entry_broadcast_address->set_text(application.get_string_configuration_value("broadcast_address"));
-	spin_button_broadcast_port->set_value(application.get_int_configuration_value("broadcast_port"));
 	combo_box_entry_preferred_language->get_entry()->set_text(application.get_string_configuration_value("preferred_language"));
 	combo_box_entry_xine_video_driver->get_entry()->set_text(application.get_string_configuration_value("xine.video_driver"));
 	combo_box_entry_xine_audio_driver->get_entry()->set_text(application.get_string_configuration_value("xine.audio_driver"));
@@ -136,6 +132,7 @@ void PreferencesDialog::run()
 	check_button_fullscreen_bug_workaround->set_active(application.get_boolean_configuration_value("fullscreen_bug_workaround"));
 	check_button_display_status_icon->set_active(application.get_boolean_configuration_value("display_status_icon"));
 	check_button_show_channel_number->set_active(application.get_boolean_configuration_value("show_channel_number"));
+	check_button_remove_colon->set_active(application.get_boolean_configuration_value("remove_colon"));
 	
 	if (Dialog::run() == Gtk::RESPONSE_OK)
 	{
@@ -144,8 +141,6 @@ void PreferencesDialog::run()
 		application.set_int_configuration_value("record_extra_after", (int)spin_button_record_extra_after->get_value());
 		application.set_int_configuration_value("epg_span_hours", (int)spin_button_epg_span_hours->get_value());
 		application.set_int_configuration_value("epg_page_size", (int)spin_button_epg_page_size->get_value());
-		application.set_string_configuration_value("broadcast_address", entry_broadcast_address->get_text());
-		application.set_int_configuration_value("broadcast_port", (int)spin_button_broadcast_port->get_value());
 		application.set_string_configuration_value("preferred_language", combo_box_entry_preferred_language->get_entry()->get_text());
 		application.set_string_configuration_value("xine.video_driver", combo_box_entry_xine_video_driver->get_entry()->get_text());
 		application.set_string_configuration_value("xine.audio_driver", combo_box_entry_xine_audio_driver->get_entry()->get_text());
@@ -158,6 +153,7 @@ void PreferencesDialog::run()
 		application.set_boolean_configuration_value("fullscreen_bug_workaround", check_button_fullscreen_bug_workaround->get_active());
 		application.set_boolean_configuration_value("display_status_icon", check_button_display_status_icon->get_active());
 		application.set_boolean_configuration_value("show_channel_number", check_button_show_channel_number->get_active());
+		application.set_boolean_configuration_value("remove_colon", check_button_remove_colon->get_active());
 
 		get_application().update();
 	}

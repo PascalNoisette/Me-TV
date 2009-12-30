@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -27,6 +27,7 @@
 #include <glibmm.h>
 #include <linux/dvb/dmx.h>
 #include "me-tv.h"
+#include "buffer.h"
 
 namespace Dvb
 {
@@ -44,12 +45,13 @@ namespace Dvb
 		void set_filter(ushort pid, ushort table_id, ushort mask = 0);
 		void set_buffer_size(unsigned int buffer_size);
 		gint read(unsigned char* buffer, size_t length);
+		void read_section(Buffer& buffer);
 		gboolean poll(gint timeout = read_timeout * 1000);
 		void stop();
 		int get_fd() const;
 	};
-}
 
-typedef std::list<Dvb::Demuxer*> DemuxerList;
+	typedef std::list<Dvb::Demuxer*> DemuxerList;
+}
 
 #endif

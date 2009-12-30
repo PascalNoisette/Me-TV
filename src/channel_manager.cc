@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -348,24 +348,26 @@ void ChannelManager::set_channels(const ChannelArray& new_channels)
 	g_debug("Finished setting channels");
 }
 
-void ChannelManager::next_channel()
+Channel* ChannelManager::get_next_channel()
 {
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	if (display_channel_index != NO_CHANNEL && (guint)display_channel_index < (channels.size()-1))
 	{
-		display_channel_index++;
+		return &(channels[display_channel_index+1]);
 	}
+	return NULL;
 }
 
-void ChannelManager::previous_channel()
+Channel* ChannelManager::get_previous_channel()
 {
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
 	if (display_channel_index != NO_CHANNEL && (guint)display_channel_index > 0)
 	{
-		display_channel_index--;
+		return &(channels[display_channel_index-1]);
 	}
+	return NULL;
 }
 
 void ChannelManager::select_display_channel()

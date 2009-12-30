@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -90,14 +90,9 @@ void DevicesDialog::on_response(int response_id)
 			if (frontend != &current_frontend)
 			{
 				Application& application = get_application();
-				application.stop_stream();
 				application.set_string_configuration_value("default_device", frontend->get_path());
 				application.device_manager.set_frontend(*frontend);
 				application.channel_manager.select_display_channel();
-				if (application.channel_manager.has_display_channel())
-				{
-					application.start_stream();
-				}
 			}
 		}
 	}

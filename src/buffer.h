@@ -18,34 +18,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __DEVICE_MANAGER_H__
-#define __DEVICE_MANAGER_H__
+#ifndef __BUFFER_H__
+#define __BUFFER_H__
 
-#include "me-tv.h"
-#include <glibmm.h>
-#include <giomm.h>
-#include "dvb_frontend.h"
-#include "exception.h"
+#include <glib.h>
 
-typedef std::list<Dvb::Frontend*> FrontendList;
-
-class DeviceManager
+class Buffer
 {
 private:
-	Glib::ustring get_adapter_path(guint adapter);
-	Glib::ustring get_frontend_path(guint adapter, guint frontend);
-	FrontendList frontends;	
-	Dvb::Frontend* frontend;
-	gboolean is_frontend_supported(const Dvb::Frontend& frontend);
+	guchar* buffer;
+	gsize length;
+
+	static guint get_bits(guchar* buffer, guint position, gsize count);
 
 public:
-	DeviceManager();
-	~DeviceManager();
-		
-	void set_frontend(Dvb::Frontend& new_frontend);
-	Dvb::Frontend* find_frontend_by_path(const Glib::ustring& path);
-	Dvb::Frontend& get_frontend();
-	const FrontendList& get_frontends() { return frontends; };
+	Buffer();
+	Buffer(gsize length);
+	~Buffer();
+
+	void dump() const;
+	void clear();
+	void set_length(gsize length);
+	gsize get_length() const { return length; }
+	guchar* get_buffer() const { return buffer; }
+	guint get_bits(guint offset, guint position, gsize count) const;
+	guint get_bits(guint position, gsize count) const;
+	guint32 crc32() const;
+
+	guchar operator[](int index) const { return buffer[index]; };
 };
 
 #endif

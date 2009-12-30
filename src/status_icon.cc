@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Lamothe
+ * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -75,19 +75,40 @@ void StatusIcon::on_activate()
 void StatusIcon::update()
 {
 	Application& application = get_application();
-	Glib::ustring title = _("Unknown program");
+	Glib::ustring title;
 
 	status_icon->set_visible(application.get_boolean_configuration_value("display_status_icon"));
 	
-	if (application.channel_manager.has_display_channel())
+	std::list<StreamManager::ChannelStream> streams = application.stream_manager.get_streams();
+	if (streams.size() == 0)
 	{
-		Channel& channel = application.channel_manager.get_display_channel();
-		title = channel.get_text();
+		title = _("Unknown program");
+	}
+	else
+	{
+		for (std::list<StreamManager::ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+		{
+			if (title.size() > 0)
+			{
+				title += "\n";
+			}
+	
+			StreamManager::ChannelStream& stream = *i;
+			switch (stream.type)
+			{
+			case StreamManager::CHANNEL_STREAM_TYPE_DISPLAY: title += "Watching: "; break;
+			case StreamManager::CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING: title += "Recording (Scheduled): "; break;
+			case StreamManager::CHANNEL_STREAM_TYPE_RECORDING: title += "Recording: "; break;
+			default: break;
+			}
+
+			title += stream.channel.get_text();
+		}	
 	}
 	
 	status_icon->set_tooltip(title);
 
-	if (get_application().is_recording())
+	if (get_application().stream_manager.is_recording())
 	{
 		status_icon->set("me-tv-recording");
 	}
