@@ -5,6 +5,7 @@
 me-tv.schemas.in
 me-tv.desktop.in
 [type: gettext/glade] src/me-tv.ui
+[type: gettext/glade] src/me-tv-actions.ui
 src/application.cc
 src/application.h
 src/atsc_text.cc
