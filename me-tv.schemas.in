@@ -308,7 +308,7 @@
 			<applyto>/apps/me-tv/preferred_language</applyto>
 			<owner>me-tv</owner>
 			<type>string</type>
-			<default>2005</default>
+			<default></default>
 			<locale name="C">
 				<short>Preferred language to us when selecting streams.</short>
 				<long>
@@ -341,6 +341,20 @@
 				<short>Remove the colon ':' from the recording filename</short>
 				<long>
 					Some file systems do not support a colon in a filename (e.g. FAT32). This option tells Me TV to remove it from the recording filename.
+				</long>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/me-tv/fullscreen_bug_workaround</key>
+			<applyto>/apps/me-tv/fullscreen_bug_workaround</applyto>
+			<owner>me-tv</owner>
+			<type>bool</type>
+			<default>false</default>
+			<locale name="C">
+				<short>Drop out of fullscreen mode when showing dialogs</short>
+				<long>
+					Some window managers don't like showing dialogs such as the EPG dialog over a fullscreen, "Always On Top" window such as the main window.  This option tells Me TV to come out of fullscreen mode while those dialogs are shown and return to fullscreen mode when the dialog is closed.
 				</long>
 			</locale>
 		</schema>
