@@ -6,7 +6,6 @@ SUBDIRS = src po
 desktopdir = $(datadir)/applications
 desktop_in_files = me-tv.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-
 @INTLTOOL_DESKTOP_RULE@
 
 pixmapsdir = $(datadir)/pixmaps
@@ -19,6 +18,7 @@ pixmaps_DATA = \
 schemasdir = $(GCONF_SCHEMA_FILE_DIR)
 schemas_in_files = me-tv.schemas.in
 schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
+@INTLTOOL_SCHEMAS_RULE@
 
 man_MANS = \
 	me-tv.1 \
@@ -38,8 +38,6 @@ EXTRA_DIST = \
 	intltool-update.in \
 	intltool-merge.in \
 	intltool-extract.in
-
-@INTLTOOL_SCHEMAS_RULE@
 
 if GCONF_SCHEMAS_INSTALL
 install-data-local: $(schemas_DATA)
