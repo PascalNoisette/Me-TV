@@ -184,16 +184,10 @@ Application::Application(int argc, char *argv[], Glib::OptionContext& option_con
 	database_filename = Glib::build_filename(data_directory, "me-tv.db");
 	connection.open(database_filename);
 	
-	Glib::ustring current_directory = Glib::path_get_dirname(argv[0]);
-	Glib::ustring ui_path = current_directory + "/me-tv.ui";
-
-	if (!Gio::File::create_for_path(ui_path)->query_exists())
-	{
-		ui_path = PACKAGE_DATA_DIR"/me-tv/glade/me-tv.ui";
-	}
+	g_debug("Loading UI files");
 	
-	g_debug("Loading GtkBuilder file '%s' ...", ui_path.c_str());
-	builder = Gtk::Builder::create_from_file(ui_path);
+	builder = Gtk::Builder::create_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv.ui");
+	builder->add_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv-actions.ui");
 	
 	g_debug("Application constructed");
 }

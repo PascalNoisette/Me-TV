@@ -4,6 +4,7 @@
 
 gladedir = $(datadir)/me-tv/glade
 glade_DATA = me-tv.ui \
+	me-tv-actions.ui \
 	me-tv.xpm
 
 AM_CPPFLAGS = \
