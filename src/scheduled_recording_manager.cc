@@ -312,6 +312,8 @@ gboolean ScheduledRecordingManager::is_recording(const Channel& channel)
 
 gboolean ScheduledRecordingManager::is_recording(const EpgEvent& epg_event)
 {
+	Glib::RecMutex::Lock lock(mutex);
+
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
 		ScheduledRecording& scheduled_recording = *i;
