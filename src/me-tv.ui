@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
-  <!-- interface-naming-policy toplevel-contextual -->
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
   <object class="GtkDialog" id="dialog_program_details">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="border_width">5</property>
@@ -593,7 +593,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_scheduled_recordings_edit">
-                    <property name="label" translatable="yes">gtk-edit</property>
+                    <property name="label">gtk-edit</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -1175,6 +1175,21 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="top_attach">10</property>
                 <property name="bottom_attach">11</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>
@@ -1849,7 +1864,7 @@ your package management system.
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="button_cancel">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1863,7 +1878,7 @@ your package management system.
             </child>
             <child>
               <object class="GtkButton" id="button_ok">
-                <property name="label" translatable="yes">gtk-ok</property>
+                <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1940,7 +1955,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="button_database_version_quit">
-                <property name="label" translatable="yes">gtk-quit</property>
+                <property name="label">gtk-quit</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2046,7 +2061,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkButton" id="button_epg_previous">
-                        <property name="label" translatable="yes">gtk-go-back</property>
+                        <property name="label">gtk-go-back</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2069,7 +2084,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                     </child>
                     <child>
                       <object class="GtkButton" id="button_epg_next">
-                        <property name="label" translatable="yes">gtk-go-forward</property>
+                        <property name="label">gtk-go-forward</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2189,13 +2204,11 @@ If you've just upgraded Me TV then this is probably what you want to do.
   </object>
   <object class="GtkAdjustment" id="adjustment_hour">
     <property name="value">12</property>
-    <property name="lower">0</property>
     <property name="upper">23</property>
     <property name="step_increment">1</property>
     <property name="page_increment">12</property>
   </object>
   <object class="GtkAdjustment" id="adjustment_minute">
-    <property name="lower">0</property>
     <property name="upper">59</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
