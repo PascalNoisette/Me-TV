@@ -198,7 +198,7 @@ void StreamManager::setup_dvb(const Channel& channel, StreamManager::ChannelStre
 	stream.set_pmt_pid(buffer, channel.service_id);
 	
 	Dvb::Demuxer demuxer_pmt(demux_path);
-	demuxer_pmt.set_filter(stream.get_pmt_pid(), PMT_ID);
+	demuxer_pmt.set_filter(stream.get_pmt_pid(), PMT_ID, 0xFF);
 	demuxer_pmt.read_section(buffer);
 	demuxer_pmt.stop();
 

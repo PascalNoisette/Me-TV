@@ -1,3 +1,8 @@
+2010-01-02  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.1.1
+	* Tell demuxer to only get PMTs (LP: #501986) 
+
 2010-01-01  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.1.0
