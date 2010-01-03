@@ -339,7 +339,10 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 	}
 	
 	guint offset = 8;
+
 	pcr_pid = ((buffer[8] & 0x1f) << 8) | buffer[9];
+	g_debug("PCR PID: %d", pcr_pid);
+
 	gsize program_info_length = ((buffer[10] & 0x0f) << 8) | buffer[11];
 
 	offset += program_info_length + 4;
