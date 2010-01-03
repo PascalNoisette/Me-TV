@@ -149,9 +149,9 @@ void EpgThread::run()
 		}
 
 		{
-			Dvb::Demuxer demuxer_tvct(demux_path);
-			demuxer_tvct.set_filter(PSIP_PID, TVCT_ID, 0xFF);
-			parser.parse_psip_tvct(demuxer_tvct, virtual_channel_table);
+			Dvb::Demuxer demuxer_vct(demux_path);
+			demuxer_vct.set_filter(PSIP_PID, TVCT_ID, 0xFE);
+			parser.parse_psip_vct(demuxer_vct, virtual_channel_table);
 		}
 
 		{

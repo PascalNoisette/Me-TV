@@ -46,6 +46,7 @@
 #define EIT_ID		0x4E
 #define MGT_ID		0xC7
 #define TVCT_ID		0xC8
+#define CVCT_ID		0xC9
 #define PSIP_EIT_ID	0xCB
 #define STT_ID		0xCD
 
@@ -181,7 +182,7 @@ namespace Dvb
 			void parse_eis (Demuxer& demuxer, EventInformationSection& section);
 			void parse_psip_eis (Demuxer& demuxer, EventInformationSection& section);
 			void parse_psip_mgt(Demuxer& demuxer, MasterGuideTableArray& tables);
-			void parse_psip_tvct(Demuxer& demuxer, VirtualChannelTable& section);
+			void parse_psip_vct(Demuxer& demuxer, VirtualChannelTable& section);
 			void parse_psip_stt(Demuxer& demuxer, SystemTimeTable& table);
 			void parse_sds (Demuxer& demuxer, ServiceDescriptionSection& section);
 			void parse_nis (Demuxer& demuxer, NetworkInformationSection& section);

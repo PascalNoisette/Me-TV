@@ -384,7 +384,7 @@ void SectionParser::parse_psip_stt(Demuxer& demuxer, SystemTimeTable& table)
 	table.daylight_savings = buffer.get_bits(offset, 0, 16);
 }
 
-void SectionParser::parse_psip_tvct(Demuxer& demuxer, VirtualChannelTable& section)
+void SectionParser::parse_psip_vct(Demuxer& demuxer, VirtualChannelTable& section)
 {
 	Buffer buffer;
 	demuxer.read_section(buffer);
@@ -399,7 +399,11 @@ void SectionParser::parse_psip_tvct(Demuxer& demuxer, VirtualChannelTable& secti
 	{
 		VirtualChannel vc;
 		gchar* result = g_convert((const gchar*)buffer.get_buffer() + offset, 14, "UTF-8", "UTF-16BE", NULL, NULL, NULL);
-		if (!result) throw Exception(_("Failed to convert channel name"));
+		if (!result)
+		{
+			throw Exception(_("Failed to convert channel name"));
+		}
+		
 		vc.short_name = result;
 		g_free(result);
 		offset += 14;

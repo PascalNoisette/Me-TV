@@ -109,23 +109,23 @@ void Scanner::atsc_tune_to(Frontend& frontend, const Transponder& transponder)
 		SI::VirtualChannelTable virtual_channel_table;
 		
 		Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
-		Demuxer demuxer_tvct(demux_path);
+		Demuxer demuxer_vct(demux_path);
 		
 		frontend.tune_to(transponder);
 		
-		demuxer_tvct.set_filter(PSIP_PID, TVCT_ID, 0xFF);
-		parser.parse_psip_tvct(demuxer_tvct, virtual_channel_table);
-	
-		demuxer_tvct.stop();
+		demuxer_vct.set_filter(PSIP_PID, TVCT_ID, 0xFE);
+		parser.parse_psip_vct(demuxer_vct, virtual_channel_table);
+		demuxer_vct.stop();
 		
 		for (guint i = 0; i < virtual_channel_table.channels.size(); i++)
 		{
 			SI::VirtualChannel* vc = &virtual_channel_table.channels[i];
-			if (vc->channel_TSID == virtual_channel_table.transport_stream_id && vc->service_type == 0x02) signal_service(
-				transponder.frontend_parameters,
-				vc->program_number,
-				Glib::ustring::compose("%1-%2 %3", vc->major_channel_number, vc->minor_channel_number, vc->short_name),
-				transponder.polarisation);
+			if (vc->channel_TSID == virtual_channel_table.transport_stream_id && vc->service_type == 0x02)
+				signal_service(
+					transponder.frontend_parameters,
+					vc->program_number,
+					Glib::ustring::compose("%1-%2 %3", vc->major_channel_number, vc->minor_channel_number, vc->short_name),
+					transponder.polarisation);
 		}
 	}
 	catch(const Exception& exception)
