@@ -502,10 +502,8 @@ gboolean Mpeg::Stream::find_descriptor(guchar tag, const unsigned char *buf, int
 Glib::ustring Mpeg::Stream::get_lang_desc(const guchar* b)
 {
 	char c[4];
-	Glib::ustring s;
 	memset( mempcpy( c, b+2, 3 ), 0, 1 );
-	s = c;
-	return s;
+	return c;
 }
 
 gboolean Mpeg::Stream::contains_pid(guint pid)

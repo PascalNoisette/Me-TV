@@ -70,9 +70,11 @@ void StreamManager::run()
 
 	Dvb::Frontend& frontend = get_application().device_manager.get_frontend();
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
+
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
+	input_channel->set_flags(input_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
 	input_channel->set_encoding("");
-		
+	
 	guint last_insert_time = 0;
 	gsize bytes_read;
 	
@@ -98,22 +100,28 @@ void StreamManager::run()
 			}
 			last_insert_time = now;
 		}
-				
-		input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read);
 
-		for (guint i = 0; i < bytes_read; i += TS_PACKET_SIZE)
+		if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
 		{
-			guint pid = ((buffer[i+1] & 0x0f) << 8) + buffer[i+2];
-			
-			for (std::list<ChannelStream>::iterator iterator = streams.begin(); iterator != streams.end(); iterator++)
+			usleep(10000);
+		}
+		else
+		{
+			for (guint i = 0; i < bytes_read; i += TS_PACKET_SIZE)
 			{
-				ChannelStream& channel_stream = *iterator;
-				if (channel_stream.stream.contains_pid(pid))
+				guint pid = ((buffer[i+1] & 0x0f) << 8) + buffer[i+2];
+			
+				for (std::list<ChannelStream>::iterator iterator = streams.begin(); iterator != streams.end(); iterator++)
 				{
-					channel_stream.write(buffer+i, TS_PACKET_SIZE);
+					ChannelStream& channel_stream = *iterator;
+					if (channel_stream.stream.contains_pid(pid))
+					{
+						channel_stream.write(buffer+i, TS_PACKET_SIZE);
+					}
 				}
 			}
 		}
+		
 		THREAD_CATCH
 	}
 		
