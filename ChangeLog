@@ -1,7 +1,8 @@
-2010-01-08  Michael Lamothe <michael.lamothe@gmail.com>
+2010-01-04  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.1.2
 	* EPG now reads CVCT to get source_id (LP: #502306)
+	* Added missing bit for PID calculation (LP: #502660)
 
 2010-01-02  Michael Lamothe <michael.lamothe@gmail.com>
 
