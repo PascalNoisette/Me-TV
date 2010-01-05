@@ -21,7 +21,7 @@
 #ifndef __SCHEDULED_RECORDINGS_DIALOG_H__
 #define __SCHEDULED_RECORDINGS_DIALOG_H__
 
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 #include "data.h"
 
 class ScheduledRecordingsDialog : public Gtk::Dialog

@@ -21,7 +21,7 @@
 #ifndef __STATUS_ICON_H__
 #define __STATUS_ICON_H__
 
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 
 class StatusIcon
 {

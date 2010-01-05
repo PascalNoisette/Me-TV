@@ -28,7 +28,7 @@
 #include "application.h"
 #include "scheduled_recordings_dialog.h"
 #include "engine.h"
-#include <libgnome/libgnome.h>
+#include <gtkmm.h>
 #include <gdk/gdkx.h>
 
 #define POKE_INTERVAL 					30
@@ -474,7 +474,7 @@ void MainWindow::on_hide()
 	Gtk::Window::on_hide();
 	if (!get_application().get_boolean_configuration_value("display_status_icon"))
 	{
-		Gnome::Main::quit();
+		Gtk::Main::quit();
 	}
 	CATCH
 }

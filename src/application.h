@@ -22,7 +22,8 @@
 #define __APPLICATION_H__
 
 #include "me-tv.h"
-#include <libgnomemm.h>
+#include <gtkmm.h>
+#include <gconfmm.h>
 #include "device_manager.h"
 #include "channel_manager.h"
 #include "scheduled_recording_manager.h"
@@ -30,7 +31,7 @@
 #include "status_icon.h"
 #include "stream_manager.h"
 
-class Application : public Gnome::Main
+class Application : public Gtk::Main
 {
 private:
 	static Application*					current;

@@ -21,7 +21,7 @@
 #ifndef __PREFERENCES_DIALOG_H__
 #define __PREFERENCES_DIALOG_H__
 
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 
 class PreferencesDialog : public Gtk::Dialog
 {

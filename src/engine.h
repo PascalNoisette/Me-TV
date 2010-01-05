@@ -22,7 +22,7 @@
 #define __ENGINE_H__
 
 #include "me-tv.h"
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 #include <X11/X.h>
 
 class Engine

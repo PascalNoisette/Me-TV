@@ -19,7 +19,7 @@
  */
 
 #include "me-tv.h"
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 #include "application.h"
 #include "devices_dialog.h"
 

@@ -21,7 +21,7 @@
 #ifndef __DEVICES_DIALOG_H__
 #define __DEVICES_DIALOG_H__
 
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 
 class DevicesDialog : public Gtk::Dialog
 {

@@ -21,7 +21,7 @@
 #ifndef __ME_TV_UI_H__
 #define __ME_TV_UI_H__
 
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 #include "me-tv.h"
 #include "dvb_frontend.h"
 #include "channel.h"

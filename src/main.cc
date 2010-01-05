@@ -20,7 +20,7 @@
 
 #include "application.h"
 #include "me-tv.h"
-#include <glibmm.h>
+#include <gconfmm.h>
 #include "me-tv-i18n.h"
 #include <glib/gprintf.h>
 #include <X11/Xlib.h>
@@ -45,6 +45,8 @@ int main (int argc, char *argv[])
 		Glib::thread_init();
 	}
 	gdk_threads_init();
+
+	Gnome::Conf::init();
 
 	g_log_set_handler(G_LOG_DOMAIN,
 		(GLogLevelFlags)(G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION),

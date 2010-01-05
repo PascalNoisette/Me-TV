@@ -21,7 +21,7 @@
 #ifndef __GTK_EPG_WIDGET__
 #define __GTK_EPG_WIDGET__
 
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 #include "data.h"
 #include "me-tv-ui.h"
 

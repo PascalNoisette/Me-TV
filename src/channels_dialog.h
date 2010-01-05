@@ -21,7 +21,7 @@
 #ifndef __CHANNELS_DIALOG_H__
 #define __CHANNELS_DIALOG_H__
 
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 
 class ChannelsDialog : public Gtk::Dialog
 {

@@ -72,7 +72,7 @@
          <child>
             <object class="GtkAction" id="scheduled_recordings">
                <property name="label" translatable="yes">_Schedule</property>
-               <property name="stock-id">gnome-stock-timer</property>
+               <property name="icon-name">appointment-soon</property>
                <signal name="activate" handler="on_scheduled_recordings"/>
             </object>
          </child>
@@ -113,7 +113,7 @@
          <child>
             <object class="GtkToggleAction" id="mute">
                <property name="label" translatable="yes">_Mute</property>
-               <property name="stock-id">gnome-stock-volume</property>
+               <property name="icon-name">audio-volume-high</property>
                <signal name="activate" handler="on_mute"/>
             </object>
             <accelerator key="M"/>

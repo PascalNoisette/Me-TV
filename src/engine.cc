@@ -21,7 +21,7 @@
 #include "engine.h"
 #include "exception.h"
 #include "application.h"
-#include <libgnome/libgnome.h>
+#include <gtkmm.h>
 #include <gdk/gdkx.h>
 #include <sys/wait.h>
 

@@ -36,7 +36,7 @@ void on_record(GtkObject *object, gpointer user_data)
 void on_quit()
 {
 	get_application().get_main_window().hide();
-	Gnome::Main::quit();
+	Gtk::Main::quit();
 }
 
 void on_next_channel(GtkObject *object, gpointer user_data)
@@ -132,7 +132,7 @@ Application& get_application()
 }
 
 Application::Application(int argc, char *argv[], Glib::OptionContext& option_context) :
-	Gnome::Main("Me TV", VERSION, Gnome::UI::module_info_get(), argc, argv, option_context)
+	Gtk::Main(argc, argv, option_context)
 {
 	g_debug("Application constructor");
 
@@ -540,7 +540,7 @@ void Application::run()
 			stream_manager.start();
 		}
 		
-		Gnome::Main::run();
+		Gtk::Main::run();
 			
 		if (status_icon != NULL)
 		{

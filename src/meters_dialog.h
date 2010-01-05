@@ -21,7 +21,7 @@
 #ifndef __METERS_DIALOG_H__
 #define __METERS_DIALOG_H__
 
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 #include "me-tv-ui.h"
 #include "thread.h"
 

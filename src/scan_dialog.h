@@ -21,7 +21,7 @@
 #ifndef __SCAN_DIALOG_H__
 #define __SCAN_DIALOG_H__
 
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 #include "device_manager.h"
 #include "dvb_scanner.h"
 #include "thread.h"

@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <libgnomeuimm.h>
+#include <gtkmm.h>
 #include <gdk/gdk.h>
 #include "application.h"
 #include "me-tv-ui.h"
