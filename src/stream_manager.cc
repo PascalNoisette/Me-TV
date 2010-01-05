@@ -43,7 +43,6 @@ StreamManager::StreamManager() :
 	g_static_rec_mutex_init(mutex.gobj());
 	
 	epg_thread = NULL;
-	socket = NULL;
 
 	g_debug("StreamManager created");
 }

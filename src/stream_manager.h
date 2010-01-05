@@ -27,7 +27,6 @@
 #include "dvb_demuxer.h"
 #include "me-tv-ui.h"
 #include "mpeg_stream.h"
-#include <gnet.h>
 
 class StreamManager : public Thread
 {
@@ -64,8 +63,6 @@ public:
 private:
 	Glib::StaticRecMutex		mutex;
 	EpgThread*					epg_thread;
-	GUdpSocket*					socket;
-	GInetAddr*					inet_address;
 	std::list<ChannelStream>	streams;
 
 	void run();
