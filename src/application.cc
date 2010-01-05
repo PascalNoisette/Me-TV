@@ -626,7 +626,7 @@ void Application::set_display_channel(const Channel& channel)
 		{
 			Glib::ustring message = Glib::ustring::compose(
 			    _("You cannot tune to channel '%1' because you are recording."),
-			    channel.name.c_str());
+			    channel.name);
 			throw Exception(message);
 		}
 	}

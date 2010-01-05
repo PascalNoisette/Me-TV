@@ -3,6 +3,7 @@
 	* 1.1.3
 	* Use GLib/Gio instead GNet (LP: #503214)
 	* Removed deprecated libgnome/ui dependency (LP: #503219)
+	* Applied patch from Ludwig Nussel to fix compile error on glibmm 2.16.1
 
 2010-01-04  Michael Lamothe <michael.lamothe@gmail.com>
 
