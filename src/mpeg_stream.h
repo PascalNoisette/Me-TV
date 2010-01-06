@@ -26,6 +26,7 @@
 #define STREAM_TYPE_MPEG4		0x10
 #define STREAM_TYPE_H264		0x1B
 #define STREAM_TYPE_AUDIO_MPEG4	0x11
+#define STREAM_TYPE_VIDEO		0x80
 #define STREAM_TYPE_AUDIO_AC3	0x81
 
 #include <linux/dvb/frontend.h>

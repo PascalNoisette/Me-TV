@@ -360,6 +360,7 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 		case STREAM_TYPE_MPEG2:
 		case STREAM_TYPE_MPEG4:
 		case STREAM_TYPE_H264:
+		case STREAM_TYPE_VIDEO:
 			g_debug("Video PID: %d", elementary_pid);
 			{
 				VideoStream video_stream;
