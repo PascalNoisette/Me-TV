@@ -6,6 +6,7 @@
 	* Applied patch from Ludwig Nussel to fix compile error on glibmm 2.16.1
 	* Added PES type 0x80 to be a recognised video stream
 	* Fix for FTBFS on Debian GNU/Linux 5.0 (LP: #503910)
+	* Removed GTK+ 2.16 requirement from UI file
 
 2010-01-04  Michael Lamothe <michael.lamothe@gmail.com>
 
