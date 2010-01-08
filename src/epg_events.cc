@@ -76,7 +76,7 @@ gboolean EpgEvents::get_current(EpgEvent& epg_event)
 {
 	EpgEvent result;
 	gboolean found = false;
-	guint now = convert_to_local_time(time(NULL));
+	guint now = get_local_time();
 	
 	Glib::RecMutex::Lock lock(mutex);
 	for (EpgEventList::iterator i = list.begin(); i != list.end() && found == false; i++)
@@ -107,8 +107,7 @@ bool is_old(EpgEvent& epg_event)
 
 void EpgEvents::prune()
 {
-	now = convert_to_local_time(time(NULL));
-
+	now = get_local_time();
 	list.remove_if(is_old);
 }
 

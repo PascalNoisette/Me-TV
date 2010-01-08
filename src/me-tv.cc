@@ -48,6 +48,11 @@ void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::us
 	}
 }
 
+guint get_local_time()
+{
+	return convert_to_local_time(time(NULL));
+}
+
 Glib::ustring get_local_time_text(const gchar* format)
 {
 	return get_local_time_text(time(NULL), format);

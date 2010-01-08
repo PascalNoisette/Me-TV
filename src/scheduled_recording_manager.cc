@@ -72,7 +72,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	{
 		ScheduledRecording& scheduled_recording = *i;
 
-		guint now = convert_to_local_time(time(NULL));
+		guint now = get_local_time();
 		if (scheduled_recording.get_end_time() > now)
 		{
 			Data::Row row;
