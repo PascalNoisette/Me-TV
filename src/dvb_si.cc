@@ -514,6 +514,7 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 		gulong	start_time_UTC;  // 24
 		gulong	duration;
 
+		event.version_number	= section.version_number;
 		event.event_id			= buffer.get_bits(offset, 0, 16);
 		start_time_MJD			= buffer.get_bits(offset, 16, 16);
 		start_time_UTC			= buffer.get_bits(offset, 32, 24);

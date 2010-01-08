@@ -52,15 +52,13 @@ gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)
 			if (epg_event.version_number > current.version_number ||
 			    (epg_event.version_number == 0 && current.version_number == 31))
 			{
-				g_debug("Old EPG Event %d (%s) removed", epg_event.event_id, epg_event.get_title().c_str());
-				EpgEventList::iterator j = i;
-				i++;
-				list.erase(j);
+				g_debug("Old EPG Event %d (%s) version %d removed",
+				    epg_event.event_id, epg_event.get_title().c_str(), epg_event.version_number);
+				i = list.erase(i);
 			}
 			else
 			{
 				add = false;
-				break;
 			}
 		}
 		else
@@ -73,7 +71,8 @@ gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)
 	{
 		list.push_back(epg_event);
 		list.sort(sort_function);
-		g_debug("EPG Event %d (%s) added", epg_event.event_id, epg_event.get_title().c_str());
+		g_debug("EPG Event %d (%s) version %d added",
+		    epg_event.event_id, epg_event.get_title().c_str(), epg_event.version_number);
 	}
 	
 	return add;
