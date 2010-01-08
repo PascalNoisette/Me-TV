@@ -1,4 +1,4 @@
-2010-01-07  Michael Lamothe <michael.lamothe@gmail.com>
+2010-01-09  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.1.3
 	* Use GLib/Gio instead GNet (LP: #503214)
@@ -7,6 +7,7 @@
 	* Added PES type 0x80 to be a recognised video stream
 	* Fix for FTBFS on Debian GNU/Linux 5.0 (LP: #503910)
 	* Removed GTK+ 2.16 requirement from UI file
+	* EPG now honours the version number field and updates EPG events
 
 2010-01-04  Michael Lamothe <michael.lamothe@gmail.com>
 

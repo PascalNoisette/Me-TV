@@ -12,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ * e
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -32,22 +32,6 @@ EpgEvents::~EpgEvents()
 {
 }
 
-gboolean EpgEvents::exists(const EpgEvent& epg_event)
-{
-	gboolean result = false;
-	
-	Glib::RecMutex::Lock lock(mutex);
-	for (EpgEventList::const_iterator i = list.begin(); i != list.end() && result == false; i++)
-	{
-		if (epg_event.event_id == (*i).event_id)
-		{
-			result = true;
-		}
-	}
-	
-	return result;
-}
-
 bool sort_function(const EpgEvent& a, const EpgEvent& b)
 {
 	return a.start_time < b.start_time;
@@ -55,21 +39,44 @@ bool sort_function(const EpgEvent& a, const EpgEvent& b)
 
 gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)
 {
+	gboolean add = true;
+	
 	Glib::RecMutex::Lock lock(mutex);
-	gboolean event_exists = exists(epg_event);
-	if (!event_exists)
+	EpgEventList::iterator i = list.begin();
+	
+	while (i != list.end() && add == true)
+	{
+		const EpgEvent& current = *i;
+		if (epg_event.event_id == current.event_id)
+		{
+			if (epg_event.version_number > current.version_number ||
+			    (epg_event.version_number == 0 && current.version_number == 31))
+			{
+				g_debug("Old EPG Event %d (%s) removed", epg_event.event_id, epg_event.get_title().c_str());
+				EpgEventList::iterator j = i;
+				i++;
+				list.erase(j);
+			}
+			else
+			{
+				add = false;
+				break;
+			}
+		}
+		else
+		{
+			i++;
+		}
+	}
+
+	if (add)
 	{
 		list.push_back(epg_event);
 		list.sort(sort_function);
 		g_debug("EPG Event %d (%s) added", epg_event.event_id, epg_event.get_title().c_str());
 	}
-	return !event_exists;
-}
-
-void EpgEvents::add_epg_events(const EpgEventList& epg_event_list)
-{
-	Glib::RecMutex::Lock lock(mutex);
-	list = epg_event_list;
+	
+	return add;
 }
 
 gboolean EpgEvents::get_current(EpgEvent& epg_event)
@@ -130,11 +137,12 @@ void EpgEvents::load(Data::Connection& connection, guint channel_id)
 		
 		epg_event.save = false;
 		
-		epg_event.epg_event_id	= row_epg_event["epg_event_id"].int_value;
-		epg_event.channel_id	= channel_id;
-		epg_event.event_id		= row_epg_event["event_id"].int_value;
-		epg_event.start_time	= row_epg_event["start_time"].int_value;
-		epg_event.duration		= row_epg_event["duration"].int_value;
+		epg_event.epg_event_id		= row_epg_event["epg_event_id"].int_value;
+		epg_event.channel_id		= channel_id;
+		epg_event.version_number	= row_epg_event["version_number"].int_value;
+		epg_event.event_id			= row_epg_event["event_id"].int_value;
+		epg_event.start_time		= row_epg_event["start_time"].int_value;
+		epg_event.duration			= row_epg_event["duration"].int_value;
 		
 		Glib::ustring clause = Glib::ustring::compose("epg_event_id = %1", epg_event.epg_event_id);
 		Data::DataTable data_table_epg_event_text = adapter_epg_event_text.select_rows(clause);
@@ -181,11 +189,12 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id)
 			Data::Row row_epg_event;
 			
 			row_epg_event.auto_increment = &(epg_event.epg_event_id);
-			row_epg_event["epg_event_id"].int_value	= epg_event.epg_event_id;
-			row_epg_event["channel_id"].int_value	= channel_id;
-			row_epg_event["event_id"].int_value		= epg_event.event_id;
-			row_epg_event["start_time"].int_value	= epg_event.start_time;
-			row_epg_event["duration"].int_value		= epg_event.duration;
+			row_epg_event["epg_event_id"].int_value		= epg_event.epg_event_id;
+			row_epg_event["channel_id"].int_value		= channel_id;
+			row_epg_event["version_number"].int_value	= epg_event.version_number;
+			row_epg_event["event_id"].int_value			= epg_event.event_id;
+			row_epg_event["start_time"].int_value		= epg_event.start_time;
+			row_epg_event["duration"].int_value			= epg_event.duration;
 			
 			data_table_epg_event.rows.add(row_epg_event);
 		}

@@ -75,6 +75,7 @@ namespace Dvb
 			Event();
 
 			guint	event_id;
+			guint	version_number;
 			guint	start_time;
 			gulong	duration;
 			guint	running_status;

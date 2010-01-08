@@ -24,7 +24,7 @@
 #include "crc32.h"
 
 #define GCONF_PATH					"/apps/me-tv"
-#define CURRENT_DATABASE_VERSION	3
+#define CURRENT_DATABASE_VERSION	4
 
 G_BEGIN_DECLS
 void on_record(GtkObject *object, gpointer user_data)
@@ -270,11 +270,12 @@ gboolean Application::initialise_database()
 	
 	Data::Table table_epg_event;
 	table_epg_event.name = "epg_event";
-	table_epg_event.columns.add("epg_event_id",	Data::DATA_TYPE_INTEGER, 0, false);
-	table_epg_event.columns.add("channel_id",	Data::DATA_TYPE_INTEGER, 0, false);
-	table_epg_event.columns.add("event_id",		Data::DATA_TYPE_INTEGER, 0, false);
-	table_epg_event.columns.add("start_time",	Data::DATA_TYPE_INTEGER, 0, false);
-	table_epg_event.columns.add("duration",		Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event.columns.add("epg_event_id",		Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event.columns.add("channel_id",		Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event.columns.add("version_number",	Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event.columns.add("event_id",			Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event.columns.add("start_time",		Data::DATA_TYPE_INTEGER, 0, false);
+	table_epg_event.columns.add("duration",			Data::DATA_TYPE_INTEGER, 0, false);
 	table_epg_event.primary_key = "epg_event_id";
 	StringList table_epg_event_unique_columns;
 	table_epg_event_unique_columns.push_back("channel_id");

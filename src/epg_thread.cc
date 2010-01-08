@@ -224,11 +224,12 @@ void EpgThread::run()
 						Dvb::SI::Event& event	= section.events[k];
 						EpgEvent epg_event;
 
-						epg_event.epg_event_id	= 0;
-						epg_event.channel_id	= channel->channel_id;
-						epg_event.event_id		= event.event_id;
-						epg_event.start_time	= event.start_time;
-						epg_event.duration		= event.duration;
+						epg_event.epg_event_id		= 0;
+						epg_event.channel_id		= channel->channel_id;
+						epg_event.version_number	= event.version_number;
+						epg_event.event_id			= event.event_id;
+						epg_event.start_time		= event.start_time;
+						epg_event.duration			= event.duration;
 						
 						if (is_atsc)
 						{

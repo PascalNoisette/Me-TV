@@ -32,14 +32,12 @@ private:
 	EpgEventList			list;
 	Glib::StaticRecMutex	mutex;
 	
-	gboolean exists(const EpgEvent& epg_event);
 	void set_saved(guint epg_event_id);
 public:
 	EpgEvents();
 	~EpgEvents();
 		
 	gboolean			add_epg_event(const EpgEvent& epg_event);
-	void				add_epg_events(const EpgEventList& epg_event_list);
 	gboolean			get_current(EpgEvent& epg_event);
 	const EpgEventList	get_list();
 	void				prune();

@@ -44,6 +44,7 @@ class EpgEvent
 public:
 	guint				epg_event_id;
 	guint				channel_id;
+	guint				version_number;
 	guint				event_id;
 	guint				start_time;
 	guint				duration;
