@@ -669,7 +669,6 @@ void Application::check_scheduled_recordings()
 		}
 	}
 
-	// This is because I don't know how to safely remove elements from a list
 	gboolean check = true;
 	while (check)
 	{

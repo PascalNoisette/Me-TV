@@ -208,7 +208,7 @@ void ChannelManager::save(Data::Connection& connection)
 	}
 
 	g_debug("Deleting old EPG events");
-	Glib::ustring clause_epg_event = Glib::ustring::compose("(START_TIME+DURATION)<%1", convert_to_local_time(time(NULL)));
+	Glib::ustring clause_epg_event = Glib::ustring::compose("(START_TIME+DURATION)<%1", get_local_time() - 36000);
 	adapter_epg_event.delete_rows(clause_epg_event);
 
 	// Delete orphaned epg_events_texts

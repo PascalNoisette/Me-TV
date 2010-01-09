@@ -418,29 +418,17 @@ void StreamManager::stop_recording(const Channel& channel)
 {
 	Lock lock(mutex, "StreamManager::stop_recording()");
 
-	// This is because I don't know how to safely remove elements from a list
-	gboolean check = true;
-	while (check)
- 	{
-		std::list<ChannelStream>::iterator iterator = streams.begin();
-
-		// Skip the first stream because it's the display one
-		if (iterator != streams.end())
+	std::list<ChannelStream>::iterator iterator = streams.begin();
+	while (iterator != streams.end())
+	{
+		ChannelStream& channel_stream = *iterator;
+		if (channel_stream.channel == channel)
 		{
-			iterator++;
+			channel_stream.output_channel.reset();
+			iterator = streams.erase(iterator);
 		}
-
-		check = false;
-		while (iterator != streams.end())
+		else
 		{
-			ChannelStream& channel_stream = *iterator;
-			if (channel_stream.channel == channel)
-			{
-				channel_stream.output_channel.reset();
-				streams.erase(iterator);
-				check = true;
-				break;
-			}
 			iterator++;
 		}
 	}

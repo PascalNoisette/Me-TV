@@ -46,14 +46,18 @@ gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)
 	
 	while (i != list.end() && add == true)
 	{
-		const EpgEvent& current = *i;
-		if (epg_event.event_id == current.event_id)
+		const EpgEvent& existing = *i;
+		if (epg_event.event_id == existing.event_id)
 		{
-			if (epg_event.version_number > current.version_number ||
-			    (epg_event.version_number == 0 && current.version_number == 31))
+			if (epg_event.version_number > existing.version_number ||
+			    (epg_event.version_number == 0 && existing.version_number == 31))
 			{
-				g_debug("Old EPG Event %d (%s) version %d removed",
-				    epg_event.event_id, epg_event.get_title().c_str(), epg_event.version_number);
+				g_debug("Old EPG Event %d (%s) (CHANNEL: %d) (%s) version %d removed",
+				    existing.event_id,
+				    existing.get_title().c_str(),
+				    existing.channel_id,
+				    existing.get_start_time_text().c_str(),
+				    existing.version_number);
 				i = list.erase(i);
 			}
 			else
@@ -108,16 +112,17 @@ const EpgEventList EpgEvents::get_list()
 	return list;
 }
 
-guint now = 0;
+guint prune_before_time = 0;
 
 bool is_old(EpgEvent& epg_event)
 {
-	return epg_event.get_end_time() < now;
+	return epg_event.get_end_time() < prune_before_time;
 }
 
 void EpgEvents::prune()
 {
-	now = get_local_time();
+	Glib::RecMutex::Lock lock(mutex);
+	prune_before_time = get_local_time() - 36000; // Back 10 hours
 	list.remove_if(is_old);
 }
 
