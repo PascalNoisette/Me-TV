@@ -22,7 +22,6 @@
 #define CHANNELS_CONF_LINE
 
 #include "me-tv.h"
-#include "string_splitter.h"
 #include <linux/dvb/frontend.h>
 
 class ChannelsConfLine
@@ -37,13 +36,13 @@ private:
 	static struct StringTable modulation_table[];
 	static struct StringTable polarisation_table[];
 	
-	StringSplitter splitter;
+	std::vector<Glib::ustring> parts;
 public:
 	ChannelsConfLine(const Glib::ustring& line);
 	
-	guint get_parameter_count() const { return splitter.get_count(); }
+	guint get_parameter_count() const { return parts.size(); }
 		
-	const gchar*			get_name(guint index);
+	const Glib::ustring&	get_name(guint index);
 	fe_spectral_inversion_t	get_inversion(guint index);
 	fe_bandwidth_t			get_bandwidth(guint index);
 	fe_code_rate_t			get_fec(guint index);

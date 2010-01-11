@@ -481,7 +481,7 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 		
 		guint descriptors_length = buffer.get_bits(offset, 4, 12);
 		offset += 2 + descriptors_length;
-		
+	
 		section.events.push_back(event);
 	}
 }
@@ -531,36 +531,23 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 		guint event_dur_sec =  ((duration >>  4)&0xf)*10+((duration      )&0xf);
 
 		event.duration = (event_dur_hour*60 + event_dur_min) * 60 + event_dur_sec;
-		
-		guint event_start_day = 0;
-		guint event_start_month = 0;
-		guint event_start_year = 0;
-		
+				
 		if (start_time_MJD > 0 && event.event_id != 0)
 		{
 			long year =  (long) ((start_time_MJD  - 15078.2) / 365.25);
 			long month =  (long) ((start_time_MJD - 14956.1 - (long)(year * 365.25) ) / 30.6001);
-			event_start_day =  (long) (start_time_MJD - 14956 - (long)(year * 365.25) - (long)(month * 30.6001));
-
-			long k = (month == 14 || month == 15) ? 1 : 0;
-
-			event_start_year = year + k + 1900;
-			event_start_month = month - 1 - k * 12;
-
-			guint event_start_hour = ((start_time_UTC >> 20)&0xf)*10+((start_time_UTC >> 16)&0xf);
-			guint event_start_min =  ((start_time_UTC >> 12)&0xf)*10+((start_time_UTC >>  8)&0xf);
-			guint event_start_sec =  ((start_time_UTC >>  4)&0xf)*10+((start_time_UTC      )&0xf);
+			long day =  (long) (start_time_MJD - 14956 - (long)(year * 365.25) - (long)(month * 30.6001));
 
 			struct tm t;
 
 			memset(&t, 0, sizeof(struct tm));
 
-			t.tm_sec	= event_start_sec;
-			t.tm_min	= event_start_min;
-			t.tm_hour	= event_start_hour;
-			t.tm_mday	= event_start_day;
-			t.tm_mon	= event_start_month - 1;
-			t.tm_year	= event_start_year - 1900;
+			t.tm_sec	= ((start_time_UTC >>  4)&0xf)*10+((start_time_UTC      )&0xf);
+			t.tm_min	= ((start_time_UTC >> 12)&0xf)*10+((start_time_UTC >>  8)&0xf);
+			t.tm_hour	= ((start_time_UTC >> 20)&0xf)*10+((start_time_UTC >> 16)&0xf);
+			t.tm_mday	= day;
+			t.tm_mon	= month - 2;
+			t.tm_year	= year;
 			
 			event.start_time = mktime(&t);
 
@@ -609,13 +596,7 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 	{		
 	case EXTENDED_EVENT:
 		{
-			Glib::ustring language;
-			Glib::ustring title;
-			Glib::ustring description;
-			Glib::ustring temp_title;
-			Glib::ustring temp_description;
-
-			language = get_lang_desc (event_buffer + 1);
+			Glib::ustring language = get_lang_desc (event_buffer + 1);
 			
 			if (!event.texts.contains(language))
 			{
@@ -626,46 +607,23 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 			EventText& event_text = event.texts[language];
 			
 			unsigned int offset = 6;
-			guint length_of_items = event_buffer[offset];
-			offset++;
+			guint length_of_items = event_buffer[offset++];
 			while (length_of_items > offset - 7)
 			{
-				offset += get_text(temp_description, &event_buffer[offset]);			
-				if (temp_description != "-")
-				{
-					description += temp_description;
-				}
-
-				offset += get_text(temp_title, &event_buffer[offset]);
-				if (temp_title != "-")
-				{
-					title += temp_title;
-				}
+				event_text.title += "[1]";
+				offset += get_text(event_text.title, &event_buffer[offset]);
+				event_text.description += "[2]";
+				offset += get_text(event_text.description, &event_buffer[offset]);
 			}
-			offset += get_text(temp_description, &event_buffer[offset]);
-			if (temp_description != "-")
-			{
-				description	+= temp_description;
-			}
-			
-			if (!event_text.is_extended)
-			{
-				event_text.description.clear();
-			}
-			
-			event_text.is_extended	= true;
-			event_text.title		+= title;
-			event_text.description	+= description;
+			event_text.description += "[3]";
+			offset += get_text(event_text.description, &event_buffer[offset]);
 		}
 		break;
 
 	case SHORT_EVENT:
 		{
-			Glib::ustring	language;
-			Glib::ustring	title;
-			Glib::ustring	description;
+			Glib::ustring language = get_lang_desc (event_buffer);
 			
-			language = get_lang_desc (event_buffer);
 			if (!event.texts.contains(language))
 			{
 				EventText event_text_temp;
@@ -674,18 +632,12 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 			}
 			EventText& event_text = event.texts[language];
 
-			event_text.is_extended = false;
 			event_text.language = language;
 			unsigned int offset = 5;
-			offset += get_text(title, &event_buffer[offset]);
-			offset += get_text(description, &event_buffer[offset]);
-			
-			event_text.title = title;
-
-			if (!event_text.is_extended)
-			{
-				event_text.description += description;
-			}
+			event_text.title += "[4]";
+			offset += get_text(event_text.title, &event_buffer[offset]);
+			event_text.subtitle += "[5]";
+			offset += get_text(event_text.subtitle, &event_buffer[offset]);
 		}
 		break;
 	default:
@@ -783,11 +735,14 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 			}
 		}
 		
-		s = "";
-
 		if (text_encoding == "iso6937")
 		{
-			s = convert_iso6937(text_buffer + index, length);
+			if (!s.empty())
+			{
+				s += " - ";
+			}
+			
+			s += convert_iso6937(text_buffer + index, length);
 		}
 		else
 		{
@@ -866,7 +821,12 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 					throw Exception(message);
 				}
 				
-				s = result;
+				if (!s.empty())
+				{
+					s += " - ";
+				}
+				
+				s += result;
 				g_free(result);
 			}
 		}

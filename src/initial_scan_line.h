@@ -22,7 +22,6 @@
 #define INITIAL_SCAN_LINE
 
 #include "me-tv.h"
-#include "string_splitter.h"
 #include <linux/dvb/frontend.h>
 
 class InitialScanLine
@@ -37,11 +36,11 @@ private:
 	static struct StringTable modulation_table[];
 	static struct StringTable polarisation_table[];
 	
-	StringSplitter splitter;
+	std::vector<Glib::ustring> parts;
 public:
 	InitialScanLine(const Glib::ustring& line);
 	
-	guint get_parameter_count() const { return splitter.get_count(); }
+	guint get_parameter_count() const { return parts.size(); }
 
 	guint				get_frequency(guint index);
 	fe_bandwidth_t		get_bandwidth(guint index);

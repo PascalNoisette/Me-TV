@@ -24,7 +24,7 @@
 #include "crc32.h"
 
 #define GCONF_PATH					"/apps/me-tv"
-#define CURRENT_DATABASE_VERSION	4
+#define CURRENT_DATABASE_VERSION	5
 
 G_BEGIN_DECLS
 void on_record(GtkObject *object, gpointer user_data)
@@ -289,6 +289,7 @@ gboolean Application::initialise_database()
 	table_epg_event_text.columns.add("epg_event_id",		Data::DATA_TYPE_INTEGER, 0, false);
 	table_epg_event_text.columns.add("language",			Data::DATA_TYPE_STRING, 3, false);
 	table_epg_event_text.columns.add("title",				Data::DATA_TYPE_STRING, 200, false);
+	table_epg_event_text.columns.add("subtitle",			Data::DATA_TYPE_STRING, 200, false);
 	table_epg_event_text.columns.add("description",			Data::DATA_TYPE_STRING, 1000, false);
 	table_epg_event_text.primary_key = "epg_event_text_id";
 	StringList table_epg_event_text_unique_columns;
@@ -511,12 +512,6 @@ void Application::run()
 		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 
 		TRY
-
-		ChannelArray& channels = channel_manager.get_channels();
-		if (channels.empty())
-		{
-			main_window->show_channels_dialog();
-		}
 		
 		if (!device_manager.get_frontends().empty())
 		{
@@ -531,6 +526,12 @@ void Application::run()
 			{
 				main_window->show_preferences_dialog();
 			}
+		}
+
+		ChannelArray& channels = channel_manager.get_channels();
+		if (channels.empty())
+		{
+			main_window->show_channels_dialog();
 		}
 
 		select_channel_to_play();

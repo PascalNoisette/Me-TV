@@ -243,7 +243,6 @@ void EpgThread::run()
 						
 							epg_event_text.epg_event_text_id	= 0;
 							epg_event_text.epg_event_id			= 0;
-							epg_event_text.is_extended			= event_text.is_extended;
 							epg_event_text.language				= event_text.language;
 							epg_event_text.title				= event_text.title;
 							epg_event_text.description			= event_text.description;

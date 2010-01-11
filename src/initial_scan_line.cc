@@ -106,51 +106,52 @@ struct StringTable InitialScanLine::polarisation_table[] =
 	{ NULL, 0 }
 };
 
-InitialScanLine::InitialScanLine(const Glib::ustring& line) : splitter(line, " \t", true, 20)
+InitialScanLine::InitialScanLine(const Glib::ustring& line)
 {
+	split_string(parts, line, " \t", true, 20);
 }
 
 guint InitialScanLine::get_frequency(guint index)
 {
-	return splitter.get_int_value(index);
+	return atoi(parts[index].c_str());
 }
 
 fe_bandwidth_t InitialScanLine::get_bandwidth(guint index)
 {
-	return (fe_bandwidth_t)convert_string_to_value(bandwidth_table, splitter.get_value(index));
+	return (fe_bandwidth_t)convert_string_to_value(bandwidth_table, parts[index]);
 }
 
 fe_code_rate_t InitialScanLine::get_fec(guint index)
 {
-	return (fe_code_rate_t)convert_string_to_value(fec_table, splitter.get_value(index));
+	return (fe_code_rate_t)convert_string_to_value(fec_table, parts[index]);
 }
 
 fe_modulation_t InitialScanLine::get_modulation(guint index)
 {
-	return (fe_modulation_t)convert_string_to_value(modulation_table, splitter.get_value(index));
+	return (fe_modulation_t)convert_string_to_value(modulation_table, parts[index]);
 }
 
 fe_transmit_mode_t InitialScanLine::get_transmit_mode(guint index)
 {
-	return (fe_transmit_mode_t)convert_string_to_value(transmit_mode_table, splitter.get_value(index));
+	return (fe_transmit_mode_t)convert_string_to_value(transmit_mode_table, parts[index]);
 }
 
 fe_guard_interval_t	InitialScanLine::get_guard_interval(guint index)
 {
-	return (fe_guard_interval_t)convert_string_to_value(guard_table, splitter.get_value(index));
+	return (fe_guard_interval_t)convert_string_to_value(guard_table, parts[index]);
 }
 
 fe_hierarchy_t InitialScanLine::get_hierarchy(guint index)
 {
-	return (fe_hierarchy_t)convert_string_to_value(hierarchy_table, splitter.get_value(index));
+	return (fe_hierarchy_t)convert_string_to_value(hierarchy_table, parts[index]);
 }
 
 guint InitialScanLine::get_symbol_rate(guint index)
 {
-	return splitter.get_int_value(index);
+	return atoi(parts[index].c_str());
 }
 
 guint InitialScanLine::get_polarisation(guint index)
 {
-	return (guint)convert_string_to_value(polarisation_table, splitter.get_value(index));
+	return (guint)convert_string_to_value(polarisation_table, parts[index]);
 }

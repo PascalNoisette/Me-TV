@@ -29,9 +29,9 @@ class EpgEventText
 public:
 	guint			epg_event_text_id;
 	guint			epg_event_id;
-	gboolean		is_extended;
 	Glib::ustring	language;
 	Glib::ustring	title;
+	Glib::ustring	subtitle;
 	Glib::ustring	description;
 		
 	EpgEventText();
@@ -54,7 +54,9 @@ public:
 	EpgEvent();
 		
 	guint get_end_time() const { return start_time + duration; }
+	EpgEventText get_default_text() const;
 	Glib::ustring get_title() const;
+	Glib::ustring get_subtitle() const;
 	Glib::ustring get_description() const;
 	Glib::ustring get_start_time_text() const;
 	Glib::ustring get_duration_text() const;

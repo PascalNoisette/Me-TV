@@ -25,7 +25,6 @@
 #include "dvb_scanner.h"
 #include "dvb_demuxer.h"
 #include "dvb_frontend.h"
-#include "string_splitter.h"
 #include "initial_scan_line.h"
 
 using namespace Dvb;

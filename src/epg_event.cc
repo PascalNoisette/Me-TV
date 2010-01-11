@@ -26,7 +26,6 @@ EpgEventText::EpgEventText()
 {
 	epg_event_text_id = 0;
 	epg_event_id = 0;
-	is_extended = 0;
 }
 
 EpgEvent::EpgEvent()
@@ -41,43 +40,47 @@ EpgEvent::EpgEvent()
 
 Glib::ustring EpgEvent::get_title() const
 {
-	Glib::ustring result;
-	const Glib::ustring& preferred_language = get_application().get_preferred_language();
-	
-	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end(); i++)
-	{
-		EpgEventText text = *i;
-		if (result.empty() || (preferred_language.size() > 0 && preferred_language == text.language))
-		{
-			result = text.title;
-		}
-	}
-	
-	if (result.empty())
-	{
-		result = _("Unknown title");
-	}
-	
-	return result;		
+	return get_default_text().title;
 }
-	
+
+Glib::ustring EpgEvent::get_subtitle() const
+{
+	return get_default_text().subtitle;
+}
+
 Glib::ustring EpgEvent::get_description() const
 {
-	Glib::ustring result;
+	return get_default_text().description;
+}
+
+EpgEventText EpgEvent::get_default_text() const
+{
+	EpgEventText result;
+	gboolean found = false;
 	const Glib::ustring& preferred_language = get_application().get_preferred_language();
 	
-	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end(); i++)
+	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end() && !found; i++)
 	{
 		EpgEventText text = *i;
-		if (result.empty() || (preferred_language.size() > 0 && preferred_language == text.language))
+		if (preferred_language.size() > 0 && preferred_language == text.language)
 		{
-			result = text.description;
+			found = true;
+			result = text;
 		}
 	}
-	
-	if (result.empty())
+
+	if (!found)
 	{
-		result = _("Unknown description");
+		if (texts.size() > 0)
+		{
+			result = *(texts.begin());
+		}
+		else
+		{
+			result.title = _("Unknown title");	
+			result.subtitle = _("Unknown subtitle");
+			result.description = _("Unknown description");
+		}
 	}
 	
 	return result;
@@ -85,8 +88,7 @@ Glib::ustring EpgEvent::get_description() const
 
 Glib::ustring EpgEvent::get_start_time_text() const
 {
-	return get_local_time_text(
-		convert_to_utc_time(start_time), "%c");
+	return get_local_time_text(convert_to_utc_time(start_time), "%c");
 }
 
 Glib::ustring EpgEvent::get_duration_text() const

@@ -158,3 +158,20 @@ Glib::ustring convert_value_to_string(const StringTable* table, guint value)
 	
 	return current->text;
 }
+
+void split_string(std::vector<Glib::ustring>& parts, const Glib::ustring& text, const char* delimiter, gboolean remove_empty, gsize max_length)
+{
+	gchar** temp_parts = g_strsplit_set(text.c_str(), delimiter, max_length);	
+	gchar** iterator = temp_parts;
+	guint count = 0;
+	while (*iterator != NULL)
+	{
+		gchar* part = *iterator++;
+		if (part[0] != 0)
+		{
+			count++;
+			parts.push_back(part);
+		}
+	}
+	g_strfreev(temp_parts);
+}

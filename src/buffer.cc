@@ -53,7 +53,7 @@ void Buffer::dump() const
 	for (guint i = 0; i < length; i++)
 	{
 		guchar ch = buffer[i];
-		if (g_ascii_isalnum(ch))
+		if (g_ascii_isalnum(ch) || g_ascii_ispunct(ch))
 		{
 			g_debug ("buffer[%d] = 0x%02X; // (%c)", i, ch, ch);
 		}

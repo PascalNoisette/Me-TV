@@ -93,8 +93,6 @@ me_tv_SOURCES = \
 	epg_thread.cc \
 	epg_thread.h \
 	exception.cc \
-	string_splitter.cc \
-	string_splitter.h \
 	channels_conf_line.cc \
 	channels_conf_line.h \
 	initial_scan_line.cc \

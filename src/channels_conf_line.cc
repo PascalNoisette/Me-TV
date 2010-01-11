@@ -101,66 +101,67 @@ struct StringTable ChannelsConfLine::polarisation_table[] =
 	{ NULL, 0 }
 };
 
-ChannelsConfLine::ChannelsConfLine(const Glib::ustring& line) : splitter(line, ":", false, 20)
+ChannelsConfLine::ChannelsConfLine(const Glib::ustring& line)
 {
+	split_string(parts, line, ":", false, 20);
 }
 
-const gchar* ChannelsConfLine::get_name(guint index)
+const Glib::ustring& ChannelsConfLine::get_name(guint index)
 {
-	return splitter.get_value(index);
+	return parts[index];
 }
 
 fe_spectral_inversion_t ChannelsConfLine::get_inversion(guint index)
 {
-	return (fe_spectral_inversion_t)convert_string_to_value(inversion_table, splitter.get_value(index));
+	return (fe_spectral_inversion_t)convert_string_to_value(inversion_table, parts[index]);
 }
 
 fe_bandwidth_t ChannelsConfLine::get_bandwidth(guint index)
 {
-	return (fe_bandwidth_t)convert_string_to_value(bandwidth_table, splitter.get_value(index));
+	return (fe_bandwidth_t)convert_string_to_value(bandwidth_table, parts[index]);
 }
 
 fe_code_rate_t ChannelsConfLine::get_fec(guint index)
 {
-	return (fe_code_rate_t)convert_string_to_value(fec_table, splitter.get_value(index));
+	return (fe_code_rate_t)convert_string_to_value(fec_table, parts[index]);
 }
 
 fe_modulation_t ChannelsConfLine::get_modulation(guint index)
 {
-	return (fe_modulation_t)convert_string_to_value(modulation_table, splitter.get_value(index));
+	return (fe_modulation_t)convert_string_to_value(modulation_table, parts[index]);
 }
 
 fe_transmit_mode_t ChannelsConfLine::get_transmit_mode(guint index)
 {
-	return (fe_transmit_mode_t)convert_string_to_value(transmit_mode_table, splitter.get_value(index));
+	return (fe_transmit_mode_t)convert_string_to_value(transmit_mode_table, parts[index]);
 }
 
 fe_guard_interval_t	ChannelsConfLine::get_guard_interval(guint index)
 {
-	return (fe_guard_interval_t)convert_string_to_value(guard_table, splitter.get_value(index));
+	return (fe_guard_interval_t)convert_string_to_value(guard_table, parts[index]);
 }
 
 fe_hierarchy_t ChannelsConfLine::get_hierarchy(guint index)
 {
-	return (fe_hierarchy_t)convert_string_to_value(hierarchy_table, splitter.get_value(index));
+	return (fe_hierarchy_t)convert_string_to_value(hierarchy_table, parts[index]);
 }
 
 guint ChannelsConfLine::get_symbol_rate(guint index)
 {
-	return splitter.get_int_value(index);
+	return atoi(parts[index].c_str());
 }
 
 guint ChannelsConfLine::get_service_id(guint index)
 {
-	return splitter.get_int_value(index);
+	return atoi(parts[index].c_str());
 }
 
 guint ChannelsConfLine::get_polarisation(guint index)
 {
-	return convert_string_to_value(polarisation_table, splitter.get_value(index));
+	return convert_string_to_value(polarisation_table, parts[index].c_str());
 }
 
 guint ChannelsConfLine::get_int(guint index)
 {
-	return splitter.get_int_value(index);
+	return atoi(parts[index].c_str());
 }

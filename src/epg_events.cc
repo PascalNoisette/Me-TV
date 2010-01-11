@@ -163,6 +163,7 @@ void EpgEvents::load(Data::Connection& connection, guint channel_id)
 			epg_event_text.epg_event_id			= epg_event.epg_event_id;
 			epg_event_text.language				= row_epg_event_text["language"].string_value;
 			epg_event_text.title				= row_epg_event_text["title"].string_value;
+			epg_event_text.subtitle				= row_epg_event_text["subtitle"].string_value;
 			epg_event_text.description			= row_epg_event_text["description"].string_value;
 							
 			epg_event.texts.push_back(epg_event_text);
@@ -228,6 +229,7 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id)
 				row_epg_event_text["epg_event_id"].int_value		= epg_event.epg_event_id;
 				row_epg_event_text["language"].string_value			= epg_event_text.language;
 				row_epg_event_text["title"].string_value			= epg_event_text.title;
+				row_epg_event_text["subtitle"].string_value			= epg_event_text.subtitle;
 				row_epg_event_text["description"].string_value		= epg_event_text.description;
 			
 				data_table_epg_event_text.rows.add(row_epg_event_text);

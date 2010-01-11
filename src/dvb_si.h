@@ -57,9 +57,9 @@ namespace Dvb
 		class EventText
 		{
 		public:
-			gboolean is_extended;
 			Glib::ustring language;
 			Glib::ustring title;
+			Glib::ustring subtitle;
 			Glib::ustring description;
 		};
 		

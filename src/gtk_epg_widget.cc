@@ -491,18 +491,19 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 	Gtk::Dialog* dialog_program_details = NULL;
 	builder->get_widget("dialog_program_details", dialog_program_details);
 
-	Gtk::TextView* text_view = NULL;
-	builder->get_widget("text_view_program_title", text_view);
-	text_view->get_buffer()->assign(epg_event.get_title());
+	const EpgEventText& epg_event_text = epg_event.get_default_text();
 
-	builder->get_widget("text_view_program_description", text_view);
-	text_view->get_buffer()->assign(epg_event.get_description());
-
-	builder->get_widget("text_view_program_start_time", text_view);
-	text_view->get_buffer()->assign(epg_event.get_start_time_text());
-
-	builder->get_widget("text_view_program_duration", text_view);
-	text_view->get_buffer()->assign(epg_event.get_duration_text());
+	Glib::ustring information = Glib::ustring::compose(
+	    	"<b>%1</b>\n<i>%2</i>\n\n%3\n\n<b>Start Time:</b> %4\n<b>Duration:</b> %5",
+	    	epg_event_text.title,
+	    	epg_event_text.subtitle,
+	    	epg_event_text.description,
+		    epg_event.get_start_time_text(),
+	    	epg_event.get_duration_text());
+	
+	Gtk::Label* label = NULL;
+	builder->get_widget("label_program_information", label);
+	label->set_label(information);
 
 	gint result = dialog_program_details->run();
 	dialog_program_details->hide();

@@ -70,18 +70,19 @@ Glib::ustring ScanDialog::get_initial_tuning_dir()
 	Glib::ustring result;
 	gboolean done = false;
 	guint i = 0;
-	
-	StringSplitter splitter(SCAN_DIRECTORIES, ":", false, 100);
+
+	std::vector<Glib::ustring> parts;
+	split_string(parts, SCAN_DIRECTORIES, ":", false, 100);
 
 	while (!done)
 	{
-		if (i >= splitter.get_count())
+		if (i >= parts.size())
 		{
 			done = true;
 		}
 		else
 		{
-			Glib::ustring scan_directory = splitter.get_value(i);
+			Glib::ustring scan_directory = parts[i];
 			
 			g_debug("Checking '%s'", scan_directory.c_str());
 		
