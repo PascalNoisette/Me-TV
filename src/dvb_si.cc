@@ -610,12 +610,9 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 			guint length_of_items = event_buffer[offset++];
 			while (length_of_items > offset - 7)
 			{
-				event_text.title += "[1]";
 				offset += get_text(event_text.title, &event_buffer[offset]);
-				event_text.description += "[2]";
 				offset += get_text(event_text.description, &event_buffer[offset]);
 			}
-			event_text.description += "[3]";
 			offset += get_text(event_text.description, &event_buffer[offset]);
 		}
 		break;
@@ -634,9 +631,7 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 
 			event_text.language = language;
 			unsigned int offset = 5;
-			event_text.title += "[4]";
 			offset += get_text(event_text.title, &event_buffer[offset]);
-			event_text.subtitle += "[5]";
 			offset += get_text(event_text.subtitle, &event_buffer[offset]);
 		}
 		break;
