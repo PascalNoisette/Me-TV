@@ -732,11 +732,6 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 		
 		if (text_encoding == "iso6937")
 		{
-			if (!s.empty())
-			{
-				s += " - ";
-			}
-			
 			s += convert_iso6937(text_buffer + index, length);
 		}
 		else
@@ -814,11 +809,6 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 						}
 					}
 					throw Exception(message);
-				}
-				
-				if (!s.empty())
-				{
-					s += " - ";
 				}
 				
 				s += result;
