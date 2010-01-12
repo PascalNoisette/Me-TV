@@ -83,7 +83,5 @@ src/status_icon.cc
 src/status_icon.h
 src/stream_manager.cc
 src/stream_manager.h
-src/string_splitter.cc
-src/string_splitter.h
 src/thread.cc
 src/thread.h
