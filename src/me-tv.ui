@@ -24,9 +24,9 @@
           <object class="GtkScrolledWindow" id="scrolled_window_program_information">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="border_width">4</property>
             <property name="hscrollbar_policy">automatic</property>
             <property name="vscrollbar_policy">automatic</property>
-            <property name="shadow_type">etched-in</property>
             <child>
               <object class="GtkViewport" id="viewport_program_information">
                 <property name="visible">True</property>
