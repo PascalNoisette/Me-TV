@@ -9,7 +9,7 @@
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="default_width">500</property>
-    <property name="default_height">300</property>
+    <property name="default_height">100</property>
     <property name="icon">me-tv.xpm</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>

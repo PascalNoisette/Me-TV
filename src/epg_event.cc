@@ -88,7 +88,7 @@ EpgEventText EpgEvent::get_default_text() const
 
 Glib::ustring EpgEvent::get_start_time_text() const
 {
-	return get_local_time_text(convert_to_utc_time(start_time), "%c");
+	return get_local_time_text(convert_to_utc_time(start_time), "%A, %d %B %Y, %H:%M");
 }
 
 Glib::ustring EpgEvent::get_duration_text() const

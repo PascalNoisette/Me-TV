@@ -493,12 +493,14 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 
 	const EpgEventText& epg_event_text = epg_event.get_default_text();
 
+	guint end_time = epg_event.start_time + epg_event.duration;
+	
 	Glib::ustring information = Glib::ustring::compose(
-	    	"<b>%1</b>\n<i>%2</i>\n\n%3\n\n<b>Start Time:</b> %4\n<b>Duration:</b> %5",
+	    	"<b>%1</b>\n<b><i>%2</i></b>\n<i>%4</i>\n\n%3\n\n<b>Duration:</b> %5",
 	    	epg_event_text.title,
-	    	epg_event_text.subtitle,
-	    	epg_event_text.description,
-		    epg_event.get_start_time_text(),
+	    	epg_event_text.description.empty() ? "" : epg_event_text.subtitle,
+	    	epg_event_text.description.empty() ? epg_event_text.subtitle : epg_event_text.description,
+		    epg_event.get_start_time_text() + " - " + get_local_time_text(convert_to_utc_time(end_time), "%H:%M"),
 	    	epg_event.get_duration_text());
 	
 	Gtk::Label* label = NULL;
