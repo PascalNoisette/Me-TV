@@ -3,6 +3,7 @@
 	* 1.1.4
 	* Heap corruption during channel scanning (LP: #505454)
 	* EPG Detail "description" shows only the subtitle (LP: #503051)
+	* Not removing display stream when stopping recordings (LP: #506078)
 
 2010-01-09  Michael Lamothe <michael.lamothe@gmail.com>
 

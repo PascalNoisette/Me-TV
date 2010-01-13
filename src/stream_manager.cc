@@ -419,6 +419,12 @@ void StreamManager::stop_recording(const Channel& channel)
 	Lock lock(mutex, "StreamManager::stop_recording()");
 
 	std::list<ChannelStream>::iterator iterator = streams.begin();
+
+	if (iterator != streams.end())
+	{
+		iterator++;
+	}
+
 	while (iterator != streams.end())
 	{
 		ChannelStream& channel_stream = *iterator;

@@ -77,7 +77,7 @@ int set_audio_channel_state(AudioChannelState state)
 		{
 			if (plugin != NULL)
 			{
-				printf("Disabling dual language");
+				printf("me-tv-xine: Disabling dual language");
 				xine_post_wire_audio_port (xine_get_audio_source (stream), audio_port);
 			}
 		}
@@ -85,28 +85,28 @@ int set_audio_channel_state(AudioChannelState state)
 		{
 			switch (state)
 			{
-			case AUDIO_CHANNEL_STATE_LEFT: printf("Enabling left channel\n");  break;
-			case AUDIO_CHANNEL_STATE_RIGHT: printf("Enabling right channel\n");  break;
+			case AUDIO_CHANNEL_STATE_LEFT: printf("me-tv-xine: Enabling left channel\n");  break;
+			case AUDIO_CHANNEL_STATE_RIGHT: printf("me-tv-xine: Enabling right channel\n");  break;
 			default: break;
 			}
 			
 			if (plugin == NULL)
 			{
-				printf("Creating upmix_mono plugin\n");
+				printf("me-tv-xine: Creating upmix_mono plugin\n");
 				xine_post_wire_audio_port(xine_get_audio_source (stream), audio_port);
 
 				plugin = xine_post_init (xine, "upmix_mono", 0, &audio_port, &video_port);
 				if (plugin == NULL)
 				{
-					fprintf(stderr, "Failed to create upmix_mono plugin\n");
+					fprintf(stderr, "me-tv-xine: Failed to create upmix_mono plugin\n");
 					return -1;
 				}
 				
-				printf("upmix_mono plugin created\n");
+				printf("me-tv-xine: upmix_mono plugin created\n");
 			}
 			else
 			{
-				printf("upmix_mono plugin already created, using existing\n");
+				printf("me-tv-xine: upmix_mono plugin already created, using existing\n");
 			}
 			
 			xine_post_out_t* plugin_output = xine_post_output (plugin, "audio out")
@@ -114,7 +114,7 @@ int set_audio_channel_state(AudioChannelState state)
 				? : xine_post_output (plugin, xine_post_list_outputs (plugin)[0]);
 			if (plugin_output == NULL)
 			{
-				fprintf(stderr, "Failed to get xine plugin output for upmix_mono");
+				fprintf(stderr, "me-tv-xine: Failed to get xine plugin output for upmix_mono");
 				return -1;
 			}
 			
@@ -124,14 +124,14 @@ int set_audio_channel_state(AudioChannelState state)
 			
 			if (plugin_input == NULL)
 			{
-				fprintf(stderr, "Failed to get xine plugin input for upmix_mono\n");
+				fprintf(stderr, "me-tv-xine: Failed to get xine plugin input for upmix_mono\n");
 				return -1;
 			}
 
 			xine_post_wire (xine_get_audio_source (stream), plugin_input);
 			xine_post_wire_audio_port (plugin_output, audio_port);
 			
-			printf("upmix_mono plugin wired\n");
+			printf("me-tv-xine: upmix_mono plugin wired\n");
 			int parameter = -1;
 			switch (state)
 			{
@@ -140,7 +140,7 @@ int set_audio_channel_state(AudioChannelState state)
 			default: break;
 			}
 
-			printf("Setting channel on upmix_mono plugin to %d\n", parameter);
+			printf("me-tv-xine: Setting channel on upmix_mono plugin to %d\n", parameter);
 
 			const xine_post_in_t *in = xine_post_input (plugin, "parameters");
 			const xine_post_api_t* api = (const xine_post_api_t*)in->data;
@@ -148,7 +148,7 @@ int set_audio_channel_state(AudioChannelState state)
 			
 			if (param_desc->struct_size != 4)
 			{
-				fprintf(stderr, "ASSERT: parameter size != 4\n");
+				fprintf(stderr, "me-tv-xine: ASSERT: parameter size != 4\n");
 				return -1;
 			}
 
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
 
 	if (argc != 7)
 	{
-		fprintf(stderr, "Invalid number of parameters\n");
+		fprintf(stderr, "me-tv-xine: Invalid number of parameters\n");
 		return -1;
 	}
 	
@@ -209,7 +209,7 @@ int main(int argc, char **argv)
 
 	if (!XInitThreads())
 	{
-		fprintf(stderr, "XInitThreads() failed\n");
+		fprintf(stderr, "me-tv-xine: XInitThreads() failed\n");
 		return -1;
 	}
 
@@ -220,7 +220,7 @@ int main(int argc, char **argv)
 
 	if ((display = XOpenDisplay(getenv("DISPLAY"))) == NULL)
 	{
-		fprintf(stderr, "XOpenDisplay() failed.\n");
+		fprintf(stderr, "me-tv-xine: XOpenDisplay() failed.\n");
 		return -1;
 	}
 
@@ -254,7 +254,7 @@ int main(int argc, char **argv)
 
 	if ((video_port = xine_open_video_driver(xine, video_driver, XINE_VISUAL_TYPE_X11, (void *) &vis)) == NULL)
 	{
-		fprintf(stderr, "Failed to initialise video driver '%s'\n", video_driver);
+		fprintf(stderr, "me-tv-xine: Failed to initialise video driver '%s'\n", video_driver);
 		return -1;
 	}
 
@@ -273,7 +273,7 @@ int main(int argc, char **argv)
 		xine_post_t* plugin = xine_post_init(xine, "tvtime", 0, &audio_port, &video_port);
 		if (plugin == NULL)
 		{
-			fprintf(stderr, "Failed to create tvtime plugin\n");
+			fprintf(stderr, "me-tv-xine: Failed to create tvtime plugin\n");
 			return -1;
 		}
 
@@ -282,7 +282,7 @@ int main(int argc, char **argv)
 				? : xine_post_output (plugin, xine_post_list_outputs (plugin)[0]);
 		if (plugin_output == NULL)
 		{
-			fprintf(stderr, "Failed to get xine plugin output for deinterlacing\n");
+			fprintf(stderr, "me-tv-xine: Failed to get xine plugin output for deinterlacing\n");
 			return -1;
 		}
 
@@ -292,7 +292,7 @@ int main(int argc, char **argv)
 
 		if (plugin_input == NULL)
 		{
-			fprintf(stderr, "Failed to get xine plugin input for deinterlacing\n");
+			fprintf(stderr, "me-tv-xine: Failed to get xine plugin input for deinterlacing\n");
 			return -1;
 		}
 
@@ -314,7 +314,7 @@ int main(int argc, char **argv)
 	
 	if ((!xine_open(stream, mrl)) || (!xine_play(stream, 0, 0)))
 	{
-		fprintf(stderr, "Failed to open mrl '%s'\n", mrl);
+		fprintf(stderr, "me-tv-xine: Failed to open mrl '%s'\n", mrl);
 		return -1;
 	}
 
@@ -442,7 +442,7 @@ int main(int argc, char **argv)
 	xine_exit(xine);
 
 	XCloseDisplay (display);
-	printf("Xine engine terminating normally");
+	printf("me-tv-xine: Xine engine terminating normally\n");
 
 	return 0;
 }
