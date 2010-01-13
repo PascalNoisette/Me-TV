@@ -470,8 +470,6 @@ void StreamManager::ChannelStream::write(guchar* buffer, gsize length)
 		{
 			gsize bytes_written = 0;
 			output_channel->write((const gchar*)buffer, length, bytes_written);
-
-			// g_debug("%d bytes written to '%s'", (int)bytes_written, filename.c_str());
 		}
 		catch(...)
 		{
