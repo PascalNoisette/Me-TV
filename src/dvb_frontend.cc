@@ -70,14 +70,13 @@ void Frontend::close()
 	}
 }
 
-void Frontend::tune_to(const Transponder& transponder)
+void Frontend::tune_to(const Transponder& transponder, guint timeout)
 {
 	g_message(_("Frontend::tune_to(%d)"), transponder.frontend_parameters.frequency);
 	
 	struct dvb_frontend_parameters parameters = transponder.frontend_parameters;
 	struct dvb_frontend_event ev;
 	
-	guint wait_seconds = read_timeout;
 	if(frontend_info.type == FE_QPSK)
 	{
 		guint hi_band = 0;
@@ -113,7 +112,7 @@ void Frontend::tune_to(const Transponder& transponder)
 	}
 	
 	g_message(_("Waiting for signal lock ..."));
-	wait_lock(wait_seconds);
+	wait_lock(timeout);
 	g_message(_("Got signal lock"));
 	
 	frontend_parameters = transponder.frontend_parameters;
@@ -162,12 +161,12 @@ const struct dvb_frontend_info& Frontend::get_frontend_info() const
 	return frontend_info;
 }
 
-void Frontend::wait_lock(guint wait_seconds)
+void Frontend::wait_lock(guint timeout)
 {
 	fe_status_t	status;
-	guint		start_time = time(NULL);
+	guint count = 0;
 	
-	while ((start_time + wait_seconds) > (guint)time(NULL))
+	while (count < timeout)
 	{
 		if (!ioctl(fd, FE_READ_STATUS, &status))
 		{
@@ -177,17 +176,13 @@ void Frontend::wait_lock(guint wait_seconds)
 			}
 		}
 
-		usleep(100000);
+		usleep(10);
+		count += 10;
 	}
 
 	if (!(status & FE_HAS_LOCK))
 	{
 		g_debug("Status: %d", status);
-		struct dvb_frontend_parameters parameters;
-		ioctl(fd, FE_GET_FRONTEND, &parameters);
-		g_debug("Currently tuned to freq %d, symbol rate %d, inner fec %d",
-			parameters.frequency, parameters.u.qpsk.symbol_rate, parameters.u.qpsk.fec_inner);
-		
 		throw Exception(_("Failed to lock to channel"));
 	}
 }

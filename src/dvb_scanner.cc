@@ -53,7 +53,7 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		Demuxer demuxer_sds(demux_path);
 		Demuxer demuxer_nis(demux_path);
 		
-		frontend.tune_to(transponder);
+		frontend.tune_to(transponder, read_timeout * 1000);
 		
 		demuxer_sds.set_filter(SDT_PID, SDT_ID);
 		demuxer_nis.set_filter(NIT_PID, NIT_ID);
@@ -110,7 +110,7 @@ void Scanner::atsc_tune_to(Frontend& frontend, const Transponder& transponder)
 		Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 		Demuxer demuxer_vct(demux_path);
 		
-		frontend.tune_to(transponder);
+		frontend.tune_to(transponder, read_timeout * 1000);
 		
 		demuxer_vct.set_filter(PSIP_PID, TVCT_ID, 0xFE);
 		parser.parse_psip_vct(demuxer_vct, virtual_channel_table);
@@ -288,8 +288,14 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 		signal_progress(0, transponders.size());
 		for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
 		{
-			if (is_atsc) atsc_tune_to(frontend, *i);
-			else tune_to(frontend, *i);
+			if (is_atsc)
+			{
+				atsc_tune_to(frontend, *i);
+			}
+			else
+			{
+				tune_to(frontend, *i);
+			}
 			signal_progress(++transponder_count, transponders.size());
 		}
 	}
@@ -303,7 +309,54 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 
 void Scanner::auto_scan(Frontend& frontend)
 {
-	throw Exception("Not implemented");
+	struct dvb_frontend_info info = frontend.get_frontend_info();
+	guint max = (info.frequency_max - info.frequency_min) / info.frequency_stepsize;
+
+	for (guint frequency = info.frequency_min; frequency < info.frequency_max; frequency += info.frequency_stepsize)
+	{
+		if (terminated)
+		{
+			return;
+		}
+
+		g_debug("Scanning %d", frequency);
+
+		if (frontend.get_frontend_info().type == FE_OFDM)
+		{
+			struct dvb_frontend_parameters frontend_parameters;
+	
+			frontend_parameters.frequency						= frequency;
+			frontend_parameters.inversion						= INVERSION_AUTO;
+			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_AUTO;
+			frontend_parameters.u.ofdm.code_rate_HP				= FEC_AUTO;
+			frontend_parameters.u.ofdm.code_rate_LP				= FEC_AUTO;
+			frontend_parameters.u.ofdm.constellation			= QAM_AUTO;
+			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_AUTO;
+			frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_AUTO;
+			frontend_parameters.u.ofdm.hierarchy_information	= HIERARCHY_AUTO;
+
+			Transponder transponder;
+			transponder.frontend_parameters = frontend_parameters;
+
+			try
+			{
+				frontend.tune_to(transponder, 0);
+			}
+			catch(Exception& exception)
+			{
+				g_debug("%s", exception.what().c_str());
+			}
+
+			g_debug("Signal Strength: %d", frontend.get_signal_strength());
+		}
+		else
+		{
+			g_debug("Not supported");
+		}
+		
+		signal_progress((frequency - info.frequency_min) / info.frequency_stepsize, max);
+	}
+	signal_complete();
 }
 
 void Scanner::terminate()

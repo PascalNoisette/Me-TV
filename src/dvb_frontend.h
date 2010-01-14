@@ -80,7 +80,7 @@ namespace Dvb
 
 		void open();
 		void close();
-		void tune_to(const Transponder& transponder);
+		void tune_to(const Transponder& transponder, guint timeout);
 
 		const struct dvb_frontend_parameters& get_frontend_parameters() const;
 		int get_frontend_type() const { return frontend_info.type; }

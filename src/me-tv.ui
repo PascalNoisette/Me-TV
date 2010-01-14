@@ -1462,8 +1462,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="active">True</property>
                     <property name="draw_indicator">True</property>
+                    <property name="group">radio_button_auto_scan</property>
                   </object>
                   <packing>
                     <property name="right_attach">2</property>
@@ -1517,9 +1517,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="active">True</property>
                     <property name="draw_indicator">True</property>
-                    <property name="group">radio_button_scan</property>
+                    <property name="group">radio_button_auto_scan</property>
                   </object>
                   <packing>
                     <property name="right_attach">2</property>
