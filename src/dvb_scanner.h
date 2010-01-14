@@ -42,9 +42,11 @@ namespace Dvb
 		void process_satellite_line(Frontend& frontend, const Glib::ustring& line);
 		void process_cable_line(Frontend& frontend, const Glib::ustring& line);
 		void process_atsc_line(Frontend& frontend, const Glib::ustring& line);
+
+		void auto_scan(Frontend& frontend);
 	public:
 		Scanner();
-			
+
 		void start(Frontend& frontend, const Glib::ustring& region_file_path);
 		void terminate();
 			

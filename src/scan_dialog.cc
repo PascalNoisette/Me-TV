@@ -33,7 +33,7 @@ void show_error(const Glib::ustring& message)
 }
 
 ScanThread::ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file) :
-	Thread("Scan"), scanner(), initial_tuning_file(file), frontend(scan_frontend)
+	Thread("Scan"), initial_tuning_file(file), frontend(scan_frontend)
 {
 }
 
@@ -369,29 +369,35 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 
 	Glib::ustring initial_tuning_file;
 	
+	Gtk::RadioButton* radio_button_auto_scan = NULL;
+	builder->get_widget("radio_button_auto_scan", radio_button_auto_scan);
+
 	Gtk::RadioButton* radio_button_scan = NULL;
 	builder->get_widget("radio_button_scan", radio_button_scan);
 
 	Gtk::RadioButton* radio_button_import = NULL;
 	builder->get_widget("radio_button_import", radio_button_import);
 	
-	if (radio_button_scan->get_active())
+	if (radio_button_scan->get_active() || radio_button_auto_scan->get_active())
 	{
-		Gtk::FileChooserButton* file_chooser_button = NULL;
-		builder->get_widget("file_chooser_button_scan", file_chooser_button);
-		initial_tuning_file = file_chooser_button->get_filename();
-
-		if (initial_tuning_file.empty())
+		if (radio_button_scan->get_active())
 		{
-			throw Exception(_("No tuning file has been selected"));
-		}
+			Gtk::FileChooserButton* file_chooser_button = NULL;
+			builder->get_widget("file_chooser_button_scan", file_chooser_button);
+			initial_tuning_file = file_chooser_button->get_filename();
 
+			if (initial_tuning_file.empty())
+			{
+				throw Exception(_("No tuning file has been selected"));
+			}
+
+			g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
+		}
+		
 		Gtk::Button* button = NULL;
 		builder->get_widget("button_scan_wizard_next", button);
 		button->hide();
 		notebook_scan_wizard->next_page();
-
-		g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
 
 		progress_bar_scan->set_text(_("Starting scanner"));
 		scan_thread = new ScanThread(frontend, initial_tuning_file);

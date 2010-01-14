@@ -39,7 +39,7 @@ public:
 	Dvb::Frontend& frontend;
 				
 public:
-	ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file);
+	ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file = "");
 		
 	void run();
 	void stop();

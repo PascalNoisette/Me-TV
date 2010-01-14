@@ -211,80 +211,87 @@ void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)
 
 void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 {
-	Glib::RefPtr<Glib::IOChannel> initial_tuning_file = Glib::IOChannel::create_from_file(region_file_path, "r");
-	
-	std::list<Glib::ustring> lines;
-	Glib::ustring line;
-	Glib::IOStatus status = initial_tuning_file->read_line(line);
-	while (status == Glib::IO_STATUS_NORMAL && !terminated)
+	if (region_file_path.empty())
 	{
-		// Remove comments
-		Glib::ustring::size_type index = line.find("#");
-		if (index != Glib::ustring::npos)
-		{
-			line = line.substr(0, index);
-		}
-		
-		// Remove trailing whitespace
-		index = line.find_last_not_of(" \t\r\n");
-		if (index == Glib::ustring::npos)
-		{
-			line.clear();
-		}
-		else
-		{
-			line = line.substr(0, index + 1);
-		}
-
-		if (!line.empty()) // Ignore empty lines or comments
-		{
-			lines.push_back(line);
-		}
-		
-		status = initial_tuning_file->read_line(line);
+		auto_scan(frontend);
 	}
-	
-	guint size = lines.size();
-	
-	for (StringList::iterator iterator = lines.begin(); iterator != lines.end() && !terminated; iterator++)
+	else
 	{
-		Glib::ustring process_line = *iterator;
+		Glib::RefPtr<Glib::IOChannel> initial_tuning_file = Glib::IOChannel::create_from_file(region_file_path, "r");
 
-		if (!process_line.empty())
+		std::list<Glib::ustring> lines;
+		Glib::ustring line;
+		Glib::IOStatus status = initial_tuning_file->read_line(line);
+		while (status == Glib::IO_STATUS_NORMAL && !terminated)
 		{
-			g_debug("Processing line: '%s'", process_line.c_str());
-
-			if (Glib::str_has_prefix(process_line, "T "))
+			// Remove comments
+			Glib::ustring::size_type index = line.find("#");
+			if (index != Glib::ustring::npos)
 			{
-				process_terrestrial_line(frontend, process_line);
+				line = line.substr(0, index);
 			}
-			else if (Glib::str_has_prefix(process_line, "C "))
+	
+			// Remove trailing whitespace
+			index = line.find_last_not_of(" \t\r\n");
+			if (index == Glib::ustring::npos)
 			{
-				process_cable_line(frontend, process_line);
-			}
-			else if (Glib::str_has_prefix(process_line, "S "))
-			{
-				process_satellite_line(frontend, process_line);
-			}
-			else if (Glib::str_has_prefix(process_line, "A "))
-			{
-				process_atsc_line(frontend, process_line);
+				line.clear();
 			}
 			else
 			{
-				throw Exception(_("Me TV cannot process a line in the initial tuning file"));
+				line = line.substr(0, index + 1);
+			}
+
+			if (!line.empty()) // Ignore empty lines or comments
+			{
+				lines.push_back(line);
+			}
+	
+			status = initial_tuning_file->read_line(line);
+		}
+
+		guint size = lines.size();
+
+		for (StringList::iterator iterator = lines.begin(); iterator != lines.end() && !terminated; iterator++)
+		{
+			Glib::ustring process_line = *iterator;
+
+			if (!process_line.empty())
+			{
+				g_debug("Processing line: '%s'", process_line.c_str());
+
+				if (Glib::str_has_prefix(process_line, "T "))
+				{
+					process_terrestrial_line(frontend, process_line);
+				}
+				else if (Glib::str_has_prefix(process_line, "C "))
+				{
+					process_cable_line(frontend, process_line);
+				}
+				else if (Glib::str_has_prefix(process_line, "S "))
+				{
+					process_satellite_line(frontend, process_line);
+				}
+				else if (Glib::str_has_prefix(process_line, "A "))
+				{
+					process_atsc_line(frontend, process_line);
+				}
+				else
+				{
+					throw Exception(_("Me TV cannot process a line in the initial tuning file"));
+				}
 			}
 		}
-	}
 
-	gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
-	guint transponder_count = 0;
-	signal_progress(0, transponders.size());
-	for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
-	{
-		if (is_atsc) atsc_tune_to(frontend, *i);
-		else tune_to(frontend, *i);
-		signal_progress(++transponder_count, transponders.size());
+		gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
+		guint transponder_count = 0;
+		signal_progress(0, transponders.size());
+		for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
+		{
+			if (is_atsc) atsc_tune_to(frontend, *i);
+			else tune_to(frontend, *i);
+			signal_progress(++transponder_count, transponders.size());
+		}
 	}
 	
 	g_debug("Scanner loop exited");
@@ -292,6 +299,11 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	signal_complete();
 	
 	g_debug("Scanner finished");
+}
+
+void Scanner::auto_scan(Frontend& frontend)
+{
+	throw Exception("Not implemented");
 }
 
 void Scanner::terminate()
