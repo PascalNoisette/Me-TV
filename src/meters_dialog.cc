@@ -84,4 +84,3 @@ void MetersDialog::on_hide()
 	stop();
 	Widget::on_hide();
 }
-
