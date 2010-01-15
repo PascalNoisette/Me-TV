@@ -305,6 +305,11 @@ const ChannelArray& ChannelManager::get_channels() const
 
 Channel& ChannelManager::get_display_channel()
 {
+	if (display_channel_index == NO_CHANNEL)
+	{
+		throw Exception(_("No channel selected"));
+	}
+	
 	return channels[display_channel_index];
 }
 
