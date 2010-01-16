@@ -173,7 +173,11 @@ void ScanDialog::on_show()
 
 	builder->get_widget("button_scan_wizard_next", button);
 	button->show();
-	
+		
+	Gtk::RadioButton* radio_button_auto_scan = NULL;
+	builder->get_widget("radio_button_auto_scan", radio_button_auto_scan);
+	radio_button_auto_scan->set_active();
+
 	notebook_scan_wizard->set_current_page(0);
 
 	Gtk::FileChooserButton* file_chooser_button = NULL;
@@ -369,29 +373,37 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 
 	Glib::ustring initial_tuning_file;
 	
+	Gtk::RadioButton* radio_button_auto_scan = NULL;
+	builder->get_widget("radio_button_auto_scan", radio_button_auto_scan);
+
 	Gtk::RadioButton* radio_button_scan = NULL;
 	builder->get_widget("radio_button_scan", radio_button_scan);
 
 	Gtk::RadioButton* radio_button_import = NULL;
 	builder->get_widget("radio_button_import", radio_button_import);
 	
-	if (radio_button_scan->get_active())
+	if (radio_button_scan->get_active() || radio_button_auto_scan->get_active())
 	{
-		Gtk::FileChooserButton* file_chooser_button = NULL;
-		builder->get_widget("file_chooser_button_scan", file_chooser_button);
-		initial_tuning_file = file_chooser_button->get_filename();
-
-		if (initial_tuning_file.empty())
+		if (radio_button_scan->get_active())
 		{
-			throw Exception(_("No tuning file has been selected"));
-		}
+			Gtk::FileChooserButton* file_chooser_button = NULL;
+			builder->get_widget("file_chooser_button_scan", file_chooser_button);
+			initial_tuning_file = file_chooser_button->get_filename();
 
-		g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
+			if (initial_tuning_file.empty())
+			{
+				throw Exception(_("No tuning file has been selected"));
+			}
+
+			g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
+		}
 		
 		Gtk::Button* button = NULL;
 		builder->get_widget("button_scan_wizard_next", button);
 		button->hide();
 		notebook_scan_wizard->next_page();
+
+		get_application().stream_manager.stop();
 
 		progress_bar_scan->set_text(_("Starting scanner"));
 		scan_thread = new ScanThread(frontend, initial_tuning_file);
@@ -467,6 +479,13 @@ void ScanDialog::on_signal_complete()
 		button_scan_wizard_add->show();
 		progress_bar_scan->set_fraction(1);
 		progress_bar_scan->set_text(_("Scan complete"));
+	}
+
+	Application& application = get_application();
+	if (application.channel_manager.has_display_channel())
+	{
+		application.stream_manager.start();
+		application.set_display_channel(application.channel_manager.get_display_channel());
 	}
 }
 

@@ -61,6 +61,14 @@ void StreamManager::start()
 	Thread::start();
 }
 
+void StreamManager::stop()
+{
+	g_debug("Stopping stream thread");
+	stop_epg_thread();
+	join(true);
+	g_debug("Stream thread stopped");
+}
+
 void StreamManager::run()
 {
 	guchar buffer[TS_PACKET_SIZE * PACKET_BUFFER_SIZE];
@@ -102,6 +110,7 @@ void StreamManager::run()
 
 		if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
 		{
+			g_debug("Input channel read failed");
 			usleep(10000);
 		}
 		else

@@ -53,7 +53,7 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		Demuxer demuxer_sds(demux_path);
 		Demuxer demuxer_nis(demux_path);
 		
-		frontend.tune_to(transponder, read_timeout * 1000);
+		frontend.tune_to(transponder, 1500);
 		
 		demuxer_sds.set_filter(SDT_PID, SDT_ID);
 		demuxer_nis.set_filter(NIT_PID, NIT_ID);
@@ -65,10 +65,18 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		
 		for (guint i = 0; i < sds.services.size(); i++)
 		{
+			Glib::ustring service_name = sds.services[i].name;
+			if (service_name.empty())
+			{
+				service_name = Glib::ustring::compose("Unknown Service %1-%2",
+				   	transponder.frontend_parameters.frequency/1000,
+				    sds.services[i].id);
+			}
+				
 			signal_service(
 				transponder.frontend_parameters,
 				sds.services[i].id,
-				sds.services[i].name,
+				service_name,
 				transponder.polarisation);
 		}
 
@@ -282,23 +290,24 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 				}
 			}
 		}
-
-		gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
-		guint transponder_count = 0;
-		signal_progress(0, transponders.size());
-		for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
-		{
-			if (is_atsc)
-			{
-				atsc_tune_to(frontend, *i);
-			}
-			else
-			{
-				tune_to(frontend, *i);
-			}
-			signal_progress(++transponder_count, transponders.size());
-		}
 	}
+
+	gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
+	guint transponder_count = 0;
+	signal_progress(0, transponders.size());
+	for (TransponderList::const_iterator i = transponders.begin(); i != transponders.end() && !terminated; i++)
+	{
+		if (is_atsc)
+		{
+			atsc_tune_to(frontend, *i);
+		}
+		else
+		{
+			tune_to(frontend, *i);
+		}
+		signal_progress(++transponder_count, transponders.size());
+	}
+	
 	
 	g_debug("Scanner loop exited");
 
@@ -309,54 +318,52 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 
 void Scanner::auto_scan(Frontend& frontend)
 {
-	struct dvb_frontend_info info = frontend.get_frontend_info();
-	guint max = (info.frequency_max - info.frequency_min) / info.frequency_stepsize;
-
-	for (guint frequency = info.frequency_min; frequency < info.frequency_max; frequency += info.frequency_stepsize)
+	if (frontend.get_frontend_info().type == FE_OFDM)
 	{
-		if (terminated)
+		for (int frequency = 177500000; frequency <= 226500000; frequency += 7000000)
 		{
-			return;
-		}
-
-		g_debug("Scanning %d", frequency);
-
-		if (frontend.get_frontend_info().type == FE_OFDM)
-		{
-			struct dvb_frontend_parameters frontend_parameters;
-	
-			frontend_parameters.frequency						= frequency;
-			frontend_parameters.inversion						= INVERSION_AUTO;
-			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_AUTO;
-			frontend_parameters.u.ofdm.code_rate_HP				= FEC_AUTO;
-			frontend_parameters.u.ofdm.code_rate_LP				= FEC_AUTO;
-			frontend_parameters.u.ofdm.constellation			= QAM_AUTO;
-			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_AUTO;
-			frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_AUTO;
-			frontend_parameters.u.ofdm.hierarchy_information	= HIERARCHY_AUTO;
-
-			Transponder transponder;
-			transponder.frontend_parameters = frontend_parameters;
-
-			try
+			for (int i = 0; i < 2; i++)
 			{
-				frontend.tune_to(transponder, 0);
-			}
-			catch(Exception& exception)
-			{
-				g_debug("%s", exception.what().c_str());
-			}
+				struct dvb_frontend_parameters frontend_parameters;
 
-			g_debug("Signal Strength: %d", frontend.get_signal_strength());
+				frontend_parameters.frequency						= frequency + (i*125000);
+				frontend_parameters.inversion						= INVERSION_AUTO;
+				frontend_parameters.u.ofdm.hierarchy_information	= HIERARCHY_AUTO;
+
+				for (int j = 0; j < 2; j++)
+				{
+					if (j == 0)
+					{
+						frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_7_MHZ;
+						frontend_parameters.u.ofdm.code_rate_HP				= FEC_3_4;
+						frontend_parameters.u.ofdm.code_rate_LP				= FEC_3_4;
+						frontend_parameters.u.ofdm.constellation			= QAM_64; // Needed
+						frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K; // Needed
+						frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_1_16; // Needed
+					}
+					else
+					{
+						frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_AUTO;
+						frontend_parameters.u.ofdm.code_rate_HP				= FEC_AUTO;
+						frontend_parameters.u.ofdm.code_rate_LP				= FEC_AUTO;
+						frontend_parameters.u.ofdm.constellation			= QAM_AUTO;
+						frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_AUTO;
+						frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_AUTO;
+					}
+					
+					g_debug("Adding %d Hz/%s", frequency, j == 0 ? "Fixed" : "Auto");
+
+					Transponder transponder;
+					transponder.frontend_parameters = frontend_parameters;
+					transponders.push_back(transponder);
+				}
+			}
 		}
-		else
-		{
-			g_debug("Not supported");
-		}
-		
-		signal_progress((frequency - info.frequency_min) / info.frequency_stepsize, max);
 	}
-	signal_complete();
+	else
+	{
+		throw Exception(_("Auto scanning is only supported on DVB-T devices"));
+	}
 }
 
 void Scanner::terminate()
