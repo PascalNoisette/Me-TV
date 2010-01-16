@@ -1334,7 +1334,7 @@ found in /usr/share/common-licenses/GPL file.</property>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="dialog_meters">
-    <property name="width_request">200</property>
+    <property name="width_request">400</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Me TV - Meters Window</property>
     <property name="resizable">False</property>
@@ -1380,6 +1380,7 @@ found in /usr/share/common-licenses/GPL file.</property>
             </child>
             <child>
               <object class="GtkLabel" id="label_meters_information">
+                <property name="width_request">350</property>
                 <property name="visible">True</property>
                 <property name="ypad">10</property>
                 <property name="label" translatable="yes">Please note that the values reported on this window are provided by the kernel driver for your device.  These values may not accurately represent the actual values but serve as a tool to help users find their optimal tuning setup.</property>
