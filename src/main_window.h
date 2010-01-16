@@ -62,7 +62,6 @@ private:
 	void stop();
 	void set_view_mode(ViewMode display_mode);
 	void load_devices();
-	void show_scheduled_recordings_dialog();
 	void set_state(const Glib::ustring& name, gboolean state);
 	void add_channel_number(guint channel_number);
 	void toggle_fullscreen();
@@ -107,6 +106,7 @@ public:
 	void show_devices_dialog();
 	void show_channels_dialog();
 	void show_preferences_dialog();
+	void show_scheduled_recordings_dialog();
 	
 	void toggle_visibility();
 	void update();

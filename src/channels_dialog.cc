@@ -49,6 +49,7 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_displayed_channels->set_model(list_store);
 	tree_view_displayed_channels->append_column(_("Channel Name"), columns.column_name);
+	tree_view_displayed_channels->append_column(_("Frequency (Hz)"), columns.column_frequency);
 	
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_displayed_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
@@ -105,9 +106,10 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 	if (add && !abort_import)
 	{
 		Gtk::TreeModel::iterator row_iterator = list_store->append();
-		Gtk::TreeModel::Row row		= *row_iterator;
-		row[columns.column_name]	= channel.name;
-		row[columns.column_channel]	= channel;
+		Gtk::TreeModel::Row row			= *row_iterator;
+		row[columns.column_name]		= channel.name;
+		row[columns.column_frequency]	= channel.transponder.frontend_parameters.frequency;
+		row[columns.column_channel]		= channel;
 	}
 
 	return !abort_import;
@@ -191,9 +193,10 @@ void ChannelsDialog::on_show()
 			const Channel& channel = *iterator;
 
 			Gtk::TreeModel::iterator row_iterator = list_store->append();
-			Gtk::TreeModel::Row row		= *row_iterator;
-			row[columns.column_name]	= channel.name;
-			row[columns.column_channel]	= channel;
+			Gtk::TreeModel::Row row			= *row_iterator;
+			row[columns.column_name]		= channel.name;
+			row[columns.column_frequency]	= channel.transponder.frontend_parameters.frequency;
+			row[columns.column_channel]		= channel;
 		}
 	}
 	Gtk::Dialog::on_show();

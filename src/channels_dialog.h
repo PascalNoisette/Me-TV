@@ -32,10 +32,12 @@ private:
 		ModelColumns()
 		{
 			add(column_name);
+			add(column_frequency);
 			add(column_channel);
 		}
 
 		Gtk::TreeModelColumn<Glib::ustring>		column_name;
+		Gtk::TreeModelColumn<guint>				column_frequency;
 		Gtk::TreeModelColumn<Channel>			column_channel;
 	};
 		

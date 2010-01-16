@@ -503,20 +503,42 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 		    epg_event.get_start_time_text() + " - " + get_local_time_text(convert_to_utc_time(end_time), "%H:%M"),
 	    	epg_event.get_duration_text());
 	
-	Gtk::Label* label = NULL;
-	builder->get_widget("label_program_information", label);
-	label->set_label(information);
+	Gtk::Label* label_program_information = NULL;
+	builder->get_widget("label_program_information", label_program_information);
+	label_program_information->set_label(information);
+
+	gboolean is_scheduled = get_application().scheduled_recording_manager.is_recording(epg_event);
+	Gtk::HBox* hbox_program_dialog_scheduled = NULL;
+	builder->get_widget("hbox_program_dialog_scheduled", hbox_program_dialog_scheduled);
+	hbox_program_dialog_scheduled->set_visible(is_scheduled);
+
+	Gtk::Button* button_program_dialog_record = NULL;
+	builder->get_widget("button_program_dialog_record", button_program_dialog_record);
+	button_program_dialog_record->set_visible(!is_scheduled);
+
+	Gtk::Button* button_program_dialog_view_schedule = NULL;
+	builder->get_widget("button_program_dialog_view_schedule", button_program_dialog_view_schedule);
+	button_program_dialog_view_schedule->set_visible(is_scheduled);
 
 	gint result = dialog_program_details->run();
 	dialog_program_details->hide();
 
-	if (result == 1)
+	switch(result)
 	{
-		ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
-		scheduled_recording_dialog.run(MainWindow::create(builder), epg_event);
-		scheduled_recording_dialog.hide();
-		get_application().update();
+	case 1:
+		{
+			ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
+			scheduled_recording_dialog.run(MainWindow::create(builder), epg_event);
+			scheduled_recording_dialog.hide();
+			get_application().update();
+		}
+	case 2:
+		{
+			get_application().get_main_window().show_scheduled_recordings_dialog();
+		}
+	default:
+		break;
 	}
-	
+
 	CATCH
 }

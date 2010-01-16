@@ -9,7 +9,6 @@
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="default_width">500</property>
-    <property name="default_height">200</property>
     <property name="icon">me-tv.xpm</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
@@ -22,16 +21,17 @@
         <property name="spacing">2</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolled_window_program_information">
+            <property name="height_request">200</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="border_width">4</property>
             <property name="hscrollbar_policy">automatic</property>
             <property name="vscrollbar_policy">automatic</property>
+            <property name="shadow_type">etched-out</property>
             <child>
               <object class="GtkViewport" id="viewport_program_information">
                 <property name="visible">True</property>
                 <property name="resize_mode">queue</property>
-                <property name="shadow_type">none</property>
+                <property name="shadow_type">etched-in</property>
                 <child>
                   <object class="GtkLabel" id="label_program_information">
                     <property name="visible">True</property>
@@ -50,10 +50,53 @@
             <property name="position">1</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkHBox" id="hbox_program_dialog_scheduled">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkImage" id="image1">
+                <property name="visible">True</property>
+                <property name="stock">gtk-media-record</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">This program is scheduled for recording.</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
         <child internal-child="action_area">
           <object class="GtkHButtonBox" id="dialog-action_area">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="button_program_dialog_view_schedule">
+                <property name="label" translatable="yes">View Schedule</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
             <child>
               <object class="GtkButton" id="button_program_dialog_record">
                 <property name="label">gtk-media-record</property>
@@ -65,7 +108,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -79,7 +122,8 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">1</property>
+                <property name="pack_type">end</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
@@ -92,6 +136,7 @@
       </object>
     </child>
     <action-widgets>
+      <action-widget response="2">button_program_dialog_view_schedule</action-widget>
       <action-widget response="1">button_program_dialog_record</action-widget>
       <action-widget response="-7">button_program_dialog_close</action-widget>
     </action-widgets>
@@ -1182,7 +1227,8 @@ found in /usr/share/common-licenses/GPL file.</property>
     <property name="title" translatable="yes">Me TV - Channels Editor</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
-    <property name="default_height">275</property>
+    <property name="default_width">500</property>
+    <property name="default_height">400</property>
     <property name="icon">me-tv.xpm</property>
     <property name="icon_name">Me TV</property>
     <property name="type_hint">dialog</property>
