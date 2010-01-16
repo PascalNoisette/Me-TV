@@ -1,9 +1,17 @@
-2010-01-15  Michael Lamothe <michael.lamothe@gmail.com>
+2010-01-16  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.1.5
+	* More tweaks to the EPG event UI
+	* Added check for EPG events before starting EPG thread
+	* Fixed information on meters dialog
+
+2010-01-16  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.1.4
 	* Heap corruption during channel scanning (LP: #505454)
 	* EPG Detail "description" shows only the subtitle (LP: #503051)
 	* Not removing display stream when stopping recordings (LP: #506078)
+	* Added sl translation
 
 2010-01-09  Michael Lamothe <michael.lamothe@gmail.com>
 

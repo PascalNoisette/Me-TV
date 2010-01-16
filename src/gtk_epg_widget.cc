@@ -496,7 +496,7 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 	guint end_time = epg_event.start_time + epg_event.duration;
 	
 	Glib::ustring information = Glib::ustring::compose(
-	    	"<b>%1</b>\n<b><i>%2</i></b>\n<i>%4</i>\n\n%3\n\n<b>Duration:</b> %5",
+	    	"<b>%1</b>\n<b><i>%2</i></b>\n<i>%4 (%5)</i>\n\n%3",
 	    	epg_event_text.title,
 	    	epg_event_text.description.empty() ? "" : epg_event_text.subtitle,
 	    	epg_event_text.description.empty() ? epg_event_text.subtitle : epg_event_text.description,

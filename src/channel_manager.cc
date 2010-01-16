@@ -238,6 +238,8 @@ Channel* ChannelManager::find_channel(guint channel_id)
 
 Channel& ChannelManager::get_channel_by_index(guint index)
 {
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+
 	if (index >= channels.size())
 	{
 		throw Exception(_("Invalid channel index"));
@@ -248,6 +250,8 @@ Channel& ChannelManager::get_channel_by_index(guint index)
 
 Channel& ChannelManager::get_channel_by_id(guint channel_id)
 {
+	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+
 	Channel* channel = find_channel(channel_id);
 
 	if (channel == NULL)
@@ -305,6 +309,11 @@ const ChannelArray& ChannelManager::get_channels() const
 
 Channel& ChannelManager::get_display_channel()
 {
+	if (display_channel_index == NO_CHANNEL)
+	{
+		throw Exception(_("No channel selected"));
+	}
+	
 	return channels[display_channel_index];
 }
 
@@ -379,6 +388,7 @@ void ChannelManager::select_display_channel()
 		Channel& channel = channels[index];
 		if (channel.type == frontend_type)
 		{
+			g_debug("Channel %d selected", index);
 			display_channel_index = index;
 			return;
 		}
@@ -389,11 +399,14 @@ void ChannelManager::set_display_channel(const Channel& channel)
 {
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
 
+	g_debug("Setting display channel to %d", channel.channel_id);
+
 	gboolean found = false;
 	for (guint index = 0; index < channels.size() && !found; index++)
 	{
 		if (channel.channel_id == channels[index].channel_id)
 		{
+			g_debug("Display channel set to %d", index);
 			display_channel_index = index;
 			found = true;
 		}
