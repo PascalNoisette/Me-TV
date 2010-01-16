@@ -316,50 +316,40 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	g_debug("Scanner finished");
 }
 
+void Scanner::add_scan_range(guint start, guint end, guint step, struct dvb_frontend_parameters frontend_parameters)
+{
+	for (guint frequency = start; frequency <= end; frequency += step)
+	{
+		g_debug("Adding %d Hz", frequency);
+		
+		Transponder transponder;
+		transponder.frontend_parameters = frontend_parameters;
+		transponder.frontend_parameters.frequency = frequency;
+		transponders.push_back(transponder);
+	}
+}
+
 void Scanner::auto_scan(Frontend& frontend)
 {
 	if (frontend.get_frontend_info().type == FE_OFDM)
 	{
-		for (int frequency = 177500000; frequency <= 226500000; frequency += 7000000)
-		{
-			for (int i = 0; i < 2; i++)
-			{
-				struct dvb_frontend_parameters frontend_parameters;
+		struct dvb_frontend_parameters frontend_parameters;
 
-				frontend_parameters.frequency						= frequency + (i*125000);
-				frontend_parameters.inversion						= INVERSION_AUTO;
-				frontend_parameters.u.ofdm.hierarchy_information	= HIERARCHY_AUTO;
+		frontend_parameters.inversion						= INVERSION_AUTO;
+		frontend_parameters.u.ofdm.hierarchy_information	= HIERARCHY_AUTO;
+		frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_7_MHZ;
+		frontend_parameters.u.ofdm.code_rate_HP				= FEC_AUTO;
+		frontend_parameters.u.ofdm.code_rate_LP				= FEC_AUTO;
+		frontend_parameters.u.ofdm.constellation			= QAM_AUTO;
+		frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_AUTO;
+		frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_AUTO;
 
-				for (int j = 0; j < 2; j++)
-				{
-					if (j == 0)
-					{
-						frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_7_MHZ;
-						frontend_parameters.u.ofdm.code_rate_HP				= FEC_3_4;
-						frontend_parameters.u.ofdm.code_rate_LP				= FEC_3_4;
-						frontend_parameters.u.ofdm.constellation			= QAM_64; // Needed
-						frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K; // Needed
-						frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_1_16; // Needed
-					}
-					else
-					{
-						frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_AUTO;
-						frontend_parameters.u.ofdm.code_rate_HP				= FEC_AUTO;
-						frontend_parameters.u.ofdm.code_rate_LP				= FEC_AUTO;
-						frontend_parameters.u.ofdm.constellation			= QAM_AUTO;
-						frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_AUTO;
-						frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_AUTO;
-					}
-					
-					g_debug("Adding %d Hz/%s", frequency, j == 0 ? "Fixed" : "Auto");
-
-					Transponder transponder;
-					transponder.frontend_parameters = frontend_parameters;
-					transponders.push_back(transponder);
-				}
-			}
-		}
-	}
+		// Ranges for Australia
+		add_scan_range(177500000, 226500000, 7000000, frontend_parameters);
+		add_scan_range(177625000, 226625000, 7000000, frontend_parameters);
+		add_scan_range(529500000, 816500000, 7000000, frontend_parameters);
+		add_scan_range(529625000, 816625000, 7000000, frontend_parameters); // Offset
+ 	}
 	else
 	{
 		throw Exception(_("Auto scanning is only supported on DVB-T devices"));
