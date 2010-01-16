@@ -109,6 +109,7 @@ namespace Dvb
 		public:
 			guint id;
 			guint type;
+			gboolean eit_schedule_flag;
 			Glib::ustring provider_name;
 			Glib::ustring name;
 		};
@@ -117,6 +118,7 @@ namespace Dvb
 		{
 		public:
 			guint transport_stream_id;
+			gboolean epg_events_available;
 			std::vector<Service> services;
 		};
 

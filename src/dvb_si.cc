@@ -86,8 +86,16 @@ void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& sect
 	while (offset < section_length - 4)
 	{
 		Service service;
+
 		service.id = buffer.get_bits(offset, 0, 16);
 		offset += 3;
+		service.eit_schedule_flag = buffer.get_bits(offset, 6, 1) == 1;
+		if (service.eit_schedule_flag)
+		{
+			section.epg_events_available = true;
+		}
+		offset++;
+
 		guint descriptors_loop_length = buffer.get_bits(offset, 4, 12);
 		offset += 2;
 		guint descriptors_end_offset = offset + descriptors_loop_length;

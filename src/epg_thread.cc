@@ -184,13 +184,7 @@ void EpgThread::run()
 		{
 			Dvb::SI::EventInformationSection section;
 			
-			gboolean got_event = demuxers.get_next_eit(parser, section, is_atsc);
-
-			if (!got_event)
-			{
-				terminate();
-			}
-			else
+			if (demuxers.get_next_eit(parser, section, is_atsc))
 			{
 				guint service_id = section.service_id;
 				
@@ -258,11 +252,6 @@ void EpgThread::run()
 					}
 				}
 			}
-		}
-		catch(const TimeoutException& ex)
-		{
-			g_debug("Timeout in EPG thread: %s", ex.what().c_str());
-			terminate();
 		}
 		catch(const Glib::Exception& ex)
 		{
