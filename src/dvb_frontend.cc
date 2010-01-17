@@ -176,8 +176,8 @@ void Frontend::wait_lock(guint timeout)
 			}
 		}
 
-		usleep(10);
-		count += 10;
+		usleep(100000);
+		count += 100;
 	}
 
 	if (!(status & FE_HAS_LOCK))

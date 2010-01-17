@@ -510,15 +510,15 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 	gboolean is_scheduled = get_application().scheduled_recording_manager.is_recording(epg_event);
 	Gtk::HBox* hbox_program_dialog_scheduled = NULL;
 	builder->get_widget("hbox_program_dialog_scheduled", hbox_program_dialog_scheduled);
-	hbox_program_dialog_scheduled->set_visible(is_scheduled);
+	hbox_program_dialog_scheduled->property_visible() = is_scheduled;
 
 	Gtk::Button* button_program_dialog_record = NULL;
 	builder->get_widget("button_program_dialog_record", button_program_dialog_record);
-	button_program_dialog_record->set_visible(!is_scheduled);
+	button_program_dialog_record->property_visible() = !is_scheduled;
 
 	Gtk::Button* button_program_dialog_view_schedule = NULL;
 	builder->get_widget("button_program_dialog_view_schedule", button_program_dialog_view_schedule);
-	button_program_dialog_view_schedule->set_visible(is_scheduled);
+	button_program_dialog_view_schedule->property_visible() = is_scheduled;
 
 	gint result = dialog_program_details->run();
 	dialog_program_details->hide();
