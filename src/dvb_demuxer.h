@@ -42,7 +42,7 @@ namespace Dvb
 		~Demuxer();
 
 		void set_pes_filter(uint16_t pid, dmx_pes_type_t pestype);		
-		void set_filter(ushort pid, ushort table_id, ushort mask = 0);
+		void set_filter(ushort pid, ushort table_id, ushort mask = 0xFF);
 		void set_buffer_size(unsigned int buffer_size);
 		gint read(unsigned char* buffer, size_t length);
 		void read_section(Buffer& buffer);

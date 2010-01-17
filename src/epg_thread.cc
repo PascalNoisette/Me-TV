@@ -144,7 +144,7 @@ void EpgThread::run()
 		system_time_table.GPS_UTC_offset = 15;
 		{
 			Dvb::Demuxer demuxer_stt(demux_path);
-			demuxer_stt.set_filter(PSIP_PID, STT_ID, 0xFF);
+			demuxer_stt.set_filter(PSIP_PID, STT_ID);
 			parser.parse_psip_stt(demuxer_stt, system_time_table);
 		}
 
@@ -156,7 +156,7 @@ void EpgThread::run()
 
 		{
 			Dvb::Demuxer demuxer_mgt(demux_path);
-			demuxer_mgt.set_filter(PSIP_PID, MGT_ID, 0xFF);
+			demuxer_mgt.set_filter(PSIP_PID, MGT_ID);
 			parser.parse_psip_mgt(demuxer_mgt, master_guide_tables);
 		}
 

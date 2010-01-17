@@ -1,9 +1,10 @@
-2010-01-16  Michael Lamothe <michael.lamothe@gmail.com>
+2010-01-17  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.1.5
 	* More tweaks to the EPG event UI
 	* Added check for EPG events before starting EPG thread
 	* Fixed information on meters dialog
+	* Changed demux filter to only except exact table types by default
 
 2010-01-16  Michael Lamothe <michael.lamothe@gmail.com>
 
