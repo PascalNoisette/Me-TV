@@ -88,7 +88,7 @@ void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& sect
 		Service service;
 
 		service.id = buffer.get_bits(offset, 0, 16);
-		offset += 3;
+		offset += 2;
 		service.eit_schedule_flag = buffer.get_bits(offset, 6, 1) == 1;
 		if (service.eit_schedule_flag)
 		{
