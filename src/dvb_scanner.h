@@ -43,6 +43,7 @@ namespace Dvb
 		void process_cable_line(Frontend& frontend, const Glib::ustring& line);
 		void process_atsc_line(Frontend& frontend, const Glib::ustring& line);
 
+		void add_transponder(struct dvb_frontend_parameters frontend_parameters);
 		void add_scan_range(guint start, guint end, guint step,
 		    struct dvb_frontend_parameters frontend_parameters);
 		void auto_scan(Frontend& frontend);

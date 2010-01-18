@@ -131,8 +131,7 @@ Application& get_application()
 	return Application::get_current();
 }
 
-Application::Application(int argc, char *argv[], Glib::OptionContext& option_context) :
-	Gtk::Main(argc, argv, option_context)
+Application::Application()
 {
 	g_debug("Application constructor");
 

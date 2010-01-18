@@ -316,16 +316,20 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 	g_debug("Scanner finished");
 }
 
+void Scanner::add_transponder(struct dvb_frontend_parameters frontend_parameters)
+{
+	Transponder transponder;
+	transponder.frontend_parameters = frontend_parameters;
+	transponders.push_back(transponder);
+}
+
 void Scanner::add_scan_range(guint start, guint end, guint step, struct dvb_frontend_parameters frontend_parameters)
 {
 	for (guint frequency = start; frequency <= end; frequency += step)
 	{
 		g_debug("Adding %d Hz", frequency);
-		
-		Transponder transponder;
-		transponder.frontend_parameters = frontend_parameters;
-		transponder.frontend_parameters.frequency = frequency;
-		transponders.push_back(transponder);
+		frontend_parameters.frequency = frequency;
+		add_transponder(frontend_parameters);
 	}
 }
 
@@ -344,11 +348,32 @@ void Scanner::auto_scan(Frontend& frontend)
 		frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_AUTO;
 		frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_AUTO;
 
-		// Ranges for Australia
+		// Ranges for AU
 		add_scan_range(177500000, 226500000, 7000000, frontend_parameters);
-		add_scan_range(177625000, 226625000, 7000000, frontend_parameters);
+		add_scan_range(177625000, 226625000, 7000000, frontend_parameters); // Offset
 		add_scan_range(529500000, 816500000, 7000000, frontend_parameters);
 		add_scan_range(529625000, 816625000, 7000000, frontend_parameters); // Offset
+
+		// Ranges for SI
+		static const int si[] = { 514000000, 602000000 };
+
+		frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
+		add_transponder(frontend_parameters);
+
+		// Ranges for IT
+		static const int it[] = { 177500000, 186000000, 194500000, 203500000,
+			212500000, 219500000, 226500000 };
+
+		for (unsigned frequency = 0; frequency < (sizeof(it) / sizeof(it[0])); ++frequency)
+		{
+			frontend_parameters.frequency = frequency;
+
+			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_7_MHZ;
+			add_transponder(frontend_parameters);
+
+			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
+			add_transponder(frontend_parameters);
+		}
  	}
 	else
 	{
