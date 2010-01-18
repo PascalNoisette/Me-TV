@@ -360,6 +360,7 @@ void Scanner::auto_scan(Frontend& frontend)
 		frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
 		for (unsigned frequency = 0; frequency < (sizeof(si) / sizeof(si[0])); ++frequency)
 		{
+			frontend_parameters.frequency = frequency;
 			add_transponder(frontend_parameters);
 		}
 		
