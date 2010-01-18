@@ -31,7 +31,7 @@
 #include "status_icon.h"
 #include "stream_manager.h"
 
-class Application : public Gtk::Main
+class Application
 {
 private:
 	static Application*					current;
@@ -60,7 +60,7 @@ private:
 	void on_error(const Glib::ustring& message);
 
 public:
-	Application(int argc, char *argv[], Glib::OptionContext& option_context);
+	Application();
 	~Application();
 		
 	void run();

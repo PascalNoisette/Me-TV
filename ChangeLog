@@ -1,5 +1,10 @@
 2010-01-17  Michael Lamothe <michael.lamothe@gmail.com>
 
+	* 1.1.6
+	* Application class not inheriting from Gtk::Main (LP: #509029)
+
+2010-01-17  Michael Lamothe <michael.lamothe@gmail.com>
+
 	* 1.1.5
 	* More tweaks to the EPG event UI
 	* Added check for EPG events before starting EPG thread

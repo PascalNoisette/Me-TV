@@ -102,7 +102,9 @@ int main (int argc, char *argv[])
 		
 	try
 	{
-		Application application(argc, argv, *option_context);
+		Gtk::Main main(argc, argv, option_context);
+
+		Application application;
 		application.run();
 	}
 	catch (const Glib::Exception& exception)
