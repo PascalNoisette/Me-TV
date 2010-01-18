@@ -358,8 +358,11 @@ void Scanner::auto_scan(Frontend& frontend)
 		static const int si[] = { 514000000, 602000000 };
 
 		frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
-		add_transponder(frontend_parameters);
-
+		for (unsigned frequency = 0; frequency < (sizeof(si) / sizeof(si[0])); ++frequency)
+		{
+			add_transponder(frontend_parameters);
+		}
+		
 		// Ranges for IT
 		static const int it[] = { 177500000, 186000000, 194500000, 203500000,
 			212500000, 219500000, 226500000 };
