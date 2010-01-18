@@ -95,15 +95,15 @@ int main (int argc, char *argv[])
 	option_group.add_entry(disable_epg_option_entry, disable_epg);
 	option_group.add_entry(read_timeout_option_entry, read_timeout);
 
-	Glib::OptionContext* option_context = new Glib::OptionContext();
-	option_context->set_summary(ME_TV_SUMMARY);
-	option_context->set_description(ME_TV_DESCRIPTION);
-	option_context->set_main_group(option_group);
+	Glib::OptionContext option_context;
+	option_context.set_summary(ME_TV_SUMMARY);
+	option_context.set_description(ME_TV_DESCRIPTION);
+	option_context.set_main_group(option_group);
 		
+	Gtk::Main main(argc, argv, option_context);
+
 	try
 	{
-		Gtk::Main main(argc, argv, option_context);
-
 		Application application;
 		application.run();
 	}
@@ -123,9 +123,6 @@ int main (int argc, char *argv[])
 		dialog.set_title(PACKAGE_NAME);
 		dialog.run();
 	}
-
-	// Seems to crash if I delete option_context.
-	//delete option_context;
 
 	g_message("Me TV terminated");
 	
