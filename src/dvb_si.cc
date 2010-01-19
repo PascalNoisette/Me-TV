@@ -463,6 +463,7 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 	guint offset = 3;
 
 	section.service_id = buffer.get_bits(offset, 0, 16);
+	section.version_number = buffer.get_bits(42, 5);
 	
 	offset += 6;
 	guint num_events_in_section = buffer[offset++];
@@ -471,9 +472,10 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 	{
 		Event event;
 
-		event.event_id		= buffer.get_bits(offset, 2, 14); offset += 2;
-		event.start_time	= buffer.get_bits(offset, 0, 32); offset += 4;
-		event.duration		= buffer.get_bits(offset, 4, 20); offset += 3;
+		event.version_number	= section.version_number;
+		event.event_id			= buffer.get_bits(offset, 2, 14); offset += 2;
+		event.start_time		= buffer.get_bits(offset, 0, 32); offset += 4;
+		event.duration			= buffer.get_bits(offset, 4, 20); offset += 3;
 
 		event.start_time += GPS_EPOCH;
 		event.start_time += timezone;

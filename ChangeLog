@@ -3,6 +3,7 @@
 	* 1.1.6
 	* Application class not inheriting from Gtk::Main (LP: #509029)
 	* Fixed Exception: Read timeout at me-tv startup (Clear QAM) (LP: #509040)
+	* Fix for uninitialised version_number in ATSC EIS parser (LP: #509515)
 
 2010-01-17  Michael Lamothe <michael.lamothe@gmail.com>
 
