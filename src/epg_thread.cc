@@ -174,25 +174,7 @@ void EpgThread::run()
 	}
 	else
 	{
-		Dvb::SI::SectionParser parser;
-		Dvb::SI::ServiceDescriptionSection sds;
-
-		g_debug("Getting Service Description Section");
-		Dvb::Demuxer demuxer_sds(demux_path);
-		demuxer_sds.set_filter(SDT_PID, SDT_ID);
-		parser.parse_sds(demuxer_sds, sds);
-		demuxer_sds.stop();
-
-		if (sds.epg_events_available)
-		{
-			g_debug("EPG events are available on this transponder, adding EIT filter");
-			demuxers.add()->set_filter(EIT_PID, EIT_ID, 0);
-		}
-		else
-		{
-			g_debug("EPG events are not available on this transponder");
-			terminate();
-		}
+		demuxers.add()->set_filter(EIT_PID, EIT_ID, 0);
 	}
 	
 	guint frequency = frontend.get_frontend_parameters().frequency;
