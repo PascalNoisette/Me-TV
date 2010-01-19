@@ -191,6 +191,7 @@ void EpgThread::run()
 		else
 		{
 			g_debug("EPG events are not available on this transponder");
+			terminate();
 		}
 	}
 	
