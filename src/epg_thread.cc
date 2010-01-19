@@ -87,12 +87,13 @@ gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::Even
 
 	gint result = ::poll(fds, demuxer_count, 2000);
 	if (result >= 0)
-	{		
+	{
+		count = 0;
 		eit_demuxer = eit_demuxers;
 		while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
 		{
 			Dvb::Demuxer* current = (Dvb::Demuxer*)eit_demuxer->data;
-			if (current->poll(100))
+			if ((fds[count++].revents&POLLIN) != 0)
 			{
 				selected_eit_demuxer = current;
 			}
@@ -104,7 +105,7 @@ gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::Even
 			g_debug("Failed to get an EIT demuxer with events");
 			return false;
 		}
-	
+
 		if (is_atsc)
 		{
 			parser.parse_psip_eis(*selected_eit_demuxer, section);
@@ -184,7 +185,7 @@ void EpgThread::run()
 
 		if (sds.epg_events_available)
 		{
-			g_debug("EPG events are be available on this transponder, adding EIT filter");
+			g_debug("EPG events are available on this transponder, adding EIT filter");
 			demuxers.add()->set_filter(EIT_PID, EIT_ID, 0);
 		}
 		else
