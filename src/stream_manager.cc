@@ -193,18 +193,25 @@ void StreamManager::setup_dvb(const Channel& channel, StreamManager::ChannelStre
 		stop_epg_thread();		
 		frontend.tune_to(channel.transponder);
 
-		Dvb::SI::SectionParser parser;
-		Dvb::SI::ServiceDescriptionSection sds;
+		gboolean epg_thread_start_required = true;
 
-		g_debug("Getting Service Description Section");
-		Dvb::Demuxer demuxer_sds(demux_path);
-		demuxer_sds.set_filter(SDT_PID, SDT_ID);
-		parser.parse_sds(demuxer_sds, sds);
-		demuxer_sds.stop();
-
-		if (sds.epg_events_available)
+		if (frontend.get_frontend_type() != FE_ATSC)
 		{
-			g_debug("EPG events are available on this transponder, starting EPG thread");
+			Dvb::SI::SectionParser parser;
+			Dvb::SI::ServiceDescriptionSection sds;
+
+			g_debug("Getting Service Description Section");
+			Dvb::Demuxer demuxer_sds(demux_path);
+			demuxer_sds.set_filter(SDT_PID, SDT_ID);
+			parser.parse_sds(demuxer_sds, sds);
+			demuxer_sds.stop();
+
+			epg_thread_start_required = sds.epg_events_available;
+		}
+
+		if (epg_thread_start_required)
+		{
+			g_debug("EPG events may be available on this transponder, starting EPG thread");
 			start_epg_thread();
 		}
 		else

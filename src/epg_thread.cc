@@ -85,14 +85,13 @@ gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::Even
 		eit_demuxer = g_slist_next(eit_demuxer);
 	}
 
-	gint result = ::poll(fds, demuxer_count, 1000);
+	gint result = ::poll(fds, demuxer_count, 2000);
 	if (result >= 0)
 	{		
 		eit_demuxer = eit_demuxers;
 		while (eit_demuxer != NULL && selected_eit_demuxer == NULL)
 		{
 			Dvb::Demuxer* current = (Dvb::Demuxer*)eit_demuxer->data;
-			//if ((fds[count].revents&POLLIN) != 0)
 			if (current->poll(100))
 			{
 				selected_eit_demuxer = current;
@@ -184,7 +183,11 @@ void EpgThread::run()
 		{
 			Dvb::SI::EventInformationSection section;
 			
-			if (demuxers.get_next_eit(parser, section, is_atsc))
+			if (!demuxers.get_next_eit(parser, section, is_atsc))
+			{
+				terminate();
+			}
+			else
 			{
 				guint service_id = section.service_id;
 				
