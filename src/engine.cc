@@ -194,7 +194,7 @@ void Engine::pause(gboolean state)
 		g_debug(state ? "Sending pause" : "Sending unpause");
 		sendKeyEvent(
 			XK_space,
-			state ? XK_Shift_L : 0);
+			state ? XK_Control_L : 0);
 	}
 }
 
@@ -209,7 +209,7 @@ void Engine::set_mute_state(gboolean state)
 			g_debug(state ? "Sending mute" : "Sending unmute");
 			sendKeyEvent(
 				XK_m,
-				state ? 0 : XK_Shift_L);
+				state ? 0 : XK_Control_L);
 		}
 	}
 }
@@ -225,15 +225,15 @@ void Engine::set_audio_channel_state(AudioChannelState state)
 			switch(state)
 			{					
 			case AUDIO_CHANNEL_STATE_LEFT:
-				modifiers &= XK_Shift_L;
+				modifiers &= XK_Control_L;
 				break;
 				
 			case AUDIO_CHANNEL_STATE_RIGHT:
-				modifiers &= XK_Shift_R;
+				modifiers &= XK_Control_R;
 				break;
 
 			default:
-				modifiers &= XK_Shift_L & XK_Shift_R;
+				modifiers &= XK_Control_L & XK_Control_R;
 				break;
 			}
 			sendKeyEvent(XK_a, modifiers);
@@ -248,7 +248,7 @@ void Engine::set_audio_stream(guint stream)
 		audio_stream = stream;
 		if (pid != -1)
 		{
-			sendKeyEvent(XK_1 + stream, XK_Shift_L);
+			sendKeyEvent(XK_1 + stream, XK_Control_L);
 		}
 	}
 }
@@ -260,7 +260,7 @@ void Engine::set_subtitle_stream(gint stream)
 		subtitle_stream = stream;
 		if (pid != -1)
 		{
-			sendKeyEvent(XK_1 + stream, XK_Shift_R);
+			sendKeyEvent(XK_1 + stream, XK_Control_R);
 		}
 	}
 }

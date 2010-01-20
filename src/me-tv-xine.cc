@@ -376,19 +376,19 @@ int main(int argc, char **argv)
 					switch(keysym)
 					{
 					case XK_m:
-						set_mute_state(key_event->state != XK_Shift_L);
+						set_mute_state(key_event->state != XK_Control_L);
 						break;
 							
 					case XK_a:
-						if (key_event->state == (XK_Shift_L & XK_Shift_R))
+						if (key_event->state == (XK_Control_L & XK_Control_R))
 						{
 							set_audio_channel_state(AUDIO_CHANNEL_STATE_BOTH);
 						}
-						else if (key_event->state == XK_Shift_L)
+						else if (key_event->state == XK_Control_L)
 						{
 							set_audio_channel_state(AUDIO_CHANNEL_STATE_LEFT);
 						}
-						else if (key_event->state == XK_Shift_R)
+						else if (key_event->state == XK_Control_R)
 						{
 							set_audio_channel_state(AUDIO_CHANNEL_STATE_RIGHT);
 						}
@@ -409,11 +409,11 @@ int main(int argc, char **argv)
 					default:
 						if (keysym >= XK_1 || keysym <= XK_9)
 						{
-							if (key_event->state == XK_Shift_L)
+							if (key_event->state == XK_Control_L)
 							{
 								set_audio_stream(keysym - XK_1);
 							}
-							else if (key_event->state == XK_Shift_R)
+							else if (key_event->state == XK_Control_R)
 							{
 								set_subtitle_stream(keysym - XK_1);
 							}
