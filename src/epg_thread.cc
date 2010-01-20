@@ -234,24 +234,27 @@ void EpgThread::run()
 							epg_event.start_time -= system_time_table.GPS_UTC_offset;
 						}
 						
-						for (Dvb::SI::EventTextMap::iterator i = event.texts.begin(); i != event.texts.end(); i++)
+						if (epg_event.get_end_time() >= (get_local_time() - 10*60*60))
 						{
-							EpgEventText epg_event_text;
-							const Dvb::SI::EventText& event_text = i->second;
+							for (Dvb::SI::EventTextMap::iterator i = event.texts.begin(); i != event.texts.end(); i++)
+							{
+								EpgEventText epg_event_text;
+								const Dvb::SI::EventText& event_text = i->second;
 						
-							epg_event_text.epg_event_text_id	= 0;
-							epg_event_text.epg_event_id			= 0;
-							epg_event_text.language				= event_text.language;
-							epg_event_text.title				= event_text.title;
-							epg_event_text.subtitle				= event_text.subtitle;
-							epg_event_text.description			= event_text.description;
+								epg_event_text.epg_event_text_id	= 0;
+								epg_event_text.epg_event_id			= 0;
+								epg_event_text.language				= event_text.language;
+								epg_event_text.title				= event_text.title;
+								epg_event_text.subtitle				= event_text.subtitle;
+								epg_event_text.description			= event_text.description;
 						
-							epg_event.texts.push_back(epg_event_text);
-						}
+								epg_event.texts.push_back(epg_event_text);
+							}
 					
-						if (channel->epg_events.add_epg_event(epg_event))
-						{
-							last_update_time = time(NULL)+1;
+							if (channel->epg_events.add_epg_event(epg_event))
+							{
+								last_update_time = time(NULL)+1;
+							}
 						}
 					}
 				}
