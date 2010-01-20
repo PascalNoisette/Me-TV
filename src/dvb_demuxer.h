@@ -44,8 +44,8 @@ namespace Dvb
 		void set_pes_filter(uint16_t pid, dmx_pes_type_t pestype);		
 		void set_filter(ushort pid, ushort table_id, ushort mask = 0xFF);
 		void set_buffer_size(unsigned int buffer_size);
-		gint read(unsigned char* buffer, size_t length);
-		void read_section(Buffer& buffer);
+		gint read(unsigned char* buffer, size_t length, gint timeout = read_timeout * 1000);
+		void read_section(Buffer& buffer, gint timeout = read_timeout * 1000);
 		gboolean poll(gint timeout = read_timeout * 1000);
 		void stop();
 		int get_fd() const;
