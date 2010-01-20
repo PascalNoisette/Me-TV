@@ -83,19 +83,20 @@ void PreferencesDialog::run()
 	combo_box_entry_preferred_language->append_text("fre");
 
 	combo_box_entry_xine_video_driver->clear_items();
-	combo_box_entry_xine_video_driver->append_text("dxr3");
 	combo_box_entry_xine_video_driver->append_text("aadxr3");
-	combo_box_entry_xine_video_driver->append_text("xv");
-	combo_box_entry_xine_video_driver->append_text("XDirectFB");
 	combo_box_entry_xine_video_driver->append_text("DirectFB");
-	combo_box_entry_xine_video_driver->append_text("SyncFB");
-	combo_box_entry_xine_video_driver->append_text("opengl");
-	combo_box_entry_xine_video_driver->append_text("xshm");
-	combo_box_entry_xine_video_driver->append_text("none");
-	combo_box_entry_xine_video_driver->append_text("xxmc");
-	combo_box_entry_xine_video_driver->append_text("sdl");
+	combo_box_entry_xine_video_driver->append_text("dxr3");
 	combo_box_entry_xine_video_driver->append_text("fb");
+	combo_box_entry_xine_video_driver->append_text("none");
+	combo_box_entry_xine_video_driver->append_text("opengl");
+	combo_box_entry_xine_video_driver->append_text("sdl");
+	combo_box_entry_xine_video_driver->append_text("SyncFB");
+	combo_box_entry_xine_video_driver->append_text("vdpau");
+	combo_box_entry_xine_video_driver->append_text("XDirectFB");
+	combo_box_entry_xine_video_driver->append_text("xshm");
+	combo_box_entry_xine_video_driver->append_text("xv");
 	combo_box_entry_xine_video_driver->append_text("xvmc");
+	combo_box_entry_xine_video_driver->append_text("xxmc");
 
 	combo_box_entry_xine_audio_driver->clear_items();
 	combo_box_entry_xine_audio_driver->append_text("null");

@@ -29,7 +29,7 @@ bool			safe_mode			= false;
 bool			minimised_mode		= false;
 bool			disable_epg_thread	= false;
 bool			disable_epg			= false;
-gint			read_timeout		= 15;
+gint			read_timeout		= 5;
 
 StringSignal signal_error;
 
