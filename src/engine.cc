@@ -225,15 +225,15 @@ void Engine::set_audio_channel_state(AudioChannelState state)
 			switch(state)
 			{					
 			case AUDIO_CHANNEL_STATE_LEFT:
-				modifiers &= XK_Control_L;
+				modifiers = XK_Control_L;
 				break;
 				
 			case AUDIO_CHANNEL_STATE_RIGHT:
-				modifiers &= XK_Control_R;
+				modifiers = XK_Control_R;
 				break;
 
 			default:
-				modifiers &= XK_Control_L & XK_Control_R;
+				modifiers = XK_Control_L & XK_Control_R;
 				break;
 			}
 			sendKeyEvent(XK_a, modifiers);
@@ -248,7 +248,7 @@ void Engine::set_audio_stream(guint stream)
 		audio_stream = stream;
 		if (pid != -1)
 		{
-			sendKeyEvent(XK_1 + stream, XK_Control_L);
+			sendKeyEvent(XK_0 + stream, XK_Control_L);
 		}
 	}
 }
@@ -260,7 +260,7 @@ void Engine::set_subtitle_stream(gint stream)
 		subtitle_stream = stream;
 		if (pid != -1)
 		{
-			sendKeyEvent(XK_1 + stream, XK_Control_R);
+			sendKeyEvent(XK_0 + stream, XK_Control_R);
 		}
 	}
 }
