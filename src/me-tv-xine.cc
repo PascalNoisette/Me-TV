@@ -409,15 +409,15 @@ int main(int argc, char **argv)
 						break;
 							
 					default:
-						if (key_event->state >= XK_0 && key_event->state <= XK_9)
+						if (key_event->keycode >= XK_0 && key_event->keycode <= XK_9)
 						{
 							if (key_event->state == XK_Control_L)
 							{
-								set_audio_stream(key_event->state - XK_0);
+								set_audio_stream(key_event->keycode - XK_0);
 							}
 							else if (key_event->state == XK_Control_R)
 							{
-								set_subtitle_stream(key_event->state - XK_0);
+								set_subtitle_stream(key_event->keycode - XK_0);
 							}
 						}
 						break;
