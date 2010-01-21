@@ -173,7 +173,6 @@ void set_deinterlacer_state(bool deinterlace)
 
 void set_audio_stream(int channel)
 {
-	printf("me-tv-xine: set_audio_stream(%d)\n", channel);
 	xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
 }
 
@@ -373,8 +372,6 @@ int main(int argc, char **argv)
 			case KeyPress:
 				{
 					XKeyEvent* key_event = (XKeyEvent*)(void*)&xevent;
-					printf("me-tv-xine: Got KeyPress keycode=%d(0x%02X)\n",
-					    key_event->keycode, key_event->keycode);
 					switch(key_event->keycode)
 					{
 					case XK_m:
