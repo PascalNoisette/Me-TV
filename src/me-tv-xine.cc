@@ -173,6 +173,7 @@ void set_deinterlacer_state(bool deinterlace)
 
 void set_audio_stream(int channel)
 {
+	printf("me-tv-xine: set_audio_stream(%d)\n", channel);
 	xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
 }
 
