@@ -176,7 +176,7 @@ void Engine::sendKeyEvent(int keycode, int modifiers)
 	event.x_root      = 1;
 	event.y_root      = 1;
 	event.same_screen = True;
-	event.keycode     = XKeysymToKeycode(display, keycode);
+	event.keycode     = keycode;
 	event.state       = modifiers;
 
 	event.type = KeyPress;

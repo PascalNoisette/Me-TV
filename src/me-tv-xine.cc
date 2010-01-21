@@ -372,10 +372,9 @@ int main(int argc, char **argv)
 			case KeyPress:
 				{
 					XKeyEvent* key_event = (XKeyEvent*)(void*)&xevent;
-					int keysym = XKeycodeToKeysym(display, key_event->keycode, 0);
-					printf("me-tv-xine: Got KeyPress keycode=%d(0x%02X) keysym=%d(0x%02X)\n",
-					    key_event->keycode, key_event->keycode, keysym, keysym);
-					switch(keysym)
+					printf("me-tv-xine: Got KeyPress keycode=%d(0x%02X)\n",
+					    key_event->keycode, key_event->keycode);
+					switch(key_event->keycode)
 					{
 					case XK_m:
 						set_mute_state(key_event->state != XK_Control_L);
@@ -409,15 +408,15 @@ int main(int argc, char **argv)
 						break;
 							
 					default:
-						if (keysym >= XK_0 && keysym <= XK_9)
+						if (key_event->state >= XK_0 && key_event->state <= XK_9)
 						{
 							if (key_event->state == XK_Control_L)
 							{
-								set_audio_stream(keysym - XK_0);
+								set_audio_stream(key_event->state - XK_0);
 							}
 							else if (key_event->state == XK_Control_R)
 							{
-								set_subtitle_stream(keysym - XK_0);
+								set_subtitle_stream(key_event->state - XK_0);
 							}
 						}
 						break;
