@@ -75,7 +75,7 @@ namespace Dvb
 		struct dvb_frontend_parameters frontend_parameters;
 		
 	public:
-		Frontend(const Adapter& adapter, guint frontend);
+		Frontend(const Adapter& adapter, guint frontend = 2000);
 		~Frontend();
 
 		void open();

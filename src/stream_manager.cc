@@ -61,6 +61,14 @@ void StreamManager::start()
 	Thread::start();
 }
 
+void StreamManager::stop()
+{
+	g_debug("Stopping stream thread");
+	stop_epg_thread();
+	join(true);
+	g_debug("Stream thread stopped");
+}
+
 void StreamManager::run()
 {
 	guchar buffer[TS_PACKET_SIZE * PACKET_BUFFER_SIZE];

@@ -70,7 +70,7 @@ void Frontend::close()
 	}
 }
 
-void Frontend::tune_to(const Transponder& transponder)
+void Frontend::tune_to(const Transponder& transponder, guint timeout)
 {
 	g_message(_("Frontend::tune_to(%d)"), transponder.frontend_parameters.frequency);
 	
