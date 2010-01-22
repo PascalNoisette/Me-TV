@@ -75,12 +75,12 @@ namespace Dvb
 		struct dvb_frontend_parameters frontend_parameters;
 		
 	public:
-		Frontend(const Adapter& adapter, guint frontend = 2000);
+		Frontend(const Adapter& adapter, guint frontend);
 		~Frontend();
 
 		void open();
 		void close();
-		void tune_to(const Transponder& transponder);
+		void tune_to(const Transponder& transponder, guint timeout = 2000);
 
 		const struct dvb_frontend_parameters& get_frontend_parameters() const;
 		int get_frontend_type() const { return frontend_info.type; }
