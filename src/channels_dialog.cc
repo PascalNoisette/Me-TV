@@ -126,7 +126,7 @@ void ChannelsDialog::show_scan_dialog()
 	scan_dialog.show();
 	Gtk::Main::run(scan_dialog);
 	
-	ChannelArray channels = scan_dialog.get_channels();	
+	ChannelArray channels = scan_dialog.get_selected_channels();	
 	for (ChannelArray::const_iterator iterator = channels.begin(); iterator != channels.end(); iterator++)
 	{
 		if (!import_channel(*iterator))

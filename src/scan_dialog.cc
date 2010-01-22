@@ -430,17 +430,41 @@ void ScanDialog::on_button_scan_wizard_add_clicked()
 	CATCH;
 }
 
-void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name, const guint polarisation)
+void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint service_id, const Glib::ustring& name, const guint polarisation)
 {
 	if (!scan_thread->is_terminated())
 	{
 		GdkLock gdk_lock;
-		
+
+		Gtk::TreeModel::Children children = list_store->children();
+		Gtk::TreeModel::Children::iterator iterator = children.begin();
+		while (iterator != children.end())
+		{
+			Gtk::TreeModel::Row row  = *iterator;
+
+			guint							existing_service_id;
+			struct dvb_frontend_parameters	existing_frontend_parameters;
+
+			existing_service_id = row.get_value(columns.column_id);
+			existing_frontend_parameters = row.get_value(columns.column_frontend_parameters);
+
+			if (abs(frontend_parameters.frequency - existing_frontend_parameters.frequency) < 500000 &&
+			    service_id == existing_service_id)
+			{
+				g_debug("Already got service ID %d at %d Hz, ignoring service at %d Hz",
+				    existing_service_id,
+				    existing_frontend_parameters.frequency,
+				 	frontend_parameters.frequency);
+			}
+			
+			iterator++;
+		}
+
 		Channel channel;
-		channel.service_id						= id;
+		channel.service_id						= service_id;
 		channel.name							= name;
 		channel.transponder.frontend_parameters = frontend_parameters;
-		channel.transponder.polarisation		= polarisation;		
+		channel.transponder.polarisation		= polarisation;
 
 		add_channel_row(channel);
 	}
@@ -489,7 +513,7 @@ void ScanDialog::on_signal_complete()
 	}
 }
 
-ChannelArray ScanDialog::get_channels()
+ChannelArray ScanDialog::get_selected_channels()
 {
 	ChannelArray result;
 	std::list<Gtk::TreeModel::Path> selected_services = tree_view_scanned_channels->get_selection()->get_selected_rows();		

@@ -333,6 +333,15 @@ void Scanner::add_scan_range(guint start, guint end, guint step, struct dvb_fron
 	}
 }
 
+void Scanner::add_scan_list(const int *si, int length, struct dvb_frontend_parameters frontend_parameters)
+{
+	for (unsigned frequency = 0; frequency < (sizeof(si) / sizeof(si[0])); ++frequency)
+	{
+		frontend_parameters.frequency = frequency;
+		add_transponder(frontend_parameters);
+	}
+}
+
 void Scanner::auto_scan(Frontend& frontend)
 {
 	if (frontend.get_frontend_info().type == FE_OFDM)
@@ -341,14 +350,13 @@ void Scanner::auto_scan(Frontend& frontend)
 
 		frontend_parameters.inversion						= INVERSION_AUTO;
 		frontend_parameters.u.ofdm.hierarchy_information	= HIERARCHY_AUTO;
-		frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_7_MHZ;
+		frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_AUTO;
 		frontend_parameters.u.ofdm.code_rate_HP				= FEC_AUTO;
 		frontend_parameters.u.ofdm.code_rate_LP				= FEC_AUTO;
 		frontend_parameters.u.ofdm.constellation			= QAM_AUTO;
 		frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_AUTO;
 		frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_AUTO;
 
-		/*
 		// AU
 		add_scan_range(177500000, 226500000, 7000000, frontend_parameters);
 		add_scan_range(177625000, 226625000, 7000000, frontend_parameters); // Offset
@@ -357,29 +365,12 @@ void Scanner::auto_scan(Frontend& frontend)
 
 		// SI
 		static const int si[] = { 514000000, 602000000 };
-
-		frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
-		for (unsigned frequency = 0; frequency < (sizeof(si) / sizeof(si[0])); ++frequency)
-		{
-			frontend_parameters.frequency = frequency;
-			add_transponder(frontend_parameters);
-		}
+		add_scan_list(si, sizeof(si) / sizeof(si[0]), frontend_parameters);
 		
 		// IT
 		static const int it[] = { 177500000, 186000000, 194500000, 203500000,
 			212500000, 219500000, 226500000 };
-
-		for (unsigned frequency = 0; frequency < (sizeof(it) / sizeof(it[0])); ++frequency)
-		{
-			frontend_parameters.frequency = frequency;
-
-			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_7_MHZ;
-			add_transponder(frontend_parameters);
-
-			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
-			add_transponder(frontend_parameters);
-		}
-		 */
+		add_scan_list(it, sizeof(it) / sizeof(it[0]), frontend_parameters);
  	}
 	else
 	{

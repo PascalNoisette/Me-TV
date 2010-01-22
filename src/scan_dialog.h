@@ -103,7 +103,7 @@ public:
 	ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	~ScanDialog();
 		
-	ChannelArray get_channels();
+	ChannelArray get_selected_channels();
 
 	static ScanDialog& create(Glib::RefPtr<Gtk::Builder> builder);
 };
