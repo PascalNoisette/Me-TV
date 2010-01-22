@@ -1,7 +1,13 @@
-2010-01-17  Michael Lamothe <michael.lamothe@gmail.com>
+2010-01-21  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.1.6
 	* Application class not inheriting from Gtk::Main (LP: #509029)
+	* Fixed Exception: Read timeout at me-tv startup (Clear QAM) (LP: #509040)
+	* Fix for uninitialised version_number in ATSC EIS parser (LP: #509515)
+	* Fix for inefficient polling of EPG data (LP: #509091)
+	* Default demuxer timeout set to 5 seconds
+	* Using XK_Control rather than XK_Shift (LP: #506855)
+	* Ignoring events older than 10 hours (LP: #510005)
 
 2010-01-17  Michael Lamothe <michael.lamothe@gmail.com>
 

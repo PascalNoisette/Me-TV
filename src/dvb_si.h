@@ -78,8 +78,6 @@ namespace Dvb
 			guint	version_number;
 			guint	start_time;
 			gulong	duration;
-			guint	running_status;
-			guint	free_CA_mode;
 			
 			EventTextMap texts;
 		};

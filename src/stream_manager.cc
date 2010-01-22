@@ -200,26 +200,8 @@ void StreamManager::setup_dvb(const Channel& channel, StreamManager::ChannelStre
 	if (channel.transponder.frontend_parameters.frequency != frontend.get_frontend_parameters().frequency)
 	{
 		stop_epg_thread();		
-		frontend.tune_to(channel.transponder, read_timeout * 1000);
-
-		Dvb::SI::SectionParser parser;
-		Dvb::SI::ServiceDescriptionSection sds;
-
-		g_debug("Getting Service Description Section");
-		Dvb::Demuxer demuxer_sds(demux_path);
-		demuxer_sds.set_filter(SDT_PID, SDT_ID);
-		parser.parse_sds(demuxer_sds, sds);
-		demuxer_sds.stop();
-
-		if (sds.epg_events_available)
-		{
-			g_debug("EPG events are available on this transponder, starting EPG thread");
-			start_epg_thread();
-		}
-		else
-		{
-			g_debug("EPG events are not available on this transponder");
-		}
+		frontend.tune_to(channel.transponder);
+		start_epg_thread();
 	}
 	
 	Dvb::Demuxer demuxer_pat(demux_path);

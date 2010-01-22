@@ -96,9 +96,9 @@ void Demuxer::set_buffer_size(unsigned int buffer_size)
 	}
 }
 
-gint Demuxer::read(unsigned char* buffer, size_t length)
+gint Demuxer::read(unsigned char* buffer, size_t length, gint timeout)
 {
-	if (!poll())
+	if (!poll(timeout))
 	{
 		throw TimeoutException(_("Read timeout"));
 	}
@@ -112,10 +112,10 @@ gint Demuxer::read(unsigned char* buffer, size_t length)
 	return bytes_read;
 }
 
-void Demuxer::read_section(Buffer& buffer)
+void Demuxer::read_section(Buffer& buffer, gint timeout)
 {
 	guchar header[3];
-	gsize bytes_read = read(header, 3);
+	gsize bytes_read = read(header, 3, timeout);
 	
 	if (bytes_read != 3)
 	{

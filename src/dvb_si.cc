@@ -37,8 +37,7 @@ Dvb::SI::Event::Event()
 	event_id = 0;
 	start_time = 0;
 	duration = 0;
-	running_status = 0;
-	free_CA_mode = 0;
+	version_number = 0;
 }
 
 SectionParser::SectionParser()
@@ -463,6 +462,7 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 	guint offset = 3;
 
 	section.service_id = buffer.get_bits(offset, 0, 16);
+	section.version_number = buffer.get_bits(42, 5);
 	
 	offset += 6;
 	guint num_events_in_section = buffer[offset++];
@@ -471,9 +471,10 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 	{
 		Event event;
 
-		event.event_id		= buffer.get_bits(offset, 2, 14); offset += 2;
-		event.start_time	= buffer.get_bits(offset, 0, 32); offset += 4;
-		event.duration		= buffer.get_bits(offset, 4, 20); offset += 3;
+		event.version_number	= section.version_number;
+		event.event_id			= buffer.get_bits(offset, 2, 14); offset += 2;
+		event.start_time		= buffer.get_bits(offset, 0, 32); offset += 4;
+		event.duration			= buffer.get_bits(offset, 4, 20); offset += 3;
 
 		event.start_time += GPS_EPOCH;
 		event.start_time += timezone;
@@ -527,8 +528,6 @@ void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section
 		start_time_MJD			= buffer.get_bits(offset, 16, 16);
 		start_time_UTC			= buffer.get_bits(offset, 32, 24);
 		duration				= buffer.get_bits(offset, 56, 24);
-		event.running_status	= buffer.get_bits(offset, 80, 3);
-		event.free_CA_mode		= buffer.get_bits(offset, 83, 1);
 		
 		unsigned int descriptors_loop_length  = buffer.get_bits(offset, 84, 12);
 		offset += 12;
