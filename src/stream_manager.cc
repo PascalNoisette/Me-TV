@@ -199,7 +199,7 @@ void StreamManager::setup_dvb(const Channel& channel, StreamManager::ChannelStre
 	channel_stream.clear_demuxers();
 	if (channel.transponder.frontend_parameters.frequency != frontend.get_frontend_parameters().frequency)
 	{
-		stop_epg_thread();		
+		stop_epg_thread();
 		frontend.tune_to(channel.transponder);
 		start_epg_thread();
 	}
