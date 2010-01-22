@@ -348,13 +348,14 @@ void Scanner::auto_scan(Frontend& frontend)
 		frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_AUTO;
 		frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_AUTO;
 
-		// Ranges for AU
+		/*
+		// AU
 		add_scan_range(177500000, 226500000, 7000000, frontend_parameters);
 		add_scan_range(177625000, 226625000, 7000000, frontend_parameters); // Offset
 		add_scan_range(529500000, 816500000, 7000000, frontend_parameters);
 		add_scan_range(529625000, 816625000, 7000000, frontend_parameters); // Offset
 
-		// Ranges for SI
+		// SI
 		static const int si[] = { 514000000, 602000000 };
 
 		frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
@@ -364,7 +365,7 @@ void Scanner::auto_scan(Frontend& frontend)
 			add_transponder(frontend_parameters);
 		}
 		
-		// Ranges for IT
+		// IT
 		static const int it[] = { 177500000, 186000000, 194500000, 203500000,
 			212500000, 219500000, 226500000 };
 
@@ -378,6 +379,7 @@ void Scanner::auto_scan(Frontend& frontend)
 			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
 			add_transponder(frontend_parameters);
 		}
+		 */
  	}
 	else
 	{
