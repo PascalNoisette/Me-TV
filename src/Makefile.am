@@ -100,8 +100,6 @@ me_tv_SOURCES = \
 	me-tv-i18n.h \
 	epg_events.cc \
 	epg_events.h \
-	devices_dialog.cc \
-	devices_dialog.h \
 	channel_manager.cc \
 	channel_manager.h \
 	scheduled_recording_manager.cc \

@@ -20,7 +20,6 @@
 
 #include "application.h"
 #include "data.h"
-#include "devices_dialog.h"
 #include "crc32.h"
 
 #define GCONF_PATH					"/apps/me-tv"
@@ -55,12 +54,6 @@ void on_change_view_mode(GtkObject *object, gpointer user_data)
 {
 	g_debug("Handler: %s", __PRETTY_FUNCTION__);
 	get_application().get_main_window().on_change_view_mode();
-}
-
-void on_devices(GtkObject *object, gpointer user_data)
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_devices();
 }
 
 void on_channels()

@@ -103,7 +103,6 @@ public:
 	void on_audio_channel_right();
 	void on_about();
 
-	void show_devices_dialog();
 	void show_channels_dialog();
 	void show_preferences_dialog();
 	void show_scheduled_recordings_dialog();

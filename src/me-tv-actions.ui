@@ -58,12 +58,6 @@
             <accelerator key="V"/>
          </child>
          <child>
-            <object class="GtkAction" id="devices">
-               <property name="label" translatable="yes">_Devices</property>
-               <signal name="activate" handler="on_devices"/>
-            </object>
-         </child>
-         <child>
             <object class="GtkAction" id="channels">
                <property name="label" translatable="yes">_Channels</property>
                <signal name="activate" handler="on_channels"/>
@@ -178,7 +172,6 @@
         <separator/>
         <menuitem action="change_view_mode"/>
         <separator/>
-        <menuitem action="devices"/>
         <menuitem action="scheduled_recordings"/>
         <menuitem action="channels"/>
         <menuitem action="meters"/>

@@ -22,7 +22,6 @@
 #include "me-tv-i18n.h"
 #include "main_window.h"
 #include "channels_dialog.h"
-#include "devices_dialog.h"
 #include "meters_dialog.h"
 #include "preferences_dialog.h"
 #include "application.h"
@@ -124,15 +123,6 @@ MainWindow* MainWindow::create(Glib::RefPtr<Gtk::Builder> builder)
 	MainWindow* main_window = NULL;
 	builder->get_widget_derived("window_main", main_window);
 	return main_window;
-}
-
-void MainWindow::show_devices_dialog()
-{
-	FullscreenBugWorkaround fullscreen_bug_workaround;
-
-	DevicesDialog& devices_dialog = DevicesDialog::create(builder);
-	devices_dialog.run();
-	devices_dialog.hide();
 }
 
 void MainWindow::show_channels_dialog()
@@ -738,13 +728,6 @@ void MainWindow::on_audio_channel_right()
 	{
 		engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_RIGHT);
 	}
-}
-
-void MainWindow::on_devices()
-{
-	TRY
-	show_devices_dialog();
-	CATCH
 }
 
 void MainWindow::on_channels()
