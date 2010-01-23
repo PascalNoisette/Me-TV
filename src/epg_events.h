@@ -39,6 +39,7 @@ public:
 		
 	gboolean			add_epg_event(const EpgEvent& epg_event);
 	gboolean			get_current(EpgEvent& epg_event);
+	EpgEvent			get_epg_event(guint epg_event_id);
 	const EpgEventList	get_list();
 	void				prune();
 	void				load(Data::Connection& connection, guint channel_id);

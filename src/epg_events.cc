@@ -251,8 +251,8 @@ EpgEventList EpgEvents::search(const Glib::ustring& text, gboolean search_descri
 	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
 	{
 		EpgEvent& epg_event = *i;
-		if (epg_event.get_title().uppercase().find(text) != -1 ||
-		    (search_description && epg_event.get_description().uppercase().find(text) != -1))
+		if (epg_event.get_title().uppercase().find(text) != Glib::ustring::npos ||
+		    (search_description && epg_event.get_description().uppercase().find(text) != Glib::ustring::npos))
 		{
 			g_debug("Found '%s'", epg_event.get_title().c_str());
 			result.push_back(epg_event);
@@ -260,4 +260,20 @@ EpgEventList EpgEvents::search(const Glib::ustring& text, gboolean search_descri
 	}
 	
 	return result;
+}
+
+EpgEvent EpgEvents::get_epg_event(guint epg_event_id)
+{
+	Glib::RecMutex::Lock lock(mutex);
+	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
+	{
+		EpgEvent& epg_event = *i;
+
+		if (epg_event.epg_event_id == epg_event_id)
+		{
+			return epg_event;
+		}
+	}
+
+	throw Exception(_("EPG event not found"));
 }
