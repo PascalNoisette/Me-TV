@@ -30,7 +30,7 @@ EpgEventSearchDialog& EpgEventSearchDialog::get(Glib::RefPtr<Gtk::Builder> build
 }
 
 EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
-	Gtk::Dialog(cobject), builder(builder)
+	Gtk::Dialog(cobject), builder(builder), image_record(Gtk::Stock::MEDIA_RECORD, Gtk::ICON_SIZE_MENU)
 {
 	Gtk::Button* button = NULL;
 	builder->get_widget("button_epg_event_search", button);
@@ -42,9 +42,9 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
 	    sigc::mem_fun(*this, &EpgEventSearchDialog::on_row_activated));
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_epg_event_search->set_model(list_store);
- 	tree_view_epg_event_search->append_column(_(" "), columns.column_is_scheduled);
  	tree_view_epg_event_search->append_column(_("Title"), columns.column_title);
 	tree_view_epg_event_search->append_column(_("Channel"), columns.column_channel_name);
+ 	tree_view_epg_event_search->append_column(_("Record"), columns.column_image);
 	tree_view_epg_event_search->append_column(_("Start Time"), columns.column_start_time);
 	tree_view_epg_event_search->append_column(_("Duration"), columns.column_duration);
 
@@ -77,8 +77,9 @@ void EpgEventSearchDialog::search()
 			EpgEvent& epg_event = *j;
 			
 			Gtk::TreeModel::Row row = *(list_store->append());
-		
-			row[columns.column_is_scheduled]	= application.scheduled_recording_manager.is_recording(epg_event);
+
+			gboolean record = application.scheduled_recording_manager.is_recording(epg_event);
+			row[columns.column_image]			= record ? "Yes" : "No";
 			row[columns.column_id]				= epg_event.epg_event_id;
 			row[columns.column_title]			= epg_event.get_title();
 			row[columns.column_start_time]		= epg_event.get_start_time_text();
@@ -103,9 +104,8 @@ void EpgEventSearchDialog::on_row_activated(const Gtk::TreeModel::Path& tree_mod
 	EpgEvent epg_event = row[columns.column_epg_event];
 
 	Application& application = get_application();
-	application.channel_manager.get_channel_by_id(epg_event.channel_id).epg_events.get_epg_event(epg_event.epg_event_id);
 	ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
 	scheduled_recording_dialog.run(MainWindow::create(builder), epg_event);
 	scheduled_recording_dialog.hide();
-	get_application().update();
+	search();
 }

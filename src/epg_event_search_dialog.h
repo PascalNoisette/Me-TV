@@ -38,7 +38,7 @@ private:
 			add(column_start_time);
 			add(column_duration);
 			add(column_epg_event);
-			add(column_is_scheduled);
+			add(column_image);
 		}
 
 		Gtk::TreeModelColumn<guint>			column_id;
@@ -48,13 +48,14 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring>	column_start_time;
 		Gtk::TreeModelColumn<Glib::ustring>	column_duration;
 		Gtk::TreeModelColumn<EpgEvent>		column_epg_event;
-		Gtk::TreeModelColumn<gboolean>		column_is_scheduled;
+		Gtk::TreeModelColumn<Glib::ustring>	column_image;
 	};
 
 	ModelColumns						columns;
 	Glib::RefPtr<Gtk::ListStore>		list_store;
 	const Glib::RefPtr<Gtk::Builder>	builder;
 	Gtk::TreeView*						tree_view_epg_event_search;
+	Gtk::Image							image_record;
 
 	void on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column);
 	void search();
