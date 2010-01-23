@@ -53,7 +53,7 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 		Demuxer demuxer_sds(demux_path);
 		Demuxer demuxer_nis(demux_path);
 		
-		frontend.tune_to(transponder, 1500);
+		frontend.tune_to(transponder, 1000);
 		
 		demuxer_sds.set_filter(SDT_PID, SDT_ID);
 		demuxer_nis.set_filter(NIT_PID, NIT_ID);
