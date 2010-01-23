@@ -71,6 +71,13 @@
             </object>
          </child>
          <child>
+            <object class="GtkAction" id="epg_event_search">
+               <property name="label" translatable="yes">_EPG Event Search</property>
+               <property name="icon-name">gtk-find</property>
+               <signal name="activate" handler="on_epg_event_search"/>
+            </object>
+         </child>
+         <child>
             <object class="GtkAction" id="meters">
                <property name="label" translatable="yes">_Meters</property>
                <signal name="activate" handler="on_meters"/>
@@ -173,6 +180,7 @@
         <menuitem action="change_view_mode"/>
         <separator/>
         <menuitem action="scheduled_recordings"/>
+        <menuitem action="epg_event_search"/>
         <menuitem action="channels"/>
         <menuitem action="meters"/>
         <menuitem action="preferences"/>
@@ -202,6 +210,7 @@
       <toolitem action='record'/>
       <toolitem action='mute'/>
       <toolitem action='scheduled_recordings'/>
+      <toolitem action='epg_event_search'/>
       <toolitem action='fullscreen'/>
     </toolbar>
   </ui>

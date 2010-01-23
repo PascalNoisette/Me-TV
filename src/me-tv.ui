@@ -461,6 +461,47 @@ found in /usr/share/common-licenses/GPL file.</property>
       <column type="gchararray"/>
     </columns>
   </object>
+  <object class="GtkListStore" id="list_store_epg_event">
+    <columns>
+      <!-- column-name Title -->
+      <column type="gchar"/>
+      <!-- column-name Channel -->
+      <column type="guint"/>
+      <!-- column-name Start -->
+      <column type="guint"/>
+      <!-- column-name Duration -->
+      <column type="guint"/>
+      <!-- column-name gdkpixbuf -->
+      <column type="GdkPixbuf"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="list_store_scan_results"/>
+  <object class="GtkListStore" id="list_store_scan_country">
+    <columns>
+      <!-- column-name Country -->
+      <column type="gchararray"/>
+      <!-- column-name Code -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">All</col>
+        <col id="1" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Australia</col>
+        <col id="1" translatable="yes">AU</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Italy</col>
+        <col id="1" translatable="yes">IT</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Slovenia</col>
+        <col id="1" translatable="yes">SI</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkDialog" id="dialog_scheduled_recordings">
     <property name="can_focus">True</property>
     <property name="has_focus">True</property>
@@ -1527,6 +1568,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">False</property>
                     <property name="padding">5</property>
                     <property name="position">0</property>
                   </packing>
@@ -1549,6 +1591,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
+                        <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
@@ -1644,6 +1687,11 @@ found in /usr/share/common-licenses/GPL file.</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                       </object>
+                      <packing>
+                        <property name="right_attach">2</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"></property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkLabel" id="label_auto_scan_information">
@@ -1663,10 +1711,17 @@ found in /usr/share/common-licenses/GPL file.</property>
                       </packing>
                     </child>
                     <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
+                      <object class="GtkComboBox" id="combo_box_auto_scan_range">
+                        <property name="visible">True</property>
+                        <property name="model">list_store_scan_country</property>
+                        <property name="active">0</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"></property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
@@ -1719,6 +1774,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                         <property name="height_request">300</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="model">list_store_scan_results</property>
                       </object>
                     </child>
                   </object>
@@ -2115,5 +2171,121 @@ If you've just upgraded Me TV then this is probably what you want to do.
     <property name="upper">59</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+  </object>
+  <object class="GtkDialog" id="dialog_epg_event_search">
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">EPG Search</property>
+    <property name="type_hint">normal</property>
+    <property name="has_separator">False</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox13">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkVBox" id="vbox5">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkHBox" id="hbox16">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkLabel" id="label_epg_event_search">
+                    <property name="visible">True</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">Search:</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_epg_event_search_text">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="has_focus">True</property>
+                    <property name="invisible_char">&#x25CF;</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="button_epg_event_search">
+                    <property name="label">gtk-find</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="check_button_search_descriptions">
+                <property name="label" translatable="yes">Search descriptions</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkTreeView" id="tree_view_epg_event_search_results">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="model">list_store_epg_event</property>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area13">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="button_epg_event_search_close">
+                <property name="label">gtk-close</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">button_epg_event_search_close</action-widget>
+    </action-widgets>
   </object>
 </interface>

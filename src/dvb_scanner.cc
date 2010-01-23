@@ -250,7 +250,8 @@ void Scanner::start(Frontend& frontend, const Glib::ustring& region_file_path)
 				line = line.substr(0, index + 1);
 			}
 
-			if (!line.empty()) // Ignore empty lines or comments
+			// Ignore empty lines or comments
+			if (!line.empty())
 			{
 				lines.push_back(line);
 			}

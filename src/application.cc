@@ -68,6 +68,12 @@ void on_scheduled_recordings()
 	get_application().get_main_window().on_scheduled_recordings();
 }
 
+void on_epg_event_search()
+{
+	g_debug("Handler: %s", __PRETTY_FUNCTION__);
+	get_application().get_main_window().on_epg_event_search();
+}
+
 void on_meters()
 {
 	g_debug("Handler: %s", __PRETTY_FUNCTION__);

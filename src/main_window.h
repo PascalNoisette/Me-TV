@@ -94,6 +94,7 @@ public:
 	void on_devices();
 	void on_channels();
 	void on_scheduled_recordings();
+	void on_epg_event_search();
 	void on_meters();
 	void on_preferences();
 	void on_fullscreen();
@@ -106,6 +107,7 @@ public:
 	void show_channels_dialog();
 	void show_preferences_dialog();
 	void show_scheduled_recordings_dialog();
+	void show_epg_event_search_dialog();
 	
 	void toggle_visibility();
 	void update();

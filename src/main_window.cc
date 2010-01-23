@@ -20,12 +20,13 @@
 
 #include "me-tv.h"
 #include "me-tv-i18n.h"
+#include "application.h"
 #include "main_window.h"
 #include "channels_dialog.h"
 #include "meters_dialog.h"
 #include "preferences_dialog.h"
-#include "application.h"
 #include "scheduled_recordings_dialog.h"
+#include "epg_event_search_dialog.h"
 #include "engine.h"
 #include <gtkmm.h>
 #include <gdk/gdkx.h>
@@ -366,6 +367,17 @@ void MainWindow::show_scheduled_recordings_dialog()
 	ScheduledRecordingsDialog& scheduled_recordings_dialog = ScheduledRecordingsDialog::create(builder);
 	scheduled_recordings_dialog.run();
 	scheduled_recordings_dialog.hide();
+
+	update();
+}
+
+void MainWindow::show_epg_event_search_dialog()
+{
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+
+	EpgEventSearchDialog& epg_event_search_dialog = EpgEventSearchDialog::create(builder);
+	epg_event_search_dialog.run();
+	epg_event_search_dialog.hide();
 
 	update();
 }
@@ -741,6 +753,14 @@ void MainWindow::on_scheduled_recordings()
 {
 	TRY
 	show_scheduled_recordings_dialog();
+	get_application().update();
+	CATCH
+}
+
+void MainWindow::on_epg_event_search()
+{
+	TRY
+	show_epg_event_search_dialog();
 	get_application().update();
 	CATCH
 }
