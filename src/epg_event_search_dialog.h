@@ -38,6 +38,7 @@ private:
 			add(column_start_time);
 			add(column_duration);
 			add(column_epg_event);
+			add(column_is_scheduled);
 		}
 
 		Gtk::TreeModelColumn<guint>			column_id;
@@ -47,6 +48,7 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring>	column_start_time;
 		Gtk::TreeModelColumn<Glib::ustring>	column_duration;
 		Gtk::TreeModelColumn<EpgEvent>		column_epg_event;
+		Gtk::TreeModelColumn<gboolean>		column_is_scheduled;
 	};
 
 	ModelColumns						columns;
