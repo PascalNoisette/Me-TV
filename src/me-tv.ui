@@ -461,20 +461,6 @@ found in /usr/share/common-licenses/GPL file.</property>
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkListStore" id="list_store_epg_event">
-    <columns>
-      <!-- column-name Title -->
-      <column type="gchar"/>
-      <!-- column-name Channel -->
-      <column type="guint"/>
-      <!-- column-name Start -->
-      <column type="guint"/>
-      <!-- column-name Duration -->
-      <column type="guint"/>
-      <!-- column-name gdkpixbuf -->
-      <column type="GdkPixbuf"/>
-    </columns>
-  </object>
   <object class="GtkListStore" id="list_store_scan_results"/>
   <object class="GtkListStore" id="list_store_scan_country">
     <columns>
@@ -501,6 +487,22 @@ found in /usr/share/common-licenses/GPL file.</property>
         <col id="1" translatable="yes">SI</col>
       </row>
     </data>
+  </object>
+  <object class="GtkListStore" id="list_store_epg_event">
+    <columns>
+      <!-- column-name ID -->
+      <column type="guint"/>
+      <!-- column-name Title -->
+      <column type="gchararray"/>
+      <!-- column-name Channel -->
+      <column type="guint"/>
+      <!-- column-name Start -->
+      <column type="guint"/>
+      <!-- column-name Duration -->
+      <column type="guint"/>
+      <!-- column-name gdkpixbuf -->
+      <column type="GdkPixbuf"/>
+    </columns>
   </object>
   <object class="GtkDialog" id="dialog_scheduled_recordings">
     <property name="can_focus">True</property>
@@ -2201,7 +2203,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="entry_epg_event_search_text">
+                  <object class="GtkEntry" id="entry_epg_event_search">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="has_focus">True</property>
@@ -2230,8 +2232,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </packing>
             </child>
             <child>
-              <object class="GtkCheckButton" id="check_button_search_descriptions">
-                <property name="label" translatable="yes">Search descriptions</property>
+              <object class="GtkCheckButton" id="check_button_search_description">
+                <property name="label" translatable="yes">Search description</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -2243,10 +2245,21 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </packing>
             </child>
             <child>
-              <object class="GtkTreeView" id="tree_view_epg_event_search_results">
+              <object class="GtkScrolledWindow" id="scrolledwindow1">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="model">list_store_epg_event</property>
+                <property name="hscrollbar_policy">automatic</property>
+                <property name="vscrollbar_policy">automatic</property>
+                <child>
+                  <object class="GtkTreeView" id="tree_view_epg_event_search">
+                    <property name="width_request">400</property>
+                    <property name="height_request">200</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="model">list_store_epg_event</property>
+                    <property name="search_column">0</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="position">2</property>

@@ -375,7 +375,7 @@ void MainWindow::show_epg_event_search_dialog()
 {
 	FullscreenBugWorkaround fullscreen_bug_workaround;
 
-	EpgEventSearchDialog& epg_event_search_dialog = EpgEventSearchDialog::create(builder);
+	EpgEventSearchDialog& epg_event_search_dialog = EpgEventSearchDialog::get(builder);
 	epg_event_search_dialog.run();
 	epg_event_search_dialog.hide();
 

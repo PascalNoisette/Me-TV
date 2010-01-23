@@ -26,12 +26,38 @@
 class EpgEventSearchDialog : public Gtk::Dialog
 {
 private:
-	const Glib::RefPtr<Gtk::Builder> builder;
+	class ModelColumns : public Gtk::TreeModel::ColumnRecord
+	{
+	public:
+		ModelColumns()
+		{
+			add(column_id);
+			add(column_title);
+			add(column_channel);
+			add(column_channel_name);
+			add(column_start_time);
+			add(column_duration);
+		}
 
+		Gtk::TreeModelColumn<guint>			column_id;
+		Gtk::TreeModelColumn<Glib::ustring>	column_title;
+		Gtk::TreeModelColumn<guint>			column_channel;
+		Gtk::TreeModelColumn<Glib::ustring>	column_channel_name;
+		Gtk::TreeModelColumn<Glib::ustring>	column_start_time;
+		Gtk::TreeModelColumn<Glib::ustring>	column_duration;
+	};
+
+	ModelColumns						columns;
+	Glib::RefPtr<Gtk::ListStore>		list_store;
+	const Glib::RefPtr<Gtk::Builder>	builder;
+	Gtk::TreeView*						tree_view_epg_event_search;
+
+	void on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column);
+	void search();
 public:
 	EpgEventSearchDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 
-	static EpgEventSearchDialog& create(Glib::RefPtr<Gtk::Builder> builder);
+	static EpgEventSearchDialog& get(Glib::RefPtr<Gtk::Builder> builder);
 };
 
 #endif
