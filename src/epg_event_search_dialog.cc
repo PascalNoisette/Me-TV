@@ -41,7 +41,6 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
 	    sigc::mem_fun(*this, &EpgEventSearchDialog::on_row_activated));
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_epg_event_search->set_model(list_store);
- 	tree_view_epg_event_search->append_column(_("ID"), columns.column_id);
  	tree_view_epg_event_search->append_column(_("Title"), columns.column_title);
 	tree_view_epg_event_search->append_column(_("Channel"), columns.column_channel_name);
 	tree_view_epg_event_search->append_column(_("Start Time"), columns.column_start_time);
@@ -60,22 +59,30 @@ void EpgEventSearchDialog::search()
 	Gtk::CheckButton* check = NULL;
 	builder->get_widget("check_button_search_description", check);
 
+	Glib::ustring text = entry->get_text().uppercase();
+	
 	Application& application = get_application();
-	Data::Table table_epg_event_text = application.get_schema().tables["epg_event_text"];
-	Data::TableAdapter adapter_epg_event_text(application.connection, table_epg_event_text);
-	Glib::ustring clause = Glib::ustring::compose("TITLE LIKE '%%%1%%'", entry->get_text());
-	if (check->get_active())
+	bool search_description = check->get_active();
+	ChannelArray channels = application.channel_manager.get_channels();
+	for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
 	{
-		clause += Glib::ustring::compose(" OR DESCRIPTION LIKE '%%%1%%'", entry->get_text());
-	}
-	Data::DataTable data_table_epg_event_text = adapter_epg_event_text.select_rows(clause);
-	for (Data::Rows::iterator i = data_table_epg_event_text.rows.begin(); i != data_table_epg_event_text.rows.end(); i++)	
-	{
-		Data::Row data_row = *i;
+		Channel& channel = *i;
 
-		Gtk::TreeModel::Row row = *(list_store->append());
-		row[columns.column_id]		= data_row["epg_event_id"].int_value;
-		row[columns.column_title]	= data_row["title"].string_value;
+		EpgEventList list = channel.epg_events.search(text, search_description);
+		
+		for (EpgEventList::iterator j = list.begin(); j != list.end(); j++)
+		{
+			EpgEvent& epg_event = *j;
+			
+			Gtk::TreeModel::Row row = *(list_store->append());
+		
+			row[columns.column_id]				= epg_event.epg_event_id;
+			row[columns.column_title]			= epg_event.get_title();
+			row[columns.column_start_time]		= epg_event.get_start_time_text();
+			row[columns.column_duration]		= epg_event.get_duration_text();
+			row[columns.column_channel]			= epg_event.channel_id;
+			row[columns.column_channel_name]	= application.channel_manager.get_channel_by_id(epg_event.channel_id).name;
+		}
 	}
 }
 

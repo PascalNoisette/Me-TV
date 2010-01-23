@@ -43,6 +43,7 @@ public:
 	void				prune();
 	void				load(Data::Connection& connection, guint channel_id);
 	void				save(Data::Connection& connection, guint channel_id);
+	EpgEventList		search(const Glib::ustring& text, gboolean search_description);
 };
 
 #endif

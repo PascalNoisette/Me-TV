@@ -242,3 +242,22 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id)
 	
 	g_debug("EPG events saved");
 }
+
+EpgEventList EpgEvents::search(const Glib::ustring& text, gboolean search_description)
+{
+	EpgEventList result;
+
+	Glib::RecMutex::Lock lock(mutex);
+	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
+	{
+		EpgEvent& epg_event = *i;
+		if (epg_event.get_title().uppercase().find(text) != -1 ||
+		    (search_description && epg_event.get_description().uppercase().find(text) != -1))
+		{
+			g_debug("Found '%s'", epg_event.get_title().c_str());
+			result.push_back(epg_event);
+		}
+	}
+	
+	return result;
+}
