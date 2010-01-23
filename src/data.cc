@@ -309,7 +309,12 @@ TableAdapter::TableAdapter(Connection& connection, Table& table)
 	Glib::ustring fields;
 	Glib::ustring replace_fields;
 	Glib::ustring replace_values;
-	
+
+	if (table.columns.size() == 0)
+	{
+		throw Exception(_("Failed to create TableAdapter: Table has no columns"));
+	}	
+
 	for (Columns::const_iterator j = table.columns.begin(); j != table.columns.end(); j++)
 	{
 		const Column& column = *j;
