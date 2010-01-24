@@ -110,7 +110,9 @@ me_tv_SOURCES = \
 	stream_manager.cc \
 	stream_manager.h \
 	epg_event_search_dialog.cc \
-	epg_event_search_dialog.h
+	epg_event_search_dialog.h \
+	epg_event_dialog.cc \
+	epg_event_dialog.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \

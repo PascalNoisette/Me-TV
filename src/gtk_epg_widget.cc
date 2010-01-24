@@ -21,6 +21,7 @@
 #include "gtk_epg_widget.h"
 #include "application.h"
 #include "scheduled_recording_dialog.h"
+#include "epg_event_dialog.h"
 
 #define MINUTES_PER_COLUMN	1
 #define COLUMNS_PER_HOUR	(60 * MINUTES_PER_COLUMN)
@@ -172,7 +173,7 @@ void GtkEpgWidget::update_table()
 		{
 			display_channel_index = channel_manager.get_display_channel_index();
 		}
-		ChannelArray& channels = channel_manager.get_channels();
+		ChannelArray channels = channel_manager.get_channels();
 
 		table_epg->resize(epg_span_hours * COLUMNS_PER_HOUR + 1, channels.size() + 1);
 
@@ -187,7 +188,10 @@ void GtkEpgWidget::update_table()
 			{
 				guint hour_time = start_time + (hour * 60 * 60);
 				Glib::ustring hour_time_text = get_local_time_text(hour_time, "%c");
-				Gtk::Button& button = attach_button(hour_time_text, false, hour * COLUMNS_PER_HOUR + 1, (hour+1) * COLUMNS_PER_HOUR + 1, 0, 1, Gtk::FILL | Gtk::EXPAND);
+				Gtk::Button& button = attach_button(hour_time_text, false,
+				    hour * COLUMNS_PER_HOUR + 1,
+				    (hour+1) * COLUMNS_PER_HOUR + 1,
+				    0, 1, Gtk::FILL | Gtk::EXPAND);
 				button.set_sensitive(false);
 			}
 			row++;
@@ -487,58 +491,8 @@ void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 	TRY
 		
 	FullscreenBugWorkaround fullscreen_bug_workaround;
-
-	Gtk::Dialog* dialog_program_details = NULL;
-	builder->get_widget("dialog_program_details", dialog_program_details);
-
-	const EpgEventText& epg_event_text = epg_event.get_default_text();
-
-	guint end_time = epg_event.start_time + epg_event.duration;
-	
-	Glib::ustring information = Glib::ustring::compose(
-	    	"<b>%1</b>\n<b><i>%2</i></b>\n<i>%4 (%5)</i>\n\n%3",
-	    	epg_event_text.title,
-	    	epg_event_text.description.empty() ? "" : epg_event_text.subtitle,
-	    	epg_event_text.description.empty() ? epg_event_text.subtitle : epg_event_text.description,
-		    epg_event.get_start_time_text() + " - " + get_local_time_text(convert_to_utc_time(end_time), "%H:%M"),
-	    	epg_event.get_duration_text());
-	
-	Gtk::Label* label_program_information = NULL;
-	builder->get_widget("label_program_information", label_program_information);
-	label_program_information->set_label(information);
-
-	gboolean is_scheduled = get_application().scheduled_recording_manager.is_recording(epg_event);
-	Gtk::HBox* hbox_program_dialog_scheduled = NULL;
-	builder->get_widget("hbox_program_dialog_scheduled", hbox_program_dialog_scheduled);
-	hbox_program_dialog_scheduled->property_visible() = is_scheduled;
-
-	Gtk::Button* button_program_dialog_record = NULL;
-	builder->get_widget("button_program_dialog_record", button_program_dialog_record);
-	button_program_dialog_record->property_visible() = !is_scheduled;
-
-	Gtk::Button* button_program_dialog_view_schedule = NULL;
-	builder->get_widget("button_program_dialog_view_schedule", button_program_dialog_view_schedule);
-	button_program_dialog_view_schedule->property_visible() = is_scheduled;
-
-	gint result = dialog_program_details->run();
-	dialog_program_details->hide();
-
-	switch(result)
-	{
-	case 1:
-		{
-			ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
-			scheduled_recording_dialog.run(MainWindow::create(builder), epg_event);
-			scheduled_recording_dialog.hide();
-			get_application().update();
-		}
-	case 2:
-		{
-			get_application().get_main_window().show_scheduled_recordings_dialog();
-		}
-	default:
-		break;
-	}
+	EpgEventDialog& epg_event_dialog = EpgEventDialog::create(builder);
+	epg_event_dialog.show_epg_event(epg_event);
 
 	CATCH
 }

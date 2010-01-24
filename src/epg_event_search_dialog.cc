@@ -21,6 +21,7 @@
 #include "epg_event_search_dialog.h"
 #include "scheduled_recording_dialog.h"
 #include "application.h"
+#include "epg_event_dialog.h"
 
 EpgEventSearchDialog& EpgEventSearchDialog::get(Glib::RefPtr<Gtk::Builder> builder)
 {
@@ -52,9 +53,7 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
 }
 
 void EpgEventSearchDialog::search()
-{
-	list_store->clear();
-	
+{	
 	Gtk::Entry* entry = NULL;
 	builder->get_widget("entry_epg_event_search", entry);
 
@@ -62,7 +61,14 @@ void EpgEventSearchDialog::search()
 	builder->get_widget("check_button_search_description", check);
 
 	Glib::ustring text = entry->get_text().uppercase();
+
+	if (text.size() == 0)
+	{
+		throw Exception(_("No search text specified"));
+	}
 	
+	list_store->clear();
+
 	Application& application = get_application();
 	bool search_description = check->get_active();
 	ChannelArray channels = application.channel_manager.get_channels();
@@ -93,6 +99,8 @@ void EpgEventSearchDialog::search()
 
 void EpgEventSearchDialog::on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column)
 {
+	TRY
+		
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_epg_event_search->get_selection();	
 	if (selection->count_selected_rows() == 0)
 	{
@@ -102,10 +110,10 @@ void EpgEventSearchDialog::on_row_activated(const Gtk::TreeModel::Path& tree_mod
 	Gtk::TreeModel::Row row = *(selection->get_selected());
 
 	EpgEvent epg_event = row[columns.column_epg_event];
+	EpgEventDialog& epg_event_dialog = EpgEventDialog::create(builder);
+	epg_event_dialog.show_epg_event(epg_event);
 
-	Application& application = get_application();
-	ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
-	scheduled_recording_dialog.run(MainWindow::create(builder), epg_event);
-	scheduled_recording_dialog.hide();
 	search();
+
+	CATCH
 }

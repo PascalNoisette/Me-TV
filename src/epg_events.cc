@@ -247,16 +247,21 @@ EpgEventList EpgEvents::search(const Glib::ustring& text, gboolean search_descri
 {
 	EpgEventList result;
 
+	guint now = get_local_time();
+	
 	Glib::RecMutex::Lock lock(mutex);
 	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
 	{
 		EpgEvent& epg_event = *i;
 		if (
-		    epg_event.get_title().uppercase().find(text) != Glib::ustring::npos ||
+		    epg_event.get_end_time() >= now &&
 		    (
-			    search_description && (
-			    	(epg_event.get_subtitle().uppercase().find(text) != Glib::ustring::npos) ||
-			    	(epg_event.get_description().uppercase().find(text) != Glib::ustring::npos)
+			    epg_event.get_title().uppercase().find(text) != Glib::ustring::npos ||
+				(
+					search_description && (
+						(epg_event.get_subtitle().uppercase().find(text) != Glib::ustring::npos) ||
+						(epg_event.get_description().uppercase().find(text) != Glib::ustring::npos)
+					)
 				)
 			)
 		)
