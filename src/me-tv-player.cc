@@ -164,7 +164,7 @@ int main(int argc, char **argv)
 		"-I", "dummy", 
 		"--ignore-config",
 		"--vout-event=3",
-		"--verbose=2",
+		"--verbose=0",
 		"--no-osd"
 	};
 
