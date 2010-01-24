@@ -32,7 +32,6 @@ public:
 
 	guint				channel_id;
 	Glib::ustring		name;
-	guint				type;
 	guint				sort_order;
 	Glib::ustring		mrl;
 	EpgEvents			epg_events;

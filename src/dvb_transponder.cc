@@ -28,6 +28,7 @@ using namespace Dvb;
 
 Transponder::Transponder() : polarisation(0), satellite_number(0), hi_band(0)
 {
+	frontend_type = FE_OFDM;
 	memset(&frontend_parameters, 0, sizeof(frontend_parameters));
 }
 
@@ -54,7 +55,11 @@ void TransponderList::add(const Transponder& transponder)
 
 bool Transponder::operator==(const Transponder& transponder) const
 {
-	return transponder.frontend_parameters.frequency == frontend_parameters.frequency;
+	return transponder.frontend_parameters.frequency == frontend_parameters.frequency && (
+		(transponder.frontend_type == FE_OFDM && transponder.frontend_parameters.u.ofdm.bandwidth == frontend_parameters.u.ofdm.bandwidth) ||
+		(transponder.frontend_type == FE_ATSC && transponder.frontend_parameters.u.vsb.modulation == frontend_parameters.u.vsb.modulation) ||
+		(transponder.frontend_type == FE_QAM && transponder.frontend_parameters.u.qam.modulation == frontend_parameters.u.qam.modulation)
+    );
 }
 
 bool Transponder::operator!=(const Transponder& transponder) const

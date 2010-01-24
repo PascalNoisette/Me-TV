@@ -1,4 +1,4 @@
-	/*
+/*
  * Copyright (C) 2010 Michael Lamothe
  *
  * This file is part of Me TV
@@ -253,8 +253,9 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 		if (parameter_count > 1)
 		{
 			Channel channel;
+			channel.transponder.frontend_type = frontend.get_frontend_info().type;
 			
-			switch(frontend.get_frontend_info().type)
+			switch(channel.transponder.frontend_type)
 			{
 				case FE_OFDM:
 					if (parameter_count != 13)
@@ -265,7 +266,6 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 
 					channel.name = channels_conf_line.get_name(0);
 					channel.sort_order = line_count;
-					channel.type = FE_OFDM;
 			
 					channel.transponder.frontend_parameters.frequency						= channels_conf_line.get_int(1);
 					channel.transponder.frontend_parameters.inversion						= channels_conf_line.get_inversion(2);
@@ -288,7 +288,6 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 
 					channel.name = channels_conf_line.get_name(0);
 					channel.sort_order = line_count;
-					channel.type = FE_QAM;
 			
 					channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1);
 					channel.transponder.frontend_parameters.inversion			= channels_conf_line.get_inversion(2);
@@ -307,7 +306,6 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 
 					channel.name = channels_conf_line.get_name(0);
 					channel.sort_order = line_count;
-					channel.type = FE_QPSK;
 			
 					channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1)*1000;
 					channel.transponder.polarisation							= channels_conf_line.get_polarisation(2);
@@ -327,7 +325,6 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 
 					channel.name = channels_conf_line.get_name(0);
 					channel.sort_order = line_count;
-					channel.type = FE_ATSC;
 			
 					channel.transponder.frontend_parameters.frequency			= channels_conf_line.get_int(1);
 					channel.transponder.frontend_parameters.inversion			= INVERSION_AUTO;
@@ -524,11 +521,11 @@ ChannelArray ScanDialog::get_selected_channels()
 
 		Channel channel;
 
-		channel.service_id			= row.get_value(columns.column_id);
-		channel.name				= row.get_value(columns.column_name);
-		channel.type				= frontend.get_frontend_info().type;
+		channel.service_id						= row.get_value(columns.column_id);
+		channel.name							= row.get_value(columns.column_name);
+		channel.transponder.frontend_type		= frontend.get_frontend_info().type;
 		channel.transponder.frontend_parameters = row.get_value(columns.column_frontend_parameters);
-		channel.transponder.polarisation = row.get_value(columns.column_polarisation);
+		channel.transponder.polarisation		= row.get_value(columns.column_polarisation);
 		
 		result.push_back(channel);
 		

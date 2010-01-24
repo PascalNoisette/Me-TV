@@ -42,7 +42,8 @@ namespace Dvb
 
 		bool operator==(const Transponder& transponder) const;
 		bool operator!=(const Transponder& transponder) const;
-			
+
+		fe_type_t						frontend_type;
 		struct dvb_frontend_parameters	frontend_parameters;
 		guint							polarisation;
 		guint							satellite_number;

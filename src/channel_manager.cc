@@ -71,7 +71,7 @@ void ChannelManager::load(Data::Connection& connection)
 
 		channel.channel_id									= row_channel["channel_id"].int_value;
 		channel.name										= row_channel["name"].string_value;
-		channel.type										= row_channel["type"].int_value;
+		channel.transponder.frontend_type					= (fe_type_t)row_channel["type"].int_value;
 		channel.sort_order									= row_channel["sort_order"].int_value;
 		channel.mrl											= row_channel["mrl"].string_value;
 		channel.service_id									= row_channel["service_id"].int_value;
@@ -80,8 +80,9 @@ void ChannelManager::load(Data::Connection& connection)
 		
 		g_debug("Loading channel '%s'", channel.name.c_str());
 
-		if (channel.type == FE_OFDM)
+		switch(channel.transponder.frontend_type)
 		{
+		case FE_OFDM:
 			channel.transponder.frontend_parameters.u.ofdm.bandwidth				= (fe_bandwidth)row_channel["bandwidth"].int_value;
 			channel.transponder.frontend_parameters.u.ofdm.code_rate_HP				= (fe_code_rate)row_channel["code_rate_hp"].int_value;
 			channel.transponder.frontend_parameters.u.ofdm.code_rate_LP				= (fe_code_rate)row_channel["code_rate_lp"].int_value;
@@ -89,24 +90,28 @@ void ChannelManager::load(Data::Connection& connection)
 			channel.transponder.frontend_parameters.u.ofdm.transmission_mode		= (fe_transmit_mode)row_channel["transmission_mode"].int_value;
 			channel.transponder.frontend_parameters.u.ofdm.guard_interval			= (fe_guard_interval)row_channel["guard_interval"].int_value;
 			channel.transponder.frontend_parameters.u.ofdm.hierarchy_information	= (fe_hierarchy)row_channel["hierarchy_information"].int_value;
-		}
-		else if (channel.type == FE_QAM)
-		{
+			break;
+				
+		case FE_QAM:
 			channel.transponder.frontend_parameters.u.qam.symbol_rate	= row_channel["symbol_rate"].int_value;
 			channel.transponder.frontend_parameters.u.qam.fec_inner		= (fe_code_rate)row_channel["fec_inner"].int_value;
 			channel.transponder.frontend_parameters.u.qam.modulation	= (fe_modulation)row_channel["modulation"].int_value;
-		}
-		else if (channel.type == FE_QPSK)
-		{
+			break;
+		
+		case FE_QPSK:
 			channel.transponder.frontend_parameters.u.qpsk.symbol_rate	= row_channel["symbol_rate"].int_value;
 			channel.transponder.frontend_parameters.u.qpsk.fec_inner	= (fe_code_rate)row_channel["fec_inner"].int_value;
 			channel.transponder.polarisation							= row_channel["polarisation"].int_value;
-		}
-		else if (channel.type == FE_ATSC)
-		{
+			break;
+
+		case FE_ATSC:
 			channel.transponder.frontend_parameters.u.vsb.modulation	= (fe_modulation)row_channel["modulation"].int_value;
+			break;
+
+		default:
+			throw Exception(_("Unknown frontend type"));
 		}
-		
+	
 		channel.epg_events.load(connection, channel.channel_id);
 		add_channel(channel);
 	}
@@ -141,15 +146,16 @@ void ChannelManager::save(Data::Connection& connection)
 
 		row["channel_id"].int_value		= channel.channel_id;		
 		row["name"].string_value		= channel.name;
-		row["type"].int_value			= channel.type;
+		row["type"].int_value			= channel.transponder.frontend_type;
 		row["sort_order"].int_value		= ++channel_count;
 		row["mrl"].string_value			= channel.mrl;
 		row["service_id"].int_value		= channel.service_id;
 		row["frequency"].int_value		= channel.transponder.frontend_parameters.frequency;
 		row["inversion"].int_value		= channel.transponder.frontend_parameters.inversion;
 
-		if (channel.type == FE_OFDM)
+		switch(channel.transponder.frontend_type)
 		{
+		case FE_OFDM:
 			row["bandwidth"].int_value				= channel.transponder.frontend_parameters.u.ofdm.bandwidth;
 			row["code_rate_hp"].int_value			= channel.transponder.frontend_parameters.u.ofdm.code_rate_HP;
 			row["code_rate_lp"].int_value			= channel.transponder.frontend_parameters.u.ofdm.code_rate_LP;
@@ -157,22 +163,26 @@ void ChannelManager::save(Data::Connection& connection)
 			row["transmission_mode"].int_value		= channel.transponder.frontend_parameters.u.ofdm.transmission_mode;
 			row["guard_interval"].int_value			= channel.transponder.frontend_parameters.u.ofdm.guard_interval;
 			row["hierarchy_information"].int_value	= channel.transponder.frontend_parameters.u.ofdm.hierarchy_information;
-		}
-		else if (channel.type == FE_QAM)
-		{
+			break;
+				
+		case FE_QAM:
 			row["symbol_rate"].int_value			= channel.transponder.frontend_parameters.u.qam.symbol_rate;
 			row["fec_inner"].int_value				= channel.transponder.frontend_parameters.u.qam.fec_inner;
 			row["modulation"].int_value				= channel.transponder.frontend_parameters.u.qam.modulation;
-		}
-		else if (channel.type == FE_QPSK)
-		{
+			break;
+				
+		case FE_QPSK:
 			row["symbol_rate"].int_value			= channel.transponder.frontend_parameters.u.qpsk.symbol_rate;
 			row["fec_inner"].int_value				= channel.transponder.frontend_parameters.u.qpsk.fec_inner;
 			row["polarisation"].int_value			= channel.transponder.polarisation;
-		}
-		else if (channel.type == FE_ATSC)
-		{
+			break;
+				
+		case FE_ATSC:
 			row["modulation"].int_value				= channel.transponder.frontend_parameters.u.vsb.modulation;
+			break;
+
+		default:
+			throw Exception(_("Unknown frontend type"));
 		}
 		data_table_channel.rows.push_back(row);
 
@@ -381,12 +391,12 @@ Channel* ChannelManager::get_previous_channel()
 
 void ChannelManager::select_display_channel()
 {
-	guint frontend_type = get_application().device_manager.get_frontend().get_frontend_type();
+	fe_type_t frontend_type = get_application().device_manager.get_frontend().get_frontend_type();
 	
 	for (guint index = 0; index < channels.size(); index++)
 	{
 		Channel& channel = channels[index];
-		if (channel.type == frontend_type)
+		if (channel.transponder.frontend_type == frontend_type)
 		{
 			g_debug("Channel %d selected", index);
 			display_channel_index = index;

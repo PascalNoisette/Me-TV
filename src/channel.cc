@@ -26,7 +26,6 @@
 Channel::Channel()
 {
 	channel_id		= 0;
-	type			= 0;
 	service_id		= 0;
 }
 

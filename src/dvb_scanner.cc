@@ -158,6 +158,7 @@ void Scanner::process_terrestrial_line(Frontend& frontend, const Glib::ustring& 
 	frontend_parameters.u.ofdm.hierarchy_information	= initial_scan_line.get_hierarchy(8);
 
 	Transponder transponder;
+	transponder.frontend_type				= FE_OFDM;
 	transponder.frontend_parameters = frontend_parameters;
 
 	transponders.add(transponder);
@@ -174,6 +175,7 @@ void Scanner::process_atsc_line(Frontend& frontend, const Glib::ustring& line)
 	frontend_parameters.inversion			= INVERSION_AUTO;
 
 	Transponder transponder;
+	transponder.frontend_type		= FE_ATSC;
 	transponder.frontend_parameters = frontend_parameters;
 	
 	transponders.add(transponder);
@@ -191,6 +193,7 @@ void Scanner::process_satellite_line(Frontend& frontend, const Glib::ustring& li
 	frontend_parameters.u.qpsk.fec_inner	= initial_scan_line.get_fec(4);
 
 	Transponder transponder;
+	transponder.frontend_type		= FE_QPSK;
 	transponder.frontend_parameters = frontend_parameters;
 	transponder.polarisation		= initial_scan_line.get_polarisation(2);
 	
@@ -212,6 +215,7 @@ void Scanner::process_cable_line(Frontend& frontend, const Glib::ustring& line)
 	frontend_parameters.u.qam.modulation	= initial_scan_line.get_modulation(4);
 
 	Transponder transponder;
+	transponder.frontend_type				= FE_QAM;
 	transponder.frontend_parameters = frontend_parameters;
 	
 	transponders.add(transponder);
@@ -377,9 +381,14 @@ void Scanner::auto_scan(Frontend& frontend)
 		frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
 		add_scan_list(it, sizeof(it) / sizeof(it[0]), frontend_parameters);
  	}
+	else if (frontend.get_frontend_info().type == FE_ATSC)
+	{
+//		add_scan_list(atsc, sizeof(atsc) / sizeof(atsc[0]), frontend_parameters);
+		throw Exception(_("Auto scanning is not supported on ATSC devices, yet"));
+	}
 	else
 	{
-		throw Exception(_("Auto scanning is only supported on DVB-T devices"));
+		throw Exception(_("Auto scanning is only supported on DVB-T and ATSC devices"));
 	}
 }
 
