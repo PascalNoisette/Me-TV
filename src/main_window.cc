@@ -567,18 +567,10 @@ void MainWindow::create_engine()
 	
 	g_debug("Creating engine");
 	Application& application = get_application();
-	Glib::ustring engine_type = application.get_string_configuration_value("engine_type");
-	if (engine_type == "none")
-	{
-		engine = NULL;
-	}
-	else
-	{
-		engine = new Engine(engine_type);
-		engine->set_mute_state(mute_state);
-	}
+	engine = new Engine();
+	engine->set_mute_state(mute_state);
 	
-	g_debug("%s engine created", engine_type.c_str());
+	g_debug("Engine created");
 }
 
 void MainWindow::play(const Glib::ustring& mrl)

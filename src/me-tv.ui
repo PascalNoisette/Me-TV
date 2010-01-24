@@ -749,7 +749,7 @@ found in /usr/share/common-licenses/GPL file.</property>
               <object class="GtkHBox" id="hbox4">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkComboBoxEntry" id="combo_box_entry_xine_video_driver">
+                  <object class="GtkComboBoxEntry" id="combo_box_entry_video_driver">
                     <property name="visible">True</property>
                     <property name="model">liststore_combo</property>
                   </object>
@@ -784,7 +784,7 @@ found in /usr/share/common-licenses/GPL file.</property>
               <object class="GtkHBox" id="hbox7">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkComboBoxEntry" id="combo_box_entry_xine_audio_driver">
+                  <object class="GtkComboBoxEntry" id="combo_box_entry_audio_driver">
                     <property name="visible">True</property>
                     <property name="model">liststore_combo</property>
                   </object>

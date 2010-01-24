@@ -136,29 +136,29 @@
 		</schema>
 
 		<schema>
-			<key>/schemas/apps/me-tv/xine.video_driver</key>
-			<applyto>/apps/me-tv/xine.video_driver</applyto>
+			<key>/schemas/apps/me-tv/video_driver</key>
+			<applyto>/apps/me-tv/video_driver</applyto>
 			<owner>me-tv</owner>
 			<type>string</type>
 			<default>xshm</default>
 			<locale name="C">
-				<short>Sets the video driver for libxine to use.</short>
-				<long>					
-					Me TV uses libxine to render video, this setting tells libxine which mechanism to use when drawing.
+				<short>Sets the video driver for the player to use.</short>
+				<long>
+					Me TV uses libvlc to render video, this setting tells libvlc which mechanism to use when drawing.
 				</long>
 			</locale>
 		</schema>
 
 		<schema>
-			<key>/schemas/apps/me-tv/xine.audio_driver</key>
-			<applyto>/apps/me-tv/xine.audio_driver</applyto>
+			<key>/schemas/apps/me-tv/audio_driver</key>
+			<applyto>/apps/me-tv/audio_driver</applyto>
 			<owner>me-tv</owner>
 			<type>string</type>
 			<default>alsa</default>
 			<locale name="C">
-				<short>Sets the audio driver for libxine to use.</short>
+				<short>Sets the audio driver for libvlc to use.</short>
 				<long>					
-					Me TV uses libxine to play sound, this setting tells libxine which mechanism to use when playing sound.
+					Me TV uses libvlc to play sound, this setting tells libvlc which mechanism to use when playing sound.
 				</long>
 			</locale>
 		</schema>
@@ -313,20 +313,6 @@
 				<short>Preferred language to us when selecting streams.</short>
 				<long>
 					If more than one stream is available in a different language then Me TV will use the preffered one.
-				</long>
-			</locale>
-		</schema>
-
-		<schema>
-			<key>/schemas/apps/me-tv/engine_type</key>
-			<applyto>/apps/me-tv/engine_type</applyto>
-			<owner>me-tv</owner>
-			<type>string</type>
-			<default>xine</default>
-			<locale name="C">
-				<short>The rendering engine to use.</short>
-				<long>
-					When multiple engines are available this can be used to select between them.
 				</long>
 			</locale>
 		</schema>

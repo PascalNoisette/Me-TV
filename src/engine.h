@@ -43,7 +43,6 @@ private:
 	guint				audio_stream;
 	gint				subtitle_stream;
 	Glib::ustring		mrl;
-	Glib::ustring		type;
 	Window				window;
 
 	void sendKeyEvent(int keycode, int modifiers);
@@ -58,7 +57,7 @@ public:
 	void set_subtitle_stream(gint stream);
 	gboolean is_running();
 
-	Engine(const Glib::ustring& type);
+	Engine();
 	~Engine();
 };
 

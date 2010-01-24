@@ -28,7 +28,7 @@
 #define KILL_SLEEP_TIME		100000
 #define KILL_SLEEP_TIMEOUT  2000000
 
-Engine::Engine(const Glib::ustring& engine_type)
+Engine::Engine()
 {
 	pid = -1;
 	mute_state = false;
@@ -36,7 +36,6 @@ Engine::Engine(const Glib::ustring& engine_type)
 	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
 	audio_stream = 0;
 	subtitle_stream = -1;
-	type = engine_type;
 
 	Gtk::DrawingArea* drawing_area_video = NULL;
 	get_application().get_builder()->get_widget("drawing_area_video", drawing_area_video);
@@ -61,11 +60,11 @@ void Engine::play(const Glib::ustring& mrl)
 	g_debug("Engine::play(\"%s\")", mrl.c_str());
 
 	StringList argv;
-	argv.push_back("me-tv-" + type);
+	argv.push_back("me-tv-player");
 	argv.push_back(Glib::ustring::compose("fifo://%1", mrl));
 	argv.push_back(Glib::ustring::compose("%1", window));
-	argv.push_back(application.get_string_configuration_value("xine.video_driver"));
-	argv.push_back(application.get_string_configuration_value("xine.audio_driver"));
+	argv.push_back(application.get_string_configuration_value("video_driver"));
+	argv.push_back(application.get_string_configuration_value("audio_driver"));
 	argv.push_back(application.get_string_configuration_value("deinterlace_type"));
 	argv.push_back(mute_state ? "true" : "false");
 

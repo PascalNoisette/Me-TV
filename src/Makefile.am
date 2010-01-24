@@ -12,7 +12,7 @@ AM_CPPFLAGS = \
 	-I$(top_builddir) \
 	$(ME_TV_CFLAGS) \
 	$(SQLITE_CFLAGS) \
-	$(XINE_LIB_CFLAGS) \
+	$(VLC_LIB_CFLAGS) \
 	$(WARN_CXXFLAGS) \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" 
@@ -22,14 +22,13 @@ AM_CFLAGS =\
 	 -g
 
 bin_PROGRAMS = me-tv \
-	 me-tv-xine
+	 me-tv-player
 
-me_tv_xine_SOURCES = \
-	me-tv-xine.cc
+me_tv_player_SOURCES = \
+	me-tv-player.cc
 
-me_tv_xine_LDADD =        \
-	$(ME_TV_XINE_LIBS) \
-	$(XINE_LIB_LIBS) \
+me_tv_player_LDADD =        \
+	$(ME_TV_PLAYER_LIBS) \
 	-lX11
 
 me_tv_SOURCES = \

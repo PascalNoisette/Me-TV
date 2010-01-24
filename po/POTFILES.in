@@ -64,7 +64,7 @@ src/me-tv.h
 src/me-tv-i18n.h
 src/me-tv-ui.cc
 src/me-tv-ui.h
-src/me-tv-xine.cc
+src/me-tv-player.cc
 src/mpeg_stream.cc
 src/mpeg_stream.h
 src/preferences_dialog.cc

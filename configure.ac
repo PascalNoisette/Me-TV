@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([Me TV], [1.1.6], [http://launchpad.net/me-tv], me-tv)
+AC_INIT([Me TV], [1.2.0], [http://launchpad.net/me-tv], me-tv)
 AC_COPYRIGHT([Michael Lamothe <michael.lamothe@gmail.com>])
 AC_CONFIG_SRCDIR([src/main.cc])
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -126,14 +126,14 @@ GIOMM_REQUIRED=2.10.0
 GCONF_REQUIRED=2.0
 GTHREAD_REQUIRED=2.10.0
 GNET_REQUIRED=2.0.0
-LIBXINE_REQUIRED=1.1.7
+LIBVLC_REQUIRED=1.0.0
 AC_SUBST(SQLITE_REQUIRED)
 AC_SUBST(LIBGTKMM_REQUIRED)
 AC_SUBST(GIOMM_REQUIRED)
 AC_SUBST(GCONF_REQUIRED)
 AC_SUBST(GTHREAD_REQUIRED)
 AC_SUBST(GNET_REQUIRED)
-AC_SUBST(LIBXINE_REQUIRED)
+AC_SUBST(LIBVLC_REQUIRED)
 
 # check for sqlite
 PKG_CHECK_MODULES(SQLITE, [sqlite3 >= $SQLITE_REQUIRED])
@@ -191,7 +191,7 @@ src/Makefile
 po/Makefile.in
 ])
 AC_CONFIG_HEADERS([config.h:config.h.in])
-PKG_CHECK_MODULES(ME_TV_XINE, libxine >= $LIBXINE_REQUIRED)
+PKG_CHECK_MODULES(ME_TV_PLAYER, libvlc >= $LIBVLC_REQUIRED)
 AC_OUTPUT
 
 

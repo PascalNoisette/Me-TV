@@ -22,7 +22,7 @@ schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 
 man_MANS = \
 	me-tv.1 \
-	me-tv-xine.1
+	me-tv-player.1
 
 EXTRA_DIST = \
 	README\
@@ -31,7 +31,7 @@ EXTRA_DIST = \
 	INSTALL\
 	NEWS \
 	me-tv.1 \
-	me-tv-xine.1 \
+	me-tv-player.1 \
 	$(desktop_in_files) \
 	$(schemas_in_files) \
 	$(pixmaps_DATA) \
