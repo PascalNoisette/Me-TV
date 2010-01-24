@@ -2158,7 +2158,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
   </object>
   <object class="GtkDialog" id="dialog_epg_event_search">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">EPG Search</property>
+    <property name="title" translatable="yes">EPG Event Search</property>
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
