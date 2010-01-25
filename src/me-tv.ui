@@ -1684,7 +1684,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                         <property name="xalign">0</property>
                         <property name="yalign">0</property>
                         <property name="ypad">10</property>
-                        <property name="label" translatable="yes">This option will only work if your DVB setup supports autoscanning.  Currently, this feature is only supported on DVB-T devices.</property>
+                        <property name="label" translatable="yes">This option will only work if your DVB setup supports auto scanning.  Currently, this feature is only supported on DVB-T devices.</property>
                         <property name="wrap">True</property>
                       </object>
                       <packing>

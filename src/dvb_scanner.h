@@ -36,23 +36,10 @@ namespace Dvb
 			
 		void tune_to(Frontend& frontend, const Transponder& transponder);
 		void atsc_tune_to(Frontend& frontend, const Transponder& transponder);
-		guint convert_string_to_value(const StringTable* table, const gchar* text);
-
-		void process_terrestrial_line(Frontend& frontend, const Glib::ustring& line);
-		void process_satellite_line(Frontend& frontend, const Glib::ustring& line);
-		void process_cable_line(Frontend& frontend, const Glib::ustring& line);
-		void process_atsc_line(Frontend& frontend, const Glib::ustring& line);
-
-		void add_transponder(struct dvb_frontend_parameters frontend_parameters);
-		void add_scan_range(guint start, guint end, guint step,
-		    struct dvb_frontend_parameters frontend_parameters);
-		void add_scan_list(const int *si, int length,
-		    struct dvb_frontend_parameters frontend_parameters);
-		void auto_scan(Frontend& frontend);
 	public:
 		Scanner();
 
-		void start(Frontend& frontend, const Glib::ustring& region_file_path);
+		void start(Frontend& frontend, TransponderList& transponders);
 		void terminate();
 			
 		sigc::signal<void,const struct dvb_frontend_parameters&, guint, const Glib::ustring&, const guint> signal_service;

@@ -112,9 +112,9 @@ void PreferencesDialog::run()
 	combo_box_entry_text_encoding->append_text("iso6937");
 
 	combo_box_deinterlace_type->clear_items();
-	combo_box_deinterlace_type->append("none");
-	combo_box_deinterlace_type->append("standard");
-	combo_box_deinterlace_type->append("tvtime");
+	combo_box_deinterlace_type->append_text("none");
+	combo_box_deinterlace_type->append_text("standard");
+	combo_box_deinterlace_type->append_text("tvtime");
 	
 	file_chooser_button_recording_directory->set_filename(application.get_string_configuration_value("recording_directory"));
 	spin_button_record_extra_before->set_value(application.get_int_configuration_value("record_extra_before"));
@@ -124,7 +124,7 @@ void PreferencesDialog::run()
 	combo_box_entry_preferred_language->get_entry()->set_text(application.get_string_configuration_value("preferred_language"));
 	combo_box_entry_video_driver->get_entry()->set_text(application.get_string_configuration_value("video_driver"));
 	combo_box_entry_audio_driver->get_entry()->set_text(application.get_string_configuration_value("audio_driver"));
-	combo_box_deinterlace_type->set_text(application.get_string_configuration_value("deinterlace_type"));
+	combo_box_deinterlace_type->set_active_text(application.get_string_configuration_value("deinterlace_type"));
 	combo_box_entry_text_encoding->get_entry()->set_text(application.get_string_configuration_value("text_encoding"));
 	check_button_keep_above->set_active(application.get_boolean_configuration_value("keep_above"));
 	check_button_show_epg_header->set_active(application.get_boolean_configuration_value("show_epg_header"));
@@ -145,7 +145,7 @@ void PreferencesDialog::run()
 		application.set_string_configuration_value("preferred_language", combo_box_entry_preferred_language->get_entry()->get_text());
 		application.set_string_configuration_value("video_driver", combo_box_entry_video_driver->get_entry()->get_text());
 		application.set_string_configuration_value("audio_driver", combo_box_entry_audio_driver->get_entry()->get_text());
-		application.set_string_configuration_value("deinterlace_type", combo_box_deinterlace_type->get_text());
+		application.set_string_configuration_value("deinterlace_type", combo_box_deinterlace_type->get_active_text());
 		application.set_string_configuration_value("text_encoding", combo_box_entry_text_encoding->get_entry()->get_text());
 		application.set_boolean_configuration_value("keep_above", check_button_keep_above->get_active());
 		application.set_boolean_configuration_value("show_epg_header", check_button_show_epg_header->get_active());

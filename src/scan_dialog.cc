@@ -23,6 +23,7 @@
 #include "thread.h"
 #include "application.h"
 #include "channels_conf_line.h"
+#include "initial_scan_line.h"
 
 void show_error(const Glib::ustring& message)
 {
@@ -32,8 +33,8 @@ void show_error(const Glib::ustring& message)
 	dialog.run();
 }
 
-ScanThread::ScanThread(Dvb::Frontend& scan_frontend, const Glib::ustring& file) :
-	Thread("Scan"), initial_tuning_file(file), frontend(scan_frontend)
+ScanThread::ScanThread(Dvb::Frontend& scan_frontend, Dvb::TransponderList& t) :
+	Thread("Scan"), transponders(t), frontend(scan_frontend)
 {
 }
 
@@ -41,7 +42,7 @@ void ScanThread::run()
 {
 	try
 	{
-		scanner.start(frontend, initial_tuning_file);
+		scanner.start(frontend, transponders);
 	}
 	catch(const Exception& exception)
 	{
@@ -152,8 +153,24 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	Gtk::FileChooserButton* file_chooser_button_import = NULL;
 	builder->get_widget("file_chooser_button_import", file_chooser_button_import);
 
+	ComboBoxText* combo_box_auto_scan_range = NULL;
+	builder->get_widget_derived("combo_box_auto_scan_range", combo_box_auto_scan_range);
+
+	combo_box_auto_scan_range->clear_items();
+	combo_box_auto_scan_range->append_text("Please select ...");
+	combo_box_auto_scan_range->append_text(_("Australia"), "AU");
+	combo_box_auto_scan_range->append_text(_("Finland"), "FI");
+	combo_box_auto_scan_range->append_text(_("France"), "FR");
+	combo_box_auto_scan_range->append_text(_("Germany"), "DE");
+	combo_box_auto_scan_range->append_text(_("Italy"), "IT");
+	combo_box_auto_scan_range->append_text(_("New Zealand"), "NZ");
+	combo_box_auto_scan_range->append_text(_("Spain"), "ES");
+	combo_box_auto_scan_range->append_text(_("Slovenia"), "SI");
+	combo_box_auto_scan_range->append_text(_("United Kingdom"), "UK");
+
 	file_chooser_button_scan->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_scan_file_changed));
 	file_chooser_button_import->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_import_file_changed));
+//	combo_box_auto_scan_range->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_import_file_changed));
 }
 
 ScanDialog::~ScanDialog()
@@ -361,6 +378,76 @@ void ScanDialog::add_channel_row(const Channel& channel)
 	g_debug("Added channel %d : %s", channel.service_id, channel.name.c_str());
 }
 
+void ScanDialog::load_initial_tuning_file(const Glib::ustring& initial_tuning_file_path)
+{
+	Glib::RefPtr<Glib::IOChannel> initial_tuning_file = Glib::IOChannel::create_from_file(initial_tuning_file_path, "r");
+
+	std::list<Glib::ustring> lines;
+	Glib::ustring line;
+	Glib::IOStatus status = initial_tuning_file->read_line(line);
+	while (status == Glib::IO_STATUS_NORMAL)
+	{
+		// Remove comments
+		Glib::ustring::size_type index = line.find("#");
+		if (index != Glib::ustring::npos)
+		{
+			line = line.substr(0, index);
+		}
+
+		// Remove trailing whitespace
+		index = line.find_last_not_of(" \t\r\n");
+		if (index == Glib::ustring::npos)
+		{
+			line.clear();
+		}
+		else
+		{
+			line = line.substr(0, index + 1);
+		}
+
+		// Ignore empty lines or comments
+		if (!line.empty())
+		{
+			lines.push_back(line);
+		}
+
+		status = initial_tuning_file->read_line(line);
+	}
+
+	guint size = lines.size();
+
+	for (StringList::iterator iterator = lines.begin(); iterator != lines.end(); iterator++)
+	{
+		Glib::ustring process_line = *iterator;
+
+		if (!process_line.empty())
+		{
+			g_debug("Processing line: '%s'", process_line.c_str());
+
+			if (Glib::str_has_prefix(process_line, "T "))
+			{
+				process_terrestrial_line(process_line);
+			}
+			else if (Glib::str_has_prefix(process_line, "C "))
+			{
+				process_cable_line(process_line);
+			}
+			else if (Glib::str_has_prefix(process_line, "S "))
+			{
+				process_satellite_line(process_line);
+			}
+			else if (Glib::str_has_prefix(process_line, "A "))
+			{
+				process_atsc_line(process_line);
+			}
+			else
+			{
+				throw Exception(_("Me TV cannot process a line in the initial tuning file"));
+			}
+		}
+	}
+}
+
 void ScanDialog::on_button_scan_wizard_next_clicked()
 {
 	TRY
@@ -393,6 +480,14 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 			}
 
 			g_debug("Initial tuning file: '%s'", initial_tuning_file.c_str());
+
+			load_initial_tuning_file(initial_tuning_file);
+		}
+		else
+		{
+			ComboBoxText* combo_box_auto_scan_range = NULL;
+			builder->get_widget_derived("combo_box_auto_scan_range", combo_box_auto_scan_range);
+			add_auto_scan_range(frontend.get_frontend_info().type, combo_box_auto_scan_range->get_active_value());
 		}
 		
 		Gtk::Button* button = NULL;
@@ -403,7 +498,7 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		get_application().stream_manager.stop();
 
 		progress_bar_scan->set_text(_("Starting scanner"));
-		scan_thread = new ScanThread(frontend, initial_tuning_file);
+		scan_thread = new ScanThread(frontend, transponders);
 		Dvb::Scanner& scanner = scan_thread->get_scanner();
 		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
 		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
@@ -531,5 +626,173 @@ ChannelArray ScanDialog::get_selected_channels()
 		
 		iterator++;
 	}
-	return result;	
+	return result;
+}
+
+void ScanDialog::add_scan_range(guint start, guint end, guint step, struct dvb_frontend_parameters frontend_parameters)
+{
+	for (guint frequency = start; frequency <= end; frequency += step)
+	{
+		g_debug("Adding %d Hz", frequency);
+		frontend_parameters.frequency = frequency;
+		add_transponder(frontend_parameters);
+	}
+}
+
+void ScanDialog::add_scan_list(const int *si, int length, struct dvb_frontend_parameters frontend_parameters)
+{
+	for (unsigned frequency = 0; frequency < (sizeof(si) / sizeof(si[0])); ++frequency)
+	{
+		frontend_parameters.frequency = frequency;
+		add_transponder(frontend_parameters);
+	}
+}
+
+void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, const Glib::ustring& range)
+{
+	if (range.empty())
+	{
+		throw Exception(_("No auto scan range was specified"));
+	}
+	
+	if (frontend_type == FE_OFDM)
+	{
+		struct dvb_frontend_parameters frontend_parameters;
+
+		frontend_parameters.inversion						= INVERSION_AUTO;
+		frontend_parameters.u.ofdm.hierarchy_information	= HIERARCHY_NONE;
+		frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_AUTO;
+		frontend_parameters.u.ofdm.code_rate_HP				= FEC_AUTO;
+		frontend_parameters.u.ofdm.code_rate_LP				= FEC_AUTO;
+		frontend_parameters.u.ofdm.constellation			= QAM_AUTO;
+		frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_AUTO;
+		frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_AUTO;
+
+		if (range == "AU")
+		{
+			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_7_MHZ;
+			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K;
+			frontend_parameters.u.ofdm.hierarchy_information	= HIERARCHY_NONE;
+			
+			add_scan_range(177500000, 226500000, 7000000, frontend_parameters);
+			add_scan_range(529500000, 816500000, 7000000, frontend_parameters);
+		}
+		else if (range == "IT")
+		{
+			static const int it[] = { 177500000, 186000000, 194500000, 203500000,
+				212500000, 219500000, 226500000 };
+
+			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_7_MHZ;
+			add_scan_list(it, sizeof(it) / sizeof(it[0]), frontend_parameters);
+
+			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
+			add_scan_list(it, sizeof(it) / sizeof(it[0]), frontend_parameters);
+		}
+		else if (range == "SE")
+		{
+			frontend_parameters.u.ofdm.transmission_mode	= TRANSMISSION_MODE_AUTO;
+			add_scan_range(474000000, 850000000, 8000000, frontend_parameters);
+		}
+		else if (range == "SI")
+		{
+			static const int si[] = { 514000000, 602000000 };
+			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_AUTO;
+			add_scan_list(si, sizeof(si) / sizeof(si[0]), frontend_parameters);
+		}
+		else
+		{
+			throw Exception(Glib::ustring::compose(_("Unknown scan range '%1'"), range));
+		}
+ 	}
+	else
+	{
+		throw Exception(_("Auto scanning is only supported on DVB-T devices"));
+	}
+}
+
+void ScanDialog::add_transponder(struct dvb_frontend_parameters frontend_parameters)
+{
+	Dvb::Transponder transponder;
+	transponder.frontend_parameters = frontend_parameters;
+	transponders.push_back(transponder);
+}
+
+void ScanDialog::process_terrestrial_line(const Glib::ustring& line)
+{
+	struct dvb_frontend_parameters frontend_parameters;
+
+	InitialScanLine initial_scan_line(line);
+	
+	frontend_parameters.frequency						= initial_scan_line.get_frequency(1);
+	frontend_parameters.inversion						= INVERSION_AUTO;
+	frontend_parameters.u.ofdm.bandwidth				= initial_scan_line.get_bandwidth(2);
+	frontend_parameters.u.ofdm.code_rate_HP				= initial_scan_line.get_fec(3);
+	frontend_parameters.u.ofdm.code_rate_LP				= initial_scan_line.get_fec(4);
+	frontend_parameters.u.ofdm.constellation			= initial_scan_line.get_modulation(5);
+	frontend_parameters.u.ofdm.transmission_mode		= initial_scan_line.get_transmit_mode(6);
+	frontend_parameters.u.ofdm.guard_interval			= initial_scan_line.get_guard_interval(7);
+	frontend_parameters.u.ofdm.hierarchy_information	= initial_scan_line.get_hierarchy(8);
+
+	Dvb::Transponder transponder;
+	transponder.frontend_type				= FE_OFDM;
+	transponder.frontend_parameters = frontend_parameters;
+
+	transponders.add(transponder);
+}
+
+void ScanDialog::process_atsc_line(const Glib::ustring& line)
+{
+	struct dvb_frontend_parameters frontend_parameters;
+
+	InitialScanLine initial_scan_line(line);
+	
+	frontend_parameters.frequency			= initial_scan_line.get_frequency(1);
+	frontend_parameters.u.vsb.modulation	= initial_scan_line.get_modulation(2);
+	frontend_parameters.inversion			= INVERSION_AUTO;
+
+	Dvb::Transponder transponder;
+	transponder.frontend_type		= FE_ATSC;
+	transponder.frontend_parameters = frontend_parameters;
+	
+	transponders.add(transponder);
+}
+
+void ScanDialog::process_satellite_line(const Glib::ustring& line)
+{
+	struct dvb_frontend_parameters frontend_parameters;
+	InitialScanLine initial_scan_line(line);
+	
+	frontend_parameters.frequency			= initial_scan_line.get_frequency(1);
+	frontend_parameters.inversion			= INVERSION_AUTO;
+	
+	frontend_parameters.u.qpsk.symbol_rate	= initial_scan_line.get_symbol_rate(3);
+	frontend_parameters.u.qpsk.fec_inner	= initial_scan_line.get_fec(4);
+
+	Dvb::Transponder transponder;
+	transponder.frontend_type		= FE_QPSK;
+	transponder.frontend_parameters = frontend_parameters;
+	transponder.polarisation		= initial_scan_line.get_polarisation(2);
+	
+	g_debug("Frequency %d, Symbol rate %d, FEC %d, polarisation %d", frontend_parameters.frequency, frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner, transponder.polarisation);
+	
+	transponders.add(transponder);
+}
+
+void ScanDialog::process_cable_line(const Glib::ustring& line)
+{
+	struct dvb_frontend_parameters frontend_parameters;
+	InitialScanLine initial_scan_line(line);
+	
+	frontend_parameters.frequency			= initial_scan_line.get_frequency(1);
+	frontend_parameters.inversion			= INVERSION_AUTO;
+	
+	frontend_parameters.u.qam.symbol_rate	= initial_scan_line.get_symbol_rate(2);
+	frontend_parameters.u.qam.fec_inner		= initial_scan_line.get_fec(3);
+	frontend_parameters.u.qam.modulation	= initial_scan_line.get_modulation(4);
+
+	Dvb::Transponder transponder;
+	transponder.frontend_type				= FE_QAM;
+	transponder.frontend_parameters = frontend_parameters;
+	
+	transponders.add(transponder);
 }

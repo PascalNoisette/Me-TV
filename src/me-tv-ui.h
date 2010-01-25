@@ -37,10 +37,12 @@ private:
 	public:
 		ModelColumns()
 		{
-			add(column_string);
+			add(column_text);
+			add(column_value);
 		}
 
-		Gtk::TreeModelColumn<Glib::ustring> column_string;
+		Gtk::TreeModelColumn<Glib::ustring> column_text;
+		Gtk::TreeModelColumn<Glib::ustring> column_value;
 	};
 	
 	ModelColumns columns;
@@ -50,9 +52,11 @@ public:
 	ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
 	
 	void clear_items();
-	void append(const Glib::ustring& text);
-	void set_text(const Glib::ustring& text);
-	Glib::ustring get_text();
+	void append_text(const Glib::ustring& text, const Glib::ustring& value = "");
+	void set_active_text(const Glib::ustring& text);
+	void set_active_value(const Glib::ustring& value);
+	Glib::ustring get_active_text();
+	Glib::ustring get_active_value();
 };
 
 class IntComboBox : public Gtk::ComboBox
