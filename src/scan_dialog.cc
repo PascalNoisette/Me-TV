@@ -157,7 +157,6 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget_derived("combo_box_auto_scan_range", combo_box_auto_scan_range);
 
 	combo_box_auto_scan_range->clear_items();
-	combo_box_auto_scan_range->append_text("Please select ...");
 	combo_box_auto_scan_range->append_text(_("Australia"), "AU");
 	combo_box_auto_scan_range->append_text(_("Finland"), "FI");
 	combo_box_auto_scan_range->append_text(_("France"), "FR");
@@ -167,6 +166,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	combo_box_auto_scan_range->append_text(_("Spain"), "ES");
 	combo_box_auto_scan_range->append_text(_("Slovenia"), "SI");
 	combo_box_auto_scan_range->append_text(_("United Kingdom"), "UK");
+	combo_box_auto_scan_range->set_active_text("Please select ...");
 
 	file_chooser_button_scan->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_scan_file_changed));
 	file_chooser_button_import->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_import_file_changed));
@@ -672,10 +672,26 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, const Glib::ustrin
 		{
 			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_7_MHZ;
 			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K;
-			frontend_parameters.u.ofdm.hierarchy_information	= HIERARCHY_NONE;
+			frontend_parameters.u.ofdm.constellation			= QAM_64;
 			
 			add_scan_range(177500000, 226500000, 7000000, frontend_parameters);
 			add_scan_range(529500000, 816500000, 7000000, frontend_parameters);
+		}
+		else if (range == "DE")
+		{
+			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_7_MHZ;
+			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K;
+			
+			add_scan_range(177500000, 226500000, 7000000, frontend_parameters);
+
+			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_8_MHZ;
+			add_scan_range(474000000, 826000000, 8000000, frontend_parameters);
+		}
+		else if (range == "FR")
+		{
+			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_8_MHZ;
+			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K;
+			add_scan_range(474000000, 850000000, 8000000, frontend_parameters);
 		}
 		else if (range == "IT")
 		{
@@ -688,16 +704,38 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, const Glib::ustrin
 			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
 			add_scan_list(it, sizeof(it) / sizeof(it[0]), frontend_parameters);
 		}
-		else if (range == "SE")
+		else if (range == "ES")
 		{
-			frontend_parameters.u.ofdm.transmission_mode	= TRANSMISSION_MODE_AUTO;
+			frontend_parameters.u.ofdm.bandwidth		= BANDWIDTH_8_MHZ;
+			add_scan_range(474000000, 858000000, 8000000, frontend_parameters);
+		}
+		else if (range == "FI" || range == "SE")
+		{
+			frontend_parameters.u.ofdm.bandwidth		= BANDWIDTH_8_MHZ;
+			frontend_parameters.u.ofdm.constellation	= QAM_64;
 			add_scan_range(474000000, 850000000, 8000000, frontend_parameters);
+		}
+		else if (range == "NZ")
+		{
+			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_8_MHZ;
+			frontend_parameters.u.ofdm.code_rate_HP				= FEC_3_4;
+			frontend_parameters.u.ofdm.code_rate_LP				= FEC_3_4;
+			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K;
+			frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_1_16;
+			add_scan_range(474000000, 858000000, 8000000, frontend_parameters);
 		}
 		else if (range == "SI")
 		{
 			static const int si[] = { 514000000, 602000000 };
-			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_AUTO;
 			add_scan_list(si, sizeof(si) / sizeof(si[0]), frontend_parameters);
+		}
+		else if (range == "UK")
+		{
+			frontend_parameters.u.ofdm.guard_interval		= GUARD_INTERVAL_1_32;
+			frontend_parameters.u.ofdm.bandwidth			= BANDWIDTH_8_MHZ;
+			frontend_parameters.u.ofdm.transmission_mode	= TRANSMISSION_MODE_2K;
+			frontend_parameters.inversion					= INVERSION_OFF;
+			add_scan_range(474000000, 850000000, 8000000, frontend_parameters);
 		}
 		else
 		{
