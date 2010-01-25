@@ -37,6 +37,10 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
 	builder->get_widget("button_epg_event_search", button);
 	button->signal_clicked().connect(sigc::mem_fun(*this, &EpgEventSearchDialog::search));
 
+	Gtk::Entry* entry = NULL;
+	builder->get_widget("entry_epg_event_search", entry);
+	entry->signal_activate().connect(sigc::mem_fun(*this, &EpgEventSearchDialog::search));
+
 	builder->get_widget("tree_view_epg_event_search", tree_view_epg_event_search);
 
 	tree_view_epg_event_search->signal_row_activated().connect(
