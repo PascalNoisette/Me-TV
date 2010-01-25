@@ -86,15 +86,15 @@ private:
 	void import_channels_conf(const Glib::ustring& channels_conf_path);
 	void load_initial_tuning_file(const Glib::ustring& initial_tuning_file);
 
-	void on_file_chooser_button_select_file_to_scan_clicked();
 	void on_button_scan_wizard_next_clicked();
 	void on_button_scan_wizard_cancel_clicked();
 	void on_button_scan_wizard_add_clicked();
 	void on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name, const guint polarisation);
 	void on_signal_progress(guint step, gsize total);
 	void on_signal_complete();
-	void on_file_chooser_button_scan_file_changed();
-	void on_file_chooser_button_import_file_changed();
+	void on_file_chooser_button_scan_file_set();
+	void on_file_chooser_button_import_file_set();
+	void on_combo_box_auto_scan_range_changed();
 	void on_hide();	
 	void stop_scan();
 	void update_channel_count();

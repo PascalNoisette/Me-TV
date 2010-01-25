@@ -149,9 +149,12 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	Gtk::FileChooserButton* file_chooser_button_scan = NULL;
 	builder->get_widget("file_chooser_button_scan", file_chooser_button_scan);
-
+	file_chooser_button_scan->set_current_folder(get_initial_tuning_dir());
+	file_chooser_button_scan->signal_file_set().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_scan_file_set));
+	
 	Gtk::FileChooserButton* file_chooser_button_import = NULL;
 	builder->get_widget("file_chooser_button_import", file_chooser_button_import);
+	file_chooser_button_import->signal_file_set().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_import_file_set));
 
 	ComboBoxText* combo_box_auto_scan_range = NULL;
 	builder->get_widget_derived("combo_box_auto_scan_range", combo_box_auto_scan_range);
@@ -168,9 +171,20 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	combo_box_auto_scan_range->append_text(_("United Kingdom"), "UK");
 	combo_box_auto_scan_range->set_active_value("AU");
 
-	file_chooser_button_scan->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_scan_file_changed));
-	file_chooser_button_import->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_import_file_changed));
-//	combo_box_auto_scan_range->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_import_file_changed));
+	combo_box_auto_scan_range->signal_changed().connect(
+	    sigc::mem_fun(*this, &ScanDialog::on_combo_box_auto_scan_range_changed));
+
+	gboolean enable_auto_scan = frontend.get_frontend_info().type == FE_OFDM;
+	combo_box_auto_scan_range->set_sensitive(enable_auto_scan);
+
+	Gtk::Label* label_auto_scan = NULL;
+	builder->get_widget("label_auto_scan", label_auto_scan);
+	label_auto_scan->set_sensitive(enable_auto_scan);
+
+	Gtk::RadioButton* radio_button_auto_scan = NULL;
+	builder->get_widget("radio_button_auto_scan", radio_button_auto_scan);
+	radio_button_auto_scan->set_sensitive(enable_auto_scan);
+	radio_button_auto_scan->set_active(enable_auto_scan);
 }
 
 ScanDialog::~ScanDialog()
@@ -182,7 +196,8 @@ void ScanDialog::on_show()
 {
 	channel_count = 0;
 	progress_bar_scan->set_fraction(0);
-
+	transponders.clear();
+	
 	Gtk::Button* button = NULL;
 
 	builder->get_widget("button_scan_wizard_add", button);
@@ -190,18 +205,8 @@ void ScanDialog::on_show()
 
 	builder->get_widget("button_scan_wizard_next", button);
 	button->show();
-		
-	Gtk::RadioButton* radio_button_auto_scan = NULL;
-	builder->get_widget("radio_button_auto_scan", radio_button_auto_scan);
-	radio_button_auto_scan->set_active();
-
-	notebook_scan_wizard->set_current_page(0);
-
-	Gtk::FileChooserButton* file_chooser_button = NULL;
-	builder->get_widget("file_chooser_button_scan", file_chooser_button);
 	
-	Glib::ustring initial_tuning_file = get_initial_tuning_dir();
-	file_chooser_button->set_current_folder(initial_tuning_file);
+	notebook_scan_wizard->set_current_page(0);
 
 	Window::on_show();
 }
@@ -224,14 +229,14 @@ void ScanDialog::stop_scan()
 	}
 }
 
-void ScanDialog::on_file_chooser_button_scan_file_changed()
+void ScanDialog::on_file_chooser_button_scan_file_set()
 {
 	Gtk::RadioButton* radio_button_scan = NULL;
 	builder->get_widget("radio_button_scan", radio_button_scan);
 	radio_button_scan->set_active();
 }
 
-void ScanDialog::on_file_chooser_button_import_file_changed()
+void ScanDialog::on_file_chooser_button_import_file_set()
 {
 	Gtk::RadioButton* radio_button_import = NULL;
 	builder->get_widget("radio_button_import", radio_button_import);
@@ -586,6 +591,8 @@ void ScanDialog::on_signal_progress(guint step, gsize total)
 
 void ScanDialog::on_signal_complete()
 {
+	g_debug("Scan completed");
+	
 	if (!scan_thread->is_terminated())
 	{
 		GdkLock gdk_lock;
@@ -601,8 +608,17 @@ void ScanDialog::on_signal_complete()
 	if (application.channel_manager.has_display_channel())
 	{
 		application.stream_manager.start();
-		application.set_display_channel(application.channel_manager.get_display_channel());
+		Channel& channel = application.channel_manager.get_display_channel();
+		application.device_manager.get_frontend().tune_to(channel.transponder);
+		application.set_display_channel(channel);
 	}
+}
+
+void ScanDialog::on_combo_box_auto_scan_range_changed()
+{
+	Gtk::RadioButton* radio_button_auto_scan = NULL;
+	builder->get_widget("radio_button_auto_scan", radio_button_auto_scan);
+	radio_button_auto_scan->set_active();
 }
 
 ChannelArray ScanDialog::get_selected_channels()
