@@ -157,16 +157,16 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget_derived("combo_box_auto_scan_range", combo_box_auto_scan_range);
 
 	combo_box_auto_scan_range->clear_items();
-	combo_box_auto_scan_range->append_text(_("Australia"), "AU");
-	combo_box_auto_scan_range->append_text(_("Finland"), "FI");
-	combo_box_auto_scan_range->append_text(_("France"), "FR");
-	combo_box_auto_scan_range->append_text(_("Germany"), "DE");
-	combo_box_auto_scan_range->append_text(_("Italy"), "IT");
-	combo_box_auto_scan_range->append_text(_("New Zealand"), "NZ");
-	combo_box_auto_scan_range->append_text(_("Spain"), "ES");
-	combo_box_auto_scan_range->append_text(_("Slovenia"), "SI");
+	combo_box_auto_scan_range->append_text(_("Australia"),		"AU");
+	combo_box_auto_scan_range->append_text(_("Finland"),		"FI");
+	combo_box_auto_scan_range->append_text(_("France"),			"FR");
+	combo_box_auto_scan_range->append_text(_("Germany"),		"DE");
+	combo_box_auto_scan_range->append_text(_("Italy"),			"IT");
+	combo_box_auto_scan_range->append_text(_("New Zealand"),	"NZ");
+	combo_box_auto_scan_range->append_text(_("Spain"),			"ES");
+	combo_box_auto_scan_range->append_text(_("Slovenia"),		"SI");
 	combo_box_auto_scan_range->append_text(_("United Kingdom"), "UK");
-	combo_box_auto_scan_range->set_active_text("Please select ...");
+	combo_box_auto_scan_range->set_active_value("AU");
 
 	file_chooser_button_scan->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_scan_file_changed));
 	file_chooser_button_import->signal_selection_changed().connect(sigc::mem_fun(*this, &ScanDialog::on_file_chooser_button_import_file_changed));
