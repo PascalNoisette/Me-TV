@@ -47,28 +47,6 @@ static AudioChannelState	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
 
 #define INPUT_MOTION (ExposureMask | KeyPressMask | StructureNotifyMask | PropertyChangeMask)
 
-static void dest_size_cb(void *data, int video_width, int video_height, double video_pixel_aspect,
-			 int *dest_width, int *dest_height, double *dest_pixel_aspect)
-{
-	*dest_width        = width;
-	*dest_height       = height;
-	*dest_pixel_aspect = pixel_aspect;
-}
-
-static void frame_output_cb(void *data, int video_width, int video_height,
-			    double video_pixel_aspect, int *dest_x, int *dest_y,
-			    int *dest_width, int *dest_height, 
-			    double *dest_pixel_aspect, int *win_x, int *win_y)
-{
-	*dest_x            = 0;
-	*dest_y            = 0;
-	*win_x             = 0;
-	*win_y             = 0;
-	*dest_width        = width;
-	*dest_height       = height;
-	*dest_pixel_aspect = pixel_aspect;
-}
-
 int set_audio_channel_state(AudioChannelState state)
 {
 	return 0;
