@@ -467,7 +467,7 @@ void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& se
 	offset += 6;
 	guint num_events_in_section = buffer[offset++];
 	
-	for (guint i = 0; i < num_events_in_section; i++)
+	for (guint i = 0; i < num_events_in_section && (offset < (section_length - CRC_BYTE_SIZE)); i++)
 	{
 		Event event;
 
