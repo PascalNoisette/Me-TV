@@ -37,12 +37,12 @@ public:
 	EpgEvents();
 	~EpgEvents();
 		
-	gboolean			add_epg_event(const EpgEvent& epg_event);
-	gboolean			get_current(EpgEvent& epg_event);
-	const EpgEventList	get_list();
-	void				prune();
-	void				load(Data::Connection& connection, guint channel_id);
-	void				save(Data::Connection& connection, guint channel_id);
+	gboolean		add_epg_event(const EpgEvent& epg_event);
+	gboolean		get_current(EpgEvent& epg_event);
+	EpgEventList	get_list(guint start_time, guint end_time);
+	void			prune();
+	void			load(Data::Connection& connection, guint channel_id);
+	void			save(Data::Connection& connection, guint channel_id);
 };
 
 #endif

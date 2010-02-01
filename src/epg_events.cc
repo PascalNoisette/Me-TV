@@ -106,10 +106,26 @@ gboolean EpgEvents::get_current(EpgEvent& epg_event)
 	return found;
 }
 
-const EpgEventList EpgEvents::get_list()
+EpgEventList EpgEvents::get_list(guint start_time, guint end_time)
 {
+	EpgEventList result;
+	
 	Glib::RecMutex::Lock lock(mutex);
-	return list;
+	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
+	{
+		EpgEvent& epg_event = *i;
+		guint epg_event_end_time = epg_event.get_end_time();
+		if(
+			(epg_event.start_time >= start_time && epg_event.start_time <= end_time) ||
+			(epg_event_end_time >= start_time && epg_event_end_time <= end_time) ||
+			(epg_event.start_time <= start_time && epg_event_end_time >= end_time)
+		)
+		{
+			result.push_back(epg_event);
+		}
+	}
+	
+	return result;
 }
 
 guint prune_before_time = 0;

@@ -268,92 +268,85 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 
 	if (!disable_epg)
 	{
-		EpgEventList events = channel.epg_events.get_list();
-		for (EpgEventList::const_iterator i = events.begin(); i != events.end(); i++)
+		EpgEventList events = channel.epg_events.get_list(start_time, end_time);
+		for (EpgEventList::iterator i = events.begin(); i != events.end(); i++)
 		{
-			const EpgEvent& epg_event = *i;
+			EpgEvent& epg_event = *i;
 					
-			if (
-				(epg_event.start_time >= start_time && epg_event.start_time <= end_time) ||
-				(epg_event.get_end_time() >= start_time && epg_event.get_end_time() <= end_time) ||
-				(epg_event.start_time <= start_time && epg_event.get_end_time() >= end_time)
-			)
+			guint event_end_time = epg_event.start_time + epg_event.duration;		
+			guint start_column = 0;
+			if (epg_event.start_time < start_time)
 			{
-				guint event_end_time = epg_event.start_time + epg_event.duration;		
-				guint start_column = 0;
-				if (epg_event.start_time < start_time)
-				{
-					start_column = 0;
-				}
-				else
-				{
-					start_column = (guint)round((epg_event.start_time - start_time) / COLUMNS_PER_HOUR);
-				}
-			
-				guint end_column = (guint)round((event_end_time - start_time) / COLUMNS_PER_HOUR);
-				if (end_column > number_columns-1)
-				{
-					end_column = number_columns-1;
-				}
-			
-				guint column_count = end_column - start_column;
-				if (start_column >= total_number_columns && column_count > 0)
-				{
-					// If there's a gap, plug it
-					if (start_column > total_number_columns)
-					{
-						guint empty_columns = start_column - total_number_columns;
-						Gtk::Button& button = attach_button(
-							empty_columns < 10 ? _("-") : _("Unknown program"), false,
-							total_number_columns + 1, start_column + 1, table_row, table_row + 1);
-						button.set_sensitive(false);
-						total_number_columns += empty_columns;
-					}
-				
-					if (column_count > 0)
-					{
-						guint converted_start_time = convert_to_utc_time(epg_event.start_time);
-
-						Glib::ustring text;
-						if (show_epg_time)
-						{
-							text = get_local_time_text(converted_start_time, "<b>%H:%M");
-							text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
-						}
-						text += encode_xml(epg_event.get_title());
-
-						gboolean record = get_application().scheduled_recording_manager.is_recording(epg_event);
-						
-						Gtk::Button& button = attach_button(text, record, start_column + 1, end_column + 1, table_row, table_row + 1);
-						button.signal_clicked().connect(
-							sigc::bind<EpgEvent>
-							(
-								sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
-								epg_event
-							)
-						);
-						button.signal_button_press_event().connect(
-							sigc::bind<EpgEvent>
-							(
-								sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_press_event),
-								epg_event
-							),
-						    false
-						);
-
-
-						if (show_epg_tooltips)
-						{
-							Glib::ustring tooltip_text = get_local_time_text(converted_start_time, "%A, %B %d\n%H:%M");
-							tooltip_text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M");
-							button.set_tooltip_text(tooltip_text);
-						}
-					}
-
-					total_number_columns += column_count;
-				}
-				last_event_end_time = event_end_time;
+				start_column = 0;
 			}
+			else
+			{
+				start_column = (guint)round((epg_event.start_time - start_time) / COLUMNS_PER_HOUR);
+			}
+		
+			guint end_column = (guint)round((event_end_time - start_time) / COLUMNS_PER_HOUR);
+			if (end_column > number_columns-1)
+			{
+				end_column = number_columns-1;
+			}
+		
+			guint column_count = end_column - start_column;
+			if (start_column >= total_number_columns && column_count > 0)
+			{
+				// If there's a gap, plug it
+				if (start_column > total_number_columns)
+				{
+					guint empty_columns = start_column - total_number_columns;
+					Gtk::Button& button = attach_button(
+						empty_columns < 10 ? _("-") : _("Unknown program"), false,
+						total_number_columns + 1, start_column + 1, table_row, table_row + 1);
+					button.set_sensitive(false);
+					total_number_columns += empty_columns;
+				}
+			
+				if (column_count > 0)
+				{
+					guint converted_start_time = convert_to_utc_time(epg_event.start_time);
+
+					Glib::ustring text;
+					if (show_epg_time)
+					{
+						text = get_local_time_text(converted_start_time, "<b>%H:%M");
+						text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M</b>\n");
+					}
+					text += encode_xml(epg_event.get_title());
+
+					gboolean record = get_application().scheduled_recording_manager.is_recording(epg_event);
+					
+					Gtk::Button& button = attach_button(text, record, start_column + 1, end_column + 1, table_row, table_row + 1);
+					button.signal_clicked().connect(
+						sigc::bind<EpgEvent>
+						(
+							sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
+							epg_event
+						)
+					);
+					button.signal_button_press_event().connect(
+						sigc::bind<EpgEvent>
+						(
+							sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_press_event),
+							epg_event
+						),
+					    false
+					);
+
+
+					if (show_epg_tooltips)
+					{
+						Glib::ustring tooltip_text = get_local_time_text(converted_start_time, "%A, %B %d\n%H:%M");
+						tooltip_text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M");
+						button.set_tooltip_text(tooltip_text);
+					}
+				}
+
+				total_number_columns += column_count;
+			}
+			last_event_end_time = event_end_time;
 		}
 	}
 	
