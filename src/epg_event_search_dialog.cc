@@ -50,7 +50,7 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
  	tree_view_epg_event_search->append_column(_("Title"), columns.column_title);
 	tree_view_epg_event_search->append_column(_("Channel"), columns.column_channel_name);
  	tree_view_epg_event_search->append_column(_("Record"), columns.column_image);
-	tree_view_epg_event_search->append_column(_("Start Time"), columns.column_start_time);
+	tree_view_epg_event_search->append_column(_("Start Time"), columns.column_start_time_text);
 	tree_view_epg_event_search->append_column(_("Duration"), columns.column_duration);
 
 	list_store->set_sort_column(columns.column_start_time, Gtk::SORT_ASCENDING);
@@ -92,7 +92,8 @@ void EpgEventSearchDialog::search()
 			row[columns.column_image]			= record ? "Yes" : "No";
 			row[columns.column_id]				= epg_event.epg_event_id;
 			row[columns.column_title]			= epg_event.get_title();
-			row[columns.column_start_time]		= epg_event.get_start_time_text();
+			row[columns.column_start_time]		= epg_event.start_time;
+			row[columns.column_start_time_text]	= epg_event.get_start_time_text();
 			row[columns.column_duration]		= epg_event.get_duration_text();
 			row[columns.column_channel]			= epg_event.channel_id;
 			row[columns.column_channel_name]	= application.channel_manager.get_channel_by_id(epg_event.channel_id).name;

@@ -36,6 +36,7 @@ private:
 			add(column_channel);
 			add(column_channel_name);
 			add(column_start_time);
+			add(column_start_time_text);
 			add(column_duration);
 			add(column_epg_event);
 			add(column_image);
@@ -45,7 +46,8 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring>	column_title;
 		Gtk::TreeModelColumn<guint>			column_channel;
 		Gtk::TreeModelColumn<Glib::ustring>	column_channel_name;
-		Gtk::TreeModelColumn<Glib::ustring>	column_start_time;
+		Gtk::TreeModelColumn<guint>			column_start_time;
+		Gtk::TreeModelColumn<Glib::ustring>	column_start_time_text;
 		Gtk::TreeModelColumn<Glib::ustring>	column_duration;
 		Gtk::TreeModelColumn<EpgEvent>		column_epg_event;
 		Gtk::TreeModelColumn<Glib::ustring>	column_image;
