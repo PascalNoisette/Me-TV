@@ -37,6 +37,8 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring> column_text;
 	};
 	
+	typedef Glib::RefPtr<Gdk::Pixbuf> PixbufPtr;
+
 	class ResultsModelColumns : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
@@ -61,13 +63,14 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring>	column_start_time_text;
 		Gtk::TreeModelColumn<Glib::ustring>	column_duration;
 		Gtk::TreeModelColumn<EpgEvent>		column_epg_event;
-		Gtk::TreeModelColumn<Glib::ustring>	column_image;
+		Gtk::TreeModelColumn<PixbufPtr>		column_image;
 	};
 
 	SearchModelColumns					search_columns;
 	ResultsModelColumns					results_columns;
 	Glib::RefPtr<Gtk::ListStore>		list_store_results;
 	Glib::RefPtr<Gtk::ListStore>		list_store_search;
+	PixbufPtr							pixbuf_record;
 	const Glib::RefPtr<Gtk::Builder>	builder;
 	Gtk::ComboBoxEntry*					combo_box_entry_search;
 	Gtk::TreeView*						tree_view_epg_event_search;

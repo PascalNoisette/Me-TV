@@ -48,13 +48,15 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
 
 	builder->get_widget("tree_view_epg_event_search", tree_view_epg_event_search);
 
+	pixbuf_record = Gtk::Widget::render_icon(Gtk::Stock::MEDIA_RECORD, Gtk::ICON_SIZE_MENU);
+
 	tree_view_epg_event_search->signal_row_activated().connect(
 	    sigc::mem_fun(*this, &EpgEventSearchDialog::on_row_activated));
 	list_store_results = Gtk::ListStore::create(results_columns);
 	tree_view_epg_event_search->set_model(list_store_results);
+ 	tree_view_epg_event_search->append_column(_(" "),			results_columns.column_image);
  	tree_view_epg_event_search->append_column(_("Title"),		results_columns.column_title);
 	tree_view_epg_event_search->append_column(_("Channel"),		results_columns.column_channel_name);
- 	tree_view_epg_event_search->append_column(_("Record"),		results_columns.column_image);
 	tree_view_epg_event_search->append_column(_("Start Time"),	results_columns.column_start_time_text);
 	tree_view_epg_event_search->append_column(_("Duration"),	results_columns.column_duration);
 
@@ -62,16 +64,13 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
 }
 
 void EpgEventSearchDialog::search()
-{	
-	Gtk::Entry* entry = NULL;
-	builder->get_widget("entry_epg_event_search", entry);
-
+{
 	Gtk::CheckButton* check = NULL;
 	builder->get_widget("check_button_search_description", check);
 
-	Glib::ustring text = entry->get_text().uppercase();
+	Glib::ustring text = combo_box_entry_search->get_active_text().uppercase();
 
-	if (text.size() == 0)
+	if (text.empty())
 	{
 		throw Exception(_("No search text specified"));
 	}
@@ -94,7 +93,11 @@ void EpgEventSearchDialog::search()
 			Gtk::TreeModel::Row row = *(list_store_results->append());
 
 			gboolean record = application.scheduled_recording_manager.is_recording(epg_event);
-			row[results_columns.column_image]			= record ? "Yes" : "No";
+			if (record)
+			{
+				row[results_columns.column_image] = pixbuf_record;
+			}
+			
 			row[results_columns.column_id]				= epg_event.epg_event_id;
 			row[results_columns.column_title]			= epg_event.get_title();
 			row[results_columns.column_start_time]		= epg_event.start_time;

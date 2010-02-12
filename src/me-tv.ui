@@ -2218,6 +2218,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <property name="label">gtk-find</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
               </object>
