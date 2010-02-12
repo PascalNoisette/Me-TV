@@ -173,7 +173,7 @@ void GtkEpgWidget::update_table()
 		{
 			display_channel_index = channel_manager.get_display_channel_index();
 		}
-		ChannelArray channels = channel_manager.get_channels();
+		ChannelArray& channels = channel_manager.get_channels();
 
 		table_epg->resize(epg_span_hours * COLUMNS_PER_HOUR + 1, channels.size() + 1);
 

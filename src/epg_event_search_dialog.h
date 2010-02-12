@@ -26,10 +26,21 @@
 class EpgEventSearchDialog : public Gtk::Dialog
 {
 private:
-	class ModelColumns : public Gtk::TreeModel::ColumnRecord
+	class SearchModelColumns : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		ModelColumns()
+		SearchModelColumns()
+		{
+			add(column_text);
+		}
+
+		Gtk::TreeModelColumn<Glib::ustring> column_text;
+	};
+	
+	class ResultsModelColumns : public Gtk::TreeModel::ColumnRecord
+	{
+	public:
+		ResultsModelColumns()
 		{
 			add(column_id);
 			add(column_title);
@@ -53,13 +64,18 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring>	column_image;
 	};
 
-	ModelColumns						columns;
-	Glib::RefPtr<Gtk::ListStore>		list_store;
+	SearchModelColumns					search_columns;
+	ResultsModelColumns					results_columns;
+	Glib::RefPtr<Gtk::ListStore>		list_store_results;
+	Glib::RefPtr<Gtk::ListStore>		list_store_search;
 	const Glib::RefPtr<Gtk::Builder>	builder;
+	Gtk::ComboBoxEntry*					combo_box_entry_search;
 	Gtk::TreeView*						tree_view_epg_event_search;
 	Gtk::Image							image_record;
 
+	void on_show();
 	void on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column);
+	void add_completion(const Glib::ustring& text);
 	void search();
 public:
 	EpgEventSearchDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);

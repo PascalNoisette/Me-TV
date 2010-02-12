@@ -344,6 +344,21 @@
 				</long>
 			</locale>
 		</schema>
+
+		<schema>
+			<key>/schemas/apps/me-tv/recent_searches</key>
+			<applyto>/apps/me-tv/recent_searches</applyto>
+			<owner>me-tv</owner>
+			<type>list</type>
+			<list_type>string</list_type>
+			<default>[]</default>
+			<locale name="C">
+				<short>Recent EPG event searches</short>
+				<long>
+					Recent EPG event searches
+				</long>
+			</locale>
+		</schema>
 	</schemalist>
 
 </gconfschemafile>

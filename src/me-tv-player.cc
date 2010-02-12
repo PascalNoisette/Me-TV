@@ -256,39 +256,38 @@ int main(int argc, char **argv)
 			case KeyPress:
 				{
 					XKeyEvent* key_event = (XKeyEvent*)(void*)&xevent;
-					int keysym = XKeycodeToKeysym(display, key_event->keycode, 0);
-					switch(keysym)
+					switch(key_event->keycode)
 					{
 					case XK_m:
-						set_mute_state(key_event->state != XK_Shift_L);
+						set_mute_state(key_event->state != XK_Control_L);
 						break;
 							
 					case XK_a:
-						if (key_event->state == (XK_Shift_L & XK_Shift_R))
+						if (key_event->state == (XK_Control_L & XK_Control_R))
 						{
 							set_audio_channel_state(AUDIO_CHANNEL_STATE_BOTH);
 						}
-						else if (key_event->state == XK_Shift_L)
+						else if (key_event->state == XK_Control_L)
 						{
 							set_audio_channel_state(AUDIO_CHANNEL_STATE_LEFT);
 						}
-						else if (key_event->state == XK_Shift_R)
+						else if (key_event->state == XK_Control_R)
 						{
 							set_audio_channel_state(AUDIO_CHANNEL_STATE_RIGHT);
 						}
 							
 						break;
-
+							
 					default:
-						if (keysym >= XK_1 || keysym <= XK_9)
+						if (key_event->keycode >= XK_0 && key_event->keycode <= XK_9)
 						{
-							if (key_event->state == XK_Shift_L)
+							if (key_event->state == XK_Control_L)
 							{
-								set_audio_stream(keysym - XK_1);
+								set_audio_stream(key_event->keycode - XK_0);
 							}
-							else if (key_event->state == XK_Shift_R)
+							else if (key_event->state == XK_Control_R)
 							{
-								set_subtitle_stream(keysym - XK_1);
+								set_subtitle_stream(key_event->keycode - XK_0);
 							}
 						}
 						break;

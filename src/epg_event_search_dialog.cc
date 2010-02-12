@@ -32,28 +32,33 @@ EpgEventSearchDialog& EpgEventSearchDialog::get(Glib::RefPtr<Gtk::Builder> build
 
 EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
 	Gtk::Dialog(cobject), builder(builder), image_record(Gtk::Stock::MEDIA_RECORD, Gtk::ICON_SIZE_MENU)
-{
+{	
 	Gtk::Button* button = NULL;
 	builder->get_widget("button_epg_event_search", button);
 	button->signal_clicked().connect(sigc::mem_fun(*this, &EpgEventSearchDialog::search));
 
-	Gtk::Entry* entry = NULL;
-	builder->get_widget("entry_epg_event_search", entry);
-	entry->signal_activate().connect(sigc::mem_fun(*this, &EpgEventSearchDialog::search));
+	list_store_search = Gtk::ListStore::create(search_columns);
+	
+	combo_box_entry_search = NULL;
+	builder->get_widget("combo_box_entry_search", combo_box_entry_search);
+	combo_box_entry_search->set_model(list_store_search);
+	combo_box_entry_search->set_text_column(0);
+//	combo_box_entry_search->signal_activate().connect(sigc::mem_fun(*this, &EpgEventSearchDialog::search));
+	list_store_search->set_sort_column(search_columns.column_text, Gtk::SORT_ASCENDING);
 
 	builder->get_widget("tree_view_epg_event_search", tree_view_epg_event_search);
 
 	tree_view_epg_event_search->signal_row_activated().connect(
 	    sigc::mem_fun(*this, &EpgEventSearchDialog::on_row_activated));
-	list_store = Gtk::ListStore::create(columns);
-	tree_view_epg_event_search->set_model(list_store);
- 	tree_view_epg_event_search->append_column(_("Title"), columns.column_title);
-	tree_view_epg_event_search->append_column(_("Channel"), columns.column_channel_name);
- 	tree_view_epg_event_search->append_column(_("Record"), columns.column_image);
-	tree_view_epg_event_search->append_column(_("Start Time"), columns.column_start_time_text);
-	tree_view_epg_event_search->append_column(_("Duration"), columns.column_duration);
+	list_store_results = Gtk::ListStore::create(results_columns);
+	tree_view_epg_event_search->set_model(list_store_results);
+ 	tree_view_epg_event_search->append_column(_("Title"),		results_columns.column_title);
+	tree_view_epg_event_search->append_column(_("Channel"),		results_columns.column_channel_name);
+ 	tree_view_epg_event_search->append_column(_("Record"),		results_columns.column_image);
+	tree_view_epg_event_search->append_column(_("Start Time"),	results_columns.column_start_time_text);
+	tree_view_epg_event_search->append_column(_("Duration"),	results_columns.column_duration);
 
-	list_store->set_sort_column(columns.column_start_time, Gtk::SORT_ASCENDING);
+	list_store_results->set_sort_column(results_columns.column_start_time, Gtk::SORT_ASCENDING);
 }
 
 void EpgEventSearchDialog::search()
@@ -71,7 +76,7 @@ void EpgEventSearchDialog::search()
 		throw Exception(_("No search text specified"));
 	}
 	
-	list_store->clear();
+	list_store_results->clear();
 
 	Application& application = get_application();
 	bool search_description = check->get_active();
@@ -86,18 +91,18 @@ void EpgEventSearchDialog::search()
 		{
 			EpgEvent& epg_event = *j;
 			
-			Gtk::TreeModel::Row row = *(list_store->append());
+			Gtk::TreeModel::Row row = *(list_store_results->append());
 
 			gboolean record = application.scheduled_recording_manager.is_recording(epg_event);
-			row[columns.column_image]			= record ? "Yes" : "No";
-			row[columns.column_id]				= epg_event.epg_event_id;
-			row[columns.column_title]			= epg_event.get_title();
-			row[columns.column_start_time]		= epg_event.start_time;
-			row[columns.column_start_time_text]	= epg_event.get_start_time_text();
-			row[columns.column_duration]		= epg_event.get_duration_text();
-			row[columns.column_channel]			= epg_event.channel_id;
-			row[columns.column_channel_name]	= application.channel_manager.get_channel_by_id(epg_event.channel_id).name;
-			row[columns.column_epg_event]		= epg_event;
+			row[results_columns.column_image]			= record ? "Yes" : "No";
+			row[results_columns.column_id]				= epg_event.epg_event_id;
+			row[results_columns.column_title]			= epg_event.get_title();
+			row[results_columns.column_start_time]		= epg_event.start_time;
+			row[results_columns.column_start_time_text]	= epg_event.get_start_time_text();
+			row[results_columns.column_duration]		= epg_event.get_duration_text();
+			row[results_columns.column_channel]			= epg_event.channel_id;
+			row[results_columns.column_channel_name]	= application.channel_manager.get_channel_by_id(epg_event.channel_id).name;
+			row[results_columns.column_epg_event]		= epg_event;
 		}
 	}
 }
@@ -114,11 +119,22 @@ void EpgEventSearchDialog::on_row_activated(const Gtk::TreeModel::Path& tree_mod
 	
 	Gtk::TreeModel::Row row = *(selection->get_selected());
 
-	EpgEvent epg_event = row[columns.column_epg_event];
+	EpgEvent epg_event = row[results_columns.column_epg_event];
 	EpgEventDialog& epg_event_dialog = EpgEventDialog::create(builder);
 	epg_event_dialog.show_epg_event(epg_event);
 
 	search();
 
 	CATCH
+}
+
+void EpgEventSearchDialog::on_show()
+{
+	list_store_search->clear();
+
+	(*list_store_search->append())[search_columns.column_text] = "Iron Man";
+	(*list_store_search->append())[search_columns.column_text] = "Nigella";
+	(*list_store_search->append())[search_columns.column_text] = "Neighbours";
+
+	Gtk::Dialog::on_show();
 }
