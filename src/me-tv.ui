@@ -2248,6 +2248,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
+                <property name="y_options"></property>
               </packing>
             </child>
             <child>

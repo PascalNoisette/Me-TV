@@ -32,6 +32,7 @@
 #include <linux/dvb/frontend.h>
 #include <list>
 #include <vector>
+#include <glibmm.h>
 #include "me-tv-i18n.h"
 #include "buffer.h"
 

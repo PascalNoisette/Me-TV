@@ -79,26 +79,26 @@ void StatusIcon::update()
 
 	status_icon->set_visible(application.get_boolean_configuration_value("display_status_icon"));
 	
-	std::list<StreamManager::ChannelStream> streams = application.stream_manager.get_streams();
+	std::list<ChannelStream> streams = application.stream_manager.get_streams();
 	if (streams.size() == 0)
 	{
 		title = _("Unknown program");
 	}
 	else
 	{
-		for (std::list<StreamManager::ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+		for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
 		{
 			if (title.size() > 0)
 			{
 				title += "\n";
 			}
 	
-			StreamManager::ChannelStream& stream = *i;
+			ChannelStream& stream = *i;
 			switch (stream.type)
 			{
-			case StreamManager::CHANNEL_STREAM_TYPE_DISPLAY: title += "Watching: "; break;
-			case StreamManager::CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING: title += "Recording (Scheduled): "; break;
-			case StreamManager::CHANNEL_STREAM_TYPE_RECORDING: title += "Recording: "; break;
+			case CHANNEL_STREAM_TYPE_DISPLAY: title += "Watching: "; break;
+			case CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING: title += "Recording (Scheduled): "; break;
+			case CHANNEL_STREAM_TYPE_RECORDING: title += "Recording: "; break;
 			default: break;
 			}
 

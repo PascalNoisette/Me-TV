@@ -24,11 +24,37 @@
 #include "me-tv-i18n.h"
 #include <glib/gprintf.h>
 #include <X11/Xlib.h>
+#include <unique/unique.h>
 
 #define ME_TV_SUMMARY _("Me TV is a digital television viewer for the GNOME desktop")
 #define ME_TV_DESCRIPTION _("Me TV was developed for the modern digital lounge room with a PC for a media centre that is capable "\
 	"of normal PC tasks (web surfing, word processing and watching TV). It is not designed to be a "\
 	"full-blown media centre such as MythTV but will integrate well with an existing GNOME desktop.\n")
+
+enum
+{
+	COMMAND_0
+};
+
+static UniqueResponse on_message_received (
+	UniqueApp*			app,
+	UniqueCommand		command,
+	UniqueMessageData*  message,
+	guint          		time_,
+	gpointer       		user_data)
+{
+	UniqueResponse response = UNIQUE_RESPONSE_FAIL;
+
+	switch (command)
+    {
+		default:
+			g_debug("Got command");
+			response = UNIQUE_RESPONSE_OK;
+			break;
+	}
+
+	return response;
+}
 
 int main (int argc, char *argv[])
 {	
@@ -104,8 +130,19 @@ int main (int argc, char *argv[])
 
 	try
 	{
-		Application application;
-		application.run();
+		UniqueApp* unique_application = unique_app_new("org.lamothe.me-tv", NULL);
+
+		if (unique_app_is_running(unique_application))
+		{
+			g_debug("Me TV is already running");
+		}
+		else
+		{
+			g_signal_connect(unique_application, "message-received", G_CALLBACK (on_message_received), NULL);
+
+			Application application;
+			application.run();
+		}
 	}
 	catch (const Glib::Exception& exception)
 	{

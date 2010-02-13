@@ -477,7 +477,7 @@ void Application::run()
 
 	if (initialise_database())
 	{
-		g_debug("Me TV database initialised successfully");
+		g_debug("Me TV database initialised");
 				
 		const FrontendList& frontends = device_manager.get_frontends();
 		
@@ -532,13 +532,13 @@ void Application::run()
 			main_window->show_channels_dialog();
 		}
 
-		select_channel_to_play();
-		CATCH
-
-		if (channel_manager.has_display_channel())
+		if (!channels.empty())
 		{
 			stream_manager.start();
+			select_channel_to_play();
 		}
+
+		CATCH
 		
 		Gtk::Main::run();
 			
@@ -678,12 +678,12 @@ void Application::check_scheduled_recordings()
 	{
 		check = false;
 
-		std::list<StreamManager::ChannelStream>& streams = stream_manager.get_streams();
-		for (std::list<StreamManager::ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+		std::list<ChannelStream> streams = stream_manager.get_streams();
+		for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
 		{
-			StreamManager::ChannelStream& channel_stream = *i;
+			ChannelStream& channel_stream = *i;
 			if (
-			    channel_stream.type == StreamManager::CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
+			    channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
 				!scheduled_recording_manager.is_recording(channel_stream.channel))
 			{
 				stream_manager.stop_recording(channel_stream.channel);

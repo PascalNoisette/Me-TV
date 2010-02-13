@@ -34,6 +34,10 @@ me_tv_player_LDADD =        \
 me_tv_SOURCES = \
 	../config.h \
 	main.cc\
+	channel_stream.cc \
+	channel_stream.h \
+	frontend_thread.cc \
+	frontend_thread.h \
 	mpeg_stream.cc \
 	mpeg_stream.h \
 	buffer.cc \

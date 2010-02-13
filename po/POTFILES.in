@@ -14,6 +14,8 @@ src/buffer.cc
 src/buffer.h
 src/channel.cc
 src/channel.h
+src/channel_stream.cc
+src/channel_stream.h
 src/channel_manager.cc
 src/channel_manager.h
 src/channels_conf_line.cc
@@ -50,6 +52,8 @@ src/epg_thread.cc
 src/epg_thread.h
 src/exception.cc
 src/exception.h
+src/frontend_thread.cc
+src/frontend_thread.h
 src/gtk_epg_widget.cc
 src/gtk_epg_widget.h
 src/initial_scan_line.cc

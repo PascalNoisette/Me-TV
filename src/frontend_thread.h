@@ -18,30 +18,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __STREAM_THREAD_H__
-#define __STREAM_THREAD_H__
+#ifndef __FRONTEND_THREAD_H__
+#define __FRONTEND_THREAD_H__
 
-#include "frontend_thread.h"
+#include "thread.h"
+#include "epg_thread.h"
+#include "channel.h"
+#include "channel_stream.h"
+#include "dvb_frontend.h"
 
-class StreamManager
+class FrontendThread : public Thread
 {
 private:
-	std::list<FrontendThread> frontend_threads;
-		
+	Glib::StaticRecMutex		mutex;
+	std::list<ChannelStream>	streams;
+	EpgThread*					epg_thread;
+	Dvb::Frontend&				frontend;
+
+	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
+	void run();
+	void setup_dvb(ChannelStream& stream);
+	void start_epg_thread();
+	void stop_epg_thread();
+
 public:
-	guint get_last_epg_update_time();
-	void set_display_stream(const Channel& channel);
-	const ChannelStream& get_display_stream();
-	std::list<ChannelStream> get_streams();
-	FrontendThread& get_display_frontend_thread();
+	FrontendThread(Dvb::Frontend& frontend);
+	~FrontendThread();
 
 	gboolean is_recording();
 	gboolean is_recording(const Channel& channel);
 	void start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled);
 	void stop_recording(const Channel& channel);
-
+	guint get_last_epg_update_time();
 	void start();
 	void stop();
+	void set_display_stream(const Channel& channel);
+	const ChannelStream& get_display_stream();
+	std::list<ChannelStream>& get_streams() { return streams; }
 };
 
 #endif

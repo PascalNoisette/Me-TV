@@ -410,7 +410,7 @@ void MainWindow::update()
 	Glib::ustring window_title;
 	Glib::ustring status_text;
 
-	std::list<StreamManager::ChannelStream>& streams = application.stream_manager.get_streams();
+	std::list<ChannelStream> streams = application.stream_manager.get_streams();
 	if (streams.size() == 0)
 	{
 		window_title = "Me TV - It's TV for me computer";
