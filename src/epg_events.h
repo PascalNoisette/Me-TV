@@ -21,8 +21,8 @@
 #ifndef __EPG_EVENTS_H__
 #define __EPG_EVENTS_H__
 
-#include "epg_event.h"
 #include "data.h"
+#include "epg_event.h"
 
 typedef std::list<EpgEvent> EpgEventList;
 

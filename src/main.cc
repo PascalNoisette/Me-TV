@@ -18,10 +18,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include "application.h"
 #include "me-tv.h"
-#include <gconfmm.h>
 #include "me-tv-i18n.h"
+#include "application.h"
+#include <gconfmm.h>
 #include <glib/gprintf.h>
 #include <X11/Xlib.h>
 #include <unique/unique.h>

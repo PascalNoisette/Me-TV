@@ -161,7 +161,7 @@ Application::Application()
 
 	Crc32::init();
 	
-	client = Gnome::Conf::Client::get_default_client();
+	gconf_client = Gnome::Conf::Client::get_default_client();
 
 	if (get_int_configuration_value("epg_span_hours") == 0)
 	{
@@ -390,64 +390,64 @@ Glib::ustring Application::get_configuration_path(const Glib::ustring& key)
 void Application::set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value)
 {
 	Glib::ustring path = get_configuration_path(key);
-	Gnome::Conf::Value v = client->get(path);
+	Gnome::Conf::Value v = gconf_client->get(path);
 	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
 	{
 		g_debug("Setting string configuration value '%s' = '%s'", key.c_str(), value.c_str());
-		client->set(path, value);
+		gconf_client->set(path, value);
 	}
 }
 
 void Application::set_int_configuration_default(const Glib::ustring& key, gint value)
 {
 	Glib::ustring path = get_configuration_path(key);
-	Gnome::Conf::Value v = client->get(path);
+	Gnome::Conf::Value v = gconf_client->get(path);
 	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
 	{
 		g_debug("Setting int configuration value '%s' = '%d'", path.c_str(), value);
-		client->set(path, value);
+		gconf_client->set(path, value);
 	}
 }
 
 void Application::set_boolean_configuration_default(const Glib::ustring& key, gboolean value)
 {
 	Glib::ustring path = get_configuration_path(key);
-	Gnome::Conf::Value v = client->get(path);
+	Gnome::Conf::Value v = gconf_client->get(path);
 	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
 	{
 		g_debug("Setting int configuration value '%s' = '%s'", path.c_str(), value ? "true" : "false");
-		client->set(path, (bool)value);
+		gconf_client->set(path, (bool)value);
 	}
 }
 
 Glib::ustring Application::get_string_configuration_value(const Glib::ustring& key)
 {
-	return client->get_string(get_configuration_path(key));
+	return gconf_client->get_string(get_configuration_path(key));
 }
 
 gint Application::get_int_configuration_value(const Glib::ustring& key)
 {
-	return client->get_int(get_configuration_path(key));
+	return gconf_client->get_int(get_configuration_path(key));
 }
 
 gint Application::get_boolean_configuration_value(const Glib::ustring& key)
 {
-	return client->get_bool(get_configuration_path(key));
+	return gconf_client->get_bool(get_configuration_path(key));
 }
 
 void Application::set_string_configuration_value(const Glib::ustring& key, const Glib::ustring& value)
 {
-	client->set(get_configuration_path(key), value);
+	gconf_client->set(get_configuration_path(key), value);
 }
 
 void Application::set_int_configuration_value(const Glib::ustring& key, gint value)
 {
-	client->set(get_configuration_path(key), (gint)value);
+	gconf_client->set(get_configuration_path(key), (gint)value);
 }
 
 void Application::set_boolean_configuration_value(const Glib::ustring& key, gboolean value)
 {
-	client->set(get_configuration_path(key), (bool)value);
+	gconf_client->set(get_configuration_path(key), (bool)value);
 }
 
 void Application::select_channel_to_play()
@@ -669,7 +669,7 @@ void Application::check_scheduled_recordings()
 		Channel* channel = channel_manager.find_channel(scheduled_recording.channel_id);
 		if (channel != NULL)
 		{
-			start_recording(*channel, scheduled_recording.description, true);
+			start_recording(*channel, scheduled_recording);
 		}
 	}
 
@@ -722,61 +722,6 @@ gboolean Application::on_timeout()
 	return true;
 }
 
-Glib::ustring Application::make_recording_filename(Channel& channel, const Glib::ustring& description)
-{
-	Glib::ustring start_time = get_local_time_text("%c");
-	Glib::ustring filename;
-	Glib::ustring title = description;
-
-	if (title.empty())
-	{
-		EpgEvent epg_event;
-		if (channel.epg_events.get_current(epg_event))
-		{
-			title = epg_event.get_title();
-		}
-	}
-	
-	if (title.empty())
-	{
-		filename = Glib::ustring::compose
-		(
-			"%1 - %2.mpeg",
-			channel.name,
-			start_time
-		);
-	}
-	else
-	{
-		filename = Glib::ustring::compose
-		(
-			"%1 - %2 - %3.mpeg",
-			title,
-			channel.name,
-			start_time
-		);
-	}
-
-	// Clean filename
-	Glib::ustring::size_type position = Glib::ustring::npos;
-	while ((position = filename.find('/')) != Glib::ustring::npos)
-	{
-		filename.replace(position, 1, "_");
-	}
-
-	if (get_boolean_configuration_value("remove_colon"))
-	{
-		while ((position = filename.find(':')) != Glib::ustring::npos )
-		{
-			filename.replace(position, 1, "_");
-		}
-	}
-
-	Glib::ustring fixed_filename = Glib::filename_from_utf8(filename);
-	
-	return Glib::build_filename(get_string_configuration_value("recording_directory"), fixed_filename);
-}
-
 Glib::StaticRecMutex& Application::get_mutex()
 {
 	return mutex;
@@ -800,12 +745,18 @@ void Application::on_error(const Glib::ustring& message)
 	}
 }
 
-void Application::start_recording(Channel& channel, const Glib::ustring& description, gboolean scheduled)
+void Application::start_recording(Channel& channel)
 {
-	stream_manager.start_recording(channel, make_recording_filename(channel, description), scheduled);
+	stream_manager.start_recording(channel);
 	update();
-
 	g_debug("Recording started");
+}
+
+void Application::start_recording(Channel& channel, const ScheduledRecording& scheduled_recording)
+{
+	stream_manager.start_recording(channel, scheduled_recording);
+	update();
+	g_debug("Scheduled recording started");
 }
 
 void Application::stop_recording(Channel& channel)

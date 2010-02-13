@@ -85,6 +85,7 @@ namespace Dvb
 		const struct dvb_frontend_parameters& get_frontend_parameters() const;
 		fe_type_t get_frontend_type() const { return frontend_info.type; }
 		const struct dvb_frontend_info& get_frontend_info() const;
+		Glib::ustring get_name() const { return get_frontend_info().name; }
 		int get_fd() const { return fd; }
 		const Adapter& get_adapter() const { return adapter; }
 		Glib::ustring get_path() const { return adapter.get_frontend_path(frontend); }

@@ -22,6 +22,7 @@
 #define __STREAM_THREAD_H__
 
 #include "frontend_thread.h"
+#include "scheduled_recording.h"
 
 class StreamManager
 {
@@ -37,7 +38,8 @@ public:
 
 	gboolean is_recording();
 	gboolean is_recording(const Channel& channel);
-	void start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled);
+	void start_recording(Channel& channel);
+	void start_recording(Channel& channel, const ScheduledRecording& scheduled_recording);
 	void stop_recording(const Channel& channel);
 
 	void start();

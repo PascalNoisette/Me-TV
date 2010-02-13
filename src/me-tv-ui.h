@@ -26,6 +26,7 @@
 #include "dvb_frontend.h"
 #include "channel.h"
 
+Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description = "");
 
 // This class exists because I can't get Gtk::ComboBoxText to work properly
 // it seems to have 2 columns

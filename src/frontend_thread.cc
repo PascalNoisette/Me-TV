@@ -127,7 +127,7 @@ void FrontendThread::run()
 		
 	g_debug("FrontendThread loop exited");
 	
-	Lock lock(mutex, "FrontendThread::run() - exit");
+	Lock lock(mutex, __PRETTY_FUNCTION__);
 
 	g_debug("Removing streams ...");
 	std::list<ChannelStream>::iterator iterator = streams.begin();
@@ -147,7 +147,7 @@ void FrontendThread::run()
 
 void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 {
-	Lock lock(mutex, "FrontendThread::setup_dvb()");
+	Lock lock(mutex, __PRETTY_FUNCTION__);
 	
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 	Buffer buffer;
@@ -215,7 +215,7 @@ void FrontendThread::start_epg_thread()
 {
 	if (!disable_epg_thread)
 	{
-		Lock lock(mutex, "FrontendThread::start_epg_thread()");
+		Lock lock(mutex, __PRETTY_FUNCTION__);
 
 		stop_epg_thread();
 		epg_thread = new EpgThread();
@@ -228,7 +228,7 @@ void FrontendThread::stop_epg_thread()
 {
 	if (!disable_epg_thread)
 	{
-		Lock lock(mutex, "FrontendThread::stop_epg_thread()");
+		Lock lock(mutex, __PRETTY_FUNCTION__);
 
 		if (epg_thread != NULL)
 		{
@@ -242,7 +242,7 @@ void FrontendThread::stop_epg_thread()
 
 const ChannelStream& FrontendThread::get_display_stream()
 {
-	Lock lock(mutex, "FrontendThread::get_display_stream()");
+	Lock lock(mutex, __PRETTY_FUNCTION__);
 
 	if (streams.size() == 0)
 	{
@@ -255,7 +255,7 @@ const ChannelStream& FrontendThread::get_display_stream()
 void FrontendThread::set_display_stream(const Channel& channel)
 {
 	g_debug("FrontendThread::set_display_stream(%s)", channel.name.c_str());
-	Lock lock(mutex, "FrontendThread::set_display_stream()");
+	Lock lock(mutex, __PRETTY_FUNCTION__);
 	
 	if (streams.size() == 0)
 	{
@@ -303,7 +303,7 @@ bool is_recording_stream(ChannelStream& channel_stream)
 
 void FrontendThread::start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled)
 {
-	Lock lock(mutex, "FrontendThread::start_recording()");
+	Lock lock(mutex, __PRETTY_FUNCTION__);
 	
 	ChannelStreamType requested_type = scheduled ? CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING :
 		CHANNEL_STREAM_TYPE_RECORDING;
@@ -381,7 +381,7 @@ void FrontendThread::start_recording(const Channel& channel, const Glib::ustring
 
 void FrontendThread::stop_recording(const Channel& channel)
 {
-	Lock lock(mutex, "FrontendThread::stop_recording()");
+	Lock lock(mutex, __PRETTY_FUNCTION__);
 
 	std::list<ChannelStream>::iterator iterator = streams.begin();
 
@@ -409,7 +409,7 @@ guint FrontendThread::get_last_epg_update_time()
 {
 	guint result = 0;
 
-	Lock lock(mutex, "FrontendThread::get_epg_last_update_time()");
+	Lock lock(mutex, __PRETTY_FUNCTION__);
 	if (epg_thread != NULL)
 	{
 		result = epg_thread->get_last_epg_update_time();
@@ -420,6 +420,7 @@ guint FrontendThread::get_last_epg_update_time()
 
 gboolean FrontendThread::is_recording()
 {
+	Lock lock(mutex, __PRETTY_FUNCTION__);
 	return streams.size() > 1;
 }
 

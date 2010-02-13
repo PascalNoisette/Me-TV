@@ -33,7 +33,6 @@ private:
 	Glib::StaticRecMutex		mutex;
 	std::list<ChannelStream>	streams;
 	EpgThread*					epg_thread;
-	Dvb::Frontend&				frontend;
 
 	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
 	void run();
@@ -45,6 +44,8 @@ public:
 	FrontendThread(Dvb::Frontend& frontend);
 	~FrontendThread();
 
+	Dvb::Frontend& frontend;
+	
 	gboolean is_recording();
 	gboolean is_recording(const Channel& channel);
 	void start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled);

@@ -38,7 +38,6 @@ private:
 	Glib::RefPtr<Gtk::Builder>			builder;
 	MainWindow*							main_window;
 	StatusIcon*							status_icon;
-	Glib::RefPtr<Gnome::Conf::Client>	client;
 	Glib::ustring						preferred_language;
 	Glib::StaticRecMutex				mutex;
 	guint								timeout_source;
@@ -46,6 +45,7 @@ private:
 	Data::Schema						schema;
 	Glib::ustring						database_filename;
 	gboolean							database_initialised;
+	Glib::RefPtr<Gnome::Conf::Client>	gconf_client;
 
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
@@ -97,9 +97,9 @@ public:
 	
 	void check_scheduled_recordings();
 	void on_record();
-	void start_recording(Channel& channel, const Glib::ustring& description = "", gboolean scheduled = false);
+	void start_recording(Channel& channel);
+	void start_recording(Channel& channel, const ScheduledRecording& scheduled_recording);
 	void stop_recording(Channel& channel);
-	Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description = "");
 		
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 	const Glib::ustring& get_application_dir() const { return application_dir; }

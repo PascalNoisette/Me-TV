@@ -83,16 +83,112 @@ gboolean StreamManager::is_recording(const Channel& channel)
 	return false;
 }
 
-void StreamManager::start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled)
+void StreamManager::start_recording(Channel& channel, const ScheduledRecording& scheduled_recording)
 {
-	// TODO
-	throw Exception("Not implemented");
+	gboolean found = false;
+	
+	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+	{
+		FrontendThread& frontend_thread = *i;
+		if (frontend_thread.frontend.get_path() == scheduled_recording.device)
+		{
+			frontend_thread.start_recording(channel,
+			    make_recording_filename(channel, scheduled_recording.description),
+			    true);
+			found = true;
+		}
+	}
+
+	if (!found)
+	{
+		Glib::ustring message = Glib::ustring::compose(
+		    _("Failed to find frontend '%1' for scheduled recording"),
+		    scheduled_recording.device);
+		throw Exception(message);
+	}
+}
+
+void StreamManager::start_recording(Channel& channel)
+{
+	gboolean recording = false;
+
+	g_debug("Request to record '%s'", channel.name.c_str());
+	
+	// TODO: Need to look into the SRs to see if the selected frontend recording will conflict
+	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+	{
+		FrontendThread& frontend_thread = *i;
+		if (frontend_thread.frontend.get_frontend_type() != channel.transponder.frontend_type)
+		{
+			g_debug("'%s' incompatible", frontend_thread.frontend.get_name().c_str());
+			continue;
+		}
+		
+		if (frontend_thread.is_recording(channel))
+		{
+			g_debug("Already recording on '%s'", channel.name.c_str());
+			recording = true;
+			break;
+		}
+	}
+
+	if (!recording)
+	{
+		gboolean found = false;
+		
+		g_debug("Not currently recording '%s'", channel.name.c_str());
+		for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+		{
+			FrontendThread& frontend_thread = *i;
+			if (frontend_thread.frontend.get_frontend_type() != channel.transponder.frontend_type)
+			{
+				g_debug("'%s' incompatible", frontend_thread.frontend.get_name().c_str());
+				continue;
+			}
+
+			if (frontend_thread.frontend.get_frontend_parameters().frequency ==
+			    channel.transponder.frontend_parameters.frequency)
+			{
+				g_debug("Found a frontend already tuned to the correct transponder");
+				frontend_thread.start_recording(channel,
+				    make_recording_filename(channel),
+				    false);
+				found = true;
+				break;
+			}
+		}
+
+		if (!found)
+		{
+			for (std::list<FrontendThread>::reverse_iterator i = frontend_threads.rbegin(); i != frontend_threads.rend(); i++)
+			{
+				FrontendThread& frontend_thread = *i;
+				if (frontend_thread.frontend.get_frontend_type() != channel.transponder.frontend_type)
+				{
+					g_debug("'%s' incompatible", frontend_thread.frontend.get_name().c_str());
+					continue;
+				}
+
+				if (!frontend_thread.is_recording())
+				{
+					g_debug("Selected idle frontend '%s' for recording", frontend_thread.frontend.get_name().c_str());
+					frontend_thread.start_recording(channel,
+					    make_recording_filename(channel),
+					    false);
+					break;
+				}
+			}
+		}
+	}
 }
 
 void StreamManager::stop_recording(const Channel& channel)
 {
-	// TODO
-	throw Exception("Not implemented");
+	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+	{
+		FrontendThread& frontend_thread = *i;
+		frontend_thread.stop_recording(channel);
+	}
 }
 
 void StreamManager::start()
@@ -101,7 +197,7 @@ void StreamManager::start()
 	for(FrontendList::iterator i = frontends.begin(); i != frontends.end(); i++)
 	{
 		frontend_threads.push_back(FrontendThread(**i));
-		(*frontend_threads.rbegin()).start();
+		frontend_threads.back().start();
 	}
 }
 

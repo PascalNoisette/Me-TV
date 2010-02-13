@@ -131,8 +131,8 @@ namespace Data
 	class Constraint
 	{
 	public:
-		ConstraintType type;
-		StringList columns;
+		ConstraintType	type;
+		StringList		columns;
 	};
 	
 	class Constraints : public std::list<Constraint>
