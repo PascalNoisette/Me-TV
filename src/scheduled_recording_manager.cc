@@ -120,7 +120,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 		if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
 		    current_channel.transponder != channel.transponder &&
 		    scheduled_recording.overlaps(current) &&
-		    scheduled_recording.device != current.device)
+		    scheduled_recording.device == current.device)
 		{
 			Glib::ustring message =  Glib::ustring::compose(
 				_("Failed to save scheduled recording because it conflicts with another scheduled recording called '%1'."),
