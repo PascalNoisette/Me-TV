@@ -109,6 +109,34 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 	g_debug("Setting scheduled recording");
 	
 	Channel& channel = get_application().channel_manager.get_channel_by_id(scheduled_recording.channel_id);
+
+	if (scheduled_recording.device.empty())
+	{
+		g_debug("Looking for an available frontend for scheduled recording");
+		FrontendList& frontends = get_application().device_manager.get_frontends();
+		for (FrontendList::reverse_iterator j = frontends.rbegin(); j != frontends.rend(); j++)
+		{
+			Glib::ustring device = (*j)->get_path();
+				
+			for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !updated; i++)
+			{
+				ScheduledRecording& current = *i;
+
+				Channel& current_channel = get_application().channel_manager.get_channel_by_id(current.channel_id);
+
+				// Check for conflict
+				if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
+					current_channel.transponder != channel.transponder &&
+					scheduled_recording.overlaps(current) &&
+					device == current.device)
+				{
+					g_debug("Found available frontend '%s'", device.c_str());
+					scheduled_recording.device = device;
+					break;
+				}
+			}
+		}		
+	}
 	
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !updated; i++)
 	{
