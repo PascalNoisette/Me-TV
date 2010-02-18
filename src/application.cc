@@ -218,15 +218,13 @@ void Application::make_directory_with_parents(const Glib::ustring& path)
 	if (!file->query_exists())
 	{
 		Glib::RefPtr<Gio::File> parent = file->get_parent();
-		if (parent->query_exists())
-		{
-			g_debug("Creating directory '%s'", path.c_str());
-			file->make_directory();
-		}
-		else
+		if (!parent->query_exists())
 		{
 			make_directory_with_parents(parent->get_path());
 		}
+
+		g_debug("Creating directory '%s'", path.c_str());
+		file->make_directory();
 	}
 }
 

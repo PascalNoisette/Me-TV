@@ -136,8 +136,13 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 				}
 			}
 		}		
+
+		if (scheduled_recording.device.empty())
+		{
+			scheduled_recording.device = (*(frontends.rbegin()))->get_path(); 
+		}
 	}
-	
+
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !updated; i++)
 	{
 		ScheduledRecording& current = *i;
