@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2010 Michael Lamothe
+ *
+ * This file is part of Me TV
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -7,28 +27,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#include <stdlib.h>
-#include <string>
-#include <list>
-#include <vlc/vlc.h>
-
-#define DEFAULT_VOLUME	130
-
-libvlc_instance_t*		instance = NULL;
-libvlc_media_player_t*	media_player = NULL;
-libvlc_exception_t		exception;
-int						volume = DEFAULT_VOLUME;
-
-typedef std::list<std::string> StringList;
-
-void check_exception()
-{
-	if (libvlc_exception_raised(&exception))
-	{
-		fprintf(stderr, "me-tv-vlc: %s\n", libvlc_exception_get_message(&exception));
-		exit(0);
-	}
-}
+#include <xine.h>
+#include <xine/xineutils.h>
 
 typedef enum
 {
@@ -36,6 +36,12 @@ typedef enum
 	AUDIO_CHANNEL_STATE_LEFT = 1,
 	AUDIO_CHANNEL_STATE_RIGHT = 2
 } AudioChannelState;
+
+static xine_t*				xine;
+static xine_stream_t*		stream;
+static xine_video_port_t*	video_port;
+static xine_audio_port_t*	audio_port;
+static xine_event_queue_t*	event_queue;
 
 static Display*				display;
 static int					screen;
@@ -47,32 +53,158 @@ static AudioChannelState	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
 
 #define INPUT_MOTION (ExposureMask | KeyPressMask | StructureNotifyMask | PropertyChangeMask)
 
+static void dest_size_cb(void *data, int video_width, int video_height, double video_pixel_aspect,
+			 int *dest_width, int *dest_height, double *dest_pixel_aspect)
+{
+	*dest_width        = width;
+	*dest_height       = height;
+	*dest_pixel_aspect = pixel_aspect;
+}
+
+static void frame_output_cb(void *data, int video_width, int video_height,
+			    double video_pixel_aspect, int *dest_x, int *dest_y,
+			    int *dest_width, int *dest_height, 
+			    double *dest_pixel_aspect, int *win_x, int *win_y)
+{
+	*dest_x            = 0;
+	*dest_y            = 0;
+	*win_x             = 0;
+	*win_y             = 0;
+	*dest_width        = width;
+	*dest_height       = height;
+	*dest_pixel_aspect = pixel_aspect;
+}
+
+static void event_listener(void *user_data, const xine_event_t *event)
+{
+	switch(event->type)
+	{
+		case XINE_EVENT_UI_PLAYBACK_FINISHED:
+			running = 0;
+			break;
+		default:
+			break;
+	}
+}
+
 int set_audio_channel_state(AudioChannelState state)
 {
+	static xine_post_t* plugin = NULL;
+	
+	if (audio_channel_state != state)
+	{
+		if (state == AUDIO_CHANNEL_STATE_BOTH)
+		{
+			if (plugin != NULL)
+			{
+				printf("me-tv-xine: Disabling dual language");
+				xine_post_wire_audio_port (xine_get_audio_source (stream), audio_port);
+			}
+		}
+		else
+		{
+			switch (state)
+			{
+			case AUDIO_CHANNEL_STATE_LEFT: printf("me-tv-xine: Enabling left channel\n");  break;
+			case AUDIO_CHANNEL_STATE_RIGHT: printf("me-tv-xine: Enabling right channel\n");  break;
+			default: break;
+			}
+			
+			if (plugin == NULL)
+			{
+				printf("me-tv-xine: Creating upmix_mono plugin\n");
+				xine_post_wire_audio_port(xine_get_audio_source (stream), audio_port);
+
+				plugin = xine_post_init (xine, "upmix_mono", 0, &audio_port, &video_port);
+				if (plugin == NULL)
+				{
+					fprintf(stderr, "me-tv-xine: Failed to create upmix_mono plugin\n");
+					return -1;
+				}
+				
+				printf("me-tv-xine: upmix_mono plugin created\n");
+			}
+			else
+			{
+				printf("me-tv-xine: upmix_mono plugin already created, using existing\n");
+			}
+			
+			xine_post_out_t* plugin_output = xine_post_output (plugin, "audio out")
+				? : xine_post_output (plugin, "audio")
+				? : xine_post_output (plugin, xine_post_list_outputs (plugin)[0]);
+			if (plugin_output == NULL)
+			{
+				fprintf(stderr, "me-tv-xine: Failed to get xine plugin output for upmix_mono");
+				return -1;
+			}
+			
+			xine_post_in_t* plugin_input = xine_post_input (plugin, "audio")
+				? : xine_post_input (plugin, "audio in")
+				? : xine_post_input (plugin, xine_post_list_inputs (plugin)[0]);
+			
+			if (plugin_input == NULL)
+			{
+				fprintf(stderr, "me-tv-xine: Failed to get xine plugin input for upmix_mono\n");
+				return -1;
+			}
+
+			xine_post_wire (xine_get_audio_source (stream), plugin_input);
+			xine_post_wire_audio_port (plugin_output, audio_port);
+			
+			printf("me-tv-xine: upmix_mono plugin wired\n");
+			int parameter = -1;
+			switch (state)
+			{
+			case AUDIO_CHANNEL_STATE_LEFT: parameter = 0; break;
+			case AUDIO_CHANNEL_STATE_RIGHT: parameter = 1; break;
+			default: break;
+			}
+
+			printf("me-tv-xine: Setting channel on upmix_mono plugin to %d\n", parameter);
+
+			const xine_post_in_t *in = xine_post_input (plugin, "parameters");
+			const xine_post_api_t* api = (const xine_post_api_t*)in->data;
+			const xine_post_api_descr_t* param_desc = api->get_param_descr();
+			
+			if (param_desc->struct_size != 4)
+			{
+				fprintf(stderr, "me-tv-xine: ASSERT: parameter size != 4\n");
+				return -1;
+			}
+
+			api->set_parameters (plugin, (void*)&parameter);
+		}
+		
+		audio_channel_state = state;
+	}
+
 	return 0;
 }
 
 void set_mute_state(bool mute)
 {
-	libvlc_audio_set_mute(instance, mute, &exception);
-	check_exception();
+	xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, mute ? 0 : 100);
 }
   
 void set_deinterlacer_state(bool deinterlace)
 {
+	xine_set_param(stream, XINE_PARAM_VO_DEINTERLACE, deinterlace);
 }
 
 void set_audio_stream(int channel)
 {
+	xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
 }
 
 void set_subtitle_stream(int channel)
 {
+	xine_set_param(stream, XINE_PARAM_SPU_CHANNEL, channel);
 }
 
 int main(int argc, char **argv)
 {
 	char			configfile[2048];
+	x11_visual_t	vis;
 	double			res_h, res_v;
 	char			*mrl = NULL;
 	const char*		video_driver = "auto";
@@ -80,25 +212,16 @@ int main(int argc, char **argv)
 
 	if (argc != 7)
 	{
-		fprintf(stderr, "Invalid number of parameters\n");
+		fprintf(stderr, "me-tv-xine: Invalid number of parameters\n");
 		return -1;
 	}
-
-	if (strncmp(argv[1], "fifo://", 7) == 0)
-	{
-		mrl = argv[1] + 7;
-	}
-	else
-	{
-		mrl = argv[1];
-	}
-
+	
+	mrl = argv[1];
 	window = atoi(argv[2]);
 	if (strlen(argv[3]) > 0)
 	{
 		video_driver = argv[3];
 	}
-	
 	if (strlen(argv[4]) > 0)
 	{
 		audio_driver = argv[4];
@@ -106,13 +229,18 @@ int main(int argc, char **argv)
 
 	if (!XInitThreads())
 	{
-		fprintf(stderr, "XInitThreads() failed\n");
+		fprintf(stderr, "me-tv-xine: XInitThreads() failed\n");
 		return -1;
 	}
 
+	xine = xine_new();
+	sprintf(configfile, "%s%s", xine_get_homedir(), "/.me-tv/xine.config");
+	xine_config_load(xine, configfile);
+	xine_init(xine);
+
 	if ((display = XOpenDisplay(getenv("DISPLAY"))) == NULL)
 	{
-		fprintf(stderr, "XOpenDisplay() failed.\n");
+		fprintf(stderr, "me-tv-xine: XOpenDisplay() failed.\n");
 		return -1;
 	}
 
@@ -131,6 +259,12 @@ int main(int argc, char **argv)
 	XSync(display, False);
 	XUnlockDisplay(display);
 
+	vis.display           = display;
+	vis.screen            = screen;
+	vis.d                 = window;
+	vis.dest_size_cb      = dest_size_cb;
+	vis.frame_output_cb   = frame_output_cb;
+	vis.user_data         = NULL;
 	pixel_aspect          = res_v / res_h;
 
 	if (fabs(pixel_aspect - 1.0) < 0.01)
@@ -138,70 +272,72 @@ int main(int argc, char **argv)
 		pixel_aspect = 1.0;
 	}
 
-	const char * const vlc_argv[] = { 
-		"-I", "dummy", 
-		"--ignore-config",
-		"--vout-event=3",
-		"--verbose=0",
-		"--no-osd"
-	};
-
-	libvlc_exception_init (&exception);
-	instance = libvlc_new (sizeof(vlc_argv) / sizeof(vlc_argv[0]), vlc_argv, &exception);
-	check_exception();
-
-	media_player = libvlc_media_player_new(instance, &exception);
-	check_exception();
-
-	libvlc_media_player_set_xwindow(media_player, window, &exception);
-	check_exception();
-
-	libvlc_audio_set_volume(instance, volume, &exception);
-	check_exception();
-
-	libvlc_media_t* media = libvlc_media_new(instance, mrl, &exception);
-	check_exception();
-
-	window = atoi(argv[2]);
-		
-	std::string vout = ":vout="; vout += argv[3];
-	std::string aout = ":aout="; aout += argv[4];
-	
-	StringList options;
-	options.push_back(":ignore-config=1");
-	options.push_back(":osd=0");
-	options.push_back(":file-caching=2000");
-	options.push_back(vout);
-	options.push_back(aout);
-	options.push_back(":skip-frames=1");
-	options.push_back(":drop-late-frames=1");
-
-	options.push_back(":video-filter=deinterlace");
-	options.push_back(":vout-filter=deinterlace");
-	options.push_back(":deinterlace-mode=bob"); // discard,blend,mean,bob,linear,x
-
-	options.push_back(":postproc-q=6");
-
-	for (StringList::iterator iterator = options.begin(); iterator != options.end(); iterator++)
+	if ((video_port = xine_open_video_driver(xine, video_driver, XINE_VISUAL_TYPE_X11, (void *) &vis)) == NULL)
 	{
-		std::string process_option = *iterator;
-		if (!process_option.empty())
-		{
-			libvlc_media_add_option(media, process_option.c_str(), &exception);
-			check_exception();
-		}
+		fprintf(stderr, "me-tv-xine: Failed to initialise video driver '%s'\n", video_driver);
+		return -1;
 	}
 
-	libvlc_media_player_set_media(media_player, media, &exception);
-	check_exception();
+	audio_port	= xine_open_audio_driver(xine , audio_driver, NULL);
+	stream		= xine_stream_new(xine, audio_port, video_port);
+	event_queue	= xine_event_new_queue(stream);
+	xine_event_create_listener_thread(event_queue, event_listener, NULL);
 
-	libvlc_media_release(media);
+	xine_port_send_gui_data(video_port, XINE_GUI_SEND_DRAWABLE_CHANGED, (void *) window);
+	xine_port_send_gui_data(video_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, (void *) 1);
 
-	libvlc_media_player_play(media_player, &exception);
-	check_exception();
+	if (video_port != NULL && strcmp(argv[5], "tvtime") == 0)
+	{
+		xine_post_wire_video_port(xine_get_video_source(stream), video_port);
+
+		xine_post_t* plugin = xine_post_init(xine, "tvtime", 0, &audio_port, &video_port);
+		if (plugin == NULL)
+		{
+			fprintf(stderr, "me-tv-xine: Failed to create tvtime plugin\n");
+			return -1;
+		}
+
+		xine_post_out_t* plugin_output = xine_post_output (plugin, "video out")
+				? : xine_post_output (plugin, "video")
+				? : xine_post_output (plugin, xine_post_list_outputs (plugin)[0]);
+		if (plugin_output == NULL)
+		{
+			fprintf(stderr, "me-tv-xine: Failed to get xine plugin output for deinterlacing\n");
+			return -1;
+		}
+
+		xine_post_in_t* plugin_input = xine_post_input (plugin, "video")
+				? : xine_post_input (plugin, "video in")
+				? : xine_post_input (plugin, xine_post_list_inputs (plugin)[0]);
+
+		if (plugin_input == NULL)
+		{
+			fprintf(stderr, "me-tv-xine: Failed to get xine plugin input for deinterlacing\n");
+			return -1;
+		}
+
+		xine_post_wire(xine_get_video_source (stream), plugin_input);
+		xine_post_wire_video_port(plugin_output, video_port);
+
+		set_deinterlacer_state(true);
+	}
+	else if (strcmp(argv[5], "standard") == 0)
+	{
+		set_deinterlacer_state(true);
+	}
+	else
+	{
+		set_deinterlacer_state(false);
+	}
 
 	set_mute_state(strcmp(argv[6], "true") == 0);
 	
+	if ((!xine_open(stream, mrl)) || (!xine_play(stream, 0, 0)))
+	{
+		fprintf(stderr, "me-tv-xine: Failed to open mrl '%s'\n", mrl);
+		return -1;
+	}
+
 	running = 1;
 
 	while (running)
@@ -219,7 +355,7 @@ int main(int argc, char **argv)
 
 		if (!got_event)
 		{
-			usleep(1000);
+			xine_usec_sleep(20000);
 			continue;
 		}
 
@@ -230,7 +366,7 @@ int main(int argc, char **argv)
 				{
 					break;
 				}
-				// Send expose
+				xine_port_send_gui_data(video_port, XINE_GUI_SEND_EXPOSE_EVENT, &xevent);
 				break;
 
 			case ConfigureNotify:
@@ -277,6 +413,17 @@ int main(int argc, char **argv)
 						}
 							
 						break;
+
+					case XK_space:
+						if (key_event->state == XK_Shift_L)
+						{
+							xine_set_param(stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE);
+						}
+						else
+						{
+							xine_set_param(stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
+						}
+						break;
 							
 					default:
 						if (key_event->keycode >= XK_0 && key_event->keycode <= XK_9)
@@ -299,14 +446,22 @@ int main(int argc, char **argv)
 				break;
 		}
 	}
-
-	libvlc_media_player_release(media_player);
-	media_player = NULL;
-	
-	libvlc_release(instance);
-	instance = NULL;
+  
+	xine_close(stream);
+	xine_event_dispose_queue(event_queue);
+	xine_dispose(stream);
+	if (audio_port)
+	{
+		xine_close_audio_driver(xine, audio_port);
+	}
+	if (video_port != NULL)
+	{
+		xine_close_video_driver(xine, video_port);
+	}
+	xine_exit(xine);
 
 	XCloseDisplay (display);
+	printf("me-tv-xine: Xine engine terminating normally\n");
 
 	return 0;
 }
