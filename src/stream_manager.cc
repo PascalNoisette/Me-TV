@@ -193,10 +193,13 @@ void StreamManager::stop_recording(const Channel& channel)
 
 void StreamManager::start()
 {
+	g_debug("Starting stream manager");
 	FrontendList& frontends = get_application().device_manager.get_frontends();
 	for(FrontendList::iterator i = frontends.begin(); i != frontends.end(); i++)
 	{
-		frontend_threads.push_back(FrontendThread(**i));
+		g_debug("Starting frontend thread");
+		FrontendThread* frontend_thread = new FrontendThread(**i);
+		frontend_threads.push_back(*frontend_thread);
 		frontend_threads.back().start();
 	}
 }

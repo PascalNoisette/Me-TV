@@ -443,7 +443,7 @@ void MainWindow::on_show()
 	gint width = application.get_int_configuration_value("width");
 	gint height = application.get_int_configuration_value("height");
 		
-	if (x != -1)
+	if (width >= 0 && height >= 0)
 	{
 		g_debug("Setting geometry (%d, %d, %d, %d)", x, y, width, height);
 		move(x, y);

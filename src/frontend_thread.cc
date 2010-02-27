@@ -30,7 +30,7 @@ public:
 	~Lock() {}
 };
 
-FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Device"), frontend(f)
+FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Frontend"), frontend(f)
 {
 	g_debug("Creating FrontendThread");
 	g_static_rec_mutex_init(mutex.gobj());
@@ -43,36 +43,45 @@ FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Device"), frontend(f)
 FrontendThread::~FrontendThread()
 {
 	g_debug("Destroying FrontendThread");
-	stop_epg_thread();
-	join(true);
-	g_debug("FrontendThread destroyed");
+	stop();
 }
 
 void FrontendThread::start()
 {
-	g_debug("Starting device thread");
+	g_debug("Starting frontend thread");
 	Thread::start();
 }
 
 void FrontendThread::stop()
 {
-	g_debug("Stopping device thread");
+	g_debug("Stopping frontend thread");
 	stop_epg_thread();
 	join(true);
-	g_debug("Device thread stopped");
+	g_debug("Frontend thread stopped");
 }
 
 void FrontendThread::run()
 {
+	g_debug("Frontend thread running");
+
 	guchar buffer[TS_PACKET_SIZE * PACKET_BUFFER_SIZE];
 	guchar pat[TS_PACKET_SIZE];
 	guchar pmt[TS_PACKET_SIZE];
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 
-	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
+        // Fudge the channel open.  Allows Glib::IO_FLAG_NONBLOCK
+        int fd = open(input_path.c_str(), O_RDONLY | O_NONBLOCK);
+        if (fd == -1)
+        {
+		throw SystemException(Glib::ustring::compose(_("Failed to open FIFO for reading '%1'"), input_path));
+        }
+
+	g_debug("Opening frontend device '%s' for reading ...", input_path.c_str());
+	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_fd(fd);
 	input_channel->set_flags(input_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
 	input_channel->set_encoding("");
+	g_debug("Frontend device opened");
 	
 	guint last_insert_time = 0;
 	gsize bytes_read;
@@ -103,7 +112,7 @@ void FrontendThread::run()
 		if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
 		{
 			g_debug("Input channel read failed");
-			usleep(10000);
+			usleep(1000000);
 		}
 		else
 		{

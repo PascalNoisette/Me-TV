@@ -78,6 +78,27 @@ void EpgEventSearchDialog::search()
 	list_store_results->clear();
 
 	Application& application = get_application();
+	bool found = true;
+
+	StringList recent_searches = application.get_string_list_configuration_value("recent_searches");
+	list_store_search->clear();
+
+        for (StringList::iterator i = recent_searches.begin(); i != recent_searches.end(); i++)
+        {
+                (*list_store_search->append())[search_columns.column_text] = *i;
+		if (*i == text)
+		{
+			found = true;
+		}
+	}
+
+	if (!found)
+	{
+                (*list_store_search->append())[search_columns.column_text] = text;
+		recent_searches.push_back(text);
+		application.set_string_list_configuration_value("recent_searches", recent_searches);
+        }
+
 	bool search_description = check->get_active();
 	ChannelArray channels = application.channel_manager.get_channels();
 	for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
@@ -135,9 +156,14 @@ void EpgEventSearchDialog::on_show()
 {
 	list_store_search->clear();
 
-	(*list_store_search->append())[search_columns.column_text] = "Iron Man";
-	(*list_store_search->append())[search_columns.column_text] = "Nigella";
-	(*list_store_search->append())[search_columns.column_text] = "Neighbours";
+	Application& application = get_application();
+	StringList recent_searches = application.get_string_list_configuration_value("recent_searches");
+
+	list_store_search->clear();
+	for (StringList::iterator i = recent_searches.begin(); i != recent_searches.end(); i++)
+	{
+		(*list_store_search->append())[search_columns.column_text] = *i;
+	}
 
 	Gtk::Dialog::on_show();
 }

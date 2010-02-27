@@ -79,10 +79,12 @@ public:
 	const Glib::ustring& get_database_filename();
 	void update();
 		
+	StringList	get_string_list_configuration_value(const Glib::ustring& key);
 	Glib::ustring	get_string_configuration_value(const Glib::ustring& key);
 	gint			get_int_configuration_value(const Glib::ustring& key);
 	gboolean		get_boolean_configuration_value(const Glib::ustring& key);
 
+	void set_string_list_configuration_value(const Glib::ustring& key, const StringList& value);
 	void set_string_configuration_value(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_value(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_value(const Glib::ustring& key, gboolean value);

@@ -418,6 +418,11 @@ void Application::set_boolean_configuration_default(const Glib::ustring& key, gb
 	}
 }
 
+StringList Application::get_string_list_configuration_value(const Glib::ustring& key)
+{
+	return gconf_client->get_string_list(get_configuration_path(key));
+}
+
 Glib::ustring Application::get_string_configuration_value(const Glib::ustring& key)
 {
 	return gconf_client->get_string(get_configuration_path(key));
@@ -431,6 +436,11 @@ gint Application::get_int_configuration_value(const Glib::ustring& key)
 gint Application::get_boolean_configuration_value(const Glib::ustring& key)
 {
 	return gconf_client->get_bool(get_configuration_path(key));
+}
+
+void Application::set_string_list_configuration_value(const Glib::ustring& key, const StringList& value)
+{
+	gconf_client->set_string_list(get_configuration_path(key), value);
 }
 
 void Application::set_string_configuration_value(const Glib::ustring& key, const Glib::ustring& value)
