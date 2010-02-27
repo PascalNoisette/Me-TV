@@ -68,7 +68,8 @@ void EpgEventSearchDialog::search()
 	Gtk::CheckButton* check = NULL;
 	builder->get_widget("check_button_search_description", check);
 
-	Glib::ustring text = combo_box_entry_search->get_active_text().uppercase();
+	Glib::ustring text = combo_box_entry_search->get_active_text();
+	Glib::ustring text_uppercase = text.uppercase();
 
 	if (text.empty())
 	{
@@ -78,15 +79,16 @@ void EpgEventSearchDialog::search()
 	list_store_results->clear();
 
 	Application& application = get_application();
-	bool found = true;
+	bool found = false;
 
 	StringList recent_searches = application.get_string_list_configuration_value("recent_searches");
 	list_store_search->clear();
 
-        for (StringList::iterator i = recent_searches.begin(); i != recent_searches.end(); i++)
-        {
-                (*list_store_search->append())[search_columns.column_text] = *i;
-		if (*i == text)
+    for (StringList::iterator i = recent_searches.begin(); i != recent_searches.end(); i++)
+    {
+		Glib::ustring recent_search = *i;
+        (*list_store_search->append())[search_columns.column_text] = recent_search;
+		if (recent_search.uppercase() == text_uppercase)
 		{
 			found = true;
 		}
@@ -94,10 +96,10 @@ void EpgEventSearchDialog::search()
 
 	if (!found)
 	{
-                (*list_store_search->append())[search_columns.column_text] = text;
+		(*list_store_search->append())[search_columns.column_text] = text;
 		recent_searches.push_back(text);
 		application.set_string_list_configuration_value("recent_searches", recent_searches);
-        }
+	}
 
 	bool search_description = check->get_active();
 	ChannelArray channels = application.channel_manager.get_channels();
@@ -105,7 +107,7 @@ void EpgEventSearchDialog::search()
 	{
 		Channel& channel = *i;
 
-		EpgEventList list = channel.epg_events.search(text, search_description);
+		EpgEventList list = channel.epg_events.search(text_uppercase, search_description);
 		
 		for (EpgEventList::iterator j = list.begin(); j != list.end(); j++)
 		{
