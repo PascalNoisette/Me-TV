@@ -57,7 +57,6 @@ private:
 	void on_display_channel_changed(const Channel& channel);
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
-	void on_error(const Glib::ustring& message);
 
 public:
 	Application();
@@ -75,6 +74,8 @@ public:
 	Glib::StaticRecMutex&	get_mutex();
 	gboolean				initialise_database();
 	Data::Schema			get_schema() const { return schema; }
+
+	void show_error_dialog(const Glib::ustring& message);
 
 	const Glib::ustring& get_database_filename();
 	void update();

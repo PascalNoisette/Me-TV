@@ -138,9 +138,7 @@ void ChannelsDialog::show_scan_dialog()
 
 void ChannelsDialog::on_button_scan_clicked()
 {
-	TRY
 	show_scan_dialog();
-	CATCH
 }
 
 void ChannelsDialog::on_button_remove_selected_channels_clicked()
@@ -176,7 +174,6 @@ ChannelArray ChannelsDialog::get_channels()
 
 void ChannelsDialog::on_show()
 {
-	TRY
 	list_store->clear();
 	
 	Application& application = get_application();
@@ -200,6 +197,4 @@ void ChannelsDialog::on_show()
 		}
 	}
 	Gtk::Dialog::on_show();
-
-	CATCH
 }

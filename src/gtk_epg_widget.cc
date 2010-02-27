@@ -75,7 +75,6 @@ void GtkEpgWidget::next()
 
 void GtkEpgWidget::on_combo_box_epg_page_changed()
 {	
-	TRY
 	if (combo_box_epg_page->get_size() > 0)
 	{
 		try
@@ -88,7 +87,6 @@ void GtkEpgWidget::on_combo_box_epg_page_changed()
 		}
 		update_table();
 	}
-	CATCH
 }
 
 void GtkEpgWidget::update()
@@ -434,20 +432,21 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 
 void GtkEpgWidget::on_button_channel_clicked(guint channel_id)
 {
-	TRY
-	get_application().set_display_channel_by_id(channel_id);
-	CATCH
-
-	TRY
+	try
+	{
+		get_application().set_display_channel_by_id(channel_id);
+	}
+	catch(...)
+	{
+		on_error();
+	}
 	update_table();
-	CATCH
 }
 
 bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, Channel& channel)
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
-		TRY
 		if (get_application().stream_manager.is_recording(channel))
 		{
 			get_application().stop_recording(channel);
@@ -456,11 +455,8 @@ bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, Channel&
 		{
 			get_application().start_recording(channel);
 		}
-		CATCH
 
-		TRY
 		update_table();
-		CATCH
 	}
 
 	return false;
@@ -481,11 +477,7 @@ bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent
 
 void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 {
-	TRY
-		
 	FullscreenBugWorkaround fullscreen_bug_workaround;
 	EpgEventDialog& epg_event_dialog = EpgEventDialog::create(builder);
 	epg_event_dialog.show_epg_event(epg_event);
-
-	CATCH
 }

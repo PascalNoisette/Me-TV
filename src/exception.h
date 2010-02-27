@@ -26,14 +26,6 @@
 #include <errno.h>
 #include <string.h>
 
-#define TRY		try {
-#define CATCH	} \
-	catch(const Glib::Exception& exception) { \
-		get_signal_error().emit(exception.what().c_str()); } \
-	catch(...) { get_signal_error().emit("An unhandled error occurred"); }
-#define THREAD_CATCH	} catch(const Glib::Exception& exception) { g_message("Error in thread: %s", exception.what().c_str()); } \
-						catch(...) { g_message("An unhandled error occurred"); }
-
 class Exception : public Glib::Exception
 {
 protected:

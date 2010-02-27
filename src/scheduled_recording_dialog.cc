@@ -105,7 +105,6 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 {
 	gint dialog_response = Gtk::RESPONSE_CANCEL;
 
-	TRY
 	if (transient_for != NULL)
 	{
 		set_transient_for(*transient_for);
@@ -132,7 +131,6 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 		g_debug("Got SR details for '%s'", scheduled_recording.description.c_str());
 		get_application().scheduled_recording_manager.set_scheduled_recording(scheduled_recording);
 	}
-	CATCH
 		
 	return dialog_response;
 }

@@ -126,8 +126,6 @@ EpgThread::EpgThread() : Thread("EPG Thread")
 
 void EpgThread::run()
 {
-	TRY;
-
 	Application&					application				= get_application();
 	ChannelManager&					channel_manager			= application.channel_manager;
 	Dvb::Frontend&					frontend				= application.device_manager.get_frontend();
@@ -265,8 +263,6 @@ void EpgThread::run()
 			g_debug("Exception in EPG thread: %s", ex.what().c_str());
 		}
 	}
-
-	THREAD_CATCH;
 
 	g_debug("Exiting EPG thread");
 }

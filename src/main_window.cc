@@ -185,7 +185,6 @@ bool MainWindow::on_delete_event(GdkEventAny* event)
 
 bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event_button)
 {
-	TRY
 	if (event_button->button == 1)
 	{
 		if (event_button->type == GDK_2BUTTON_PRESS)
@@ -197,7 +196,6 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event_button)
 	{
 		on_change_view_mode();
 	}
-	CATCH
 	
 	return false;
 }
@@ -257,7 +255,6 @@ void MainWindow::on_timeout()
 {
 	static gboolean poke_failed = false;
 	
-	TRY
 	guint now = time(NULL);
 	
 	if (channel_change_timeout > 1)
@@ -329,8 +326,6 @@ void MainWindow::on_timeout()
 
 		last_poke_time = now;
 	}
-	
-	CATCH
 }
 
 void MainWindow::pause(gboolean state)
@@ -453,7 +448,6 @@ void MainWindow::on_show()
 	Gtk::Window::on_show();
 	Gdk::Window::process_all_updates();
 
-	TRY
 	start_engine();
 	if (application.get_boolean_configuration_value("keep_above"))
 	{
@@ -463,22 +457,18 @@ void MainWindow::on_show()
 	builder->get_widget("event_box_video", event_box_video);
 	event_box_video->resize_children();
 	update();
-
-	CATCH
 }
 
 void MainWindow::on_hide()
 {
 	save_geometry();
 
-	TRY
 	stop_engine();
 	Gtk::Window::on_hide();
 	if (!get_application().get_boolean_configuration_value("display_status_icon"))
 	{
 		Gtk::Main::quit();
 	}
-	CATCH
 }
 
 void MainWindow::save_geometry()
@@ -545,7 +535,6 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 
 bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event_expose)
 {
-	TRY
 	if (engine == NULL)
 	{
 		drawing_area_video->get_window()->draw_rectangle(
@@ -553,7 +542,6 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event_expose)
 			event_expose->area.x, event_expose->area.y,
 			event_expose->area.width, event_expose->area.height);
 	}
-	CATCH
 
 	return false;
 }
@@ -736,30 +724,23 @@ void MainWindow::on_audio_channel_right()
 
 void MainWindow::on_channels()
 {
-	TRY
 	show_channels_dialog();
-	CATCH
 }
 
 void MainWindow::on_scheduled_recordings()
 {
-	TRY
 	show_scheduled_recordings_dialog();
 	get_application().update();
-	CATCH
 }
 
 void MainWindow::on_epg_event_search()
 {
-	TRY
 	show_epg_event_search_dialog();
 	get_application().update();
-	CATCH
 }
 
 void MainWindow::on_meters()
 {
-	TRY	
 	// Check that there is a device
 	get_application().device_manager.get_frontend();
 	
@@ -767,35 +748,28 @@ void MainWindow::on_meters()
 	meters_dialog.stop();
 	meters_dialog.start();
 	meters_dialog.show();
-	CATCH
 }
 
 void MainWindow::on_preferences()
 {
-	TRY
 	show_preferences_dialog();
-	CATCH
 }
 
 void MainWindow::on_about()
 {
-	TRY
 	FullscreenBugWorkaround fullscreen_bug_workaround;
 
 	Gtk::Dialog* about_dialog = NULL;
 	builder->get_widget("dialog_about", about_dialog);
 	about_dialog->run();
 	about_dialog->hide();
-	CATCH
 }
 
 void MainWindow::on_mute()
 {
-	TRY
 	Gtk::ToggleToolButton* mute_button =
 		(Gtk::ToggleToolButton*)ui_manager->get_widget("/toolbar/mute");
 	set_mute_state(mute_button->get_active());
-	CATCH
 }
 
 void MainWindow::set_mute_state(gboolean state)

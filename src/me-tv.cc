@@ -22,6 +22,7 @@
 #include "me-tv-i18n.h"
 #include "exception.h"
 #include <glib/gprintf.h>
+#include "application.h"
 
 Glib::ustring	default_device;
 bool			verbose_logging		= false;
@@ -30,13 +31,6 @@ bool			minimised_mode		= false;
 bool			disable_epg_thread	= false;
 bool			disable_epg			= false;
 gint			read_timeout		= 5;
-
-StringSignal signal_error;
-
-StringSignal& get_signal_error()
-{
-	return signal_error;
-}
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to)
 {
@@ -104,9 +98,24 @@ void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar 
 	}
 }
 
-void on_error(const Glib::ustring& message)
+void on_error()
 {
-	g_message("%s", message.c_str());
+	try
+	{
+		throw;
+	}
+	catch (const Exception& exception)
+	{
+		get_application().show_error_dialog(exception.what());
+	}
+	catch (const Glib::Error& exception)
+	{
+		get_application().show_error_dialog(exception.what());
+	}
+	catch (...)
+	{
+		get_application().show_error_dialog("Unhandled exception");
+	}
 }
 
 guint convert_string_to_value(const StringTable* table, const Glib::ustring& text)

@@ -147,10 +147,6 @@ Application::Application()
 	timeout_source			= 0;
 	database_initialised	= false;
 	
-	// Remove all other handlers first
-	get_signal_error().clear();
-	get_signal_error().connect(sigc::mem_fun(*this, &Application::on_error));
-
 #ifndef IGNORE_SQLITE3_THREADSAFE_CHECK
 	g_debug("sqlite3_threadsafe() = %d", sqlite3_threadsafe());
 	if (sqlite3_threadsafe() == 0)
@@ -480,74 +476,76 @@ void Application::select_channel_to_play()
 
 void Application::run()
 {
-	TRY
 	GdkLock gdk_lock;
 
 	if (initialise_database())
 	{
 		g_debug("Me TV database initialised");
-				
-		const FrontendList& frontends = device_manager.get_frontends();
-		
-		if (!default_device.empty())
+
+		try
 		{
-			Dvb::Frontend* default_frontend = device_manager.find_frontend_by_path(default_device);
+			const FrontendList& frontends = device_manager.get_frontends();
+		
+			if (!default_device.empty())
+			{
+				Dvb::Frontend* default_frontend = device_manager.find_frontend_by_path(default_device);
 			
-			if (default_frontend == NULL)
-			{
-				Glib::ustring message = Glib::ustring::compose(
-					_("Failed to load default device '%1'"), default_device);
-				throw Exception(message);
-			}
+				if (default_frontend == NULL)
+				{
+					Glib::ustring message = Glib::ustring::compose(
+						_("Failed to load default device '%1'"), default_device);
+					throw Exception(message);
+				}
 			
-			device_manager.set_frontend(*default_frontend);
-		}
-		else
-		{
-			if (frontends.size() > 0)
+				device_manager.set_frontend(*default_frontend);
+			}
+			else
 			{
-				device_manager.set_frontend(**frontends.begin());
+				if (frontends.size() > 0)
+				{
+					device_manager.set_frontend(**frontends.begin());
+				}
+			}
+
+			channel_manager.load(connection);
+
+			status_icon = new StatusIcon();
+			main_window = MainWindow::create(builder);
+
+			timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
+
+			if (!device_manager.get_frontends().empty())
+			{
+				scheduled_recording_manager.load(connection);
+			}
+		
+			if (!minimised_mode)
+			{
+				main_window->show();
+		
+				if (safe_mode)
+				{
+					main_window->show_preferences_dialog();
+				}
+			}
+
+			ChannelArray& channels = channel_manager.get_channels();
+			if (channels.empty())
+			{
+				main_window->show_channels_dialog();
+			}
+
+			if (!channels.empty())
+			{
+				stream_manager.start();
+				select_channel_to_play();
 			}
 		}
-
-		channel_manager.load(connection);
-
-		status_icon = new StatusIcon();
-		main_window = MainWindow::create(builder);
-
-		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
-
-		TRY
-		
-		if (!device_manager.get_frontends().empty())
+		catch(...)
 		{
-			scheduled_recording_manager.load(connection);
-		}
-		
-		if (!minimised_mode)
-		{
-			main_window->show();
-		
-			if (safe_mode)
-			{
-				main_window->show_preferences_dialog();
-			}
+			on_error();
 		}
 
-		ChannelArray& channels = channel_manager.get_channels();
-		if (channels.empty())
-		{
-			main_window->show_channels_dialog();
-		}
-
-		if (!channels.empty())
-		{
-			stream_manager.start();
-			select_channel_to_play();
-		}
-
-		CATCH
-		
 		Gtk::Main::run();
 			
 		if (status_icon != NULL)
@@ -562,8 +560,6 @@ void Application::run()
 			main_window = NULL;
 		}
 	}
-	
-	CATCH
 }
 
 Application& Application::get_current()
@@ -709,7 +705,6 @@ gboolean Application::on_timeout(gpointer data)
 
 gboolean Application::on_timeout()
 {
-	TRY
 	static guint last_seconds = 60;
 	
 	guint now = time(NULL);
@@ -725,8 +720,6 @@ gboolean Application::on_timeout()
 	}
 	last_seconds = seconds;
 	
-	CATCH
-	
 	return true;
 }
 
@@ -735,22 +728,9 @@ Glib::StaticRecMutex& Application::get_mutex()
 	return mutex;
 }
 
-void Application::on_error(const Glib::ustring& message)
+void Application::show_error_dialog(const Glib::ustring& message)
 {
-	g_debug("Error message: '%s'", message.c_str());
-	if (main_window != NULL)
-	{
-		FullscreenBugWorkaround fullscreen_bug_workaround;
-		Gtk::MessageDialog dialog(*main_window, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
-		dialog.set_title(_("Me TV - Error Message"));
-		dialog.run();
-	}
-	else
-	{
-		Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
-		dialog.set_title(_("Me TV - Error Message"));
-		dialog.run();
-	}
+	::show_error_dialog(message, main_window);
 }
 
 void Application::start_recording(Channel& channel)
@@ -777,7 +757,6 @@ void Application::on_record()
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-	TRY
 	if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->get_active())
 	{
 		try
@@ -800,7 +779,6 @@ void Application::on_record()
 		stream_manager.stop_recording(channel_manager.get_display_channel());			
 		g_debug("Recording stopped");
 	}
-	CATCH
 
 	update();
 }

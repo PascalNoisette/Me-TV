@@ -133,8 +133,6 @@ void EpgEventSearchDialog::search()
 
 void EpgEventSearchDialog::on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column)
 {
-	TRY
-		
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_epg_event_search->get_selection();	
 	if (selection->count_selected_rows() == 0)
 	{
@@ -148,8 +146,6 @@ void EpgEventSearchDialog::on_row_activated(const Gtk::TreeModel::Path& tree_mod
 	epg_event_dialog.show_epg_event(epg_event);
 
 	search();
-
-	CATCH
 }
 
 void EpgEventSearchDialog::on_show()

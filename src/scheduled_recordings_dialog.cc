@@ -71,28 +71,22 @@ guint ScheduledRecordingsDialog::get_selected_scheduled_recording_id()
 
 void ScheduledRecordingsDialog::on_button_scheduled_recordings_add_clicked()
 {
-	TRY
 	ScheduledRecordingDialog& scheduled_recordings_dialog = ScheduledRecordingDialog::create(builder);
 	scheduled_recordings_dialog.run(this);
 	scheduled_recordings_dialog.hide();
 	update();
-	CATCH
 }
 
 void ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked()
 {
-	TRY
 	get_application().scheduled_recording_manager.remove_scheduled_recording(
 		get_selected_scheduled_recording_id());
 	update();
-	CATCH
 }
 
 void ScheduledRecordingsDialog::on_button_scheduled_recordings_edit_clicked()
 {
-	TRY
 	show_scheduled_recording(get_selected_scheduled_recording_id());
-	CATCH
 }
 
 void ScheduledRecordingsDialog::update()
@@ -127,9 +121,7 @@ void ScheduledRecordingsDialog::show_scheduled_recording(guint scheduled_recordi
 
 void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column)
 {
-	TRY
 	show_scheduled_recording(get_selected_scheduled_recording_id());
-	CATCH
 }
 
 void ScheduledRecordingsDialog::on_show()

@@ -64,11 +64,7 @@ void Thread::start()
 void Thread::on_run()
 {
 	started = true;
-
-	TRY
 	run();
-	THREAD_CATCH;
-
 	terminated = true;
 	g_debug("Thread '%s' exited", name.c_str());
 }

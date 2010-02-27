@@ -40,18 +40,7 @@ ScanThread::ScanThread(Dvb::Frontend& scan_frontend, Dvb::TransponderList& t) :
 
 void ScanThread::run()
 {
-	try
-	{
-		scanner.start(frontend, transponders);
-	}
-	catch(const Exception& exception)
-	{
-		show_error(exception.what());
-	}
-	catch(...)
-	{
-		show_error(_("An unhandled error occurred"));
-	}
+	scanner.start(frontend, transponders);
 }
 
 void ScanThread::stop()
@@ -455,7 +444,6 @@ void ScanDialog::load_initial_tuning_file(const Glib::ustring& initial_tuning_fi
 
 void ScanDialog::on_button_scan_wizard_next_clicked()
 {
-	TRY
 	stop_scan();
 
 	list_store->clear();
@@ -517,14 +505,11 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		Glib::ustring channels_conf_path = file_chooser_button->get_filename();
 		import_channels_conf(channels_conf_path);
 	}	
-	CATCH
 }
 
 void ScanDialog::on_button_scan_wizard_add_clicked()
 {
-	TRY
 	hide();
-	CATCH;
 }
 
 void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint service_id, const Glib::ustring& name, const guint polarisation)

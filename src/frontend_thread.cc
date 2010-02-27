@@ -70,15 +70,8 @@ void FrontendThread::run()
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 
-        // Fudge the channel open.  Allows Glib::IO_FLAG_NONBLOCK
-        int fd = open(input_path.c_str(), O_RDONLY | O_NONBLOCK);
-        if (fd == -1)
-        {
-		throw SystemException(Glib::ustring::compose(_("Failed to open FIFO for reading '%1'"), input_path));
-        }
-
 	g_debug("Opening frontend device '%s' for reading ...", input_path.c_str());
-	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_fd(fd);
+	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
 	input_channel->set_flags(input_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
 	input_channel->set_encoding("");
 	g_debug("Frontend device opened");
@@ -88,50 +81,52 @@ void FrontendThread::run()
 	
 	while (!is_terminated())
 	{
-		TRY
-
-		// Insert PAT/PMT every second second
-		time_t now = time(NULL);
-		if (now - last_insert_time > 2)
+		try
 		{
-			g_debug("Writing PAT/PMT header");
+			// Insert PAT/PMT every second second
+			time_t now = time(NULL);
+			if (now - last_insert_time > 2)
+			{
+				g_debug("Writing PAT/PMT header");
 			
-			for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
-			{
-				ChannelStream& channel_stream = *i;
-
-				channel_stream.stream.build_pat(pat);
-				channel_stream.stream.build_pmt(pmt);
-
-				channel_stream.write(pat, TS_PACKET_SIZE);
-				channel_stream.write(pmt, TS_PACKET_SIZE);
-			}
-			last_insert_time = now;
-		}
-
-		if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
-		{
-			g_debug("Input channel read failed");
-			usleep(1000000);
-		}
-		else
-		{
-			for (guint offset = 0; offset < bytes_read; offset += TS_PACKET_SIZE)
-			{
-				guint pid = ((buffer[offset+1] & 0x1f) << 8) + buffer[offset+2];
-
 				for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
 				{
 					ChannelStream& channel_stream = *i;
-					if (channel_stream.stream.contains_pid(pid))
+
+					channel_stream.stream.build_pat(pat);
+					channel_stream.stream.build_pmt(pmt);
+
+					channel_stream.write(pat, TS_PACKET_SIZE);
+					channel_stream.write(pmt, TS_PACKET_SIZE);
+				}
+				last_insert_time = now;
+			}
+
+			if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
+			{
+				g_debug("Input channel read failed");
+				usleep(1000000);
+			}
+			else
+			{
+				for (guint offset = 0; offset < bytes_read; offset += TS_PACKET_SIZE)
+				{
+					guint pid = ((buffer[offset+1] & 0x1f) << 8) + buffer[offset+2];
+
+					for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
 					{
-						channel_stream.write(buffer+offset, TS_PACKET_SIZE);
+						ChannelStream& channel_stream = *i;
+						if (channel_stream.stream.contains_pid(pid))
+						{
+							channel_stream.write(buffer+offset, TS_PACKET_SIZE);
+						}
 					}
 				}
 			}
 		}
-		
-		THREAD_CATCH
+		catch(...)
+		{
+		}
 	}
 		
 	g_debug("FrontendThread loop exited");

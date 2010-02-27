@@ -37,10 +37,6 @@ extern bool disable_epg_thread;
 extern bool disable_epg;
 extern gint read_timeout;
 
-typedef sigc::signal<void, const Glib::ustring&> StringSignal;
-
-StringSignal& get_signal_error();
-
 typedef std::vector<Glib::ustring> StringArray;
 typedef std::list<Glib::ustring> StringList;
 
@@ -62,7 +58,7 @@ Glib::ustring get_local_time_text(time_t t, const gchar* format);
 guint convert_to_local_time(guint utc);
 guint convert_to_utc_time(guint local_time);
 
-void on_error(const Glib::ustring& message);
+void on_error();
 void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data);
 
 void split_string(std::vector<Glib::ustring>& parts, const Glib::ustring& text, const char* delimiter, gboolean remove_empty, gsize max_length);

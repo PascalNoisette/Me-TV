@@ -80,6 +80,24 @@ Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& des
 	    fixed_filename);
 }
 
+void show_error_dialog(const Glib::ustring& message, Gtk::Window* parent)
+{
+	g_message("Message: '%s'", message.c_str());
+	if (parent != NULL)
+	{
+		Gtk::MessageDialog dialog(*parent, message, Gtk::MESSAGE_ERROR);
+		dialog.set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
+		dialog.set_title(PACKAGE_NAME);
+		dialog.run();
+	}
+	else
+	{
+		Gtk::MessageDialog dialog(message, Gtk::MESSAGE_ERROR);
+		dialog.set_title(PACKAGE_NAME);
+		dialog.run();
+	}
+}
+
 ComboBoxText::ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml)
 	: Gtk::ComboBox(cobject)
 {

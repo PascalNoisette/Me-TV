@@ -73,12 +73,13 @@ int main (int argc, char *argv[])
 	gdk_threads_init();
 
 	Gnome::Conf::init();
+	Gtk::Main main(argc, argv);
+
+	Glib::add_exception_handler(&on_error);
 
 	g_log_set_handler(G_LOG_DOMAIN,
 		(GLogLevelFlags)(G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION),
 		log_handler, NULL);
-	
-	get_signal_error().connect(sigc::ptr_fun(on_error));
 
 	Glib::OptionEntry verbose_option_entry;
 	verbose_option_entry.set_long_name("verbose");
@@ -126,7 +127,7 @@ int main (int argc, char *argv[])
 	option_context.set_description(ME_TV_DESCRIPTION);
 	option_context.set_main_group(option_group);
 		
-	Gtk::Main main(argc, argv, option_context);
+	option_context.parse(argc, argv);
 
 	try
 	{
@@ -146,19 +147,11 @@ int main (int argc, char *argv[])
 	}
 	catch (const Glib::Exception& exception)
 	{
-		g_debug("Error message: '%s'", exception.what().c_str());
-		Gtk::MessageDialog dialog(exception.what(),
-			false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
-		dialog.set_title(PACKAGE_NAME);
-		dialog.run();
+		show_error_dialog(exception.what());
 	}
 	catch (...)
 	{
-		g_debug(_("An unhandled error occurred"));
-		Gtk::MessageDialog dialog(_("An unhandled error occurred"),
-			false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
-		dialog.set_title(PACKAGE_NAME);
-		dialog.run();
+		show_error_dialog(_("An unhandled error occurred"));		
 	}
 
 	g_message("Me TV terminated");
