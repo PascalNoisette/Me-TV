@@ -30,6 +30,7 @@
 #include "engine.h"
 #include <gtkmm.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtk.h>
 
 #define POKE_INTERVAL 					30
 #define UPDATE_INTERVAL					60
