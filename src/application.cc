@@ -25,6 +25,8 @@
 #define GCONF_PATH					"/apps/me-tv"
 #define CURRENT_DATABASE_VERSION	5
 
+bool application_quit = false;
+
 G_BEGIN_DECLS
 void on_record(GtkObject *object, gpointer user_data)
 {
@@ -34,6 +36,7 @@ void on_record(GtkObject *object, gpointer user_data)
 
 void on_quit()
 {
+	application_quit = true;
 	get_application().get_main_window().hide();
 	Gtk::Main::quit();
 }
@@ -546,8 +549,22 @@ void Application::run()
 			on_error();
 		}
 
-		Gtk::Main::run();
-			
+		while (!application_quit)
+		{
+			try
+			{
+				Gtk::Main::run();
+			}
+			catch (const Glib::Exception& exception)
+			{
+				show_error_dialog(exception.what());
+			}
+			catch (...)
+			{
+				show_error_dialog(_("An unhandled error occurred"));		
+			}
+		}
+		
 		if (status_icon != NULL)
 		{
 			delete status_icon;
