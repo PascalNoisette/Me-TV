@@ -70,9 +70,14 @@ void FrontendThread::run()
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 
+	int fd = 0;
+	if ( (fd = ::open( input_path.c_str(), O_RDONLY | O_NONBLOCK) ) < 0 )
+	{
+		throw SystemException("Failed to open frontend");
+	}
+		
 	g_debug("Opening frontend device '%s' for reading ...", input_path.c_str());
-	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_file(input_path, "r");
-	input_channel->set_flags(input_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
+	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_fd(fd);
 	input_channel->set_encoding("");
 	g_debug("Frontend device opened");
 	
@@ -292,12 +297,21 @@ void FrontendThread::set_display_stream(const Channel& channel)
 	}
 	else
 	{
-		g_debug("Stream output exists");
+		g_debug("Display stream exists");
 	}
 
 	ChannelStream& stream = *(streams.begin());
 	stream.channel = channel;
-	setup_dvb(stream);
+	try
+	{
+		setup_dvb(stream);
+	}
+	catch(...)
+	{
+		g_debug("DVB setup failed, terminating frontend thread");
+		terminate();
+		throw;
+	}
 }
 
 bool is_recording_stream(ChannelStream& channel_stream)
