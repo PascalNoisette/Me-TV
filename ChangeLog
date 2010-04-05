@@ -1,9 +1,8 @@
-2010-02-01  Michael Lamothe <michael.lamothe@gmail.com>
+2010-06-01  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.2.0
 	* Added auto scan feature
 	* Added EPG event search feature
-	* Using libvlc as render
 
 2010-01-21  Michael Lamothe <michael.lamothe@gmail.com>
 
