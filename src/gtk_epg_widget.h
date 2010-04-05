@@ -56,7 +56,7 @@ private:
 	Gtk::Button& attach_button(const Glib::ustring& text, gboolean record, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	Gtk::Label& attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
 	void attach_widget(Gtk::Widget& widget, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
-	void create_channel_row(const Channel& const_channel,
+	void create_channel_row(Channel& const_channel,
 		guint table_row, gboolean selected, guint start_time, guint channel_number,
 		gboolean show_channel_number, gboolean show_epg_time, gboolean show_epg_tooltips);
 

@@ -538,10 +538,15 @@ void Application::run()
 				main_window->show_channels_dialog();
 			}
 
-			if (!channels.empty())
+			if (!channels.empty() && !device_manager.get_frontends().empty())
 			{
 				stream_manager.start();
 				select_channel_to_play();
+			}
+
+			if (device_manager.get_frontends().empty())
+			{
+				show_error_dialog(_("There are no available DVB devices"));
 			}
 		}
 		catch(...)

@@ -35,6 +35,7 @@ public:
 	const ChannelStream& get_display_stream();
 	std::list<ChannelStream> get_streams();
 	FrontendThread& get_display_frontend_thread();
+	const std::list<FrontendThread>& get_frontend_threads() const { return frontend_threads; };
 
 	gboolean is_recording();
 	gboolean is_recording(const Channel& channel);

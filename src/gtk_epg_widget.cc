@@ -221,19 +221,17 @@ void GtkEpgWidget::update_table()
 	vadjustment->set_value(vvalue);
 }
 
-void GtkEpgWidget::create_channel_row(const Channel& const_channel,
+void GtkEpgWidget::create_channel_row(Channel& channel,
 	guint table_row, gboolean selected, guint start_time, guint channel_number,
 	gboolean show_channel_number, gboolean show_epg_time, gboolean show_epg_tooltips)
-{	
-	Channel channel = const_channel;
-
+{
 	Glib::ustring channel_text = Glib::ustring::compose("<b>%1</b>", encode_xml(channel.name));
 	if (show_channel_number)
 	{
 		channel_text = Glib::ustring::compose("<i>%1.</i> ", channel_number) + channel_text;
 	}
 	
-	gboolean record_channel = get_application().stream_manager.is_recording(const_channel);
+	gboolean record_channel = get_application().stream_manager.is_recording(channel);
 	
 	Gtk::ToggleButton& channel_button = attach_toggle_button(channel_text, record_channel, 0, 1, table_row, table_row + 1);
 
@@ -336,7 +334,6 @@ void GtkEpgWidget::create_channel_row(const Channel& const_channel,
 						),
 					    false
 					);
-
 
 					if (show_epg_tooltips)
 					{
