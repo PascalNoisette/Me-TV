@@ -36,9 +36,7 @@ void on_record(GtkObject *object, gpointer user_data)
 
 void on_quit()
 {
-	application_quit = true;
-	get_application().get_main_window().hide();
-	Gtk::Main::quit();
+	get_application().quit();
 }
 
 void on_next_channel(GtkObject *object, gpointer user_data)
@@ -209,6 +207,13 @@ Application::~Application()
 	}
 
 	g_debug("Application destructor complete");
+}
+
+void Application::quit()
+{
+	application_quit = true;
+	get_application().get_main_window().hide();
+	Gtk::Main::quit();
 }
 
 void Application::make_directory_with_parents(const Glib::ustring& path)

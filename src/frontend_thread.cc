@@ -87,14 +87,14 @@ void FrontendThread::run()
 	
 	while (!is_terminated())
 	{
-		try
+		if (!is_tuned)
 		{
-			if (!is_tuned)
-			{
-				g_debug("Frontend is not tuned, waiting");
-				usleep(1000000);
-			}
-			else
+			g_debug("Frontend is not tuned, waiting");
+			usleep(1000000);
+		}
+		else
+		{
+			try
 			{
 				// Insert PAT/PMT every second second
 				time_t now = time(NULL);
@@ -137,9 +137,9 @@ void FrontendThread::run()
 					}
 				}
 			}
-		}
-		catch(...)
-		{
+			catch(...)
+			{
+			}
 		}
 	}
 		

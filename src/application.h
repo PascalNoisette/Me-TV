@@ -63,6 +63,7 @@ public:
 	~Application();
 		
 	void run();
+	void quit();
 	static Application& get_current();
 	
 	ChannelManager				channel_manager;
