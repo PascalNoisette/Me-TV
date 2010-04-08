@@ -36,6 +36,7 @@ FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Frontend"), frontend(
 	g_static_rec_mutex_init(mutex.gobj());
 	
 	epg_thread = NULL;
+	is_tuned = false;
 
 	g_debug("FrontendThread created");
 }
@@ -88,42 +89,50 @@ void FrontendThread::run()
 	{
 		try
 		{
-			// Insert PAT/PMT every second second
-			time_t now = time(NULL);
-			if (now - last_insert_time > 2)
+			if (!is_tuned)
 			{
-				g_debug("Writing PAT/PMT header");
-			
-				for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
-				{
-					ChannelStream& channel_stream = *i;
-
-					channel_stream.stream.build_pat(pat);
-					channel_stream.stream.build_pmt(pmt);
-
-					channel_stream.write(pat, TS_PACKET_SIZE);
-					channel_stream.write(pmt, TS_PACKET_SIZE);
-				}
-				last_insert_time = now;
-			}
-
-			if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
-			{
-				g_debug("Input channel read failed");
+				g_debug("Frontend is not tuned, waiting");
 				usleep(1000000);
 			}
 			else
 			{
-				for (guint offset = 0; offset < bytes_read; offset += TS_PACKET_SIZE)
+				// Insert PAT/PMT every second second
+				time_t now = time(NULL);
+				if (now - last_insert_time > 2)
 				{
-					guint pid = ((buffer[offset+1] & 0x1f) << 8) + buffer[offset+2];
-
+					g_debug("Writing PAT/PMT header");
+			
 					for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
 					{
 						ChannelStream& channel_stream = *i;
-						if (channel_stream.stream.contains_pid(pid))
+
+						channel_stream.stream.build_pat(pat);
+						channel_stream.stream.build_pmt(pmt);
+
+						channel_stream.write(pat, TS_PACKET_SIZE);
+						channel_stream.write(pmt, TS_PACKET_SIZE);
+					}
+					last_insert_time = now;
+				}
+
+				if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
+				{
+					g_debug("Input channel read failed");
+					usleep(1000000);
+				}
+				else
+				{
+					for (guint offset = 0; offset < bytes_read; offset += TS_PACKET_SIZE)
+					{
+						guint pid = ((buffer[offset+1] & 0x1f) << 8) + buffer[offset+2];
+
+						for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
 						{
-							channel_stream.write(buffer+offset, TS_PACKET_SIZE);
+							ChannelStream& channel_stream = *i;
+							if (channel_stream.stream.contains_pid(pid))
+							{
+								channel_stream.write(buffer+offset, TS_PACKET_SIZE);
+							}
 						}
 					}
 				}
@@ -158,6 +167,7 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 	
+	is_tuned = false;
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 	Buffer buffer;
 	const Channel& channel = channel_stream.channel;
@@ -218,6 +228,8 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 	}
 
 	g_debug("Finished setting up DVB");
+
+	is_tuned = true;
 }
 
 void FrontendThread::start_epg_thread()
@@ -302,16 +314,7 @@ void FrontendThread::set_display_stream(const Channel& channel)
 
 	ChannelStream& stream = *(streams.begin());
 	stream.channel = channel;
-	try
-	{
-		setup_dvb(stream);
-	}
-	catch(...)
-	{
-		g_debug("DVB setup failed, terminating frontend thread");
-		terminate();
-		throw;
-	}
+	setup_dvb(stream);
 }
 
 bool is_recording_stream(ChannelStream& channel_stream)

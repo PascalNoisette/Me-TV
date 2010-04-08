@@ -33,7 +33,8 @@ private:
 	Glib::StaticRecMutex		mutex;
 	std::list<ChannelStream>	streams;
 	EpgThread*					epg_thread;
-
+	gboolean					is_tuned;
+	
 	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
 	void run();
 	void setup_dvb(ChannelStream& stream);

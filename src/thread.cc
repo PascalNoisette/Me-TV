@@ -105,7 +105,13 @@ void Thread::terminate()
 	terminated = true;
 	g_debug("Thread '%s' marked for termination", name.c_str());
 }
-	
+
+gboolean Thread::is_started()
+{
+	Glib::RecMutex::Lock lock(mutex);
+	return (thread != NULL);
+}
+
 gboolean Thread::is_terminated()
 {
 	return terminated;

@@ -41,14 +41,14 @@ public:
 	virtual ~Thread();
 
 	virtual void run() = 0;
-	
-	void start();
 
-	void join(gboolean set_terminate = false);
+	void start();
+	gboolean is_started();
+
 	void terminate();
 	gboolean is_terminated();
-	gboolean was_successful();
-	const Glib::ustring& get_message() const;
+
+	void join(gboolean set_terminate = false);
 };
 
 #endif
