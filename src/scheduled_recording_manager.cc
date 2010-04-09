@@ -38,7 +38,7 @@ void ScheduledRecordingManager::load(Data::Connection& connection)
 	Data::TableAdapter adapter(connection, table);
 	
 	Glib::ustring where = Glib::ustring::compose(
-		"device = '%1' AND (start_time + duration) > %2",
+		"device = '%1' AND ((start_time + duration) > %2 OR type != 0)",
 		frontend_path, time(NULL));
 	Data::DataTable data_table = adapter.select_rows(where, "start_time");
 	
@@ -51,6 +51,7 @@ void ScheduledRecordingManager::load(Data::Connection& connection)
 		scheduled_recording.scheduled_recording_id	= row["scheduled_recording_id"].int_value;
 		scheduled_recording.channel_id				= row["channel_id"].int_value;
 		scheduled_recording.description				= row["description"].string_value;
+		scheduled_recording.type					= row["type"].int_value;
 		scheduled_recording.start_time				= row["start_time"].int_value;
 		scheduled_recording.duration				= row["duration"].int_value;
 		scheduled_recording.device					= row["device"].string_value;
@@ -71,22 +72,22 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
 		ScheduledRecording& scheduled_recording = *i;
-
-		guint now = get_local_time();
-		if (scheduled_recording.get_end_time() > now)
+		guint now = time(NULL);
+		if (scheduled_recording.get_end_time() > now || scheduled_recording.type != 0)
 		{
 			Data::Row row;
-			row.auto_increment = &(scheduled_recording.scheduled_recording_id);
+			row.auto_increment 						= &(scheduled_recording.scheduled_recording_id);
 			row["scheduled_recording_id"].int_value	= scheduled_recording.scheduled_recording_id;
 			row["channel_id"].int_value				= scheduled_recording.channel_id;
 			row["description"].string_value			= scheduled_recording.description;
+			row["type"].int_value					= scheduled_recording.type;
 			row["start_time"].int_value				= scheduled_recording.start_time;
 			row["duration"].int_value				= scheduled_recording.duration;
 			row["device"].string_value				= scheduled_recording.device;
-					
+
 			data_table.rows.add(row);
 		}
-	
+
 		g_debug("Scheduled recording '%s' (%d) saved", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
 	}
 	
@@ -95,7 +96,42 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 
 	guint now = time(NULL);
 	g_debug("Deleting old scheduled recordings ending before %d", now);
-	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1", now);
+	Glib::ustring frontend_path = get_application().device_manager.get_frontend().get_path();
+	Glib::ustring where = Glib::ustring::compose("device = '%1' AND type !=0 AND (start_time + duration) < %2", frontend_path, now);
+	data_table = adapter.select_rows(where, "start_time");
+
+	gboolean updated = false;
+	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
+	{
+		Data::Row& row = *i;
+		g_message("ScheduledRecordingManager::save/clear ID: %d", row["scheduled_recording_id"].int_value); 
+
+		if(row["type"].int_value == 1)
+			row["start_time"].int_value += 86400;
+		if(row["type"].int_value == 2)
+			row["start_time"].int_value += 604800;
+		if(row["type"].int_value == 3)
+		{
+			time_t tim = row["start_time"].int_value;
+			struct tm *ts;
+			char buf[80];
+			ts = localtime(&tim);
+			strftime(buf, sizeof(buf), "%w", ts);
+			switch(atoi(buf))
+			{
+				case 5 : row["start_time"].int_value += 259200;break;
+				case 6 : row["start_time"].int_value += 172800;break;
+				default  : row["start_time"].int_value +=  86400;break;
+			}
+		}  
+		updated = true;
+	}
+	if(updated)
+	{
+		adapter.replace_rows(data_table);
+		load(connection);
+	}
+	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1 AND type = 0", now);
 	adapter.delete_rows(clause);
 
 	g_debug("Scheduled recordings saved");
@@ -179,9 +215,10 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 		// Check if we are scheduling the same program
 		if (scheduled_recording.scheduled_recording_id == 0 &&
-		    current.channel_id == scheduled_recording.channel_id &&
-		    current.start_time == scheduled_recording.start_time &&
-		    current.duration == scheduled_recording.duration)
+		    current.type		== scheduled_recording.type &&
+		    current.channel_id 	== scheduled_recording.channel_id &&
+		    current.start_time 	== scheduled_recording.start_time &&
+		    current.duration 	== scheduled_recording.duration)
 		{
 			Glib::ustring message =  Glib::ustring::compose(
 				_("Failed to save scheduled recording because you have already have a scheduled recording called '%1' which is scheduled for the same time on the same channel."),
@@ -238,7 +275,7 @@ guint scheduled_recording_now = 0;
 
 guint is_old(ScheduledRecording& scheduled_recording)
 {
-	return (scheduled_recording.get_end_time() < scheduled_recording_now);
+	return (scheduled_recording.get_end_time() < scheduled_recording_now && scheduled_recording.type == 0);
 }
 
 ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()

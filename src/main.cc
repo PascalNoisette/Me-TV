@@ -132,7 +132,7 @@ int main (int argc, char *argv[])
 		UniqueApp* unique_application = unique_app_new_with_commands(
 			"org.lamothe.me-tv", NULL,
 		    "run", (UniqueCommand)1,
-			NULL);
+			(char *)NULL);
 
 		if (unique_app_is_running(unique_application))
 		{

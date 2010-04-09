@@ -35,6 +35,7 @@ private:
 	Gtk::SpinButton*	spin_button_start_time_minute;
 	Gtk::SpinButton*	spin_button_duration;
 	Gtk::Entry*			entry_description;
+	ComboBoxText*		recurring_combo_box;
 	ChannelComboBox*	channel_combo_box;
 	guint				scheduled_recording_id;
 

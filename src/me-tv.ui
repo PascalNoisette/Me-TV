@@ -404,6 +404,27 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="bottom_attach">4</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkLabel" id="label_recurring">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Recurring:</property>
+              </object>
+              <packing>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="combo_box_recurring">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="position">1</property>
