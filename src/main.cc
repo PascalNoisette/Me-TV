@@ -31,11 +31,6 @@
 	"of normal PC tasks (web surfing, word processing and watching TV). It is not designed to be a "\
 	"full-blown media centre such as MythTV but will integrate well with an existing GNOME desktop.\n")
 
-enum
-{
-	COMMAND_0
-};
-
 static UniqueResponse on_message_received (
 	UniqueApp*			app,
 	UniqueCommand		command,
@@ -47,9 +42,12 @@ static UniqueResponse on_message_received (
 
 	switch (command)
     {
-		default:
-			g_debug("Got command");
+		case 1:
+			get_application().get_main_window().present();
 			response = UNIQUE_RESPONSE_OK;
+			break;
+			
+		default:
 			break;
 	}
 
@@ -131,11 +129,17 @@ int main (int argc, char *argv[])
 
 	try
 	{
-		UniqueApp* unique_application = unique_app_new("org.lamothe.me-tv", NULL);
+		UniqueApp* unique_application = unique_app_new_with_commands(
+			"org.lamothe.me-tv", NULL,
+		    "run", (UniqueCommand)1,
+			NULL);
 
 		if (unique_app_is_running(unique_application))
 		{
 			g_debug("Me TV is already running");
+
+			UniqueMessageData* message = unique_message_data_new();
+			unique_app_send_message(unique_application, (UniqueCommand)1, message);
 		}
 		else
 		{
