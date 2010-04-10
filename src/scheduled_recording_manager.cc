@@ -121,7 +121,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 			{
 				case 5 : row["start_time"].int_value += 259200;break;
 				case 6 : row["start_time"].int_value += 172800;break;
-				default  : row["start_time"].int_value +=  86400;break;
+				default: row["start_time"].int_value +=  86400;break;
 			}
 		}  
 		updated = true;
@@ -162,7 +162,6 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 				// Check for conflict
 				if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
-					current_channel.transponder != channel.transponder &&
 					scheduled_recording.overlaps(current) &&
 					device == current.device)
 				{
@@ -187,9 +186,8 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 		// Check for conflict
 		if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
-		    current_channel.transponder != channel.transponder &&
-		    scheduled_recording.overlaps(current) &&
-		    scheduled_recording.device == current.device)
+		    scheduled_recording.device == current.device &&
+		    scheduled_recording.overlaps(current))
 		{
 			Glib::ustring message =  Glib::ustring::compose(
 				_("Failed to save scheduled recording because it conflicts with another scheduled recording called '%1'."),
