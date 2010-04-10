@@ -96,8 +96,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 
 	guint now = time(NULL);
 	g_debug("Deleting old scheduled recordings ending before %d", now);
-	Glib::ustring frontend_path = get_application().device_manager.get_frontend().get_path();
-	Glib::ustring where = Glib::ustring::compose("device = '%1' AND type !=0 AND (start_time + duration) < %2", frontend_path, now);
+	Glib::ustring where = Glib::ustring::compose("type !=0 AND (start_time + duration) < %1", now);
 	data_table = adapter.select_rows(where, "start_time");
 
 	gboolean updated = false;
