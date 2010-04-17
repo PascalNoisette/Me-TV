@@ -32,6 +32,20 @@ bool			disable_epg_thread	= false;
 bool			disable_epg			= false;
 gint			read_timeout		= 5;
 
+Glib::RefPtr<Gtk::ToggleAction> toggle_action_fullscreen;
+Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;
+Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
+
+Glib::RefPtr<Gtk::Action> action_about;
+Glib::RefPtr<Gtk::Action> action_channels;
+Glib::RefPtr<Gtk::Action> action_epg_event_search;
+Glib::RefPtr<Gtk::Action> action_preferences;
+Glib::RefPtr<Gtk::Action> action_meters;
+Glib::RefPtr<Gtk::Action> action_next_channel;
+Glib::RefPtr<Gtk::Action> action_previous_channel;
+Glib::RefPtr<Gtk::Action> action_quit;
+Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
+
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to)
 {
 	Glib::ustring::size_type position = 0;
@@ -106,15 +120,15 @@ void on_error()
 	}
 	catch (const Exception& exception)
 	{
-		get_application().show_error_dialog(exception.what());
+		g_message("Exception: %s", exception.what().c_str());
 	}
 	catch (const Glib::Error& exception)
 	{
-		get_application().show_error_dialog(exception.what());
+		g_message("Exception: %s", exception.what().c_str());
 	}
 	catch (...)
 	{
-		get_application().show_error_dialog("Unhandled exception");
+		g_message("Unhandled exception");
 	}
 }
 

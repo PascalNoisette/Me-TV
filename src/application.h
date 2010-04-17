@@ -58,6 +58,11 @@ private:
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
 
+	void on_record();
+	void on_quit();
+	void on_next_channel();
+	void on_previous_channel();
+	
 public:
 	Application();
 	~Application();
@@ -96,11 +101,8 @@ public:
 	void set_display_channel(const Channel& channel);
 	void set_display_channel_by_id(guint channel_id);
 	void set_display_channel_number(guint display_channel_number);
-	void previous_channel();
-	void next_channel();
 	
 	void check_scheduled_recordings();
-	void on_record();
 	void start_recording(Channel& channel);
 	void start_recording(Channel& channel, const ScheduledRecording& scheduled_recording);
 	void stop_recording(Channel& channel);

@@ -151,11 +151,11 @@ int main (int argc, char *argv[])
 	}
 	catch (const Glib::Exception& exception)
 	{
-		show_error_dialog(exception.what());
+		g_message("Exception: %s", exception.what().c_str());
 	}
 	catch (...)
 	{
-		show_error_dialog(_("An unhandled error occurred"));		
+		g_message(_("An unhandled error occurred"));		
 	}
 
 	g_message("Me TV terminated");

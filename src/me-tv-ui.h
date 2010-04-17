@@ -28,7 +28,7 @@
 
 Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description = "");
 
-void show_error_dialog(const Glib::ustring& message, Gtk::Window* parent = NULL);
+extern Glib::RefPtr<Gtk::UIManager>	ui_manager;
 
 // This class exists because I can't get Gtk::ComboBoxText to work properly
 // it seems to have 2 columns

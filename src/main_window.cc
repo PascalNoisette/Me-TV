@@ -36,6 +36,56 @@
 #define UPDATE_INTERVAL					60
 #define SECONDS_UNTIL_CHANNEL_CHANGE	3
 
+Glib::ustring ui_info =
+	"<ui>"
+	"	<menubar name='menu_bar'>"
+	"		<menu action='File'>"
+	"			<menuitem action='toggle_action_record'/>"
+	"			<separator/>"
+	"			<menuitem action='action_quit'/>"
+	"		</menu>"
+	"		<menu action='View'>"
+	"			<menuitem action='action_previous_channel'/>"
+	"			<menuitem action='action_next_channel'/>"
+	"			<separator/>"
+	"			<menuitem action='change_view_mode'/>"
+	"			<separator/>"
+	"			<menuitem action='action_scheduled_recordings'/>"
+	"			<menuitem action='action_epg_event_search'/>"
+	"			<menuitem action='action_channels'/>"
+	"			<menuitem action='action_meters'/>"
+	"			<menuitem action='action_preferences'/>"
+	"		</menu>"
+	"		<menu action='Video'>"
+	"			<menuitem action='toggle_action_fullscreen'/>"
+	"				<menu action='subtitle_streams'>"
+	"				<menuitem action='not_available'/>"
+	"			</menu>"
+	"		</menu>"
+	"		<menu action='Audio'>"
+	"			<menuitem action='toggle_action_mute'/>"
+	"			<menu action='audio_streams'>"
+	"				<menuitem action='not_available'/>"
+	"			</menu>"
+	"			<menu action='audio_channels'>"
+	"				<menuitem action='audio_channel_both'/>"
+	"				<menuitem action='audio_channel_left'/>"
+	"				<menuitem action='audio_channel_right'/>"
+	"			</menu>"
+	"		</menu>"
+	"		<menu action='Help'>"
+	"			<menuitem action='action_about'/>"
+	"		</menu>"
+	"	</menubar>"
+	"	<toolbar name='toolbar'>"
+	"		<toolitem action='toggle_action_record'/>"
+	"		<toolitem action='toggle_action_mute'/>"
+	"		<toolitem action='action_scheduled_recordings'/>"
+	"		<toolitem action='action_epg_event_search'/>"
+	"		<toolitem action='toggle_action_fullscreen'/>"
+	"	</toolbar>"
+	"</ui>";
+
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : Gtk::Window(cobject), builder(builder)
 {
@@ -55,6 +105,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	mute_state				= false;
 	maximise_forced			= false;
 
+	builder->add_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv-actions.ui");
+	
 	builder->get_widget("statusbar", statusbar);
 	builder->get_widget("drawing_area_video", drawing_area_video);
 	drawing_area_video->set_double_buffered(false);
@@ -83,27 +135,34 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	
 	Application& application = get_application();
 	set_keep_above(application.get_boolean_configuration_value("keep_above"));
-
-	gtk_builder_connect_signals(builder->gobj(), NULL);
-		
-	ui_manager = Glib::RefPtr<Gtk::UIManager>::cast_dynamic(builder->get_object("ui_manager"));
+	
 	add_accel_group(ui_manager->get_accel_group());
+	ui_manager->add_ui_from_string(ui_info);
 
-	Gtk::Widget* menubar = ui_manager->get_widget("/menubar");
-	Gtk::Widget* toolbar = ui_manager->get_widget("/toolbar");
+	Gtk::Widget* menu_bar = (Gtk::MenuBar*)ui_manager->get_widget("/menu_bar");
+	Gtk::Toolbar* toolbar = (Gtk::Toolbar*)ui_manager->get_widget("/toolbar");
 
 	Gtk::VBox* vbox_main_window = NULL;
 	builder->get_widget("vbox_main_window", vbox_main_window);
 
-	vbox_main_window->pack_start(*menubar, Gtk::PACK_SHRINK);
-	vbox_main_window->reorder_child(*menubar, 0);
+	vbox_main_window->pack_start(*menu_bar, Gtk::PACK_SHRINK);
+	vbox_main_window->reorder_child(*menu_bar, 0);
 	
 	vbox_main_window->pack_start(*toolbar, Gtk::PACK_SHRINK);
 	vbox_main_window->reorder_child(*toolbar, 1);
 
-	menubar->show_all();
+	menu_bar->show_all();
 	set_view_mode(view_mode);
 
+	connection_exception = Glib::add_exception_handler(sigc::mem_fun(*this, &MainWindow::on_exception));
+
+	toggle_action_fullscreen->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_fullscreen));
+
+	action_channels->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_channels_dialog));
+	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_epg_event_search_dialog));
+	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_preferences_dialog));
+	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));
+	
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
 
@@ -112,12 +171,15 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 MainWindow::~MainWindow()
 {
+	connection_exception.disconnect();
 	stop_engine();
 	if (timeout_source != 0)
 	{
 		g_source_remove(timeout_source);
 	}
 	save_geometry();
+
+	g_debug("MainWindow destroyed");
 }
 
 MainWindow* MainWindow::create(Glib::RefPtr<Gtk::Builder> builder)
@@ -190,7 +252,7 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event_button)
 	{
 		if (event_button->type == GDK_2BUTTON_PRESS)
 		{
-			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("fullscreen"))->activate();
+			toggle_action_fullscreen->activate();
 		}
 	}
 	else if (event_button->button == 3)
@@ -254,78 +316,85 @@ gboolean MainWindow::on_timeout(gpointer data)
 
 void MainWindow::on_timeout()
 {
-	static gboolean poke_failed = false;
-	
-	guint now = time(NULL);
-	
-	if (channel_change_timeout > 1)
+	try
 	{
-		channel_change_timeout--;
-	}
-	else if (channel_change_timeout == 1)
-	{
-		// Deactivate the countdown
-		channel_change_timeout = 0;
-
-		guint channel_index = temp_channel_number - 1;
-
-		// Reset the temporary channel number for the next run
-		temp_channel_number = 0;		
-
-		get_application().set_display_channel_number(channel_index);
-	}
+		static gboolean poke_failed = false;
 	
-	// Hide the mouse
-	if (now - last_motion_time > 3 && is_cursor_visible)
-	{
-		Gtk::Widget* widget = NULL;
-		builder->get_widget("event_box_video", widget);
-		Glib::RefPtr<Gdk::Window> event_box_video = widget->get_window();
-		if (event_box_video)
+		guint now = time(NULL);
+	
+		if (channel_change_timeout > 1)
 		{
-			event_box_video->set_cursor(Gdk::Cursor(hidden_cursor));
-			is_cursor_visible = false;
+			channel_change_timeout--;
 		}
-	}
-	
-	// Update EPG
-	guint last_epg_update_time = get_application().stream_manager.get_last_epg_update_time();
-	if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
-	{
-		update();
-		last_update_time = now;
-	}
-	
-	// Check on engine
-	if (engine != NULL && !engine->is_running())
-	{
-		stop_engine();
-	}
-	
-	// Disable screensaver
-	if (now - last_poke_time > POKE_INTERVAL && !poke_failed)
-	{
-		Glib::RefPtr<Gdk::Window> window = get_window();
-		gboolean is_minimised = window == NULL || window->get_state() & Gdk::WINDOW_STATE_ICONIFIED;
-		if (is_visible() && !is_minimised)
+		else if (channel_change_timeout == 1)
 		{
-			try
+			// Deactivate the countdown
+			channel_change_timeout = 0;
+
+			guint channel_index = temp_channel_number - 1;
+
+			// Reset the temporary channel number for the next run
+			temp_channel_number = 0;		
+
+			get_application().set_display_channel_number(channel_index);
+		}
+	
+		// Hide the mouse
+		if (now - last_motion_time > 3 && is_cursor_visible)
+		{
+			Gtk::Widget* widget = NULL;
+			builder->get_widget("event_box_video", widget);
+			Glib::RefPtr<Gdk::Window> event_box_video = widget->get_window();
+			if (event_box_video)
 			{
-				Glib::ustring screensaver_poke_command = get_application().get_string_configuration_value("screensaver_poke_command");
-				if (!screensaver_poke_command.empty())
+				event_box_video->set_cursor(Gdk::Cursor(hidden_cursor));
+				is_cursor_visible = false;
+			}
+		}
+	
+		// Update EPG
+		guint last_epg_update_time = get_application().stream_manager.get_last_epg_update_time();
+		if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
+		{
+			update();
+			last_update_time = now;
+		}
+	
+		// Check on engine
+		if (engine != NULL && !engine->is_running())
+		{
+			stop_engine();
+		}
+	
+		// Disable screensaver
+		if (now - last_poke_time > POKE_INTERVAL && !poke_failed)
+		{
+			Glib::RefPtr<Gdk::Window> window = get_window();
+			gboolean is_minimised = window == NULL || window->get_state() & Gdk::WINDOW_STATE_ICONIFIED;
+			if (is_visible() && !is_minimised)
+			{
+				try
 				{
-					g_debug("Poking screensaver");
-					Glib::spawn_command_line_async(screensaver_poke_command);
+					Glib::ustring screensaver_poke_command = get_application().get_string_configuration_value("screensaver_poke_command");
+					if (!screensaver_poke_command.empty())
+					{
+						g_debug("Poking screensaver");
+						Glib::spawn_command_line_async(screensaver_poke_command);
+					}
+				}
+				catch(...)
+				{
+					poke_failed = true;
+					throw Exception(_("Failed to poke screensaver"));
 				}
 			}
-			catch(...)
-			{
-				poke_failed = true;
-				throw Exception(_("Failed to poke screensaver"));
-			}
-		}
 
-		last_poke_time = now;
+			last_poke_time = now;
+		}
+	}
+	catch(...)
+	{
+		on_exception();
 	}
 }
 
@@ -341,7 +410,7 @@ void MainWindow::set_view_mode(ViewMode mode)
 {
 	Gtk::Widget* widget = NULL;
 
-	widget = ui_manager->get_widget("/menubar");
+	widget = ui_manager->get_widget("/menu_bar");
 	widget->property_visible() = (mode == VIEW_MODE_EPG) || (mode == VIEW_MODE_CONTROLS);
 	
 	widget = ui_manager->get_widget("/toolbar");
@@ -419,8 +488,7 @@ void MainWindow::update()
 		
 		gboolean record = application.stream_manager.is_recording(
 		    application.channel_manager.get_display_channel());
-		Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(
-		    builder->get_object("record"))->set_active(record);
+		toggle_action_record->set_active(record);
 	}
 	
 	set_title(window_title);
@@ -575,8 +643,8 @@ void MainWindow::play(const Glib::ustring& mrl)
 		}
 	}
 	
-	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menubar/audio/audio_streams"))->get_submenu();
-	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menubar/video/subtitle_streams"))->get_submenu();
+	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/audio/audio_streams"))->get_submenu();
+	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/video/subtitle_streams"))->get_submenu();
 	
 	Gtk::Menu_Helpers::MenuList& audio_items = audio_streams_menu->items();
 	audio_items.erase(audio_items.begin(), audio_items.end());
@@ -784,17 +852,11 @@ void MainWindow::set_mute_state(gboolean state)
 
 void MainWindow::toggle_fullscreen()
 {
-	if (is_fullscreen())
-	{
-		unfullscreen();
+}
 
-		if (maximise_forced)
-		{
-			get_window()->unmaximize();
-			maximise_forced = false;
-		}
-	}
-	else
+void MainWindow::on_fullscreen()
+{
+	if (toggle_action_fullscreen->get_active())
 	{
 		if (get_application().get_boolean_configuration_value("fullscreen_bug_workaround"))
 		{
@@ -804,9 +866,42 @@ void MainWindow::toggle_fullscreen()
 
 		fullscreen();
 	}
+	else
+	{
+		unfullscreen();
+
+		if (maximise_forced)
+		{
+			get_window()->unmaximize();
+			maximise_forced = false;
+		}
+	}
 }
 
-void MainWindow::on_fullscreen()
+void MainWindow::show_error_dialog(const Glib::ustring& message)
 {
-	toggle_fullscreen();
+	Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+	dialog.set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
+	dialog.set_title(PACKAGE_NAME " - Error");
+	dialog.run();
+}
+
+void MainWindow::on_exception()
+{
+	try
+	{
+		throw;
+	}
+	catch (const Exception& exception)
+	{
+		show_error_dialog(exception.what());
+	}
+	catch (const Glib::Error& exception)
+	{
+		show_error_dialog(exception.what());
+	}
+	catch (...)
+	{
+		show_error_dialog("Unhandled exception");
+	}
 }

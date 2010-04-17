@@ -57,7 +57,7 @@ private:
 	guint									channel_change_timeout;
 	guint									temp_channel_number;
 
-	Glib::RefPtr<Gtk::UIManager>			ui_manager;
+	sigc::connection						connection_exception;
 	
 	void stop();
 	void set_view_mode(ViewMode display_mode);
@@ -77,6 +77,7 @@ private:
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
 	void on_menu_item_audio_stream_activate(guint audio_stream_index);
 	void on_menu_item_subtitle_stream_activate(guint audio_stream_index);
+	void on_exception();
 
 	void on_show();
 	void on_hide();
@@ -108,6 +109,7 @@ public:
 	void show_preferences_dialog();
 	void show_scheduled_recordings_dialog();
 	void show_epg_event_search_dialog();
+	void show_error_dialog(const Glib::ustring& message);
 	
 	void toggle_visibility();
 	void update();

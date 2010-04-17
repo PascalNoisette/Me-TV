@@ -25,105 +25,6 @@
 #define GCONF_PATH					"/apps/me-tv"
 #define CURRENT_DATABASE_VERSION	5
 
-bool application_quit = false;
-
-G_BEGIN_DECLS
-void on_record(GtkObject *object, gpointer user_data)
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().on_record();
-}
-
-void on_quit()
-{
-	get_application().quit();
-}
-
-void on_next_channel(GtkObject *object, gpointer user_data)
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().next_channel();
-}
-
-void on_previous_channel(GtkObject *object, gpointer user_data)
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().previous_channel();
-}
-
-void on_change_view_mode(GtkObject *object, gpointer user_data)
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_change_view_mode();
-}
-
-void on_channels()
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_channels();
-}
-
-void on_scheduled_recordings()
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_scheduled_recordings();
-}
-
-void on_epg_event_search()
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_epg_event_search();
-}
-
-void on_meters()
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_meters();
-}
-
-void on_preferences(GtkObject *object, gpointer user_data)
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_preferences();
-}
-
-void on_fullscreen()
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_fullscreen();
-}
-
-void on_mute()
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_mute();
-}
-
-void on_audio_channel_both()
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_audio_channel_both();
-}
-
-void on_audio_channel_left()
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_audio_channel_left();
-}
-
-void on_audio_channel_right()
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_audio_channel_right();
-}
-
-void on_about()
-{
-	g_debug("Handler: %s", __PRETTY_FUNCTION__);
-	get_application().get_main_window().on_about();
-}
-G_END_DECLS
-
 Application* Application::current = NULL;
 
 Application& get_application()
@@ -182,8 +83,47 @@ Application::Application()
 	g_debug("Loading UI files");
 	
 	builder = Gtk::Builder::create_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv.ui");
-	builder->add_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv-actions.ui");
 	
+	toggle_action_fullscreen = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_fullscreen"));
+	toggle_action_mute = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_mute"));
+	toggle_action_record = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_record"));
+
+	action_about = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_about"));
+	action_channels = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_channels"));
+	action_epg_event_search = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_epg_event_search"));
+	action_meters = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_meters"));
+	action_next_channel = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_next_channel"));
+	action_preferences = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_preferences"));
+	action_previous_channel = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_previous_channel"));
+	action_quit = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_quit"));
+	action_scheduled_recordings = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_scheduled_recordings"));
+
+	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create();
+	action_group->add(toggle_action_record, Gtk::AccelKey("R"));
+	action_group->add(toggle_action_fullscreen, Gtk::AccelKey("F"));
+	action_group->add(toggle_action_mute, Gtk::AccelKey("M"));
+
+	action_group->add(action_about);
+	action_group->add(action_channels);
+	action_group->add(action_epg_event_search);
+	action_group->add(action_meters);
+	action_group->add(action_next_channel);
+	action_group->add(action_preferences);
+	action_group->add(action_previous_channel);
+	action_group->add(action_quit);
+	action_group->add(action_scheduled_recordings);
+
+	action_group->add(Gtk::Action::create("File", Gtk::Stock::FILE, _("_File")));
+	action_group->add(Gtk::Action::create("View", _("_View")));
+	action_group->add(Gtk::Action::create("Video", _("_Video")));
+	action_group->add(Gtk::Action::create("Audio", _("_Audio")));
+	action_group->add(Gtk::Action::create("Help", Gtk::Stock::HELP));
+
+	action_quit->signal_activate().connect(sigc::ptr_fun(Gtk::Main::quit));
+
+	ui_manager = Gtk::UIManager::create();
+	ui_manager->insert_action_group(action_group);
+
 	g_debug("Application constructed");
 }
 
@@ -209,9 +149,56 @@ Application::~Application()
 	g_debug("Application destructor complete");
 }
 
-void Application::quit()
+void Application::on_record()
 {
-	application_quit = true;
+	Glib::RecMutex::Lock lock(mutex);
+
+	if (toggle_action_record->get_active())
+	{
+		try
+		{
+			start_recording(channel_manager.get_display_channel());
+		}
+		catch (const Glib::Exception& exception)
+		{
+			toggle_action_record->set_active(false);
+			throw Exception(exception.what());
+		}
+		catch (...)
+		{
+			toggle_action_record->set_active(false);
+			throw Exception(_("Failed to start recording"));
+		}
+	}
+	else
+	{
+		stream_manager.stop_recording(channel_manager.get_display_channel());			
+		g_debug("Recording stopped");
+	}
+
+	update();
+}
+
+void Application::on_previous_channel()
+{
+	Channel* channel = channel_manager.get_previous_channel();
+	if (channel != NULL)
+	{
+		set_display_channel(*channel);
+	}
+}
+
+void Application::on_next_channel()
+{
+	Channel* channel = channel_manager.get_next_channel();
+	if (channel != NULL)
+	{
+		set_display_channel(*channel);
+	}
+}
+
+void Application::on_quit()
+{
 	get_application().get_main_window().hide();
 	Gtk::Main::quit();
 }
@@ -486,106 +473,94 @@ void Application::run()
 {
 	GdkLock gdk_lock;
 
-	if (initialise_database())
+	if (!initialise_database())
 	{
-		g_debug("Me TV database initialised");
+		throw Exception(_("Failed to initialise database"));
+	}
 
-		try
+	g_debug("Me TV database initialised");
+
+	status_icon = new StatusIcon();
+	main_window = MainWindow::create(builder);
+
+	try
+	{
+		const FrontendList& frontends = device_manager.get_frontends();
+	
+		if (!default_device.empty())
 		{
-			const FrontendList& frontends = device_manager.get_frontends();
+			Dvb::Frontend* default_frontend = device_manager.find_frontend_by_path(default_device);
 		
-			if (!default_device.empty())
+			if (default_frontend == NULL)
 			{
-				Dvb::Frontend* default_frontend = device_manager.find_frontend_by_path(default_device);
-			
-				if (default_frontend == NULL)
-				{
-					Glib::ustring message = Glib::ustring::compose(
-						_("Failed to load default device '%1'"), default_device);
-					throw Exception(message);
-				}
-			
-				device_manager.set_frontend(*default_frontend);
-			}
-			else
-			{
-				if (frontends.size() > 0)
-				{
-					device_manager.set_frontend(**frontends.begin());
-				}
-			}
-
-			channel_manager.load(connection);
-
-			status_icon = new StatusIcon();
-			main_window = MainWindow::create(builder);
-
-			timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
-
-			if (!device_manager.get_frontends().empty())
-			{
-				scheduled_recording_manager.load(connection);
+				Glib::ustring message = Glib::ustring::compose(
+					_("Failed to load default device '%1'"), default_device);
+				throw Exception(message);
 			}
 		
-			if (!minimised_mode)
-			{
-				main_window->show();
-		
-				if (safe_mode)
-				{
-					main_window->show_preferences_dialog();
-				}
-			}
-
-			ChannelArray& channels = channel_manager.get_channels();
-			if (channels.empty())
-			{
-				main_window->show_channels_dialog();
-			}
-
-			if (!channels.empty() && !device_manager.get_frontends().empty())
-			{
-				stream_manager.start();
-				select_channel_to_play();
-			}
-
-			if (device_manager.get_frontends().empty())
-			{
-				show_error_dialog(_("There are no available DVB devices"));
-			}
+			device_manager.set_frontend(*default_frontend);
 		}
-		catch(...)
+		else
 		{
-			on_error();
+			if (frontends.size() > 0)
+			{
+				device_manager.set_frontend(**frontends.begin());
+			}
 		}
 
-		while (!application_quit)
+		channel_manager.load(connection);
+
+		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
+
+		if (!device_manager.get_frontends().empty())
 		{
-			try
+			scheduled_recording_manager.load(connection);
+		}
+	
+		if (!minimised_mode)
+		{
+			main_window->show();
+	
+			if (safe_mode)
 			{
-				Gtk::Main::run();
-			}
-			catch (const Glib::Exception& exception)
-			{
-				show_error_dialog(exception.what());
-			}
-			catch (...)
-			{
-				show_error_dialog(_("An unhandled error occurred"));		
+				main_window->show_preferences_dialog();
 			}
 		}
-		
-		if (status_icon != NULL)
+
+		ChannelArray& channels = channel_manager.get_channels();
+		if (channels.empty() && !device_manager.get_frontends().empty())
 		{
-			delete status_icon;
-			status_icon = NULL;
+			main_window->show_channels_dialog();
 		}
-		
-		if (main_window != NULL)
+
+		if (!channels.empty() && !device_manager.get_frontends().empty())
 		{
-			delete main_window;
-			main_window = NULL;
+			stream_manager.start();
+			select_channel_to_play();
 		}
+
+		if (device_manager.get_frontends().empty())
+		{
+			throw Exception(_("There are no DVB devices available"));
+		}
+	}
+	catch(...)
+	{
+		on_error();
+	}
+
+	Gtk::Main::run();
+	
+	if (status_icon != NULL)
+	{
+		delete status_icon;
+		status_icon = NULL;
+	}
+	
+	if (main_window != NULL)
+	{
+		delete main_window;
+		main_window = NULL;
 	}
 }
 
@@ -611,24 +586,6 @@ void Application::update()
 	if (status_icon != NULL)
 	{
 		status_icon->update();
-	}
-}
-
-void Application::previous_channel()
-{
-	Channel* channel = channel_manager.get_previous_channel();
-	if (channel != NULL)
-	{
-		set_display_channel(*channel);
-	}
-}
-
-void Application::next_channel()
-{
-	Channel* channel = channel_manager.get_next_channel();
-	if (channel != NULL)
-	{
-		set_display_channel(*channel);
 	}
 }
 
@@ -755,11 +712,6 @@ Glib::StaticRecMutex& Application::get_mutex()
 	return mutex;
 }
 
-void Application::show_error_dialog(const Glib::ustring& message)
-{
-	::show_error_dialog(message, main_window);
-}
-
 void Application::start_recording(Channel& channel)
 {
 	stream_manager.start_recording(channel);
@@ -777,35 +729,5 @@ void Application::start_recording(Channel& channel, const ScheduledRecording& sc
 void Application::stop_recording(Channel& channel)
 {
 	stream_manager.stop_recording(channel);
-	update();
-}
-
-void Application::on_record()
-{
-	Glib::RecMutex::Lock lock(mutex);
-
-	if (Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->get_active())
-	{
-		try
-		{
-			start_recording(channel_manager.get_display_channel());
-		}
-		catch (const Glib::Exception& exception)
-		{
-			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->set_active(false);
-			throw Exception(exception.what());
-		}
-		catch (...)
-		{
-			Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("record"))->set_active(false);
-			throw Exception(_("Failed to start recording"));
-		}
-	}
-	else
-	{
-		stream_manager.stop_recording(channel_manager.get_display_channel());			
-		g_debug("Recording stopped");
-	}
-
 	update();
 }
