@@ -39,16 +39,16 @@
 Glib::ustring ui_info =
 	"<ui>"
 	"	<menubar name='menu_bar'>"
-	"		<menu action='File'>"
+	"		<menu action='action_file'>"
 	"			<menuitem action='toggle_action_record'/>"
 	"			<separator/>"
 	"			<menuitem action='action_quit'/>"
 	"		</menu>"
-	"		<menu action='View'>"
+	"		<menu action='action_view'>"
 	"			<menuitem action='action_previous_channel'/>"
 	"			<menuitem action='action_next_channel'/>"
 	"			<separator/>"
-	"			<menuitem action='change_view_mode'/>"
+	"			<menuitem action='action_change_view_mode'/>"
 	"			<separator/>"
 	"			<menuitem action='action_scheduled_recordings'/>"
 	"			<menuitem action='action_epg_event_search'/>"
@@ -56,24 +56,22 @@ Glib::ustring ui_info =
 	"			<menuitem action='action_meters'/>"
 	"			<menuitem action='action_preferences'/>"
 	"		</menu>"
-	"		<menu action='Video'>"
+	"		<menu action='action_video'>"
 	"			<menuitem action='toggle_action_fullscreen'/>"
-	"				<menu action='subtitle_streams'>"
-	"				<menuitem action='not_available'/>"
+	"			<menu action='action_subtitle_streams'>"
 	"			</menu>"
 	"		</menu>"
-	"		<menu action='Audio'>"
+	"		<menu action='action_audio'>"
 	"			<menuitem action='toggle_action_mute'/>"
-	"			<menu action='audio_streams'>"
-	"				<menuitem action='not_available'/>"
+	"			<menu action='action_audio_streams'>"
 	"			</menu>"
-	"			<menu action='audio_channels'>"
-	"				<menuitem action='audio_channel_both'/>"
-	"				<menuitem action='audio_channel_left'/>"
-	"				<menuitem action='audio_channel_right'/>"
+	"			<menu action='action_audio_channels'>"
+	"				<menuitem action='action_audio_channel_both'/>"
+	"				<menuitem action='action_audio_channel_left'/>"
+	"				<menuitem action='action_audio_channel_right'/>"
 	"			</menu>"
 	"		</menu>"
-	"		<menu action='Help'>"
+	"		<menu action='action_help'>"
 	"			<menuitem action='action_about'/>"
 	"		</menu>"
 	"	</menubar>"
@@ -104,8 +102,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	output_fd				= -1;
 	mute_state				= false;
 	maximise_forced			= false;
-
-	builder->add_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv-actions.ui");
 	
 	builder->get_widget("statusbar", statusbar);
 	builder->get_widget("drawing_area_video", drawing_area_video);
@@ -162,6 +158,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_epg_event_search_dialog));
 	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_preferences_dialog));
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));
+	action_about->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about));
 	
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
@@ -719,20 +716,6 @@ void MainWindow::play(const Glib::ustring& mrl)
 		);
 		
 		count++;
-	}
-
-	if (audio_streams_menu->items().empty())
-	{
-		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("Not available"));
-		menu_item->show_all();
-		audio_streams_menu->items().push_back(*menu_item);
-	}
-
-	if (subtitle_streams_menu->items().empty())
-	{
-		Gtk::MenuItem* menu_item = new Gtk::MenuItem(_("Not available"));
-		menu_item->show_all();
-		subtitle_streams_menu->items().push_back(*menu_item);
 	}
 }
 

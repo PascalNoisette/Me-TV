@@ -113,12 +113,16 @@ Application::Application()
 	action_group->add(action_quit);
 	action_group->add(action_scheduled_recordings);
 
-	action_group->add(Gtk::Action::create("File", Gtk::Stock::FILE, _("_File")));
-	action_group->add(Gtk::Action::create("View", _("_View")));
-	action_group->add(Gtk::Action::create("Video", _("_Video")));
-	action_group->add(Gtk::Action::create("Audio", _("_Audio")));
-	action_group->add(Gtk::Action::create("Help", Gtk::Stock::HELP));
-
+	action_group->add(Gtk::Action::create("action_file", Gtk::Stock::FILE, _("_File")));
+	action_group->add(Gtk::Action::create("action_view", _("_View")));
+	action_group->add(Gtk::Action::create("action_video", _("_Video")));
+	action_group->add(Gtk::Action::create("action_audio", _("_Audio")));
+	action_group->add(Gtk::Action::create("action_help", Gtk::Stock::HELP));
+	action_group->add(Gtk::Action::create("action_change_view_mode", _("_Change View Mode")));
+	action_group->add(Gtk::Action::create("action_subtitle_streams", _("Subtitles")));
+	action_group->add(Gtk::Action::create("action_audio_streams", _("_Streams")));
+	action_group->add(Gtk::Action::create("action_audio_channels", _("_Channels")));
+	
 	action_quit->signal_activate().connect(sigc::ptr_fun(Gtk::Main::quit));
 
 	ui_manager = Gtk::UIManager::create();

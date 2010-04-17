@@ -2275,24 +2275,48 @@ If you've just upgraded Me TV then this is probably what you want to do.
     </action-widgets>
   </object>
   <object class="GtkToggleAction" id="toggle_action_record">
+    <property name="label">Record</property>
     <property name="stock_id">gtk-media-record</property>
   </object>
   <object class="GtkAction" id="action_next_channel">
+    <property name="label">Next Channel</property>
     <property name="stock_id">gtk-media-next</property>
   </object>
   <object class="GtkAction" id="action_previous_channel">
+    <property name="label">Previous Channel</property>
     <property name="stock_id">gtk-media-previous</property>
   </object>
   <object class="GtkAction" id="action_quit">
+    <property name="label">Quit</property>
     <property name="stock_id">gtk-quit</property>
   </object>
-  <object class="GtkAction" id="action_channels"/>
-  <object class="GtkAction" id="action_meters"/>
-  <object class="GtkAction" id="action_scheduled_recordings"/>
-  <object class="GtkAction" id="action_epg_event_search"/>
-  <object class="GtkAction" id="action_preferences"/>
-  <object class="GtkToggleAction" id="toggle_action_mute"/>
-  <object class="GtkToggleAction" id="toggle_action_fullscreen"/>
+  <object class="GtkAction" id="action_channels">
+    <property name="label">Channels</property>
+  </object>
+  <object class="GtkAction" id="action_meters">
+    <property name="label">Meters</property>
+    <property name="icon_name">utilities-system-monitor</property>
+  </object>
+  <object class="GtkAction" id="action_scheduled_recordings">
+    <property name="label">Scheduled Recordings</property>
+    <property name="icon_name">appointment-soon</property>
+  </object>
+  <object class="GtkAction" id="action_epg_event_search">
+    <property name="label">EPG Event Search</property>
+    <property name="stock_id">gtk-find</property>
+  </object>
+  <object class="GtkAction" id="action_preferences">
+    <property name="label">Preferences</property>
+    <property name="stock_id">gtk-preferences</property>
+  </object>
+  <object class="GtkToggleAction" id="toggle_action_mute">
+    <property name="label">Mute</property>
+    <property name="icon_name">audio-volume-high</property>
+  </object>
+  <object class="GtkToggleAction" id="toggle_action_fullscreen">
+    <property name="label">Fullscreen</property>
+    <property name="stock_id">gtk-fullscreen</property>
+  </object>
   <object class="GtkAction" id="action_about">
     <property name="stock_id">gtk-about</property>
   </object>
