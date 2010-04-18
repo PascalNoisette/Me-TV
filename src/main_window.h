@@ -77,7 +77,6 @@ private:
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
 	void on_menu_item_audio_stream_activate(guint audio_stream_index);
 	void on_menu_item_subtitle_stream_activate(guint audio_stream_index);
-	void on_exception();
 
 	void on_show();
 	void on_hide();
@@ -104,6 +103,7 @@ public:
 	void on_audio_channel_left();
 	void on_audio_channel_right();
 	void on_about();
+	void on_exception();
 
 	void show_channels_dialog();
 	void show_preferences_dialog();

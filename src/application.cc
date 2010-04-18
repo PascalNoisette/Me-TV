@@ -122,6 +122,11 @@ Application::Application()
 	action_group->add(Gtk::Action::create("action_subtitle_streams", _("Subtitles")));
 	action_group->add(Gtk::Action::create("action_audio_streams", _("_Streams")));
 	action_group->add(Gtk::Action::create("action_audio_channels", _("_Channels")));
+
+	Gtk::RadioButtonGroup radio_button_group_audio_channel;
+	action_group->add(Gtk::RadioAction::create(radio_button_group_audio_channel, "action_audio_channel_both", _("_Both")));
+	action_group->add(Gtk::RadioAction::create(radio_button_group_audio_channel, "action_audio_channel_left", _("_Left")));
+	action_group->add(Gtk::RadioAction::create(radio_button_group_audio_channel, "action_audio_channel_right", _("_Right")));
 	
 	action_quit->signal_activate().connect(sigc::ptr_fun(Gtk::Main::quit));
 
@@ -138,6 +143,13 @@ Application::~Application()
 	{
 		g_source_remove(timeout_source);
 	}
+	
+	if (status_icon != NULL)
+	{
+		delete status_icon;
+		status_icon = NULL;
+	}
+
 	if (main_window != NULL)
 	{
 		delete main_window;
@@ -488,84 +500,71 @@ void Application::run()
 	main_window = MainWindow::create(builder);
 
 	try
-	{
-		const FrontendList& frontends = device_manager.get_frontends();
+	{	
+		const FrontendList& frontends = device_manager.get_frontends();	
 	
-		if (!default_device.empty())
-		{
-			Dvb::Frontend* default_frontend = device_manager.find_frontend_by_path(default_device);
+		if (!default_device.empty())	
+		{	
+			Dvb::Frontend* default_frontend = device_manager.find_frontend_by_path(default_device);	
 		
-			if (default_frontend == NULL)
-			{
-				Glib::ustring message = Glib::ustring::compose(
-					_("Failed to load default device '%1'"), default_device);
-				throw Exception(message);
-			}
+			if (default_frontend == NULL)	
+			{	
+				Glib::ustring message = Glib::ustring::compose(	
+					_("Failed to load default device '%1'"), default_device);	
+				throw Exception(message);	
+			}	
 		
-			device_manager.set_frontend(*default_frontend);
+			device_manager.set_frontend(*default_frontend);	
+		}	
+		else	
+		{	
+			if (frontends.size() > 0)	
+			{	
+				device_manager.set_frontend(**frontends.begin());	
+			}	
 		}
-		else
-		{
-			if (frontends.size() > 0)
-			{
-				device_manager.set_frontend(**frontends.begin());
-			}
-		}
-
+	
 		channel_manager.load(connection);
-
+	
 		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
-
-		if (!device_manager.get_frontends().empty())
-		{
-			scheduled_recording_manager.load(connection);
+	
+		if (!device_manager.get_frontends().empty())	
+		{	
+			scheduled_recording_manager.load(connection);	
+		}	
+	
+		if (!minimised_mode)	
+		{	
+			main_window->show();	
+	
+			if (safe_mode)	
+			{	
+				main_window->show_preferences_dialog();	
+			}	
 		}
 	
-		if (!minimised_mode)
-		{
-			main_window->show();
+		ChannelArray& channels = channel_manager.get_channels();	
+		if (channels.empty() && !device_manager.get_frontends().empty())	
+		{	
+			main_window->show_channels_dialog();	
+		}
 	
-			if (safe_mode)
-			{
-				main_window->show_preferences_dialog();
-			}
-		}
-
-		ChannelArray& channels = channel_manager.get_channels();
-		if (channels.empty() && !device_manager.get_frontends().empty())
-		{
-			main_window->show_channels_dialog();
-		}
-
-		if (!channels.empty() && !device_manager.get_frontends().empty())
-		{
-			stream_manager.start();
-			select_channel_to_play();
+		if (!channels.empty() && !device_manager.get_frontends().empty())	
+		{	
+			stream_manager.start();	
+			select_channel_to_play();	
 		}
 
 		if (device_manager.get_frontends().empty())
 		{
 			throw Exception(_("There are no DVB devices available"));
-		}
+		}	
 	}
 	catch(...)
 	{
-		on_error();
+		main_window->on_exception();
 	}
-
 	Gtk::Main::run();
-	
-	if (status_icon != NULL)
-	{
-		delete status_icon;
-		status_icon = NULL;
-	}
-	
-	if (main_window != NULL)
-	{
-		delete main_window;
-		main_window = NULL;
-	}
 }
 
 Application& Application::get_current()
