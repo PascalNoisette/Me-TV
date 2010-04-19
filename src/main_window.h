@@ -64,7 +64,6 @@ private:
 	void load_devices();
 	void set_state(const Glib::ustring& name, gboolean state);
 	void add_channel_number(guint channel_number);
-	void toggle_fullscreen();
 	void toggle_mute();
 	void set_mute_state(gboolean state);
 		

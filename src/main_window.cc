@@ -153,6 +153,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	connection_exception = Glib::add_exception_handler(sigc::mem_fun(*this, &MainWindow::on_exception));
 
 	toggle_action_fullscreen->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_fullscreen));
+	toggle_action_mute->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_mute));
 
 	action_channels->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_channels_dialog));
 	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_epg_event_search_dialog));
@@ -819,9 +820,7 @@ void MainWindow::on_about()
 
 void MainWindow::on_mute()
 {
-	Gtk::ToggleToolButton* mute_button =
-		(Gtk::ToggleToolButton*)ui_manager->get_widget("/toolbar/mute");
-	set_mute_state(mute_button->get_active());
+	set_mute_state(toggle_action_mute->get_active());
 }
 
 void MainWindow::set_mute_state(gboolean state)
@@ -831,10 +830,6 @@ void MainWindow::set_mute_state(gboolean state)
 	{
 		engine->set_mute_state(mute_state);
 	}
-}
-
-void MainWindow::toggle_fullscreen()
-{
 }
 
 void MainWindow::on_fullscreen()
