@@ -640,8 +640,8 @@ void MainWindow::play(const Glib::ustring& mrl)
 		}
 	}
 	
-	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/audio/audio_streams"))->get_submenu();
-	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/video/subtitle_streams"))->get_submenu();
+	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_audio/action_audio_streams"))->get_submenu();
+	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_video/action_subtitle_streams"))->get_submenu();
 	
 	Gtk::Menu_Helpers::MenuList& audio_items = audio_streams_menu->items();
 	audio_items.erase(audio_items.begin(), audio_items.end());
