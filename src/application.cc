@@ -546,22 +546,23 @@ void Application::run()
 			}	
 		}
 	
-		ChannelArray& channels = channel_manager.get_channels();	
-		if (channels.empty() && !device_manager.get_frontends().empty())	
-		{	
-			main_window->show_channels_dialog();	
-		}
-	
-		if (!channels.empty() && !device_manager.get_frontends().empty())	
-		{	
-			stream_manager.start();	
-			select_channel_to_play();	
-		}
-
 		if (device_manager.get_frontends().empty())
 		{
 			throw Exception(_("There are no DVB devices available"));
 		}	
+
+		stream_manager.start();
+
+		ChannelArray& channels = channel_manager.get_channels();	
+		if (channels.empty())
+		{	
+			main_window->show_channels_dialog();	
+		}
+	
+		if (!channels.empty())	
+		{	
+			select_channel_to_play();	
+		}
 	}
 	catch(...)
 	{
