@@ -103,13 +103,13 @@ Application::Application()
 	action_group->add(toggle_action_fullscreen, Gtk::AccelKey("F"));
 	action_group->add(toggle_action_mute, Gtk::AccelKey("M"));
 
-	action_group->add(action_about);
+	action_group->add(action_about, Gtk::AccelKey("F1"));
 	action_group->add(action_channels);
 	action_group->add(action_epg_event_search);
 	action_group->add(action_meters);
-	action_group->add(action_next_channel);
+	action_group->add(action_next_channel, Gtk::AccelKey("<Ctrl>Down"));
 	action_group->add(action_preferences);
-	action_group->add(action_previous_channel);
+	action_group->add(action_previous_channel, Gtk::AccelKey("<Ctrl>Up"));
 	action_group->add(action_quit);
 	action_group->add(action_scheduled_recordings);
 
@@ -130,6 +130,8 @@ Application::Application()
 	
 	action_quit->signal_activate().connect(sigc::ptr_fun(Gtk::Main::quit));
 	toggle_action_record->signal_activate().connect(sigc::mem_fun(*this, &Application::on_record));
+	action_next_channel->signal_activate().connect(sigc::mem_fun(*this, &Application::on_next_channel));
+	action_previous_channel->signal_activate().connect(sigc::mem_fun(*this, &Application::on_previous_channel));
 
 	ui_manager = Gtk::UIManager::create();
 	ui_manager->insert_action_group(action_group);
