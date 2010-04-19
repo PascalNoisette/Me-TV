@@ -129,6 +129,7 @@ Application::Application()
 	action_group->add(Gtk::RadioAction::create(radio_button_group_audio_channel, "action_audio_channel_right", _("_Right")));
 	
 	action_quit->signal_activate().connect(sigc::ptr_fun(Gtk::Main::quit));
+	toggle_action_record->signal_activate().connect(sigc::mem_fun(*this, &Application::on_record));
 
 	ui_manager = Gtk::UIManager::create();
 	ui_manager->insert_action_group(action_group);
