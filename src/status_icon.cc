@@ -58,7 +58,7 @@ void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
 
 void StatusIcon::on_menu_item_status_quit_clicked()
 {
-	get_application().quit();
+	action_quit->activate();
 }
 
 void StatusIcon::on_menu_item_status_me_tv_clicked()

@@ -57,14 +57,13 @@ private:
 	guint									channel_change_timeout;
 	guint									temp_channel_number;
 
-	Glib::RefPtr<Gtk::UIManager>			ui_manager;
+	sigc::connection						connection_exception;
 	
 	void stop();
 	void set_view_mode(ViewMode display_mode);
 	void load_devices();
 	void set_state(const Glib::ustring& name, gboolean state);
 	void add_channel_number(guint channel_number);
-	void toggle_fullscreen();
 	void toggle_mute();
 	void set_mute_state(gboolean state);
 		
@@ -103,11 +102,13 @@ public:
 	void on_audio_channel_left();
 	void on_audio_channel_right();
 	void on_about();
+	void on_exception();
 
 	void show_channels_dialog();
 	void show_preferences_dialog();
 	void show_scheduled_recordings_dialog();
 	void show_epg_event_search_dialog();
+	void show_error_dialog(const Glib::ustring& message);
 	
 	void toggle_visibility();
 	void update();

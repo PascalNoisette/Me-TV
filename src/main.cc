@@ -132,7 +132,7 @@ int main (int argc, char *argv[])
 		UniqueApp* unique_application = unique_app_new_with_commands(
 			"org.lamothe.me-tv", NULL,
 		    "run", (UniqueCommand)1,
-			(char *)NULL);
+		    (char*)NULL);
 
 		if (unique_app_is_running(unique_application))
 		{
@@ -151,11 +151,11 @@ int main (int argc, char *argv[])
 	}
 	catch (const Glib::Exception& exception)
 	{
-		show_error_dialog(exception.what());
+		g_message("Exception: %s", exception.what().c_str());
 	}
 	catch (...)
 	{
-		show_error_dialog(_("An unhandled error occurred"));		
+		g_message(_("An unhandled error occurred"));		
 	}
 
 	g_message("Me TV terminated");

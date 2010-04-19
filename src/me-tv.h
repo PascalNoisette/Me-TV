@@ -27,7 +27,7 @@
 
 #include <list>
 #include <vector>
-#include <glibmm.h>
+#include <gtkmm.h>
 
 extern bool verbose_logging;
 extern bool safe_mode;
@@ -62,5 +62,19 @@ void on_error();
 void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data);
 
 void split_string(std::vector<Glib::ustring>& parts, const Glib::ustring& text, const char* delimiter, gboolean remove_empty, gsize max_length);
+
+extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_fullscreen;
+extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;
+extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
+
+extern Glib::RefPtr<Gtk::Action> action_channels;
+extern Glib::RefPtr<Gtk::Action> action_preferences;
+extern Glib::RefPtr<Gtk::Action> action_meters;
+extern Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
+extern Glib::RefPtr<Gtk::Action> action_epg_event_search;
+extern Glib::RefPtr<Gtk::Action> action_next_channel;
+extern Glib::RefPtr<Gtk::Action> action_previous_channel;
+extern Glib::RefPtr<Gtk::Action> action_about;
+extern Glib::RefPtr<Gtk::Action> action_quit;
 
 #endif

@@ -488,8 +488,6 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		button->hide();
 		notebook_scan_wizard->next_page();
 
-		get_application().stream_manager.stop();
-
 		progress_bar_scan->set_text(_("Starting scanner"));
 		scan_thread = new ScanThread(frontend, transponders);
 		Dvb::Scanner& scanner = scan_thread->get_scanner();
