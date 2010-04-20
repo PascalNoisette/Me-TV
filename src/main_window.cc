@@ -156,9 +156,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	toggle_action_mute->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_mute));
 
 	action_channels->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_channels_dialog));
-	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_epg_event_search_dialog));
-	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_preferences_dialog));
-	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_scheduled_recordings_dialog));
+	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_epg_event_search));
+	action_meters->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_meters));
+	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences));
+	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
 	action_about->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about));
 	
 	last_motion_time = time(NULL);
