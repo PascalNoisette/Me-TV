@@ -155,7 +155,7 @@ void Scanner::start(Frontend& frontend, TransponderList& t)
 		else
 		{
 			tune_to(frontend, *i);
-		}
+		}		
 		signal_progress(++transponder_count, transponders.size());
 	}
 	

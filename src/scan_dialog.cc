@@ -118,6 +118,9 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget("button_scan_wizard_cancel", button);
 	button->signal_clicked().connect(sigc::mem_fun(*this, &ScanDialog::on_button_scan_wizard_cancel_clicked));
 
+	builder->get_widget("button_scan_stop", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &ScanDialog::on_button_scan_stop_clicked));
+
 	notebook_scan_wizard->set_show_tabs(false);
 		
 	Glib::ustring device_name = frontend.get_frontend_info().name;
@@ -211,6 +214,12 @@ void ScanDialog::stop_scan()
 	if (scan_thread != NULL)
 	{
 		g_debug("Stopping scan");
+		
+		Dvb::Scanner& scanner = scan_thread->get_scanner();
+		scanner.signal_service.clear();
+		scanner.signal_progress.clear();
+		scanner.signal_complete.clear();
+		
 		scan_thread->stop();
 		scan_thread->join(true);
 		delete scan_thread;
@@ -234,8 +243,23 @@ void ScanDialog::on_file_chooser_button_import_file_set()
 
 void ScanDialog::on_button_scan_wizard_cancel_clicked()
 {
-	list_store->clear();
 	hide();
+}
+
+void ScanDialog::on_button_scan_stop_clicked()
+{
+	stop_scan();
+	list_store->clear();
+	
+	Gtk::Button* button = NULL;
+	builder->get_widget("button_scan_stop", button);
+	button->hide();
+
+	builder->get_widget("button_scan_wizard_add", button);
+	button->show();
+
+	builder->get_widget("button_scan_wizard_cancel", button);
+	button->show();
 }
 
 void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
@@ -512,7 +536,7 @@ void ScanDialog::on_button_scan_wizard_add_clicked()
 
 void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint service_id, const Glib::ustring& name, const guint polarisation)
 {
-	if (!scan_thread->is_terminated())
+	if (scan_thread != NULL && !scan_thread->is_terminated())
 	{
 		GdkLock gdk_lock;
 
@@ -552,7 +576,7 @@ void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& fronten
 
 void ScanDialog::on_signal_progress(guint step, gsize total)
 {
-	if (!scan_thread->is_terminated())
+	if (scan_thread != NULL && !scan_thread->is_terminated())
 	{
 		GdkLock gdk_lock;
 		gdouble fraction = total == 0 ? 0 : step/(gdouble)total;
@@ -576,7 +600,7 @@ void ScanDialog::on_signal_complete()
 {
 	g_debug("Scan completed");
 	
-	if (!scan_thread->is_terminated())
+	if (scan_thread != NULL && !scan_thread->is_terminated())
 	{
 		GdkLock gdk_lock;
 
