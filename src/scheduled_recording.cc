@@ -69,7 +69,7 @@ Glib::ustring ScheduledRecording::get_end_time_text() const
 
 gboolean ScheduledRecording::is_in(guint at) const
 {
-	return start_time <= at && start_time+duration > at;
+	return start_time < at && start_time+duration > at;
 }
 
 gboolean ScheduledRecording::is_in(guint s, guint e) const
@@ -80,41 +80,47 @@ gboolean ScheduledRecording::is_in(guint s, guint e) const
 gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_recording) const
 {
 	// Current recording is before the "scheduled_recording"
-	if (start_time+duration < scheduled_recording.start_time)
+	if (start_time+duration <= scheduled_recording.start_time)
 		return false;
 	// Current recording is overlaping the "scheduled_recording"
 	else if (is_in(scheduled_recording.start_time) || is_in(scheduled_recording.get_end_time()))
 		return true;
-	// Current recording is after the "scheduled_recording" but "scheduled_recording" have no recurring
-	else if (scheduled_recording.get_end_time() < start_time && scheduled_recording.type == 0)
-		return false;
-	// Current recording is after the "scheduled_recording" and there is a chance of conflict because of recurring
-	else
+	// Current recording is after the "scheduled_recording"...
+	else if (scheduled_recording.get_end_time() <= start_time)
 	{
-		guint tstartt 	= scheduled_recording.start_time;
-		while(tstartt < start_time + duration)
+		// ...but "scheduled_recording" have no recurring
+		if(scheduled_recording.type == 0)
+			return false;
+		// ...and there is a chance of conflict because of recurring
+		else
 		{
-			if(scheduled_recording.type == 1)
-				tstartt += 86400;
-			else if(scheduled_recording.type == 2)
-				tstartt += 604800;
-			else if(scheduled_recording.type == 3)
+			guint tstartt 	= scheduled_recording.start_time;
+			while(tstartt < start_time + duration)
 			{
-				time_t tim = tstartt;
-				struct tm *ts;
-				char buf[80];
-				ts = localtime(&tim);
-				strftime(buf, sizeof(buf), "%w", ts);
-				switch(atoi(buf))
+				if(scheduled_recording.type == 1)
+					tstartt += 86400;
+				else if(scheduled_recording.type == 2)
+					tstartt += 604800;
+				else if(scheduled_recording.type == 3)
 				{
-					case 5 : tstartt += 259200;break;
-					case 6 : tstartt += 172800;break;
-					default: tstartt += 86400;break;
-				}
-			}  
-			if (is_in(tstartt) || is_in(tstartt+duration))
-				return true;
+					time_t tim = tstartt;
+					struct tm *ts;
+					char buf[80];
+					ts = localtime(&tim);
+					strftime(buf, sizeof(buf), "%w", ts);
+					switch(atoi(buf))
+					{
+						case 5 : tstartt += 259200;break;
+						case 6 : tstartt += 172800;break;
+						default: tstartt += 86400;break;
+					}
+				}  
+				if (is_in(tstartt) || is_in(tstartt+duration))
+					return true;
+			}
+			return false;
 		}
-		return false;
 	}
+	else
+		return true;
 }
