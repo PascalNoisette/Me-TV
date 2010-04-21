@@ -414,6 +414,13 @@ found in /usr/share/common-licenses/GPL file.</property>
             <child>
               <object class="GtkComboBox" id="combo_box_recurring">
                 <property name="visible">True</property>
+                <property name="model">list_store_recurring</property>
+                <child>
+                  <object class="GtkCellRendererText" id="cellrenderertext_recurring"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -502,6 +509,26 @@ found in /usr/share/common-licenses/GPL file.</property>
       <row>
         <col id="0" translatable="yes">Slovenia</col>
         <col id="1" translatable="yes">SI</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="list_store_recurring">
+    <columns>
+      <!-- column-name text -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Once</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Every day</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Every week</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Every weekday</col>
       </row>
     </data>
   </object>

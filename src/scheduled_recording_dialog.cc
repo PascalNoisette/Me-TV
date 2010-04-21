@@ -44,14 +44,7 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 	builder->get_widget("spin_button_start_time_hour", spin_button_start_time_hour);
 	builder->get_widget("spin_button_start_time_minute", spin_button_start_time_minute);
 	builder->get_widget("spinbutton_duration", spin_button_duration);
-	
-	builder->get_widget_derived("combo_box_recurring", recurring_combo_box);
-	recurring_combo_box->clear_items();
-	recurring_combo_box->append_text("Once");
-	recurring_combo_box->append_text("Every day");
-	recurring_combo_box->append_text("Every week");
-	recurring_combo_box->append_text("Every days of week");
-	recurring_combo_box->set_active(0);
+	builder->get_widget("combo_box_recurring", recurring_combo_box);
 }
 
 void ScheduledRecordingDialog::set_date_time(time_t t)
@@ -164,5 +157,6 @@ ScheduledRecording ScheduledRecordingDialog::get_scheduled_recording()
 	scheduled_recording.start_time				= mktime(&start_time);
 	scheduled_recording.duration				= (int)spin_button_duration->get_value() * 60;
 	scheduled_recording.device					= "";
+	
 	return scheduled_recording;
 }
