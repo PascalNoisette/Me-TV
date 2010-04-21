@@ -192,6 +192,12 @@ void ScanDialog::on_show()
 	
 	Gtk::Button* button = NULL;
 
+	builder->get_widget("button_scan_stop", button);
+	button->hide();
+
+	builder->get_widget("button_scan_wizard_cancel", button);
+	button->show();
+
 	builder->get_widget("button_scan_wizard_add", button);
 	button->hide();
 
@@ -243,15 +249,17 @@ void ScanDialog::on_file_chooser_button_import_file_set()
 
 void ScanDialog::on_button_scan_wizard_cancel_clicked()
 {
+	stop_scan();
+	list_store->clear();
 	hide();
 }
 
 void ScanDialog::on_button_scan_stop_clicked()
-{
+{	
 	stop_scan();
-	list_store->clear();
-	
+
 	Gtk::Button* button = NULL;
+
 	builder->get_widget("button_scan_stop", button);
 	button->hide();
 
@@ -508,8 +516,16 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		}
 		
 		Gtk::Button* button = NULL;
+
+		builder->get_widget("button_scan_wizard_cancel", button);
+		button->hide();
+
+		builder->get_widget("button_scan_stop", button);
+		button->show();
+
 		builder->get_widget("button_scan_wizard_next", button);
 		button->hide();
+		
 		notebook_scan_wizard->next_page();
 
 		progress_bar_scan->set_text(_("Starting scanner"));
@@ -604,9 +620,14 @@ void ScanDialog::on_signal_complete()
 	{
 		GdkLock gdk_lock;
 
+		Gtk::Button* button_scan_wizard_cancel = NULL;
+		builder->get_widget("button_scan_wizard_cancel", button_scan_wizard_cancel);
+		button_scan_wizard_cancel->show();
+
 		Gtk::Button* button_scan_wizard_add = NULL;
 		builder->get_widget("button_scan_wizard_add", button_scan_wizard_add);
 		button_scan_wizard_add->show();
+		
 		progress_bar_scan->set_fraction(1);
 		progress_bar_scan->set_text(_("Scan complete"));
 	}
