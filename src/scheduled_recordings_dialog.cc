@@ -51,6 +51,7 @@ ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, co
 	tree_view_scheduled_recordings->append_column(_("Channel"), columns.column_channel);
 	tree_view_scheduled_recordings->append_column(_("Start Time"), columns.column_start_time);
 	tree_view_scheduled_recordings->append_column(_("Duration"), columns.column_duration);
+	tree_view_scheduled_recordings->append_column(_("Record"),columns.column_type);
 	tree_view_scheduled_recordings->append_column(_("Device"), columns.column_device);
 	
 	list_store->set_sort_column(columns.column_sort, Gtk::SORT_ASCENDING);
@@ -105,6 +106,13 @@ void ScheduledRecordingsDialog::update()
 		row[columns.column_start_time]				= scheduled_recording.get_start_time_text();
 		row[columns.column_duration]				= scheduled_recording.get_duration_text();
 		row[columns.column_device]					= scheduled_recording.device;
+		switch(scheduled_recording.type)
+		{
+			case 1 : row[columns.column_type] = "Every day";break;
+			case 2 : row[columns.column_type] = "Every week";break;
+			case 3 : row[columns.column_type] = "Every days of week";break;
+			default: row[columns.column_type] = "Once";break;
+		}
 	}
 }
 
