@@ -25,6 +25,18 @@
 #include "dvb_transponder.h"
 #include "dvb_si.h"
 
+void StreamManager::load()
+{
+	g_debug("Creating stream manager");
+	FrontendList& frontends = get_application().device_manager.get_frontends();
+	for(FrontendList::iterator i = frontends.begin(); i != frontends.end(); i++)
+	{
+		g_debug("Creating frontend thread");
+		FrontendThread* frontend_thread = new FrontendThread(**i);
+		frontend_threads.push_back(*frontend_thread);
+	}
+}
+
 guint StreamManager::get_last_epg_update_time()
 {
 	guint result = 0;
@@ -193,14 +205,11 @@ void StreamManager::stop_recording(const Channel& channel)
 
 void StreamManager::start()
 {
-	g_debug("Starting stream manager");
-	FrontendList& frontends = get_application().device_manager.get_frontends();
-	for(FrontendList::iterator i = frontends.begin(); i != frontends.end(); i++)
+	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		g_debug("Starting frontend thread");
-		FrontendThread* frontend_thread = new FrontendThread(**i);
-		frontend_threads.push_back(*frontend_thread);
-		frontend_threads.back().start();
+		FrontendThread& frontend_thread = *i;
+		frontend_thread.start();
 	}
 }
 
@@ -208,6 +217,7 @@ void StreamManager::stop()
 {
 	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
+		g_debug("Stopping frontend thread");
 		FrontendThread& frontend_thread = *i;
 		frontend_thread.stop();
 	}

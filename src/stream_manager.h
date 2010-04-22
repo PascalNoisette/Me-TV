@@ -30,6 +30,8 @@ private:
 	std::list<FrontendThread> frontend_threads;
 		
 public:
+	void load();
+		
 	guint get_last_epg_update_time();
 	void set_display_stream(const Channel& channel);
 	const ChannelStream& get_display_stream();

@@ -620,6 +620,10 @@ void ScanDialog::on_signal_complete()
 	{
 		GdkLock gdk_lock;
 
+		Gtk::Button* button_scan_stop = NULL;
+		builder->get_widget("button_scan_stop", button_scan_stop);
+		button_scan_stop->show();
+
 		Gtk::Button* button_scan_wizard_cancel = NULL;
 		builder->get_widget("button_scan_wizard_cancel", button_scan_wizard_cancel);
 		button_scan_wizard_cancel->show();
@@ -635,7 +639,6 @@ void ScanDialog::on_signal_complete()
 	Application& application = get_application();
 	if (application.channel_manager.has_display_channel())
 	{
-		application.stream_manager.start();
 		Channel& channel = application.channel_manager.get_display_channel();
 		application.device_manager.get_frontend().tune_to(channel.transponder);
 		application.set_display_channel(channel);

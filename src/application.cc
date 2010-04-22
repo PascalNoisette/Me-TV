@@ -503,7 +503,7 @@ void Application::run()
 	main_window = MainWindow::create(builder);
 
 	try
-	{	
+	{
 		const FrontendList& frontends = device_manager.get_frontends();	
 	
 		if (!default_device.empty())	
@@ -551,6 +551,7 @@ void Application::run()
 			throw Exception(_("There are no DVB devices available"));
 		}	
 
+		stream_manager.load();
 		stream_manager.start();
 
 		ChannelArray& channels = channel_manager.get_channels();	
