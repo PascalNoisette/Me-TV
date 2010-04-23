@@ -29,8 +29,6 @@ ScheduledRecordingManager::ScheduledRecordingManager()
 void ScheduledRecordingManager::load(Data::Connection& connection)
 {
 	Glib::RecMutex::Lock lock(mutex);
-
-	Glib::ustring frontend_path = get_application().device_manager.get_frontend().get_path();
 	
 	g_debug("Loading scheduled recordings");
 
@@ -38,8 +36,7 @@ void ScheduledRecordingManager::load(Data::Connection& connection)
 	Data::TableAdapter adapter(connection, table);
 	
 	Glib::ustring where = Glib::ustring::compose(
-		"device = '%1' AND ((start_time + duration) > %2 OR type != 0)",
-		frontend_path, time(NULL));
+		"((start_time + duration) > %1 OR type != 0)", time(NULL));
 	Data::DataTable data_table = adapter.select_rows(where, "start_time");
 	
 	scheduled_recordings.clear();

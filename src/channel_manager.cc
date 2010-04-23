@@ -391,18 +391,7 @@ Channel* ChannelManager::get_previous_channel()
 
 void ChannelManager::select_display_channel()
 {
-	fe_type_t frontend_type = get_application().device_manager.get_frontend().get_frontend_type();
-	
-	for (guint index = 0; index < channels.size(); index++)
-	{
-		Channel& channel = channels[index];
-		if (channel.transponder.frontend_type == frontend_type)
-		{
-			g_debug("Channel %d selected", index);
-			display_channel_index = index;
-			return;
-		}
-	}	
+	display_channel_index = 0;
 }
 
 void ChannelManager::set_display_channel(const Channel& channel)

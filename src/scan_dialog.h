@@ -58,9 +58,9 @@ private:
 	ScanThread*							scan_thread;
 	StringList							system_files;
 	guint								channel_count;
-	Dvb::Frontend&						frontend;
 	Glib::ustring						scan_directory_path;
 	Dvb::TransponderList				transponders;
+	Dvb::Frontend*						frontend;
 
 	class ModelColumns : public Gtk::TreeModelColumnRecord
 	{

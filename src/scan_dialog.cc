@@ -81,7 +81,7 @@ Glib::ustring ScanDialog::get_initial_tuning_dir()
 				done = true;
 				result = scan_directory;
 
-				switch(frontend.get_frontend_info().type)
+				switch(frontend->get_frontend_info().type)
 				{
 				case FE_OFDM:   result += "/dvb-t";       break;
 				case FE_QAM:    result += "/dvb-c";       break;
@@ -101,7 +101,7 @@ Glib::ustring ScanDialog::get_initial_tuning_dir()
 }
 
 ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
-	Gtk::Window(cobject), builder(builder), frontend(get_application().device_manager.get_frontend())
+	Gtk::Window(cobject), builder(builder)
 {
 	scan_thread = NULL;
 
@@ -123,7 +123,8 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	notebook_scan_wizard->set_show_tabs(false);
 		
-	Glib::ustring device_name = frontend.get_frontend_info().name;
+	frontend = *(get_application().device_manager.get_frontends().begin());
+	Glib::ustring device_name = frontend->get_frontend_info().name;
 
 	Gtk::Label* label = NULL;
 	builder->get_widget("label_scan_device", label);
@@ -166,7 +167,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	combo_box_auto_scan_range->signal_changed().connect(
 	    sigc::mem_fun(*this, &ScanDialog::on_combo_box_auto_scan_range_changed));
 
-	gboolean enable_auto_scan = frontend.get_frontend_info().type == FE_OFDM;
+	gboolean enable_auto_scan = frontend->get_frontend_info().type == FE_OFDM;
 	combo_box_auto_scan_range->set_sensitive(enable_auto_scan);
 
 	Gtk::Label* label_auto_scan = NULL;
@@ -296,7 +297,7 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 		if (parameter_count > 1)
 		{
 			Channel channel;
-			channel.transponder.frontend_type = frontend.get_frontend_info().type;
+			channel.transponder.frontend_type = frontend->get_frontend_info().type;
 			
 			switch(channel.transponder.frontend_type)
 			{
@@ -512,7 +513,7 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		{
 			ComboBoxText* combo_box_auto_scan_range = NULL;
 			builder->get_widget_derived("combo_box_auto_scan_range", combo_box_auto_scan_range);
-			add_auto_scan_range(frontend.get_frontend_info().type, combo_box_auto_scan_range->get_active_value());
+			add_auto_scan_range(frontend->get_frontend_info().type, combo_box_auto_scan_range->get_active_value());
 		}
 		
 		Gtk::Button* button = NULL;
@@ -529,7 +530,7 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		notebook_scan_wizard->next_page();
 
 		progress_bar_scan->set_text(_("Starting scanner"));
-		scan_thread = new ScanThread(frontend, transponders);
+		scan_thread = new ScanThread(*frontend, transponders);
 		Dvb::Scanner& scanner = scan_thread->get_scanner();
 		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
 		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
@@ -640,7 +641,6 @@ void ScanDialog::on_signal_complete()
 	if (application.channel_manager.has_display_channel())
 	{
 		Channel& channel = application.channel_manager.get_display_channel();
-		application.device_manager.get_frontend().tune_to(channel.transponder);
 		application.set_display_channel(channel);
 	}
 }
@@ -665,7 +665,7 @@ ChannelArray ScanDialog::get_selected_channels()
 
 		channel.service_id						= row.get_value(columns.column_id);
 		channel.name							= row.get_value(columns.column_name);
-		channel.transponder.frontend_type		= frontend.get_frontend_info().type;
+		channel.transponder.frontend_type		= frontend->get_frontend_info().type;
 		channel.transponder.frontend_parameters = row.get_value(columns.column_frontend_parameters);
 		channel.transponder.polarisation		= row.get_value(columns.column_polarisation);
 		

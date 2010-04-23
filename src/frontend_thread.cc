@@ -239,7 +239,7 @@ void FrontendThread::start_epg_thread()
 		Lock lock(mutex, __PRETTY_FUNCTION__);
 
 		stop_epg_thread();
-		epg_thread = new EpgThread();
+		epg_thread = new EpgThread(frontend);
 		epg_thread->start();
 		g_debug("EPG thread started");
 	}

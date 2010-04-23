@@ -65,7 +65,6 @@ me_tv_SOURCES = \
 	atsc_text.h \
 	device_manager.h \
 	me-tv.h \
-	meters_dialog.h \
 	channels_dialog.cc \
 	thread.cc \
 	gtk_epg_widget.cc \
@@ -74,7 +73,6 @@ me_tv_SOURCES = \
 	me-tv-ui.cc \
 	device_manager.cc \
 	engine.h \
-	meters_dialog.cc \
 	engine.cc \
 	channel.h \
 	epg_event.h \

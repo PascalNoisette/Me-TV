@@ -22,13 +22,16 @@
 #define __EPG_THREAD_H__
 
 #include "thread.h"
+#include "dvb_frontend.h"
 
 class EpgThread : public Thread
 {
 private:
 	guint last_update_time;
+	Dvb::Frontend& frontend;
+	
 public:
-	EpgThread();
+	EpgThread(Dvb::Frontend& frontend);
 
 	void run();
 		

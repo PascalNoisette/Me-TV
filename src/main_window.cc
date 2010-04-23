@@ -23,7 +23,6 @@
 #include "application.h"
 #include "main_window.h"
 #include "channels_dialog.h"
-#include "meters_dialog.h"
 #include "preferences_dialog.h"
 #include "scheduled_recordings_dialog.h"
 #include "epg_event_search_dialog.h"
@@ -794,14 +793,11 @@ void MainWindow::on_epg_event_search()
 }
 
 void MainWindow::on_meters()
-{
-	// Check that there is a device
-	get_application().device_manager.get_frontend();
-	
-	MetersDialog& meters_dialog = MetersDialog::create(builder);
+{	
+/*	MetersDialog& meters_dialog = MetersDialog::create(builder);
 	meters_dialog.stop();
 	meters_dialog.start();
-	meters_dialog.show();
+	meters_dialog.show();*/
 }
 
 void MainWindow::on_preferences()

@@ -33,7 +33,6 @@ Glib::ustring DeviceManager::get_frontend_path(guint adapter, guint frontend_ind
 	
 DeviceManager::DeviceManager()
 {
-	frontend = NULL;
 	Glib::ustring frontend_path;
 	
 	g_debug("Scanning DVB devices ...");
@@ -48,24 +47,39 @@ DeviceManager::DeviceManager()
 		frontend_path = get_frontend_path(adapter_count, frontend_count);
 		while (Gio::File::create_for_path(frontend_path)->query_exists())
 		{
-			Dvb::Frontend* current = new Dvb::Frontend(*adapter, frontend_count);
+			Dvb::Frontend* frontend = new Dvb::Frontend(*adapter, frontend_count);
 			try
 			{
-				current->open();
-				if (!is_frontend_supported(*current))
+				frontend->open();
+				if (!is_frontend_supported(*frontend))
 				{
 					g_debug("Frontend not supported");
 				}
 				else
 				{					
-					frontends.push_back(current);
+					frontends.push_back(frontend);
+
+					Glib::ustring frontend_type = "Unknown";
+
+					switch(frontend->get_frontend_type())
+					{
+					case FE_ATSC: frontend_type = "ATSC"; break;
+					case FE_OFDM: frontend_type = "DVB-T"; break;
+					case FE_QAM: frontend_type = "DVB-C"; break;
+					case FE_QPSK: frontend_type = "DVB-S"; break;
+					default: break;
+					}
+		
+					g_message("Device: '%s' (%s) at \"%s\"",
+						frontend->get_frontend_info().name,
+					    frontend_type.c_str(),
+					    frontend->get_path().c_str());
 				}
 			}
 			catch(...)
 			{
 				g_debug("Failed to load '%s'", frontend_path.c_str());
 			}
-			current->close();
 			
 			frontend_path = get_frontend_path(adapter_count, ++frontend_count);
 		}
@@ -76,12 +90,6 @@ DeviceManager::DeviceManager()
 
 DeviceManager::~DeviceManager()
 {
-	if (frontend != NULL)
-	{
-		delete frontend;
-		frontend = NULL;
-		g_debug("Closed DVB device");
-	}
 }
 
 gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend)
@@ -104,21 +112,6 @@ gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend
 	return result;
 }
 
-Dvb::Frontend& DeviceManager::get_frontend()
-{
-	if (frontends.empty())
-	{
-		throw Exception(_("There are no digital tuner devices available"));
-	}
-		
-	if (frontend == NULL)
-	{
-		throw Exception(_("No frontend has been selected"));
-	}
-	
-	return *frontend;
-}
-
 Dvb::Frontend* DeviceManager::find_frontend_by_path(const Glib::ustring& path)
 {
 	Dvb::Frontend* result = NULL;
@@ -133,31 +126,4 @@ Dvb::Frontend* DeviceManager::find_frontend_by_path(const Glib::ustring& path)
 	}
 	
 	return result;
-}
-
-void DeviceManager::set_frontend(Dvb::Frontend& new_frontend)
-{
-	if (frontend != &new_frontend)
-	{
-		if (frontend != NULL)
-		{
-			frontend->close();
-		}
-		frontend = &new_frontend;
-		frontend->open();
-		
-		Glib::ustring frontend_type = "Unknown";
-
-		switch(frontend->get_frontend_type())
-		{
-		case FE_ATSC: frontend_type = "ATSC"; break;
-		case FE_OFDM: frontend_type = "DVB-T"; break;
-		case FE_QAM: frontend_type = "DVB-C"; break;
-		case FE_QPSK: frontend_type = "DVB-S"; break;
-		default: break;
-		}
-		
-		g_message("Using %s", frontend->get_path().c_str());
-		g_message("Device: '%s' (%s)", frontend->get_frontend_info().name, frontend_type.c_str());
-	}
 }

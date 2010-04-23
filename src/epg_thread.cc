@@ -119,7 +119,7 @@ gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::Even
 	return result >= 0;
 }
 
-EpgThread::EpgThread() : Thread("EPG Thread")
+EpgThread::EpgThread(Dvb::Frontend& f) : Thread("EPG Thread"), frontend(f)
 {
 	last_update_time = 0;
 }
@@ -128,7 +128,6 @@ void EpgThread::run()
 {
 	Application&					application				= get_application();
 	ChannelManager&					channel_manager			= application.channel_manager;
-	Dvb::Frontend&					frontend				= application.device_manager.get_frontend();
 	Glib::ustring					demux_path				= frontend.get_adapter().get_demux_path();
 	EITDemuxers						demuxers(demux_path);
 	Dvb::SI::SectionParser			parser;

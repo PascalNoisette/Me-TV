@@ -117,9 +117,6 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 
 void ChannelsDialog::show_scan_dialog()
 {
-	// Check for a valid frontend device
-	get_application().device_manager.get_frontend();
-	
 	FullscreenBugWorkaround fullscreen_bug_workaround;
 
 	ScanDialog& scan_dialog = ScanDialog::create(builder);

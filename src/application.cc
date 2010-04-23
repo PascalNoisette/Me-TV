@@ -503,39 +503,17 @@ void Application::run()
 	main_window = MainWindow::create(builder);
 
 	try
-	{
-		const FrontendList& frontends = device_manager.get_frontends();	
-	
-		if (!default_device.empty())	
-		{	
-			Dvb::Frontend* default_frontend = device_manager.find_frontend_by_path(default_device);	
-		
-			if (default_frontend == NULL)	
-			{	
-				Glib::ustring message = Glib::ustring::compose(	
-					_("Failed to load default device '%1'"), default_device);	
-				throw Exception(message);	
-			}	
-		
-			device_manager.set_frontend(*default_frontend);	
-		}	
-		else	
-		{	
-			if (frontends.size() > 0)	
-			{	
-				device_manager.set_frontend(**frontends.begin());	
-			}	
-		}
-	
+	{	
 		channel_manager.load(connection);
-	
-		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
-	
-		if (!device_manager.get_frontends().empty())	
+		
+		const FrontendList& frontends = device_manager.get_frontends();	
+		if (!frontends.empty())	
 		{	
 			scheduled_recording_manager.load(connection);	
 		}	
 	
+		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
+
 		if (!minimised_mode)	
 		{	
 			main_window->show();	
@@ -546,7 +524,7 @@ void Application::run()
 			}	
 		}
 	
-		if (device_manager.get_frontends().empty())
+		if (frontends.empty())
 		{
 			throw Exception(_("There are no DVB devices available"));
 		}	

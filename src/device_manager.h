@@ -32,19 +32,17 @@ typedef std::list<Dvb::Frontend*> FrontendList;
 class DeviceManager
 {
 private:
-	Glib::ustring get_adapter_path(guint adapter);
-	Glib::ustring get_frontend_path(guint adapter, guint frontend);
 	FrontendList frontends;	
-	Dvb::Frontend* frontend;
-	gboolean is_frontend_supported(const Dvb::Frontend& frontend);
+
+	static Glib::ustring get_adapter_path(guint adapter);
+	static Glib::ustring get_frontend_path(guint adapter, guint frontend);
+	static gboolean is_frontend_supported(const Dvb::Frontend& frontend);
 
 public:
 	DeviceManager();
 	~DeviceManager();
 		
-	void set_frontend(Dvb::Frontend& new_frontend);
 	Dvb::Frontend* find_frontend_by_path(const Glib::ustring& path);
-	Dvb::Frontend& get_frontend();
 	FrontendList& get_frontends() { return frontends; };
 };
 
