@@ -110,7 +110,7 @@ void ScheduledRecordingsDialog::update()
 		{
 			case 1 : row[columns.column_type] = "Every day";break;
 			case 2 : row[columns.column_type] = "Every week";break;
-			case 3 : row[columns.column_type] = "Every days of week";break;
+			case 3 : row[columns.column_type] = "Every weekday";break;
 			default: row[columns.column_type] = "Once";break;
 		}
 	}
