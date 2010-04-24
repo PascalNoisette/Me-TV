@@ -32,38 +32,38 @@ public:
 
 FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Frontend"), frontend(f)
 {
-	g_debug("Creating FrontendThread");
+	g_debug("Creating FrontendThread (%s)", frontend.get_path().c_str());
 	g_static_rec_mutex_init(mutex.gobj());
 	
 	epg_thread = NULL;
 	is_tuned = false;
 
-	g_debug("FrontendThread created");
+	g_debug("FrontendThread created (%s)", frontend.get_path().c_str());
 }
 
 FrontendThread::~FrontendThread()
 {
-	g_debug("Destroying FrontendThread");
+	g_debug("Destroying FrontendThread (%s)", frontend.get_path().c_str());
 	stop();
 }
 
 void FrontendThread::start()
 {
-	g_debug("Starting frontend thread");
+	g_debug("Starting frontend thread (%s)", frontend.get_path().c_str());
 	Thread::start();
 }
 
 void FrontendThread::stop()
 {
-	g_debug("Stopping frontend thread");
+	g_debug("Stopping frontend thread (%s)", frontend.get_path().c_str());
 	stop_epg_thread();
 	join(true);
-	g_debug("Frontend thread stopped");
+	g_debug("Frontend thread stopped (%s)", frontend.get_path().c_str());
 }
 
 void FrontendThread::run()
 {
-	g_debug("Frontend thread running");
+	g_debug("Frontend thread running (%s)", frontend.get_path().c_str());
 
 	guchar buffer[TS_PACKET_SIZE * PACKET_BUFFER_SIZE];
 	guchar pat[TS_PACKET_SIZE];
@@ -80,7 +80,7 @@ void FrontendThread::run()
 	g_debug("Opening frontend device '%s' for reading ...", input_path.c_str());
 	Glib::RefPtr<Glib::IOChannel> input_channel = Glib::IOChannel::create_from_fd(fd);
 	input_channel->set_encoding("");
-	g_debug("Frontend device opened");
+	g_debug("Frontend device opened (%s)", frontend.get_path().c_str());
 	
 	guint last_insert_time = 0;
 	gsize bytes_read;
@@ -89,7 +89,7 @@ void FrontendThread::run()
 	{
 		if (!is_tuned)
 		{
-			g_debug("Frontend is not tuned, waiting");
+			g_debug("Frontend is not tuned, waiting (%s)", frontend.get_path().c_str());
 			usleep(1000000);
 		}
 		else
@@ -117,7 +117,7 @@ void FrontendThread::run()
 
 				if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
 				{
-					g_debug("Input channel read failed");
+					g_debug("Input channel read failed (%s)", frontend.get_path().c_str());
 					usleep(1000000);
 				}
 				else
@@ -143,7 +143,7 @@ void FrontendThread::run()
 		}
 	}
 		
-	g_debug("FrontendThread loop exited");
+	g_debug("FrontendThread loop exited (%s)", frontend.get_path().c_str());
 	
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 
@@ -160,7 +160,7 @@ void FrontendThread::run()
 	g_debug("About to close input channel ...");
 	input_channel->close(true);
 	input_channel.reset();
-	g_debug("Input channel reset");
+	g_debug("Input channel reset (%s)", frontend.get_path().c_str());
 }
 
 void FrontendThread::setup_dvb(ChannelStream& channel_stream)
@@ -227,7 +227,7 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 		channel_stream.add_pes_demuxer(demux_path, stream.teletext_streams[i].pid, DMX_PES_OTHER, "teletext");
 	}
 
-	g_debug("Finished setting up DVB");
+	g_debug("Finished setting up DVB (%s)", frontend.get_path().c_str());
 
 	is_tuned = true;
 }
@@ -253,10 +253,10 @@ void FrontendThread::stop_epg_thread()
 
 		if (epg_thread != NULL)
 		{
-			g_debug("Stopping EPG thread");
+			g_debug("Stopping EPG thread (%s)", frontend.get_path().c_str());
 			delete epg_thread;
 			epg_thread = NULL;
-			g_debug("EPG thread stopped");
+			g_debug("EPG thread stopped (%s)", frontend.get_path().c_str());
 		}
 	}
 }
@@ -409,7 +409,7 @@ void FrontendThread::start_recording(const Channel& channel, const Glib::ustring
 	}
 		
 	
-	g_debug("New recording channel created");
+	g_debug("New recording channel created (%s)", frontend.get_path().c_str());
 }
 
 void FrontendThread::stop_recording(const Channel& channel)
