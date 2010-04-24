@@ -33,11 +33,12 @@ public:
 	void load();
 		
 	guint get_last_epg_update_time();
-	void set_display_stream(const Channel& channel);
-	const ChannelStream& get_display_stream();
 	std::list<ChannelStream> get_streams();
-	FrontendThread& get_display_frontend_thread();
 	const std::list<FrontendThread>& get_frontend_threads() const { return frontend_threads; };
+
+	void start_display(const Channel& channel);
+	const ChannelStream& get_display_stream();
+	FrontendThread& get_display_frontend_thread();
 
 	gboolean is_recording();
 	gboolean is_recording(const Channel& channel);

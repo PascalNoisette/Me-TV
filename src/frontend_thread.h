@@ -54,8 +54,8 @@ public:
 	guint get_last_epg_update_time();
 	void start();
 	void stop();
-	void set_display_stream(const Channel& channel);
-	const ChannelStream& get_display_stream();
+	void start_display(const Channel& channel);
+	void stop_display();
 	std::list<ChannelStream>& get_streams() { return streams; }
 };
 

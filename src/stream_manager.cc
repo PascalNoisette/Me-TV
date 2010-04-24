@@ -229,27 +229,57 @@ void StreamManager::stop()
 	}
 }
 
-void StreamManager::set_display_stream(const Channel& channel)
+void StreamManager::start_display(const Channel& channel)
 {
-	get_display_frontend_thread().set_display_stream(channel);
+	get_display_frontend_thread().start_display(channel);
 }
 
 const ChannelStream& StreamManager::get_display_stream()
-{
-	return get_display_frontend_thread().get_display_stream();
-}
-
-FrontendThread& StreamManager::get_display_frontend_thread()
 {
 	Dvb::Transponder& current_transponder = get_application().channel_manager.get_display_channel().transponder;
 	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		FrontendThread& frontend_thread = *i;
-		const Dvb::Transponder& transponder = frontend_thread.get_display_stream().channel.transponder;
-		if (current_transponder == transponder)
+		std::list<ChannelStream>& streams = frontend_thread.get_streams();
+		for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); i++)
 		{
-			return frontend_thread;
+			ChannelStream& stream = *j;
+			if (stream.type == CHANNEL_STREAM_TYPE_DISPLAY)
+			{
+				return stream;
+			}
 		}
+	}
+
+	throw Exception("Failed to get display stream");
+}
+
+FrontendThread& StreamManager::get_display_frontend_thread()
+{
+	FrontendThread* free_frontend_thread = NULL;
+	
+	Dvb::Transponder& current_transponder = get_application().channel_manager.get_display_channel().transponder;
+	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+	{
+		FrontendThread& frontend_thread = *i;
+		std::list<ChannelStream>& streams = frontend_thread.get_streams();
+		if (streams.empty())
+		{
+			free_frontend_thread = &frontend_thread;
+		}
+		for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); i++)
+		{
+			ChannelStream& stream = *j;
+			if (stream.type == CHANNEL_STREAM_TYPE_DISPLAY)
+			{
+				return frontend_thread;
+			}
+		}
+	}
+
+	if (free_frontend_thread != NULL)
+	{
+		return *free_frontend_thread;
 	}
 
 	throw Exception("Failed to get display frontend thread");

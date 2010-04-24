@@ -261,19 +261,7 @@ void FrontendThread::stop_epg_thread()
 	}
 }
 
-const ChannelStream& FrontendThread::get_display_stream()
-{
-	Lock lock(mutex, __PRETTY_FUNCTION__);
-
-	if (streams.size() == 0)
-	{
-		throw Exception(_("Display stream has not been created"));
-	}
-	
-	return (*(streams.begin()));
-}
-
-void FrontendThread::set_display_stream(const Channel& channel)
+void FrontendThread::start_display(const Channel& channel)
 {
 	g_debug("FrontendThread::set_display_stream(%s)", channel.name.c_str());
 	Lock lock(mutex, __PRETTY_FUNCTION__);
@@ -315,6 +303,32 @@ void FrontendThread::set_display_stream(const Channel& channel)
 	ChannelStream& stream = *(streams.begin());
 	stream.channel = channel;
 	setup_dvb(stream);
+}
+
+void FrontendThread::stop_display()
+{
+	Lock lock(mutex, __PRETTY_FUNCTION__);
+
+	std::list<ChannelStream>::iterator iterator = streams.begin();
+
+	if (iterator != streams.end())
+	{
+		iterator++;
+	}
+
+	while (iterator != streams.end())
+	{
+		ChannelStream& channel_stream = *iterator;
+		if (channel_stream.type == CHANNEL_STREAM_TYPE_DISPLAY)
+		{
+			channel_stream.output_channel.reset();
+			iterator = streams.erase(iterator);
+		}
+		else
+		{
+			iterator++;
+		}
+	}
 }
 
 bool is_recording_stream(ChannelStream& channel_stream)
