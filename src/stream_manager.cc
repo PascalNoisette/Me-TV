@@ -165,6 +165,12 @@ void StreamManager::start_recording(Channel& channel)
 				frontend_thread.start_recording(channel,
 				    make_recording_filename(channel),
 				    false);
+
+				if (get_display_frontend_thread().frontend.get_path() == frontend_thread.frontend.get_path())
+				{
+					get_application().set_display_channel(channel);
+				}
+				
 				found = true;
 				break;
 			}
@@ -235,10 +241,16 @@ const ChannelStream& StreamManager::get_display_stream()
 
 FrontendThread& StreamManager::get_display_frontend_thread()
 {
-	if (frontend_threads.empty())
+	Dvb::Transponder& current_transponder = get_application().channel_manager.get_display_channel().transponder;
+	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
-		throw Exception("Failed to get Display Frontend Thread: no threads");
+		FrontendThread& frontend_thread = *i;
+		const Dvb::Transponder& transponder = frontend_thread.get_display_stream().channel.transponder;
+		if (current_transponder == transponder)
+		{
+			return frontend_thread;
+		}
 	}
 
-	return *(frontend_threads.begin());
+	throw Exception("Failed to get display frontend thread");
 }

@@ -384,8 +384,6 @@ void FrontendThread::start_recording(const Channel& channel, const Glib::ustring
 					// Need to kill all current recordings
 					streams.remove_if(is_recording_stream);
 				}
-			
-				get_application().set_display_channel(channel);
 			}
 
 			ChannelStream channel_stream(
