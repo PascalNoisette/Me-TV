@@ -589,30 +589,7 @@ void Application::set_display_channel(const Channel& channel)
 {
 	g_message(_("Changing channel to '%s'"), channel.name.c_str());
 
-	if (channel_manager.has_display_channel())
-	{
-		Channel& current_channel = channel_manager.get_display_channel();
-		if (current_channel.transponder == channel.transponder)
-		{
-			g_message(_("Already tuned to correct frequency"));
-		}
-		else
-		{
-			if (stream_manager.is_recording())
-			{
-				Glib::ustring message = Glib::ustring::compose(
-					_("You cannot tune to channel '%1' because you are recording."),
-					channel.name);
-				throw Exception(message);
-			}
-		}
-
-		if (current_channel != channel)
-		{
-			main_window->stop_engine();
-		}
-	}
-
+	main_window->stop_engine();
 	channel_manager.set_display_channel(channel);
 	stream_manager.start_display(channel);
 	main_window->start_engine();
