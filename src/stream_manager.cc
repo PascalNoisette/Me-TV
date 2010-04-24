@@ -263,7 +263,7 @@ FrontendThread& StreamManager::get_display_frontend_thread()
 	{
 		FrontendThread& frontend_thread = *i;
 		std::list<ChannelStream>& streams = frontend_thread.get_streams();
-		if (streams.empty())
+		if (free_frontend_thread == NULL && streams.empty())
 		{
 			free_frontend_thread = &frontend_thread;
 		}
