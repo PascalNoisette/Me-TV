@@ -79,48 +79,67 @@ gboolean ScheduledRecording::is_in(guint s, guint e) const
 
 gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_recording) const
 {
-	// Current recording is before the "scheduled_recording"
-	if (start_time+duration <= scheduled_recording.start_time)
-		return false;
-	// Current recording is overlaping the "scheduled_recording"
-	else if (is_in(scheduled_recording.start_time) || is_in(scheduled_recording.get_end_time()))
-		return true;
-	// Current recording is after the "scheduled_recording"...
-	else if (scheduled_recording.get_end_time() <= start_time)
+	std::list<guint> ctime;
+	std::list<guint> srtime;
+	
+	ctime.push_back(start_time);
+	srtime.push_back(scheduled_recording.start_time);
+
+	// Creating the list long enough to overlaps (front of one bigger than the back of the other)
+	while (ctime.back()<srtime.front() || srtime.back()<ctime.front())
 	{
-		// ...but "scheduled_recording" have no recurring
-		if(scheduled_recording.type == 0)
-			return false;
-		// ...and there is a chance of conflict because of recurring
-		else
+		// Create the list for the current scheduled_recording
+		if(type==0)
+			ctime.push_back(ctime.back());
+		else if(type==1)
+			ctime.push_back(ctime.back() + 86400);
+		else if(type==2)
+			ctime.push_back(ctime.back() + 604800);
+		else if(type==3)
 		{
-			guint tstartt 	= scheduled_recording.start_time;
-			while(tstartt < start_time + scheduled_recording.duration)
+			time_t tim = ctime.back();
+			struct tm *ts;
+			char buf[80];
+			ts = localtime(&tim);
+			strftime(buf, sizeof(buf), "%w", ts);
+			switch(atoi(buf))
 			{
-				if(scheduled_recording.type == 1)
-					tstartt += 86400;
-				else if(scheduled_recording.type == 2)
-					tstartt += 604800;
-				else if(scheduled_recording.type == 3)
-				{
-					time_t tim = tstartt;
-					struct tm *ts;
-					char buf[80];
-					ts = localtime(&tim);
-					strftime(buf, sizeof(buf), "%w", ts);
-					switch(atoi(buf))
-					{
-						case 5 : tstartt += 259200;break;
-						case 6 : tstartt += 172800;break;
-						default: tstartt += 86400;break;
-					}
-				}  
-				if (is_in(tstartt) || is_in(tstartt+scheduled_recording.duration))
-					return true;
-			}
-			return false;
+				case 5 : ctime.push_back(ctime.back() + 259200);break;
+				case 6 : ctime.push_back(ctime.back() + 172800);break;
+				default: ctime.push_back(ctime.back() + 86400);break;
+			}	
+		}
+
+		// Create the list for the tested scheduled_recording
+		if(scheduled_recording.type==0)
+			srtime.push_back(srtime.back());
+		else if(scheduled_recording.type==1)
+			srtime.push_back(srtime.back() + 86400);
+		else if(scheduled_recording.type==2)
+			srtime.push_back(srtime.back() + 604800);
+		else if(scheduled_recording.type==3)
+		{
+			time_t tim = srtime.back();
+			struct tm *ts;
+			char buf[80];
+			ts = localtime(&tim);
+			strftime(buf, sizeof(buf), "%w", ts);
+			switch(atoi(buf))
+			{
+				case 5 : srtime.push_back(srtime.back() + 259200);break;
+				case 6 : srtime.push_back(srtime.back() + 172800);break;
+				default: srtime.push_back(srtime.back() + 86400);break;
+			}	
 		}
 	}
-	else
-		return true;
+	// Now check for overlaps
+	for(std::list<guint>::iterator i=ctime.begin() ; i!=ctime.end() ; i++)
+	{
+		for(std::list<guint>::iterator j=srtime.begin() ; j!=srtime.end() ; j++)
+		{
+			if(!(*i+duration<=*j) && !(*i>=*j+scheduled_recording.duration))
+				return true;
+		}
+	}
+	return false;
 }
