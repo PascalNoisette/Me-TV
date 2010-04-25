@@ -95,7 +95,7 @@ gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_record
 		else
 		{
 			guint tstartt 	= scheduled_recording.start_time;
-			while(tstartt < start_time + duration)
+			while(tstartt < start_time + scheduled_recording.duration)
 			{
 				if(scheduled_recording.type == 1)
 					tstartt += 86400;
@@ -115,7 +115,7 @@ gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_record
 						default: tstartt += 86400;break;
 					}
 				}  
-				if (is_in(tstartt) || is_in(tstartt+duration))
+				if (is_in(tstartt) || is_in(tstartt+scheduled_recording.duration))
 					return true;
 			}
 			return false;
