@@ -69,7 +69,6 @@ extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
 
 extern Glib::RefPtr<Gtk::Action> action_channels;
 extern Glib::RefPtr<Gtk::Action> action_preferences;
-extern Glib::RefPtr<Gtk::Action> action_meters;
 extern Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
 extern Glib::RefPtr<Gtk::Action> action_epg_event_search;
 extern Glib::RefPtr<Gtk::Action> action_next_channel;

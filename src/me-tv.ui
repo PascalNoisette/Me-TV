@@ -1444,98 +1444,6 @@ found in /usr/share/common-licenses/GPL file.</property>
       <action-widget response="-5">button_channels_ok</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkDialog" id="dialog_meters">
-    <property name="width_request">400</property>
-    <property name="border_width">5</property>
-    <property name="title" translatable="yes">Me TV - Meters Window</property>
-    <property name="resizable">False</property>
-    <property name="window_position">center-on-parent</property>
-    <property name="icon">me-tv.xpm</property>
-    <property name="icon_name">Me TV</property>
-    <property name="type_hint">dialog</property>
-    <property name="transient_for">window_main</property>
-    <property name="has_separator">False</property>
-    <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox11">
-        <property name="visible">True</property>
-        <property name="spacing">2</property>
-        <child>
-          <object class="GtkVBox" id="vbox13">
-            <property name="visible">True</property>
-            <child>
-              <object class="GtkProgressBar" id="progress_bar_signal_strength">
-                <property name="visible">True</property>
-                <property name="show_text">True</property>
-                <property name="text" translatable="yes">Signal Strength</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="padding">2</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkProgressBar" id="progress_bar_signal_noise">
-                <property name="visible">True</property>
-                <property name="show_text">True</property>
-                <property name="text" translatable="yes">S/N Ratio</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="padding">3</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label_meters_information">
-                <property name="width_request">350</property>
-                <property name="visible">True</property>
-                <property name="ypad">10</property>
-                <property name="label" translatable="yes">Please note that the values reported on this window are provided by the kernel driver for your device.  These values may not accurately represent the actual values but serve as a tool to help users find their optimal tuning setup.</property>
-                <property name="wrap">True</property>
-              </object>
-              <packing>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area11">
-            <property name="visible">True</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="button_meters_close">
-                <property name="label">gtk-close</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="0">button_meters_close</action-widget>
-    </action-widgets>
-  </object>
   <object class="GtkWindow" id="window_scan_wizard">
     <property name="border_width">4</property>
     <property name="title" translatable="yes">Me TV - Scan Wizard</property>
@@ -2354,10 +2262,6 @@ If you've just upgraded Me TV then this is probably what you want to do.
   </object>
   <object class="GtkAction" id="action_channels">
     <property name="label">Channels</property>
-  </object>
-  <object class="GtkAction" id="action_meters">
-    <property name="label">Meters</property>
-    <property name="icon_name">utilities-system-monitor</property>
   </object>
   <object class="GtkAction" id="action_scheduled_recordings">
     <property name="label">Scheduled Recordings</property>

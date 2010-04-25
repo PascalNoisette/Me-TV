@@ -52,7 +52,6 @@ Glib::ustring ui_info =
 	"			<menuitem action='action_scheduled_recordings'/>"
 	"			<menuitem action='action_epg_event_search'/>"
 	"			<menuitem action='action_channels'/>"
-	"			<menuitem action='action_meters'/>"
 	"			<menuitem action='action_preferences'/>"
 	"		</menu>"
 	"		<menu action='action_video'>"
@@ -156,7 +155,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	action_channels->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_channels_dialog));
 	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_epg_event_search));
-	action_meters->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_meters));
 	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences));
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
 	action_about->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about));
@@ -790,14 +788,6 @@ void MainWindow::on_epg_event_search()
 {
 	show_epg_event_search_dialog();
 	get_application().update();
-}
-
-void MainWindow::on_meters()
-{	
-/*	MetersDialog& meters_dialog = MetersDialog::create(builder);
-	meters_dialog.stop();
-	meters_dialog.start();
-	meters_dialog.show();*/
 }
 
 void MainWindow::on_preferences()

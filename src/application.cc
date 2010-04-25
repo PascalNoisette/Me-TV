@@ -91,7 +91,6 @@ Application::Application()
 	action_about = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_about"));
 	action_channels = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_channels"));
 	action_epg_event_search = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_epg_event_search"));
-	action_meters = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_meters"));
 	action_next_channel = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_next_channel"));
 	action_preferences = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_preferences"));
 	action_previous_channel = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_previous_channel"));
@@ -106,7 +105,6 @@ Application::Application()
 	action_group->add(action_about, Gtk::AccelKey("F1"));
 	action_group->add(action_channels);
 	action_group->add(action_epg_event_search);
-	action_group->add(action_meters);
 	action_group->add(action_next_channel, Gtk::AccelKey("<Ctrl>Down"));
 	action_group->add(action_preferences);
 	action_group->add(action_previous_channel, Gtk::AccelKey("<Ctrl>Up"));

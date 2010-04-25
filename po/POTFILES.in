@@ -62,8 +62,6 @@ src/initial_scan_line.h
 src/main.cc
 src/main_window.cc
 src/main_window.h
-src/meters_dialog.cc
-src/meters_dialog.h
 src/me-tv.cc
 src/me-tv.h
 src/me-tv-i18n.h
