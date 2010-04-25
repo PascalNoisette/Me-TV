@@ -345,11 +345,6 @@ void FrontendThread::start_recording(const Channel& channel, const Glib::ustring
 	ChannelStreamType current_type = CHANNEL_STREAM_TYPE_NONE;
 
 	std::list<ChannelStream>::iterator iterator = streams.begin();
-		
-	if (iterator != streams.end())
-	{
-		iterator++;
-	}
 	
 	while (iterator != streams.end())
 	{
@@ -418,11 +413,6 @@ void FrontendThread::stop_recording(const Channel& channel)
 
 	std::list<ChannelStream>::iterator iterator = streams.begin();
 
-	if (iterator != streams.end())
-	{
-		iterator++;
-	}
-
 	while (iterator != streams.end())
 	{
 		ChannelStream& channel_stream = *iterator;
@@ -461,16 +451,11 @@ gboolean FrontendThread::is_recording(const Channel& channel)
 {
 	std::list<ChannelStream>::iterator iterator = streams.begin();
 
-	// Skip over display stream
-	if (iterator != streams.end())
-	{
-		iterator++;
-	}
-
 	while (iterator != streams.end())
 	{
 		ChannelStream& stream = *iterator;
-		if (stream.channel == channel)
+		if (stream.channel == channel &&
+		    (stream.type == CHANNEL_STREAM_TYPE_RECORDING || stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING))
 		{
 			return true;
 		}

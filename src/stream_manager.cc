@@ -165,11 +165,6 @@ void StreamManager::start_recording(Channel& channel)
 				frontend_thread.start_recording(channel,
 				    make_recording_filename(channel),
 				    false);
-
-				if (get_display_frontend_thread().frontend.get_path() == frontend_thread.frontend.get_path())
-				{
-					get_application().set_display_channel(channel);
-				}
 				
 				found = true;
 				break;
@@ -186,7 +181,7 @@ void StreamManager::start_recording(Channel& channel)
 					g_debug("'%s' incompatible", frontend_thread.frontend.get_name().c_str());
 					continue;
 				}
-
+				
 				if (!frontend_thread.is_recording())
 				{
 					g_debug("Selected idle frontend '%s' for recording", frontend_thread.frontend.get_name().c_str());
