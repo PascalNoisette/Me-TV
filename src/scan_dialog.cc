@@ -154,6 +154,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	combo_box_auto_scan_range->clear_items();
 	combo_box_auto_scan_range->append_text(_("Australia"),		"AU");
+	combo_box_auto_scan_range->append_text(_("Canada"),			"CA");
 	combo_box_auto_scan_range->append_text(_("Finland"),		"FI");
 	combo_box_auto_scan_range->append_text(_("France"),			"FR");
 	combo_box_auto_scan_range->append_text(_("Germany"),		"DE");
@@ -702,9 +703,10 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, const Glib::ustrin
 		throw Exception(_("No auto scan range was specified"));
 	}
 	
+	struct dvb_frontend_parameters frontend_parameters;
+
 	if (frontend_type == FE_OFDM)
 	{
-		struct dvb_frontend_parameters frontend_parameters;
 
 		frontend_parameters.inversion						= INVERSION_AUTO;
 		frontend_parameters.u.ofdm.hierarchy_information	= HIERARCHY_NONE;
@@ -789,9 +791,19 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, const Glib::ustrin
 			throw Exception(Glib::ustring::compose(_("Unknown scan range '%1'"), range));
 		}
  	}
+	else if (frontend_type == FE_ATSC)
+	{
+		frontend_parameters.inversion			= INVERSION_AUTO;
+		frontend_parameters.u.vsb.modulation	= VSB_8;
+
+		add_scan_range(45000000, 46000000, 6000000, frontend_parameters);		
+		add_scan_range(49000000, 50000000, 6000000, frontend_parameters);		
+		add_scan_range(135000000, 135000000 + (6000000 * 6), 6000000, frontend_parameters);		
+		add_scan_range(389000000, 389000000 + (6000000 * 55), 6000000, frontend_parameters);		
+	}
 	else
 	{
-		throw Exception(_("Auto scanning is only supported on DVB-T devices"));
+		throw Exception(_("Auto scanning is only supported on DVB-T and ATSC devices"));
 	}
 }
 
