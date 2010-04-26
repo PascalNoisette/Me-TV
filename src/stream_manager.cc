@@ -172,7 +172,7 @@ void StreamManager::start_recording(Channel& channel)
 
 		if (!found)
 		{
-			for (std::list<FrontendThread>::reverse_iterator i = frontend_threads.rbegin(); i != frontend_threads.rend(); i++)
+			for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 			{
 				FrontendThread& frontend_thread = *i;
 				if (frontend_thread.frontend.get_frontend_type() != channel.transponder.frontend_type)
@@ -233,13 +233,28 @@ void StreamManager::start_display(const Channel& channel)
 {
 	gboolean found = false;
 
-	if (get_display_stream().channel == channel)
+	g_debug("Not currently displaying '%s'", channel.name.c_str());
+	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
-		g_debug("Display stream is already set to '%s'", channel.name.c_str());
+		FrontendThread& frontend_thread = *i;
+		if (frontend_thread.frontend.get_frontend_type() != channel.transponder.frontend_type)
+		{
+			g_debug("'%s' incompatible", frontend_thread.frontend.get_name().c_str());
+			continue;
+		}
+
+		if (frontend_thread.frontend.get_frontend_parameters().frequency ==
+		    channel.transponder.frontend_parameters.frequency)
+		{
+			g_debug("Found a frontend already tuned to the correct transponder");
+			frontend_thread.start_display(channel);
+			found = true;
+			break;
+		}
 	}
-	else
+	
+	if (!found)
 	{
-		g_debug("Not currently displaying '%s'", channel.name.c_str());
 		for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 		{
 			FrontendThread& frontend_thread = *i;
@@ -248,40 +263,19 @@ void StreamManager::start_display(const Channel& channel)
 				g_debug("'%s' incompatible", frontend_thread.frontend.get_name().c_str());
 				continue;
 			}
-
-			if (frontend_thread.frontend.get_frontend_parameters().frequency ==
-			    channel.transponder.frontend_parameters.frequency)
+			
+			if (!frontend_thread.is_recording())
 			{
-				g_debug("Found a frontend already tuned to the correct transponder");
+				g_debug("Selected idle frontend '%s' for display", frontend_thread.frontend.get_name().c_str());
 				frontend_thread.start_display(channel);
 				found = true;
 				break;
 			}
 		}
-		
+
 		if (!found)
 		{
-			for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
-			{
-				FrontendThread& frontend_thread = *i;
-				if (frontend_thread.frontend.get_frontend_type() != channel.transponder.frontend_type)
-				{
-					g_debug("'%s' incompatible", frontend_thread.frontend.get_name().c_str());
-					continue;
-				}
-				
-				if (!frontend_thread.is_recording())
-				{
-					g_debug("Selected idle frontend '%s' for display", frontend_thread.frontend.get_name().c_str());
-					frontend_thread.start_display(channel);
-					break;
-				}
-			}
-
-			if (!found)
-			{
-				throw Exception(_("Failed to get available frontend"));
-			}
+			throw Exception(_("Failed to get available frontend"));
 		}
 	}
 }

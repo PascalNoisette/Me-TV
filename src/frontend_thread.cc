@@ -445,7 +445,16 @@ guint FrontendThread::get_last_epg_update_time()
 gboolean FrontendThread::is_recording()
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
-	return streams.size() > 1;
+	for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+	{
+		ChannelStream& stream = *i;
+		if (stream.type == CHANNEL_STREAM_TYPE_RECORDING || stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING)
+		{
+			return true;
+		}
+	} 
+
+	return false;
 }
 
 gboolean FrontendThread::is_recording(const Channel& channel)
