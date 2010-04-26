@@ -81,16 +81,21 @@ gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_record
 {
 	std::list<guint> ctime;
 	std::list<guint> srtime;
+	gboolean type_once_c  = false;
+	gboolean type_once_sr = false;
 	
 	ctime.push_back(start_time);
 	srtime.push_back(scheduled_recording.start_time);
 
 	// Creating the list long enough to overlaps (front of one bigger than the back of the other)
-	while (ctime.back()<srtime.front() || srtime.back()<ctime.front())
+	while ( ((ctime.back()<srtime.front()+604800 && !type_once_c) || (srtime.back()<ctime.front()+604800 && !type_once_sr)) )
 	{
 		// Create the list for the current scheduled_recording
 		if(type==0)
+		{
+			type_once_c = true;
 			ctime.push_back(ctime.back());
+		}
 		else if(type==1)
 			ctime.push_back(ctime.back() + 86400);
 		else if(type==2)
@@ -112,7 +117,10 @@ gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_record
 
 		// Create the list for the tested scheduled_recording
 		if(scheduled_recording.type==0)
+		{
+			type_once_sr = true;
 			srtime.push_back(srtime.back());
+		}
 		else if(scheduled_recording.type==1)
 			srtime.push_back(srtime.back() + 86400);
 		else if(scheduled_recording.type==2)
