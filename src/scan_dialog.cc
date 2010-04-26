@@ -807,8 +807,8 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, const Glib::ustrin
 
 		add_scan_range(45000000, 46000000, 6000000, frontend_parameters);		
 		add_scan_range(49000000, 50000000, 6000000, frontend_parameters);		
-		add_scan_range(135000000, 135000000 + (6000000 * 6), 6000000, frontend_parameters);		
-		add_scan_range(389000000, 389000000 + (6000000 * 55), 6000000, frontend_parameters);		
+		add_scan_range(177000000, 177000000 + (6000000 * 6), 6000000, frontend_parameters);		
+		add_scan_range(473000000, 473000000 + (6000000 * 55), 6000000, frontend_parameters);		
 	}
 	else
 	{
