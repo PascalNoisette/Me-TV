@@ -49,6 +49,7 @@ void ScheduledRecordingManager::load(Data::Connection& connection)
 		scheduled_recording.channel_id				= row["channel_id"].int_value;
 		scheduled_recording.description				= row["description"].string_value;
 		scheduled_recording.recurring_type			= row["recurring_type"].int_value;
+		scheduled_recording.action_after			= row["action_after"].int_value;
 		scheduled_recording.start_time				= row["start_time"].int_value;
 		scheduled_recording.duration				= row["duration"].int_value;
 		scheduled_recording.device					= row["device"].string_value;
@@ -78,6 +79,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 			row["channel_id"].int_value				= scheduled_recording.channel_id;
 			row["description"].string_value			= scheduled_recording.description;
 			row["recurring_type"].int_value			= scheduled_recording.recurring_type;
+			row["action_after"].int_value			= scheduled_recording.action_after;
 			row["start_time"].int_value				= scheduled_recording.start_time;
 			row["duration"].int_value				= scheduled_recording.duration;
 			row["device"].string_value				= scheduled_recording.device;
@@ -207,6 +209,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 		// Check if we are scheduling the same program
 		if (scheduled_recording.scheduled_recording_id == 0 &&
 		    current.recurring_type	== scheduled_recording.recurring_type &&
+		    current.action_after	== scheduled_recording.action_after &&
 		    current.channel_id 		== scheduled_recording.channel_id &&
 		    current.start_time 		== scheduled_recording.start_time &&
 		    current.duration 		== scheduled_recording.duration)
@@ -225,6 +228,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 		current.device = scheduled_recording.device;
 		current.recurring_type = scheduled_recording.recurring_type;
+		current.action_after = scheduled_recording.action_after;
 		current.description = scheduled_recording.description;
 		current.channel_id = scheduled_recording.channel_id;
 		current.start_time = scheduled_recording.start_time;

@@ -216,7 +216,7 @@ found in /usr/share/common-licenses/GPL file.</property>
         <child>
           <object class="GtkTable" id="table_scheduled_recordings">
             <property name="visible">True</property>
-            <property name="n_rows">5</property>
+            <property name="n_rows">7</property>
             <property name="n_columns">2</property>
             <child>
               <object class="GtkHBox" id="hbox_duration">
@@ -429,6 +429,34 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="bottom_attach">6</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkLabel" id="label_action_after">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">After:</property>
+              </object>
+              <packing>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="combo_box_action_after">
+                <property name="visible">True</property>
+                <property name="model">list_store_action_after</property>
+				<child>
+                  <object class="GtkCellRendererText" id="cellrenderertext_action_after"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="position">1</property>
@@ -529,6 +557,23 @@ found in /usr/share/common-licenses/GPL file.</property>
       </row>
       <row>
         <col id="0" translatable="yes">Every weekday</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="list_store_action_after">
+    <columns>
+      <!-- column-name text -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Do Nothing</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Close Me-tv</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Shutdown</col>
       </row>
     </data>
   </object>

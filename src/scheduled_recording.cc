@@ -26,6 +26,7 @@ ScheduledRecording::ScheduledRecording()
 {
 	scheduled_recording_id	= 0;
 	recurring_type			= 0;
+	action_after			= 0;
 	channel_id				= 0;
 	start_time				= 0;
 	duration				= 0;

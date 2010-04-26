@@ -30,6 +30,7 @@ public:
 	guint			scheduled_recording_id;
 	Glib::ustring	description;
 	guint			recurring_type;
+	guint			action_after;
 	guint			channel_id;
 	guint			start_time;
 	guint			duration;

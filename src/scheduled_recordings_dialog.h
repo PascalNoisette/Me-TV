@@ -39,6 +39,7 @@ private:
 			add(column_start_time);
 			add(column_duration);
 			add(column_recurring_type);
+			add(column_action_after);
 			add(column_device);
 		}
 
@@ -49,6 +50,7 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring>	column_start_time;
 		Gtk::TreeModelColumn<Glib::ustring>	column_duration;
 		Gtk::TreeModelColumn<Glib::ustring>	column_recurring_type;
+		Gtk::TreeModelColumn<Glib::ustring>	column_action_after;
 		Gtk::TreeModelColumn<Glib::ustring>	column_device;
 	};
 	

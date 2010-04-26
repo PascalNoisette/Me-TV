@@ -35,6 +35,7 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 {
 	channel_combo_box = NULL;
 	recurring_combo_box = NULL;
+	action_after_combo_box = NULL;
 	scheduled_recording_id = 0;
 	
 	builder->get_widget("entry_description", entry_description);
@@ -45,6 +46,7 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 	builder->get_widget("spin_button_start_time_minute", spin_button_start_time_minute);
 	builder->get_widget("spinbutton_duration", spin_button_duration);
 	builder->get_widget("combo_box_recurring", recurring_combo_box);
+	builder->get_widget("combo_box_action_after", action_after_combo_box);
 }
 
 void ScheduledRecordingDialog::set_date_time(time_t t)
@@ -79,6 +81,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, ScheduledRecordin
 	set_date_time(convert_to_local_time((time_t)scheduled_recording.start_time));
 	spin_button_duration->set_value(scheduled_recording.duration/60);
 	recurring_combo_box->set_active(scheduled_recording.recurring_type);
+	action_after_combo_box->set_active(scheduled_recording.action_after);
 
 	return run(transient_for, false);
 }
@@ -101,6 +104,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_eve
 	set_date_time((time_t)epg_event.start_time - (before * 60));
 	spin_button_duration->set_value((epg_event.duration/60) + before + after);
 	recurring_combo_box->set_active(0);
+	action_after_combo_box->set_active(0);
 	
 	return run(transient_for, false);
 }
@@ -121,6 +125,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 		channel_combo_box->set_selected_channel_id(channel.channel_id);
 		entry_description->set_text(_("Unknown description"));
 		recurring_combo_box->set_active(0);
+		action_after_combo_box->set_active(0);
 		set_date_time(0);
 
 		spin_button_duration->set_value(30);
@@ -154,6 +159,7 @@ ScheduledRecording ScheduledRecordingDialog::get_scheduled_recording()
 	scheduled_recording.scheduled_recording_id	= scheduled_recording_id;
 	scheduled_recording.description				= entry_description->get_text();
 	scheduled_recording.recurring_type			= recurring_combo_box->get_active_row_number();
+	scheduled_recording.action_after			= action_after_combo_box->get_active_row_number();
 	scheduled_recording.channel_id				= channel_combo_box->get_selected_channel_id();
 	scheduled_recording.start_time				= mktime(&start_time);
 	scheduled_recording.duration				= (int)spin_button_duration->get_value() * 60;

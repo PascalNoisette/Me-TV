@@ -52,6 +52,7 @@ ScheduledRecordingsDialog::ScheduledRecordingsDialog(BaseObjectType* cobject, co
 	tree_view_scheduled_recordings->append_column(_("Start Time"), columns.column_start_time);
 	tree_view_scheduled_recordings->append_column(_("Duration"), columns.column_duration);
 	tree_view_scheduled_recordings->append_column(_("Record"),columns.column_recurring_type);
+	tree_view_scheduled_recordings->append_column(_("After"),columns.column_action_after);
 	tree_view_scheduled_recordings->append_column(_("Device"), columns.column_device);
 	
 	list_store->set_sort_column(columns.column_sort, Gtk::SORT_ASCENDING);
@@ -112,6 +113,12 @@ void ScheduledRecordingsDialog::update()
 			case 2 : row[columns.column_recurring_type] = "Every week";break;
 			case 3 : row[columns.column_recurring_type] = "Every weekday";break;
 			default: row[columns.column_recurring_type] = "Once";break;
+		}
+		switch(scheduled_recording.action_after)
+		{
+			case 1 : row[columns.column_action_after] = "Close Me-tv";break;
+			case 2 : row[columns.column_action_after] = "Shutdown";break;
+			default: row[columns.column_action_after] = "Do Nothing";break;
 		}
 	}
 }
