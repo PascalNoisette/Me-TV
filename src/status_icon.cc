@@ -77,22 +77,22 @@ void StatusIcon::update()
 	Glib::ustring title;
 
 	status_icon->set_visible(application.get_boolean_configuration_value("display_status_icon"));
-	
-	std::list<ChannelStream> streams = application.stream_manager.get_streams();
-	if (streams.size() == 0)
+
+	std::list<FrontendThread> frontend_threads = application.stream_manager.get_frontend_threads();
+	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
-		title = _("Unknown program");
-	}
-	else
-	{
-		for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+		FrontendThread& frontend_thread = *i;
+
+		Glib::ustring device = frontend_thread.frontend.get_path();
+		std::list<ChannelStream> streams = frontend_thread.get_streams();
+		for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); j++)
 		{
 			if (title.size() > 0)
 			{
 				title += "\n";
 			}
 	
-			ChannelStream& stream = *i;
+			ChannelStream& stream = *j;
 			switch (stream.type)
 			{
 			case CHANNEL_STREAM_TYPE_DISPLAY: title += "Watching: "; break;
@@ -102,7 +102,13 @@ void StatusIcon::update()
 			}
 
 			title += stream.channel.get_text();
-		}	
+			title += " (" + device + ")";
+		}
+	}
+
+	if (title.empty())
+	{
+		title = _("Not available");
 	}
 	
 	status_icon->set_tooltip(title);
