@@ -52,13 +52,13 @@ void Thread::start()
 	terminated = false;
 	started = false;
 	thread = Glib::Thread::create(sigc::mem_fun(*this, &Thread::on_run), true);
-	g_debug("Thread '%s' started", name.c_str());
 	
 	while (!started)
 	{
 		g_debug("Waiting for '%s' to start", name.c_str());
 		usleep(1000);
 	}
+	g_debug("Thread '%s' started", name.c_str());
 }
 	
 void Thread::on_run()

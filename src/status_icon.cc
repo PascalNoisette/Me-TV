@@ -78,7 +78,7 @@ void StatusIcon::update()
 
 	status_icon->set_visible(application.get_boolean_configuration_value("display_status_icon"));
 
-	std::list<FrontendThread> frontend_threads = application.stream_manager.get_frontend_threads();
+	std::list<FrontendThread>& frontend_threads = application.stream_manager.get_frontend_threads();
 	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		FrontendThread& frontend_thread = *i;

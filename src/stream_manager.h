@@ -34,7 +34,7 @@ public:
 		
 	guint get_last_epg_update_time();
 	std::list<ChannelStream> get_streams();
-	const std::list<FrontendThread>& get_frontend_threads() const { return frontend_threads; };
+	std::list<FrontendThread>& get_frontend_threads() { return frontend_threads; };
 
 	void start_display(const Channel& channel);
 	const ChannelStream& get_display_stream();

@@ -85,6 +85,7 @@ void FrontendThread::run()
 	guint last_insert_time = 0;
 	gsize bytes_read;
 	
+	g_debug("Entering FrontendThread loop (%s)", frontend.get_path().c_str());
 	while (!is_terminated())
 	{
 		if (!is_tuned)
