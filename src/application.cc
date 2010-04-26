@@ -23,7 +23,7 @@
 #include "crc32.h"
 
 #define GCONF_PATH					"/apps/me-tv"
-#define CURRENT_DATABASE_VERSION	5
+#define CURRENT_DATABASE_VERSION	6
 
 Application* Application::current = NULL;
 
@@ -306,7 +306,8 @@ gboolean Application::initialise_database()
 	table_scheduled_recording.name = "scheduled_recording";
 	table_scheduled_recording.columns.add("scheduled_recording_id",	Data::DATA_TYPE_INTEGER, 0, false);
 	table_scheduled_recording.columns.add("description",			Data::DATA_TYPE_STRING, 200, false);
-	table_scheduled_recording.columns.add("type",					Data::DATA_TYPE_INTEGER, 0, false);
+	table_scheduled_recording.columns.add("recurring_type",			Data::DATA_TYPE_INTEGER, 0, false);
+	table_scheduled_recording.columns.add("action_after",			Data::DATA_TYPE_INTEGER, 0, false);
 	table_scheduled_recording.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_scheduled_recording.columns.add("start_time",				Data::DATA_TYPE_INTEGER, 0, false);
 	table_scheduled_recording.columns.add("duration",				Data::DATA_TYPE_INTEGER, 0, false);
