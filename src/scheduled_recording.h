@@ -29,7 +29,7 @@ class ScheduledRecording
 public:
 	guint			scheduled_recording_id;
 	Glib::ustring	description;
-	guint			type;
+	guint			recurring_type;
 	guint			channel_id;
 	guint			start_time;
 	guint			duration;

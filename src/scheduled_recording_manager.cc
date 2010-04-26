@@ -36,7 +36,7 @@ void ScheduledRecordingManager::load(Data::Connection& connection)
 	Data::TableAdapter adapter(connection, table);
 	
 	Glib::ustring where = Glib::ustring::compose(
-		"((start_time + duration) > %1 OR type != 0)", time(NULL));
+		"((start_time + duration) > %1 OR recurring_type != 0)", time(NULL));
 	Data::DataTable data_table = adapter.select_rows(where, "start_time");
 	
 	scheduled_recordings.clear();
@@ -48,7 +48,7 @@ void ScheduledRecordingManager::load(Data::Connection& connection)
 		scheduled_recording.scheduled_recording_id	= row["scheduled_recording_id"].int_value;
 		scheduled_recording.channel_id				= row["channel_id"].int_value;
 		scheduled_recording.description				= row["description"].string_value;
-		scheduled_recording.type					= row["type"].int_value;
+		scheduled_recording.recurring_type			= row["recurring_type"].int_value;
 		scheduled_recording.start_time				= row["start_time"].int_value;
 		scheduled_recording.duration				= row["duration"].int_value;
 		scheduled_recording.device					= row["device"].string_value;
@@ -70,14 +70,14 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	{
 		ScheduledRecording& scheduled_recording = *i;
 		guint now = time(NULL);
-		if (scheduled_recording.get_end_time() > now || scheduled_recording.type != 0)
+		if (scheduled_recording.get_end_time() > now || scheduled_recording.recurring_type != 0)
 		{
 			Data::Row row;
 			row.auto_increment 						= &(scheduled_recording.scheduled_recording_id);
 			row["scheduled_recording_id"].int_value	= scheduled_recording.scheduled_recording_id;
 			row["channel_id"].int_value				= scheduled_recording.channel_id;
 			row["description"].string_value			= scheduled_recording.description;
-			row["type"].int_value					= scheduled_recording.type;
+			row["recurring_type"].int_value			= scheduled_recording.recurring_type;
 			row["start_time"].int_value				= scheduled_recording.start_time;
 			row["duration"].int_value				= scheduled_recording.duration;
 			row["device"].string_value				= scheduled_recording.device;
@@ -93,7 +93,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 
 	guint now = time(NULL);
 	g_debug("Deleting old scheduled recordings ending before %d", now);
-	Glib::ustring where = Glib::ustring::compose("type !=0 AND (start_time + duration) < %1", now);
+	Glib::ustring where = Glib::ustring::compose("recurring_type !=0 AND (start_time + duration) < %1", now);
 	data_table = adapter.select_rows(where, "start_time");
 
 	gboolean updated = false;
@@ -102,11 +102,11 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 		Data::Row& row = *i;
 		g_message("ScheduledRecordingManager::save/clear ID: %d", row["scheduled_recording_id"].int_value); 
 
-		if(row["type"].int_value == 1)
+		if(row["recurring_type"].int_value == 1)
 			row["start_time"].int_value += 86400;
-		if(row["type"].int_value == 2)
+		if(row["recurring_type"].int_value == 2)
 			row["start_time"].int_value += 604800;
-		if(row["type"].int_value == 3)
+		if(row["recurring_type"].int_value == 3)
 		{
 			time_t tim = row["start_time"].int_value;
 			struct tm *ts;
@@ -127,7 +127,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 		adapter.replace_rows(data_table);
 		load(connection);
 	}
-	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1 AND type = 0", now);
+	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1 AND recurring_type = 0", now);
 	adapter.delete_rows(clause);
 
 	g_debug("Scheduled recordings saved");
@@ -206,10 +206,10 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 		// Check if we are scheduling the same program
 		if (scheduled_recording.scheduled_recording_id == 0 &&
-		    current.type		== scheduled_recording.type &&
-		    current.channel_id 	== scheduled_recording.channel_id &&
-		    current.start_time 	== scheduled_recording.start_time &&
-		    current.duration 	== scheduled_recording.duration)
+		    current.recurring_type	== scheduled_recording.recurring_type &&
+		    current.channel_id 		== scheduled_recording.channel_id &&
+		    current.start_time 		== scheduled_recording.start_time &&
+		    current.duration 		== scheduled_recording.duration)
 		{
 			is_same = true;
 			Glib::ustring message =  Glib::ustring::compose(
@@ -224,7 +224,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 		ScheduledRecording& current = *iupdated;
 
 		current.device = scheduled_recording.device;
-		current.type = scheduled_recording.type;
+		current.recurring_type = scheduled_recording.recurring_type;
 		current.description = scheduled_recording.description;
 		current.channel_id = scheduled_recording.channel_id;
 		current.start_time = scheduled_recording.start_time;
@@ -279,7 +279,7 @@ guint scheduled_recording_now = 0;
 
 guint is_old(ScheduledRecording& scheduled_recording)
 {
-	return (scheduled_recording.get_end_time() < scheduled_recording_now && scheduled_recording.type == 0);
+	return (scheduled_recording.get_end_time() < scheduled_recording_now && scheduled_recording.recurring_type == 0);
 }
 
 ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()

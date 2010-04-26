@@ -25,7 +25,7 @@
 ScheduledRecording::ScheduledRecording()
 {
 	scheduled_recording_id	= 0;
-	type					= 0;
+	recurring_type			= 0;
 	channel_id				= 0;
 	start_time				= 0;
 	duration				= 0;
@@ -88,19 +88,19 @@ gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_record
 	srtime.push_back(scheduled_recording.start_time);
 
 	// Creating the list long enough to overlaps (front of one bigger than the back of the other)
-	while ( ((ctime.back()<srtime.front()+604800 && !type_once_c) || (srtime.back()<ctime.front()+604800 && !type_once_sr)) )
+	while ( (ctime.back()<srtime.front()+604800 && !type_once_c) || (srtime.back()<ctime.front()+604800 && !type_once_sr) )
 	{
 		// Create the list for the current scheduled_recording
-		if(type==0)
+		if(recurring_type==0)
 		{
 			type_once_c = true;
 			ctime.push_back(ctime.back());
 		}
-		else if(type==1)
+		else if(recurring_type==1)
 			ctime.push_back(ctime.back() + 86400);
-		else if(type==2)
+		else if(recurring_type==2)
 			ctime.push_back(ctime.back() + 604800);
-		else if(type==3)
+		else if(recurring_type==3)
 		{
 			time_t tim = ctime.back();
 			struct tm *ts;
@@ -116,16 +116,16 @@ gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_record
 		}
 
 		// Create the list for the tested scheduled_recording
-		if(scheduled_recording.type==0)
+		if(scheduled_recording.recurring_type == 0)
 		{
 			type_once_sr = true;
 			srtime.push_back(srtime.back());
 		}
-		else if(scheduled_recording.type==1)
+		else if(scheduled_recording.recurring_type == 1)
 			srtime.push_back(srtime.back() + 86400);
-		else if(scheduled_recording.type==2)
+		else if(scheduled_recording.recurring_type == 2)
 			srtime.push_back(srtime.back() + 604800);
-		else if(scheduled_recording.type==3)
+		else if(scheduled_recording.recurring_type == 3)
 		{
 			time_t tim = srtime.back();
 			struct tm *ts;

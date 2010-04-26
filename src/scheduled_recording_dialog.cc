@@ -78,7 +78,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, ScheduledRecordin
 	entry_description->set_text(scheduled_recording.description);
 	set_date_time(convert_to_local_time((time_t)scheduled_recording.start_time));
 	spin_button_duration->set_value(scheduled_recording.duration/60);
-	recurring_combo_box->set_active(scheduled_recording.type);
+	recurring_combo_box->set_active(scheduled_recording.recurring_type);
 
 	return run(transient_for, false);
 }
@@ -153,7 +153,7 @@ ScheduledRecording ScheduledRecordingDialog::get_scheduled_recording()
 	ScheduledRecording scheduled_recording;
 	scheduled_recording.scheduled_recording_id	= scheduled_recording_id;
 	scheduled_recording.description				= entry_description->get_text();
-	scheduled_recording.type					= recurring_combo_box->get_active_row_number();
+	scheduled_recording.recurring_type			= recurring_combo_box->get_active_row_number();
 	scheduled_recording.channel_id				= channel_combo_box->get_selected_channel_id();
 	scheduled_recording.start_time				= mktime(&start_time);
 	scheduled_recording.duration				= (int)spin_button_duration->get_value() * 60;
