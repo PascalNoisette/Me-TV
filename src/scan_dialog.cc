@@ -168,7 +168,16 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	combo_box_auto_scan_range->signal_changed().connect(
 	    sigc::mem_fun(*this, &ScanDialog::on_combo_box_auto_scan_range_changed));
 
-	gboolean enable_auto_scan = frontend->get_frontend_info().type == FE_OFDM;
+	gboolean enable_auto_scan = false;
+	switch (frontend->get_frontend_info().type)
+	{
+		case FE_OFDM:
+		case FE_ATSC:
+			enable_auto_scan = true;
+			break;
+		default:
+			break;
+	}		
 	combo_box_auto_scan_range->set_sensitive(enable_auto_scan);
 
 	Gtk::Label* label_auto_scan = NULL;
