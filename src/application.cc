@@ -678,14 +678,12 @@ void Application::start_recording(Channel& channel)
 {
 	stream_manager.start_recording(channel);
 	update();
-	g_debug("Recording started");
 }
 
 void Application::start_recording(Channel& channel, const ScheduledRecording& scheduled_recording)
 {
 	stream_manager.start_recording(channel, scheduled_recording);
 	update();
-	g_debug("Scheduled recording started");
 }
 
 void Application::stop_recording(Channel& channel)

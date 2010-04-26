@@ -126,7 +126,6 @@ void StreamManager::start_recording(Channel& channel)
 
 	g_debug("Request to record '%s'", channel.name.c_str());
 	
-	// TODO: Need to look into the SRs to see if the selected frontend recording will conflict
 	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		FrontendThread& frontend_thread = *i;
@@ -188,8 +187,14 @@ void StreamManager::start_recording(Channel& channel)
 					frontend_thread.start_recording(channel,
 					    make_recording_filename(channel),
 					    false);
+					found = true;
 					break;
 				}
+			}
+
+			if (!found)
+			{
+				throw Exception(_("Failed to get available frontend"));
 			}
 		}
 	}
@@ -226,7 +231,59 @@ void StreamManager::stop()
 
 void StreamManager::start_display(const Channel& channel)
 {
-	get_display_frontend_thread().start_display(channel);
+	gboolean found = false;
+
+	if (get_display_stream().channel == channel)
+	{
+		g_debug("Display stream is already set to '%s'", channel.name.c_str());
+	}
+	else
+	{
+		g_debug("Not currently displaying '%s'", channel.name.c_str());
+		for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+		{
+			FrontendThread& frontend_thread = *i;
+			if (frontend_thread.frontend.get_frontend_type() != channel.transponder.frontend_type)
+			{
+				g_debug("'%s' incompatible", frontend_thread.frontend.get_name().c_str());
+				continue;
+			}
+
+			if (frontend_thread.frontend.get_frontend_parameters().frequency ==
+			    channel.transponder.frontend_parameters.frequency)
+			{
+				g_debug("Found a frontend already tuned to the correct transponder");
+				frontend_thread.start_display(channel);
+				found = true;
+				break;
+			}
+		}
+		
+		if (!found)
+		{
+			for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+			{
+				FrontendThread& frontend_thread = *i;
+				if (frontend_thread.frontend.get_frontend_type() != channel.transponder.frontend_type)
+				{
+					g_debug("'%s' incompatible", frontend_thread.frontend.get_name().c_str());
+					continue;
+				}
+				
+				if (!frontend_thread.is_recording())
+				{
+					g_debug("Selected idle frontend '%s' for display", frontend_thread.frontend.get_name().c_str());
+					frontend_thread.start_display(channel);
+					break;
+				}
+			}
+
+			if (!found)
+			{
+				throw Exception(_("Failed to get available frontend"));
+			}
+		}
+	}
 }
 
 const ChannelStream& StreamManager::get_display_stream()
@@ -246,7 +303,7 @@ const ChannelStream& StreamManager::get_display_stream()
 		}
 	}
 
-	throw Exception("Failed to get display stream");
+	throw Exception(_("Failed to get display stream"));
 }
 
 FrontendThread& StreamManager::get_display_frontend_thread()
@@ -277,5 +334,5 @@ FrontendThread& StreamManager::get_display_frontend_thread()
 		return *free_frontend_thread;
 	}
 
-	throw Exception("Failed to get display frontend thread");
+	throw Exception(_("Failed to get display frontend thread"));
 }
