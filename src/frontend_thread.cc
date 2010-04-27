@@ -334,7 +334,7 @@ void FrontendThread::stop_display()
 
 bool is_recording_stream(ChannelStream& channel_stream)
 {
-	return channel_stream.type == CHANNEL_STREAM_TYPE_RECORDING;
+	return channel_stream.type == CHANNEL_STREAM_TYPE_RECORDING || channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING;
 }
 
 void FrontendThread::start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled)
@@ -350,12 +350,7 @@ void FrontendThread::start_recording(const Channel& channel, const Glib::ustring
 	while (iterator != streams.end())
 	{
 		ChannelStream& channel_stream = *iterator;
-		if (
-		    channel_stream.channel == channel &&
-		    (
-		        channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING ||
-				channel_stream.type == CHANNEL_STREAM_TYPE_RECORDING)
-		    )
+		if (channel_stream.channel == channel && is_recording_stream(channel_stream))
 		{
 			current_type = channel_stream.type;
 			break;
@@ -417,7 +412,7 @@ void FrontendThread::stop_recording(const Channel& channel)
 	while (iterator != streams.end())
 	{
 		ChannelStream& channel_stream = *iterator;
-		if (channel_stream.channel == channel)
+		if (channel_stream.channel == channel && is_recording_stream(channel_stream))
 		{
 			channel_stream.output_channel.reset();
 			iterator = streams.erase(iterator);
@@ -445,10 +440,10 @@ guint FrontendThread::get_last_epg_update_time()
 gboolean FrontendThread::is_recording()
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
+
 	for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
 	{
-		ChannelStream& stream = *i;
-		if (stream.type == CHANNEL_STREAM_TYPE_RECORDING || stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING)
+		if (is_recording_stream(*i))
 		{
 			return true;
 		}
@@ -459,17 +454,16 @@ gboolean FrontendThread::is_recording()
 
 gboolean FrontendThread::is_recording(const Channel& channel)
 {
-	std::list<ChannelStream>::iterator iterator = streams.begin();
+	Lock lock(mutex, __PRETTY_FUNCTION__);
 
-	while (iterator != streams.end())
+	for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
 	{
-		ChannelStream& stream = *iterator;
-		if (stream.channel == channel &&
-		    (stream.type == CHANNEL_STREAM_TYPE_RECORDING || stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING))
+		ChannelStream& channel_stream = *i;
+		if (channel_stream.channel == channel && is_recording_stream(channel_stream))
 		{
 			return true;
 		}
-		iterator++;
 	}
 	return false;
 }
+
