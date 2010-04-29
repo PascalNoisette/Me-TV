@@ -468,15 +468,10 @@ void MainWindow::on_menu_item_subtitle_stream_activate(guint index)
 void MainWindow::update()
 {	
 	Application& application = get_application();
-	Glib::ustring window_title;
 	Glib::ustring status_text;
-
-	std::list<ChannelStream> streams = application.stream_manager.get_streams();
-	if (streams.size() == 0)
-	{
-		window_title = "Me TV - It's TV for me computer";
-	}
-	else
+	Glib::ustring window_title = "Me TV - It's TV for me computer";
+/*
+	if (!application.stream_manager.get_frontend_threads().empty())
 	{
 		Channel& channel = application.channel_manager.get_display_channel();
 		window_title = "Me TV - " + channel.get_text();
@@ -486,7 +481,7 @@ void MainWindow::update()
 		    application.channel_manager.get_display_channel());
 		toggle_action_record->set_active(record);
 	}
-	
+*/	
 	set_title(window_title);
 	statusbar->pop();
 	statusbar->push(status_text);
@@ -650,8 +645,8 @@ void MainWindow::play(const Glib::ustring& mrl)
 
 	Gtk::RadioMenuItem::Group audio_streams_menu_group;
 
-	const Mpeg::Stream stream = application.stream_manager.get_display_stream().stream;
-	std::vector<Mpeg::AudioStream> audio_streams = stream.audio_streams;
+	Mpeg::Stream& stream = application.stream_manager.get_display_stream().stream;
+	std::vector<Mpeg::AudioStream>& audio_streams = stream.audio_streams;
 	guint count = 0;
 
 	g_debug("Audio streams: %zu", audio_streams.size());
@@ -682,7 +677,7 @@ void MainWindow::play(const Glib::ustring& mrl)
 		count++;
 	}
 
-	std::vector<Mpeg::SubtitleStream> subtitle_streams = stream.subtitle_streams;
+	std::vector<Mpeg::SubtitleStream>& subtitle_streams = stream.subtitle_streams;
 	Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
 	count = 0;
 	
@@ -722,7 +717,10 @@ void MainWindow::start_engine()
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-	if (!get_application().stream_manager.get_streams().empty() && property_visible())
+	// Bail if no display stream
+	get_application().stream_manager.get_display_stream();
+
+	if (property_visible())
 	{
 		play(get_application().stream_manager.get_display_stream().filename);
 	}

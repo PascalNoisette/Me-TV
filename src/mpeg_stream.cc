@@ -32,6 +32,11 @@ Mpeg::Stream::Stream()
 	pmt_counter = 0;
 }
 
+Mpeg::Stream::~Stream()
+{
+	g_debug("MPEG stream destroyed");
+}
+
 void Mpeg::Stream::clear()
 {
 	video_streams.clear();
@@ -515,7 +520,7 @@ gboolean Mpeg::Stream::contains_pid(guint pid)
 	guint index = 0;
 
 	if (pid == pcr_pid) return true;
-	
+
 	for (index = 0; index < video_streams.size(); index++)
 	{ if (video_streams[index].pid == pid) return true; }
 	

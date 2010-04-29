@@ -84,7 +84,7 @@ void StatusIcon::update()
 		FrontendThread& frontend_thread = *i;
 
 		Glib::ustring device = frontend_thread.frontend.get_path();
-		std::list<ChannelStream> streams = frontend_thread.get_streams();
+		std::list<ChannelStream>& streams = frontend_thread.get_streams();
 		for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); j++)
 		{
 			if (title.size() > 0)

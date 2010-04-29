@@ -41,6 +41,7 @@ private:
 		
 public:
 	ChannelStream(ChannelStreamType type, const Channel& channel, const Glib::ustring& filename);
+	~ChannelStream();
 
 	Glib::RefPtr<Glib::IOChannel>	output_channel;
 	Mpeg::Stream					stream;

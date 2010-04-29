@@ -429,14 +429,7 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 
 void GtkEpgWidget::on_button_channel_clicked(guint channel_id)
 {
-	try
-	{
-		get_application().set_display_channel_by_id(channel_id);
-	}
-	catch(...)
-	{
-		on_error();
-	}
+	get_application().set_display_channel_by_id(channel_id);
 	update_table();
 }
 

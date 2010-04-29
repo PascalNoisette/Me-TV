@@ -37,6 +37,7 @@ FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Frontend"), frontend(
 	
 	epg_thread = NULL;
 	is_tuned = false;
+	stop_crash = 0;
 
 	g_debug("FrontendThread created (%s)", frontend.get_path().c_str());
 }
@@ -102,7 +103,7 @@ void FrontendThread::run()
 				if (now - last_insert_time > 2)
 				{
 					g_debug("Writing PAT/PMT header");
-			
+
 					for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
 					{
 						ChannelStream& channel_stream = *i;
@@ -140,8 +141,11 @@ void FrontendThread::run()
 			}
 			catch(...)
 			{
+				// The show must go on!
 			}
 		}
+
+		stop_crash = 0;
 	}
 		
 	g_debug("FrontendThread loop exited (%s)", frontend.get_path().c_str());
@@ -264,46 +268,35 @@ void FrontendThread::stop_epg_thread()
 
 void FrontendThread::start_display(const Channel& channel)
 {
-	g_debug("FrontendThread::set_display_stream(%s)", channel.name.c_str());
+	g_debug("FrontendThread::start_display(%s)", channel.name.c_str());
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 	
-	if (streams.size() == 0)
+	g_debug("Creating new stream output");
+	
+	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
+	Glib::ustring fifo_path = Glib::build_filename(get_application().get_application_dir(), filename);
+
+	if (Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
 	{
-		g_debug("Creating new stream output");
-		
-		Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
-		Glib::ustring fifo_path = Glib::build_filename(get_application().get_application_dir(), filename);
- 
-		if (Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
-		{
-			unlink(fifo_path.c_str());
-		}
-
-		if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
-		{
-			throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
-		}
-
-		// Fudge the channel open.  Allows Glib::IO_FLAG_NONBLOCK
-		int fd = open(fifo_path.c_str(), O_RDONLY | O_NONBLOCK);
-		if (fd == -1)
-		{
-			throw SystemException(Glib::ustring::compose(_("Failed to open FIFO for reading '%1'"), fifo_path));
-		}
-
-		ChannelStream channel_stream(CHANNEL_STREAM_TYPE_DISPLAY, channel, fifo_path);
-		streams.push_back(channel_stream);
-
-		close(fd);
-	}
-	else
-	{
-		g_debug("Display stream exists");
+		unlink(fifo_path.c_str());
 	}
 
-	ChannelStream& stream = *(streams.begin());
-	stream.channel = channel;
-	setup_dvb(stream);
+	if (mkfifo(fifo_path.c_str(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP) != 0)
+	{
+		throw Exception(Glib::ustring::compose(_("Failed to create FIFO '%1'"), fifo_path));
+	}
+
+	// Fudge the channel open.  Allows Glib::IO_FLAG_NONBLOCK
+	int fd = open(fifo_path.c_str(), O_RDONLY | O_NONBLOCK);
+	if (fd == -1)
+	{
+		throw SystemException(Glib::ustring::compose(_("Failed to open FIFO for reading '%1'"), fifo_path));
+	}
+
+	ChannelStream* channel_stream = new ChannelStream(CHANNEL_STREAM_TYPE_DISPLAY, channel, fifo_path);
+	close(fd);
+	setup_dvb(*channel_stream);
+	streams.push_back(*channel_stream);
 }
 
 void FrontendThread::stop_display()
@@ -312,18 +305,17 @@ void FrontendThread::stop_display()
 
 	std::list<ChannelStream>::iterator iterator = streams.begin();
 
-	if (iterator != streams.end())
-	{
-		iterator++;
-	}
-
 	while (iterator != streams.end())
 	{
 		ChannelStream& channel_stream = *iterator;
 		if (channel_stream.type == CHANNEL_STREAM_TYPE_DISPLAY)
 		{
+			g_debug("Resetting output channel");
 			channel_stream.output_channel.reset();
+			stop_crash = 1;
+			while (stop_crash == 1) { usleep(1000); }
 			iterator = streams.erase(iterator);
+			g_debug("Frontend stopped display");
 		}
 		else
 		{

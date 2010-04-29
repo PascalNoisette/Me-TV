@@ -65,23 +65,6 @@ gboolean StreamManager::is_recording()
 	return false;
 }
 
-std::list<ChannelStream> StreamManager::get_streams()
-{
-	std::list<ChannelStream> result;
-	
-	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
-	{
-		FrontendThread& frontend_thread = *i;
-		std::list<ChannelStream> streams = frontend_thread.get_streams();
-		for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); j++)
-		{
-			result.push_back(*j);
-		}
-	}
-
-	return result;
-}
-
 gboolean StreamManager::is_recording(const Channel& channel)
 {
 	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
@@ -102,6 +85,7 @@ void StreamManager::start_recording(Channel& channel, const ScheduledRecording& 
 	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		FrontendThread& frontend_thread = *i;
+		g_debug("CHECKING: %s", frontend_thread.frontend.get_path().c_str());
 		if (frontend_thread.frontend.get_path() == scheduled_recording.device)
 		{
 			frontend_thread.start_recording(channel,
@@ -181,7 +165,7 @@ void StreamManager::start_recording(Channel& channel)
 					continue;
 				}
 				
-				if (!frontend_thread.is_recording())
+				if (frontend_thread.get_streams().empty())
 				{
 					g_debug("Selected idle frontend '%s' for recording", frontend_thread.frontend.get_name().c_str());
 					frontend_thread.start_recording(channel,
@@ -247,6 +231,7 @@ void StreamManager::start_display(const Channel& channel)
 		    channel.transponder.frontend_parameters.frequency)
 		{
 			g_debug("Found a frontend already tuned to the correct transponder");
+			stop_display();
 			frontend_thread.start_display(channel);
 			found = true;
 			break;
@@ -267,6 +252,7 @@ void StreamManager::start_display(const Channel& channel)
 			if (!frontend_thread.is_recording())
 			{
 				g_debug("Selected idle frontend '%s' for display", frontend_thread.frontend.get_name().c_str());
+				stop_display();
 				frontend_thread.start_display(channel);
 				found = true;
 				break;
@@ -280,14 +266,27 @@ void StreamManager::start_display(const Channel& channel)
 	}
 }
 
-const ChannelStream& StreamManager::get_display_stream()
+void StreamManager::stop_display()
+{
+	FrontendThread* free_frontend_thread = NULL;
+	
+	g_debug("StreamManager stopping display");
+	Dvb::Transponder& current_transponder = get_application().channel_manager.get_display_channel().transponder;
+	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+	{
+		FrontendThread& frontend_thread = *i;
+		frontend_thread.stop_display();
+	}
+}
+
+ChannelStream& StreamManager::get_display_stream()
 {
 	Dvb::Transponder& current_transponder = get_application().channel_manager.get_display_channel().transponder;
 	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		FrontendThread& frontend_thread = *i;
 		std::list<ChannelStream>& streams = frontend_thread.get_streams();
-		for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); i++)
+		for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); j++)
 		{
 			ChannelStream& stream = *j;
 			if (stream.type == CHANNEL_STREAM_TYPE_DISPLAY)
@@ -313,7 +312,7 @@ FrontendThread& StreamManager::get_display_frontend_thread()
 		{
 			free_frontend_thread = &frontend_thread;
 		}
-		for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); i++)
+		for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); j++)
 		{
 			ChannelStream& stream = *j;
 			if (stream.type == CHANNEL_STREAM_TYPE_DISPLAY)

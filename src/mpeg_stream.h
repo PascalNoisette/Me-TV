@@ -125,6 +125,7 @@ namespace Mpeg
 			
 	public:
 		Stream();
+		~Stream();
 
 		std::vector<VideoStream>	video_streams;
 		std::vector<AudioStream>	audio_streams;

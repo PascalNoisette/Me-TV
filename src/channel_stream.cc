@@ -41,7 +41,12 @@ ChannelStream::ChannelStream(ChannelStreamType t, const Channel& c, const Glib::
 	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
 	output_channel->set_buffer_size(TS_PACKET_SIZE * PACKET_BUFFER_SIZE);
 	
-	g_debug("Added new output stream '%s' -> '%s'", channel.name.c_str(), filename.c_str());
+	g_debug("Added new channel stream '%s' -> '%s'", channel.name.c_str(), filename.c_str());
+}
+
+ChannelStream::~ChannelStream()
+{
+	g_debug("Destroying channel stream '%s' -> '%s'", channel.name.c_str(), filename.c_str());
 }
 
 void ChannelStream::clear_demuxers()

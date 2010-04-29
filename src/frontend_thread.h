@@ -34,6 +34,7 @@ private:
 	std::list<ChannelStream>	streams;
 	EpgThread*					epg_thread;
 	gboolean					is_tuned;
+	int				stop_crash;
 	
 	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
 	void run();

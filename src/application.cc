@@ -506,10 +506,6 @@ void Application::run()
 		channel_manager.load(connection);
 		
 		const FrontendList& frontends = device_manager.get_frontends();	
-		if (!frontends.empty())	
-		{	
-			scheduled_recording_manager.load(connection);	
-		}	
 	
 		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 
@@ -530,6 +526,11 @@ void Application::run()
 
 		stream_manager.load();
 		stream_manager.start();
+
+		if (!frontends.empty())	
+		{	
+			scheduled_recording_manager.load(connection);	
+		}	
 
 		ChannelArray& channels = channel_manager.get_channels();	
 		if (channels.empty())
@@ -587,10 +588,32 @@ void Application::set_display_channel_number(guint channel_index)
 void Application::set_display_channel(const Channel& channel)
 {
 	g_message(_("Changing channel to '%s'"), channel.name.c_str());
+ 
+	// Save old channel in the case that we can't tune to the new channel
+	int display_channel_index = -1;
+	if (channel_manager.has_display_channel())
+	{
+		display_channel_index = channel_manager.get_display_channel_index();
+	}
 
 	main_window->stop_engine();
-	channel_manager.set_display_channel(channel);
-	stream_manager.start_display(channel);
+	try
+	{
+		channel_manager.set_display_channel(channel);
+		stream_manager.start_display(channel);
+	}
+	catch (...)
+	{
+		main_window->on_exception();
+
+		// Revert to the previous channel if there was one
+		if (display_channel_index != -1)
+		{
+			Channel& old_channel = channel_manager.get_channel_by_index(display_channel_index);
+			channel_manager.set_display_channel(old_channel);
+			stream_manager.start_display(old_channel);
+		}
+	}
 	main_window->start_engine();
 	
 	set_int_configuration_value("last_channel", channel.channel_id);
@@ -628,17 +651,22 @@ void Application::check_scheduled_recordings()
 	{
 		check = false;
 
-		std::list<ChannelStream> streams = stream_manager.get_streams();
-		for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+		std::list<FrontendThread>& frontend_threads = stream_manager.get_frontend_threads();
+		for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 		{
-			ChannelStream& channel_stream = *i;
-			if (
-			    channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
-				!scheduled_recording_manager.is_recording(channel_stream.channel))
+			FrontendThread& frontend_thread = *i;
+			std::list<ChannelStream>& streams = frontend_thread.get_streams();
+			for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); j++)
 			{
-				stream_manager.stop_recording(channel_stream.channel);
-				check = true;
-				break;
+				ChannelStream& channel_stream = *j;
+				if (
+				    channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
+					!scheduled_recording_manager.is_recording(channel_stream.channel))
+				{
+					stream_manager.stop_recording(channel_stream.channel);
+					check = true;
+					break;
+				}
 			}
 		}
 	}
