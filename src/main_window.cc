@@ -470,18 +470,14 @@ void MainWindow::update()
 	Application& application = get_application();
 	Glib::ustring status_text;
 	Glib::ustring window_title = "Me TV - It's TV for me computer";
-/*
-	if (!application.stream_manager.get_frontend_threads().empty())
+
+	if (application.channel_manager.has_display_channel())
 	{
 		Channel& channel = application.channel_manager.get_display_channel();
 		window_title = "Me TV - " + channel.get_text();
 		status_text = channel.get_text();
-		
-		gboolean record = application.stream_manager.is_recording(
-		    application.channel_manager.get_display_channel());
-		toggle_action_record->set_active(record);
 	}
-*/	
+
 	set_title(window_title);
 	statusbar->pop();
 	statusbar->push(status_text);
