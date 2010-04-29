@@ -509,6 +509,20 @@ void Application::run()
 	
 		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 
+		stream_manager.load();
+		stream_manager.start();
+
+		if (!frontends.empty())	
+		{	
+			scheduled_recording_manager.load(connection);	
+		}	
+	
+		ChannelArray& channels = channel_manager.get_channels();	
+		if (!channels.empty())	
+		{	
+			select_channel_to_play();	
+		}
+
 		if (!minimised_mode)	
 		{	
 			main_window->show();	
@@ -519,29 +533,15 @@ void Application::run()
 			}	
 		}
 	
-		if (frontends.empty())
-		{
-			throw Exception(_("There are no DVB devices available"));
-		}	
-
-		stream_manager.load();
-		stream_manager.start();
-
-		if (!frontends.empty())	
-		{	
-			scheduled_recording_manager.load(connection);	
-		}	
-
-		ChannelArray& channels = channel_manager.get_channels();	
 		if (channels.empty())
 		{	
 			main_window->show_channels_dialog();	
 		}
-	
-		if (!channels.empty())	
-		{	
-			select_channel_to_play();	
-		}
+
+		if (frontends.empty())
+		{
+			throw Exception(_("There are no DVB devices available"));
+		}	
 	}
 	catch(...)
 	{

@@ -271,7 +271,6 @@ void StreamManager::stop_display()
 	FrontendThread* free_frontend_thread = NULL;
 	
 	g_debug("StreamManager stopping display");
-	Dvb::Transponder& current_transponder = get_application().channel_manager.get_display_channel().transponder;
 	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		FrontendThread& frontend_thread = *i;
@@ -281,7 +280,6 @@ void StreamManager::stop_display()
 
 ChannelStream& StreamManager::get_display_stream()
 {
-	Dvb::Transponder& current_transponder = get_application().channel_manager.get_display_channel().transponder;
 	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		FrontendThread& frontend_thread = *i;
