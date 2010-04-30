@@ -70,7 +70,7 @@ Glib::ustring ScheduledRecording::get_end_time_text() const
 
 gboolean ScheduledRecording::is_in(guint at) const
 {
-	return start_time < at && start_time+duration > at;
+	return start_time <= at && start_time+duration > at;
 }
 
 gboolean ScheduledRecording::is_in(guint s, guint e) const
