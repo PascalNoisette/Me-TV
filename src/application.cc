@@ -659,11 +659,19 @@ void Application::check_scheduled_recordings()
 			for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); j++)
 			{
 				ChannelStream& channel_stream = *j;
+				guint srid = scheduled_recording_manager.is_recording(channel_stream.channel);
 				if (
 				    channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
-					!scheduled_recording_manager.is_recording(channel_stream.channel))
+					(signed)srid >= 0)
 				{
 					stream_manager.stop_recording(channel_stream.channel);
+					switch (srid)
+					{
+						case 0  : g_message("do nothing");break;
+						case 1  : g_message("close me-tv");break;
+						case 2  : g_message("shutdown");break;
+						default : g_message("not good");break;
+					}
 					check = true;
 					break;
 				}

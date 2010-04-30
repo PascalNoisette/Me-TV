@@ -373,7 +373,7 @@ ScheduledRecording ScheduledRecordingManager::get_scheduled_recording(guint sche
 	return *result;
 }
 
-gboolean ScheduledRecordingManager::is_recording(const Channel& channel)
+guint ScheduledRecordingManager::is_recording(const Channel& channel)
 {
 	Glib::RecMutex::Lock lock(mutex);
 
@@ -382,11 +382,11 @@ gboolean ScheduledRecordingManager::is_recording(const Channel& channel)
 	{			
 		ScheduledRecording& scheduled_recording = *i;
 		if (scheduled_recording.is_in(now) && scheduled_recording.channel_id == channel.channel_id)
-		{
-			return true;
-		}
+			return -1;
+		else if (scheduled_recording.is_in(now-60) && scheduled_recording.channel_id == channel.channel_id)
+			return scheduled_recording.action_after;
 	}
-	return false;
+	return -2;
 }
 
 gboolean ScheduledRecordingManager::is_recording(const EpgEvent& epg_event)
