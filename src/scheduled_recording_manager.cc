@@ -156,7 +156,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 			Glib::ustring device = (*j)->get_path();
 			gboolean device_conflict = false;
 
-			for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !found; i++)
+			for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 			{
 				ScheduledRecording& current = *i;
 
