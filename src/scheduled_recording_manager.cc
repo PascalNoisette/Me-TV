@@ -151,11 +151,12 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 	{
 		g_debug("Looking for an available frontend for scheduled recording");
 		FrontendList& frontends = get_application().device_manager.get_frontends();
-		for (FrontendList::reverse_iterator j = frontends.rbegin(); j != frontends.rend(); j++)
+		for (FrontendList::iterator j = frontends.begin(); j != frontends.end(); j++)
 		{
 			Glib::ustring device = (*j)->get_path();
-				
-			for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+			gboolean device_conflict = false;
+
+			for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !found; i++)
 			{
 				ScheduledRecording& current = *i;
 
@@ -166,19 +167,19 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 					scheduled_recording.overlaps(current) &&
 					device == current.device)
 				{
-					g_debug("Found available frontend '%s'", device.c_str());
-					scheduled_recording.device = device;
-					break;
+					g_debug("'%s' is busy at that time", device.c_str());
+					device_conflict = true;
 				}
 			}
-		}		
 
-		if (scheduled_recording.device.empty())
-		{
-			scheduled_recording.device = (*(frontends.rbegin()))->get_path(); 
+			if (!device_conflict)
+			{
+				g_debug("Found available frontend '%s'", device.c_str());
+				scheduled_recording.device = device;
+			}
 		}
 	}
-
+		
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
 		ScheduledRecording& current = *i;
@@ -187,6 +188,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 		// Check for conflict
 		if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
+		    current_channel.transponder != channel.transponder &&
 		    scheduled_recording.device == current.device &&
 		    scheduled_recording.overlaps(current))
 		{
@@ -208,19 +210,27 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 		// Check if we are scheduling the same program
 		if (scheduled_recording.scheduled_recording_id == 0 &&
-		    current.recurring_type	== scheduled_recording.recurring_type &&
-		    current.action_after	== scheduled_recording.action_after &&
 		    current.channel_id 		== scheduled_recording.channel_id &&
 		    current.start_time 		== scheduled_recording.start_time &&
 		    current.duration 		== scheduled_recording.duration)
 		{
-			is_same = true;
 			Glib::ustring message =  Glib::ustring::compose(
 				_("Failed to save scheduled recording because you have already have a scheduled recording called '%1' which is scheduled for the same time on the same channel."),
 				current.description);
 			throw Exception(message);
 		}
+
+		if (current.scheduled_recording_id == scheduled_recording.scheduled_recording_id &&
+			current.recurring_type	== scheduled_recording.recurring_type &&
+			current.action_after	== scheduled_recording.action_after &&
+			current.channel_id 		== scheduled_recording.channel_id &&
+			current.start_time 		== scheduled_recording.start_time &&
+			current.duration 		== scheduled_recording.duration)
+		{
+			is_same = true;
+		}
 	}
+	
 	// If there is an update an not conflict on scheduled recording, update it.
 	if (updated && !conflict && !is_same)
 	{
