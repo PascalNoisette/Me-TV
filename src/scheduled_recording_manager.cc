@@ -165,6 +165,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 				// Check for conflict
 				if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
 					scheduled_recording.overlaps(current) &&
+					channel.transponder != current_channel.transponder &&
 					device == current.device)
 				{
 					g_debug("'%s' is busy at that time", device.c_str());
@@ -180,6 +181,11 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 		}
 	}
 		
+	if (scheduled_recording.device.empty())
+	{
+		throw Exception(_("Failed to set scheduled recording: There are no devices available at that time"));
+	}
+
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
 		ScheduledRecording& current = *i;
