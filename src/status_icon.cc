@@ -102,7 +102,6 @@ void StatusIcon::update()
 			}
 
 			title += stream.channel.get_text();
-			title += " (" + device + ")";
 		}
 	}
 

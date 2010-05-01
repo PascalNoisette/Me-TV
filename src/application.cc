@@ -613,6 +613,8 @@ void Application::set_display_channel(const Channel& channel)
 			stream_manager.start_display(old_channel);
 		}
 	}
+	toggle_action_record->set_active(stream_manager.is_recording(channel_manager.get_display_channel()));
+
 	main_window->start_engine();
 	
 	set_int_configuration_value("last_channel", channel.channel_id);
