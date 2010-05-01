@@ -1,3 +1,10 @@
+2010-05-01  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.2.1
+	* Multi-device support
+	* Recurring scheduled recordings reimplemented
+	* After recording feature implemented
+
 2010-04-05  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.2.0
