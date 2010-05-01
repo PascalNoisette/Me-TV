@@ -164,8 +164,8 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 				// Check for conflict
 				if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
-					scheduled_recording.overlaps(current) &&
 					channel.transponder != current_channel.transponder &&
+					scheduled_recording.overlaps(current) &&
 					device == current.device)
 				{
 					g_debug("'%s' is busy at that time", device.c_str());
@@ -177,6 +177,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 			{
 				g_debug("Found available frontend '%s'", device.c_str());
 				scheduled_recording.device = device;
+				break;
 			}
 		}
 	}

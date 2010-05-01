@@ -515,14 +515,14 @@ void Application::run()
 		ChannelArray& channels = channel_manager.get_channels();	
 
 		if (!frontends.empty())	
-		{	
+		{
 			scheduled_recording_manager.load(connection);	
-		}	
 
-		if (!channels.empty())	
-		{	
-			select_channel_to_play();	
-		}
+			if (!channels.empty())
+			{	
+				select_channel_to_play();	
+			}
+		}	
 
 		if (!minimised_mode)	
 		{	
@@ -533,7 +533,10 @@ void Application::run()
 				main_window->show_preferences_dialog();	
 			}	
 		}
-	
+
+		// Check that there's a device
+		device_manager.check_frontend();
+		
 		if (channels.empty())
 		{	
 			main_window->show_channels_dialog();	

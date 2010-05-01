@@ -203,7 +203,11 @@ void MainWindow::show_channels_dialog()
 	update();
 	
 	Glib::RecMutex::Lock lock(mutex);
-	if (engine == NULL)
+	ChannelManager& channel_manager = get_application().channel_manager;
+	gboolean no_devices = get_application().device_manager.get_frontends().empty();
+
+	// If the engine's not started, there are channels and there are devices
+	if (engine == NULL && channel_manager.get_channels().empty() && !no_devices)
 	{
 		start_engine();
 	}
@@ -504,7 +508,11 @@ void MainWindow::on_show()
 	Gtk::Window::on_show();
 	Gdk::Window::process_all_updates();
 
-	start_engine();
+	if (!get_application().device_manager.get_frontends().empty())
+	{
+		start_engine();
+	}
+	
 	if (application.get_boolean_configuration_value("keep_above"))
 	{
 		set_keep_above();
