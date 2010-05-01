@@ -588,9 +588,6 @@ found in /usr/share/common-licenses/GPL file.</property>
       <row>
         <col id="0" translatable="yes">Close Me-tv</col>
       </row>
-      <row>
-        <col id="0" translatable="yes">Shutdown</col>
-      </row>
     </data>
   </object>
   <object class="GtkDialog" id="dialog_scheduled_recordings">

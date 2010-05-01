@@ -668,8 +668,7 @@ void Application::check_scheduled_recordings()
 					stream_manager.stop_recording(channel_stream.channel);
 					switch (srid)
 					{
-						case 0  : g_message("do nothing");break;
-						case 1  : g_message("close me-tv");break;
+						case 1  : g_message("me-tv closed by Scheduled Recording");action_quit->activate();break;
 						case 2  : g_message("shutdown");break;
 						default : g_message("not good");break;
 					}
