@@ -117,8 +117,11 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 
 void ChannelsDialog::show_scan_dialog()
 {
-	FullscreenBugWorkaround fullscreen_bug_workaround;
+	// Check that there is a device
+	get_application().device_manager.check_frontend();
 
+	FullscreenBugWorkaround fullscreen_bug_workaround;
+	
 	ScanDialog& scan_dialog = ScanDialog::create(builder);
 	scan_dialog.show();
 	Gtk::Main::run(scan_dialog);

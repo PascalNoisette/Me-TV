@@ -44,6 +44,8 @@ public:
 		
 	Dvb::Frontend* find_frontend_by_path(const Glib::ustring& path);
 	FrontendList& get_frontends() { return frontends; };
+
+	void check_frontend();
 };
 
 #endif

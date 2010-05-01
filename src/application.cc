@@ -512,12 +512,13 @@ void Application::run()
 		stream_manager.load();
 		stream_manager.start();
 
+		ChannelArray& channels = channel_manager.get_channels();	
+
 		if (!frontends.empty())	
 		{	
 			scheduled_recording_manager.load(connection);	
 		}	
-	
-		ChannelArray& channels = channel_manager.get_channels();	
+
 		if (!channels.empty())	
 		{	
 			select_channel_to_play();	
@@ -537,11 +538,6 @@ void Application::run()
 		{	
 			main_window->show_channels_dialog();	
 		}
-
-		if (frontends.empty())
-		{
-			throw Exception(_("There are no DVB devices available"));
-		}	
 	}
 	catch(...)
 	{

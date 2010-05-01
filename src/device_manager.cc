@@ -127,3 +127,11 @@ Dvb::Frontend* DeviceManager::find_frontend_by_path(const Glib::ustring& path)
 	
 	return result;
 }
+
+void DeviceManager::check_frontend()
+{
+	if (frontends.empty())
+	{
+		throw Exception(_("There are no DVB devices available"));
+	}
+}
