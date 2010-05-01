@@ -670,7 +670,7 @@ void Application::check_scheduled_recordings()
 					{
 						case 1  : g_message("me-tv closed by Scheduled Recording");action_quit->activate();break;
 						case 2  : g_message("shutdown");break;
-						default : g_message("not good");break;
+						default : g_message("nothing to do");break;
 					}
 					check = true;
 					break;

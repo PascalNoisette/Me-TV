@@ -403,7 +403,7 @@ guint ScheduledRecordingManager::is_recording(const Channel& channel)
 		else if (scheduled_recording.is_in(now-60) && scheduled_recording.channel_id == channel.channel_id)
 			return scheduled_recording.action_after;
 	}
-	return -2;
+	return 0;
 }
 
 gboolean ScheduledRecordingManager::is_recording(const EpgEvent& epg_event)
