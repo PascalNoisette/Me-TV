@@ -24,6 +24,7 @@
 #include "me-tv.h"
 #include "gtk_epg_widget.h"
 #include "engine.h"
+#include <dbus/dbus.h>
 
 typedef enum
 {
@@ -46,7 +47,6 @@ private:
 	ViewMode								view_mode;
 	ViewMode								prefullscreen_view_mode;
 	guint									last_update_time;
-	guint									last_poke_time;
 	guint									timeout_source;
 	Engine*									engine;
 	gint									output_fd;
@@ -55,7 +55,8 @@ private:
 	gboolean								maximise_forced;
 	guint									channel_change_timeout;
 	guint									temp_channel_number;
-
+    DBusConnection*							dbus_connection;
+    DBusError								dbus_error;
 	sigc::connection						connection_exception;
 	
 	void stop();
@@ -65,7 +66,8 @@ private:
 	void add_channel_number(guint channel_number);
 	void toggle_mute();
 	void set_mute_state(gboolean state);
-		
+	void inhibit_screensaver(gboolean activate);
+	
 	bool on_delete_event(GdkEventAny* event);
 	bool on_motion_notify_event(GdkEventMotion* event);
 	bool on_drawing_area_expose_event(GdkEventExpose* event);

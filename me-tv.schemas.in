@@ -178,20 +178,6 @@
 		</schema>
 
 		<schema>
-			<key>/schemas/apps/me-tv/screensaver_poke_command</key>
-			<applyto>/apps/me-tv/screensaver_poke_command</applyto>
-			<owner>me-tv</owner>
-			<type>string</type>
-			<default>gnome-screensaver-command --poke</default>
-			<locale name="C">
-				<short>The command to execute to inhibit the screensaver.</short>
-				<long>
-					The command to execute to inhibit the screensaver.  This is called every minute.
-				</long>
-			</locale>
-		</schema>
-
-		<schema>
 			<key>/schemas/apps/me-tv/display_status_icon</key>
 			<applyto>/apps/me-tv/display_status_icon</applyto>
 			<owner>me-tv</owner>

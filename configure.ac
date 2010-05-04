@@ -139,7 +139,13 @@ AC_SUBST(LIBXINE_REQUIRED)
 PKG_CHECK_MODULES(SQLITE, [sqlite3 >= $SQLITE_REQUIRED])
 
 PKG_CHECK_MODULES(ME_TV, [
-gtkmm-2.4 >= $GTKMM_REQUIRED giomm-2.4 >= $GIOMM_REQUIRED gthread-2.0 >= $GTHREAD_REQUIRED gconfmm-2.6 >= $GCONF_REQUIRED gmodule-export-2.0 unique-1.0 x11])
+	gtkmm-2.4 >= $GTKMM_REQUIRED
+	giomm-2.4 >= $GIOMM_REQUIRED
+	gthread-2.0 >= $GTHREAD_REQUIRED
+	gconfmm-2.6 >= $GCONF_REQUIRED
+	unique-1.0
+	x11
+	dbus-1 dbus-glib-1])
 AC_SUBST(ME_TV_CFLAGS)
 AC_SUBST(ME_TV_LIBS)
 

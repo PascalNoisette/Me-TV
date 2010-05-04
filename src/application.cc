@@ -563,6 +563,8 @@ void Application::update()
 {
 	preferred_language = get_string_configuration_value("preferred_language");	
 
+	toggle_action_record->set_active(stream_manager.is_recording(channel_manager.get_display_channel()));
+	
 	if (main_window != NULL)
 	{
 		main_window->update();

@@ -30,10 +30,14 @@
 #include <gtkmm.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
 
-#define POKE_INTERVAL 					30
 #define UPDATE_INTERVAL					60
 #define SECONDS_UNTIL_CHANNEL_CHANGE	3
+#define GS_SERVICE   					"org.gnome.ScreenSaver"
+#define GS_PATH      					"/org/gnome/ScreenSaver"
+#define GS_INTERFACE 					"org.gnome.ScreenSaver"
 
 Glib::ustring ui_info =
 	"<ui>"
@@ -87,12 +91,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 {
 	g_debug("MainWindow constructor");
 
-	g_static_rec_mutex_init(mutex.gobj());
-
 	view_mode				= VIEW_MODE_EPG;
 	prefullscreen_view_mode	= VIEW_MODE_EPG;
 	last_update_time		= 0;
-	last_poke_time			= 0;
 	timeout_source			= 0;
 	channel_change_timeout	= 0;
 	temp_channel_number		= 0;
@@ -159,6 +160,15 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
 	action_about->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about));
 	
+    dbus_error_init (&dbus_error);
+    dbus_connection = dbus_bus_get (DBUS_BUS_SESSION, &dbus_error);
+    if (!dbus_connection)
+    {
+		g_message(_("Failed to connect to the D-BUS daemon: %s"), dbus_error.message);
+		dbus_error_free (&dbus_error);
+		dbus_connection_setup_with_g_main (dbus_connection, NULL);
+    }
+
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
 
@@ -202,7 +212,6 @@ void MainWindow::show_channels_dialog()
 	}
 	update();
 	
-	Glib::RecMutex::Lock lock(mutex);
 	ChannelManager& channel_manager = get_application().channel_manager;
 	gboolean no_devices = get_application().device_manager.get_frontends().empty();
 
@@ -318,8 +327,6 @@ void MainWindow::on_timeout()
 {
 	try
 	{
-		static gboolean poke_failed = false;
-	
 		guint now = time(NULL);
 	
 		if (channel_change_timeout > 1)
@@ -364,32 +371,6 @@ void MainWindow::on_timeout()
 		if (engine != NULL && !engine->is_running())
 		{
 			stop_engine();
-		}
-	
-		// Disable screensaver
-		if (now - last_poke_time > POKE_INTERVAL && !poke_failed)
-		{
-			Glib::RefPtr<Gdk::Window> window = get_window();
-			gboolean is_minimised = window == NULL || window->get_state() & Gdk::WINDOW_STATE_ICONIFIED;
-			if (is_visible() && !is_minimised)
-			{
-				try
-				{
-					Glib::ustring screensaver_poke_command = get_application().get_string_configuration_value("screensaver_poke_command");
-					if (!screensaver_poke_command.empty())
-					{
-						g_debug("Poking screensaver");
-						Glib::spawn_command_line_async(screensaver_poke_command);
-					}
-				}
-				catch(...)
-				{
-					poke_failed = true;
-					throw Exception(_("Failed to poke screensaver"));
-				}
-			}
-
-			last_poke_time = now;
 		}
 	}
 	catch(...)
@@ -449,8 +430,6 @@ void MainWindow::show_epg_event_search_dialog()
 
 void MainWindow::on_menu_item_audio_stream_activate(guint index)
 {
-	Glib::RecMutex::Lock lock(mutex);
-
 	g_debug("MainWindow::on_menu_item_audio_stream_activate(%d)", index);
 	if (engine != NULL)
 	{
@@ -460,8 +439,6 @@ void MainWindow::on_menu_item_audio_stream_activate(guint index)
 
 void MainWindow::on_menu_item_subtitle_stream_activate(guint index)
 {
-	Glib::RecMutex::Lock lock(mutex);
-
 	g_debug("MainWindow::on_menu_item_subtitle_stream_activate(%d)", index);
 	if (engine != NULL)
 	{
@@ -633,8 +610,9 @@ void MainWindow::play(const Glib::ustring& mrl)
 	{
 		create_engine();
 		if (engine != NULL)
-		{
+		{			
 			engine->play(mrl);
+			inhibit_screensaver(true);
 		}
 	}
 	
@@ -719,8 +697,6 @@ void MainWindow::play(const Glib::ustring& mrl)
 
 void MainWindow::start_engine()
 {
-	Glib::RecMutex::Lock lock(mutex);
-
 	// Bail if no display stream
 	get_application().stream_manager.get_display_stream();
 
@@ -734,9 +710,9 @@ void MainWindow::stop_engine()
 {
 	g_debug("Stopping engine");
 
-	Glib::RecMutex::Lock lock(mutex);
 	if (engine != NULL)
 	{
+		inhibit_screensaver(false);
 		engine->stop();
 		delete engine;
 		engine = NULL;
@@ -870,5 +846,75 @@ void MainWindow::on_exception()
 	catch (...)
 	{
 		show_error_dialog("Unhandled exception");
+	}
+}
+
+void MainWindow::inhibit_screensaver(gboolean activate)
+{
+	DBusMessage*	message = NULL;
+	DBusMessageIter iter;
+	static int		cookie = 0;
+
+	if (dbus_connection == NULL)
+	{
+		return;
+	}
+		
+	if (activate)
+	{
+		DBusMessage*	reply = NULL;
+		
+		message = dbus_message_new_method_call(GS_SERVICE, GS_PATH, GS_INTERFACE, "Inhibit");
+		if (message == NULL)
+		{
+			g_warning ("Couldn't allocate the dbus message");
+			return;
+		}
+
+		const char* application = PACKAGE_NAME;
+		const char* reason = "Playing video";
+
+		dbus_message_iter_init_append (message, &iter);
+		dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &application);
+		dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &reason);
+
+		reply = dbus_connection_send_with_reply_and_block (dbus_connection, message, -1, &dbus_error);
+		if (dbus_error_is_set (&dbus_error))
+		{
+			g_warning ("%s raised:\n %s\n", dbus_error.name, dbus_error.message);
+			reply = NULL;
+		}
+
+		if (reply != NULL)
+		{
+			dbus_message_iter_init (reply, &iter);
+			dbus_message_iter_get_basic (&iter, &cookie);
+
+			dbus_message_unref (message);
+			dbus_message_unref (reply);
+
+			g_debug("Got Cookie: %d", cookie);
+			g_debug("Screensaver inhibited");
+		}
+	}
+	else
+	{
+		if (cookie != 0)
+		{
+			message = dbus_message_new_method_call(GS_SERVICE, GS_PATH, GS_INTERFACE, "UnInhibit");
+			if (message == NULL)
+			{
+				g_warning ("Couldn't allocate the dbus message");
+				return;
+			}
+			
+			g_debug("Using Cookie: %d", cookie);
+			dbus_message_iter_init_append (message, &iter);
+			dbus_message_iter_append_basic (&iter, DBUS_TYPE_INT32, &cookie);
+			dbus_connection_send (dbus_connection, message, NULL);
+			cookie = 0;
+
+			g_debug("Screensaver uninhibited");
+		}
 	}
 }
