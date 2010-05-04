@@ -107,6 +107,9 @@ void FrontendThread::run()
 		{
 			try
 			{
+				usleep(10000);
+				Lock lock(mutex, __PRETTY_FUNCTION__);
+
 				// Insert PAT/PMT every second second
 				time_t now = time(NULL);
 				if (now - last_insert_time > 2)
@@ -165,6 +168,7 @@ void FrontendThread::run()
 	{
 		(*iterator)->output_channel.reset();
 		streams.pop_back();
+		delete *iterator;
 		iterator = streams.begin();
 	}
 	g_debug("Streams removed");
@@ -461,6 +465,7 @@ gboolean FrontendThread::is_recording(const Channel& channel)
 			return true;
 		}
 	}
+
 	return false;
 }
 
