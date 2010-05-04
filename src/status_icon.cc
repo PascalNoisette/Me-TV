@@ -78,21 +78,21 @@ void StatusIcon::update()
 
 	status_icon->set_visible(application.get_boolean_configuration_value("display_status_icon"));
 
-	std::list<FrontendThread>& frontend_threads = application.stream_manager.get_frontend_threads();
-	for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+	FrontendThreadList& frontend_threads = application.stream_manager.get_frontend_threads();
+	for (FrontendThreadList::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
-		FrontendThread& frontend_thread = *i;
+		FrontendThread& frontend_thread = **i;
 
 		Glib::ustring device = frontend_thread.frontend.get_path();
-		std::list<ChannelStream>& streams = frontend_thread.get_streams();
-		for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); j++)
+		ChannelStreamList& streams = frontend_thread.get_streams();
+		for (ChannelStreamList::iterator j = streams.begin(); j != streams.end(); j++)
 		{
 			if (title.size() > 0)
 			{
 				title += "\n";
 			}
 	
-			ChannelStream& stream = *j;
+			ChannelStream& stream = **j;
 			switch (stream.type)
 			{
 			case CHANNEL_STREAM_TYPE_DISPLAY: title += "Watching: "; break;

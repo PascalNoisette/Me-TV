@@ -30,11 +30,10 @@
 class FrontendThread : public Thread
 {
 private:
-	Glib::StaticRecMutex		mutex;
-	std::list<ChannelStream>	streams;
-	EpgThread*					epg_thread;
-	gboolean					is_tuned;
-	int				stop_crash;
+	Glib::RecMutex		mutex;
+	ChannelStreamList	streams;
+	EpgThread*			epg_thread;
+	gboolean			is_tuned;
 	
 	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
 	void run();
@@ -57,7 +56,9 @@ public:
 	void stop();
 	void start_display(const Channel& channel);
 	void stop_display();
-	std::list<ChannelStream>& get_streams() { return streams; }
+	ChannelStreamList& get_streams() { return streams; }
 };
+
+typedef std::list<FrontendThread*> FrontendThreadList;
 
 #endif

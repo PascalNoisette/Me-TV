@@ -25,7 +25,7 @@
 class Lock : public Glib::RecMutex::Lock
 {
 public:
-	Lock(Glib::StaticRecMutex& mutex, const Glib::ustring& name) :
+	Lock(Glib::RecMutex& mutex, const Glib::ustring& name) :
 		Glib::RecMutex::Lock(mutex) {}
 	~Lock() {}
 };
@@ -33,11 +33,9 @@ public:
 FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Frontend"), frontend(f)
 {
 	g_debug("Creating FrontendThread (%s)", frontend.get_path().c_str());
-	g_static_rec_mutex_init(mutex.gobj());
 	
 	epg_thread = NULL;
 	is_tuned = false;
-	stop_crash = 0;
 
 	g_debug("FrontendThread created (%s)", frontend.get_path().c_str());
 }
@@ -57,7 +55,18 @@ void FrontendThread::start()
 void FrontendThread::stop()
 {
 	g_debug("Stopping frontend thread (%s)", frontend.get_path().c_str());
+
 	stop_epg_thread();
+
+	g_debug("Deleting channel streams");
+	ChannelStreamList::iterator iterator = streams.begin();
+	while (iterator != streams.end())
+	{
+		ChannelStream* channel_stream = *iterator;
+		delete channel_stream;
+		iterator = streams.erase(iterator);
+	}
+
 	join(true);
 	g_debug("Frontend thread stopped (%s)", frontend.get_path().c_str());
 }
@@ -104,9 +113,9 @@ void FrontendThread::run()
 				{
 					g_debug("Writing PAT/PMT header");
 
-					for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+					for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
 					{
-						ChannelStream& channel_stream = *i;
+						ChannelStream& channel_stream = **i;
 
 						channel_stream.stream.build_pat(pat);
 						channel_stream.stream.build_pmt(pmt);
@@ -128,9 +137,9 @@ void FrontendThread::run()
 					{
 						guint pid = ((buffer[offset+1] & 0x1f) << 8) + buffer[offset+2];
 
-						for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+						for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
 						{
-							ChannelStream& channel_stream = *i;
+							ChannelStream& channel_stream = **i;
 							if (channel_stream.stream.contains_pid(pid))
 							{
 								channel_stream.write(buffer+offset, TS_PACKET_SIZE);
@@ -144,8 +153,6 @@ void FrontendThread::run()
 				// The show must go on!
 			}
 		}
-
-		stop_crash = 0;
 	}
 		
 	g_debug("FrontendThread loop exited (%s)", frontend.get_path().c_str());
@@ -153,10 +160,10 @@ void FrontendThread::run()
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 
 	g_debug("Removing streams ...");
-	std::list<ChannelStream>::iterator iterator = streams.begin();
+	ChannelStreamList::iterator iterator = streams.begin();
 	while (iterator != streams.end())
 	{
-		(*iterator).output_channel.reset();
+		(*iterator)->output_channel.reset();
 		streams.pop_back();
 		iterator = streams.begin();
 	}
@@ -241,9 +248,10 @@ void FrontendThread::start_epg_thread()
 {
 	if (!disable_epg_thread)
 	{
+		stop_epg_thread();
+
 		Lock lock(mutex, __PRETTY_FUNCTION__);
 
-		stop_epg_thread();
 		epg_thread = new EpgThread(frontend);
 		epg_thread->start();
 		g_debug("EPG thread started");
@@ -296,26 +304,23 @@ void FrontendThread::start_display(const Channel& channel)
 	ChannelStream* channel_stream = new ChannelStream(CHANNEL_STREAM_TYPE_DISPLAY, channel, fifo_path);
 	close(fd);
 	setup_dvb(*channel_stream);
-	streams.push_back(*channel_stream);
+	streams.push_back(channel_stream);
 }
 
 void FrontendThread::stop_display()
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 
-	std::list<ChannelStream>::iterator iterator = streams.begin();
+	ChannelStreamList::iterator iterator = streams.begin();
 
 	while (iterator != streams.end())
 	{
-		ChannelStream& channel_stream = *iterator;
-		if (channel_stream.type == CHANNEL_STREAM_TYPE_DISPLAY)
+		ChannelStream* channel_stream = *iterator;
+		if (channel_stream->type == CHANNEL_STREAM_TYPE_DISPLAY)
 		{
-			g_debug("Resetting output channel");
-			channel_stream.output_channel.reset();
-			stop_crash = 1;
-			while (stop_crash == 1) { usleep(1000); }
+			delete channel_stream;
 			iterator = streams.erase(iterator);
-			g_debug("Frontend stopped display");
+			g_debug("Stopped display stream");
 		}
 		else
 		{
@@ -324,9 +329,9 @@ void FrontendThread::stop_display()
 	}
 }
 
-bool is_recording_stream(ChannelStream& channel_stream)
+bool is_recording_stream(ChannelStream* channel_stream)
 {
-	return channel_stream.type == CHANNEL_STREAM_TYPE_RECORDING || channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING;
+	return channel_stream->type == CHANNEL_STREAM_TYPE_RECORDING || channel_stream->type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING;
 }
 
 void FrontendThread::start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled)
@@ -337,14 +342,14 @@ void FrontendThread::start_recording(const Channel& channel, const Glib::ustring
 		CHANNEL_STREAM_TYPE_RECORDING;
 	ChannelStreamType current_type = CHANNEL_STREAM_TYPE_NONE;
 
-	std::list<ChannelStream>::iterator iterator = streams.begin();
+	ChannelStreamList::iterator iterator = streams.begin();
 	
 	while (iterator != streams.end())
 	{
-		ChannelStream& channel_stream = *iterator;
-		if (channel_stream.channel == channel && is_recording_stream(channel_stream))
+		ChannelStream* channel_stream = *iterator;
+		if (channel_stream->channel == channel && is_recording_stream(channel_stream))
 		{
-			current_type = channel_stream.type;
+			current_type = channel_stream->type;
 			break;
 		}
 		iterator++;
@@ -383,10 +388,10 @@ void FrontendThread::start_recording(const Channel& channel, const Glib::ustring
 				}
 			}
 
-			ChannelStream channel_stream(
-			scheduled ? CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING : CHANNEL_STREAM_TYPE_RECORDING,
+			ChannelStream* channel_stream = new ChannelStream(
+				scheduled ? CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING : CHANNEL_STREAM_TYPE_RECORDING,
 				channel, filename);
-			setup_dvb(channel_stream);
+			setup_dvb(*channel_stream);
 			streams.push_back(channel_stream);
 		}
 	}
@@ -399,14 +404,14 @@ void FrontendThread::stop_recording(const Channel& channel)
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 
-	std::list<ChannelStream>::iterator iterator = streams.begin();
+	ChannelStreamList::iterator iterator = streams.begin();
 
 	while (iterator != streams.end())
 	{
-		ChannelStream& channel_stream = *iterator;
-		if (channel_stream.channel == channel && is_recording_stream(channel_stream))
+		ChannelStream* channel_stream = *iterator;
+		if (channel_stream->channel == channel && is_recording_stream(channel_stream))
 		{
-			channel_stream.output_channel.reset();
+			delete channel_stream;
 			iterator = streams.erase(iterator);
 		}
 		else
@@ -433,7 +438,7 @@ gboolean FrontendThread::is_recording()
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 
-	for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+	for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
 	{
 		if (is_recording_stream(*i))
 		{
@@ -448,10 +453,10 @@ gboolean FrontendThread::is_recording(const Channel& channel)
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 
-	for (std::list<ChannelStream>::iterator i = streams.begin(); i != streams.end(); i++)
+	for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
 	{
-		ChannelStream& channel_stream = *i;
-		if (channel_stream.channel == channel && is_recording_stream(channel_stream))
+		ChannelStream* channel_stream = *i;
+		if (channel_stream->channel == channel && is_recording_stream(channel_stream))
 		{
 			return true;
 		}

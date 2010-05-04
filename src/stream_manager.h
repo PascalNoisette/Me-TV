@@ -27,13 +27,15 @@
 class StreamManager
 {
 private:
-	std::list<FrontendThread> frontend_threads;
+	FrontendThreadList frontend_threads;
 		
 public:
+	~StreamManager();
+	
 	void load();
 		
 	guint get_last_epg_update_time();
-	std::list<FrontendThread>& get_frontend_threads() { return frontend_threads; };
+	FrontendThreadList& get_frontend_threads() { return frontend_threads; };
 
 	void start_display(const Channel& channel);
 	void stop_display();

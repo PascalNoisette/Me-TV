@@ -47,6 +47,7 @@ ChannelStream::ChannelStream(ChannelStreamType t, const Channel& c, const Glib::
 ChannelStream::~ChannelStream()
 {
 	g_debug("Destroying channel stream '%s' -> '%s'", channel.name.c_str(), filename.c_str());
+	output_channel.reset();
 }
 
 void ChannelStream::clear_demuxers()

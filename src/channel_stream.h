@@ -57,4 +57,6 @@ public:
 	void clear_demuxers();
 };
 
+typedef std::list<ChannelStream*> ChannelStreamList;
+
 #endif

@@ -652,14 +652,14 @@ void Application::check_scheduled_recordings()
 	{
 		check = false;
 
-		std::list<FrontendThread>& frontend_threads = stream_manager.get_frontend_threads();
-		for (std::list<FrontendThread>::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+		FrontendThreadList& frontend_threads = stream_manager.get_frontend_threads();
+		for (FrontendThreadList::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 		{
-			FrontendThread& frontend_thread = *i;
-			std::list<ChannelStream>& streams = frontend_thread.get_streams();
-			for (std::list<ChannelStream>::iterator j = streams.begin(); j != streams.end(); j++)
+			FrontendThread& frontend_thread = **i;
+			ChannelStreamList& streams = frontend_thread.get_streams();
+			for (ChannelStreamList::iterator j = streams.begin(); j != streams.end(); j++)
 			{
-				ChannelStream& channel_stream = *j;
+				ChannelStream& channel_stream = **j;
 				guint srid = scheduled_recording_manager.is_recording(channel_stream.channel);
 				if (
 				    channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
