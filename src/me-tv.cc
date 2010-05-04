@@ -24,7 +24,6 @@
 #include <glib/gprintf.h>
 #include "application.h"
 
-Glib::ustring	default_device;
 bool			verbose_logging		= false;
 bool			safe_mode			= false;
 bool			minimised_mode		= false;

@@ -1,3 +1,12 @@
+2010-05-08  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.2.2
+	* Switched to a DBus style screensaver inhibitor
+	* Removed --device option from command line
+	* Added mutex to FrontendThread loop
+	* Switched FrontendThreadList and ChannelStreamList to be pointer based
+	* Updating record action state on application update
+
 2010-05-01  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.2.1
