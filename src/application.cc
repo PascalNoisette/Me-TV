@@ -111,11 +111,12 @@ Application::Application()
 	action_group->add(action_quit);
 	action_group->add(action_scheduled_recordings);
 
-	action_group->add(Gtk::Action::create("action_file", Gtk::Stock::FILE, _("_File")));
+	action_group->add(Gtk::Action::create("action_file", _("_File")));
 	action_group->add(Gtk::Action::create("action_view", _("_View")));
 	action_group->add(Gtk::Action::create("action_video", _("_Video")));
 	action_group->add(Gtk::Action::create("action_audio", _("_Audio")));
-	action_group->add(Gtk::Action::create("action_help", Gtk::Stock::HELP));
+	action_group->add(Gtk::Action::create("action_help", _("_Help")));
+	
 	action_group->add(Gtk::Action::create("action_change_view_mode", _("_Change View Mode")));
 	action_group->add(Gtk::Action::create("action_subtitle_streams", _("Subtitles")));
 	action_group->add(Gtk::Action::create("action_audio_streams", _("_Streams")));
