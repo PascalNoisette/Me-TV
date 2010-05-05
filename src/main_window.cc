@@ -556,16 +556,16 @@ bool MainWindow::on_key_press_event(GdkEventKey* event_key)
 {
 	switch(event_key->keyval)
 	{		
-		case GDK_0: add_channel_number(0); break;
-		case GDK_1: add_channel_number(1); break;
-		case GDK_2: add_channel_number(2); break;
-		case GDK_3: add_channel_number(3); break;
-		case GDK_4: add_channel_number(4); break;
-		case GDK_5: add_channel_number(5); break;
-		case GDK_6: add_channel_number(6); break;
-		case GDK_7: add_channel_number(7); break;
-		case GDK_8: add_channel_number(8); break;
-		case GDK_9: add_channel_number(9); break;
+		case GDK_KP_0: case GDK_0: add_channel_number(0); break;
+		case GDK_KP_1: case GDK_1: add_channel_number(1); break;
+		case GDK_KP_2: case GDK_2: add_channel_number(2); break;
+		case GDK_KP_3: case GDK_3: add_channel_number(3); break;
+		case GDK_KP_4: case GDK_4: add_channel_number(4); break;
+		case GDK_KP_5: case GDK_5: add_channel_number(5); break;
+		case GDK_KP_6: case GDK_6: add_channel_number(6); break;
+		case GDK_KP_7: case GDK_7: add_channel_number(7); break;
+		case GDK_KP_8: case GDK_8: add_channel_number(8); break;
+		case GDK_KP_9: case GDK_9: add_channel_number(9); break;
 			
  		default:
 			break;
