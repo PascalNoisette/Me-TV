@@ -34,6 +34,7 @@ private:
 	ChannelStreamList	streams;
 	EpgThread*			epg_thread;
 	gboolean			is_tuned;
+	Dvb::Transponder	transponder;
 	
 	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
 	void run();
@@ -46,7 +47,8 @@ public:
 	~FrontendThread();
 
 	Dvb::Frontend& frontend;
-	
+
+	gboolean is_display();
 	gboolean is_recording();
 	gboolean is_recording(const Channel& channel);
 	void start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled);

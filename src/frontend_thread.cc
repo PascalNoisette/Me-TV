@@ -184,12 +184,14 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 	
 	is_tuned = false;
+	transponder = channel_stream.channel.transponder;
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
+
 	Buffer buffer;
 	const Channel& channel = channel_stream.channel;
 	
 	channel_stream.clear_demuxers();
-	if (channel.transponder.frontend_parameters.frequency != frontend.get_frontend_parameters().frequency)
+	if (channel.transponder != transponder)
 	{
 		stop_epg_thread();
 		frontend.tune_to(channel.transponder);
@@ -380,14 +382,23 @@ void FrontendThread::start_recording(const Channel& channel, const Glib::ustring
 		{
 			g_debug("Channel '%s' is currently not being recorded", channel.name.c_str());
 
-			if (channel.transponder != get_application().channel_manager.get_display_channel().transponder)
+			if (channel.transponder != transponder)
 			{
 				g_debug("Need to change transponders to record this channel");
 
-				if (scheduled)
+				gboolean was_display = is_display();
+
+				if (was_display)
 				{
-					// Need to kill all current recordings
-					streams.remove_if(is_recording_stream);
+					g_debug("This frontend is being used for the display so we need to switch display channels also");
+				}
+				
+				// Need to kill all current streams
+				stop();
+
+				if (was_display)
+				{
+					start_display(channel);
 				}
 			}
 
@@ -444,6 +455,21 @@ gboolean FrontendThread::is_recording()
 	for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
 	{
 		if (is_recording_stream(*i))
+		{
+			return true;
+		}
+	} 
+
+	return false;
+}
+
+gboolean FrontendThread::is_display()
+{
+	Lock lock(mutex, __PRETTY_FUNCTION__);
+
+	for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
+	{
+		if ((*i)->type == CHANNEL_STREAM_TYPE_DISPLAY)
 		{
 			return true;
 		}
