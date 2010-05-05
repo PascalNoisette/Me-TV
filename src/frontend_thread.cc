@@ -285,8 +285,7 @@ void FrontendThread::start_display(const Channel& channel)
 	
 	g_debug("Creating new stream output");
 	
-	Glib::ustring filename = Glib::ustring::compose("me-tv-%1.fifo", frontend.get_adapter().get_index());
-	Glib::ustring fifo_path = Glib::build_filename(get_application().get_application_dir(), filename);
+	Glib::ustring fifo_path = Glib::build_filename(get_application().get_application_dir(), "me-tv.fifo");
 
 	if (Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
 	{
