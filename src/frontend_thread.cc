@@ -394,7 +394,13 @@ void FrontendThread::start_recording(const Channel& channel, const Glib::ustring
 				}
 				
 				// Need to kill all current streams
-				stop();
+				ChannelStreamList::iterator iterator = streams.begin();
+				while (iterator != streams.end())
+				{
+					ChannelStream* channel_stream = *iterator;
+					delete channel_stream;
+					iterator = streams.erase(iterator);
+				}
 
 				if (was_display)
 				{
