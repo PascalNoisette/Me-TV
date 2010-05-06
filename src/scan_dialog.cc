@@ -242,6 +242,13 @@ void ScanDialog::stop_scan()
 		delete scan_thread;
 		scan_thread = NULL;
 	}
+
+	Application& application = get_application();
+	if (application.channel_manager.has_display_channel())
+	{
+		Channel& channel = application.channel_manager.get_display_channel();
+		application.set_display_channel(channel);
+	}
 }
 
 void ScanDialog::on_file_chooser_button_scan_file_set()
@@ -646,13 +653,6 @@ void ScanDialog::on_signal_complete()
 		progress_bar_scan->set_fraction(1);
 		progress_bar_scan->set_text(_("Scan complete"));
 	}
-
-	Application& application = get_application();
-	if (application.channel_manager.has_display_channel())
-	{
-		Channel& channel = application.channel_manager.get_display_channel();
-		application.set_display_channel(channel);
-	}
 }
 
 void ScanDialog::on_combo_box_auto_scan_range_changed()
@@ -698,9 +698,9 @@ void ScanDialog::add_scan_range(guint start, guint end, guint step, struct dvb_f
 
 void ScanDialog::add_scan_list(const int *si, int length, struct dvb_frontend_parameters frontend_parameters)
 {
-	for (unsigned frequency = 0; frequency < (sizeof(si) / sizeof(si[0])); ++frequency)
+	for (int index = 0; index < length; ++index)
 	{
-		frontend_parameters.frequency = frequency;
+		frontend_parameters.frequency = si[index];
 		add_transponder(frontend_parameters);
 	}
 }
