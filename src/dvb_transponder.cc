@@ -59,10 +59,10 @@ bool Transponder::operator==(const Transponder& transponder) const
 		(transponder.frontend_type == FE_OFDM && transponder.frontend_parameters.u.ofdm.bandwidth == frontend_parameters.u.ofdm.bandwidth) ||
 		(transponder.frontend_type == FE_ATSC && transponder.frontend_parameters.u.vsb.modulation == frontend_parameters.u.vsb.modulation) ||
 		(transponder.frontend_type == FE_QAM && transponder.frontend_parameters.u.qam.modulation == frontend_parameters.u.qam.modulation)
-    );
+	);
 }
 
 bool Transponder::operator!=(const Transponder& transponder) const
 {
-	return transponder.frontend_parameters.frequency != frontend_parameters.frequency;
+	return !(transponder.frontend_parameters.frequency == frontend_parameters.frequency);
 }

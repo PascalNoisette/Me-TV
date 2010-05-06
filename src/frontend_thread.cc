@@ -183,18 +183,18 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 	
-	is_tuned = false;
-	transponder = channel_stream.channel.transponder;
 	Glib::ustring demux_path = frontend.get_adapter().get_demux_path();
 
 	Buffer buffer;
 	const Channel& channel = channel_stream.channel;
 	
 	channel_stream.clear_demuxers();
-	if (channel.transponder != transponder)
+	if (!is_tuned || channel.transponder != transponder)
 	{
 		stop_epg_thread();
+		is_tuned = false;
 		frontend.tune_to(channel.transponder);
+		transponder = channel_stream.channel.transponder;
 		start_epg_thread();
 	}
 	
