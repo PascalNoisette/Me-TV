@@ -48,6 +48,7 @@ FrontendThread::~FrontendThread()
 
 void FrontendThread::start()
 {
+	is_tuned = false;
 	g_debug("Starting frontend thread (%s)", frontend.get_path().c_str());
 	Thread::start();
 }

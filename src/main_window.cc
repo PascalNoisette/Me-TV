@@ -160,14 +160,14 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
 	action_about->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about));
 	
-    dbus_error_init (&dbus_error);
-    dbus_connection = dbus_bus_get (DBUS_BUS_SESSION, &dbus_error);
-    if (!dbus_connection)
-    {
+	dbus_error_init (&dbus_error);
+	dbus_connection = dbus_bus_get (DBUS_BUS_SESSION, &dbus_error);
+	if (!dbus_connection)
+	{
 		g_message(_("Failed to connect to the D-BUS daemon: %s"), dbus_error.message);
 		dbus_error_free (&dbus_error);
 		dbus_connection_setup_with_g_main (dbus_connection, NULL);
-    }
+	}
 
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
@@ -215,10 +215,10 @@ void MainWindow::show_channels_dialog()
 	ChannelManager& channel_manager = get_application().channel_manager;
 	gboolean no_devices = get_application().device_manager.get_frontends().empty();
 
-	// If the engine's not started, there are channels and there are devices
-	if (engine == NULL && channel_manager.get_channels().empty() && !no_devices)
+	if (channel_manager.has_display_channel())
 	{
-		start_engine();
+		Channel& channel = channel_manager.get_display_channel();
+		get_application().set_display_channel(channel);
 	}
 }
 
@@ -288,7 +288,6 @@ bool MainWindow::on_motion_notify_event(GdkEventMotion* event_motion)
 	}
 	return true;
 }
-
 
 void MainWindow::unfullscreen(gboolean restore_mode)
 {

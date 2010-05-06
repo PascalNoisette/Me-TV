@@ -241,13 +241,8 @@ void ScanDialog::stop_scan()
 		scan_thread->join(true);
 		delete scan_thread;
 		scan_thread = NULL;
-	}
 
-	Application& application = get_application();
-	if (application.channel_manager.has_display_channel())
-	{
-		Channel& channel = application.channel_manager.get_display_channel();
-		application.set_display_channel(channel);
+		get_application().stream_manager.start();
 	}
 }
 
@@ -552,6 +547,7 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
 		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
 		scanner.signal_complete.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_complete));
+		get_application().stream_manager.stop();
 		scan_thread->start();
 	}
 	else if (radio_button_import->get_active())
@@ -640,7 +636,7 @@ void ScanDialog::on_signal_complete()
 
 		Gtk::Button* button_scan_stop = NULL;
 		builder->get_widget("button_scan_stop", button_scan_stop);
-		button_scan_stop->show();
+		button_scan_stop->hide();
 
 		Gtk::Button* button_scan_wizard_cancel = NULL;
 		builder->get_widget("button_scan_wizard_cancel", button_scan_wizard_cancel);
