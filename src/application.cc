@@ -505,16 +505,13 @@ void Application::run()
 	try
 	{	
 		channel_manager.load(connection);
-		
-		const FrontendList& frontends = device_manager.get_frontends();	
-	
-		timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
-
+			
 		stream_manager.load();
 		stream_manager.start();
 
 		ChannelArray& channels = channel_manager.get_channels();	
 
+		const FrontendList& frontends = device_manager.get_frontends();	
 		if (!frontends.empty())	
 		{
 			scheduled_recording_manager.load(connection);	
@@ -539,7 +536,7 @@ void Application::run()
 		device_manager.check_frontend();
 		
 		if (channels.empty())
-		{	
+		{
 			main_window->show_channels_dialog();	
 		}
 	}
@@ -547,6 +544,8 @@ void Application::run()
 	{
 		main_window->on_exception();
 	}
+
+	timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
 	Gtk::Main::run();
 }
 

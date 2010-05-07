@@ -474,7 +474,7 @@ void MainWindow::on_show()
 	gint width = application.get_int_configuration_value("width");
 	gint height = application.get_int_configuration_value("height");
 		
-	if (width >= 0 && height >= 0)
+	if (width > 0 && height > 0)
 	{
 		g_debug("Setting geometry (%d, %d, %d, %d)", x, y, width, height);
 		move(x, y);
@@ -484,7 +484,7 @@ void MainWindow::on_show()
 	Gtk::Window::on_show();
 	Gdk::Window::process_all_updates();
 
-	if (!get_application().device_manager.get_frontends().empty())
+	if (get_application().stream_manager.has_display_stream())
 	{
 		start_engine();
 	}
@@ -493,6 +493,7 @@ void MainWindow::on_show()
 	{
 		set_keep_above();
 	}
+	
 	Gtk::EventBox* event_box_video = NULL;
 	builder->get_widget("event_box_video", event_box_video);
 	event_box_video->resize_children();
@@ -696,9 +697,6 @@ void MainWindow::play(const Glib::ustring& mrl)
 
 void MainWindow::start_engine()
 {
-	// Bail if no display stream
-	get_application().stream_manager.get_display_stream();
-
 	if (property_visible())
 	{
 		play(get_application().stream_manager.get_display_stream().filename);

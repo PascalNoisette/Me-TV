@@ -39,6 +39,7 @@ public:
 
 	void start_display(const Channel& channel);
 	void stop_display();
+	gboolean has_display_stream();
 	ChannelStream& get_display_stream();
 	FrontendThread& get_display_frontend_thread();
 

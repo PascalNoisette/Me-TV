@@ -312,6 +312,20 @@ ChannelStream& StreamManager::get_display_stream()
 	throw Exception(_("Failed to get display stream"));
 }
 
+gboolean StreamManager::has_display_stream()
+{
+	for (FrontendThreadList::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
+	{
+		FrontendThread& frontend_thread = **i;
+		if (frontend_thread.is_display())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 FrontendThread& StreamManager::get_display_frontend_thread()
 {
 	FrontendThread* free_frontend_thread = NULL;

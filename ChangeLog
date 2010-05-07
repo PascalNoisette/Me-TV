@@ -1,5 +1,10 @@
 2010-05-08  Michael Lamothe <michael.lamothe@gmail.com>
 
+	* 1.2.3
+	* Fixed startup not to crash
+
+2010-05-08  Michael Lamothe <michael.lamothe@gmail.com>
+
 	* 1.2.2
 	* Switched to a DBus style screensaver inhibitor
 	* Removed --device option from command line
