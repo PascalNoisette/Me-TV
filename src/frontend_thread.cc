@@ -108,35 +108,33 @@ void FrontendThread::run()
 		{
 			try
 			{
-				usleep(10000);
 				Lock lock(mutex, __PRETTY_FUNCTION__);
-
-				// Insert PAT/PMT every second second
-				time_t now = time(NULL);
-				if (now - last_insert_time > 2)
-				{
-					g_debug("Writing PAT/PMT header");
-
-					for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
-					{
-						ChannelStream& channel_stream = **i;
-
-						channel_stream.stream.build_pat(pat);
-						channel_stream.stream.build_pmt(pmt);
-
-						channel_stream.write(pat, TS_PACKET_SIZE);
-						channel_stream.write(pmt, TS_PACKET_SIZE);
-					}
-					last_insert_time = now;
-				}
 
 				if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
 				{
-					g_debug("Input channel read failed (%s)", frontend.get_path().c_str());
-					usleep(1000000);
+					usleep(10000);
 				}
 				else
 				{
+					// Insert PAT/PMT every second second
+					time_t now = time(NULL);
+					if (now - last_insert_time > 2)
+					{
+						g_debug("Writing PAT/PMT header");
+
+						for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
+						{
+							ChannelStream& channel_stream = **i;
+
+							channel_stream.stream.build_pat(pat);
+							channel_stream.stream.build_pmt(pmt);
+
+							channel_stream.write(pat, TS_PACKET_SIZE);
+							channel_stream.write(pmt, TS_PACKET_SIZE);
+						}
+						last_insert_time = now;
+					}
+
 					for (guint offset = 0; offset < bytes_read; offset += TS_PACKET_SIZE)
 					{
 						guint pid = ((buffer[offset+1] & 0x1f) << 8) + buffer[offset+2];
