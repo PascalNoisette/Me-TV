@@ -731,7 +731,7 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, const Glib::ustrin
 			add_scan_range(177500000, 226500000, 7000000, frontend_parameters);
 			add_scan_range(529500000, 816500000, 7000000, frontend_parameters);
 		}
-		else if (range == "DE")
+		else if (range == "DE" || range == "IT")
 		{
 			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_7_MHZ;
 			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K;
@@ -739,24 +739,13 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, const Glib::ustrin
 			add_scan_range(177500000, 226500000, 7000000, frontend_parameters);
 
 			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_8_MHZ;
-			add_scan_range(474000000, 826000000, 8000000, frontend_parameters);
+			add_scan_range(474000000, 858000000, 8000000, frontend_parameters);
 		}
 		else if (range == "FR")
 		{
 			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_8_MHZ;
 			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K;
 			add_scan_range(474000000, 850000000, 8000000, frontend_parameters);
-		}
-		else if (range == "IT")
-		{
-			static const int it[] = { 177500000, 186000000, 194500000, 203500000,
-				212500000, 219500000, 226500000 };
-
-			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_7_MHZ;
-			add_scan_list(it, sizeof(it) / sizeof(it[0]), frontend_parameters);
-
-			frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ;
-			add_scan_list(it, sizeof(it) / sizeof(it[0]), frontend_parameters);
 		}
 		else if (range == "ES")
 		{
