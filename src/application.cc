@@ -175,7 +175,7 @@ void Application::on_record()
 	{
 		try
 		{
-			start_recording(channel_manager.get_display_channel());
+			start_recording(stream_manager.get_display_channel());
 		}
 		catch (const Glib::Exception& exception)
 		{
@@ -190,7 +190,7 @@ void Application::on_record()
 	}
 	else
 	{
-		stream_manager.stop_recording(channel_manager.get_display_channel());			
+		stream_manager.stop_recording(stream_manager.get_display_channel());			
 		g_debug("Recording stopped");
 	}
 
@@ -199,20 +199,21 @@ void Application::on_record()
 
 void Application::on_previous_channel()
 {
-	Channel* channel = channel_manager.get_previous_channel();
+/*	Channel* channel = channel_manager.get_previous_channel();
 	if (channel != NULL)
 	{
 		set_display_channel(*channel);
 	}
+*/
 }
 
 void Application::on_next_channel()
 {
-	Channel* channel = channel_manager.get_next_channel();
+/*	Channel* channel = channel_manager.get_next_channel();
 	if (channel != NULL)
 	{
 		set_display_channel(*channel);
-	}
+	}*/
 }
 
 void Application::on_quit()
@@ -483,7 +484,7 @@ void Application::select_channel_to_play()
 		else
 		{
 			g_debug("Last channel '%d' not found", last_channel_id);
-			channel_manager.select_display_channel();
+			set_display_channel(channels[0]);
 		}
 	}
 }
@@ -563,9 +564,9 @@ void Application::update()
 {
 	preferred_language = get_string_configuration_value("preferred_language");	
 
-	if (channel_manager.has_display_channel())
+	if (stream_manager.has_display_stream())
 	{
-		toggle_action_record->set_active(stream_manager.is_recording(channel_manager.get_display_channel()));
+		toggle_action_record->set_active(stream_manager.is_recording(stream_manager.get_display_channel()));
 	}
 	
 	if (main_window != NULL)
@@ -592,33 +593,17 @@ void Application::set_display_channel_number(guint channel_index)
 void Application::set_display_channel(const Channel& channel)
 {
 	g_message(_("Changing channel to '%s'"), channel.name.c_str());
- 
-	// Save old channel in the case that we can't tune to the new channel
-	int display_channel_index = -1;
-	if (channel_manager.has_display_channel())
-	{
-		display_channel_index = channel_manager.get_display_channel_index();
-	}
 
 	main_window->stop_engine();
 	try
 	{
-		channel_manager.set_display_channel(channel);
 		stream_manager.start_display(channel);
 	}
 	catch (...)
 	{
 		main_window->on_exception();
-
-		// Revert to the previous channel if there was one
-		if (display_channel_index != -1)
-		{
-			Channel& old_channel = channel_manager.get_channel_by_index(display_channel_index);
-			channel_manager.set_display_channel(old_channel);
-			stream_manager.start_display(old_channel);
-		}
 	}
-	toggle_action_record->set_active(stream_manager.is_recording(channel_manager.get_display_channel()));
+	toggle_action_record->set_active(stream_manager.is_recording(stream_manager.get_display_channel()));
 
 	main_window->start_engine();
 	

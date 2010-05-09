@@ -29,9 +29,6 @@ class ChannelManager
 private:
 	Glib::StaticRecMutex mutex;
 	ChannelArray channels;
-	gint display_channel_index;
-
-	void check_display_channel();
 public:
 	ChannelManager();
 		
@@ -43,19 +40,12 @@ public:
 		
 	const ChannelArray& get_channels() const;
 	ChannelArray& get_channels();
-	Channel* get_next_channel();
-	Channel* get_previous_channel();
-	void select_display_channel();
-	void set_display_channel(const Channel& channel);
-	void set_display_channel_by_id(guint channel_id);
-	void set_display_channel_index(guint channel_index);
-	gboolean has_display_channel();
-	Channel& get_display_channel();
-	guint get_display_channel_index();
+
 	void add_channel(const Channel& channel);
 	void add_channels(const ChannelArray& channels);
 	void set_channels(const ChannelArray& channels);
 	void clear();
+
 	Channel& get_channel_by_id(guint channel_id);
 	Channel& get_channel_by_index(guint number);
 	Channel* find_channel(guint frequency, guint service_id);

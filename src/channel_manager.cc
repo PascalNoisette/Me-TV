@@ -24,7 +24,6 @@
 #include "application.h"
 
 #define MAX_CHANNELS	10000
-#define NO_CHANNEL		-1
 
 class LockLogger
 {
@@ -48,7 +47,6 @@ public:
 
 ChannelManager::ChannelManager()
 {
-	display_channel_index = NO_CHANNEL;
 	g_static_rec_mutex_init(mutex.gobj());
 }
 
@@ -317,20 +315,9 @@ const ChannelArray& ChannelManager::get_channels() const
 	return channels;
 }
 
-Channel& ChannelManager::get_display_channel()
-{
-	if (display_channel_index == NO_CHANNEL)
-	{
-		throw Exception(_("No channel selected"));
-	}
-	
-	return channels[display_channel_index];
-}
-
 void ChannelManager::clear()
 {
 	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-	display_channel_index = NO_CHANNEL;
 	channels.clear();
 	g_debug("Channels cleared");
 }
@@ -367,61 +354,6 @@ void ChannelManager::set_channels(const ChannelArray& new_channels)
 	g_debug("Finished setting channels");
 }
 
-Channel* ChannelManager::get_next_channel()
-{
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-
-	if (display_channel_index != NO_CHANNEL && (guint)display_channel_index < (channels.size()-1))
-	{
-		return &(channels[display_channel_index+1]);
-	}
-	return NULL;
-}
-
-Channel* ChannelManager::get_previous_channel()
-{
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-
-	if (display_channel_index != NO_CHANNEL && (guint)display_channel_index > 0)
-	{
-		return &(channels[display_channel_index-1]);
-	}
-	return NULL;
-}
-
-void ChannelManager::select_display_channel()
-{
-	display_channel_index = 0;
-}
-
-void ChannelManager::set_display_channel(const Channel& channel)
-{
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-
-	g_debug("Setting display channel to %d", channel.channel_id);
-
-	gboolean found = false;
-	for (guint index = 0; index < channels.size() && !found; index++)
-	{
-		if (channel.channel_id == channels[index].channel_id)
-		{
-			g_debug("Display channel set to %d", index);
-			display_channel_index = index;
-			found = true;
-		}
-	}
-
-	if (!found)
-	{
-		throw Exception(
-			Glib::ustring::compose(
-				_("Failed to set display channel: channel ID %d not found"),
-				channel.channel_id
-			)
-		);
-	}
-}
-
 void ChannelManager::prune_epg()
 {
 	ChannelArray::iterator iterator = channels.begin();
@@ -430,26 +362,5 @@ void ChannelManager::prune_epg()
 		Channel& channel = *iterator;
 		channel.epg_events.prune();
 		iterator++;
-	}
-}
-
-gboolean ChannelManager::has_display_channel()
-{
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-	return display_channel_index != NO_CHANNEL || (guint)display_channel_index <= channels.size();
-}
-
-guint ChannelManager::get_display_channel_index()
-{
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
-	check_display_channel();
-	return display_channel_index;
-}
-
-void ChannelManager::check_display_channel()
-{
-	if (!has_display_channel())
-	{
-		throw Exception(_("Invalid display channel index"));
 	}
 }

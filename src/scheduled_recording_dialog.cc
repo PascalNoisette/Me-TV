@@ -121,7 +121,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	if (populate_default)
 	{	
 		scheduled_recording_id = 0;	
-		Channel& channel = get_application().channel_manager.get_display_channel();		
+		Channel& channel = get_application().stream_manager.get_display_channel();		
 		channel_combo_box->set_selected_channel_id(channel.channel_id);
 		entry_description->set_text(_("Unknown description"));
 		recurring_combo_box->set_active(0);

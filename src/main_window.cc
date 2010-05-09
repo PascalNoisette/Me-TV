@@ -212,12 +212,12 @@ void MainWindow::show_channels_dialog()
 	}
 	update();
 	
-	ChannelManager& channel_manager = get_application().channel_manager;
+	StreamManager& stream_manager = get_application().stream_manager;
 	gboolean no_devices = get_application().device_manager.get_frontends().empty();
 
-	if (channel_manager.has_display_channel())
+	if (stream_manager.has_display_stream())
 	{
-		Channel& channel = channel_manager.get_display_channel();
+		Channel& channel = stream_manager.get_display_channel();
 		get_application().set_display_channel(channel);
 	}
 }
@@ -451,9 +451,9 @@ void MainWindow::update()
 	Glib::ustring status_text;
 	Glib::ustring window_title = "Me TV - It's TV for me computer";
 
-	if (application.channel_manager.has_display_channel())
+	if (application.stream_manager.has_display_stream())
 	{
-		Channel& channel = application.channel_manager.get_display_channel();
+		Channel& channel = application.stream_manager.get_display_channel();
 		window_title = "Me TV - " + channel.get_text();
 		status_text = channel.get_text();
 	}

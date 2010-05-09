@@ -166,11 +166,7 @@ void GtkEpgWidget::update_table()
 		widget->set_sensitive(offset > 0);
 		
 		ChannelManager& channel_manager = get_application().channel_manager;
-		guint display_channel_index = -1;
-		if (channel_manager.has_display_channel())
-		{
-			display_channel_index = channel_manager.get_display_channel_index();
-		}
+		StreamManager& stream_manager = get_application().stream_manager;
 		ChannelArray& channels = channel_manager.get_channels();
 
 		table_epg->resize(epg_span_hours * COLUMNS_PER_HOUR + 1, channels.size() + 1);
@@ -211,7 +207,7 @@ void GtkEpgWidget::update_table()
 		for (guint channel_index = channel_start; channel_index < channel_end; channel_index++)
 		{
 			Channel& channel = channels[channel_index];
-			gboolean selected = channel_index == display_channel_index;
+			gboolean selected = stream_manager.has_display_stream() && (stream_manager.get_display_channel() == channel);
 			create_channel_row(channel, row++, selected, start_time, channel_index + 1,
 				show_channel_number, show_epg_time, show_epg_tooltips);
 		}

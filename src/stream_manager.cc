@@ -293,6 +293,11 @@ void StreamManager::stop_display()
 	}
 }
 
+Channel& StreamManager::get_display_channel()
+{
+	return get_display_stream().channel;
+}
+
 ChannelStream& StreamManager::get_display_stream()
 {
 	for (FrontendThreadList::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
@@ -330,7 +335,7 @@ FrontendThread& StreamManager::get_display_frontend_thread()
 {
 	FrontendThread* free_frontend_thread = NULL;
 	
-	Dvb::Transponder& current_transponder = get_application().channel_manager.get_display_channel().transponder;
+	Dvb::Transponder& current_transponder = get_application().stream_manager.get_display_channel().transponder;
 	for (FrontendThreadList::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		FrontendThread& frontend_thread = **i;
