@@ -21,6 +21,7 @@
 #include "me-tv.h"
 #include <gtkmm.h>
 #include "scan_dialog.h"
+#include "edit_channel_dialog.h"
 #include "application.h"
 #include "channels_dialog.h"
 
@@ -38,6 +39,9 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::
 
 	builder->get_widget("button_scan", button);
 	button->signal_clicked().connect(sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
+
+	builder->get_widget("button_edit_selected_channel", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &ChannelsDialog::on_button_edit_selected_channel_clicked));
 	
 	builder->get_widget("button_remove_selected_channels", button);
 	button->signal_clicked().connect(sigc::mem_fun(*this, &ChannelsDialog::on_button_remove_selected_channels_clicked));
@@ -139,6 +143,30 @@ void ChannelsDialog::show_scan_dialog()
 void ChannelsDialog::on_button_scan_clicked()
 {
 	show_scan_dialog();
+}
+
+void ChannelsDialog::on_button_edit_selected_channel_clicked()
+{
+	get_window()->freeze_updates();
+	Glib::RefPtr<Gtk::TreeSelection> tree_selection = tree_view_displayed_channels->get_selection();
+	std::list<Gtk::TreeModel::Path> selected_channels = tree_selection->get_selected_rows();
+	if (selected_channels.size() == 0)
+	{
+		get_window()->thaw_updates();
+		throw Exception(_("No channel selected"));
+	}
+	else if (selected_channels.size() > 1)
+	{
+		get_window()->thaw_updates();
+		throw Exception(_("Select only one channel"));
+	}
+	else
+	{
+		EditChannelDialog& edit_channel_dialog = EditChannelDialog::create(builder);
+		edit_channel_dialog.run(this);
+		edit_channel_dialog.hide();
+		get_window()->thaw_updates();
+	}
 }
 
 void ChannelsDialog::on_button_remove_selected_channels_clicked()

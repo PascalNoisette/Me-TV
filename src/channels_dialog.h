@@ -51,6 +51,7 @@ private:
 	
 	void on_show();
 	void on_button_scan_clicked();
+	void on_button_edit_selected_channel_clicked();
 	void on_button_remove_selected_channels_clicked();
 
 public:
