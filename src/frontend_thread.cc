@@ -277,7 +277,7 @@ void FrontendThread::stop_epg_thread()
 	}
 }
 
-void FrontendThread::start_display(const Channel& channel)
+void FrontendThread::start_display(Channel& channel)
 {
 	g_debug("FrontendThread::start_display(%s)", channel.name.c_str());
 	Lock lock(mutex, __PRETTY_FUNCTION__);
@@ -336,7 +336,7 @@ bool is_recording_stream(ChannelStream* channel_stream)
 	return channel_stream->type == CHANNEL_STREAM_TYPE_RECORDING || channel_stream->type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING;
 }
 
-void FrontendThread::start_recording(const Channel& channel, const Glib::ustring& filename, gboolean scheduled)
+void FrontendThread::start_recording(Channel& channel, const Glib::ustring& filename, gboolean scheduled)
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 	

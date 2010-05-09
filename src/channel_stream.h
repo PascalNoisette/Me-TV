@@ -40,14 +40,14 @@ private:
 	Glib::StaticRecMutex			mutex;
 		
 public:
-	ChannelStream(ChannelStreamType type, const Channel& channel, const Glib::ustring& filename);
+	ChannelStream(ChannelStreamType type, Channel& channel, const Glib::ustring& filename);
 	~ChannelStream();
 
 	Glib::RefPtr<Glib::IOChannel>	output_channel;
 	Mpeg::Stream					stream;
 	Glib::ustring					filename;
 	ChannelStreamType				type;
-	Channel							channel;			
+	Channel&						channel;
 
 	Dvb::Demuxer& add_pes_demuxer(const Glib::ustring& demux_path,
 		guint pid, dmx_pes_type_t pid_type, const gchar* type_text);

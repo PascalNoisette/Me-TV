@@ -98,7 +98,7 @@ public:
 	
 	Glib::RefPtr<Gtk::Builder> get_builder() { return builder; }
 	
-	void set_display_channel(const Channel& channel);
+	void set_display_channel(Channel& channel);
 	void set_display_channel_by_id(guint channel_id);
 	void set_display_channel_number(guint display_channel_number);
 	

@@ -37,7 +37,7 @@ public:
 	guint get_last_epg_update_time();
 	FrontendThreadList& get_frontend_threads() { return frontend_threads; };
 
-	void start_display(const Channel& channel);
+	void start_display(Channel& channel);
 	void stop_display();
 	gboolean has_display_stream();
 	Channel& get_display_channel();

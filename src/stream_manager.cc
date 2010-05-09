@@ -228,7 +228,7 @@ void StreamManager::stop()
 	}
 }
 
-void StreamManager::start_display(const Channel& channel)
+void StreamManager::start_display(Channel& channel)
 {
 	gboolean found = false;
 

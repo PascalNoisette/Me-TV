@@ -471,7 +471,7 @@ void Application::set_boolean_configuration_value(const Glib::ustring& key, gboo
 
 void Application::select_channel_to_play()
 {
-	const ChannelArray& channels = channel_manager.get_channels();
+	ChannelArray& channels = channel_manager.get_channels();
 	if (channels.size() > 0)
 	{
 		gint last_channel_id = get_application().get_int_configuration_value("last_channel");
@@ -590,7 +590,7 @@ void Application::set_display_channel_number(guint channel_index)
 	set_display_channel(channel_manager.get_channel_by_index(channel_index));
 }
 
-void Application::set_display_channel(const Channel& channel)
+void Application::set_display_channel(Channel& channel)
 {
 	g_message(_("Changing channel to '%s'"), channel.name.c_str());
 
