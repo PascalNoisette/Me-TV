@@ -199,26 +199,34 @@ void MainWindow::show_channels_dialog()
 {
 	FullscreenBugWorkaround fullscreen_bug_workaround;
 
+	if (get_application().stream_manager.is_recording())
+	{
+		throw Exception(_("Please stop all recordings before editing channels"));
+	}
+	
 	ChannelsDialog& channels_dialog = ChannelsDialog::create(builder);	
 	gint dialog_result = channels_dialog.run();
 	channels_dialog.hide();
 
 	if (dialog_result == Gtk::RESPONSE_OK)
 	{
+		if (get_application().stream_manager.is_recording())
+		{
+			throw Exception(_("Cannot update channels while recording"));
+		}
+
 		const ChannelArray& channels = channels_dialog.get_channels();
-		ChannelManager& channel_manager = get_application().channel_manager;
-		channel_manager.set_channels(channels);
+		get_application().stream_manager.stop();
+		get_application().channel_manager.set_channels(channels);
+		get_application().stream_manager.start();
 		get_application().select_channel_to_play();
 	}
 	update();
-	
-	StreamManager& stream_manager = get_application().stream_manager;
-	gboolean no_devices = get_application().device_manager.get_frontends().empty();
 
+	StreamManager& stream_manager = get_application().stream_manager;
 	if (stream_manager.has_display_stream())
 	{
-		Channel& channel = stream_manager.get_display_channel();
-		get_application().set_display_channel(channel);
+		get_application().set_display_channel(stream_manager.get_display_channel());
 	}
 }
 
