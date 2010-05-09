@@ -664,6 +664,11 @@ void MainWindow::play(const Glib::ustring& mrl)
 			)
 		);
 
+		if (get_application().get_preferred_language() == audio_stream.language)
+		{
+			menu_item->set_active(true);
+		}
+
 		count++;
 	}
 
