@@ -220,14 +220,14 @@ void MainWindow::show_channels_dialog()
 		get_application().channel_manager.set_channels(channels);
 		get_application().stream_manager.start();
 		get_application().select_channel_to_play();
+
+		StreamManager& stream_manager = get_application().stream_manager;
+		if (stream_manager.has_display_stream())
+		{
+			get_application().set_display_channel(stream_manager.get_display_channel());
+		}
 	}
 	update();
-
-	StreamManager& stream_manager = get_application().stream_manager;
-	if (stream_manager.has_display_stream())
-	{
-		get_application().set_display_channel(stream_manager.get_display_channel());
-	}
 }
 
 void MainWindow::show_preferences_dialog()
