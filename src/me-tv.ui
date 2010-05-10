@@ -483,11 +483,11 @@ found in /usr/share/common-licenses/GPL file.</property>
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="button_scheduled_recording_ok">
-                <property name="label">gtk-ok</property>
+              <object class="GtkButton" id="button_scheduled_recording_cancel">
+                <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
+                <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -497,8 +497,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_scheduled_recording_cancel">
-                <property name="label">gtk-cancel</property>
+              <object class="GtkButton" id="button_scheduled_recording_ok">
+                <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -520,8 +520,8 @@ found in /usr/share/common-licenses/GPL file.</property>
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-5">button_scheduled_recording_ok</action-widget>
       <action-widget response="0">button_scheduled_recording_cancel</action-widget>
+      <action-widget response="-5">button_scheduled_recording_ok</action-widget>
     </action-widgets>
   </object>
   <object class="GtkListStore" id="liststore_string">
@@ -657,6 +657,19 @@ found in /usr/share/common-licenses/GPL file.</property>
                   </packing>
                 </child>
                 <child>
+                  <object class="GtkButton" id="button_scheduled_recordings_edit">
+                    <property name="label">gtk-edit</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkButton" id="button_scheduled_recordings_delete">
                     <property name="label">gtk-delete</property>
                     <property name="visible">True</property>
@@ -668,19 +681,6 @@ found in /usr/share/common-licenses/GPL file.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="button_scheduled_recordings_edit">
-                    <property name="label">gtk-edit</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
@@ -1441,7 +1441,7 @@ found in /usr/share/common-licenses/GPL file.</property>
                     </child>
                     <child>
                       <object class="GtkButton" id="button_remove_selected_channels">
-                        <property name="label">gtk-remove</property>
+                        <property name="label">gtk-delete</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2363,6 +2363,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
   <object class="GtkDialog" id="dialog_edit_channel">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Me TV - Edit Channel</property>
+    <property name="resizable">False</property>
     <property name="icon">me-tv.xpm</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
@@ -2372,15 +2373,64 @@ If you've just upgraded Me TV then this is probably what you want to do.
         <property name="visible">True</property>
         <property name="spacing">2</property>
         <child>
-          <placeholder/>
+          <object class="GtkTable" id="table_edit_channel">
+            <property name="visible">True</property>
+            <property name="n_rows">2</property>
+            <property name="n_columns">2</property>
+            <child>
+              <object class="GtkLabel" id="label_edit_channel_name">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Channel Name : </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEntry" id="entry_edit_channel_name">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label_edit_channel_frequency">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Channel Frequency : </property>
+              </object>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="entry_edit_channel_frequency">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
         </child>
         <child internal-child="action_area">
           <object class="GtkHButtonBox" id="dialog-action_area11">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="button_edit_channel_save">
-                <property name="label">gtk-ok</property>
+              <object class="GtkButton" id="button_edit_channel_cancel">
+                <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2393,8 +2443,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_edit_channel_cancel">
-                <property name="label">gtk-cancel</property>
+              <object class="GtkButton" id="button_edit_channel_save">
+                <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2416,8 +2466,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
       </object>
     </child>
     <action-widgets>
-      <action-widget response="0">button_edit_channel_save</action-widget>
       <action-widget response="0">button_edit_channel_cancel</action-widget>
+      <action-widget response="0">button_edit_channel_save</action-widget>
     </action-widgets>
   </object>
 </interface>
