@@ -1427,7 +1427,6 @@ found in /usr/share/common-licenses/GPL file.</property>
                     <child>
                       <object class="GtkButton" id="button_edit_selected_channel">
                         <property name="label">gtk-edit</property>
-                        <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_stock">True</property>
