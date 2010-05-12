@@ -105,10 +105,14 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 		g_message("ScheduledRecordingManager::save/clear ID: %d", row["scheduled_recording_id"].int_value); 
 
 		if(row["recurring_type"].int_value == 1)
+		{
 			row["start_time"].int_value += 86400;
-		if(row["recurring_type"].int_value == 2)
+		}
+		else if(row["recurring_type"].int_value == 2)
+		{
 			row["start_time"].int_value += 604800;
-		if(row["recurring_type"].int_value == 3)
+		}
+		else if(row["recurring_type"].int_value == 3)
 		{
 			time_t tim = row["start_time"].int_value;
 			struct tm *ts;
@@ -117,9 +121,9 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 			strftime(buf, sizeof(buf), "%w", ts);
 			switch(atoi(buf))
 			{
-				case 5 : row["start_time"].int_value += 259200;break;
-				case 6 : row["start_time"].int_value += 172800;break;
-				default: row["start_time"].int_value +=  86400;break;
+				case 5 : row["start_time"].int_value += 259200; break;
+				case 6 : row["start_time"].int_value += 172800; break;
+				default: row["start_time"].int_value +=  86400; break;
 			}
 		}  
 		updated = true;
@@ -133,6 +137,25 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	adapter.delete_rows(clause);
 
 	g_debug("Scheduled recordings saved");
+}
+
+void ScheduledRecordingManager::set_scheduled_recording(EpgEvent& epg_event)
+{
+	ScheduledRecording scheduled_recording;
+	
+	Application& application = get_application();
+	guint before = application.get_int_configuration_value("record_extra_before");
+	guint after = application.get_int_configuration_value("record_extra_after");
+	
+	scheduled_recording.channel_id				= epg_event.channel_id;
+	scheduled_recording.description				= epg_event.get_title();
+	scheduled_recording.recurring_type			= 0;
+	scheduled_recording.action_after			= 0;
+	scheduled_recording.start_time				= epg_event.start_time - before;
+	scheduled_recording.duration				= epg_event.duration + before + after;
+	scheduled_recording.device					= "";
+	
+	set_scheduled_recording(scheduled_recording);
 }
 
 void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& scheduled_recording)
@@ -181,7 +204,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 			}
 		}
 	}
-		
+
 	if (scheduled_recording.device.empty())
 	{
 		throw Exception(_("Failed to set scheduled recording: There are no devices available at that time"));

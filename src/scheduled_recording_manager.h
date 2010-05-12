@@ -31,6 +31,7 @@ class ScheduledRecordingManager
 {
 private:
 	Glib::StaticRecMutex	mutex;
+
 public:
 	ScheduledRecordingManager();
 		
@@ -39,6 +40,7 @@ public:
 	void load(Data::Connection& connection);
 	void save(Data::Connection& connection);
 
+	void set_scheduled_recording(EpgEvent& epg_event);
 	void set_scheduled_recording(ScheduledRecording& scheduled_recording);
 	void remove_scheduled_recording(guint scheduled_recording_id);		
 	ScheduledRecording get_scheduled_recording(guint scheduled_recording_id);

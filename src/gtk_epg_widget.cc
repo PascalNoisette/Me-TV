@@ -452,9 +452,7 @@ bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
-		ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
-		scheduled_recording_dialog.run(MainWindow::create(builder), epg_event);
-		scheduled_recording_dialog.hide();
+		get_application().scheduled_recording_manager.set_scheduled_recording(epg_event);
 		get_application().update();
 	}
 
