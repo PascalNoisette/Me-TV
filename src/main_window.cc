@@ -623,6 +623,8 @@ void MainWindow::play(const Glib::ustring& mrl)
 			inhibit_screensaver(true);
 		}
 	}
+
+	Glib::ustring preferred_language = application.get_preferred_language();
 	
 	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_audio/action_audio_streams"))->get_submenu();
 	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_video/action_subtitle_streams"))->get_submenu();
@@ -664,7 +666,7 @@ void MainWindow::play(const Glib::ustring& mrl)
 			)
 		);
 
-		if (get_application().get_preferred_language() == audio_stream.language)
+		if (!preferred_language.empty() && (preferred_language == audio_stream.language))
 		{
 			menu_item->set_active(true);
 		}
@@ -704,6 +706,11 @@ void MainWindow::play(const Glib::ustring& mrl)
 			)
 		);
 		
+		if (!preferred_language.empty() && (preferred_language == subtitle_stream.language))
+		{
+			menu_item->set_active(true);
+		}
+
 		count++;
 	}
 }
