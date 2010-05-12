@@ -659,7 +659,11 @@ void Application::check_scheduled_recordings()
 					switch (srid)
 					{
 						case 1  : g_message("me-tv closed by Scheduled Recording");action_quit->activate();break;
-						case 2  : g_message("shutdown");break;
+						case 2  : 
+							g_message("Computer Shutdown by Scheduled Recording");
+							g_debug("shuting down computer");
+							Glib::spawn_command_line_async("sudo shutdown -h now");
+							break;
 						default : g_message("nothing to do");break;
 					}
 					check = true;
