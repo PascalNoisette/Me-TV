@@ -151,8 +151,8 @@ void ScheduledRecordingManager::set_scheduled_recording(EpgEvent& epg_event)
 	scheduled_recording.description				= epg_event.get_title();
 	scheduled_recording.recurring_type			= 0;
 	scheduled_recording.action_after			= 0;
-	scheduled_recording.start_time				= epg_event.start_time - before;
-	scheduled_recording.duration				= epg_event.duration + before + after;
+	scheduled_recording.start_time				= epg_event.start_time - (before * 60);
+	scheduled_recording.duration				= epg_event.duration + ((before + after) * 60);
 	scheduled_recording.device					= "";
 	
 	set_scheduled_recording(scheduled_recording);
