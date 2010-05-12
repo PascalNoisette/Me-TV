@@ -656,22 +656,36 @@ void Application::check_scheduled_recordings()
 					(signed)srid >= 0)
 				{
 					stream_manager.stop_recording(channel_stream.channel);
-					switch (srid)
-					{
-						case 1  : g_message("me-tv closed by Scheduled Recording");action_quit->activate();break;
-						case 2  : 
-							g_message("Computer Shutdown by Scheduled Recording");
-							g_debug("shuting down computer");
-							Glib::spawn_command_line_async("sudo shutdown -h now");
-							break;
-						default : g_message("nothing to do");break;
-					}
+					action_after(srid);
 					check = true;
 					break;
 				}
 			}
 		}
 	}
+}
+
+void Application::action_after(guint action)
+{
+	if (action == 1)
+	{
+		g_message("Me-TV closed by Scheduled Recording");
+		action_quit->activate();
+	}
+	else if (action == 2)
+	{
+		g_message("Computer Shutdown by Scheduled Recording");
+		try
+		{
+			g_debug("shuting down computer");
+			Glib::spawn_command_line_async("sudo shutdown -h now");
+		}
+		catch(...)
+		{
+			g_message("failed to shutdown");
+			throw Exception(_("Failed to shutdown computer"));
+		}
+	}	
 }
 
 gboolean Application::on_timeout(gpointer data)
