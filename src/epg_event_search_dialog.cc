@@ -43,7 +43,7 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
 	builder->get_widget("combo_box_entry_search", combo_box_entry_search);
 	combo_box_entry_search->set_model(list_store_search);
 	combo_box_entry_search->set_text_column(0);
-//	combo_box_entry_search->signal_activate().connect(sigc::mem_fun(*this, &EpgEventSearchDialog::search));
+	combo_box_entry_search->get_entry()->signal_activate().connect(sigc::mem_fun(*this, &EpgEventSearchDialog::search));
 	list_store_search->set_sort_column(search_columns.column_text, Gtk::SORT_ASCENDING);
 
 	builder->get_widget("tree_view_epg_event_search", tree_view_epg_event_search);
@@ -101,6 +101,8 @@ void EpgEventSearchDialog::search()
 		application.set_string_list_configuration_value("recent_searches", recent_searches);
 	}
 
+	int got_results = false;
+
 	bool search_description = check->get_active();
 	ChannelArray channels = application.channel_manager.get_channels();
 	for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
@@ -128,8 +130,18 @@ void EpgEventSearchDialog::search()
 			row[results_columns.column_duration]		= epg_event.get_duration_text();
 			row[results_columns.column_channel]			= epg_event.channel_id;
 			row[results_columns.column_channel_name]	= application.channel_manager.get_channel_by_id(epg_event.channel_id).name;
-			row[results_columns.column_epg_event]		= epg_event;
+			row[results_columns.column_epg_event]		= epg_event;			
 		}
+
+		got_results = got_results || !list.empty();
+	}
+
+	if (!got_results)
+	{
+		Gtk::MessageDialog dialog(*this, _("No results"));
+		dialog.set_modal(true);
+		dialog.set_title(PACKAGE_NAME);
+		dialog.run();
 	}
 }
 
