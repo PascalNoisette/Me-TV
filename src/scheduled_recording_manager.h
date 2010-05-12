@@ -43,6 +43,7 @@ public:
 	void set_scheduled_recording(EpgEvent& epg_event);
 	void set_scheduled_recording(ScheduledRecording& scheduled_recording);
 	void remove_scheduled_recording(guint scheduled_recording_id);		
+	void remove_scheduled_recording(EpgEvent& epg_event);
 	ScheduledRecording get_scheduled_recording(guint scheduled_recording_id);
 	ScheduledRecordingList check_scheduled_recordings();
 	guint is_recording(const Channel& channel);

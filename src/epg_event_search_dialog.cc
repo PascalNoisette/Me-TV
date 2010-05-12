@@ -156,7 +156,14 @@ void EpgEventSearchDialog::on_row_activated(const Gtk::TreeModel::Path& tree_mod
 	Gtk::TreeModel::Row row = *(selection->get_selected());
 
 	EpgEvent epg_event = row[results_columns.column_epg_event];
-	get_application().scheduled_recording_manager.set_scheduled_recording(epg_event);
+	if (get_application().scheduled_recording_manager.is_recording(epg_event))
+	{
+		get_application().scheduled_recording_manager.remove_scheduled_recording(epg_event);
+	}
+	else
+	{
+		get_application().scheduled_recording_manager.set_scheduled_recording(epg_event);
+	}
 
 	search();
 }

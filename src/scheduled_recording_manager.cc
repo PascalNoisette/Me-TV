@@ -319,6 +319,24 @@ void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recor
 	get_application().check_scheduled_recordings();
 }
 
+void ScheduledRecordingManager::remove_scheduled_recording(EpgEvent& epg_event)
+{
+	Glib::RecMutex::Lock lock(mutex);
+
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	{
+		ScheduledRecording& scheduled_recording = *i;
+		if (scheduled_recording.channel_id == epg_event.channel_id &&
+			scheduled_recording.is_in(
+			    convert_to_utc_time(epg_event.start_time),
+			    convert_to_utc_time(epg_event.get_end_time())))
+		{
+			remove_scheduled_recording(scheduled_recording.scheduled_recording_id);
+			return;
+		}
+	}	
+}
+
 guint scheduled_recording_now = 0;
 
 guint is_old(ScheduledRecording& scheduled_recording)
