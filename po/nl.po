@@ -1,0 +1,1269 @@
+# Dutch translation for me-tv
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the me-tv package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: me-tv\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-12-27 12:21+1100\n"
+"PO-Revision-Date: 2010-05-13 10:29+0000\n"
+"Last-Translator: Han Terheggen <Unknown>\n"
+"Language-Team: Dutch <nl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-05-13 11:52+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../me-tv.schemas.in.h:1
+msgid ""
+"By default, the EPG header is visible but disabling it can minimise screen "
+"real estate by reducing the vertical EPG size."
+msgstr ""
+"Standaard wordt de EPG koptekst getoond. Door deze uit te zetten kan het "
+"bruikbare gedeelte van het scherm vergroot worden, aangezien de hoogte van "
+"de EPG vermindert."
+
+#: ../me-tv.schemas.in.h:2
+msgid "Display a channel number next to the channel name in the EPG."
+msgstr "Toon het kanaalnummer naast de kanaalnaam in de EPG."
+
+#: ../me-tv.schemas.in.h:3
+msgid "Display the time span in the EPG buttons."
+msgstr "Toon de tijdsduur in de EPG-vakken."
+
+#: ../me-tv.schemas.in.h:4
+msgid "Displays the date/time header in the EPG"
+msgstr "Toon de datum/tijd koptekst in de EPG"
+
+#: ../me-tv.schemas.in.h:5
+msgid ""
+"Extra default time (in minutes) to append to the end of a scheduled recording"
+msgstr ""
+"Extra tijd (in minuten) die standaard wordt toegevoegd aan het einde van een "
+"geplande opname."
+
+#: ../me-tv.schemas.in.h:6
+msgid ""
+"Extra default time (in minutes) to append to the end of a scheduled "
+"recording. This default value can be overriden when setting up a scheduled "
+"recording."
+msgstr ""
+"Extra tijd (in minuten) die standaard wordt toegevoegd aan het einde van een "
+"geplande opname. Deze standaardwaarde kan overschreven worden tijdens het "
+"instellen van een geplande opname."
+
+#: ../me-tv.schemas.in.h:7
+msgid ""
+"Extra default time (in minutes) to append to the start of a scheduled "
+"recording"
+msgstr ""
+"Extra tijd (in minuten) die standaard wordt toegevoegd aan het begin van een "
+"geplande opname."
+
+#: ../me-tv.schemas.in.h:8
+msgid ""
+"Extra default time (in minutes) to append to the start of a scheduled "
+"recording. This default value can be overriden when setting up a scheduled "
+"recording."
+msgstr ""
+"Extra tijd (in minuten) die standaard wordt toegevoegd aan het begin van een "
+"geplande opname. Deze standaardwaarde kan overschreven worden tijdens het "
+"instellen van een geplande opname."
+
+#: ../me-tv.schemas.in.h:9
+msgid ""
+"If more than one stream is available in a different language then Me TV will "
+"use the preffered one."
+msgstr ""
+"Als meer dan een uitzending in een andere taal beschikbaar is, dan zal Me TV "
+"de voorkeurstaal gebruiken."
+
+#: ../me-tv.schemas.in.h:10
+msgid ""
+"If you want to reduce the vertical size of your EPG then use this setting in "
+"combination with show_epg_tooltips."
+msgstr ""
+"Als je de hoogte van de EPG wil verminderen, gebruik dan deze instelling in "
+"combinatie met toon_epg_tooltips."
+
+#: ../me-tv.schemas.in.h:11
+msgid ""
+"Me TV uses libxine to play sound, this setting tells libxine which mechanism "
+"to use when playing sound."
+msgstr ""
+"Me TV gebruikt libxine voor geluid, deze instelling vertelt libxine welk "
+"mechanisme gebruikt moet worden om geluid af te spelen."
+
+#: ../me-tv.schemas.in.h:12
+msgid ""
+"Me TV uses libxine to render video, this setting tells libxine which "
+"mechanism to use when drawing."
+msgstr ""
+"Me TV gebruikt libxine voor video, deze instelling vertelt libxine welk "
+"mechanisme gebruikt moet worden om video af te spelen."
+
+#: ../me-tv.schemas.in.h:13
+msgid ""
+"Most digital video is transmitted in an interlaced format which should be "
+"corrected before viewing. Options are \"none\", \"standard\", \"tvtime\""
+msgstr ""
+"Meestal wordt digitale video geïnterlinieerd verzonden. Vóór vertoning is "
+"een correctie nodig. Opties zijn \"geen\", \"standaard\", \"tvtijd\""
+
+#: ../me-tv.schemas.in.h:14
+msgid ""
+"Most of the time the text encoding can be automatically determined but "
+"sometimes it needs a hint such as iso6937."
+msgstr ""
+"Meestal kan de tekstcodering automatisch vastgesteld worden, maar soms is er "
+"een hint zoals iso6937 nodig."
+
+#: ../me-tv.schemas.in.h:15
+msgid "Preferred language to us when selecting streams."
+msgstr "De voorkeurstaal om te gebruiken bij het selecteren van streams."
+
+#: ../me-tv.schemas.in.h:16
+msgid "Remove the colon ':' from the recording filename"
+msgstr "Verwijder de dubbele punt ':' van de opnamebestandsnaam."
+
+#: ../me-tv.schemas.in.h:17
+msgid "Sets the \"Always On Top\" attribute on the main window."
+msgstr "Zet de \"Altijd bovenaan\" eigenschap van het hoofdvenster."
+
+#: ../me-tv.schemas.in.h:18
+msgid "Sets the audio driver for libxine to use."
+msgstr "Laat de audiodriver libxine gebruiken."
+
+#: ../me-tv.schemas.in.h:19
+msgid "Sets the video driver for libxine to use."
+msgstr "Laat de videodriver libxine gebruiken."
+
+#: ../me-tv.schemas.in.h:20
+msgid "Show a tool tip when hovering over an EPG event."
+msgstr "Toon een tooltip als je met je muis op een item van de EPG komt."
+
+#: ../me-tv.schemas.in.h:21
+msgid ""
+"Some file systems do not support a colon in a filename (e.g. FAT32). This "
+"option tells Me TV to remove it from the recording filename."
+msgstr ""
+"Bepaalde bestandssystemen ondersteunen geen dubbele punt in bestandsnamen "
+"(bv. FAT32). Deze optie geeft aan dat Me TV ze moet verwijderen uit de "
+"opnamebestandsnaam."
+
+#: ../me-tv.schemas.in.h:22
+msgid "Tells Me TV to display an icon the notification area."
+msgstr "Laat Me TV een icoon plaatsen in de notification area."
+
+#: ../me-tv.schemas.in.h:23
+msgid "The command to execute to inhibit the screensaver."
+msgstr "Het commando om de screensaver te onderdrukken."
+
+#: ../me-tv.schemas.in.h:24
+msgid ""
+"The command to execute to inhibit the screensaver. This is called every "
+"minute."
+msgstr ""
+"Het commando om de onderdrukking van de screensaver uit te voeren. Dit "
+"commando wordt om de minuut uitgevoerd."
+
+#: ../me-tv.schemas.in.h:25
+msgid "The directory to use for recordings."
+msgstr "De map om opnamen in op te slaan."
+
+#: ../me-tv.schemas.in.h:26
+msgid ""
+"The directory to use for recordings. This value defaults to the users home "
+"directory."
+msgstr ""
+"De map om opnamen in op te slaan. Standaard is de homedirectory van de "
+"gebruiker."
+
+#: ../me-tv.schemas.in.h:27
+msgid "The height of the window before Me TV was last closed"
+msgstr ""
+"De hoogte van het venster voordat Me TV de laatste keer werd afgesloten."
+
+#: ../me-tv.schemas.in.h:28
+msgid ""
+"The height of the window before Me TV was last closed. Me TV uses this value "
+"to try to restore the main window to its previous geometry."
+msgstr ""
+"De hoogte van het venster voordat Me TV de laatste keer werd afgesloten. Me "
+"TV gebruikt deze waarde om het hoofdvenster de volgende keer met dezelfde "
+"afmetingen te openen."
+
+#: ../me-tv.schemas.in.h:29
+msgid "The last channel tuned to."
+msgstr "Het laatste kanaal waarop afgestemd werd."
+
+#: ../me-tv.schemas.in.h:30
+msgid ""
+"The number of channels to show before paging, this is deliberately set low "
+"to reduce preformance issues."
+msgstr ""
+"Het getoonde aantal kanalen is opzettelijk beperkt om de prestaties van het "
+"systeem niet nadelig te beïnvloeden."
+
+#: ../me-tv.schemas.in.h:31
+msgid "The number of channels to show before paging."
+msgstr "Het aantal kanalen te tonen vóór paginering."
+
+#: ../me-tv.schemas.in.h:32
+msgid "The number of hours for the EPG to span on one page."
+msgstr "Het aantal uren dat de EPG op een pagina omvat."
+
+#: ../me-tv.schemas.in.h:33
+msgid "The rendering engine to use."
+msgstr "De weergave-engine die gebruikt gaat worden."
+
+#: ../me-tv.schemas.in.h:34
+msgid "The text endoding that the DVB information is in."
+msgstr "De tekstcodering gebruikt voor de DVB-informatie."
+
+#: ../me-tv.schemas.in.h:35
+msgid "The width of the window before Me TV was last closed"
+msgstr ""
+"De breedte van het venster voordat Me TV de laatste keer werd afgesloten."
+
+#: ../me-tv.schemas.in.h:36
+msgid ""
+"The width of the window before Me TV was last closed. Me TV uses this value "
+"to try to restore the main window to its previous geometry."
+msgstr ""
+"De breedte van het venster voordat Me TV de laatste keer werd afgesloten. Me "
+"TV gebruikt deze waarde om het hoofdvenster de volgende keer met dezelfde "
+"afmetingen te openen."
+
+#: ../me-tv.schemas.in.h:37
+msgid "The x position of the window before Me TV was last closed"
+msgstr ""
+"De x-positie van het venster voordat Me TV de laatste keer werd afgesloten."
+
+#: ../me-tv.schemas.in.h:38
+msgid ""
+"The x position of the window before Me TV was last closed. Me TV uses this "
+"value to try to restore the main window to its previous geometry."
+msgstr ""
+"De x-positie van het venster voordat Me TV de laatste keer werd afgesloten. "
+"Me TV gebruikt deze waarde om het hoofdvenster de volgende keer op dezelfde "
+"plaats te openen."
+
+#: ../me-tv.schemas.in.h:39
+msgid "The y position of the window before Me TV was last closed"
+msgstr ""
+"De y-positie van het venster voordat Me TV de laatste keer werd afgesloten."
+
+#: ../me-tv.schemas.in.h:40
+msgid ""
+"The y position of the window before Me TV was last closed. Me TV uses this "
+"value to try to restore the main window to its previous geometry."
+msgstr ""
+"De y-positie van het venster voordat Me TV de laatste keer werd afgesloten. "
+"Me TV gebruikt deze waarde om het hoofdvenster de volgende keer op dezelfde "
+"plaats te openen."
+
+#: ../me-tv.schemas.in.h:41
+msgid ""
+"This is used to store what channel the user was last watching so it can be "
+"returned when restarting."
+msgstr ""
+"Dit wordt gebruikt om het laatst bekeken kanaal in op te slaan zodat hier "
+"ook weer mee wordt opgestart."
+
+#: ../me-tv.schemas.in.h:42
+msgid "This will show the timespan of an EPG event in a tooltip."
+msgstr "Dit toont de tijdsduur van een EPG-item in een tooltip."
+
+#: ../me-tv.schemas.in.h:43
+msgid ""
+"When multiple engines are available this can be used to select between them."
+msgstr ""
+"Als meerdere engines beschikbaar zijn, kan dit gebruikt worden om er een te "
+"selecteren."
+
+#: ../me-tv.schemas.in.h:44
+msgid ""
+"When this setting is false Me TV will terminate when the main window is "
+"closed."
+msgstr ""
+"Als deze instelling niet gekozen is, zal Me TV afsluiten als het "
+"hoofdvenster wordt gesloten."
+
+#: ../me-tv.schemas.in.h:45
+msgid "Whether the video should be deinterlaced."
+msgstr "Of het beeld gedeïnterlinieerd moet worden."
+
+#: ../me-tv.desktop.in.h:1
+msgid "A digital television (DVB) viewer for GNOME"
+msgstr "Een digitale televisie (DVB) viewer voor GNOME"
+
+#: ../me-tv.desktop.in.h:2
+msgid "Me TV"
+msgstr "Me TV"
+
+#: ../src/me-tv.ui.h:1
+msgid " hours"
+msgstr " uren"
+
+#: ../src/me-tv.ui.h:2
+msgid " minutes"
+msgstr " minuten"
+
+#: ../src/me-tv.ui.h:3
+msgid ":"
+msgstr ":"
+
+#: ../src/me-tv.ui.h:4
+msgid "<b>Device:</b>"
+msgstr "<b>Apparaat:</b>"
+
+#: ../src/me-tv.ui.h:5
+msgid ""
+"A channels.conf file is a common file format for storing\n"
+"channels and can be read by many applications.  You\n"
+"may have one of these from another DVB application.\n"
+"The <i>scan</i> command line application is the most\n"
+"common way to generate a channels.conf file."
+msgstr ""
+"Een channels.conf formaat is het gemeenschappelijke bestandsformaat voor het "
+"opslaan\n"
+"van kanalen en kan door veel applicaties gebruikt worden. Je\n"
+"hebt deze misschien van een andere DVB applicatie.\n"
+"De <i>scan</i> command line applicatie is de meest\n"
+"gebruikelijke manier om een channels.conf bestand te maken."
+
+#: ../src/me-tv.ui.h:10
+msgid ""
+"An initial scan file is used to seed the tuner with \n"
+"some initial parameters to help it find DVB services.\n"
+"Many popular initial scan files are available from the \n"
+"LinuxTV dvb-apps package which is included in \n"
+"most Linux distributions.  Look for <i>dvb-apps</i> in\n"
+"your package management system.\n"
+"\n"
+"<i>Scanning is only supported on DVB-T/C, not DVB-S or ATSC. </i>"
+msgstr ""
+"Een initieel scanbestand wordt gebruikt om de tuner te voorzien van \n"
+"een aantal initiële parameters om DVB-zenders te kunnen vinden.\n"
+"Veel populaire initiële scanbestanden zijn beschikbaar in het \n"
+"LinuxTV dvb-apps package dat zich bevindt \n"
+"in de meeste Linux distributies. Zoek naar <i>dvb-apps</i> in\n"
+"je packagemanagementsysteem.\n"
+"\n"
+"<i>Scannen wordt alleen ondersteund voor DVB-T/C, niet voor DVB-S of ATSC. "
+"</i>"
+
+#: ../src/me-tv.ui.h:18
+msgid "Audio"
+msgstr "Audio"
+
+#: ../src/me-tv.ui.h:19
+msgid "Audio _Channels"
+msgstr "Audio _Kanalen"
+
+#: ../src/me-tv.ui.h:20
+msgid "Audio _Streams"
+msgstr "Audio _Streams"
+
+#: ../src/me-tv.ui.h:21
+msgid "Audio driver:"
+msgstr "Audiostuurprogramma:"
+
+#: ../src/me-tv.ui.h:22
+msgid "Channel:"
+msgstr "Kanaal:"
+
+#: ../src/me-tv.ui.h:23
+msgid "Copyright &#xA9; Michael Lamothe"
+msgstr "Copyright &#xA9; Michael Lamothe"
+
+#: ../src/me-tv.ui.h:24
+msgid "Deinterlace Type:"
+msgstr "Type Deïnterliniëring"
+
+#: ../src/me-tv.ui.h:25
+msgid "Description:"
+msgstr "Beschrijving:"
+
+#: ../src/me-tv.ui.h:26
+msgid "Device Text"
+msgstr "Apparaat tekst"
+
+#: ../src/me-tv.ui.h:27
+msgid "Drag and drop the channels to reorder them."
+msgstr "Versleep de kanalen om de volgorde te veranderen."
+
+#: ../src/me-tv.ui.h:28
+msgid "Duration:"
+msgstr "Tijdsduur:"
+
+#: ../src/me-tv.ui.h:29
+msgid "EPG page size: "
+msgstr "Grootte van EPG-pagina: "
+
+#: ../src/me-tv.ui.h:30
+msgid "EPG span: "
+msgstr "Tijdspanne EPG: "
+
+#: ../src/me-tv.ui.h:31
+msgid "Fullscreen workaround"
+msgstr "Een alternatieve oplossing voor Volledig Scherm"
+
+#. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
+#: ../src/me-tv.ui.h:33
+msgid ""
+"GNU General Public License:\n"
+"\n"
+"This program is free software; you can redistribute it and/or modify it "
+"under\n"
+"the terms of the GNU General Public License as published by the Free "
+"Software\n"
+"Foundation; either version 2 of the License, or (at your option) any later\n"
+"version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY\n"
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A\n"
+"PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
+"\n"
+"On Debian systems, the complete text of the GNU General Public License can "
+"be\n"
+"found in /usr/share/common-licenses/GPL file."
+msgstr ""
+"GNU General Public License:\n"
+"\n"
+"This program is free software; you can redistribute it and/or modify it "
+"under\n"
+"the terms of the GNU General Public License as published by the Free "
+"Software\n"
+"Foundation; either version 2 of the License, or (at your option) any later\n"
+"version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY\n"
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A\n"
+"PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
+"\n"
+"On Debian systems, the complete text of the GNU General Public License can "
+"be\n"
+"found in /usr/share/common-licenses/GPL file."
+
+#: ../src/me-tv.ui.h:46
+msgid "Import a channels.conf:"
+msgstr "Importeer een channels.conf:"
+
+#: ../src/me-tv.ui.h:47
+msgid "Me TV - About"
+msgstr "Me TV - Over"
+
+#: ../src/me-tv.ui.h:48
+msgid "Me TV - Channels Editor"
+msgstr "Me TV - Kanaalbewerker"
+
+#: ../src/me-tv.ui.h:49
+msgid "Me TV - Devices"
+msgstr "Me TV - Apparaten"
+
+#: ../src/me-tv.ui.h:50
+msgid "Me TV - Main Window"
+msgstr "Me TV - Hoofdvenster"
+
+#: ../src/me-tv.ui.h:51
+msgid "Me TV - Meters Window"
+msgstr "Me TV - Venster met meters"
+
+#: ../src/me-tv.ui.h:52
+msgid "Me TV - Preferences Window"
+msgstr "Me Tv - Venster met voorkeuren"
+
+#: ../src/me-tv.ui.h:53
+msgid "Me TV - Program Details"
+msgstr "Me TV - Programma Details"
+
+#: ../src/me-tv.ui.h:54
+msgid "Me TV - Scan Wizard"
+msgstr "Me TV - Scan Wizard"
+
+#: ../src/me-tv.ui.h:55
+msgid "Me TV - Scheduled Recording"
+msgstr "Me TV - Geplande opname"
+
+#: ../src/me-tv.ui.h:56
+msgid "Me TV - Scheduled Recordings"
+msgstr "Me TV - Geplande opnames"
+
+#: ../src/me-tv.ui.h:57
+msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
+msgstr "Me TV is een Digitale Televisie (DVB) viewer voor GNOME"
+
+#: ../src/me-tv.ui.h:58
+msgid "Me TV project website"
+msgstr "Me TV project website"
+
+#: ../src/me-tv.ui.h:59
+msgid "Not Available"
+msgstr "Niet Beschikbaar"
+
+#: ../src/me-tv.ui.h:60
+msgid "Now"
+msgstr "Nu"
+
+#: ../src/me-tv.ui.h:61
+msgid "Page:"
+msgstr "Pagina:"
+
+#: ../src/me-tv.ui.h:62
+msgid "Please select a device:"
+msgstr "Selecteer een apparaat:"
+
+#: ../src/me-tv.ui.h:63
+msgid "Preferred language:"
+msgstr "Taalvoorkeur:"
+
+#: ../src/me-tv.ui.h:64
+msgid "Record extra after: "
+msgstr "Erna extra opnemen: "
+
+#: ../src/me-tv.ui.h:65
+msgid "Record extra before: "
+msgstr "Ervoor extra opnemen: "
+
+#: ../src/me-tv.ui.h:66
+msgid "Recording directory: "
+msgstr "Map voor opnamen: "
+
+#: ../src/me-tv.ui.h:67
+msgid "Remove colon from recording filenames"
+msgstr "Verwijder de dubbele punt van opnamebestandsnamen"
+
+#: ../src/me-tv.ui.h:68
+msgid "S/N Ratio"
+msgstr "S/N Verhouding"
+
+#: ../src/me-tv.ui.h:69
+msgid "Scan Progress"
+msgstr "Scanvoortgang"
+
+#: ../src/me-tv.ui.h:70
+msgid "Scan using an initial scan file:"
+msgstr "Scan met gebruikmaking van initieel scanbestand:"
+
+#: ../src/me-tv.ui.h:71
+msgid "Scanning/Importing"
+msgstr "Aan het scannen/importeren"
+
+#: ../src/me-tv.ui.h:72
+msgid "See https://launchpad.net/me-tv"
+msgstr "Zie https://launchpad.net/me-tv"
+
+#: ../src/me-tv.ui.h:73
+msgid "Select A Recording Directory"
+msgstr "Selecteer een opnamemap"
+
+#: ../src/me-tv.ui.h:74
+msgid "Select Scan File"
+msgstr "Selecteer  een Scanbestand"
+
+#: ../src/me-tv.ui.h:75
+msgid "Select a channels.conf file"
+msgstr "Selecteer een channels.conf-bestand"
+
+#: ../src/me-tv.ui.h:76
+msgid "Select a file"
+msgstr "Selecteer een bestand"
+
+#: ../src/me-tv.ui.h:77
+msgid "Set \"Always on Top\" at startup"
+msgstr "Laat \"Altijd bovenop\" starten"
+
+#: ../src/me-tv.ui.h:78
+msgid "Show EPG header"
+msgstr "Toon EGP-kop"
+
+#: ../src/me-tv.ui.h:79
+msgid "Show a status icon in the notification area"
+msgstr "Toon een statusicoon in de notification area"
+
+#: ../src/me-tv.ui.h:80
+msgid "Show channel number"
+msgstr "Toon kanaalnummer"
+
+#: ../src/me-tv.ui.h:81
+msgid "Show time on EPG event buttons"
+msgstr "Toon de tijd in de EPG-vakken"
+
+#: ../src/me-tv.ui.h:82
+msgid "Show tooltips for EPG event buttons"
+msgstr "Toon tooltips in de EPG-vakken"
+
+#: ../src/me-tv.ui.h:83
+msgid "Signal Strength"
+msgstr "Signaalsterkte"
+
+#: ../src/me-tv.ui.h:84
+msgid "Start Date:"
+msgstr "Begindatum:"
+
+#: ../src/me-tv.ui.h:85
+msgid "Start Time:"
+msgstr "Starttijd:"
+
+#: ../src/me-tv.ui.h:86
+msgid "Text encoding:"
+msgstr "Tekstcodering:"
+
+#: ../src/me-tv.ui.h:87
+msgid "Title:"
+msgstr "Titel:"
+
+#: ../src/me-tv.ui.h:88
+msgid "Video"
+msgstr "Video"
+
+#: ../src/me-tv.ui.h:89
+msgid "Video driver:"
+msgstr "Videostuurprogramma:"
+
+#: ../src/me-tv.ui.h:90
+msgid ""
+"Your Me TV database is too old to use this version of Me TV.  Would you like "
+"to clear the Me TV database?  All of your channels, EPG events and scheduled "
+"recordings will be <b>deleted</b>.\n"
+"\n"
+"If you've just upgraded Me TV then this is probably what you want to do.\n"
+"\n"
+"<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
+msgstr ""
+"Je Me TV-database is te oud voor deze versie van Me TV. Wil je de Me TV-"
+"database opschonen? Al je kanalen, EPG-items en geplande opnamen zullen "
+"worden <b>gewist</b>.\n"
+"\n"
+"Als je onlangs Me TV hebt opgewaardeerd, is dit waarschijnlijk wat je wilt.\n"
+"\n"
+"<i>De Me TV-database staat op ~/.local/share/me-tv.db.</i>"
+
+#: ../src/me-tv.ui.h:95
+msgid "_Both"
+msgstr "_Beide"
+
+#: ../src/me-tv.ui.h:96
+msgid "_Change View"
+msgstr "_Verander Beeld"
+
+#: ../src/me-tv.ui.h:97
+msgid "_Channels"
+msgstr "_Kanalen"
+
+#: ../src/me-tv.ui.h:98
+msgid "_Delete my old Me TV data!"
+msgstr "_Verwijder mijn oude Me TV-gegevens!"
+
+#: ../src/me-tv.ui.h:99
+msgid "_Devices"
+msgstr "_Apparaten"
+
+#: ../src/me-tv.ui.h:100
+msgid "_File"
+msgstr "_Bestand"
+
+#: ../src/me-tv.ui.h:101
+msgid "_Help"
+msgstr "_Help"
+
+#: ../src/me-tv.ui.h:102
+msgid "_Left"
+msgstr "_Links"
+
+#: ../src/me-tv.ui.h:103
+msgid "_Meters"
+msgstr "_Meters"
+
+#: ../src/me-tv.ui.h:104
+msgid "_Mute"
+msgstr "_Dempen"
+
+#: ../src/me-tv.ui.h:105
+msgid "_Next Channel"
+msgstr "_Volgend Kanaal"
+
+#: ../src/me-tv.ui.h:106
+msgid "_Previous Channel"
+msgstr "_Vorig Kanaal"
+
+#: ../src/me-tv.ui.h:107
+msgid "_Right"
+msgstr "_Rechts"
+
+#: ../src/me-tv.ui.h:108
+msgid "_Schedule"
+msgstr "_Planning"
+
+#: ../src/me-tv.ui.h:109
+msgid "_Subtitle Streams"
+msgstr "_Ondertiteling Streams"
+
+#: ../src/me-tv.ui.h:110
+msgid "_View"
+msgstr "_Beeld"
+
+#: ../src/me-tv.ui.h:111
+msgid "channels"
+msgstr "kanalen"
+
+#: ../src/me-tv.ui.h:112
+msgid "gtk-cancel"
+msgstr "gtk-annuleren"
+
+#: ../src/me-tv.ui.h:113
+msgid "gtk-edit"
+msgstr "gtk-bewerken"
+
+#: ../src/me-tv.ui.h:114
+msgid "gtk-go-back"
+msgstr "gtk-ga-terug"
+
+#: ../src/me-tv.ui.h:115
+msgid "gtk-go-forward"
+msgstr "gtk-ga-vooruit"
+
+#: ../src/me-tv.ui.h:116
+msgid "gtk-ok"
+msgstr "gtk-ok"
+
+#: ../src/me-tv.ui.h:117
+msgid "gtk-quit"
+msgstr "gtk-afsluiten"
+
+#: ../src/application.cc:141
+msgid "Application has already been initialised"
+msgstr "Toepassing is al geïnitialiseerd"
+
+#: ../src/application.cc:160
+msgid "The SQLite version is not thread-safe"
+msgstr "De SQLite-versie is niet thread-safe"
+
+#: ../src/application.cc:497
+msgid "Failed to load default device '%1'"
+msgstr "Het laden van standaardapparaat '%1' is mislukt"
+
+#: ../src/application.cc:572
+msgid "Application has not been initialised"
+msgstr "Toepassing is niet geïnitialiseerd"
+
+#: ../src/application.cc:623
+#, c-format
+msgid "Changing channel to '%s'"
+msgstr "Kanaal wordt veranderd in '%s'"
+
+#: ../src/application.cc:628
+msgid "Already tuned to correct frequency"
+msgstr "Al op de juiste frequentie afgestemd"
+
+#: ../src/application.cc:635
+msgid "You cannot tune to channel '%1' because you are recording."
+msgstr "Je kunt niet op kanaal '%1' afstemmen omdat je aan het opnemen bent."
+
+#: ../src/application.cc:652
+#, c-format
+msgid "Channel changed to %s"
+msgstr "Kanaal veranderd in %s"
+
+#: ../src/application.cc:659
+msgid "Main window has not been created"
+msgstr "Het hoofdvenster is niet gemaakt"
+
+#: ../src/application.cc:795 ../src/application.cc:801
+msgid "Me TV - Error Message"
+msgstr "Me TV - Foutmelding"
+
+#: ../src/application.cc:856
+msgid "Failed to start recording"
+msgstr "Het is niet gelukt met opnemen te beginnen"
+
+#: ../src/channel_manager.cc:243
+msgid "Invalid channel index"
+msgstr "Ongeldige kanaalindex"
+
+#: ../src/channel_manager.cc:255
+msgid "Channel '%1' not found"
+msgstr "Kanaal '%1' niet gevonden"
+
+#: ../src/channel_manager.cc:278
+msgid "Failed to add channel: You cannot have more than %1 channel"
+msgid_plural "Failed to add channel: You cannot have more than %1 channels"
+msgstr[0] "Kanaal toevoegen mislukt: je kunt niet meer dan %1 kanaal hebben"
+msgstr[1] "Kanaal toevoegen mislukt: je kunt niet meer dan %1 kanalen hebben"
+
+#: ../src/channel_manager.cc:406
+#, c-format
+msgid "Failed to set display channel: channel ID %d not found"
+msgstr "Displaykanaal instellen mislukt: kanaal ID %d is niet gevonden"
+
+#: ../src/channel_manager.cc:441
+msgid "Invalid display channel index"
+msgstr "Ongeldige displaykanaalindex"
+
+#: ../src/channels_dialog.cc:51
+msgid "Channel Name"
+msgstr "Kanaalnaam"
+
+#: ../src/channels_dialog.cc:73
+msgid "A channel named '%1' already exists.  Do you want to overwrite it?"
+msgstr "Kanaalnaam '%1' bestaat al. Wil je die overschrijven?"
+
+#: ../src/channels_dialog.cc:77
+msgid "Overwrite existing channel"
+msgstr "Overschrijf bestaand kanaal"
+
+#: ../src/channels_dialog.cc:78
+msgid "Keep existing channel"
+msgstr "Behoud bestaand kanaal"
+
+#: ../src/channels_dialog.cc:79
+msgid "Cancel scan/import"
+msgstr "Annuleer scannen/importeren"
+
+#: ../src/channels_dialog.cc:82
+msgid "Channel conflict"
+msgstr "Kanaalconflict"
+
+#: ../src/data.cc:50 ../src/data.cc:55
+msgid "Failed to prepare statement: %1"
+msgstr "Voorbereiden statement: %1 mislukt"
+
+#: ../src/data.cc:62
+msgid "Prepared statement had remaining data: %1"
+msgstr "Voorbereid statement had resterende data: %1"
+
+#: ../src/data.cc:67
+msgid "Failed to create statement"
+msgstr "Maken statement mislukt"
+
+#: ../src/data.cc:75
+msgid "Failed to finalise statement"
+msgstr "Afronden statement mislukt"
+
+#: ../src/data.cc:105
+msgid "Failed to execute statement: %1"
+msgstr "Uitvoeren statement: %1 mislukt"
+
+#: ../src/data.cc:176
+msgid "Failed to connect to Me TV database '%1'"
+msgstr "Verbinden met Me TV-database '%1' mislukt"
+
+#: ../src/data.cc:246
+msgid "Only integers can be primary keys"
+msgstr "Alleen hele getallen kunnen primaire sleutels zijn"
+
+#: ../src/device_manager.cc:111
+msgid "No frontend has been selected"
+msgstr "Er is geen frontend geselecteerd"
+
+#: ../src/devices_dialog.cc:40
+msgid "Device Name"
+msgstr "Apparaatnaam"
+
+#: ../src/devices_dialog.cc:41
+msgid "Frontend Path"
+msgstr "Pad voor Frontend"
+
+#: ../src/dvb_demuxer.cc:37
+msgid "Failed to open demux device"
+msgstr "Openen van demuxapparaat mislukt"
+
+#: ../src/dvb_demuxer.cc:68
+msgid "Failed to set PES filter"
+msgstr "Instellen van PES-filter mislukt"
+
+#: ../src/dvb_demuxer.cc:87
+msgid "Failed to set section filter for demuxer"
+msgstr "Instellen sectiefilter voor demuxer mislukt"
+
+#: ../src/dvb_demuxer.cc:95
+msgid "Failed to set demuxer buffer size"
+msgstr "Instellen grootte demuxerbuffer mislukt"
+
+#: ../src/dvb_demuxer.cc:103
+msgid "Read timeout"
+msgstr "Tijdsoverschrijding bij lezen"
+
+#: ../src/dvb_demuxer.cc:109
+msgid "Failed to read data from demuxer"
+msgstr "Het lezen van de data van demuxer mislukt"
+
+#: ../src/dvb_demuxer.cc:122
+msgid "Failed to read header"
+msgstr "Lezen van header mislukt"
+
+#: ../src/dvb_demuxer.cc:133
+msgid "Failed to read section"
+msgstr "Lezen van sectie mislukt"
+
+#: ../src/dvb_demuxer.cc:138
+msgid "CRC32 check failed"
+msgstr "Controleren van CRC32 mislukt"
+
+#: ../src/dvb_demuxer.cc:146
+msgid "Failed to stop demuxer"
+msgstr "Stoppen van demuxer mislukt"
+
+#: ../src/dvb_demuxer.cc:161
+msgid "Failed to poll"
+msgstr "Opiniepeiling mislukt"
+
+#: ../src/dvb_frontend.cc:51
+msgid "Failed to open tuner"
+msgstr "Openen van de tuner mislukt"
+
+#: ../src/dvb_frontend.cc:56
+msgid "Failed to get tuner info"
+msgstr "Verkrijgen van tunerinfo mislukt"
+
+#: ../src/dvb_frontend.cc:75
+#, c-format
+msgid "Frontend::tune_to(%d)"
+msgstr "Frontend::tune_to(%d)"
+
+#: ../src/dvb_frontend.cc:112
+msgid "Failed to tune device"
+msgstr "Afstemmen apparaat mislukt"
+
+#: ../src/dvb_frontend.cc:115
+msgid "Waiting for signal lock ..."
+msgstr "Wachten op signaalslot ..."
+
+#: ../src/dvb_frontend.cc:117
+msgid "Got signal lock"
+msgstr "Signaalslot ontvangen"
+
+#: ../src/dvb_frontend.cc:133
+msgid "Failed to set tone off"
+msgstr "Toon uitzetten mislukt"
+
+#: ../src/dvb_frontend.cc:138
+msgid "Failed to set voltage"
+msgstr "Instellen voltage mislukt"
+
+#: ../src/dvb_frontend.cc:144
+msgid "Failed to send master command"
+msgstr "Mastercommando verzenden mislukt"
+
+#: ../src/dvb_frontend.cc:150
+msgid "Failed to send burst"
+msgstr "Burst verzenden mislukt"
+
+#: ../src/dvb_frontend.cc:156
+msgid "Failed to set tone"
+msgstr "Toon instellen mislukt"
+
+#: ../src/dvb_frontend.cc:191
+msgid "Failed to lock to channel"
+msgstr "Kanaal op slot zetten mislukt"
+
+#: ../src/dvb_frontend.cc:200
+msgid "Failed to get signal strength"
+msgstr "Vaststellen signaalsterkte mislukt"
+
+#: ../src/dvb_frontend.cc:210
+msgid "Failed to get signal to noise ratio"
+msgstr "Verkrijgen signaal-ruisverhouding mislukt"
+
+#: ../src/dvb_scanner.cc:276
+msgid "Me TV cannot process a line in the initial tuning file"
+msgstr ""
+"Me TV kan een regel in het initiële afstemmingsbestand niet uitvoeren"
+
+#: ../src/dvb_si.cc:402
+msgid "Failed to convert channel name"
+msgstr "Omzetten kanaalnaam mislukt"
+
+#: ../src/dvb_si.cc:569
+msgid "ASSERT: offset > end_descriptor_offset"
+msgstr "HANDHAAF: offset > end_descriptor_offset"
+
+#: ../src/dvb_si.cc:580
+msgid "ASSERT: offset > end_section_offset"
+msgstr "HANDHAAF: offset > end_section_offset"
+
+#: ../src/dvb_si.cc:837
+msgid "No message"
+msgstr "Geen bericht"
+
+#: ../src/dvb_si.cc:844
+msgid "Failed to convert to UTF-8: %1"
+msgstr "Omzetten naar UTF-8: %1 mislukt"
+
+#: ../src/engine.cc:47
+msgid "Window ID was 0"
+msgstr "Venster ID was 0"
+
+#: ../src/epg_event.cc:58
+msgid "Unknown title"
+msgstr "Onbekende titel"
+
+#: ../src/epg_event.cc:80 ../src/scheduled_recording_dialog.cc:116
+msgid "Unknown description"
+msgstr "Onbekende beschrijving"
+
+#: ../src/epg_event.cc:99 ../src/scheduled_recording.cc:46
+msgid "1 hour"
+msgid_plural "%1 hours"
+msgstr[0] "1 uur"
+msgstr[1] "%1 uren"
+
+#: ../src/epg_event.cc:107 ../src/scheduled_recording.cc:54
+msgid "1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] "1 minuut"
+msgstr[1] "%1 minuten"
+
+#: ../src/epg_thread.cc:71
+msgid "No demuxers"
+msgstr "Geen demuxers"
+
+#: ../src/epg_thread.cc:214
+#, c-format
+msgid "Unknown source_id %u"
+msgstr "Onbekende bron_id %u"
+
+#: ../src/exception.cc:31
+msgid "Failed to get error message"
+msgstr "Foutmelding verkrijgen mislukt"
+
+#: ../src/gtk_epg_widget.cc:298 ../src/gtk_epg_widget.cc:355
+msgid "-"
+msgstr "-"
+
+#: ../src/gtk_epg_widget.cc:298 ../src/gtk_epg_widget.cc:355
+#: ../src/status_icon.cc:85
+msgid "Unknown program"
+msgstr "Programma niet bekend"
+
+#: ../src/main.cc:28
+msgid "Me TV is a digital television viewer for the GNOME desktop"
+msgstr "Me TV is een digitale televisie viewer voor de GNOME desktop"
+
+#: ../src/main.cc:29
+msgid ""
+"Me TV was developed for the modern digital lounge room with a PC for a media "
+"centre that is capable of normal PC tasks (web surfing, word processing and "
+"watching TV). It is not designed to be a full-blown media centre such as "
+"MythTV but will integrate well with an existing GNOME desktop.\n"
+msgstr ""
+"Me TV is ontwikkeld voor de moderne digitale huiskamer met een PC bestemd "
+"voor gebruikelijke PC-taken (websurfing, tekstverwerking en TV-kijken). Het "
+"is niet ontworpen als volledig ontwikkeld mediacentrum zoals MythTV, maar "
+"integreert goed met een bestaande GNOME desktop.\n"
+
+#: ../src/main.cc:58
+msgid "Enable verbose messages"
+msgstr "Sta uitgebreide meldingen toe"
+
+#: ../src/main.cc:63
+msgid "Start in safe mode"
+msgstr "Start in veilige modus"
+
+#: ../src/main.cc:68
+msgid "Start minimised in notification area"
+msgstr "Start geminimaliseerd op in de notification area"
+
+#: ../src/main.cc:73
+msgid ""
+"Set the default DVB frontend device (e.g. /dev/dvb/adapter0/frontend0)"
+msgstr ""
+"Stel het standaard DVB-frontendapparaat in (b.v. /dev/dvb/adapter0/frontend0)"
+
+#: ../src/main.cc:77
+msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
+msgstr ""
+"Schakel de Elektronische ProgrammaGids uit. Me TV zal geen EPG-items meer "
+"verzamelen."
+
+#: ../src/main.cc:81
+msgid "Stops the rendering of the EPG event buttons on the UI."
+msgstr "Stop de weergave van de EPG-vakken op de User Interface."
+
+#: ../src/main.cc:85
+msgid ""
+"How long to wait (in seconds) before timing out while waiting for data from "
+"demuxer (default 15)."
+msgstr ""
+"Hoeveel seconden moet er op data van demuxer worden gewacht (default 15)."
+
+#: ../src/main.cc:87
+msgid "Show Me TV help options"
+msgstr "Toon de helpopties van Me TV"
+
+#: ../src/main.cc:116 ../src/main.cc:117 ../src/scan_dialog.cc:52
+msgid "An unhandled error occurred"
+msgstr "Onafgehandelde fout vond plaats"
+
+#: ../src/main_window.cc:335
+msgid "Failed to poke screensaver"
+msgstr "Benaderen screensaver mislukt"
+
+#: ../src/main_window.cc:563
+msgid "Failed to start engine: Engine has already been started"
+msgstr "Engine starten mislukt: Engine is al gestart"
+
+#: ../src/main_window.cc:638
+msgid "None"
+msgstr "Geen"
+
+#: ../src/main_window.cc:671 ../src/main_window.cc:678
+msgid "Not available"
+msgstr "Niet beschikbaar"
+
+#: ../src/meters_dialog.cc:74
+msgid "Signal Strength (%1%%)"
+msgstr "Signaalsterkte (%1%%)"
+
+#: ../src/meters_dialog.cc:75
+msgid "S/N Ratio (%1%%)"
+msgstr "Signaal-ruisverhouding (%1%%)"
+
+#: ../src/me-tv.cc:63
+msgid "Failed to get time"
+msgstr "Vaststellen tijd mislukt"
+
+#: ../src/me-tv.cc:126
+msgid "Failed to find a value for '%1'"
+msgstr "Geen waarde voor '%1' gevonden"
+
+#: ../src/me-tv.cc:151
+msgid "Failed to find a text value for '%1'"
+msgstr "Geen tekstwaarde voor '%1' gevonden"
+
+#: ../src/me-tv-ui.cc:72
+msgid "Failed to get active text value"
+msgstr "Geen actieve tekstwaarde gevonden"
+
+#: ../src/me-tv-ui.cc:194
+msgid "Failed to get active integer value"
+msgstr ""
+"Het verkrijgen van een actieve waarde in de vorm van een heel getal mislukt"
+
+#: ../src/mpeg_stream.cc:314
+msgid "Failed to find Program Map PID for service"
+msgstr "Geen Program Map PID voor zender gevonden"
+
+#: ../src/mpeg_stream.h:65 ../src/mpeg_stream.h:78 ../src/mpeg_stream.h:103
+msgid "Unknown language"
+msgstr "Onbekende taal"
+
+#: ../src/scan_dialog.cc:31
+msgid "Me TV - Error"
+msgstr "Me TV - Fout"
+
+#: ../src/scan_dialog.cc:99
+msgid "Unknown frontend type"
+msgstr "Onbekend frontend type"
+
+#: ../src/scan_dialog.cc:143
+msgid "Service Name"
+msgstr "Zendernaam"
+
+#: ../src/scan_dialog.cc:232
+msgid "Importing channels"
+msgstr "Kanalen aan het importeren"
+
+#: ../src/scan_dialog.cc:257 ../src/scan_dialog.cc:280
+#: ../src/scan_dialog.cc:299 ../src/scan_dialog.cc:319
+msgid "Invalid parameter count on line %1"
+msgstr "Ongeldig aantal parameters in regel %1"
+
+#: ../src/scan_dialog.cc:334
+msgid ""
+"Failed to import: importing a channels.conf is only supported with DVB-T, "
+"DVB-C, DVB-S and ATSC"
+msgstr ""
+"Importeren mislukt: een channels.conf importeren wordt alleen ondersteund "
+"met DVB-T, DVB-C, DVB-S and ATSC"
+
+#: ../src/scan_dialog.cc:385
+msgid "No tuning file has been selected"
+msgstr "Er is geen afstembestand geselecteerd"
+
+#: ../src/scan_dialog.cc:395
+msgid "Starting scanner"
+msgstr "Scanner wordt gestart"
+
+#: ../src/scan_dialog.cc:453
+msgid "%1/%2 (%3 channels)"
+msgstr "%1/%2 (%3 kanalen)"
+
+#: ../src/scan_dialog.cc:469
+msgid "Scan complete"
+msgstr "Scan voltooid"
+
+#: ../src/scheduled_recording_manager.cc:123
+msgid ""
+"Failed to save scheduled recording because it conflicts with another "
+"scheduled recording called '%1'."
+msgstr ""
+"Het opslaan van geplande opname mislukt omdat die conflicteert met een "
+"andere geplande opname genaamd '%1'."
+
+#: ../src/scheduled_recording_manager.cc:151
+msgid ""
+"Failed to save scheduled recording because you have already have a scheduled "
+"recording called '%1' which is scheduled for the same time on the same "
+"channel."
+msgstr ""
+"Het opslaan van geplande opname mislukt omdat je al een geplande opname "
+"genaamd '%1' hebt die gepland is voor dezelfde tijd op hetzelfde kanaal."
+
+#: ../src/scheduled_recording_manager.cc:288
+msgid "Scheduled recording '%1' not found"
+msgstr "Geplande opname '%1' niet gevonden"
+
+#: ../src/scheduled_recordings_dialog.cc:50
+msgid "Description"
+msgstr "Omschrijving"
+
+#: ../src/scheduled_recordings_dialog.cc:51
+msgid "Channel"
+msgstr "Kanaal"
+
+#: ../src/scheduled_recordings_dialog.cc:52
+msgid "Start Time"
+msgstr "Starttijd"
+
+#: ../src/scheduled_recordings_dialog.cc:53
+msgid "Duration"
+msgstr "Lengte"
+
+#: ../src/scheduled_recordings_dialog.cc:54
+msgid "Device"
+msgstr "Apparaat"
+
+#: ../src/scheduled_recordings_dialog.cc:64
+msgid "No scheduled recording selected"
+msgstr "Geen geplande opname geselecteerd"
+
+#: ../src/stream_manager.cc:270
+msgid "Display stream has not been created"
+msgstr "Displaystream is niet gemaakt"
+
+#: ../src/stream_manager.cc:297
+msgid "Failed to create FIFO '%1'"
+msgstr "Maken van FIFO '%1' mislukt"
+
+#: ../src/stream_manager.cc:304
+msgid "Failed to open FIFO for reading '%1'"
+msgstr "FIFO openen om '%1' te lezen mislukt"
+
+#: ../src/string_splitter.cc:50
+msgid "Index out of bounds"
+msgstr "Index buiten geldig bereik"
+
+#: ../src/thread.cc:49
+msgid " thread has already been started"
+msgstr " thread is al gestart"
