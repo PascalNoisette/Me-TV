@@ -21,6 +21,8 @@
 #include "application.h"
 #include "data.h"
 #include "crc32.h"
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
 
 #define GCONF_PATH					"/apps/me-tv"
 #define CURRENT_DATABASE_VERSION	6
@@ -119,7 +121,6 @@ Application::Application()
 	action_group->add(Gtk::Action::create("action_audio", _("_Audio")));
 	action_group->add(Gtk::Action::create("action_help", _("_Help")));
 	
-	action_group->add(Gtk::Action::create("action_change_view_mode", _("_Change View Mode")));
 	action_group->add(Gtk::Action::create("action_subtitle_streams", _("Subtitles")));
 	action_group->add(Gtk::Action::create("action_audio_streams", _("_Streams")));
 	action_group->add(Gtk::Action::create("action_audio_channels", _("_Channels")));
@@ -675,19 +676,32 @@ void Application::action_after(guint action)
 		action_quit->activate();
 	}
 	else if (action == 2)
-	{
+	{		
 		g_message("Computer Shutdown by Scheduled Recording");
-		try
+
+		GError *error = NULL;
+		DBusGConnection *connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+		if (connection == NULL)
 		{
-			g_debug("shuting down computer");
-			Glib::spawn_command_line_async("sudo shutdown -h now");
+			throw Exception("Failed to get DBus session");
 		}
-		catch(...)
+		
+		DBusGProxy* proxy = dbus_g_proxy_new_for_name (connection,
+			"org.gnome.SessionManager",
+			"/org/gnome/SessionManager",
+			"org.gnome.SessionManager");
+		if (proxy == NULL)
 		{
-			g_message("failed to shutdown");
-			throw Exception(_("Failed to shutdown computer"));
+			throw Exception("Failed to get org.gnome.SessionManager proxy");
 		}
-	}	
+		
+		if (!dbus_g_proxy_call(proxy, "Shutdown", &error, G_TYPE_INVALID, G_TYPE_INVALID))
+		{
+			throw Exception("Failed to call Shutdown method");
+		}
+
+		g_message("Shutdown requested");
+	}
 }
 
 gboolean Application::on_timeout(gpointer data)
