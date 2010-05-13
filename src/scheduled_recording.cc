@@ -25,8 +25,8 @@
 ScheduledRecording::ScheduledRecording()
 {
 	scheduled_recording_id	= 0;
-	recurring_type			= 0;
-	action_after			= 0;
+	recurring_type			= SCHEDULED_RECORDING_RECURRING_TYPE_ONCE;
+	action_after			= SCHEDULED_RECORDING_ACTION_AFTER_NONE;
 	channel_id				= 0;
 	start_time				= 0;
 	duration				= 0;
@@ -92,16 +92,20 @@ gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_record
 	while ( (ctime.back()<srtime.front()+604800 && !type_once_c) || (srtime.back()<ctime.front()+604800 && !type_once_sr) )
 	{
 		// Create the list for the current scheduled_recording
-		if(recurring_type==0)
+		if (recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_ONCE)
 		{
 			type_once_c = true;
 			ctime.push_back(ctime.back());
 		}
-		else if(recurring_type==1)
+		else if (recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYDAY)
+		{
 			ctime.push_back(ctime.back() + 86400);
-		else if(recurring_type==2)
+		}
+		else if (recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYWEEK)
+		{
 			ctime.push_back(ctime.back() + 604800);
-		else if(recurring_type==3)
+		}
+		else if (recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYWEEKDAY)
 		{
 			time_t tim = ctime.back();
 			struct tm *ts;
@@ -117,16 +121,20 @@ gboolean ScheduledRecording::overlaps(const ScheduledRecording& scheduled_record
 		}
 
 		// Create the list for the tested scheduled_recording
-		if(scheduled_recording.recurring_type == 0)
+		if (scheduled_recording.recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_ONCE)
 		{
 			type_once_sr = true;
 			srtime.push_back(srtime.back());
 		}
-		else if(scheduled_recording.recurring_type == 1)
+		else if (scheduled_recording.recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYDAY)
+		{
 			srtime.push_back(srtime.back() + 86400);
-		else if(scheduled_recording.recurring_type == 2)
+		}
+		else if(scheduled_recording.recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYWEEK)
+		{
 			srtime.push_back(srtime.back() + 604800);
-		else if(scheduled_recording.recurring_type == 3)
+		}
+		else if(scheduled_recording.recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYWEEKDAY)
 		{
 			time_t tim = srtime.back();
 			struct tm *ts;

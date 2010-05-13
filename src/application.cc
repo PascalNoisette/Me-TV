@@ -653,13 +653,13 @@ void Application::check_scheduled_recordings()
 			for (ChannelStreamList::iterator j = streams.begin(); j != streams.end(); j++)
 			{
 				ChannelStream& channel_stream = **j;
-				guint srid = scheduled_recording_manager.is_recording(channel_stream.channel);
+				guint scheduled_recording_id = scheduled_recording_manager.is_recording(channel_stream.channel);
 				if (
 				    channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
-					(signed)srid >= 0)
+					(signed)scheduled_recording_id >= 0)
 				{
 					stream_manager.stop_recording(channel_stream.channel);
-					action_after(srid);
+					action_after(scheduled_recording_id);
 					check = true;
 					break;
 				}
@@ -670,12 +670,12 @@ void Application::check_scheduled_recordings()
 
 void Application::action_after(guint action)
 {
-	if (action == 1)
+	if (action == SCHEDULED_RECORDING_ACTION_AFTER_CLOSE)
 	{
 		g_message("Me-TV closed by Scheduled Recording");
 		action_quit->activate();
 	}
-	else if (action == 2)
+	else if (action == SCHEDULED_RECORDING_ACTION_AFTER_SHUTDOWN)
 	{		
 		g_message("Computer Shutdown by Scheduled Recording");
 
