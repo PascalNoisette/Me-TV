@@ -95,7 +95,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 
 	guint now = time(NULL);
 	g_debug("Deleting old scheduled recordings ending before %d", now);
-	Glib::ustring where = Glib::ustring::compose("recurring_type !=0 AND (start_time + duration) < %1", now);
+	Glib::ustring where = Glib::ustring::compose("recurring_type != %1 AND (start_time + duration) < %2", SCHEDULED_RECORDING_RECURRING_TYPE_ONCE, now);
 	data_table = adapter.select_rows(where, "start_time");
 
 	gboolean updated = false;
@@ -104,15 +104,15 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 		Data::Row& row = *i;
 		g_message("ScheduledRecordingManager::save/clear ID: %d", row["scheduled_recording_id"].int_value); 
 
-		if(row["recurring_type"].int_value == 1)
+		if(row["recurring_type"].int_value == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYDAY)
 		{
 			row["start_time"].int_value += 86400;
 		}
-		else if(row["recurring_type"].int_value == 2)
+		else if(row["recurring_type"].int_value == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYWEEK)
 		{
 			row["start_time"].int_value += 604800;
 		}
-		else if(row["recurring_type"].int_value == 3)
+		else if(row["recurring_type"].int_value == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYWEEKDAY)
 		{
 			time_t tim = row["start_time"].int_value;
 			struct tm *ts;
@@ -133,7 +133,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 		adapter.replace_rows(data_table);
 		load(connection);
 	}
-	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1 AND recurring_type = 0", now);
+	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1 AND recurring_type = %2", now, SCHEDULED_RECORDING_RECURRING_TYPE_ONCE);
 	adapter.delete_rows(clause);
 
 	g_debug("Scheduled recordings saved");
@@ -149,9 +149,9 @@ void ScheduledRecordingManager::set_scheduled_recording(EpgEvent& epg_event)
 	
 	scheduled_recording.channel_id				= epg_event.channel_id;
 	scheduled_recording.description				= epg_event.get_title();
-	scheduled_recording.recurring_type			= 0;
-	scheduled_recording.action_after			= 0;
-	scheduled_recording.start_time				= epg_event.start_time - (before * 60);
+	scheduled_recording.recurring_type			= SCHEDULED_RECORDING_RECURRING_TYPE_ONCE;
+	scheduled_recording.action_after			= SCHEDULED_RECORDING_ACTION_AFTER_NONE;
+	scheduled_recording.start_time				= convert_to_utc_time(epg_event.start_time - (before * 60));
 	scheduled_recording.duration				= epg_event.duration + ((before + after) * 60);
 	scheduled_recording.device					= "";
 	
@@ -341,7 +341,7 @@ guint scheduled_recording_now = 0;
 
 guint is_old(ScheduledRecording& scheduled_recording)
 {
-	return (scheduled_recording.get_end_time() < scheduled_recording_now && scheduled_recording.recurring_type == 0);
+	return (scheduled_recording.get_end_time() < scheduled_recording_now && scheduled_recording.recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_ONCE);
 }
 
 ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
@@ -440,9 +440,13 @@ guint ScheduledRecordingManager::is_recording(const Channel& channel)
 	{			
 		ScheduledRecording& scheduled_recording = *i;
 		if (scheduled_recording.is_in(now) && scheduled_recording.channel_id == channel.channel_id)
+		{
 			return -1;
+		}
 		else if (scheduled_recording.is_in(now-60) && scheduled_recording.channel_id == channel.channel_id)
+		{
 			return scheduled_recording.action_after;
+		}
 	}
 	return 0;
 }
