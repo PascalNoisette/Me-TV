@@ -37,6 +37,7 @@ Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
 
 Glib::RefPtr<Gtk::Action> action_about;
 Glib::RefPtr<Gtk::Action> action_channels;
+Glib::RefPtr<Gtk::Action> action_change_view_mode;
 Glib::RefPtr<Gtk::Action> action_epg_event_search;
 Glib::RefPtr<Gtk::Action> action_preferences;
 Glib::RefPtr<Gtk::Action> action_next_channel;

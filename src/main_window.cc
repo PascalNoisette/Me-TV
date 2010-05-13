@@ -154,11 +154,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	toggle_action_fullscreen->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_fullscreen));
 	toggle_action_mute->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_mute));
 
+	action_about->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about));
 	action_channels->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_channels_dialog));
+	action_change_view_mode->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_change_view_mode));
 	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_epg_event_search));
 	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences));
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
-	action_about->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about));
 	
 	dbus_error_init (&dbus_error);
 	dbus_connection = dbus_bus_get (DBUS_BUS_SESSION, &dbus_error);

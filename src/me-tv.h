@@ -67,6 +67,7 @@ extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;
 extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
 
 extern Glib::RefPtr<Gtk::Action> action_channels;
+extern Glib::RefPtr<Gtk::Action> action_change_view_mode;
 extern Glib::RefPtr<Gtk::Action> action_preferences;
 extern Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
 extern Glib::RefPtr<Gtk::Action> action_epg_event_search;

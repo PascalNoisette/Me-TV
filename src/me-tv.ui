@@ -2472,4 +2472,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
       <action-widget response="0">button_edit_channel_save</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkAction" id="action_change_view_mode">
+    <property name="label">Change View Mode</property>
+  </object>
 </interface>
