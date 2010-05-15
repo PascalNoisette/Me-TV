@@ -35,7 +35,7 @@ private:
 	const Glib::RefPtr<Gtk::Builder>	builder;
 	guint								epg_span_hours;
 	guint								epg_page;
-	IntComboBox*						combo_box_epg_page;
+	Gtk::SpinButton*					spin_button_epg_page;
 	Gtk::Label*							label_epg_page;
 	Gtk::Table*							table_epg;
 	Gtk::ScrolledWindow*				scrolled_window_epg;
@@ -47,7 +47,7 @@ private:
 	bool on_button_channel_press_event(GdkEventButton* event, Channel& channel);
 	void on_button_program_clicked(EpgEvent& epg_event);
 	void on_button_channel_clicked(guint channel_id);
-	void on_combo_box_epg_page_changed();
+	void on_spin_button_epg_page_changed();
 		
 	void clear();
 	void update_pages();

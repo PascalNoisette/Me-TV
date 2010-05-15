@@ -48,8 +48,8 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
 	button->signal_clicked().connect(sigc::mem_fun(*this, &GtkEpgWidget::next));
 
 	builder->get_widget("label_epg_page", label_epg_page);
-	builder->get_widget_derived("combo_box_epg_page", combo_box_epg_page);
-	combo_box_epg_page->signal_changed().connect(sigc::mem_fun(*this, &GtkEpgWidget::on_combo_box_epg_page_changed));
+	builder->get_widget("spin_button_epg_page", spin_button_epg_page);
+	spin_button_epg_page->signal_changed().connect(sigc::mem_fun(*this, &GtkEpgWidget::on_spin_button_epg_page_changed));
 }
 
 void GtkEpgWidget::set_offset(gint value)
@@ -73,18 +73,11 @@ void GtkEpgWidget::next()
 	set_offset(offset + (epg_span_hours*60*60));
 }
 
-void GtkEpgWidget::on_combo_box_epg_page_changed()
+void GtkEpgWidget::on_spin_button_epg_page_changed()
 {	
-	if (combo_box_epg_page->get_size() > 0)
+	int epg_page = (int)spin_button_epg_page->get_value();
+	if (epg_page > 0)
 	{
-		try
-		{
-			epg_page = combo_box_epg_page->get_active_value();
-		}
-		catch(...)
-		{
-			g_debug("Ignoring invalid active integer value");
-		}
 		update_table();
 	}
 }
@@ -115,7 +108,11 @@ void GtkEpgWidget::clear()
 void GtkEpgWidget::update_pages()
 {
 	Application& application = get_application();
-	guint epg_page_count = combo_box_epg_page->get_size();
+
+	double min = 0, max = 0;
+	spin_button_epg_page->get_range(min, max);
+	
+	guint epg_page_count = max;
 	guint epg_page_size = application.get_int_configuration_value("epg_page_size");
 
 	if (epg_page_size == 0)
@@ -134,11 +131,11 @@ void GtkEpgWidget::update_pages()
 	
 	if (new_epg_page_count != epg_page_count)
 	{		
-		combo_box_epg_page->set_size(new_epg_page_count);
+		spin_button_epg_page->set_range(0, new_epg_page_count);
 	}
 	
 	label_epg_page->property_visible() = new_epg_page_count > 1;
-	combo_box_epg_page->property_visible() = new_epg_page_count > 1;
+	spin_button_epg_page->property_visible() = new_epg_page_count > 1;
 }
 
 void GtkEpgWidget::update_table()
@@ -452,14 +449,17 @@ bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
-		if (get_application().scheduled_recording_manager.is_recording(epg_event))
+		ScheduledRecordingManager& scheduled_recording_manager = get_application().scheduled_recording_manager;
+
+		if (scheduled_recording_manager.is_recording(epg_event))
 		{
-			get_application().scheduled_recording_manager.remove_scheduled_recording(epg_event);
+			scheduled_recording_manager.remove_scheduled_recording(epg_event);
 		}
 		else
 		{
-			get_application().scheduled_recording_manager.set_scheduled_recording(epg_event);
+			scheduled_recording_manager.set_scheduled_recording(epg_event);
 		}
+
 		get_application().update();
 	}
 
@@ -469,6 +469,5 @@ bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent
 void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 {
 	FullscreenBugWorkaround fullscreen_bug_workaround;
-	EpgEventDialog& epg_event_dialog = EpgEventDialog::create(builder);
-	epg_event_dialog.show_epg_event(epg_event);
+	EpgEventDialog::create(builder).show_epg_event(epg_event);
 }

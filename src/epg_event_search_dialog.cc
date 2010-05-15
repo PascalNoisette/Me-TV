@@ -50,6 +50,8 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
 
 	pixbuf_record = Gtk::Widget::render_icon(Gtk::Stock::MEDIA_RECORD, Gtk::ICON_SIZE_MENU);
 
+	tree_view_epg_event_search->signal_button_press_event().connect(
+	    sigc::mem_fun(*this, &EpgEventSearchDialog::on_button_press_event));
 	tree_view_epg_event_search->signal_row_activated().connect(
 	    sigc::mem_fun(*this, &EpgEventSearchDialog::on_row_activated));
 	list_store_results = Gtk::ListStore::create(results_columns);
@@ -156,16 +158,38 @@ void EpgEventSearchDialog::on_row_activated(const Gtk::TreeModel::Path& tree_mod
 	Gtk::TreeModel::Row row = *(selection->get_selected());
 
 	EpgEvent epg_event = row[results_columns.column_epg_event];
-	if (get_application().scheduled_recording_manager.is_recording(epg_event))
+	EpgEventDialog::create(builder).show_epg_event(epg_event);
+	
+	search();
+}
+
+bool EpgEventSearchDialog::on_button_press_event(GdkEventButton* button)
+{
+	if (button->button == 3)
 	{
-		get_application().scheduled_recording_manager.remove_scheduled_recording(epg_event);
-	}
-	else
-	{
-		get_application().scheduled_recording_manager.set_scheduled_recording(epg_event);
+		Gtk::TreeModel::Path path;
+
+		if (tree_view_epg_event_search->get_path_at_pos(button->x, button->y, path))
+		{
+			Gtk::TreeModel::iterator i = list_store_results->get_iter(path);
+			EpgEvent epg_event = (*i)[results_columns.column_epg_event];
+
+			ScheduledRecordingManager& scheduled_recording_manager = get_application().scheduled_recording_manager;
+
+			if (scheduled_recording_manager.is_recording(epg_event))
+			{
+				scheduled_recording_manager.remove_scheduled_recording(epg_event);
+			}
+			else
+			{
+				scheduled_recording_manager.set_scheduled_recording(epg_event);
+			}
+
+			search();
+		}
 	}
 
-	search();
+	return false;
 }
 
 void EpgEventSearchDialog::on_show()
