@@ -34,7 +34,6 @@ private:
 	gsize								span_seconds;
 	const Glib::RefPtr<Gtk::Builder>	builder;
 	guint								epg_span_hours;
-	guint								epg_page;
 	Gtk::SpinButton*					spin_button_epg_page;
 	Gtk::Label*							label_epg_page;
 	Gtk::Table*							table_epg;

@@ -30,7 +30,6 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
 	Gtk::ScrolledWindow(cobject), builder(builder)
 {
 	offset = 0;
-	epg_page = 0;
 
 	builder->get_widget("table_epg", table_epg);
 	builder->get_widget("scrolled_window_epg", scrolled_window_epg);
@@ -75,11 +74,7 @@ void GtkEpgWidget::next()
 
 void GtkEpgWidget::on_spin_button_epg_page_changed()
 {	
-	int epg_page = (int)spin_button_epg_page->get_value();
-	if (epg_page > 0)
-	{
-		update_table();
-	}
+	update_table();
 }
 
 void GtkEpgWidget::update()
@@ -124,14 +119,9 @@ void GtkEpgWidget::update_pages()
 	guint channel_count = channels.size();
 	guint new_epg_page_count = channel_count == 0 ? 1 : ((channel_count-1) / epg_page_size) + 1;
 	
-	if (epg_page == 0 && new_epg_page_count >= 1)
-	{
-		epg_page = 1;
-	}
-	
 	if (new_epg_page_count != epg_page_count)
 	{		
-		spin_button_epg_page->set_range(0, new_epg_page_count);
+		spin_button_epg_page->set_range(1, new_epg_page_count);
 	}
 	
 	label_epg_page->property_visible() = new_epg_page_count > 1;
@@ -189,6 +179,7 @@ void GtkEpgWidget::update_table()
 		}
 		start_time += timezone;
 
+		gint epg_page = spin_button_epg_page->get_value();
 		guint epg_page_size = get_application().get_int_configuration_value("epg_page_size");
 		gboolean show_channel_number = get_application().get_boolean_configuration_value("show_channel_number");
 		gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
