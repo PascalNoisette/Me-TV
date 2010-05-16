@@ -78,7 +78,7 @@ private:
 
 	void on_show();
 	void on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column);
-	bool on_button_press_event(GdkEventButton* button);
+	void on_event_search_button_press_event(GdkEventButton* button);
 	void add_completion(const Glib::ustring& text);
 	void search();
 public:

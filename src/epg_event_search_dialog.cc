@@ -50,8 +50,8 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
 
 	pixbuf_record = Gtk::Widget::render_icon(Gtk::Stock::MEDIA_RECORD, Gtk::ICON_SIZE_MENU);
 
-	tree_view_epg_event_search->signal_button_press_event().connect(
-	    sigc::mem_fun(*this, &EpgEventSearchDialog::on_button_press_event));
+	tree_view_epg_event_search->signal_button_press_event().connect_notify(
+	    sigc::mem_fun(*this, &EpgEventSearchDialog::on_event_search_button_press_event));
 	tree_view_epg_event_search->signal_row_activated().connect(
 	    sigc::mem_fun(*this, &EpgEventSearchDialog::on_row_activated));
 	list_store_results = Gtk::ListStore::create(results_columns);
@@ -163,7 +163,7 @@ void EpgEventSearchDialog::on_row_activated(const Gtk::TreeModel::Path& tree_mod
 	search();
 }
 
-bool EpgEventSearchDialog::on_button_press_event(GdkEventButton* button)
+void EpgEventSearchDialog::on_event_search_button_press_event(GdkEventButton* button)
 {
 	g_debug("*** Button press event");
 	if (button->button == 3)
@@ -192,8 +192,6 @@ bool EpgEventSearchDialog::on_button_press_event(GdkEventButton* button)
 			search();
 		}
 	}
-
-	return false;
 }
 
 void EpgEventSearchDialog::on_show()
