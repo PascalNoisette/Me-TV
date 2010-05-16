@@ -104,16 +104,16 @@ void GtkEpgWidget::update_pages()
 {
 	Application& application = get_application();
 
-	double min = 0, max = 0;
-	spin_button_epg_page->get_range(min, max);
-	
-	guint epg_page_count = max;
 	guint epg_page_size = application.get_int_configuration_value("epg_page_size");
-
 	if (epg_page_size == 0)
 	{
 		return;
 	}
+
+	double min = 0, max = 0;
+	spin_button_epg_page->get_range(min, max);
+	
+	guint epg_page_count = max;
 	
 	const ChannelArray& channels = application.channel_manager.get_channels();
 	guint channel_count = channels.size();
@@ -179,7 +179,7 @@ void GtkEpgWidget::update_table()
 		}
 		start_time += timezone;
 
-		gint epg_page = spin_button_epg_page->get_value();
+		gint epg_page = spin_button_epg_page->get_value_as_int();
 		guint epg_page_size = get_application().get_int_configuration_value("epg_page_size");
 		gboolean show_channel_number = get_application().get_boolean_configuration_value("show_channel_number");
 		gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
