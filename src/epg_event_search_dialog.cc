@@ -165,16 +165,12 @@ void EpgEventSearchDialog::on_row_activated(const Gtk::TreeModel::Path& tree_mod
 
 void EpgEventSearchDialog::on_event_search_button_press_event(GdkEventButton* button)
 {
-	g_debug("*** Button press event");
 	if (button->button == 3)
 	{
 		Gtk::TreeModel::Path path;
 
-		g_debug("*** Button press == 3");
 		if (tree_view_epg_event_search->get_path_at_pos(button->x, button->y, path))
 		{
-			g_debug ("*** Got path");
-
 			Gtk::TreeModel::iterator i = list_store_results->get_iter(path);
 			EpgEvent epg_event = (*i)[results_columns.column_epg_event];
 
