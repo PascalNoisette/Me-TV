@@ -1,3 +1,10 @@
+2010-05-15  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.2.4
+	* Right-click on EPG events toggles record
+	* Right-click on rows in the EPG event search dialag toggles record
+	* Shutdown after record implemented
+
 2010-05-11  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.2.3
