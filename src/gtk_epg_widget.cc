@@ -179,7 +179,7 @@ void GtkEpgWidget::update_table()
 		}
 		start_time += timezone;
 
-		gint epg_page = spin_button_epg_page->get_value_as_int();
+		gint epg_page = spin_button_epg_page->is_visible() ? spin_button_epg_page->get_value_as_int() : 1;
 		guint epg_page_size = get_application().get_int_configuration_value("epg_page_size");
 		gboolean show_channel_number = get_application().get_boolean_configuration_value("show_channel_number");
 		gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
