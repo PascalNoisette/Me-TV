@@ -40,12 +40,14 @@ private:
 	Glib::StaticRecMutex			mutex;
 		
 public:
-	ChannelStream(ChannelStreamType type, Channel& channel, const Glib::ustring& filename);
+	ChannelStream(ChannelStreamType type, Channel& channel, const Glib::ustring& filename,
+		const Glib::ustring& description = "");
 	~ChannelStream();
 
 	Glib::RefPtr<Glib::IOChannel>	output_channel;
 	Mpeg::Stream					stream;
 	Glib::ustring					filename;
+	Glib::ustring					description;
 	ChannelStreamType				type;
 	Channel&						channel;
 

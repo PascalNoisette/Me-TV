@@ -105,6 +105,7 @@ void StreamManager::start_recording(Channel& channel, const ScheduledRecording& 
 		{
 			frontend_thread.start_recording(channel,
 			    make_recording_filename(channel, scheduled_recording.description),
+                scheduled_recording.description,
 			    true);
 			found = true;
 		}
@@ -162,6 +163,7 @@ void StreamManager::start_recording(Channel& channel)
 				g_debug("Found a frontend already tuned to the correct transponder");
 				frontend_thread.start_recording(channel,
 				    make_recording_filename(channel),
+				    channel.name,
 				    false);
 				
 				found = true;
@@ -185,6 +187,7 @@ void StreamManager::start_recording(Channel& channel)
 					g_debug("Selected idle frontend '%s' for recording", frontend_thread.frontend.get_name().c_str());
 					frontend_thread.start_recording(channel,
 					    make_recording_filename(channel),
+					    channel.name,
 					    false);
 					found = true;
 					break;

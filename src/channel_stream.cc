@@ -29,12 +29,14 @@ public:
 	~Lock() {}
 };
 
-ChannelStream::ChannelStream(ChannelStreamType t, Channel& c, const Glib::ustring& f) : channel(c)
+ChannelStream::ChannelStream(ChannelStreamType t, Channel& c, const Glib::ustring& f,
+	const Glib::ustring& d) : channel(c)
 {
 	g_static_rec_mutex_init(mutex.gobj());
 
 	type = t;
 	filename = f;
+	description = d;
 	output_channel = Glib::IOChannel::create_from_file(filename, "w");
 	output_channel->set_encoding("");
 	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);

@@ -339,7 +339,8 @@ bool is_recording_stream(ChannelStream* channel_stream)
 	return channel_stream->type == CHANNEL_STREAM_TYPE_RECORDING || channel_stream->type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING;
 }
 
-void FrontendThread::start_recording(Channel& channel, const Glib::ustring& filename, gboolean scheduled)
+void FrontendThread::start_recording(Channel& channel, const Glib::ustring& filename,
+	const Glib::ustring& description, gboolean scheduled)
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 	
@@ -414,11 +415,11 @@ void FrontendThread::start_recording(Channel& channel, const Glib::ustring& file
 			setup_dvb(*channel_stream);
 			streams.push_back(channel_stream);
 
-			Glib::ustring message = Glib::ustring::compose(_("Recording started: %1"), filename);
+			Glib::ustring message = Glib::ustring::compose(_("Recording started: %1"), description);
 			get_application().show_notification_message(message, "me-tv-recording");
 		}
 	}
-			
+	
 	g_debug("New recording channel created (%s)", frontend.get_path().c_str());
 }
 
@@ -433,7 +434,8 @@ void FrontendThread::stop_recording(const Channel& channel)
 		ChannelStream* channel_stream = *iterator;
 		if (channel_stream->channel == channel && is_recording_stream(channel_stream))
 		{
-			Glib::ustring message = Glib::ustring::compose(_("Recording stopped: %1"), channel_stream->filename);
+			Glib::ustring message = Glib::ustring::compose(_("Recording stopped: %1"),
+				channel_stream->description);
 
 			delete channel_stream;
 			iterator = streams.erase(iterator);

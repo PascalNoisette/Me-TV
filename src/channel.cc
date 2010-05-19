@@ -25,8 +25,8 @@
 
 Channel::Channel()
 {
-	channel_id		= 0;
-	service_id		= 0;
+	channel_id	= 0;
+	service_id	= 0;
 }
 
 Glib::ustring Channel::get_text()

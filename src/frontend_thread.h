@@ -51,7 +51,8 @@ public:
 	gboolean is_display();
 	gboolean is_recording();
 	gboolean is_recording(const Channel& channel);
-	void start_recording(Channel& channel, const Glib::ustring& filename, gboolean scheduled);
+	void start_recording(Channel& channel, const Glib::ustring& filename,
+		const Glib::ustring& description, gboolean scheduled);
 	void stop_recording(const Channel& channel);
 	guint get_last_epg_update_time();
 	void start();
