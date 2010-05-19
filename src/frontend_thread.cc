@@ -414,7 +414,7 @@ void FrontendThread::start_recording(Channel& channel, const Glib::ustring& file
 			setup_dvb(*channel_stream);
 			streams.push_back(channel_stream);
 
-			Glib::ustring message = Glib::ustring::compose(_("Recording started: %1"), channel_stream->channel.get_text());
+			Glib::ustring message = Glib::ustring::compose(_("Recording started: %1"), filename);
 			get_application().show_notification_message(message, "me-tv-recording");
 		}
 	}
@@ -433,12 +433,12 @@ void FrontendThread::stop_recording(const Channel& channel)
 		ChannelStream* channel_stream = *iterator;
 		if (channel_stream->channel == channel && is_recording_stream(channel_stream))
 		{
+			Glib::ustring message = Glib::ustring::compose(_("Recording stopped: %1"), channel_stream->filename);
+
 			delete channel_stream;
-
-			Glib::ustring message = Glib::ustring::compose(_("Recording stopped: %1"), channel_stream->channel.get_text());
-			get_application().show_notification_message(message);
-
 			iterator = streams.erase(iterator);
+
+			get_application().show_notification_message(message);
 		}
 		else
 		{
