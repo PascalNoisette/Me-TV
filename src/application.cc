@@ -23,6 +23,7 @@
 #include "crc32.h"
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
+#include <libnotify/notify.h>
 
 #define GCONF_PATH					"/apps/me-tv"
 #define CURRENT_DATABASE_VERSION	6
@@ -168,6 +169,21 @@ Application::~Application()
 	}
 
 	g_debug("Application destructor complete");
+}
+
+void Application::show_notification_message(const Glib::ustring& message, const Glib::ustring& icon)
+{
+    NotifyNotification* notification = notify_notification_new (PACKAGE_NAME, message.c_str(), icon.c_str(), NULL);
+    notify_notification_set_timeout (notification, 5000); // 5 seconds
+
+    if (!notify_notification_show (notification, NULL)) 
+    {
+		g_message(_("Failed to send notification"));
+    }
+	else
+	{
+	    g_object_unref(G_OBJECT(notification));
+	}
 }
 
 void Application::on_record()
@@ -672,12 +688,14 @@ void Application::action_after(guint action)
 {
 	if (action == SCHEDULED_RECORDING_ACTION_AFTER_CLOSE)
 	{
-		g_message("Me-TV closed by Scheduled Recording");
+		g_message("Me TV closed by Scheduled Recording");
+		show_notification_message("Me TV closed by Scheduled Recording");
 		action_quit->activate();
 	}
 	else if (action == SCHEDULED_RECORDING_ACTION_AFTER_SHUTDOWN)
 	{		
-		g_message("Computer Shutdown by Scheduled Recording");
+		g_message("Computer shutdown by scheduled recording");
+		show_notification_message("Computer shutdown by scheduled recording");
 
 		GError *error = NULL;
 		DBusGConnection *connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);

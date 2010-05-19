@@ -83,7 +83,8 @@ public:
 	Data::Schema			get_schema() const { return schema; }
 
 	void show_error_dialog(const Glib::ustring& message);
-
+	void show_notification_message(const Glib::ustring& message, const Glib::ustring& icon = "me-tv");
+		
 	const Glib::ustring& get_database_filename();
 	void update();
 		
