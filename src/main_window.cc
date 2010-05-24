@@ -162,12 +162,11 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
 	
 	dbus_error_init (&dbus_error);
-	dbus_connection = dbus_bus_get (DBUS_BUS_SESSION, &dbus_error);
-	if (!dbus_connection)
+	dbus_connection = dbus_bus_get(DBUS_BUS_SESSION, &dbus_error);
+	if (dbus_connection == NULL)
 	{
 		g_message(_("Failed to connect to the D-BUS daemon: %s"), dbus_error.message);
-		dbus_error_free (&dbus_error);
-		dbus_connection_setup_with_g_main (dbus_connection, NULL);
+		dbus_error_free(&dbus_error);
 	}
 
 	last_motion_time = time(NULL);

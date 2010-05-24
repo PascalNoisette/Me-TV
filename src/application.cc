@@ -174,9 +174,8 @@ Application::~Application()
 void Application::show_notification_message(const Glib::ustring& message, const Glib::ustring& icon)
 {
     NotifyNotification* notification = notify_notification_new (PACKAGE_NAME, message.c_str(), icon.c_str(), NULL);
-    notify_notification_set_timeout (notification, 5000); // 5 seconds
 
-    if (!notify_notification_show (notification, NULL)) 
+    if (!notify_notification_show(notification, NULL)) 
     {
 		g_message(_("Failed to send notification"));
     }
