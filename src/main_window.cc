@@ -814,8 +814,9 @@ void MainWindow::on_mute()
 void MainWindow::set_mute_state(gboolean state)
 {
 	mute_state = state;
-	inhibit_screensaver(state);
-	
+
+	toggle_action_mute->set_icon_name(state ? "audio-volume-muted" : "audio-volume-high");
+
 	if (engine != NULL)
 	{
 		engine->set_mute_state(mute_state);
