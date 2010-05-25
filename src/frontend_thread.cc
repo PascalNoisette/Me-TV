@@ -106,13 +106,15 @@ void FrontendThread::run()
 		}
 		else
 		{
-			usleep(10000);
-
 			try
 			{
 				Lock lock(mutex, __PRETTY_FUNCTION__);
 
-				if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) == Glib::IO_STATUS_NORMAL)
+				if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
+				{
+					usleep(5000);
+				}
+				else
 				{
 					// Insert PAT/PMT every second second
 					time_t now = time(NULL);

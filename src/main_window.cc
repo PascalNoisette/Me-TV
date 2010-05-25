@@ -161,7 +161,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences));
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
 	
-	dbus_error_init (&dbus_error);
+	dbus_error_init(&dbus_error);
 	dbus_connection = dbus_bus_get(DBUS_BUS_SESSION, &dbus_error);
 	if (dbus_connection == NULL)
 	{
@@ -814,6 +814,8 @@ void MainWindow::on_mute()
 void MainWindow::set_mute_state(gboolean state)
 {
 	mute_state = state;
+	inhibit_screensaver(state);
+	
 	if (engine != NULL)
 	{
 		engine->set_mute_state(mute_state);
@@ -898,23 +900,24 @@ void MainWindow::inhibit_screensaver(gboolean activate)
 		const char* reason = "Playing video";
 
 		dbus_message_iter_init_append (message, &iter);
-		dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &application);
-		dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &reason);
+		dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &application);
+		dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &reason);
 
-		reply = dbus_connection_send_with_reply_and_block (dbus_connection, message, -1, &dbus_error);
-		if (dbus_error_is_set (&dbus_error))
+		reply = dbus_connection_send_with_reply_and_block(dbus_connection, message, -1, &dbus_error);
+		if (dbus_error_is_set(&dbus_error))
 		{
-			g_warning ("%s raised:\n %s\n", dbus_error.name, dbus_error.message);
+			g_warning("%s raised:\n %s\n", dbus_error.name, dbus_error.message);
+			dbus_error_free(&dbus_error);
 			reply = NULL;
 		}
 
 		if (reply != NULL)
 		{
-			dbus_message_iter_init (reply, &iter);
-			dbus_message_iter_get_basic (&iter, &cookie);
+			dbus_message_iter_init(reply, &iter);
+			dbus_message_iter_get_basic(&iter, &cookie);
 
-			dbus_message_unref (message);
-			dbus_message_unref (reply);
+			dbus_message_unref(message);
+			dbus_message_unref(reply);
 
 			g_debug("Got Cookie: %d", cookie);
 			g_debug("Screensaver inhibited");
