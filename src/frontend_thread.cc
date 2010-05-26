@@ -112,7 +112,7 @@ void FrontendThread::run()
 
 				if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
 				{
-					usleep(5000);
+					usleep(10000);
 				}
 				else
 				{
