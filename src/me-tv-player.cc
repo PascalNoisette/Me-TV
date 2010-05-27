@@ -97,7 +97,7 @@ int set_audio_channel_state(AudioChannelState state)
 		{
 			if (plugin != NULL)
 			{
-				printf("me-tv-player (xine): Disabling dual language");
+				printf("me-tv-player (xine): Disabling dual language\n");
 				xine_post_wire_audio_port (xine_get_audio_source (stream), audio_port);
 			}
 		}
@@ -134,7 +134,7 @@ int set_audio_channel_state(AudioChannelState state)
 				? : xine_post_output (plugin, xine_post_list_outputs (plugin)[0]);
 			if (plugin_output == NULL)
 			{
-				fprintf(stderr, "me-tv-player (xine): Failed to get xine plugin output for upmix_mono");
+				fprintf(stderr, "me-tv-player (xine): Failed to get xine plugin output for upmix_mono\n");
 				return -1;
 			}
 			
@@ -183,25 +183,25 @@ int set_audio_channel_state(AudioChannelState state)
 
 void set_mute_state(bool mute)
 {
-	printf("me-tv-player (xine): Setting mute state to %s", mute ? "true" : "false");
+	printf("me-tv-player (xine): Setting mute state to %s\n", mute ? "true" : "false");
 	xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, mute ? 0 : 100);
 }
   
 void set_deinterlacer_state(bool deinterlace)
 {
-	printf("me-tv-player (xine): Setting deinterlacer state to %s", deinterlace ? "true" : "false");
+	printf("me-tv-player (xine): Setting deinterlacer state to %s\n", deinterlace ? "true" : "false");
 	xine_set_param(stream, XINE_PARAM_VO_DEINTERLACE, deinterlace);
 }
 
 void set_audio_stream(int channel)
 {
-	printf("me-tv-player (xine): Setting audio channel to %d", channel);
+	printf("me-tv-player (xine): Setting audio channel to %d\n", channel);
 	xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
 }
 
 void set_subtitle_stream(int channel)
 {
-	printf("me-tv-player (xine): Setting subtitle channel to %d", channel);
+	printf("me-tv-player (xine): Setting subtitle channel to %d/n", channel);
 	xine_set_param(stream, XINE_PARAM_SPU_CHANNEL, channel);
 }
 
