@@ -4,6 +4,7 @@
 	* Added libnotify messages
 	* Fixed EPG event dialog not updating due to unencoded XML
 	* Fixed crash bug on right-click channel record
+	* Added LT scan range
 
 2010-05-15  Michael Lamothe <michael.lamothe@gmail.com>
 

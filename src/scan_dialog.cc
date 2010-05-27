@@ -159,6 +159,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	combo_box_auto_scan_range->append_text(_("France"),			"FR");
 	combo_box_auto_scan_range->append_text(_("Germany"),		"DE");
 	combo_box_auto_scan_range->append_text(_("Italy"),			"IT");
+	combo_box_auto_scan_range->append_text(_("Lithuania"),		"LT");
 	combo_box_auto_scan_range->append_text(_("New Zealand"),	"NZ");
 	combo_box_auto_scan_range->append_text(_("Spain"),			"ES");
 	combo_box_auto_scan_range->append_text(_("Slovenia"),		"SI");
@@ -748,7 +749,7 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, const Glib::ustrin
 			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K;
 			add_scan_range(474000000, 850000000, 8000000, frontend_parameters);
 		}
-		else if (range == "ES")
+		else if (range == "ES" || range == "LT")
 		{
 			frontend_parameters.u.ofdm.bandwidth		= BANDWIDTH_8_MHZ;
 			add_scan_range(474000000, 858000000, 8000000, frontend_parameters);
