@@ -43,9 +43,9 @@ void EpgEventDialog::show_epg_event(EpgEvent& epg_event)
 	
 	Glib::ustring information = Glib::ustring::compose(
 	    	"<b>%1</b>\n<b><i>%2</i></b>\n<i>%4 (%5)</i>\n\n%3",
-	    	epg_event_text.title,
-	    	epg_event_text.description.empty() ? "" : epg_event_text.subtitle,
-	    	epg_event_text.description.empty() ? epg_event_text.subtitle : epg_event_text.description,
+	    	encode_xml(epg_event_text.title),
+	    	epg_event_text.description.empty() ? "" : encode_xml(epg_event_text.subtitle),
+	    	epg_event_text.description.empty() ? encode_xml(epg_event_text.subtitle) : encode_xml(epg_event_text.description),
 		    epg_event.get_start_time_text() + " - " + get_local_time_text(convert_to_utc_time(end_time), "%H:%M"),
 	    	epg_event.get_duration_text());
 	
