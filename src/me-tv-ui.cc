@@ -25,63 +25,6 @@
 
 Glib::RefPtr<Gtk::UIManager> ui_manager;
 
-Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description)
-{
-	Glib::ustring start_time = get_local_time_text("%c");
-	Glib::ustring filename;
-	Glib::ustring title = description;
-	
-	if (title.empty())
-	{
-		EpgEvent epg_event;
-		if (channel.epg_events.get_current(epg_event))
-		{
-			title = epg_event.get_title();
-		}
-	}
-	
-	if (title.empty())
-	{
-		filename = Glib::ustring::compose
-		(
-			"%1 - %2.mpeg",
-			channel.name,
-			start_time
-		);
-	}
-	else
-	{
-		filename = Glib::ustring::compose
-		(
-			"%1 - %2 - %3.mpeg",
-			title,
-			channel.name,
-			start_time
-		);
-	}
-
-	// Clean filename
-	Glib::ustring::size_type position = Glib::ustring::npos;
-	while ((position = filename.find('/')) != Glib::ustring::npos)
-	{
-		filename.replace(position, 1, "_");
-	}
-
-	if (get_application().get_boolean_configuration_value("remove_colon"))
-	{
-		while ((position = filename.find(':')) != Glib::ustring::npos )
-		{
-			filename.replace(position, 1, "_");
-		}
-	}
-
-	Glib::ustring fixed_filename = Glib::filename_from_utf8(filename);
-	
-	return Glib::build_filename(
-	    get_application().get_string_configuration_value("recording_directory"),
-	    fixed_filename);
-}
-
 ComboBoxText::ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml)
 	: Gtk::ComboBox(cobject)
 {

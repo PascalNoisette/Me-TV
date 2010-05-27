@@ -336,13 +336,69 @@ void FrontendThread::stop_display()
 	}
 }
 
+Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description)
+{
+	Glib::ustring start_time = get_local_time_text("%c");
+	Glib::ustring filename;
+	Glib::ustring title = description;
+	
+	if (title.empty())
+	{
+		EpgEvent epg_event;
+		if (channel.epg_events.get_current(epg_event))
+		{
+			title = epg_event.get_title();
+		}
+	}
+	
+	if (title.empty())
+	{
+		filename = Glib::ustring::compose
+		(
+			"%1 - %2.mpeg",
+			channel.name,
+			start_time
+		);
+	}
+	else
+	{
+		filename = Glib::ustring::compose
+		(
+			"%1 - %2 - %3.mpeg",
+			title,
+			channel.name,
+			start_time
+		);
+	}
+
+	// Clean filename
+	Glib::ustring::size_type position = Glib::ustring::npos;
+	while ((position = filename.find('/')) != Glib::ustring::npos)
+	{
+		filename.replace(position, 1, "_");
+	}
+
+	if (get_application().get_boolean_configuration_value("remove_colon"))
+	{
+		while ((position = filename.find(':')) != Glib::ustring::npos )
+		{
+			filename.replace(position, 1, "_");
+		}
+	}
+
+	Glib::ustring fixed_filename = Glib::filename_from_utf8(filename);
+	
+	return Glib::build_filename(
+	    get_application().get_string_configuration_value("recording_directory"),
+	    fixed_filename);
+}
+
 bool is_recording_stream(ChannelStream* channel_stream)
 {
 	return channel_stream->type == CHANNEL_STREAM_TYPE_RECORDING || channel_stream->type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING;
 }
 
-void FrontendThread::start_recording(Channel& channel, const Glib::ustring& filename,
-	const Glib::ustring& description, gboolean scheduled)
+void FrontendThread::start_recording(Channel& channel, const Glib::ustring& description, gboolean scheduled)
 {
 	Lock lock(mutex, __PRETTY_FUNCTION__);
 	
@@ -413,7 +469,7 @@ void FrontendThread::start_recording(Channel& channel, const Glib::ustring& file
 
 			ChannelStream* channel_stream = new ChannelStream(
 				scheduled ? CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING : CHANNEL_STREAM_TYPE_RECORDING,
-				channel, filename);
+				channel, make_recording_filename(channel, scheduled ? description : ""));
 			setup_dvb(*channel_stream);
 			streams.push_back(channel_stream);
 

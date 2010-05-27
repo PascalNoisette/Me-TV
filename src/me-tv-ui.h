@@ -26,8 +26,6 @@
 #include "dvb_frontend.h"
 #include "channel.h"
 
-Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& description = "");
-
 extern Glib::RefPtr<Gtk::UIManager>	ui_manager;
 
 // This class exists because I can't get Gtk::ComboBoxText to work properly

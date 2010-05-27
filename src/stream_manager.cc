@@ -103,10 +103,21 @@ void StreamManager::start_recording(Channel& channel, const ScheduledRecording& 
 		g_debug("CHECKING: %s", frontend_thread.frontend.get_path().c_str());
 		if (frontend_thread.frontend.get_path() == scheduled_recording.device)
 		{
-			frontend_thread.start_recording(channel,
-			    make_recording_filename(channel, scheduled_recording.description),
-                scheduled_recording.description,
-			    true);
+			gboolean change_channel = false;
+			
+			if (frontend_thread.is_display())
+			{
+				frontend_thread.stop_display();
+				change_channel = true;
+			}
+			
+			frontend_thread.start_recording(channel, scheduled_recording.description, true);
+
+			if (change_channel)
+			{
+				frontend_thread.start_display(channel);
+			}
+			
 			found = true;
 		}
 	}
@@ -161,11 +172,7 @@ void StreamManager::start_recording(Channel& channel)
 			    channel.transponder.frontend_parameters.frequency)
 			{
 				g_debug("Found a frontend already tuned to the correct transponder");
-				frontend_thread.start_recording(channel,
-				    make_recording_filename(channel),
-				    channel.name,
-				    false);
-				
+				frontend_thread.start_recording(channel, channel.name, false);
 				found = true;
 				break;
 			}
@@ -185,10 +192,7 @@ void StreamManager::start_recording(Channel& channel)
 				if (frontend_thread.get_streams().empty())
 				{
 					g_debug("Selected idle frontend '%s' for recording", frontend_thread.frontend.get_name().c_str());
-					frontend_thread.start_recording(channel,
-					    make_recording_filename(channel),
-					    channel.name,
-					    false);
+					frontend_thread.start_recording(channel, channel.name, false);
 					found = true;
 					break;
 				}
