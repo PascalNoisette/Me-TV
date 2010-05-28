@@ -628,8 +628,8 @@ void MainWindow::play(const Glib::ustring& mrl)
 
 	if (!preferred_language.empty())
 	{
-		g_debug("*** Preferred language has been set, waiting 1 second for player to start");
-		usleep(1000000);
+		g_debug("*** Preferred language has been set, waiting 3 second for player to start");
+		usleep(3000000);
 	}
 	
 	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_audio/action_audio_streams"))->get_submenu();
