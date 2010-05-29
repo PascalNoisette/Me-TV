@@ -380,26 +380,7 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 			
 			if (record)
 			{
-				gboolean conflict = false;
-				for (ScheduledRecordingList::iterator i = results.begin(); i != results.end(); i++)
-				{
-					ScheduledRecording& scheduled_recording_test = *i;
-
-					Dvb::Transponder& t1 = get_application().channel_manager.get_channel_by_id(scheduled_recording_test.channel_id).transponder;
-					Dvb::Transponder& t2 = get_application().channel_manager.get_channel_by_id(scheduled_recording.channel_id).transponder;
-
-					if (t1 != t2)
-					{
-						conflict = true;
-						g_debug("Conflict!");
-						break;
-					}
-				}
-				
-				if (!conflict)
-				{
-					results.push_back(scheduled_recording);
-				}
+				results.push_back(scheduled_recording);
 			}
 		}
 	}
