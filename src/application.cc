@@ -729,19 +729,25 @@ gboolean Application::on_timeout(gpointer data)
 gboolean Application::on_timeout()
 {
 	static guint last_seconds = 60;
-	
-	guint now = time(NULL);
-	
-	guint seconds = now % 60;
-	if (last_seconds > seconds)
+
+	try
 	{
-		check_scheduled_recordings();
-		scheduled_recording_manager.save(connection);
-		channel_manager.prune_epg();
-		channel_manager.save(connection);
-		update();
+		guint now = time(NULL);
+		guint seconds = now % 60;
+		if (last_seconds > seconds)
+		{
+			check_scheduled_recordings();
+			scheduled_recording_manager.save(connection);
+			channel_manager.prune_epg();
+			channel_manager.save(connection);
+			update();
+		}
+		last_seconds = seconds;
 	}
-	last_seconds = seconds;
+	catch(...)
+	{
+		on_error();
+	}
 	
 	return true;
 }
