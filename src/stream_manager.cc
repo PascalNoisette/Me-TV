@@ -103,21 +103,7 @@ void StreamManager::start_recording(Channel& channel, const ScheduledRecording& 
 		g_debug("CHECKING: %s", frontend_thread.frontend.get_path().c_str());
 		if (frontend_thread.frontend.get_path() == scheduled_recording.device)
 		{
-			gboolean change_channel = false;
-			
-			if (frontend_thread.is_display())
-			{
-				frontend_thread.stop_display();
-				change_channel = true;
-			}
-			
 			frontend_thread.start_recording(channel, scheduled_recording.description, true);
-
-			if (change_channel)
-			{
-				frontend_thread.start_display(channel);
-			}
-			
 			found = true;
 		}
 	}
