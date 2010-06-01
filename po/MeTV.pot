@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-30 15:16-0400\n"
+"POT-Creation-Date: 2010-06-01 18:06-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1005,7 +1005,7 @@ msgid "Failed to open FIFO for reading '%1'"
 msgstr ""
 
 #: ../src/frontend_thread.cc:315
-msgid "Watching: %1"
+msgid "Now showing: %1"
 msgstr ""
 
 #: ../src/frontend_thread.cc:478
@@ -1257,19 +1257,19 @@ msgstr ""
 msgid "Not available"
 msgstr ""
 
-#: ../src/stream_manager.cc:128
+#: ../src/stream_manager.cc:114
 msgid "Failed to find frontend '%1' for scheduled recording"
 msgstr ""
 
-#: ../src/stream_manager.cc:203 ../src/stream_manager.cc:286
+#: ../src/stream_manager.cc:189 ../src/stream_manager.cc:272
 msgid "Failed to get available frontend"
 msgstr ""
 
-#: ../src/stream_manager.cc:324
+#: ../src/stream_manager.cc:310
 msgid "Failed to get display stream"
 msgstr ""
 
-#: ../src/stream_manager.cc:371
+#: ../src/stream_manager.cc:357
 msgid "Failed to get display frontend thread"
 msgstr ""
 

@@ -7,445 +7,380 @@ msgid ""
 msgstr ""
 "Project-Id-Version: trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-05 21:17+0200\n"
-"PO-Revision-Date: 2009-02-05 21:17+0200\n"
-"Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
+"POT-Creation-Date: 2010-05-30 15:16-0400\n"
+"PO-Revision-Date: 2010-05-30 23:02+0000\n"
+"Last-Translator: Timo Jyrinki <timo.jyrinki@gmail.com>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-06-01 22:08+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../me-tv.schemas.in.h:1
+msgid ""
+"By default, the EPG header is visible but disabling it can minimise screen "
+"real estate by reducing the vertical EPG size."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:2
+msgid "Display a channel number next to the channel name in the EPG."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:3
+msgid "Display the time span in the EPG buttons."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:4
+msgid "Displays the date/time header in the EPG"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:5
+msgid "Drop out of fullscreen mode when showing dialogs"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:6
+msgid ""
+"Extra default time (in minutes) to append to the end of a scheduled recording"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:7
+msgid ""
+"Extra default time (in minutes) to append to the end of a scheduled "
+"recording. This default value can be overriden when setting up a scheduled "
+"recording."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:8
+msgid ""
+"Extra default time (in minutes) to append to the start of a scheduled "
+"recording"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:9
+msgid ""
+"Extra default time (in minutes) to append to the start of a scheduled "
+"recording. This default value can be overriden when setting up a scheduled "
+"recording."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:10
+msgid ""
+"If more than one stream is available in a different language then Me TV will "
+"use the preffered one."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:11
+msgid ""
+"If you want to reduce the vertical size of your EPG then use this setting in "
+"combination with show_epg_tooltips."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:12
+msgid ""
+"Me TV uses libvlc to play sound, this setting tells libvlc which mechanism "
+"to use when playing sound."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:13
+msgid ""
+"Me TV uses libvlc to render video, this setting tells libvlc which mechanism "
+"to use when drawing."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:14
+msgid ""
+"Most digital video is transmitted in an interlaced format which should be "
+"corrected before viewing. Options are \"none\", \"standard\", \"tvtime\""
+msgstr ""
+
+#: ../me-tv.schemas.in.h:15
+msgid ""
+"Most of the time the text encoding can be automatically determined but "
+"sometimes it needs a hint such as iso6937."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:16
+msgid "Preferred language to us when selecting streams."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:17
+msgid "Recent EPG event searches"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:18
+msgid "Remove the colon ':' from the recording filename"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:19
+msgid "Sets the \"Always On Top\" attribute on the main window."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:20
+msgid "Sets the audio driver for libvlc to use."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:21
+msgid "Sets the video driver for the player to use."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:22
+msgid "Show a tool tip when hovering over an EPG event."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:23
+msgid ""
+"Some file systems do not support a colon in a filename (e.g. FAT32). This "
+"option tells Me TV to remove it from the recording filename."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:24
+msgid ""
+"Some window managers don't like showing dialogs such as the EPG dialog over "
+"a fullscreen, \"Always On Top\" window such as the main window. This option "
+"tells Me TV to come out of fullscreen mode while those dialogs are shown and "
+"return to fullscreen mode when the dialog is closed."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:25
+msgid "Tells Me TV to display an icon the notification area."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:26
+msgid "The directory to use for recordings."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:27
+msgid ""
+"The directory to use for recordings. This value defaults to the users home "
+"directory."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:28
+msgid "The height of the window before Me TV was last closed"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:29
+msgid ""
+"The height of the window before Me TV was last closed. Me TV uses this value "
+"to try to restore the main window to its previous geometry."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:30
+msgid "The last channel tuned to."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:31
+msgid ""
+"The number of channels to show before paging, this is deliberately set low "
+"to reduce preformance issues."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:32
+msgid "The number of channels to show before paging."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:33
+msgid "The number of hours for the EPG to span on one page."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:34
+msgid "The text endoding that the DVB information is in."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:35
+msgid "The width of the window before Me TV was last closed"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:36
+msgid ""
+"The width of the window before Me TV was last closed. Me TV uses this value "
+"to try to restore the main window to its previous geometry."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:37
+msgid "The x position of the window before Me TV was last closed"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:38
+msgid ""
+"The x position of the window before Me TV was last closed. Me TV uses this "
+"value to try to restore the main window to its previous geometry."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:39
+msgid "The y position of the window before Me TV was last closed"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:40
+msgid ""
+"The y position of the window before Me TV was last closed. Me TV uses this "
+"value to try to restore the main window to its previous geometry."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:41
+msgid ""
+"This is used to store what channel the user was last watching so it can be "
+"returned when restarting."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:42
+msgid "This will show the timespan of an EPG event in a tooltip."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:43
+msgid ""
+"When this setting is false Me TV will terminate when the main window is "
+"closed."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:44
+msgid "Whether the video should be deinterlaced."
+msgstr ""
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
 msgstr "Digitaalisen television (DVB) katseluohjelma Gnomelle"
 
-#: ../me-tv.desktop.in.h:2 ../src/me-tv.glade.h:34
+#: ../me-tv.desktop.in.h:2
 msgid "Me TV"
 msgstr "Me TV"
 
-#: ../src/application.cc:39
-msgid "Application has already been initialised"
-msgstr "Sovellus on jo alustettu"
-
-#: ../src/application.cc:271
-msgid "Application has not been initialised"
-msgstr "Sovellusta ei ole alustettu"
-
-#: ../src/application.cc:358
-msgid "Main window has not been created"
-msgstr "Pääikkunaa ei ole luotu"
-
-#: ../src/application.cc:479
-msgid "No channel to make recording filename"
-msgstr "Ei kanavaa, josta tehdä nauhoituksen tiedostonimi"
-
-#: ../src/application.cc:553
-msgid "Stream thread has not been created"
-msgstr "Virtasäiettä ei ole luotu"
-
-#: ../src/application.cc:578
-msgid ""
-"You are trying to stop a scheduled recording.  Would you like Me TV to "
-"delete the scheduled recording?"
-msgstr ""
-"Olet pysäyttämässä ajastettua nauhoitusta. Haluatko Me TV:n poistavan "
-"kyseisen ajastetun nauhoituksen?"
-
-#: ../src/data.cc:147 ../src/data.cc:151
-msgid "Failed to prepare statement: %1"
-msgstr ""
-
-#: ../src/data.cc:157
-msgid "Prepare statement had remaining data: %1"
-msgstr ""
-
-#: ../src/data.cc:162
-msgid "Failed to create statement"
-msgstr ""
-
-#: ../src/data.cc:170
-msgid "Failed to finalise statement"
-msgstr ""
-
-#: ../src/data.cc:205
-msgid "Failed to connect to Me TV database"
-msgstr "Me TV -tietokantaan yhdistäminen epäonnistui"
-
-#: ../src/data.cc:297
-msgid "ASSERT: epg_event.channel_id == 0"
-msgstr ""
-
-#: ../src/data.cc:331
-msgid "Failed to get epg_event_id"
-msgstr ""
-
-#: ../src/data.cc:351
-msgid "Event ID was 0"
-msgstr "Tapahtuman tunniste (ID) oli 0"
-
-#: ../src/data.cc:525
-msgid "Invalid channel flag"
-msgstr "Tuntematon kanavalippu"
-
-#: ../src/data.cc:691
-msgid ""
-"Failed to save scheduled recording because it conflicts with another "
-"scheduled recording called '%1'"
-msgstr ""
-
-#: ../src/data.cc:719
-msgid "ASSERT: scheduled_recording.scheduled_recording_id == 0"
-msgstr ""
-
-#: ../src/device_manager.cc:24
-msgid "There are no available DVB tuner devices"
-msgstr "Saatavilla ei ole DVB-viritinlaitteita"
-
-#: ../src/device_manager.cc:140
-msgid "Failed to get frontend by path"
-msgstr ""
-
-#: ../src/dvb_demuxer.cc:37
-msgid "Failed to open demux device"
-msgstr "Demuksauslaitteen avaaminen epäonnistui"
-
-#: ../src/dvb_demuxer.cc:68
-msgid "Failed to set PES filter"
-msgstr ""
-
-#: ../src/dvb_demuxer.cc:86
-msgid "Failed to set section filter for demuxer"
-msgstr ""
-
-#: ../src/dvb_demuxer.cc:94
-msgid "Failed to set demuxer buffer size"
-msgstr ""
-
-#: ../src/dvb_demuxer.cc:102
-msgid "Timeout while reading"
-msgstr "Aikakatkaisu luettaessa"
-
-#: ../src/dvb_demuxer.cc:108
-msgid "Failed to read data from demuxer"
-msgstr ""
-
-#: ../src/dvb_demuxer.cc:118
-msgid "Failed to stop demuxer"
-msgstr ""
-
-#: ../src/dvb_demuxer.cc:133
-msgid "Failed to poll"
-msgstr ""
-
-#: ../src/dvb_frontend.cc:39
-msgid "Failed to open tuner"
-msgstr "Virittimen avaaminen epäonnistui"
-
-#: ../src/dvb_frontend.cc:44
-msgid "Failed to get tuner info"
-msgstr ""
-
-#: ../src/dvb_frontend.cc:66
-msgid "Failed to tune device"
-msgstr "Laitteen viritys epäonnistui"
-
-#: ../src/dvb_frontend.cc:69
-msgid "Waiting for signal lock ..."
-msgstr "Odotetaan lukitusta signaaliin..."
-
-#: ../src/dvb_frontend.cc:71
-msgid "Got signal lock"
-msgstr "Saatiin lukitus signaaliin"
-
-#: ../src/dvb_frontend.cc:91
-msgid "Failed to set tone off"
-msgstr ""
-
-#: ../src/dvb_frontend.cc:96
-msgid "Failed to set voltage"
-msgstr "Jännitteen asetus epäonnistui"
-
-#: ../src/dvb_frontend.cc:102
-msgid "Failed to send master command"
-msgstr "master-komennon lähetys epäonnistui"
-
-#: ../src/dvb_frontend.cc:108
-msgid "Failed to send burst"
-msgstr "Purskeen lähettäminen epäonnistui"
-
-#: ../src/dvb_frontend.cc:114
-msgid "Failed to set tone"
-msgstr ""
-
-#: ../src/dvb_frontend.cc:143
-msgid "Failed to lock to channel"
-msgstr "Kanavaan lukittuminen epäonnistui"
-
-#: ../src/dvb_frontend.cc:152
-msgid "Failed to get signal strength"
-msgstr "Signaalin vahvuuden saanti epäonnistui"
-
-#: ../src/dvb_frontend.cc:162
-msgid "Failed to get signal to noise ratio"
-msgstr "Signaali-kohinasuhteen saanti epäonnistui"
-
-#: ../src/dvb_scanner.cc:172
-msgid "Me TV cannot process a line in the initial tuning file"
-msgstr "Me TV ei osaa käsitellä riviä alustavassa viritystiedostossa"
-
-#: ../src/dvb_si.cc:129
-msgid "Failed to read header"
-msgstr ""
-
-#: ../src/dvb_si.cc:138
-msgid "Failed to read section"
-msgstr ""
-
-#: ../src/dvb_si.cc:145
-msgid "CRC32 check failed"
-msgstr ""
-
-#: ../src/dvb_si.cc:542
-msgid "ASSERT: offset > end_descriptor_offset"
-msgstr ""
-
-#: ../src/dvb_si.cc:553
-msgid "ASSERT: offset > end_section_offset"
-msgstr ""
-
-#: ../src/dvb_si.cc:765
-msgid "Failed to convert to UTF-8: %1"
-msgstr "Muuntaminen UTF-8:ksi epäonnistui: %1"
-
-#: ../src/dvb_si.cc:786
-msgid "Failed to convert to UTF-8"
-msgstr "Muuntaminen UTF-8:ksi epäonnistui"
-
-#: ../src/dvb_si.h:163 ../src/dvb_si.h:176 ../src/dvb_si.h:209
-msgid "Unknown language"
-msgstr "Tuntematon kieli"
-
-#: ../src/dvb_transponder.cc:52
-msgid "Failed to find service with service ID %1"
-msgstr "Palvelua palvelutunnisteella (ID) %1 ei löytynyt"
-
-#: ../src/epg_event.cc:41
-msgid "Unknown title"
-msgstr "Tuntematon nimike"
-
-#: ../src/epg_event.cc:63 ../src/scheduled_recording_dialog.cc:101
-msgid "Unknown description"
-msgstr "Tuntematon kuvaus"
-
-#: ../src/epg_event.cc:82 ../src/scheduled_recording.cc:37
-msgid "1 hour"
-msgid_plural "%1 hours"
-msgstr[0] "1 tunti"
-msgstr[1] "%1 tuntia"
-
-#: ../src/epg_event.cc:90 ../src/scheduled_recording.cc:45
-msgid "1 minute"
-msgid_plural "%1 minutes"
-msgstr[0] "1 minuutti"
-msgstr[1] "%1 minuuttia"
-
-#: ../src/epg_thread.cc:72
-msgid "No demuxers"
-msgstr "Ei demuksaajia"
-
-#: ../src/epg_thread.cc:92
-msgid "Failed to poll EIT demuxers"
-msgstr ""
-
-#: ../src/epg_thread.cc:108
-msgid "Failed to get an EIT demuxer with events"
-msgstr ""
-
-#: ../src/epg_thread.cc:233
-msgid "Exiting EPG thread"
-msgstr "Poistutaan EPG-säikeestä"
-
-#: ../src/exception.cc:31
-msgid "Failed to get error message"
-msgstr "Virheviestin saanti epäonnistui"
-
-#: ../src/gtk_epg_widget.cc:200 ../src/gtk_epg_widget.cc:243
-#: ../src/status_icon.cc:61
-msgid "Unknown program"
-msgstr "Tuntematon ohjelma"
-
-#: ../src/channels_dialog.cc:45
-msgid "Channel Name"
-msgstr "Kanavan nimi"
-
-#: ../src/lib_gstreamer_engine.cc:127
-msgid "Failed to create GStreamer element '%1'"
-msgstr "GStreamer-elementin ”%1” luonti epäonnistui"
-
-#: ../src/main.cc:28
-msgid "Me TV is a digital television viewer for the GNOME desktop"
-msgstr "Me TV on digitaalisen television katseluohjelma Gnome-työpöydälle"
-
-#: ../src/main.cc:29
-msgid ""
-"Me TV was developed for the modern digital lounge room with a PC for a media "
-"centre that is capable of normal PC tasks (web surfing, word processing and "
-"watching TV). It is not designed to be a full-blown media centre such as "
-"MythTV but will integrate well with an existing GNOME desktop.\n"
-msgstr ""
-"Me TV kehitettiin nykyaikaisia digitaalisia olohuoneita varten, joissa PC "
-"toimii mediakeskuksena jolla voi tehdä kaikkia tavallisia asioita (WWW-"
-"selaus, tekstinkäsittely ja television katsominen). Sitä ei kehitetty "
-"kokonaiseksi mediakeskusohjelmistoksi, kuten MythTV, mutta se integroituu "
-"hyvin olemassa olevaan Gnome-työpöytään.\n"
-
-#: ../src/main.cc:60
-msgid "Enable verbose messages"
-msgstr "Ota käyttöön suurempi viestien määrä"
-
-#: ../src/main.cc:65
-msgid "Start in safe mode"
-msgstr "Käynnistä turvallisessa tilassa"
-
-#: ../src/main.cc:70
-msgid "Start minimised in notification area"
-msgstr "Käynnistä pienennettynä ilmoitusalueella"
-
-#: ../src/main.cc:72
-msgid "Show Me TV help options"
-msgstr "Näytä Me TV:n ohjevalitsimet"
-
-#: ../src/main.cc:96
-msgid "An unhandled error occurred"
-msgstr "Tapahtui käsittelemätön virhe"
-
-#: ../src/main_window.cc:75
-msgid "Failed to load EPG widget"
-msgstr "EPG-käyttöliittymäelementin lataaminen epäonnistui"
-
-#: ../src/main_window.cc:165
-msgid "No DVB Devices"
-msgstr "Ei DVB-laitteita"
-
-#: ../src/main_window.cc:301
-msgid "Failed to launch help"
-msgstr "Ohjeen käynnistäminen epäonnistui"
-
-#: ../src/main_window.cc:305
-msgid "Failed to launch help: %1"
-msgstr "Ohjeen käynnistäminen epäonnistui: %1"
-
-#: ../src/main_window.cc:506
-msgid "Me TV - It's TV for me computer"
-msgstr "Me TV – TV meikäläisen tietokoneelle"
-
-#: ../src/main_window.cc:518 ../src/main_window.cc:519
-msgid " [Recording]"
-msgstr " [Nauhoitetaan]"
-
-#: ../src/main_window.cc:727
-msgid "Failed to start engine: Engine has already been started"
-msgstr "Moottoria ei voi käynnistää: moottori on jo käynnistetty"
-
-#: ../src/main_window.cc:767
-msgid "Unknown engine type"
-msgstr "Tuntematon moottorin tyyppi"
-
-#: ../src/meters_dialog.cc:71
-msgid "Signal Strength (%1%%)"
-msgstr "Signaalin voimakkkuus (%1%%)"
-
-#: ../src/meters_dialog.cc:72
-msgid "S/N Ratio (%1%%)"
-msgstr "S/N-suhde (%1%%)"
-
-#: ../src/me-tv.cc:59
-msgid "Failed to get time"
-msgstr "Ajan nouto epäonnistui"
-
-#: ../src/me-tv.cc:122
-msgid "Failed to find a value for '%1'"
-msgstr ""
-
-#: ../src/me-tv.cc:147
-msgid "Failed to find a text value for '%1'"
-msgstr ""
-
-#: ../src/me-tv.glade.h:1
+#: ../src/me-tv.ui.h:1
 msgid " hours"
 msgstr " tuntia"
 
-#: ../src/me-tv.glade.h:2
+#: ../src/me-tv.ui.h:2
 msgid " minutes"
 msgstr " minuuttia"
 
-#: ../src/me-tv.glade.h:3
-msgid "192.168.0.255"
-msgstr "192.168.0.255"
+#: ../src/me-tv.ui.h:3
+msgid ":"
+msgstr ""
 
-#: ../src/me-tv.glade.h:4
-msgid "< Previous"
-msgstr "< Edellinen"
+#: ../src/me-tv.ui.h:4
+msgid "<b>Device:</b>"
+msgstr ""
 
-#: ../src/me-tv.glade.h:5
-msgid "Always on top"
-msgstr "Aina päällimmäisenä"
+#: ../src/me-tv.ui.h:5
+msgid ""
+"A channels.conf file is a common file format for storing channels and can be "
+"read by many applications.  You may have one of these from another DVB "
+"application. The <i>scan</i> command line application is the most common way "
+"to generate a channels.conf file."
+msgstr ""
 
-#: ../src/me-tv.glade.h:6
-msgid "Broadcast"
-msgstr "Lähetys"
+#: ../src/me-tv.ui.h:6
+msgid "AU"
+msgstr ""
 
-#: ../src/me-tv.glade.h:7
-msgid "Broadcast address:"
-msgstr "Lähetysosoite:"
+#: ../src/me-tv.ui.h:7
+msgid "Advanced"
+msgstr ""
 
-#: ../src/me-tv.glade.h:8
-msgid "Broadcast port:"
-msgstr "Lähetysportti:"
+#: ../src/me-tv.ui.h:8
+msgid "After:"
+msgstr ""
 
-#: ../src/me-tv.glade.h:9
-msgid "By location"
-msgstr "Sijainnin mukaan"
+#: ../src/me-tv.ui.h:9
+msgid "All"
+msgstr ""
 
-#: ../src/me-tv.glade.h:10
-msgid "Channel Editor"
-msgstr "Kanavamuokkain"
+#: ../src/me-tv.ui.h:10
+msgid ""
+"An initial scan file is used to seed the tuner with some initial parameters "
+"to help it find DVB services.  Many popular initial scan files are available "
+"from the LinuxTV dvb-apps package which is included in most Linux "
+"distributions.  Look for <i>dvb-apps</i> in your package management system."
+msgstr ""
 
-#: ../src/me-tv.glade.h:11
+#: ../src/me-tv.ui.h:11
+msgid "Audio driver:"
+msgstr ""
+
+#: ../src/me-tv.ui.h:12 ../src/scan_dialog.cc:156
+msgid "Australia"
+msgstr ""
+
+#: ../src/me-tv.ui.h:13
+msgid "Auto scan"
+msgstr ""
+
+#: ../src/me-tv.ui.h:14
+msgid "Channel Frequency : "
+msgstr ""
+
+#: ../src/me-tv.ui.h:15
+msgid "Channel Name : "
+msgstr ""
+
+#: ../src/me-tv.ui.h:16
 msgid "Channel:"
 msgstr "Kanava:"
 
-#: ../src/me-tv.glade.h:12
-msgid "Copyright © Michael Lamothe <michael.lamothe@gmail.com>"
-msgstr "Tekijänoikeudet © Michael Lamothe <michael.lamothe@gmail.com>"
+#: ../src/me-tv.ui.h:17
+msgid "Close Me TV"
+msgstr ""
 
-#: ../src/me-tv.glade.h:13
+#: ../src/me-tv.ui.h:18
+msgid "Copyright &#xA9; Michael Lamothe"
+msgstr ""
+
+#: ../src/me-tv.ui.h:19
+msgid "Deinterlace Type:"
+msgstr ""
+
+#: ../src/me-tv.ui.h:20
 msgid "Description:"
 msgstr "Kuvaus:"
 
-#: ../src/me-tv.glade.h:14
+#: ../src/me-tv.ui.h:21
 msgid "Device Text"
 msgstr "Laiteteksti"
 
-#: ../src/me-tv.glade.h:15
-msgid "Device: "
-msgstr "Laite:"
+#: ../src/me-tv.ui.h:22
+msgid "Do Nothing"
+msgstr ""
 
-#: ../src/me-tv.glade.h:16
-msgid "Drag channels to reorder"
-msgstr "Raahaa kanavia muuttaaksesi järjestystä"
+#: ../src/me-tv.ui.h:23
+msgid "Drag and drop the channels to reorder them."
+msgstr ""
 
-#: ../src/me-tv.glade.h:17
+#: ../src/me-tv.ui.h:24
 msgid "Duration:"
 msgstr "Kesto:"
 
-#: ../src/me-tv.glade.h:18
+#: ../src/me-tv.ui.h:25
+msgid "EPG event information"
+msgstr ""
+
+#: ../src/me-tv.ui.h:26
+msgid "EPG page size: "
+msgstr ""
+
+#: ../src/me-tv.ui.h:27
 msgid "EPG span: "
 msgstr "EPG:n aikaväli: "
 
+#: ../src/me-tv.ui.h:28
+msgid "Every day"
+msgstr ""
+
+#: ../src/me-tv.ui.h:29
+msgid "Every week"
+msgstr ""
+
+#: ../src/me-tv.ui.h:30
+msgid "Every weekday"
+msgstr ""
+
+#: ../src/me-tv.ui.h:31
+msgid "Fullscreen workaround"
+msgstr ""
+
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
-#: ../src/me-tv.glade.h:20
+#: ../src/me-tv.ui.h:33
 msgid ""
 "GNU General Public License:\n"
 "\n"
@@ -467,448 +402,1101 @@ msgid ""
 "found in /usr/share/common-licenses/GPL file."
 msgstr ""
 
-#: ../src/me-tv.glade.h:33
+#: ../src/me-tv.ui.h:46
+msgid "IT"
+msgstr ""
+
+#: ../src/me-tv.ui.h:47
 msgid "Import a channels.conf"
 msgstr "Tuo channels.conf"
 
-#: ../src/me-tv.glade.h:35
+#: ../src/me-tv.ui.h:48 ../src/scan_dialog.cc:161
+msgid "Italy"
+msgstr ""
+
+#: ../src/me-tv.ui.h:49
 msgid "Me TV - About"
 msgstr "Me TV - Tietoja"
 
-#: ../src/me-tv.glade.h:36
+#: ../src/me-tv.ui.h:50
 msgid "Me TV - Channels Editor"
 msgstr "Me TV - Kanavamuokkain"
 
-#: ../src/me-tv.glade.h:37
+#: ../src/me-tv.ui.h:51
+msgid "Me TV - EPG Event Search"
+msgstr ""
+
+#: ../src/me-tv.ui.h:52
+msgid "Me TV - Edit Channel"
+msgstr ""
+
+#: ../src/me-tv.ui.h:53
 msgid "Me TV - Main Window"
 msgstr "Me TV - Pääikkuna"
 
-#: ../src/me-tv.glade.h:38
-msgid "Me TV - Meters Window"
-msgstr "Me TV - Mittarit-ikkuna"
-
-#: ../src/me-tv.glade.h:39
+#: ../src/me-tv.ui.h:54
 msgid "Me TV - Preferences Window"
 msgstr "Me TV - Asetukset-ikkuna"
 
-#: ../src/me-tv.glade.h:40
+#: ../src/me-tv.ui.h:55
 msgid "Me TV - Program Details"
 msgstr "Me TV - Ohjelman tiedot"
 
-#: ../src/me-tv.glade.h:41
+#: ../src/me-tv.ui.h:56
 msgid "Me TV - Scan Wizard"
 msgstr "Me TV - Etsintäapulainen"
 
-#: ../src/me-tv.glade.h:42
+#: ../src/me-tv.ui.h:57
 msgid "Me TV - Scheduled Recording"
 msgstr "Me TV - Ajastettu nauhoitus"
 
-#: ../src/me-tv.glade.h:43
+#: ../src/me-tv.ui.h:58
 msgid "Me TV - Scheduled Recordings"
 msgstr "Me TV - Ajastetut nauhoitukset"
 
-#: ../src/me-tv.glade.h:44
+#: ../src/me-tv.ui.h:59
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
 msgstr "Me TV on digitaalisen television (DVB) katseluohjelma Gnomelle"
 
-#: ../src/me-tv.glade.h:45
+#: ../src/me-tv.ui.h:60
 msgid "Me TV project website"
 msgstr "Me TV:n projektisivusto"
 
-#: ../src/me-tv.glade.h:46
-msgid "Mute"
-msgstr "Vaimenna"
+#: ../src/me-tv.ui.h:61
+msgid "Now"
+msgstr ""
 
-#: ../src/me-tv.glade.h:47
-msgid "Next >"
-msgstr "Seuraava >"
+#: ../src/me-tv.ui.h:62
+msgid "Once"
+msgstr ""
 
-#: ../src/me-tv.glade.h:48
-msgid "Open channel editor dialog"
-msgstr "Avaa kanavamuokkaimen valintaikkuna"
+#: ../src/me-tv.ui.h:63
+msgid "Page:"
+msgstr ""
 
-#: ../src/me-tv.glade.h:49
-msgid "Open scheduled recordings dialog"
-msgstr "Avaa ajastettujen nauhoitusten valintaikkuna"
-
-#: ../src/me-tv.glade.h:50
+#: ../src/me-tv.ui.h:64
 msgid "Preferred language:"
 msgstr "Suosittu kieli:"
 
-#: ../src/me-tv.glade.h:51
-msgid "Quit Me TV"
-msgstr "Lopeta Me TV"
-
-#: ../src/me-tv.glade.h:52
+#: ../src/me-tv.ui.h:65
 msgid "Record extra after: "
 msgstr "Nauhoita loppuun lisää: "
 
-#: ../src/me-tv.glade.h:53
+#: ../src/me-tv.ui.h:66
 msgid "Record extra before: "
 msgstr "Nauhoita ennen alkua: "
 
-#: ../src/me-tv.glade.h:54
+#: ../src/me-tv.ui.h:67
 msgid "Recording directory: "
 msgstr "Nauhoituskansio: "
 
-#: ../src/me-tv.glade.h:55
-msgid "Removes selected channels"
-msgstr "Poistaa valitut kanavat"
+#: ../src/me-tv.ui.h:68
+msgid "Recurring:"
+msgstr ""
 
-#: ../src/me-tv.glade.h:56
-msgid "S/N Ratio"
-msgstr "S/N-suhde"
+#: ../src/me-tv.ui.h:69
+msgid "Remove colon from recording filenames"
+msgstr ""
 
-#: ../src/me-tv.glade.h:57
+#: ../src/me-tv.ui.h:70
+msgid "SI"
+msgstr ""
+
+#: ../src/me-tv.ui.h:71
 msgid "Scan Progress"
 msgstr "Etsinnän edistyminen"
 
-#: ../src/me-tv.glade.h:58
-msgid "Scanning ..."
-msgstr "Etsitään..."
+#: ../src/me-tv.ui.h:72
+msgid "Scan using an initial scan file"
+msgstr ""
 
-#: ../src/me-tv.glade.h:59
+#: ../src/me-tv.ui.h:73
 msgid "Scanning/Importing"
 msgstr "Etsitään/tuodaan"
 
-#: ../src/me-tv.glade.h:60
-msgid "Schedule"
-msgstr "Aikataulu"
+#: ../src/me-tv.ui.h:74
+msgid "Search description"
+msgstr ""
 
-#: ../src/me-tv.glade.h:61
+#: ../src/me-tv.ui.h:75
+msgid "Search:"
+msgstr ""
+
+#: ../src/me-tv.ui.h:76
 msgid "See https://launchpad.net/me-tv"
 msgstr "Katso https://launchpad.net/me-tv"
 
-#: ../src/me-tv.glade.h:62
+#: ../src/me-tv.ui.h:77
 msgid "Select A Recording Directory"
 msgstr "Valitse nauhoituskansio"
 
-#: ../src/me-tv.glade.h:63
-msgid "Select Channels"
-msgstr "Valitse kanavat"
-
-#: ../src/me-tv.glade.h:64
+#: ../src/me-tv.ui.h:78
 msgid "Select Scan File"
 msgstr "Valitse etsintä/viritystiedosto"
 
-#: ../src/me-tv.glade.h:65
+#: ../src/me-tv.ui.h:79
 msgid "Select a channels.conf file"
 msgstr "Valitse channels.conf-tiedosto"
 
-#: ../src/me-tv.glade.h:66
-msgid "Select a channels.conf to import"
-msgstr "Valitse tuotava channels.conf"
-
-#: ../src/me-tv.glade.h:67
+#: ../src/me-tv.ui.h:80
 msgid "Select a file"
 msgstr "Valitse tiedosto"
 
-#: ../src/me-tv.glade.h:68
-msgid "Select a file to scan"
-msgstr "Valitse tiedosto josta viritetään"
+#: ../src/me-tv.ui.h:81
+msgid "Set \"Always on Top\" at startup"
+msgstr ""
 
-#: ../src/me-tv.glade.h:69
-msgid "Select a region file to scan"
-msgstr "Valitse aluetiedosto josta viritetään"
-
-#: ../src/me-tv.glade.h:70
-msgid "Select the channels that you want to add."
-msgstr "Valitse lisättävät kanavat."
-
-#: ../src/me-tv.glade.h:71
-msgid "Select your country: "
-msgstr "Valitse maasi: "
-
-#: ../src/me-tv.glade.h:72
-msgid "Select your region: "
-msgstr "Valitse alueesi: "
-
-#: ../src/me-tv.glade.h:73
+#: ../src/me-tv.ui.h:82
 msgid "Show EPG header"
 msgstr "Näytä EPG-tunniste"
 
-#: ../src/me-tv.glade.h:74
-msgid "Show Meters"
-msgstr "Näytä mittarit"
-
-#: ../src/me-tv.glade.h:75
+#: ../src/me-tv.ui.h:83
 msgid "Show a status icon in the notification area"
 msgstr "Näytä tilakuvake ilmoitusalueella"
 
-#: ../src/me-tv.glade.h:76
-msgid "Show meters dialog"
-msgstr "Näytä mittarit-valintaikkuna"
+#: ../src/me-tv.ui.h:84
+msgid "Show channel number"
+msgstr ""
 
-#: ../src/me-tv.glade.h:77
-msgid "Show preferences dialog"
-msgstr "Näytä asetukset-valintaikkuna"
-
-#: ../src/me-tv.glade.h:78
-msgid "Show the About dialog"
-msgstr "Näytä Tietoja-valintaikkuna"
-
-#: ../src/me-tv.glade.h:79
+#: ../src/me-tv.ui.h:85
 msgid "Show time on EPG event buttons"
 msgstr "Näytä aika EPG:n tapahtumapainikkeissa"
 
-#: ../src/me-tv.glade.h:80
+#: ../src/me-tv.ui.h:86
 msgid "Show tooltips for EPG event buttons"
 msgstr "Näytä työkaluvihjeet EPG:n tapahtumapainikkeissa"
 
-#: ../src/me-tv.glade.h:81
-msgid "Signal Strength"
-msgstr "Signaalin voimakkuus"
+#: ../src/me-tv.ui.h:87
+msgid "Shutdown"
+msgstr ""
 
-#: ../src/me-tv.glade.h:82
+#: ../src/me-tv.ui.h:88 ../src/scan_dialog.cc:165
+msgid "Slovenia"
+msgstr ""
+
+#: ../src/me-tv.ui.h:89
 msgid "Start Date:"
 msgstr "Aloituspäivämäärä:"
 
-#: ../src/me-tv.glade.h:83
+#: ../src/me-tv.ui.h:90
 msgid "Start Time:"
 msgstr "Aloitusaika:"
 
-#: ../src/me-tv.glade.h:84
-msgid "Streams"
-msgstr "Virrat"
-
-#: ../src/me-tv.glade.h:85
-msgid "Switch audio streams"
-msgstr "Vaihda äänivirrat"
-
-#: ../src/me-tv.glade.h:86
-msgid "Switch devices"
-msgstr "Vaihda laite"
-
-#: ../src/me-tv.glade.h:87
+#: ../src/me-tv.ui.h:91
 msgid "Text encoding:"
 msgstr "Tekstin koodaus:"
 
-#: ../src/me-tv.glade.h:88
-msgid "Title:"
-msgstr "Nimike:"
+#: ../src/me-tv.ui.h:92
+msgid ""
+"This option will only work if your DVB setup supports auto scanning.  "
+"Currently, this feature is only supported on DVB-T and ATSC devices."
+msgstr ""
 
-#: ../src/me-tv.glade.h:89
-msgid "Toggle broadcasting"
-msgstr "Kytke lähetys"
+#: ../src/me-tv.ui.h:93
+msgid "This program is scheduled for recording."
+msgstr ""
 
-#: ../src/me-tv.glade.h:90
-msgid "Toggle fullscreen mode"
-msgstr "Kytke kokonäyttötila"
+#: ../src/me-tv.ui.h:94
+msgid "Video driver:"
+msgstr ""
 
-#: ../src/me-tv.glade.h:91
-msgid "Toggle mute audio"
-msgstr "Kytke äänen vaimennus"
+#: ../src/me-tv.ui.h:95
+msgid "View Schedule"
+msgstr ""
 
-#: ../src/me-tv.glade.h:92
-msgid "Toggle recording"
-msgstr "Kytke nauhoitus"
+#: ../src/me-tv.ui.h:96
+msgid ""
+"Your Me TV database is too old to use this version of Me TV.  Would you like "
+"to clear the Me TV database?  All of your channels, EPG events and scheduled "
+"recordings will be <b>deleted</b>.\n"
+"\n"
+"If you've just upgraded Me TV then this is probably what you want to do.\n"
+"\n"
+"<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
+msgstr ""
 
-#: ../src/me-tv.glade.h:93
-msgid "Use 24 hour workaround for GnomeDateEdit"
-msgstr "Käytä 24 tunnin kiertokeinoa GnomeDateEdit:lle"
+#: ../src/me-tv.ui.h:101
+msgid "_Delete my old Me TV data!"
+msgstr ""
 
-#: ../src/me-tv.glade.h:94
-msgid "Use both audio channels"
-msgstr "Käytä molempia äänikanavia"
+#: ../src/me-tv.ui.h:102
+msgid "channels"
+msgstr ""
 
-#: ../src/me-tv.glade.h:95
-msgid "What's on now"
-msgstr "Mitä on menossa nyt"
+#: ../src/application.cc:44
+msgid "Application has already been initialised"
+msgstr "Sovellus on jo alustettu"
 
-#: ../src/me-tv.glade.h:96
-msgid "Xine audio driver:"
-msgstr "Xinen ääniajuri:"
+#: ../src/application.cc:59
+msgid "The SQLite version is not thread-safe"
+msgstr ""
 
-#: ../src/me-tv.glade.h:97
-msgid "Xine video driver:"
-msgstr "Xinen videoajuri:"
-
-#: ../src/me-tv.glade.h:98
-msgid "_Audio"
-msgstr "_Ääni"
-
-#: ../src/me-tv.glade.h:99
-msgid "_Both"
-msgstr "_Molemmat"
-
-#: ../src/me-tv.glade.h:100
-msgid "_Broadcast"
-msgstr "_Lähetä"
-
-#: ../src/me-tv.glade.h:101
-msgid "_Channels"
-msgstr "_Kanavat"
-
-#: ../src/me-tv.glade.h:102
-msgid "_Devices"
-msgstr "_Laitteet"
-
-#: ../src/me-tv.glade.h:103
+#: ../src/application.cc:119
 msgid "_File"
 msgstr "_Tiedosto"
 
-#: ../src/me-tv.glade.h:104
-msgid "_Help"
-msgstr "O_hje"
-
-#: ../src/me-tv.glade.h:105
-msgid "_Left"
-msgstr "_Vasen"
-
-#: ../src/me-tv.glade.h:106
-msgid "_Mute"
-msgstr "Vai_menna"
-
-#: ../src/me-tv.glade.h:107
-msgid "_Record"
-msgstr "_Nauhoita"
-
-#: ../src/me-tv.glade.h:108
-msgid "_Right"
-msgstr "_Oikea"
-
-#: ../src/me-tv.glade.h:109
-msgid "_Scheduled Recordings"
-msgstr "Aja_stetut nauhoitukset"
-
-#: ../src/me-tv.glade.h:110
-msgid "_Video"
-msgstr "Ku_va"
-
-#: ../src/me-tv.glade.h:111
+#: ../src/application.cc:120
 msgid "_View"
 msgstr "_Näytä"
 
-#: ../src/profile.cc:58
+#: ../src/application.cc:121
+msgid "_Video"
+msgstr "Ku_va"
+
+#: ../src/application.cc:122
+msgid "_Audio"
+msgstr "_Ääni"
+
+#: ../src/application.cc:123
+msgid "_Help"
+msgstr "O_hje"
+
+#: ../src/application.cc:125
+msgid "Subtitles"
+msgstr ""
+
+#: ../src/application.cc:126
+msgid "_Streams"
+msgstr ""
+
+#: ../src/application.cc:127
+msgid "_Channels"
+msgstr "_Kanavat"
+
+#: ../src/application.cc:130
+msgid "_Both"
+msgstr "_Molemmat"
+
+#: ../src/application.cc:131
+msgid "_Left"
+msgstr "_Vasen"
+
+#: ../src/application.cc:132
+msgid "_Right"
+msgstr "_Oikea"
+
+#: ../src/application.cc:180
+msgid "Failed to send notification"
+msgstr ""
+
+#: ../src/application.cc:206
+msgid "Failed to start recording"
+msgstr ""
+
+#: ../src/application.cc:516
+msgid "Failed to initialise database"
+msgstr ""
+
+#: ../src/application.cc:575
+msgid "Application has not been initialised"
+msgstr "Sovellusta ei ole alustettu"
+
+#: ../src/application.cc:613
+#, c-format
+msgid "Changing channel to '%s'"
+msgstr ""
+
+#: ../src/application.cc:632
+#, c-format
+msgid "Channel changed to %s"
+msgstr ""
+
+#: ../src/application.cc:639
+msgid "Main window has not been created"
+msgstr "Pääikkunaa ei ole luotu"
+
+#: ../src/channel_manager.cc:110 ../src/channel_manager.cc:183
+#: ../src/scan_dialog.cc:90
+msgid "Unknown frontend type"
+msgstr "Tuntematon edustaosan tyyppi"
+
+#: ../src/channel_manager.cc:253
+msgid "Invalid channel index"
+msgstr ""
+
+#: ../src/channel_manager.cc:267
 msgid "Channel '%1' not found"
 msgstr "Kanavaa ”%1” ei löydy"
 
-#: ../src/profile.cc:75
-msgid "Failed to set display channel: channel not found"
-msgstr "Kanavaa ei voi näyttää: kanavaa: ei löytynyt"
-
-#: ../src/profile.cc:99
+#: ../src/channel_manager.cc:290
 msgid "Failed to add channel: You cannot have more than %1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
 msgstr[0] "Kanavaa ei voi lisätä: useampaa kuin %1 kanava ei voi olla"
 msgstr[1] "Kanavaa ei voi lisätä: useampaa kuin %1 kanavaa ei voi olla"
 
-#: ../src/profile.cc:182 ../src/profile.cc:217
-msgid "No channels"
-msgstr "Ei kanavia"
+#: ../src/channels_dialog.cc:55
+msgid "Channel Name"
+msgstr "Kanavan nimi"
 
-#: ../src/profile_manager.cc:42
-msgid "Default"
-msgstr "Oletus"
-
-#: ../src/profile_manager.cc:77
-msgid "Failed to find profile '%1'"
-msgstr "Profiilia ”%1” ei löydy"
-
-#: ../src/profile_manager.cc:85
-msgid "Saving profile data"
-msgstr "Tallennetaan profiilitietoja"
-
-#: ../src/profile_manager.cc:90
-msgid "Profile data saved"
-msgstr "Profiilitiedot tallennettu"
-
-#: ../src/profile_manager.cc:97
-msgid "There is no current profile"
-msgstr "Ei nykyistä profiilia"
-
-#: ../src/scan_window.cc:66
-msgid "Unknown frontend type"
-msgstr "Tuntematon edustaosan tyyppi"
-
-#: ../src/scan_window.cc:105
-msgid "Service Name"
-msgstr "Palvelun nimi"
-
-#: ../src/scan_window.cc:233 ../src/scan_window.cc:262
-msgid "Invalid parameter count on line %1"
-msgstr "Virheellinen parametrien lukumäärä rivillä %1"
-
-#: ../src/scan_window.cc:283
-msgid ""
-"Failed to import: importing a channels.conf is only supported only DVB-T and "
-"ATSC"
+#: ../src/channels_dialog.cc:56
+msgid "Frequency (Hz)"
 msgstr ""
-"Tuonti epäonnistui: channels.conf-tuonti on tuettu vain DVB-T- ja ATSC-"
-"laitteilla"
 
-#: ../src/scan_window.cc:330
-msgid "No scan/import option specified"
-msgstr "Etsintä/tuontivalitsinta ei määritetty"
-
-#: ../src/scan_window.cc:341
-msgid "Failed to scan: scanning is only supported for DVB-T and DVB-C devices"
-msgstr "Etsintä epäonnistui: etsintä on tuettu vain DVB-T- ja DVB-C-laitteilla"
-
-#: ../src/scan_window.cc:346
-msgid "No tuning file has been selected"
-msgstr "Viritystiedostoa ei ole valittu"
-
-#: ../src/scan_window.cc:397
-msgid "Invalid frontend type"
-msgstr "Edustaosan tyyppi ei kelvollinen"
-
-#: ../src/scan_window.cc:427
-msgid "Found 1 channel"
-msgid_plural "Found %1 channels"
-msgstr[0] "Löydettiin 1 kanava"
-msgstr[1] "Löydettiin %1 kanavaa"
-
-#: ../src/scheduled_recording_dialog.cc:97
-msgid "Failed to create scheduled recording dialog: No display channel"
+#: ../src/channels_dialog.cc:78
+msgid "A channel named '%1' already exists.  Do you want to overwrite it?"
 msgstr ""
-"Ajastetun nauhoituksen valintaikkunan luonti epäonnistui: ei näytettävää "
-"kanavaa"
 
-#: ../src/scheduled_recordings_dialog.cc:41
-msgid "Description"
-msgstr "Kuvaus"
+#: ../src/channels_dialog.cc:82
+msgid "Overwrite existing channel"
+msgstr ""
 
-#: ../src/scheduled_recordings_dialog.cc:42
+#: ../src/channels_dialog.cc:83
+msgid "Keep existing channel"
+msgstr ""
+
+#: ../src/channels_dialog.cc:84
+msgid "Cancel scan/import"
+msgstr ""
+
+#: ../src/channels_dialog.cc:87
+msgid "Channel conflict"
+msgstr ""
+
+#: ../src/channels_dialog.cc:156
+msgid "No channel selected"
+msgstr ""
+
+#: ../src/channels_dialog.cc:161
+msgid "Select only one channel"
+msgstr ""
+
+#: ../src/data.cc:50 ../src/data.cc:55
+msgid "Failed to prepare statement: %1"
+msgstr ""
+
+#: ../src/data.cc:62
+msgid "Prepared statement had remaining data: %1"
+msgstr ""
+
+#: ../src/data.cc:67
+msgid "Failed to create statement"
+msgstr ""
+
+#: ../src/data.cc:75
+msgid "Failed to finalise statement"
+msgstr ""
+
+#: ../src/data.cc:105
+msgid "Failed to execute statement: %1"
+msgstr ""
+
+#: ../src/data.cc:176
+msgid "Failed to connect to Me TV database '%1'"
+msgstr ""
+
+#: ../src/data.cc:246
+msgid "Only integers can be primary keys"
+msgstr ""
+
+#: ../src/data.cc:315
+msgid "Failed to create TableAdapter: Table has no columns"
+msgstr ""
+
+#: ../src/device_manager.cc:135
+msgid "There are no DVB devices available"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:37
+msgid "Failed to open demux device"
+msgstr "Demuksauslaitteen avaaminen epäonnistui"
+
+#: ../src/dvb_demuxer.cc:68
+msgid "Failed to set PES filter"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:87
+msgid "Failed to set section filter for demuxer"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:95
+msgid "Failed to set demuxer buffer size"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:103
+msgid "Read timeout"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:109
+msgid "Failed to read data from demuxer"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:122
+msgid "Failed to read header"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:133
+msgid "Failed to read section"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:138
+msgid "CRC32 check failed"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:146
+msgid "Failed to stop demuxer"
+msgstr ""
+
+#: ../src/dvb_demuxer.cc:161
+msgid "Failed to poll"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:51
+msgid "Failed to open tuner"
+msgstr "Virittimen avaaminen epäonnistui"
+
+#: ../src/dvb_frontend.cc:56
+msgid "Failed to get tuner info"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:75
+#, c-format
+msgid "Frontend::tune_to(%d)"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:111
+msgid "Failed to tune device"
+msgstr "Laitteen viritys epäonnistui"
+
+#: ../src/dvb_frontend.cc:114
+msgid "Waiting for signal lock ..."
+msgstr "Odotetaan lukitusta signaaliin..."
+
+#: ../src/dvb_frontend.cc:116
+msgid "Got signal lock"
+msgstr "Saatiin lukitus signaaliin"
+
+#: ../src/dvb_frontend.cc:132
+msgid "Failed to set tone off"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:137
+msgid "Failed to set voltage"
+msgstr "Jännitteen asetus epäonnistui"
+
+#: ../src/dvb_frontend.cc:143
+msgid "Failed to send master command"
+msgstr "master-komennon lähetys epäonnistui"
+
+#: ../src/dvb_frontend.cc:149
+msgid "Failed to send burst"
+msgstr "Purskeen lähettäminen epäonnistui"
+
+#: ../src/dvb_frontend.cc:155
+msgid "Failed to set tone"
+msgstr ""
+
+#: ../src/dvb_frontend.cc:186
+msgid "Failed to lock to channel"
+msgstr "Kanavaan lukittuminen epäonnistui"
+
+#: ../src/dvb_frontend.cc:195
+msgid "Failed to get signal strength"
+msgstr "Signaalin vahvuuden saanti epäonnistui"
+
+#: ../src/dvb_frontend.cc:205
+msgid "Failed to get signal to noise ratio"
+msgstr "Signaali-kohinasuhteen saanti epäonnistui"
+
+#: ../src/dvb_si.cc:411
+msgid "Failed to convert channel name"
+msgstr ""
+
+#: ../src/dvb_si.cc:568
+msgid "ASSERT: offset > end_descriptor_offset"
+msgstr ""
+
+#: ../src/dvb_si.cc:579
+msgid "ASSERT: offset > end_section_offset"
+msgstr ""
+
+#: ../src/dvb_si.cc:794
+msgid "No message"
+msgstr ""
+
+#: ../src/dvb_si.cc:801
+msgid "Failed to convert to UTF-8: %1"
+msgstr "Muuntaminen UTF-8:ksi epäonnistui: %1"
+
+#: ../src/engine.cc:46
+msgid "Window ID was 0"
+msgstr ""
+
+#: ../src/epg_event.cc:80
+msgid "Unknown title"
+msgstr "Tuntematon nimike"
+
+#: ../src/epg_event.cc:81
+msgid "Unknown subtitle"
+msgstr ""
+
+#: ../src/epg_event.cc:82 ../src/scheduled_recording_dialog.cc:126
+msgid "Unknown description"
+msgstr "Tuntematon kuvaus"
+
+#: ../src/epg_event.cc:101 ../src/scheduled_recording.cc:47
+msgid "1 hour"
+msgid_plural "%1 hours"
+msgstr[0] "1 tunti"
+msgstr[1] "%1 tuntia"
+
+#: ../src/epg_event.cc:109 ../src/scheduled_recording.cc:55
+msgid "1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] "1 minuutti"
+msgstr[1] "%1 minuuttia"
+
+#: ../src/epg_event_search_dialog.cc:59
+msgid " "
+msgstr ""
+
+#: ../src/epg_event_search_dialog.cc:60
+msgid "Title"
+msgstr ""
+
+#: ../src/epg_event_search_dialog.cc:61
+#: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
 msgstr "Kanava"
 
-#: ../src/scheduled_recordings_dialog.cc:43
+#: ../src/epg_event_search_dialog.cc:62
+#: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
 msgstr "Aloitusaika"
 
-#: ../src/scheduled_recordings_dialog.cc:44
+#: ../src/epg_event_search_dialog.cc:63
+#: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
 msgstr "Kesto"
 
-#: ../src/scheduled_recordings_dialog.cc:107
-msgid "Failed to get scheduled recording"
-msgstr "Ajastetun nauhoituksen nouto epäonnistui"
+#: ../src/epg_event_search_dialog.cc:78
+msgid "No search text specified"
+msgstr ""
 
-#: ../src/stream_thread.cc:81
+#: ../src/epg_event_search_dialog.cc:143
+msgid "No results"
+msgstr ""
+
+#: ../src/epg_event_search_dialog.cc:155
+msgid "No EPG event selected"
+msgstr ""
+
+#: ../src/epg_events.cc:305
+msgid "EPG event not found"
+msgstr ""
+
+#: ../src/epg_thread.cc:71
+msgid "No demuxers"
+msgstr "Ei demuksaajia"
+
+#: ../src/epg_thread.cc:209
+#, c-format
+msgid "Unknown source_id %u"
+msgstr ""
+
+#: ../src/exception.cc:31
+msgid "Failed to get error message"
+msgstr "Virheviestin saanti epäonnistui"
+
+#: ../src/frontend_thread.cc:300
 msgid "Failed to create FIFO '%1'"
 msgstr ""
 
-#: ../src/stream_thread.cc:88
+#: ../src/frontend_thread.cc:307
 msgid "Failed to open FIFO for reading '%1'"
 msgstr ""
 
-#: ../src/stream_thread.cc:533
-msgid "Failed to find PMT ID for service"
+#: ../src/frontend_thread.cc:315
+msgid "Watching: %1"
 msgstr ""
 
-#: ../src/stream_thread.cc:646
-msgid "Failed to create internet address"
+#: ../src/frontend_thread.cc:478
+msgid "Recording started: %1"
 msgstr ""
 
-#: ../src/stream_thread.cc:652
-msgid "Failed to create socket"
+#: ../src/frontend_thread.cc:497
+msgid "Recording stopped: %1"
 msgstr ""
 
-#: ../src/string_splitter.cc:45
-msgid "Index out of bounds"
+#: ../src/gtk_epg_widget.cc:285 ../src/gtk_epg_widget.cc:340
+msgid "-"
+msgstr ""
+
+#: ../src/gtk_epg_widget.cc:285 ../src/gtk_epg_widget.cc:340
+msgid "Unknown program"
+msgstr "Tuntematon ohjelma"
+
+#: ../src/main.cc:30
+msgid "Me TV is a digital television viewer for the GNOME desktop"
+msgstr "Me TV on digitaalisen television katseluohjelma Gnome-työpöydälle"
+
+#: ../src/main.cc:31
+msgid ""
+"Me TV was developed for the modern digital lounge room with a PC for a media "
+"centre that is capable of normal PC tasks (web surfing, word processing and "
+"watching TV). It is not designed to be a full-blown media centre such as "
+"MythTV but will integrate well with an existing GNOME desktop.\n"
+msgstr ""
+"Me TV kehitettiin nykyaikaisia digitaalisia olohuoneita varten, joissa PC "
+"toimii mediakeskuksena jolla voi tehdä kaikkia tavallisia asioita (WWW-"
+"selaus, tekstinkäsittely ja television katsominen). Sitä ei kehitetty "
+"kokonaiseksi mediakeskusohjelmistoksi, kuten MythTV, mutta se integroituu "
+"hyvin olemassa olevaan Gnome-työpöytään.\n"
+
+#: ../src/main.cc:87
+msgid "Enable verbose messages"
+msgstr "Ota käyttöön suurempi viestien määrä"
+
+#: ../src/main.cc:92
+msgid "Start in safe mode"
+msgstr "Käynnistä turvallisessa tilassa"
+
+#: ../src/main.cc:97
+msgid "Start minimised in notification area"
+msgstr "Käynnistä pienennettynä ilmoitusalueella"
+
+#: ../src/main.cc:101
+msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
+msgstr ""
+
+#: ../src/main.cc:105
+msgid "Stops the rendering of the EPG event buttons on the UI."
+msgstr ""
+
+#: ../src/main.cc:109
+msgid ""
+"How long to wait (in seconds) before timing out while waiting for data from "
+"demuxer (default 5)."
+msgstr ""
+
+#: ../src/main.cc:111
+msgid "Show Me TV help options"
+msgstr "Näytä Me TV:n ohjevalitsimet"
+
+#: ../src/main.cc:154
+msgid "An unhandled error occurred"
+msgstr "Tapahtui käsittelemätön virhe"
+
+#: ../src/main_window.cc:168
+#, c-format
+msgid "Failed to connect to the D-BUS daemon: %s"
+msgstr ""
+
+#: ../src/main_window.cc:204
+msgid "Please stop all recordings before editing channels"
+msgstr ""
+
+#: ../src/main_window.cc:215
+msgid "Cannot update channels while recording"
+msgstr ""
+
+#: ../src/main_window.cc:602
+msgid "Failed to start engine: Engine has already been started"
+msgstr "Moottoria ei voi käynnistää: moottori on jo käynnistetty"
+
+#: ../src/main_window.cc:687
+msgid "None"
+msgstr ""
+
+#: ../src/me-tv.cc:75
+msgid "Failed to get time"
+msgstr "Ajan nouto epäonnistui"
+
+#: ../src/me-tv.cc:153
+msgid "Failed to find a value for '%1'"
+msgstr ""
+
+#: ../src/me-tv.cc:178
+msgid "Failed to find a text value for '%1'"
+msgstr ""
+
+#: ../src/me-tv-ui.cc:88 ../src/me-tv-ui.cc:103
+msgid "Failed to get active text value"
+msgstr ""
+
+#: ../src/me-tv-ui.cc:225
+msgid "Failed to get active integer value"
+msgstr ""
+
+#: ../src/mpeg_stream.cc:317
+msgid "Failed to find Program Map PID for service"
+msgstr ""
+
+#: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
+msgid "Unknown language"
+msgstr "Tuntematon kieli"
+
+#: ../src/scan_dialog.cc:32
+msgid "Me TV - Error"
+msgstr ""
+
+#: ../src/scan_dialog.cc:138
+msgid "Service Name"
+msgstr "Palvelun nimi"
+
+#: ../src/scan_dialog.cc:157
+msgid "Canada"
+msgstr ""
+
+#: ../src/scan_dialog.cc:158
+msgid "Finland"
+msgstr ""
+
+#: ../src/scan_dialog.cc:159
+msgid "France"
+msgstr ""
+
+#: ../src/scan_dialog.cc:160
+msgid "Germany"
+msgstr ""
+
+#: ../src/scan_dialog.cc:162
+msgid "Lithuania"
+msgstr ""
+
+#: ../src/scan_dialog.cc:163
+msgid "New Zealand"
+msgstr ""
+
+#: ../src/scan_dialog.cc:164
+msgid "Spain"
+msgstr ""
+
+#: ../src/scan_dialog.cc:166
+msgid "United Kingdom"
+msgstr ""
+
+#: ../src/scan_dialog.cc:167
+msgid "United States"
+msgstr ""
+
+#: ../src/scan_dialog.cc:295
+msgid "Importing channels"
+msgstr ""
+
+#: ../src/scan_dialog.cc:321 ../src/scan_dialog.cc:343
+#: ../src/scan_dialog.cc:361 ../src/scan_dialog.cc:380
+msgid "Invalid parameter count on line %1"
+msgstr "Virheellinen parametrien lukumäärä rivillä %1"
+
+#: ../src/scan_dialog.cc:394
+msgid ""
+"Failed to import: importing a channels.conf is only supported with DVB-T, "
+"DVB-C, DVB-S and ATSC"
+msgstr ""
+
+#: ../src/scan_dialog.cc:486
+msgid "Me TV cannot process a line in the initial tuning file"
+msgstr "Me TV ei osaa käsitellä riviä alustavassa viritystiedostossa"
+
+#: ../src/scan_dialog.cc:519
+msgid "No tuning file has been selected"
+msgstr "Viritystiedostoa ei ole valittu"
+
+#: ../src/scan_dialog.cc:546
+msgid "Starting scanner"
+msgstr ""
+
+#: ../src/scan_dialog.cc:625
+msgid "%1/%2 (%3 channels)"
+msgstr ""
+
+#: ../src/scan_dialog.cc:652
+msgid "Scan complete"
+msgstr ""
+
+#: ../src/scan_dialog.cc:710
+msgid "No auto scan range was specified"
+msgstr ""
+
+#: ../src/scan_dialog.cc:787
+msgid "Unknown scan range '%1'"
+msgstr ""
+
+#: ../src/scan_dialog.cc:802
+msgid "Auto scanning is only supported on DVB-T and ATSC devices"
+msgstr ""
+
+#: ../src/scheduled_recording_manager.cc:210
+msgid ""
+"Failed to set scheduled recording: There are no devices available at that "
+"time"
+msgstr ""
+
+#: ../src/scheduled_recording_manager.cc:227
+msgid ""
+"Failed to save scheduled recording because it conflicts with another "
+"scheduled recording called '%1'."
+msgstr ""
+
+#: ../src/scheduled_recording_manager.cc:248
+msgid ""
+"Failed to save scheduled recording because you have already have a scheduled "
+"recording called '%1' which is scheduled for the same time on the same "
+"channel."
+msgstr ""
+
+#: ../src/scheduled_recording_manager.cc:408
+msgid "Scheduled recording '%1' not found"
+msgstr ""
+
+#: ../src/scheduled_recordings_dialog.cc:50
+msgid "Description"
+msgstr "Kuvaus"
+
+#: ../src/scheduled_recordings_dialog.cc:54
+msgid "Record"
+msgstr ""
+
+#: ../src/scheduled_recordings_dialog.cc:55
+msgid "After"
+msgstr ""
+
+#: ../src/scheduled_recordings_dialog.cc:56
+msgid "Device"
+msgstr ""
+
+#: ../src/scheduled_recordings_dialog.cc:66
+msgid "No scheduled recording selected"
+msgstr ""
+
+#: ../src/status_icon.cc:110
+msgid "Not available"
+msgstr ""
+
+#: ../src/stream_manager.cc:128
+msgid "Failed to find frontend '%1' for scheduled recording"
+msgstr ""
+
+#: ../src/stream_manager.cc:203 ../src/stream_manager.cc:286
+msgid "Failed to get available frontend"
+msgstr ""
+
+#: ../src/stream_manager.cc:324
+msgid "Failed to get display stream"
+msgstr ""
+
+#: ../src/stream_manager.cc:371
+msgid "Failed to get display frontend thread"
 msgstr ""
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
 msgstr " säie on jo käynnistetty"
+
+#~ msgid "No channel to make recording filename"
+#~ msgstr "Ei kanavaa, josta tehdä nauhoituksen tiedostonimi"
+
+#~ msgid "Stream thread has not been created"
+#~ msgstr "Virtasäiettä ei ole luotu"
+
+#~ msgid ""
+#~ "You are trying to stop a scheduled recording.  Would you like Me TV to "
+#~ "delete the scheduled recording?"
+#~ msgstr ""
+#~ "Olet pysäyttämässä ajastettua nauhoitusta. Haluatko Me TV:n poistavan "
+#~ "kyseisen ajastetun nauhoituksen?"
+
+#~ msgid "Failed to connect to Me TV database"
+#~ msgstr "Me TV -tietokantaan yhdistäminen epäonnistui"
+
+#~ msgid "Event ID was 0"
+#~ msgstr "Tapahtuman tunniste (ID) oli 0"
+
+#~ msgid "Invalid channel flag"
+#~ msgstr "Tuntematon kanavalippu"
+
+#~ msgid "Failed to convert to UTF-8"
+#~ msgstr "Muuntaminen UTF-8:ksi epäonnistui"
+
+#~ msgid "Failed to find service with service ID %1"
+#~ msgstr "Palvelua palvelutunnisteella (ID) %1 ei löytynyt"
+
+#~ msgid "Failed to create GStreamer element '%1'"
+#~ msgstr "GStreamer-elementin ”%1” luonti epäonnistui"
+
+#~ msgid "Failed to load EPG widget"
+#~ msgstr "EPG-käyttöliittymäelementin lataaminen epäonnistui"
+
+#~ msgid "No DVB Devices"
+#~ msgstr "Ei DVB-laitteita"
+
+#~ msgid "Failed to launch help"
+#~ msgstr "Ohjeen käynnistäminen epäonnistui"
+
+#~ msgid "Failed to launch help: %1"
+#~ msgstr "Ohjeen käynnistäminen epäonnistui: %1"
+
+#~ msgid "Unknown engine type"
+#~ msgstr "Tuntematon moottorin tyyppi"
+
+#~ msgid "< Previous"
+#~ msgstr "< Edellinen"
+
+#~ msgid "Always on top"
+#~ msgstr "Aina päällimmäisenä"
+
+#~ msgid "Broadcast"
+#~ msgstr "Lähetys"
+
+#~ msgid "By location"
+#~ msgstr "Sijainnin mukaan"
+
+#~ msgid "Channel Editor"
+#~ msgstr "Kanavamuokkain"
+
+#~ msgid "Copyright © Michael Lamothe <michael.lamothe@gmail.com>"
+#~ msgstr "Tekijänoikeudet © Michael Lamothe <michael.lamothe@gmail.com>"
+
+#~ msgid "Device: "
+#~ msgstr "Laite: "
+
+#~ msgid "Drag channels to reorder"
+#~ msgstr "Raahaa kanavia muuttaaksesi järjestystä"
+
+#~ msgid "Mute"
+#~ msgstr "Vaimenna"
+
+#~ msgid "Next >"
+#~ msgstr "Seuraava >"
+
+#~ msgid "Open channel editor dialog"
+#~ msgstr "Avaa kanavamuokkaimen valintaikkuna"
+
+#~ msgid "Open scheduled recordings dialog"
+#~ msgstr "Avaa ajastettujen nauhoitusten valintaikkuna"
+
+#~ msgid "Quit Me TV"
+#~ msgstr "Lopeta Me TV"
+
+#~ msgid "Removes selected channels"
+#~ msgstr "Poistaa valitut kanavat"
+
+#~ msgid "Scanning ..."
+#~ msgstr "Etsitään..."
+
+#~ msgid "Schedule"
+#~ msgstr "Aikataulu"
+
+#~ msgid "Select Channels"
+#~ msgstr "Valitse kanavat"
+
+#~ msgid "Select a channels.conf to import"
+#~ msgstr "Valitse tuotava channels.conf"
+
+#~ msgid "Select a file to scan"
+#~ msgstr "Valitse tiedosto josta viritetään"
+
+#~ msgid "Select a region file to scan"
+#~ msgstr "Valitse aluetiedosto josta viritetään"
+
+#~ msgid "Select the channels that you want to add."
+#~ msgstr "Valitse lisättävät kanavat."
+
+#~ msgid "Select your country: "
+#~ msgstr "Valitse maasi: "
+
+#~ msgid "Select your region: "
+#~ msgstr "Valitse alueesi: "
+
+#~ msgid "Show Meters"
+#~ msgstr "Näytä mittarit"
+
+#~ msgid "Show meters dialog"
+#~ msgstr "Näytä mittarit-valintaikkuna"
+
+#~ msgid "Show preferences dialog"
+#~ msgstr "Näytä asetukset-valintaikkuna"
+
+#~ msgid "Show the About dialog"
+#~ msgstr "Näytä Tietoja-valintaikkuna"
+
+#~ msgid "Streams"
+#~ msgstr "Virrat"
+
+#~ msgid "Switch audio streams"
+#~ msgstr "Vaihda äänivirrat"
+
+#~ msgid "Switch devices"
+#~ msgstr "Vaihda laite"
+
+#~ msgid "Toggle broadcasting"
+#~ msgstr "Kytke lähetys"
+
+#~ msgid "Toggle fullscreen mode"
+#~ msgstr "Kytke kokonäyttötila"
+
+#~ msgid "Toggle mute audio"
+#~ msgstr "Kytke äänen vaimennus"
+
+#~ msgid "Toggle recording"
+#~ msgstr "Kytke nauhoitus"
+
+#~ msgid "Use 24 hour workaround for GnomeDateEdit"
+#~ msgstr "Käytä 24 tunnin kiertokeinoa GnomeDateEdit:lle"
+
+#~ msgid "Use both audio channels"
+#~ msgstr "Käytä molempia äänikanavia"
+
+#~ msgid "What's on now"
+#~ msgstr "Mitä on menossa nyt"
+
+#~ msgid "Xine audio driver:"
+#~ msgstr "Xinen ääniajuri:"
+
+#~ msgid "Xine video driver:"
+#~ msgstr "Xinen videoajuri:"
+
+#~ msgid "_Record"
+#~ msgstr "_Nauhoita"
+
+#~ msgid "_Scheduled Recordings"
+#~ msgstr "Aja_stetut nauhoitukset"
+
+#~ msgid "Failed to set display channel: channel not found"
+#~ msgstr "Kanavaa ei voi näyttää: kanavaa: ei löytynyt"
+
+#~ msgid "No channels"
+#~ msgstr "Ei kanavia"
+
+#~ msgid "Default"
+#~ msgstr "Oletus"
+
+#~ msgid "Failed to find profile '%1'"
+#~ msgstr "Profiilia ”%1” ei löydy"
+
+#~ msgid "Saving profile data"
+#~ msgstr "Tallennetaan profiilitietoja"
+
+#~ msgid "Profile data saved"
+#~ msgstr "Profiilitiedot tallennettu"
+
+#~ msgid "There is no current profile"
+#~ msgstr "Ei nykyistä profiilia"
+
+#~ msgid ""
+#~ "Failed to import: importing a channels.conf is only supported only DVB-T and "
+#~ "ATSC"
+#~ msgstr ""
+#~ "Tuonti epäonnistui: channels.conf-tuonti on tuettu vain DVB-T- ja ATSC-"
+#~ "laitteilla"
+
+#~ msgid "No scan/import option specified"
+#~ msgstr "Etsintä/tuontivalitsinta ei määritetty"
+
+#~ msgid ""
+#~ "Failed to scan: scanning is only supported for DVB-T and DVB-C devices"
+#~ msgstr ""
+#~ "Etsintä epäonnistui: etsintä on tuettu vain DVB-T- ja DVB-C-laitteilla"
+
+#~ msgid "Found 1 channel"
+#~ msgid_plural "Found %1 channels"
+#~ msgstr[0] "Löydettiin 1 kanava"
+#~ msgstr[1] "Löydettiin %1 kanavaa"
+
+#~ msgid "Failed to create scheduled recording dialog: No display channel"
+#~ msgstr ""
+#~ "Ajastetun nauhoituksen valintaikkunan luonti epäonnistui: ei näytettävää "
+#~ "kanavaa"
+
+#~ msgid "Failed to get scheduled recording"
+#~ msgstr "Ajastetun nauhoituksen nouto epäonnistui"
