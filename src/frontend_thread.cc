@@ -312,7 +312,7 @@ void FrontendThread::start_display(Channel& channel)
 	setup_dvb(*channel_stream);
 	streams.push_back(channel_stream);
 
-	Glib::ustring message = Glib::ustring::compose(_("Watching: %1"), channel_stream->channel.get_text());
+	Glib::ustring message = Glib::ustring::compose(_("Now showing: %1"), channel_stream->channel.get_text());
 	get_application().show_notification_message(message);
 }
 
