@@ -21,7 +21,6 @@
 #include "application.h"
 #include "data.h"
 #include "crc32.h"
-#include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <libnotify/notify.h>
 
@@ -51,6 +50,7 @@ Application::Application()
 	status_icon				= NULL;
 	timeout_source			= 0;
 	database_initialised	= false;
+	dbus_connection			= NULL;
 	
 #ifndef IGNORE_SQLITE3_THREADSAFE_CHECK
 	g_debug("sqlite3_threadsafe() = %d", sqlite3_threadsafe());
@@ -95,9 +95,7 @@ Application::Application()
 	action_channels = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_channels"));
 	action_change_view_mode = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_change_view_mode"));
 	action_epg_event_search = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_epg_event_search"));
-	action_next_channel = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_next_channel"));
 	action_preferences = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_preferences"));
-	action_previous_channel = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_previous_channel"));
 	action_quit = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_quit"));
 	action_scheduled_recordings = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_scheduled_recordings"));
 
@@ -110,9 +108,7 @@ Application::Application()
 	action_group->add(action_channels);
 	action_group->add(action_change_view_mode, Gtk::AccelKey("V"));
 	action_group->add(action_epg_event_search);
-	action_group->add(action_next_channel, Gtk::AccelKey("<Ctrl>Down"));
 	action_group->add(action_preferences);
-	action_group->add(action_previous_channel, Gtk::AccelKey("<Ctrl>Up"));
 	action_group->add(action_quit);
 	action_group->add(action_scheduled_recordings);
 
@@ -133,12 +129,17 @@ Application::Application()
 	
 	action_quit->signal_activate().connect(sigc::ptr_fun(Gtk::Main::quit));
 	toggle_action_record->signal_activate().connect(sigc::mem_fun(*this, &Application::on_record));
-	action_next_channel->signal_activate().connect(sigc::mem_fun(*this, &Application::on_next_channel));
-	action_previous_channel->signal_activate().connect(sigc::mem_fun(*this, &Application::on_previous_channel));
 
 	ui_manager = Gtk::UIManager::create();
 	ui_manager->insert_action_group(action_group);
 
+	GError *error = NULL;
+	dbus_connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	if (dbus_connection == NULL)
+	{
+		throw Exception("Failed to get DBus session");
+	}
+	
 	g_debug("Application constructed");
 }
 
@@ -213,25 +214,6 @@ void Application::on_record()
 	}
 
 	update();
-}
-
-void Application::on_previous_channel()
-{
-/*	Channel* channel = channel_manager.get_previous_channel();
-	if (channel != NULL)
-	{
-		set_display_channel(*channel);
-	}
-*/
-}
-
-void Application::on_next_channel()
-{
-/*	Channel* channel = channel_manager.get_next_channel();
-	if (channel != NULL)
-	{
-		set_display_channel(*channel);
-	}*/
 }
 
 void Application::on_quit()
@@ -692,18 +674,16 @@ void Application::action_after(guint action)
 		action_quit->activate();
 	}
 	else if (action == SCHEDULED_RECORDING_ACTION_AFTER_SHUTDOWN)
-	{		
-		g_message("Computer shutdown by scheduled recording");
-		show_notification_message("Computer shutdown by scheduled recording");
-
-		GError *error = NULL;
-		DBusGConnection *connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-		if (connection == NULL)
+	{
+		if (dbus_connection == NULL)
 		{
-			throw Exception("Failed to get DBus session");
+			throw Exception("BBus connection not available");
 		}
 		
-		DBusGProxy* proxy = dbus_g_proxy_new_for_name (connection,
+		g_message("Computer shutdown by scheduled recording");
+		show_notification_message("Computer shutdown by scheduled recording");
+		
+		DBusGProxy* proxy = dbus_g_proxy_new_for_name(dbus_connection,
 			"org.gnome.SessionManager",
 			"/org/gnome/SessionManager",
 			"org.gnome.SessionManager");
@@ -712,6 +692,7 @@ void Application::action_after(guint action)
 			throw Exception("Failed to get org.gnome.SessionManager proxy");
 		}
 		
+		GError* error = NULL;
 		if (!dbus_g_proxy_call(proxy, "Shutdown", &error, G_TYPE_INVALID, G_TYPE_INVALID))
 		{
 			throw Exception("Failed to call Shutdown method");

@@ -55,8 +55,6 @@ private:
 	gboolean								maximise_forced;
 	guint									channel_change_timeout;
 	guint									temp_channel_number;
-    DBusConnection*							dbus_connection;
-    DBusError								dbus_error;
 	sigc::connection						connection_exception;
 	
 	void stop();

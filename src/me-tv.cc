@@ -40,8 +40,6 @@ Glib::RefPtr<Gtk::Action> action_channels;
 Glib::RefPtr<Gtk::Action> action_change_view_mode;
 Glib::RefPtr<Gtk::Action> action_epg_event_search;
 Glib::RefPtr<Gtk::Action> action_preferences;
-Glib::RefPtr<Gtk::Action> action_next_channel;
-Glib::RefPtr<Gtk::Action> action_previous_channel;
 Glib::RefPtr<Gtk::Action> action_quit;
 Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
 

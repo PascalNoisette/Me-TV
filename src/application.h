@@ -24,6 +24,7 @@
 #include "me-tv.h"
 #include <gtkmm.h>
 #include <gconfmm.h>
+#include <dbus/dbus-glib.h>
 #include "device_manager.h"
 #include "channel_manager.h"
 #include "scheduled_recording_manager.h"
@@ -46,7 +47,8 @@ private:
 	Glib::ustring						database_filename;
 	gboolean							database_initialised;
 	Glib::RefPtr<Gnome::Conf::Client>	gconf_client;
-
+	DBusGConnection*					dbus_connection;
+	
 	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
 	void set_int_configuration_default(const Glib::ustring& key, gint value);
 	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);	
@@ -61,8 +63,6 @@ private:
 
 	void on_record();
 	void on_quit();
-	void on_next_channel();
-	void on_previous_channel();
 	
 public:
 	Application();
@@ -111,6 +111,7 @@ public:
 		
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 	const Glib::ustring& get_application_dir() const { return application_dir; }
+	DBusGConnection* get_dbus_connection() const { return dbus_connection; }
 	
 	MainWindow& get_main_window();
 

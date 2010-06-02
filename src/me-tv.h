@@ -71,8 +71,6 @@ extern Glib::RefPtr<Gtk::Action> action_change_view_mode;
 extern Glib::RefPtr<Gtk::Action> action_preferences;
 extern Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
 extern Glib::RefPtr<Gtk::Action> action_epg_event_search;
-extern Glib::RefPtr<Gtk::Action> action_next_channel;
-extern Glib::RefPtr<Gtk::Action> action_previous_channel;
 extern Glib::RefPtr<Gtk::Action> action_about;
 extern Glib::RefPtr<Gtk::Action> action_quit;
 

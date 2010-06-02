@@ -35,9 +35,6 @@
 
 #define UPDATE_INTERVAL					60
 #define SECONDS_UNTIL_CHANNEL_CHANGE	3
-#define GS_SERVICE   					"org.gnome.ScreenSaver"
-#define GS_PATH      					"/org/gnome/ScreenSaver"
-#define GS_INTERFACE 					"org.gnome.ScreenSaver"
 
 Glib::ustring ui_info =
 	"<ui>"
@@ -48,9 +45,6 @@ Glib::ustring ui_info =
 	"			<menuitem action='action_quit'/>"
 	"		</menu>"
 	"		<menu action='action_view'>"
-	"			<menuitem action='action_previous_channel'/>"
-	"			<menuitem action='action_next_channel'/>"
-	"			<separator/>"
 	"			<menuitem action='action_change_view_mode'/>"
 	"			<separator/>"
 	"			<menuitem action='action_scheduled_recordings'/>"
@@ -161,14 +155,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences));
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
 	
-	dbus_error_init(&dbus_error);
-	dbus_connection = dbus_bus_get(DBUS_BUS_SESSION, &dbus_error);
-	if (dbus_connection == NULL)
-	{
-		g_message(_("Failed to connect to the D-BUS daemon: %s"), dbus_error.message);
-		dbus_error_free(&dbus_error);
-	}
-
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
 
@@ -877,71 +863,61 @@ void MainWindow::on_exception()
 
 void MainWindow::inhibit_screensaver(gboolean activate)
 {
-	DBusMessage*	message = NULL;
-	DBusMessageIter iter;
-	static int		cookie = 0;
+	static guint	cookie = 0;
+	GError*			error = NULL;
 
-	if (dbus_connection == NULL)
+	if (get_application().get_dbus_connection() == NULL)
 	{
-		return;
-	}
-		
-	if (activate)
-	{
-		DBusMessage*	reply = NULL;
-		
-		message = dbus_message_new_method_call(GS_SERVICE, GS_PATH, GS_INTERFACE, "Inhibit");
-		if (message == NULL)
-		{
-			g_warning ("Couldn't allocate the dbus message");
-			return;
-		}
-
-		const char* application = PACKAGE_NAME;
-		const char* reason = "Playing video";
-
-		dbus_message_iter_init_append (message, &iter);
-		dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &application);
-		dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &reason);
-
-		reply = dbus_connection_send_with_reply_and_block(dbus_connection, message, -1, &dbus_error);
-		if (dbus_error_is_set(&dbus_error))
-		{
-			g_warning("%s raised:\n %s\n", dbus_error.name, dbus_error.message);
-			dbus_error_free(&dbus_error);
-			reply = NULL;
-		}
-
-		if (reply != NULL)
-		{
-			dbus_message_iter_init(reply, &iter);
-			dbus_message_iter_get_basic(&iter, &cookie);
-
-			dbus_message_unref(message);
-			dbus_message_unref(reply);
-
-			g_debug("Got Cookie: %d", cookie);
-			g_debug("Screensaver inhibited");
-		}
+		g_debug("No DBus connection, can't (un)inhibit");
 	}
 	else
 	{
-		if (cookie != 0)
-		{
-			message = dbus_message_new_method_call(GS_SERVICE, GS_PATH, GS_INTERFACE, "UnInhibit");
-			if (message == NULL)
-			{
-				g_warning ("Couldn't allocate the dbus message");
-				return;
-			}
-			
-			g_debug("Using Cookie: %d", cookie);
-			dbus_message_iter_init_append (message, &iter);
-			dbus_message_iter_append_basic (&iter, DBUS_TYPE_INT32, &cookie);
-			dbus_connection_send (dbus_connection, message, NULL);
-			cookie = 0;
+		DBusGProxy* proxy = dbus_g_proxy_new_for_name(get_application().get_dbus_connection(),
+			"org.gnome.ScreenSaver",
+			"/org/gnome/ScreenSaver",
+			"org.gnome.ScreenSaver");
 
-			g_debug("Screensaver uninhibited");
+		if (proxy == NULL)
+		{
+			throw Exception("Failed to get org.gnome.ScreenSaver proxy");
+		}
+
+		if (activate)
+		{
+			if (cookie != 0)
+			{
+				g_debug("Screensaver is already being inhibited");
+			}
+			else
+			{
+				if (!dbus_g_proxy_call(proxy, "Inhibit", &error,
+					G_TYPE_STRING, PACKAGE_NAME, G_TYPE_STRING, "Watching TV", G_TYPE_INVALID,
+					G_TYPE_UINT, &cookie, G_TYPE_INVALID))
+				{
+					throw Exception("Failed to call Inhibit method");
+				}
+	
+				g_debug("Got Cookie: %d", cookie);
+				g_debug("Screensaver inhibited");
+			}
+		}
+		else
+		{
+			if (cookie == 0)
+			{
+				g_debug("Screensaver is not currently inhibited");
+			}
+			else
+			{
+				if (!dbus_g_proxy_call(proxy, "Uninhibit", &error,
+					G_TYPE_UINT, &cookie, G_TYPE_INVALID, G_TYPE_INVALID))
+				{
+					throw Exception("Failed to call Uninhibit method");
+				}
+				cookie = 0;
+
+				g_debug("Screensaver uninhibited");
+			}
 		}
 	}
 }
