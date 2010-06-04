@@ -195,13 +195,13 @@ void set_deinterlacer_state(bool deinterlace)
 
 void set_audio_stream(int channel)
 {
-	printf("me-tv-player (xine): Setting audio channel to %d\n", channel);
+	printf("me-tv-player (xine): Setting audio stream to %d\n", channel);
 	xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL, channel);
 }
 
 void set_subtitle_stream(int channel)
 {
-	printf("me-tv-player (xine): Setting subtitle channel to %d/n", channel);
+	printf("me-tv-player (xine): Setting subtitle stream to %d\n", channel);
 	xine_set_param(stream, XINE_PARAM_SPU_CHANNEL, channel);
 }
 
@@ -214,7 +214,7 @@ int main(int argc, char **argv)
 	const char*		video_driver = "auto";
 	const char*		audio_driver = "auto";
 
-	if (argc != 7)
+	if (argc != 9)
 	{
 		fprintf(stderr, "me-tv-player (xine): Invalid number of parameters\n");
 		return -1;
@@ -335,6 +335,8 @@ int main(int argc, char **argv)
 	}
 
 	set_mute_state(strcmp(argv[6], "true") == 0);
+	set_audio_stream(atoi(argv[7]));
+	set_subtitle_stream(atoi(argv[8]));
 	
 	if ((!xine_open(stream, mrl)) || (!xine_play(stream, 0, 0)))
 	{

@@ -613,12 +613,6 @@ void MainWindow::play(const Glib::ustring& mrl)
 
 	Glib::ustring preferred_language = application.get_preferred_language();
 
-	if (!preferred_language.empty())
-	{
-		g_debug("*** Preferred language has been set, waiting 3 second for player to start");
-		usleep(3000000);
-	}
-	
 	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_audio/action_audio_streams"))->get_submenu();
 	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_video/action_subtitle_streams"))->get_submenu();
 	

@@ -40,7 +40,7 @@ private:
 	gboolean			mute_state;
 	gboolean			deinterlacer_state;
 	AudioChannelState	audio_channel_state;
-	guint				audio_stream;
+	gint				audio_stream;
 	gint				subtitle_stream;
 	Glib::ustring		mrl;
 	Window				window;
@@ -52,9 +52,9 @@ public:
 	void stop();
 	void pause(gboolean state);
 	void set_mute_state(gboolean state);
-	void set_audio_stream(guint stream);
-	void set_audio_channel_state(AudioChannelState state);
 	void set_subtitle_stream(gint stream);
+	void set_audio_stream(gint stream);
+	void set_audio_channel_state(AudioChannelState state);
 	gboolean is_running();
 
 	Engine();

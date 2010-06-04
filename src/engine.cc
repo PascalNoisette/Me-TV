@@ -67,6 +67,8 @@ void Engine::play(const Glib::ustring& mrl)
 	argv.push_back(application.get_string_configuration_value("audio_driver"));
 	argv.push_back(application.get_string_configuration_value("deinterlace_type"));
 	argv.push_back(mute_state ? "true" : "false");
+	argv.push_back(Glib::ustring::compose("%1", audio_stream));
+	argv.push_back(Glib::ustring::compose("%1", subtitle_stream));
 
 	g_debug("=================================================");
 	for (StringList::iterator i = argv.begin(); i != argv.end(); i++)
@@ -240,7 +242,7 @@ void Engine::set_audio_channel_state(AudioChannelState state)
 	}
 }
 
-void Engine::set_audio_stream(guint stream)
+void Engine::set_audio_stream(gint stream)
 {
 	if (audio_stream != stream)
 	{
