@@ -95,6 +95,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	output_fd				= -1;
 	mute_state				= false;
 	maximise_forced			= false;
+	screensaver_inhibit_cookie	= true;
 	
 	builder->get_widget("statusbar", statusbar);
 	builder->get_widget("drawing_area_video", drawing_area_video);
@@ -863,8 +864,7 @@ void MainWindow::on_exception()
 
 void MainWindow::inhibit_screensaver(gboolean activate)
 {
-	static guint	cookie = 0;
-	GError*			error = NULL;
+	GError*	error = NULL;
 
 	if (get_application().get_dbus_connection() == NULL)
 	{
@@ -884,7 +884,7 @@ void MainWindow::inhibit_screensaver(gboolean activate)
 
 		if (activate)
 		{
-			if (cookie != 0)
+			if (screensaver_inhibit_cookie != 0)
 			{
 				g_debug("Screensaver is already being inhibited");
 			}
@@ -892,29 +892,29 @@ void MainWindow::inhibit_screensaver(gboolean activate)
 			{
 				if (!dbus_g_proxy_call(proxy, "Inhibit", &error,
 					G_TYPE_STRING, PACKAGE_NAME, G_TYPE_STRING, "Watching TV", G_TYPE_INVALID,
-					G_TYPE_UINT, &cookie, G_TYPE_INVALID))
+					G_TYPE_UINT, &screensaver_inhibit_cookie, G_TYPE_INVALID))
 				{
 					throw Exception("Failed to call Inhibit method");
 				}
 	
-				g_debug("Got Cookie: %d", cookie);
+				g_debug("Got screensaver inhibit cookie: %d", screensaver_inhibit_cookie);
 				g_debug("Screensaver inhibited");
 			}
 		}
 		else
 		{
-			if (cookie == 0)
+			if (screensaver_inhibit_cookie == 0)
 			{
 				g_debug("Screensaver is not currently inhibited");
 			}
 			else
 			{
 				if (!dbus_g_proxy_call(proxy, "UnInhibit", &error,
-					G_TYPE_UINT, &cookie, G_TYPE_INVALID, G_TYPE_INVALID))
+					G_TYPE_UINT, &screensaver_inhibit_cookie, G_TYPE_INVALID, G_TYPE_INVALID))
 				{
 					throw Exception("Failed to call UnInhibit method");
 				}
-				cookie = 0;
+				screensaver_inhibit_cookie = 0;
 
 				g_debug("Screensaver uninhibited");
 			}

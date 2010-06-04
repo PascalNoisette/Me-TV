@@ -177,6 +177,13 @@ void Application::show_notification_message(const Glib::ustring& message, const 
 	NotifyNotification* notification = notify_notification_new(PACKAGE_NAME, message.c_str(), icon.c_str(), NULL);
 
 	g_debug("Notification Message: %s", message.c_str());
+
+	gboolean is_screensaver_inhibited = main_window->is_screensaver_inhibited();
+	if (is_screensaver_inhibited)
+	{
+		main_window->inhibit_screensaver(false);
+	}
+
 	if (!notify_notification_show(notification, NULL)) 
 	{
 		g_message(_("Failed to send notification"));
@@ -184,6 +191,11 @@ void Application::show_notification_message(const Glib::ustring& message, const 
 	else
 	{
 		g_object_unref(G_OBJECT(notification));
+	}
+
+	if (is_screensaver_inhibited)
+	{
+		main_window->inhibit_screensaver(true);
 	}
 }
 
