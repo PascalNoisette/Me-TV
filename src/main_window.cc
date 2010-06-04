@@ -909,10 +909,10 @@ void MainWindow::inhibit_screensaver(gboolean activate)
 			}
 			else
 			{
-				if (!dbus_g_proxy_call(proxy, "Uninhibit", &error,
+				if (!dbus_g_proxy_call(proxy, "UnInhibit", &error,
 					G_TYPE_UINT, &cookie, G_TYPE_INVALID, G_TYPE_INVALID))
 				{
-					throw Exception("Failed to call Uninhibit method");
+					throw Exception("Failed to call UnInhibit method");
 				}
 				cookie = 0;
 

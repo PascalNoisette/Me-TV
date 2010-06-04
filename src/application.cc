@@ -137,7 +137,7 @@ Application::Application()
 	dbus_connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 	if (dbus_connection == NULL)
 	{
-		throw Exception("Failed to get DBus session");
+		g_message(_("Failed to get DBus session"));
 	}
 	
 	g_debug("Application constructed");
@@ -174,15 +174,16 @@ Application::~Application()
 
 void Application::show_notification_message(const Glib::ustring& message, const Glib::ustring& icon)
 {
-    NotifyNotification* notification = notify_notification_new (PACKAGE_NAME, message.c_str(), icon.c_str(), NULL);
+	NotifyNotification* notification = notify_notification_new(PACKAGE_NAME, message.c_str(), icon.c_str(), NULL);
 
-    if (!notify_notification_show(notification, NULL)) 
-    {
+	g_debug("Notification Message: %s", message.c_str());
+	if (!notify_notification_show(notification, NULL)) 
+	{
 		g_message(_("Failed to send notification"));
-    }
+	}
 	else
 	{
-	    g_object_unref(G_OBJECT(notification));
+		g_object_unref(G_OBJECT(notification));
 	}
 }
 
