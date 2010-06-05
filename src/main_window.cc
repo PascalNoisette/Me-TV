@@ -95,7 +95,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	output_fd				= -1;
 	mute_state				= false;
 	maximise_forced			= false;
-	screensaver_inhibit_cookie	= true;
+	screensaver_inhibit_cookie	= 0;
 	
 	builder->get_widget("statusbar", statusbar);
 	builder->get_widget("drawing_area_video", drawing_area_video);
