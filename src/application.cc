@@ -22,7 +22,6 @@
 #include "data.h"
 #include "crc32.h"
 #include <dbus/dbus-glib-lowlevel.h>
-#include <libnotify/notify.h>
 
 #define GCONF_PATH					"/apps/me-tv"
 #define CURRENT_DATABASE_VERSION	6
@@ -170,33 +169,6 @@ Application::~Application()
 	}
 
 	g_debug("Application destructor complete");
-}
-
-void Application::show_notification_message(const Glib::ustring& message, const Glib::ustring& icon)
-{
-	NotifyNotification* notification = notify_notification_new(PACKAGE_NAME, message.c_str(), icon.c_str(), NULL);
-
-	g_debug("Notification Message: %s", message.c_str());
-
-	gboolean is_screensaver_inhibited = main_window->is_screensaver_inhibited();
-	if (is_screensaver_inhibited)
-	{
-		main_window->inhibit_screensaver(false);
-	}
-
-	if (!notify_notification_show(notification, NULL)) 
-	{
-		g_message(_("Failed to send notification"));
-	}
-	else
-	{
-		g_object_unref(G_OBJECT(notification));
-	}
-
-	if (is_screensaver_inhibited)
-	{
-		main_window->inhibit_screensaver(true);
-	}
 }
 
 void Application::on_record()
@@ -683,7 +655,6 @@ void Application::action_after(guint action)
 	if (action == SCHEDULED_RECORDING_ACTION_AFTER_CLOSE)
 	{
 		g_message("Me TV closed by Scheduled Recording");
-		show_notification_message("Me TV closed by Scheduled Recording");
 		action_quit->activate();
 	}
 	else if (action == SCHEDULED_RECORDING_ACTION_AFTER_SHUTDOWN)
@@ -694,7 +665,6 @@ void Application::action_after(guint action)
 		}
 		
 		g_message("Computer shutdown by scheduled recording");
-		show_notification_message("Computer shutdown by scheduled recording");
 		
 		DBusGProxy* proxy = dbus_g_proxy_new_for_name(dbus_connection,
 			"org.gnome.SessionManager",

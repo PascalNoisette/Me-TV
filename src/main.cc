@@ -25,7 +25,6 @@
 #include <glib/gprintf.h>
 #include <X11/Xlib.h>
 #include <unique/unique.h>
-#include <libnotify/notify.h>
 
 #define ME_TV_SUMMARY _("Me TV is a digital television viewer for the GNOME desktop")
 #define ME_TV_DESCRIPTION _("Me TV was developed for the modern digital lounge room with a PC for a media centre that is capable "\
@@ -73,7 +72,6 @@ int main (int argc, char *argv[])
 
 	Gnome::Conf::init();
 	Gtk::Main main(argc, argv);
-	notify_init(PACKAGE_NAME);
 
 	Glib::add_exception_handler(&on_error);
 

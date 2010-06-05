@@ -145,7 +145,6 @@ PKG_CHECK_MODULES(ME_TV, [
 	gconfmm-2.6 >= $GCONF_REQUIRED
 	unique-1.0
 	x11
-	libnotify
 	dbus-1 dbus-glib-1])
 AC_SUBST(ME_TV_CFLAGS)
 AC_SUBST(ME_TV_LIBS)

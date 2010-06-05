@@ -30,11 +30,10 @@
 class FrontendThread : public Thread
 {
 private:
-	Glib::RecMutex		mutex;
 	ChannelStreamList	streams;
 	EpgThread*			epg_thread;
-	gboolean			is_tuned;
 	Dvb::Transponder	transponder;
+	Glib::RefPtr<Glib::IOChannel> input_channel;
 	
 	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
 	void run();

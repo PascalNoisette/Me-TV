@@ -1,11 +1,11 @@
 2010-06-05  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.2.5
-	* Added libnotify messages
 	* Fixed EPG event dialog not updating due to unencoded XML
 	* Fixed crash bug on right-click channel record
 	* Added LT scan range
 	* Volume icon is now context sensitive
+	* Now stopping/starting frontend thread when modifying streams
 
 2010-05-15  Michael Lamothe <michael.lamothe@gmail.com>
 
