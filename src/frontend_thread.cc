@@ -95,7 +95,11 @@ void FrontendThread::run()
 	
 		try
 		{
-			if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) == Glib::IO_STATUS_NORMAL)
+			if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
+			{
+				usleep(10000);
+			}
+			else
 			{
 				// Insert PAT/PMT every second second
 				time_t now = time(NULL);
