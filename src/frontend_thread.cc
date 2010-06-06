@@ -110,7 +110,8 @@ void FrontendThread::run()
 
 			if (bytes_read < 0)
 			{
-				throw SystemException("Frontend read failed");
+				Glib::ustring message = Glib::ustring::compose("Frontend read failed (%1)", frontend.get_path().c_str());
+				throw SystemException(message);
 			}
 
 			// Insert PAT/PMT every second second
