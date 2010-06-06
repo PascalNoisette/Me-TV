@@ -22,6 +22,8 @@
 #include "application.h"
 #include "dvb_si.h"
 
+#define READ_TIMEOUT 10 /* In milliseconds */
+
 FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Frontend"), frontend(f)
 {
 	g_debug("Creating FrontendThread (%s)", frontend.get_path().c_str());
@@ -31,15 +33,11 @@ FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Frontend"), frontend(
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 
-	int fd = 0;
-	if ( (fd = ::open( input_path.c_str(), O_RDONLY | O_NONBLOCK) ) < 0 )
-	{
-		throw SystemException("Failed to open frontend");
-	}
-
 	g_debug("Opening frontend device '%s' for reading ...", input_path.c_str());
-	input_channel = Glib::IOChannel::create_from_fd(fd);
-	input_channel->set_encoding("");
+	if ( (fd = ::open(input_path.c_str(), O_RDONLY | O_NONBLOCK) ) < 0 )
+	{
+		throw SystemException("Failed to open frontend device");
+	}
 	
 	g_debug("FrontendThread created (%s)", frontend.get_path().c_str());
 }
@@ -49,11 +47,11 @@ FrontendThread::~FrontendThread()
 	g_debug("Destroying FrontendThread (%s)", frontend.get_path().c_str());
 	
 	g_debug("About to close input channel ...");
-	input_channel->close(true);
-	input_channel.reset();
-	g_debug("Input channel reset (%s)", frontend.get_path().c_str());
-
+	::close(fd);
+	
 	stop();
+	
+	g_debug("FrontendThread destroyed (%s)", frontend.get_path().c_str());
 }
 
 void FrontendThread::start()
@@ -70,19 +68,22 @@ void FrontendThread::stop()
 	g_debug("Stopping frontend thread (%s)", frontend.get_path().c_str());
 	stop_epg_thread();
 	join(true);
-	g_debug("Frontend thread stopped (%s)", frontend.get_path().c_str());
+	g_debug("Frontend thread stopped and joined (%s)", frontend.get_path().c_str());
 }
 
 void FrontendThread::run()
 {
 	g_debug("Frontend thread running (%s)", frontend.get_path().c_str());
 
+	struct pollfd pfds[1];
+	pfds[0].fd = fd;
+	pfds[0].events = POLLIN;
+	
 	guchar buffer[TS_PACKET_SIZE * PACKET_BUFFER_SIZE];
 	guchar pat[TS_PACKET_SIZE];
 	guchar pmt[TS_PACKET_SIZE];
 
 	guint last_insert_time = 0;
-	gsize bytes_read;
 	
 	g_debug("Entering FrontendThread loop (%s)", frontend.get_path().c_str());
 	while (!is_terminated())
@@ -95,42 +96,52 @@ void FrontendThread::run()
 	
 		try
 		{
-			if (input_channel->read((gchar*)buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE, bytes_read) != Glib::IO_STATUS_NORMAL)
+			if (::poll(pfds, 1, READ_TIMEOUT) < 0)
 			{
-				usleep(10000);
+				throw SystemException("Frontend poll failed");
 			}
-			else
+
+			if ((pfds[0].revents & POLLIN) != 0)
 			{
-				// Insert PAT/PMT every second second
-				time_t now = time(NULL);
-				if (now - last_insert_time > 2)
+				throw Exception("Bad return event from poll()");
+			}
+
+			gint bytes_read = ::read(fd, buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE);
+
+			if (bytes_read < 0)
+			{
+				throw SystemException("Frontend read failed");
+			}
+
+			// Insert PAT/PMT every second second
+			time_t now = time(NULL);
+			if (now - last_insert_time > 2)
+			{
+				g_debug("Writing PAT/PMT header");
+
+				for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
 				{
-					g_debug("Writing PAT/PMT header");
+					ChannelStream& channel_stream = **i;
 
-					for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
-					{
-						ChannelStream& channel_stream = **i;
+					channel_stream.stream.build_pat(pat);
+					channel_stream.stream.build_pmt(pmt);
 
-						channel_stream.stream.build_pat(pat);
-						channel_stream.stream.build_pmt(pmt);
-
-						channel_stream.write(pat, TS_PACKET_SIZE);
-						channel_stream.write(pmt, TS_PACKET_SIZE);
-					}
-					last_insert_time = now;
+					channel_stream.write(pat, TS_PACKET_SIZE);
+					channel_stream.write(pmt, TS_PACKET_SIZE);
 				}
+				last_insert_time = now;
+			}
 
-				for (guint offset = 0; offset < bytes_read; offset += TS_PACKET_SIZE)
+			for (guint offset = 0; offset < (guint)bytes_read; offset += TS_PACKET_SIZE)
+			{
+				guint pid = ((buffer[offset+1] & 0x1f) << 8) + buffer[offset+2];
+
+				for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
 				{
-					guint pid = ((buffer[offset+1] & 0x1f) << 8) + buffer[offset+2];
-
-					for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
+					ChannelStream& channel_stream = **i;
+					if (channel_stream.stream.contains_pid(pid))
 					{
-						ChannelStream& channel_stream = **i;
-						if (channel_stream.stream.contains_pid(pid))
-						{
-							channel_stream.write(buffer+offset, TS_PACKET_SIZE);
-						}
+						channel_stream.write(buffer+offset, TS_PACKET_SIZE);
 					}
 				}
 			}

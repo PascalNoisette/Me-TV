@@ -33,8 +33,8 @@ private:
 	ChannelStreamList	streams;
 	EpgThread*			epg_thread;
 	Dvb::Transponder	transponder;
-	Glib::RefPtr<Glib::IOChannel> input_channel;
-	
+	int					fd;
+		
 	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
 	void run();
 	void setup_dvb(ChannelStream& stream);
