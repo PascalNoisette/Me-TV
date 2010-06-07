@@ -126,142 +126,153 @@ EpgThread::EpgThread(Dvb::Frontend& f) : Thread("EPG Thread"), frontend(f)
 
 void EpgThread::run()
 {
-	Application&					application				= get_application();
-	ChannelManager&					channel_manager			= application.channel_manager;
-	Glib::ustring					demux_path				= frontend.get_adapter().get_demux_path();
-	EITDemuxers						demuxers(demux_path);
-	Dvb::SI::SectionParser			parser;
-	Dvb::SI::MasterGuideTableArray	master_guide_tables;
-	Dvb::SI::VirtualChannelTable	virtual_channel_table;
-	Dvb::SI::SystemTimeTable		system_time_table;
-	
-	gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
-	if (is_atsc)
+	try
 	{
-		system_time_table.GPS_UTC_offset = 15;
+		Application&					application				= get_application();
+		ChannelManager&					channel_manager			= application.channel_manager;
+		Glib::ustring					demux_path				= frontend.get_adapter().get_demux_path();
+		EITDemuxers						demuxers(demux_path);
+		Dvb::SI::SectionParser			parser;
+		Dvb::SI::MasterGuideTableArray	master_guide_tables;
+		Dvb::SI::VirtualChannelTable	virtual_channel_table;
+		Dvb::SI::SystemTimeTable		system_time_table;
+	
+		gboolean is_atsc = frontend.get_frontend_type() == FE_ATSC;
+		if (is_atsc)
 		{
-			Dvb::Demuxer demuxer_stt(demux_path);
-			demuxer_stt.set_filter(PSIP_PID, STT_ID);
-			parser.parse_psip_stt(demuxer_stt, system_time_table);
-		}
-
-		{
-			Dvb::Demuxer demuxer_vct(demux_path);
-			demuxer_vct.set_filter(PSIP_PID, TVCT_ID, 0xFE);
-			parser.parse_psip_vct(demuxer_vct, virtual_channel_table);
-		}
-
-		{
-			Dvb::Demuxer demuxer_mgt(demux_path);
-			demuxer_mgt.set_filter(PSIP_PID, MGT_ID);
-			parser.parse_psip_mgt(demuxer_mgt, master_guide_tables);
-		}
-
-		guint i = master_guide_tables.size();
-		if (i > 0) do
-		{
-			--i;
-			Dvb::SI::MasterGuideTable mgt = master_guide_tables[i];
-			if (mgt.type >= 0x0100 && mgt.type <= 0x017F)
+			system_time_table.GPS_UTC_offset = 15;
 			{
-				demuxers.add()->set_filter(mgt.pid, PSIP_EIT_ID, 0);
-				g_debug("Set up PID 0x%02X for events", mgt.pid);
+				Dvb::Demuxer demuxer_stt(demux_path);
+				demuxer_stt.set_filter(PSIP_PID, STT_ID);
+				parser.parse_psip_stt(demuxer_stt, system_time_table);
 			}
-		} while (i > 0);
-	}
-	else
-	{
-		demuxers.add()->set_filter(EIT_PID, EIT_ID, 0);
-	}
-	
-	guint frequency = frontend.get_frontend_parameters().frequency;
-	while (!is_terminated())
-	{
-		try
+
+			{
+				Dvb::Demuxer demuxer_vct(demux_path);
+				demuxer_vct.set_filter(PSIP_PID, TVCT_ID, 0xFE);
+				parser.parse_psip_vct(demuxer_vct, virtual_channel_table);
+			}
+
+			{
+				Dvb::Demuxer demuxer_mgt(demux_path);
+				demuxer_mgt.set_filter(PSIP_PID, MGT_ID);
+				parser.parse_psip_mgt(demuxer_mgt, master_guide_tables);
+			}
+
+			guint i = master_guide_tables.size();
+			if (i > 0) do
+			{
+				--i;
+				Dvb::SI::MasterGuideTable mgt = master_guide_tables[i];
+				if (mgt.type >= 0x0100 && mgt.type <= 0x017F)
+				{
+					demuxers.add()->set_filter(mgt.pid, PSIP_EIT_ID, 0);
+					g_debug("Set up PID 0x%02X for events", mgt.pid);
+				}
+			} while (i > 0);
+		}
+		else
 		{
-			Dvb::SI::EventInformationSection section;
+			demuxers.add()->set_filter(EIT_PID, EIT_ID, 0);
+		}
+	
+		guint frequency = frontend.get_frontend_parameters().frequency;
+		while (!is_terminated())
+		{
+			try
+			{
+				Dvb::SI::EventInformationSection section;
 			
-			if (!demuxers.get_next_eit(parser, section, is_atsc))
-			{
-				terminate();
-			}
-			else
-			{
-				guint service_id = section.service_id;
+				if (!demuxers.get_next_eit(parser, section, is_atsc))
+				{
+					terminate();
+				}
+				else
+				{
+					guint service_id = section.service_id;
 				
-				if (is_atsc)
-				{
-					bool found = false;
-					gsize size = virtual_channel_table.channels.size();
+					if (is_atsc)
+					{
+						bool found = false;
+						gsize size = virtual_channel_table.channels.size();
 	
-					for (guint i = 0; i < size && !found; i++)
-					{
-						Dvb::SI::VirtualChannel& vc = virtual_channel_table.channels[i];
-						if (vc.source_id == service_id)
+						for (guint i = 0; i < size && !found; i++)
 						{
-							service_id = vc.program_number;
-							found = true;
-						}
-					}
-
-					if (!found)
-					{
-						g_message(_("Unknown source_id %u"), service_id);
-						service_id = 0;
-					}
-				}
-
-				Channel* channel = channel_manager.find_channel(frequency, service_id);
-				if (channel != NULL)
-				{
-					for (unsigned int k = 0; section.events.size() > k; k++)
-					{
-						Dvb::SI::Event& event	= section.events[k];
-						EpgEvent epg_event;
-
-						epg_event.epg_event_id		= 0;
-						epg_event.channel_id		= channel->channel_id;
-						epg_event.version_number	= event.version_number;
-						epg_event.event_id			= event.event_id;
-						epg_event.start_time		= event.start_time;
-						epg_event.duration			= event.duration;
-						
-						if (is_atsc)
-						{
-							epg_event.start_time -= system_time_table.GPS_UTC_offset;
-						}
-						
-						if (epg_event.get_end_time() >= (get_local_time() - 10*60*60))
-						{
-							for (Dvb::SI::EventTextMap::iterator i = event.texts.begin(); i != event.texts.end(); i++)
+							Dvb::SI::VirtualChannel& vc = virtual_channel_table.channels[i];
+							if (vc.source_id == service_id)
 							{
-								EpgEventText epg_event_text;
-								const Dvb::SI::EventText& event_text = i->second;
-						
-								epg_event_text.epg_event_text_id	= 0;
-								epg_event_text.epg_event_id			= 0;
-								epg_event_text.language				= event_text.language;
-								epg_event_text.title				= event_text.title;
-								epg_event_text.subtitle				= event_text.subtitle;
-								epg_event_text.description			= event_text.description;
-						
-								epg_event.texts.push_back(epg_event_text);
+								service_id = vc.program_number;
+								found = true;
 							}
-					
-							if (channel->epg_events.add_epg_event(epg_event))
+						}
+
+						if (!found)
+						{
+							g_message(_("Unknown source_id %u"), service_id);
+							service_id = 0;
+						}
+					}
+
+					Channel* channel = channel_manager.find_channel(frequency, service_id);
+					if (channel != NULL)
+					{
+						for (unsigned int k = 0; section.events.size() > k; k++)
+						{
+							Dvb::SI::Event& event	= section.events[k];
+							EpgEvent epg_event;
+
+							epg_event.epg_event_id		= 0;
+							epg_event.channel_id		= channel->channel_id;
+							epg_event.version_number	= event.version_number;
+							epg_event.event_id			= event.event_id;
+							epg_event.start_time		= event.start_time;
+							epg_event.duration			= event.duration;
+						
+							if (is_atsc)
 							{
-								last_update_time = time(NULL)+1;
+								epg_event.start_time -= system_time_table.GPS_UTC_offset;
+							}
+						
+							if (epg_event.get_end_time() >= (get_local_time() - 10*60*60))
+							{
+								for (Dvb::SI::EventTextMap::iterator i = event.texts.begin(); i != event.texts.end(); i++)
+								{
+									EpgEventText epg_event_text;
+									const Dvb::SI::EventText& event_text = i->second;
+						
+									epg_event_text.epg_event_text_id	= 0;
+									epg_event_text.epg_event_id			= 0;
+									epg_event_text.language				= event_text.language;
+									epg_event_text.title				= event_text.title;
+									epg_event_text.subtitle				= event_text.subtitle;
+									epg_event_text.description			= event_text.description;
+						
+									epg_event.texts.push_back(epg_event_text);
+								}
+					
+								if (channel->epg_events.add_epg_event(epg_event))
+								{
+									last_update_time = time(NULL)+1;
+								}
 							}
 						}
 					}
 				}
 			}
-		}
-		catch(const Glib::Exception& ex)
-		{
-			g_debug("Exception in EPG thread: %s", ex.what().c_str());
+			catch(const Glib::Exception& ex)
+			{
+				g_debug("Exception in EPG thread loop: %s", ex.what().c_str());
+			}
 		}
 	}
-
+	catch(const Glib::Exception& ex)
+	{
+		g_debug("Unrecoverable exception in EPG thread loop: %s", ex.what().c_str());
+	}
+	catch(...)
+	{
+		g_debug("Unrecoverable exception in EPG thread loop");
+	}
+	
 	g_debug("Exiting EPG thread");
 }
