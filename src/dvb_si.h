@@ -33,7 +33,7 @@
 
 #define DVB_SECTION_BUFFER_SIZE	16*1024
 #define TS_PACKET_SIZE			188
-#define PACKET_BUFFER_SIZE		100
+#define PACKET_BUFFER_SIZE		20
 
 #define PAT_PID		0x00
 #define NIT_PID		0x10
