@@ -101,15 +101,15 @@ void FrontendThread::run()
 				throw SystemException("Frontend poll failed");
 			}
 
-//			if ((pfds[0].revents & POLLIN) != 0)
-			{
-//				throw Exception("Bad return event from poll()");
-			}
-
 			gint bytes_read = ::read(fd, buffer, TS_PACKET_SIZE * PACKET_BUFFER_SIZE);
 
 			if (bytes_read < 0)
 			{
+				if (errno == EAGAIN)
+				{
+					continue;
+				}
+
 				Glib::ustring message = Glib::ustring::compose("Frontend read failed (%1)", frontend.get_path().c_str());
 				throw SystemException(message);
 			}
