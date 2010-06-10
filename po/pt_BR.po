@@ -1,21 +1,20 @@
-# Lithuanian translation for me-tv
-# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# Brazilian Portuguese translation for me-tv
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the me-tv package.
-# Mantas Kriaučiūnas <mantas@akl.lt>, 2010.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-06-01 18:06-0400\n"
-"PO-Revision-Date: 2010-06-04 02:55+0000\n"
-"Last-Translator: Mantas Kriaučiūnas <mantas@akl.lt>\n"
-"Language-Team: Lithuanian <lt@li.org>\n"
+"PO-Revision-Date: 2010-06-02 17:05+0000\n"
+"Last-Translator: Eugênio F <Unknown>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"(n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Launchpad-Export-Date: 2010-06-10 14:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
@@ -24,10 +23,12 @@ msgid ""
 "By default, the EPG header is visible but disabling it can minimise screen "
 "real estate by reducing the vertical EPG size."
 msgstr ""
+"Por padrão, o cabeçalho EPG é visível, mas ao desabilita-lo pode minimizar o "
+"estado real da tela ao reduzir o tamanho EPG vertical."
 
 #: ../me-tv.schemas.in.h:2
 msgid "Display a channel number next to the channel name in the EPG."
-msgstr "Rodyti kanalo numerį prie kanalo vardo EPG režime."
+msgstr "Mostra um número de canal próximo ao nome de canal no EPG."
 
 #: ../me-tv.schemas.in.h:3
 msgid "Display the time span in the EPG buttons."
@@ -35,7 +36,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:4
 msgid "Displays the date/time header in the EPG"
-msgstr ""
+msgstr "Mostra o cabeçalho data/tempo no EPG"
 
 #: ../me-tv.schemas.in.h:5
 msgid "Drop out of fullscreen mode when showing dialogs"
@@ -45,6 +46,7 @@ msgstr ""
 msgid ""
 "Extra default time (in minutes) to append to the end of a scheduled recording"
 msgstr ""
+"Tempo extra padrão (em minutos) para anexar ao final de uma gravação agendada"
 
 #: ../me-tv.schemas.in.h:7
 msgid ""
@@ -52,12 +54,17 @@ msgid ""
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr ""
+"Tempo extra padrão (em minutos) para anexar ao início de uma gravação "
+"agendada. Este valor padrão pode ser substituído ao configurar uma gravação "
+"agendada"
 
 #: ../me-tv.schemas.in.h:8
 msgid ""
 "Extra default time (in minutes) to append to the start of a scheduled "
 "recording"
 msgstr ""
+"Tempo extra padrão (em minutos) para anexar ao início de uma gravação "
+"agendada"
 
 #: ../me-tv.schemas.in.h:9
 msgid ""
@@ -65,18 +72,25 @@ msgid ""
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr ""
+"Tempo extra padrão (em minutos) para anexar ao início de uma gravação "
+"agendada. Este valor padrão pode ser substituído ao configurar uma gravação "
+"agendada"
 
 #: ../me-tv.schemas.in.h:10
 msgid ""
 "If more than one stream is available in a different language then Me TV will "
 "use the preffered one."
 msgstr ""
+"Se mais de um stream estiver disponível em um idioma diferente que o Me TV "
+"usa como padrão."
 
 #: ../me-tv.schemas.in.h:11
 msgid ""
 "If you want to reduce the vertical size of your EPG then use this setting in "
 "combination with show_epg_tooltips."
 msgstr ""
+"Se você quiser reduzir o tamanho vertical de seu EPG então use esta "
+"configuração em combinação com show_epg_tooltips."
 
 #: ../me-tv.schemas.in.h:12
 msgid ""
@@ -95,6 +109,9 @@ msgid ""
 "Most digital video is transmitted in an interlaced format which should be "
 "corrected before viewing. Options are \"none\", \"standard\", \"tvtime\""
 msgstr ""
+"A maioria dos videos digitais são transmitidos em um formado interlaçado que "
+"devia ser corrigido antes de ser assistido. As opções são \"nenhum\", "
+"\"padrão\", \"tvtime\""
 
 #: ../me-tv.schemas.in.h:15
 msgid ""
@@ -104,7 +121,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:16
 msgid "Preferred language to us when selecting streams."
-msgstr ""
+msgstr "Idioma preferido para nós ao selecionar transmissões."
 
 #: ../me-tv.schemas.in.h:17
 msgid "Recent EPG event searches"
@@ -112,11 +129,11 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:18
 msgid "Remove the colon ':' from the recording filename"
-msgstr "Nenaudoti dvitaškio (:) įrašo failų varduose"
+msgstr "Remover os dois pontos ':' do nome de arquivo de gravação"
 
 #: ../me-tv.schemas.in.h:19
 msgid "Sets the \"Always On Top\" attribute on the main window."
-msgstr ""
+msgstr "Define o menu de janela \"Sempre ao topo\"."
 
 #: ../me-tv.schemas.in.h:20
 msgid "Sets the audio driver for libvlc to use."
@@ -124,7 +141,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:21
 msgid "Sets the video driver for the player to use."
-msgstr ""
+msgstr "Definir driver de vídeo para o player usar."
 
 #: ../me-tv.schemas.in.h:22
 msgid "Show a tool tip when hovering over an EPG event."
@@ -135,6 +152,9 @@ msgid ""
 "Some file systems do not support a colon in a filename (e.g. FAT32). This "
 "option tells Me TV to remove it from the recording filename."
 msgstr ""
+"Alguns arquivos de sistema não suportam dois pontos em um nome de arquivo "
+"(ex: FAT32). Esta opção diz ao Me TV para removê-los do nome de arquivo da "
+"gravação."
 
 #: ../me-tv.schemas.in.h:24
 msgid ""
@@ -146,41 +166,48 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:25
 msgid "Tells Me TV to display an icon the notification area."
-msgstr ""
+msgstr "Dizer ao Me TV para exibir um icone na área de notificação."
 
 #: ../me-tv.schemas.in.h:26
 msgid "The directory to use for recordings."
-msgstr "Įrašų failams skirtas aplankas"
+msgstr "Diretório usado para gravações."
 
 #: ../me-tv.schemas.in.h:27
 msgid ""
 "The directory to use for recordings. This value defaults to the users home "
 "directory."
 msgstr ""
+"Diretório usado para gravações. Este valor se torna padrão para o diretório "
+"home."
 
 #: ../me-tv.schemas.in.h:28
 msgid "The height of the window before Me TV was last closed"
-msgstr ""
+msgstr "A altura da janela antes do Me Tv ter sido fechado pela última vez."
 
 #: ../me-tv.schemas.in.h:29
 msgid ""
 "The height of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
+"A altura da janela antes do Me Tv ter sido fechado pela última vez. Me TV "
+"usa este valor para tentar restaurar a janela principal para sua geometria "
+"anterior."
 
 #: ../me-tv.schemas.in.h:30
 msgid "The last channel tuned to."
-msgstr ""
+msgstr "O último canal sintonizado"
 
 #: ../me-tv.schemas.in.h:31
 msgid ""
 "The number of channels to show before paging, this is deliberately set low "
 "to reduce preformance issues."
 msgstr ""
+"Número de canais para mostrar antes da paginação, isto é feito para reduzir "
+"problemas de desempenho."
 
 #: ../me-tv.schemas.in.h:32
 msgid "The number of channels to show before paging."
-msgstr ""
+msgstr "Número de canais para mostrar antes de paginação."
 
 #: ../me-tv.schemas.in.h:33
 msgid "The number of hours for the EPG to span on one page."
@@ -188,43 +215,53 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:34
 msgid "The text endoding that the DVB information is in."
-msgstr "Skaitmeninės televizijos (DVB) informacijos teksto koduotė"
+msgstr ""
 
 #: ../me-tv.schemas.in.h:35
 msgid "The width of the window before Me TV was last closed"
-msgstr ""
+msgstr "Largura da janela antes do Me TV ter sido fechado"
 
 #: ../me-tv.schemas.in.h:36
 msgid ""
 "The width of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
+"Largura da janela antes do Me TV ter sido fechado. Me TV usa este valor para "
+"tentar restaurar a janela principal para sua geometria anterior."
 
 #: ../me-tv.schemas.in.h:37
 msgid "The x position of the window before Me TV was last closed"
-msgstr ""
+msgstr "Posição x da janela antes da última vez que o Me TV foi fechado"
 
 #: ../me-tv.schemas.in.h:38
 msgid ""
 "The x position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"Posição x da janela antes da última vez que o Me TV foi fechado. Me TV usa "
+"este valor para tentar restaurar a janela principal de sua geometria "
+"anterior."
 
 #: ../me-tv.schemas.in.h:39
 msgid "The y position of the window before Me TV was last closed"
-msgstr ""
+msgstr "Posição y da janela antes da última vez que o Me TV foi fechado"
 
 #: ../me-tv.schemas.in.h:40
 msgid ""
 "The y position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"Posição y da janela antes da última vez que o Me TV foi fechado. Me TV usa "
+"este valor para tentar restaurar a janela principal de sua geometria "
+"anterior."
 
 #: ../me-tv.schemas.in.h:41
 msgid ""
 "This is used to store what channel the user was last watching so it can be "
 "returned when restarting."
 msgstr ""
+"Isto é usado para armazenar qual o canal o usuário assistiu por último, "
+"podendo ser retornado depois de reiniciar."
 
 #: ../me-tv.schemas.in.h:42
 msgid "This will show the timespan of an EPG event in a tooltip."
@@ -235,6 +272,8 @@ msgid ""
 "When this setting is false Me TV will terminate when the main window is "
 "closed."
 msgstr ""
+"Quando esta configuração for falsa, o Me TV irá finalizar quando a janela "
+"principal estiver fechada."
 
 #: ../me-tv.schemas.in.h:44
 msgid "Whether the video should be deinterlaced."
@@ -242,27 +281,27 @@ msgstr ""
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
-msgstr "Skaitmeninės televizijos (DVB) leistuvas GNOME aplinkai"
+msgstr "Um visualizador de TV Digital (DVB) para GNOME"
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
-msgstr ""
+msgstr "Me TV"
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
-msgstr " val."
+msgstr " horas"
 
 #: ../src/me-tv.ui.h:2
 msgid " minutes"
-msgstr " min."
+msgstr " minutos"
 
 #: ../src/me-tv.ui.h:3
 msgid ":"
-msgstr ""
+msgstr ":"
 
 #: ../src/me-tv.ui.h:4
 msgid "<b>Device:</b>"
-msgstr "<b>Įrenginys:</b>"
+msgstr "<b>Dispositivo:</b>"
 
 #: ../src/me-tv.ui.h:5
 msgid ""
@@ -271,11 +310,6 @@ msgid ""
 "application. The <i>scan</i> command line application is the most common way "
 "to generate a channels.conf file."
 msgstr ""
-"channels.conf failas - tai įprastas formatas skaitmeninės televizijos kanalų "
-"informacijos saugojimui. Šį failą supranta dauguma programų. Jūs tikriausiai "
-"turite šį failą jei naudojotės kita skaitmeninės televizijos (DVB) žiūrėjimo "
-"programa. Galite automatiškai sukurti channels.conf failą naudodami "
-"<i>scan</i> komandą iš dvb-apps paketo arba <i>w_scan</i> iš w-scan paketo."
 
 #: ../src/me-tv.ui.h:6
 msgid "AU"
@@ -283,15 +317,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:7
 msgid "Advanced"
-msgstr ""
+msgstr "Avançado"
 
 #: ../src/me-tv.ui.h:8
 msgid "After:"
-msgstr ""
+msgstr "Depois:"
 
 #: ../src/me-tv.ui.h:9
 msgid "All"
-msgstr ""
+msgstr "Todos"
 
 #: ../src/me-tv.ui.h:10
 msgid ""
@@ -300,70 +334,66 @@ msgid ""
 "from the LinuxTV dvb-apps package which is included in most Linux "
 "distributions.  Look for <i>dvb-apps</i> in your package management system."
 msgstr ""
-"Pradinis skenavimo failas naudojamas jūsų nurodytoje vietovėje transliuojamų "
-"TV kanalų suradimui. Šiame faile yra pradiniai TV tiunerio parametrai, "
-"skirti jūsų vietovei (miestui). Pradiniai skenavimo failai daugumai vietovių "
-"yra <i>dvb-apps</i> pakete (/usr/share/dvb/ aplanke)."
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
-msgstr "Garso valdyklė:"
+msgstr "Driver de áudio:"
 
 #: ../src/me-tv.ui.h:12 ../src/scan_dialog.cc:156
 msgid "Australia"
-msgstr "Australija"
+msgstr "Austrália"
 
 #: ../src/me-tv.ui.h:13
 msgid "Auto scan"
-msgstr "Automatinis aptikimas"
+msgstr "Auto busca"
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
-msgstr "Kanalo dažnis: "
+msgstr "Frequência do Canal: "
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
-msgstr "Kanalo pavadinimas: "
+msgstr "Nome do Canal: "
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel:"
-msgstr "Kanalas:"
+msgstr "Canal:"
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
-msgstr "Užverti Me TV"
+msgstr "Fechar Me TV"
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
-msgstr ""
+msgstr "Copyright &#xA9; Michael Lamothe"
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
-msgstr ""
+msgstr "Tipo de desentrelaçamento"
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
-msgstr "Aprašymas:"
+msgstr "Descrição:"
 
 #: ../src/me-tv.ui.h:21
 msgid "Device Text"
-msgstr ""
+msgstr "Texto do dispositivo"
 
 #: ../src/me-tv.ui.h:22
 msgid "Do Nothing"
-msgstr ""
+msgstr "Não Fazer Nada"
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
-msgstr "Kanalus galite rikiuoti tempdami su pele"
+msgstr "Arraste e solte os canais para reorganizá-los."
 
 #: ../src/me-tv.ui.h:24
 msgid "Duration:"
-msgstr "Trukmė:"
+msgstr "Duração:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
-msgstr "EPG laidos informacija"
+msgstr ""
 
 #: ../src/me-tv.ui.h:26
 msgid "EPG page size: "
@@ -375,15 +405,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:28
 msgid "Every day"
-msgstr "Kiekvieną dieną"
+msgstr "Todo dia"
 
 #: ../src/me-tv.ui.h:29
 msgid "Every week"
-msgstr "Kiekvieną savaitę"
+msgstr "Toda semana"
 
 #: ../src/me-tv.ui.h:30
 msgid "Every weekday"
-msgstr ""
+msgstr "Todo dia da semana"
 
 #: ../src/me-tv.ui.h:31
 msgid "Fullscreen workaround"
@@ -411,6 +441,22 @@ msgid ""
 "be\n"
 "found in /usr/share/common-licenses/GPL file."
 msgstr ""
+"Licença Pública Geral - GNU (General Public License):\n"
+"\n"
+"Esse programa é um software livre; você pode redistribuir-lo e/ou modificar-"
+"lo sob\n"
+"os termos da Licença Pública Geral como publicado pela Fundação do Software "
+"Livre;\n"
+"Estar de acordo com a versão 2 da licença, ou (se você quiser) qualquer "
+"versão superior.\n"
+"\n"
+"Esse programa é distribuído com a esperança de que seja útil, mas SEM "
+"QUALQUER\n"
+"GARANTIA; sem até mesmo a garantia de MERCHANTABILITY ou APTIDÃO PARA UM\n"
+"PROPÓSITO PARTICULAR. Veja a Licença Pública Geral GNU, para mais detalhes.\n"
+"\n"
+"Em sistemas Debian, o texto completo da Licença Pública Geral pode ser\n"
+"encontrado no arquivo GPL em /usr/share/common-licenses/GPL"
 
 #: ../src/me-tv.ui.h:46
 msgid "IT"
@@ -418,87 +464,87 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:47
 msgid "Import a channels.conf"
-msgstr ""
+msgstr "Importar um canal.conf"
 
 #: ../src/me-tv.ui.h:48 ../src/scan_dialog.cc:161
 msgid "Italy"
-msgstr "Italija"
+msgstr "Itália"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - About"
-msgstr "Me TV - Apie"
+msgstr "Sobre - Me TV"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channels Editor"
-msgstr "Me TV - Kanalų keitimas"
+msgstr "Editor de canais - Me TV"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - EPG Event Search"
-msgstr "Me TV - EPG laidų paieška"
+msgstr ""
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - Edit Channel"
-msgstr "Me TV - keisti kanalo informaciją"
+msgstr "Editar Canal - Me TV"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Main Window"
-msgstr "Me TV - pagrindinis langas"
+msgstr "Janela principal - Me TV"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - Preferences Window"
-msgstr "Me TV - nustatymų langas"
+msgstr "Janela de preferências - Me TV"
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Program Details"
-msgstr "Me TV - laidos informacija"
+msgstr "Detalhes do Programa - Me TV"
 
 #: ../src/me-tv.ui.h:56
 msgid "Me TV - Scan Wizard"
-msgstr ""
+msgstr "Assistente de Busca - Me TV"
 
 #: ../src/me-tv.ui.h:57
 msgid "Me TV - Scheduled Recording"
-msgstr "Me TV - planuojamas įrašas"
+msgstr "Gravação agendada - Me TV"
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scheduled Recordings"
-msgstr "Me TV - planuojami įrašai"
+msgstr "Gravações Agendadas - Me TV"
 
 #: ../src/me-tv.ui.h:59
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
-msgstr "Me TV - tai skaitmeninės televizijos (DVB) leistuvas GNOME aplinkai"
+msgstr "Me TV é um visualizador de TV Digital (DVB) para o GNOME"
 
 #: ../src/me-tv.ui.h:60
 msgid "Me TV project website"
-msgstr "Me TV projekto interneto svetainė"
+msgstr "Website do projeto Me TV"
 
 #: ../src/me-tv.ui.h:61
 msgid "Now"
-msgstr "Dabar"
+msgstr "Agora"
 
 #: ../src/me-tv.ui.h:62
 msgid "Once"
-msgstr ""
+msgstr "Uma vez"
 
 #: ../src/me-tv.ui.h:63
 msgid "Page:"
-msgstr "Puslapis:"
+msgstr "Página:"
 
 #: ../src/me-tv.ui.h:64
 msgid "Preferred language:"
-msgstr ""
+msgstr "Idioma preferido:"
 
 #: ../src/me-tv.ui.h:65
 msgid "Record extra after: "
-msgstr "Įrašą papildomai pratęsti: "
+msgstr "Gravar extra depois: "
 
 #: ../src/me-tv.ui.h:66
 msgid "Record extra before: "
-msgstr "Įrašą pradėti prieš: "
+msgstr "Gravar extra antes: "
 
 #: ../src/me-tv.ui.h:67
 msgid "Recording directory: "
-msgstr "Įrašų aplankas: "
+msgstr "Diretório de gravação: "
 
 #: ../src/me-tv.ui.h:68
 msgid "Recurring:"
@@ -506,7 +552,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:69
 msgid "Remove colon from recording filenames"
-msgstr "Nenaudoti dvitaškio įrašų failų pavadinimuose"
+msgstr "Remover dois pontos dos nomes de arquivo de gravação"
 
 #: ../src/me-tv.ui.h:70
 msgid "SI"
@@ -514,87 +560,87 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:71
 msgid "Scan Progress"
-msgstr ""
+msgstr "Progresso da Busca"
 
 #: ../src/me-tv.ui.h:72
 msgid "Scan using an initial scan file"
-msgstr "Aptikti naudojant pradinį skenavimo failą"
+msgstr "Buscar usando um arquivo de busca inicial"
 
 #: ../src/me-tv.ui.h:73
 msgid "Scanning/Importing"
-msgstr ""
+msgstr "Escaneando/Importando"
 
 #: ../src/me-tv.ui.h:74
 msgid "Search description"
-msgstr ""
+msgstr "Descrição da busca"
 
 #: ../src/me-tv.ui.h:75
 msgid "Search:"
-msgstr ""
+msgstr "Procurar:"
 
 #: ../src/me-tv.ui.h:76
 msgid "See https://launchpad.net/me-tv"
-msgstr "Žiūrėkite https://launchpad.net/me-tv"
+msgstr "Veja https://launchpad.net/me-tv"
 
 #: ../src/me-tv.ui.h:77
 msgid "Select A Recording Directory"
-msgstr "Pasirinkite aplanką vaizdo įrašų failams"
+msgstr "Selecione um Diretório de Gravação"
 
 #: ../src/me-tv.ui.h:78
 msgid "Select Scan File"
-msgstr "Pasirinkite skenavimo failą"
+msgstr "Selecione o arquivo de procura"
 
 #: ../src/me-tv.ui.h:79
 msgid "Select a channels.conf file"
-msgstr "Pasirinkite channels.conf failą"
+msgstr "Selecione um arquivo channels.conf"
 
 #: ../src/me-tv.ui.h:80
 msgid "Select a file"
-msgstr "Pasirinkite failą"
+msgstr "Selecionar um arquivo"
 
 #: ../src/me-tv.ui.h:81
 msgid "Set \"Always on Top\" at startup"
-msgstr "Įjungti „Visuomet virš kitų langų“ nustatymą"
+msgstr "Ajustar para \"sempre no topo\" na inicialização"
 
 #: ../src/me-tv.ui.h:82
 msgid "Show EPG header"
-msgstr "Rodyti EPG antraštę"
+msgstr "Exibir cabeçalhos EPG"
 
 #: ../src/me-tv.ui.h:83
 msgid "Show a status icon in the notification area"
-msgstr ""
+msgstr "Mostrar um ícone de status na área de notificação"
 
 #: ../src/me-tv.ui.h:84
 msgid "Show channel number"
-msgstr "Rodyti kanalo numerį"
+msgstr "Mostrar número do canal"
 
 #: ../src/me-tv.ui.h:85
 msgid "Show time on EPG event buttons"
-msgstr ""
+msgstr "Exibir tempo em botões de eventos EGP"
 
 #: ../src/me-tv.ui.h:86
 msgid "Show tooltips for EPG event buttons"
-msgstr ""
+msgstr "Exibir dicas para botões de eventos EPG"
 
 #: ../src/me-tv.ui.h:87
 msgid "Shutdown"
-msgstr "Išjungti"
+msgstr "Desligar"
 
 #: ../src/me-tv.ui.h:88 ../src/scan_dialog.cc:165
 msgid "Slovenia"
-msgstr "Slovėnija"
+msgstr "Eslovênia"
 
 #: ../src/me-tv.ui.h:89
 msgid "Start Date:"
-msgstr "Pradžios data:"
+msgstr "Data Inicial:"
 
 #: ../src/me-tv.ui.h:90
 msgid "Start Time:"
-msgstr "Pradžios laikas:"
+msgstr "Hora de início:"
 
 #: ../src/me-tv.ui.h:91
 msgid "Text encoding:"
-msgstr "Teksto koduotė:"
+msgstr "Codificação do texto:"
 
 #: ../src/me-tv.ui.h:92
 msgid ""
@@ -604,15 +650,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:93
 msgid "This program is scheduled for recording."
-msgstr "Šią laidą planuojama įrašyti."
+msgstr ""
 
 #: ../src/me-tv.ui.h:94
 msgid "Video driver:"
-msgstr "Vaizdo valdyklė:"
+msgstr "Driver de vídeo:"
 
 #: ../src/me-tv.ui.h:95
 msgid "View Schedule"
-msgstr ""
+msgstr "Visualisar Programação"
 
 #: ../src/me-tv.ui.h:96
 msgid ""
@@ -624,18 +670,26 @@ msgid ""
 "\n"
 "<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
 msgstr ""
+"Seu banco de dados é velho demais para usar esta versão do Me TV. Você "
+"gostaria de limpar o banco de dados do Me TV? Todos os seus canais, eventos "
+"EPG e gravações agendadas serão <b>excluídos</b>.\n"
+"\n"
+"Se você apenas atualizou o Me TV, então isto é provavelmente o que você quer "
+"fazer.\n"
+"\n"
+"<i>O banco de dados do Me TV está localizado em  ~/.local/share/me-tv.db.</i>"
 
 #: ../src/me-tv.ui.h:101
 msgid "_Delete my old Me TV data!"
-msgstr "_Pašalinti senus Me TV programos duomenis!"
+msgstr "E_xcluir meus dados antigos do Me TV!"
 
 #: ../src/me-tv.ui.h:102
 msgid "channels"
-msgstr "kanalai"
+msgstr "canais"
 
 #: ../src/application.cc:44
 msgid "Application has already been initialised"
-msgstr ""
+msgstr "O aplicativo já iniciou"
 
 #: ../src/application.cc:59
 msgid "The SQLite version is not thread-safe"
@@ -643,116 +697,116 @@ msgstr ""
 
 #: ../src/application.cc:119
 msgid "_File"
-msgstr "_Failas"
+msgstr "_Arquivo"
 
 #: ../src/application.cc:120
 msgid "_View"
-msgstr "_Rodymas"
+msgstr "_Ver"
 
 #: ../src/application.cc:121
 msgid "_Video"
-msgstr "_Vaizdas"
+msgstr "Ví_deo"
 
 #: ../src/application.cc:122
 msgid "_Audio"
-msgstr "_Garsas"
+msgstr "Áud_io"
 
 #: ../src/application.cc:123
 msgid "_Help"
-msgstr "_Pagalba"
+msgstr "Aj_uda"
 
 #: ../src/application.cc:125
 msgid "Subtitles"
-msgstr "Titrai"
+msgstr "Legendas"
 
 #: ../src/application.cc:126
 msgid "_Streams"
-msgstr "_Srautai (kalbos)"
+msgstr "_Transmissões"
 
 #: ../src/application.cc:127
 msgid "_Channels"
-msgstr "_Kanalai"
+msgstr "_Canais"
 
 #: ../src/application.cc:130
 msgid "_Both"
-msgstr "_Abu"
+msgstr "Ambo_s"
 
 #: ../src/application.cc:131
 msgid "_Left"
-msgstr "_Kairysis"
+msgstr "Es_querda"
 
 #: ../src/application.cc:132
 msgid "_Right"
-msgstr "_Dešinysis"
+msgstr "Di_reita"
 
 #: ../src/application.cc:180
 msgid "Failed to send notification"
-msgstr ""
+msgstr "Falha ao enviar notificação"
 
 #: ../src/application.cc:206
 msgid "Failed to start recording"
-msgstr "Nepavyko pradėti įrašymo"
+msgstr "Falhou ao iniciar gravação"
 
 #: ../src/application.cc:516
 msgid "Failed to initialise database"
-msgstr ""
+msgstr "Falha ao inicial banco de dados"
 
 #: ../src/application.cc:575
 msgid "Application has not been initialised"
-msgstr "Programa nebuvo inicializuota"
+msgstr "O Aplicativo não foi inicializado"
 
 #: ../src/application.cc:613
 #, c-format
 msgid "Changing channel to '%s'"
-msgstr "Kanalas keičiamas į „%s“"
+msgstr "Mudando canal para '%s'"
 
 #: ../src/application.cc:632
 #, c-format
 msgid "Channel changed to %s"
-msgstr "Kanalas pakeistas į „%s“"
+msgstr "Canal mudado para %s"
 
 #: ../src/application.cc:639
 msgid "Main window has not been created"
-msgstr ""
+msgstr "A janela principal não foi criada"
 
 #: ../src/channel_manager.cc:110 ../src/channel_manager.cc:183
 #: ../src/scan_dialog.cc:90
 msgid "Unknown frontend type"
-msgstr ""
+msgstr "Tipo de frontend desconhecido"
 
 #: ../src/channel_manager.cc:253
 msgid "Invalid channel index"
-msgstr ""
+msgstr "Índice de canal inválido"
 
 #: ../src/channel_manager.cc:267
 msgid "Channel '%1' not found"
-msgstr "Kanalas „%1“ nerastas"
+msgstr "O canal '%1' não foi encontrado."
 
 #: ../src/channel_manager.cc:290
 msgid "Failed to add channel: You cannot have more than %1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Falha ao adicionar canal: Você não pode ter mais que %1 canal"
+msgstr[1] "Falha ao adicionar canais: Você não pode ter mais que %1 canais"
 
 #: ../src/channels_dialog.cc:55
 msgid "Channel Name"
-msgstr "Kanalo pavadinimas"
+msgstr "Nome do Canal"
 
 #: ../src/channels_dialog.cc:56
 msgid "Frequency (Hz)"
-msgstr "Dažnis (Hz)"
+msgstr "Frequência (Hz)"
 
 #: ../src/channels_dialog.cc:78
 msgid "A channel named '%1' already exists.  Do you want to overwrite it?"
-msgstr "Kanalas pavadinimu „%1“ jau yra. Ar norite perrašyti jo infomaciją?"
+msgstr "Já existe um canal chamado '%1'.  Você quer sobrescrevê-lo?"
 
 #: ../src/channels_dialog.cc:82
 msgid "Overwrite existing channel"
-msgstr "Perrašyti esamą kanalo informaciją"
+msgstr "Substituir canal existente"
 
 #: ../src/channels_dialog.cc:83
 msgid "Keep existing channel"
-msgstr "Palikti esamą informaciją"
+msgstr "Manter canal existente"
 
 #: ../src/channels_dialog.cc:84
 msgid "Cancel scan/import"
@@ -760,19 +814,19 @@ msgstr ""
 
 #: ../src/channels_dialog.cc:87
 msgid "Channel conflict"
-msgstr ""
+msgstr "Conflito de canal"
 
 #: ../src/channels_dialog.cc:156
 msgid "No channel selected"
-msgstr "Nepasirinktas joks kanalas"
+msgstr ""
 
 #: ../src/channels_dialog.cc:161
 msgid "Select only one channel"
-msgstr "Pasirinkite tik vieną kanalą"
+msgstr "Selecionar somente um canal"
 
 #: ../src/data.cc:50 ../src/data.cc:55
 msgid "Failed to prepare statement: %1"
-msgstr ""
+msgstr "Falha ao preparar frase: %1"
 
 #: ../src/data.cc:62
 msgid "Prepared statement had remaining data: %1"
@@ -792,7 +846,7 @@ msgstr ""
 
 #: ../src/data.cc:176
 msgid "Failed to connect to Me TV database '%1'"
-msgstr ""
+msgstr "Falha ao conectar ao banco de dados '%1' do Me TV."
 
 #: ../src/data.cc:246
 msgid "Only integers can be primary keys"
@@ -804,47 +858,47 @@ msgstr ""
 
 #: ../src/device_manager.cc:135
 msgid "There are no DVB devices available"
-msgstr "Nerasta jokių skaitmeninės televizijos (DVB) įrenginių"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:37
 msgid "Failed to open demux device"
-msgstr ""
+msgstr "Falha ao abrir o dispositivo demux"
 
 #: ../src/dvb_demuxer.cc:68
 msgid "Failed to set PES filter"
-msgstr ""
+msgstr "Falha ao ajustar o filtro PES"
 
 #: ../src/dvb_demuxer.cc:87
 msgid "Failed to set section filter for demuxer"
-msgstr ""
+msgstr "Falha ao ajustar o filtro de seção para o demuxer"
 
 #: ../src/dvb_demuxer.cc:95
 msgid "Failed to set demuxer buffer size"
-msgstr ""
+msgstr "Falha ao ajustar o tamnho do buffer para o demuxer"
 
 #: ../src/dvb_demuxer.cc:103
 msgid "Read timeout"
-msgstr "Per ilgai užtruko duomenų gavimas"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
-msgstr ""
+msgstr "Falha na leitura dos dados do demuxer"
 
 #: ../src/dvb_demuxer.cc:122
 msgid "Failed to read header"
-msgstr ""
+msgstr "Falha na leitura do cabeçalho"
 
 #: ../src/dvb_demuxer.cc:133
 msgid "Failed to read section"
-msgstr ""
+msgstr "Falha na leitura da seção"
 
 #: ../src/dvb_demuxer.cc:138
 msgid "CRC32 check failed"
-msgstr ""
+msgstr "A verificação CRC32 falhou"
 
 #: ../src/dvb_demuxer.cc:146
 msgid "Failed to stop demuxer"
-msgstr ""
+msgstr "Falha ao parar o demuxer"
 
 #: ../src/dvb_demuxer.cc:161
 msgid "Failed to poll"
@@ -852,11 +906,11 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:51
 msgid "Failed to open tuner"
-msgstr ""
+msgstr "Falha ao abrir o tuner"
 
 #: ../src/dvb_frontend.cc:56
 msgid "Failed to get tuner info"
-msgstr ""
+msgstr "Falha ao acesar as informações do afinador"
 
 #: ../src/dvb_frontend.cc:75
 #, c-format
@@ -865,43 +919,43 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:111
 msgid "Failed to tune device"
-msgstr ""
+msgstr "Falha ao afinar o dispositivo"
 
 #: ../src/dvb_frontend.cc:114
 msgid "Waiting for signal lock ..."
-msgstr ""
+msgstr "Esperando por um fechamento de sinal ..."
 
 #: ../src/dvb_frontend.cc:116
 msgid "Got signal lock"
-msgstr ""
+msgstr "Fechamento de sinal obtido"
 
 #: ../src/dvb_frontend.cc:132
 msgid "Failed to set tone off"
-msgstr ""
+msgstr "Falha ao ajustar o desligamento de tom"
 
 #: ../src/dvb_frontend.cc:137
 msgid "Failed to set voltage"
-msgstr ""
+msgstr "Falha ao ajustar a tensão"
 
 #: ../src/dvb_frontend.cc:143
 msgid "Failed to send master command"
-msgstr ""
+msgstr "Falha ao enviar um comando principal"
 
 #: ../src/dvb_frontend.cc:149
 msgid "Failed to send burst"
-msgstr ""
+msgstr "Falha ao enviar explosão"
 
 #: ../src/dvb_frontend.cc:155
 msgid "Failed to set tone"
-msgstr ""
+msgstr "Falha ao ajustar o tom"
 
 #: ../src/dvb_frontend.cc:186
 msgid "Failed to lock to channel"
-msgstr ""
+msgstr "Falha no fechamento de canal"
 
 #: ../src/dvb_frontend.cc:195
 msgid "Failed to get signal strength"
-msgstr ""
+msgstr "Falha ao pegar tamanho do sinal"
 
 #: ../src/dvb_frontend.cc:205
 msgid "Failed to get signal to noise ratio"
@@ -909,7 +963,7 @@ msgstr ""
 
 #: ../src/dvb_si.cc:411
 msgid "Failed to convert channel name"
-msgstr ""
+msgstr "Falha ao converter o nome do canal"
 
 #: ../src/dvb_si.cc:568
 msgid "ASSERT: offset > end_descriptor_offset"
@@ -921,41 +975,39 @@ msgstr ""
 
 #: ../src/dvb_si.cc:794
 msgid "No message"
-msgstr ""
+msgstr "Sem mensagem"
 
 #: ../src/dvb_si.cc:801
 msgid "Failed to convert to UTF-8: %1"
-msgstr ""
+msgstr "Falha ao converter para UTF-8: %1"
 
 #: ../src/engine.cc:46
 msgid "Window ID was 0"
-msgstr ""
+msgstr "ID da janela foi 0"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown title"
-msgstr ""
+msgstr "Título desconhecido"
 
 #: ../src/epg_event.cc:81
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Legenda desconhecida"
 
 #: ../src/epg_event.cc:82 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
-msgstr ""
+msgstr "Descrição desconhecida"
 
 #: ../src/epg_event.cc:101 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
-msgstr[0] "1 valanda"
-msgstr[1] "%1 valandos"
-msgstr[2] "%1 valandų"
+msgstr[0] "1 hora"
+msgstr[1] "%1 horas"
 
 #: ../src/epg_event.cc:109 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] "1 minutė"
-msgstr[1] "%1 minutės"
-msgstr[2] "%1 minučių"
+msgstr[0] "1 minuto"
+msgstr[1] "%1 minutos"
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
@@ -963,30 +1015,30 @@ msgstr " "
 
 #: ../src/epg_event_search_dialog.cc:60
 msgid "Title"
-msgstr "Pavadinimas"
+msgstr "Título"
 
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
-msgstr "Kanalas"
+msgstr "Canal"
 
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr "Pradžia"
+msgstr "Horário de início"
 
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr "Trukmė"
+msgstr "Duração"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
-msgstr "Neįrašėte paieškos teksto"
+msgstr "Busca não especificada"
 
 #: ../src/epg_event_search_dialog.cc:143
 msgid "No results"
-msgstr "Rezultatų nerasta"
+msgstr "Sem resultados"
 
 #: ../src/epg_event_search_dialog.cc:155
 msgid "No EPG event selected"
@@ -1007,11 +1059,11 @@ msgstr ""
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
-msgstr ""
+msgstr "Falha ao obter mensagem de erro"
 
 #: ../src/frontend_thread.cc:300
 msgid "Failed to create FIFO '%1'"
-msgstr ""
+msgstr "Erro ao criar FIFO '%1'"
 
 #: ../src/frontend_thread.cc:307
 msgid "Failed to open FIFO for reading '%1'"
@@ -1019,27 +1071,28 @@ msgstr ""
 
 #: ../src/frontend_thread.cc:315
 msgid "Now showing: %1"
-msgstr "Dabar rodoma: %1"
+msgstr "Exibindo agora: %1"
 
 #: ../src/frontend_thread.cc:478
 msgid "Recording started: %1"
-msgstr "Įrašymas pradėtas: %1"
+msgstr "Gravação iniciada: %1"
 
 #: ../src/frontend_thread.cc:497
 msgid "Recording stopped: %1"
-msgstr "Įrašymas sustabdytas: %1"
+msgstr "Gravação parada: %1"
 
 #: ../src/gtk_epg_widget.cc:285 ../src/gtk_epg_widget.cc:340
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: ../src/gtk_epg_widget.cc:285 ../src/gtk_epg_widget.cc:340
 msgid "Unknown program"
-msgstr ""
+msgstr "Programa desconhecido"
 
 #: ../src/main.cc:30
 msgid "Me TV is a digital television viewer for the GNOME desktop"
-msgstr "Me TV - tai skaitmeninės televizijos (DVB) leistuvas GNOME aplinkai"
+msgstr ""
+"Me TV é um visualizador de televisão digital para a área de trabalho GNOME"
 
 #: ../src/main.cc:31
 msgid ""
@@ -1051,15 +1104,15 @@ msgstr ""
 
 #: ../src/main.cc:87
 msgid "Enable verbose messages"
-msgstr ""
+msgstr "Ativar mensagens de voz"
 
 #: ../src/main.cc:92
 msgid "Start in safe mode"
-msgstr ""
+msgstr "Inicializar em modo de segurança"
 
 #: ../src/main.cc:97
 msgid "Start minimised in notification area"
-msgstr ""
+msgstr "Inicializar minimizado na área de notificação"
 
 #: ../src/main.cc:101
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
@@ -1077,11 +1130,11 @@ msgstr ""
 
 #: ../src/main.cc:111
 msgid "Show Me TV help options"
-msgstr ""
+msgstr "Mostrar opções de ajuda do Me TV"
 
 #: ../src/main.cc:154
 msgid "An unhandled error occurred"
-msgstr ""
+msgstr "Um erro desconhecido ocorreu"
 
 #: ../src/main_window.cc:168
 #, c-format
@@ -1090,7 +1143,7 @@ msgstr ""
 
 #: ../src/main_window.cc:204
 msgid "Please stop all recordings before editing channels"
-msgstr "Prieš keičiant kanalų informaciją reikia sustabdyti visus įrašymus"
+msgstr ""
 
 #: ../src/main_window.cc:215
 msgid "Cannot update channels while recording"
@@ -1098,31 +1151,31 @@ msgstr ""
 
 #: ../src/main_window.cc:602
 msgid "Failed to start engine: Engine has already been started"
-msgstr ""
+msgstr "Falha ao iniciar mecanismo: O mecanismo já foi inicializado"
 
 #: ../src/main_window.cc:687
 msgid "None"
-msgstr ""
+msgstr "Nada"
 
 #: ../src/me-tv.cc:75
 msgid "Failed to get time"
-msgstr ""
+msgstr "Falha ao obter tempo"
 
 #: ../src/me-tv.cc:153
 msgid "Failed to find a value for '%1'"
-msgstr ""
+msgstr "Falha ao pesquisar um valor para '%1'"
 
 #: ../src/me-tv.cc:178
 msgid "Failed to find a text value for '%1'"
-msgstr ""
+msgstr "Falha ao pesquisar um valor de texto para '%1'"
 
 #: ../src/me-tv-ui.cc:88 ../src/me-tv-ui.cc:103
 msgid "Failed to get active text value"
-msgstr ""
+msgstr "Erro ao capturar valor de texto ativo"
 
 #: ../src/me-tv-ui.cc:225
 msgid "Failed to get active integer value"
-msgstr ""
+msgstr "Erro ao capturar valor numérico ativo"
 
 #: ../src/mpeg_stream.cc:317
 msgid "Failed to find Program Map PID for service"
@@ -1130,86 +1183,88 @@ msgstr ""
 
 #: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
 msgid "Unknown language"
-msgstr "Nežinoma kalba"
+msgstr "Idioma desconhecido"
 
 #: ../src/scan_dialog.cc:32
 msgid "Me TV - Error"
-msgstr "Me TV - Klaida"
+msgstr "Erro - Me TV"
 
 #: ../src/scan_dialog.cc:138
 msgid "Service Name"
-msgstr ""
+msgstr "Nome do serviço"
 
 #: ../src/scan_dialog.cc:157
 msgid "Canada"
-msgstr "Kanada"
+msgstr "Canadá"
 
 #: ../src/scan_dialog.cc:158
 msgid "Finland"
-msgstr "Suomija"
+msgstr "Finlândia"
 
 #: ../src/scan_dialog.cc:159
 msgid "France"
-msgstr "Prancūzija"
+msgstr "França"
 
 #: ../src/scan_dialog.cc:160
 msgid "Germany"
-msgstr "Vokietija"
+msgstr "Alemanha"
 
 #: ../src/scan_dialog.cc:162
 msgid "Lithuania"
-msgstr "Lietuva"
+msgstr "Lituânia"
 
 #: ../src/scan_dialog.cc:163
 msgid "New Zealand"
-msgstr "Naujoji Zelandija"
+msgstr ""
 
 #: ../src/scan_dialog.cc:164
 msgid "Spain"
-msgstr "Ispanija"
+msgstr "Espanha"
 
 #: ../src/scan_dialog.cc:166
 msgid "United Kingdom"
-msgstr "Jungtinė Karalystė"
+msgstr "Reino Unido"
 
 #: ../src/scan_dialog.cc:167
 msgid "United States"
-msgstr "Jungtinės Amerikos Valstijos"
+msgstr "Estados Unidos"
 
 #: ../src/scan_dialog.cc:295
 msgid "Importing channels"
-msgstr ""
+msgstr "Importando canais"
 
 #: ../src/scan_dialog.cc:321 ../src/scan_dialog.cc:343
 #: ../src/scan_dialog.cc:361 ../src/scan_dialog.cc:380
 msgid "Invalid parameter count on line %1"
-msgstr ""
+msgstr "Quantidade de parâmetros inválidos na linha %1"
 
 #: ../src/scan_dialog.cc:394
 msgid ""
 "Failed to import: importing a channels.conf is only supported with DVB-T, "
 "DVB-C, DVB-S and ATSC"
 msgstr ""
+"Houve falha ao importar: importar um channels.conf é apenas suportado com "
+"DVB-T, DVB-C, DVB-S e ATSC"
 
 #: ../src/scan_dialog.cc:486
 msgid "Me TV cannot process a line in the initial tuning file"
-msgstr ""
+msgstr "Me TV não pode processar uma linha no arquivo de transmissão inicial"
 
 #: ../src/scan_dialog.cc:519
 msgid "No tuning file has been selected"
-msgstr ""
+msgstr "Nenhum arquivo de transmissão foi selecionado"
 
 #: ../src/scan_dialog.cc:546
 msgid "Starting scanner"
-msgstr ""
+msgstr "Iniciando busca"
 
 #: ../src/scan_dialog.cc:625
 msgid "%1/%2 (%3 channels)"
-msgstr ""
+msgstr "%1/%2 (%3 canais)"
 
 #: ../src/scan_dialog.cc:652
 msgid "Scan complete"
-msgstr "Kanalų aptikimas baigtas"
+msgstr "Busca completa"
 
 #: ../src/scan_dialog.cc:710
 msgid "No auto scan range was specified"
@@ -1222,8 +1277,6 @@ msgstr ""
 #: ../src/scan_dialog.cc:802
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
-"Automatinis kanalų aptikimas veikia tik su skaitmeninės antžeminės "
-"televizijos (DVB-T) bei ATSC įrenginiais"
 
 #: ../src/scheduled_recording_manager.cc:210
 msgid ""
@@ -1236,6 +1289,8 @@ msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
 msgstr ""
+"Falhou ao salvar gravação agendada por que está conflitando com outra "
+"gravação agendada chamada '%1'."
 
 #: ../src/scheduled_recording_manager.cc:248
 msgid ""
@@ -1243,34 +1298,36 @@ msgid ""
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
+"Falhou ao salvar a gravação agendada por que você já tem uma gravação "
+"agendada chamada '%1', que está agendado para o mesmo horário no mesmo canal."
 
 #: ../src/scheduled_recording_manager.cc:408
 msgid "Scheduled recording '%1' not found"
-msgstr ""
+msgstr "Não foi encontrada a gravação agendada '%1'."
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
-msgstr "Aprašymas"
+msgstr "Descrição"
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Record"
-msgstr ""
+msgstr "Gravar"
 
 #: ../src/scheduled_recordings_dialog.cc:55
 msgid "After"
-msgstr ""
+msgstr "Depois"
 
 #: ../src/scheduled_recordings_dialog.cc:56
 msgid "Device"
-msgstr "Įrenginys"
+msgstr "Dispositivo"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
-msgstr ""
+msgstr "Não foi selecionada nenhuma gravação agendada"
 
 #: ../src/status_icon.cc:110
 msgid "Not available"
-msgstr ""
+msgstr "Indisponível"
 
 #: ../src/stream_manager.cc:114
 msgid "Failed to find frontend '%1' for scheduled recording"
@@ -1282,7 +1339,7 @@ msgstr ""
 
 #: ../src/stream_manager.cc:310
 msgid "Failed to get display stream"
-msgstr "Nepavyko gauti duomenų srauto rodymui"
+msgstr ""
 
 #: ../src/stream_manager.cc:357
 msgid "Failed to get display frontend thread"
@@ -1290,7 +1347,4 @@ msgstr ""
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
-msgstr ""
-
-#~ msgid "Watching: %1"
-#~ msgstr "Žiūrite: %1"
+msgstr " thread já foi iniciada"

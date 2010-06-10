@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-05-30 15:16-0400\n"
-"PO-Revision-Date: 2010-05-30 23:03+0000\n"
-"Last-Translator: Me TV Administration <Unknown>\n"
+"POT-Creation-Date: 2010-06-01 18:06-0400\n"
+"PO-Revision-Date: 2010-06-01 23:01+0000\n"
+"Last-Translator: Frédéric Côté <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-06-01 22:08+0000\n"
+"X-Launchpad-Export-Date: 2010-06-10 14:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -972,7 +972,7 @@ msgstr[1] "%1 Minuten"
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
-msgstr ""
+msgstr " "
 
 #: ../src/epg_event_search_dialog.cc:60
 msgid "Title"
@@ -1031,7 +1031,7 @@ msgid "Failed to open FIFO for reading '%1'"
 msgstr "Fehler: Failed to open FIFO for reading '%1'"
 
 #: ../src/frontend_thread.cc:315
-msgid "Watching: %1"
+msgid "Now showing: %1"
 msgstr ""
 
 #: ../src/frontend_thread.cc:478
@@ -1294,19 +1294,19 @@ msgstr "Keine geplante Aufnahme ausgewählt."
 msgid "Not available"
 msgstr "Nicht verfügbar"
 
-#: ../src/stream_manager.cc:128
+#: ../src/stream_manager.cc:114
 msgid "Failed to find frontend '%1' for scheduled recording"
 msgstr ""
 
-#: ../src/stream_manager.cc:203 ../src/stream_manager.cc:286
+#: ../src/stream_manager.cc:189 ../src/stream_manager.cc:272
 msgid "Failed to get available frontend"
 msgstr ""
 
-#: ../src/stream_manager.cc:324
+#: ../src/stream_manager.cc:310
 msgid "Failed to get display stream"
 msgstr ""
 
-#: ../src/stream_manager.cc:371
+#: ../src/stream_manager.cc:357
 msgid "Failed to get display frontend thread"
 msgstr ""
 

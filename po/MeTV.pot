@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 18:06-0400\n"
+"POT-Creation-Date: 2010-06-10 10:23-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -622,85 +622,85 @@ msgstr ""
 msgid "channels"
 msgstr ""
 
-#: ../src/application.cc:44
+#: ../src/application.cc:42
 msgid "Application has already been initialised"
 msgstr ""
 
-#: ../src/application.cc:59
+#: ../src/application.cc:58
 msgid "The SQLite version is not thread-safe"
 msgstr ""
 
-#: ../src/application.cc:119
+#: ../src/application.cc:114
 msgid "_File"
 msgstr ""
 
-#: ../src/application.cc:120
+#: ../src/application.cc:115
 msgid "_View"
 msgstr ""
 
-#: ../src/application.cc:121
+#: ../src/application.cc:116
 msgid "_Video"
 msgstr ""
 
-#: ../src/application.cc:122
+#: ../src/application.cc:117
 msgid "_Audio"
 msgstr ""
 
-#: ../src/application.cc:123
+#: ../src/application.cc:118
 msgid "_Help"
 msgstr ""
 
-#: ../src/application.cc:125
+#: ../src/application.cc:120
 msgid "Subtitles"
 msgstr ""
 
-#: ../src/application.cc:126
+#: ../src/application.cc:121
 msgid "_Streams"
 msgstr ""
 
-#: ../src/application.cc:127
+#: ../src/application.cc:122
 msgid "_Channels"
 msgstr ""
 
-#: ../src/application.cc:130
+#: ../src/application.cc:125
 msgid "_Both"
 msgstr ""
 
-#: ../src/application.cc:131
+#: ../src/application.cc:126
 msgid "_Left"
 msgstr ""
 
-#: ../src/application.cc:132
+#: ../src/application.cc:127
 msgid "_Right"
 msgstr ""
 
-#: ../src/application.cc:180
-msgid "Failed to send notification"
+#: ../src/application.cc:139
+msgid "Failed to get DBus session"
 msgstr ""
 
-#: ../src/application.cc:206
+#: ../src/application.cc:192
 msgid "Failed to start recording"
 msgstr ""
 
-#: ../src/application.cc:516
+#: ../src/application.cc:483
 msgid "Failed to initialise database"
 msgstr ""
 
-#: ../src/application.cc:575
+#: ../src/application.cc:542
 msgid "Application has not been initialised"
 msgstr ""
 
-#: ../src/application.cc:613
+#: ../src/application.cc:580
 #, c-format
 msgid "Changing channel to '%s'"
 msgstr ""
 
-#: ../src/application.cc:632
+#: ../src/application.cc:599
 #, c-format
 msgid "Channel changed to %s"
 msgstr ""
 
-#: ../src/application.cc:639
+#: ../src/application.cc:606
 msgid "Main window has not been created"
 msgstr ""
 
@@ -987,7 +987,7 @@ msgstr ""
 msgid "No demuxers"
 msgstr ""
 
-#: ../src/epg_thread.cc:209
+#: ../src/epg_thread.cc:211
 #, c-format
 msgid "Unknown source_id %u"
 msgstr ""
@@ -996,24 +996,12 @@ msgstr ""
 msgid "Failed to get error message"
 msgstr ""
 
-#: ../src/frontend_thread.cc:300
+#: ../src/frontend_thread.cc:266
 msgid "Failed to create FIFO '%1'"
 msgstr ""
 
-#: ../src/frontend_thread.cc:307
+#: ../src/frontend_thread.cc:273
 msgid "Failed to open FIFO for reading '%1'"
-msgstr ""
-
-#: ../src/frontend_thread.cc:315
-msgid "Now showing: %1"
-msgstr ""
-
-#: ../src/frontend_thread.cc:478
-msgid "Recording started: %1"
-msgstr ""
-
-#: ../src/frontend_thread.cc:497
-msgid "Recording stopped: %1"
 msgstr ""
 
 #: ../src/gtk_epg_widget.cc:285 ../src/gtk_epg_widget.cc:340
@@ -1024,11 +1012,11 @@ msgstr ""
 msgid "Unknown program"
 msgstr ""
 
-#: ../src/main.cc:30
+#: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for the GNOME desktop"
 msgstr ""
 
-#: ../src/main.cc:31
+#: ../src/main.cc:30
 msgid ""
 "Me TV was developed for the modern digital lounge room with a PC for a media "
 "centre that is capable of normal PC tasks (web surfing, word processing and "
@@ -1036,70 +1024,65 @@ msgid ""
 "MythTV but will integrate well with an existing GNOME desktop.\n"
 msgstr ""
 
-#: ../src/main.cc:87
+#: ../src/main.cc:85
 msgid "Enable verbose messages"
 msgstr ""
 
-#: ../src/main.cc:92
+#: ../src/main.cc:90
 msgid "Start in safe mode"
 msgstr ""
 
-#: ../src/main.cc:97
+#: ../src/main.cc:95
 msgid "Start minimised in notification area"
 msgstr ""
 
-#: ../src/main.cc:101
+#: ../src/main.cc:99
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
 msgstr ""
 
-#: ../src/main.cc:105
+#: ../src/main.cc:103
 msgid "Stops the rendering of the EPG event buttons on the UI."
 msgstr ""
 
-#: ../src/main.cc:109
+#: ../src/main.cc:107
 msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 5)."
 msgstr ""
 
-#: ../src/main.cc:111
+#: ../src/main.cc:109
 msgid "Show Me TV help options"
 msgstr ""
 
-#: ../src/main.cc:154
+#: ../src/main.cc:152
 msgid "An unhandled error occurred"
 msgstr ""
 
-#: ../src/main_window.cc:168
-#, c-format
-msgid "Failed to connect to the D-BUS daemon: %s"
-msgstr ""
-
-#: ../src/main_window.cc:204
+#: ../src/main_window.cc:191
 msgid "Please stop all recordings before editing channels"
 msgstr ""
 
-#: ../src/main_window.cc:215
+#: ../src/main_window.cc:202
 msgid "Cannot update channels while recording"
 msgstr ""
 
-#: ../src/main_window.cc:602
+#: ../src/main_window.cc:589
 msgid "Failed to start engine: Engine has already been started"
 msgstr ""
 
-#: ../src/main_window.cc:687
+#: ../src/main_window.cc:668
 msgid "None"
 msgstr ""
 
-#: ../src/me-tv.cc:75
+#: ../src/me-tv.cc:73
 msgid "Failed to get time"
 msgstr ""
 
-#: ../src/me-tv.cc:153
+#: ../src/me-tv.cc:151
 msgid "Failed to find a value for '%1'"
 msgstr ""
 
-#: ../src/me-tv.cc:178
+#: ../src/me-tv.cc:176
 msgid "Failed to find a text value for '%1'"
 msgstr ""
 
