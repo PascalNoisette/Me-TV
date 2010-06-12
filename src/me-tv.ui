@@ -2491,6 +2491,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
           <object class="GtkLabel" id="label_channel_conflict_message">
             <property name="visible">True</property>
             <property name="label" translatable="yes">A channel named 'xxx' already exists.</property>
+            <property name="use_markup">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -2532,7 +2533,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </packing>
             </child>
             <child>
-              <object class="GtkRadioButton" id="radio_button_channel_conflict_unique">
+              <object class="GtkRadioButton" id="radio_button_channel_conflict_rename">
                 <property name="label" translatable="yes">Rename the new channel to a unique name</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>

@@ -63,7 +63,9 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::
 gboolean ChannelsDialog::import_channel(const Channel& channel)
 {
 	gboolean abort_import = false;
-	gboolean add = true;
+	gboolean add_channel = true;
+	Glib::ustring channel_name = channel.name;
+	ChannelConflictAction action = channel_conflict_action;
 	
 	const Gtk::TreeModel::Children& children = list_store->children();
 	for (Gtk::TreeModel::Children::const_iterator iterator = children.begin(); iterator != children.end(); iterator++)
@@ -71,9 +73,9 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 		Gtk::TreeModel::Row row	= *iterator;
 		if (row[columns.column_name] == channel.name)
 		{
-			g_debug("Channel import: conflict with '%s'", channel.name.c_str());
+			g_debug("Channel add: conflict with '%s'", channel.name.c_str());
 
-			add = false;
+			add_channel = false;
 
 			if (channel_conflict_action != CHANNEL_CONFLICT_ACTION_NONE)
 			{
@@ -91,10 +93,12 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 
 				Gtk::Dialog* dialog_channel_conflict = NULL;
 				builder->get_widget("dialog_channel_conflict", dialog_channel_conflict);
+				int response = dialog_channel_conflict->run();
+				dialog_channel_conflict->hide();
 
-				switch (dialog_channel_conflict->run())
+				switch (response)
 				{
-					case 0: /// OK
+					case 0: // OK
 					{
 						Gtk::RadioButton* radio_button_channel_conflict_overwrite = NULL;
 						Gtk::RadioButton* radio_button_channel_conflict_keep = NULL;
@@ -105,32 +109,23 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 						builder->get_widget("radio_button_channel_conflict_keep", radio_button_channel_conflict_keep);
 						builder->get_widget("radio_button_channel_conflict_rename", radio_button_channel_conflict_rename);
 						builder->get_widget("check_button_channel_conflict_repeat", check_button_channel_conflict_repeat);
-
-						ChannelConflictAction action = CHANNEL_CONFLICT_ACTION_NONE;
 					
 						if (radio_button_channel_conflict_overwrite->get_active())
 						{
-							g_debug("Overwriting channel");
 							action = CHANNEL_CONFLICT_OVERWRITE;
-
-							row[columns.column_name] = channel.name;
-							row[columns.column_channel] = channel;
 						}
 						else if (radio_button_channel_conflict_keep->get_active())
 						{
-							g_debug("Keeping channel");
 							action = CHANNEL_CONFLICT_KEEP;
 						}
 						else if (radio_button_channel_conflict_rename->get_active())
 						{
-							g_debug("Renaming channel");
 							action = CHANNEL_CONFLICT_RENAME;
-							row[columns.column_name] = Glib::ustring::compose("%1 (%2)", channel.name, channel.service_id);
 						}
 
 						if (check_button_channel_conflict_repeat->get_active())
 						{
-							g_debug("Set repeating channel conflict action");
+							g_debug("Setting repeating channel conflict action");
 							channel_conflict_action = action;						
 						}
 					}
@@ -142,14 +137,35 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 						break;
 				}
 			}
+
+			if (!abort_import && action != CHANNEL_CONFLICT_ACTION_NONE)
+			{
+				if (action == CHANNEL_CONFLICT_OVERWRITE)
+				{
+					g_debug("Overwriting channel");
+
+					row[columns.column_name] = channel.name;
+					row[columns.column_channel] = channel;
+				}
+				else if (action == CHANNEL_CONFLICT_KEEP)
+				{
+					g_debug("Keeping channel");
+				}
+				else if (action == CHANNEL_CONFLICT_RENAME)
+				{
+					g_debug("Renaming new channel");
+					channel_name = Glib::ustring::compose("%1 (%2)", channel.name, channel.service_id);
+					add_channel = true;
+				}
+			}
 		}		
 	}
 
-	if (add && !abort_import)
+	if (add_channel && !abort_import)
 	{
 		Gtk::TreeModel::iterator row_iterator = list_store->append();
 		Gtk::TreeModel::Row row			= *row_iterator;
-		row[columns.column_name]		= channel.name;
+		row[columns.column_name]		= channel_name;
 		row[columns.column_frequency]	= channel.transponder.frontend_parameters.frequency;
 		row[columns.column_channel]		= channel;
 	}
