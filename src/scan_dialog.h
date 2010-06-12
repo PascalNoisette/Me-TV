@@ -78,7 +78,7 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring>						column_name;
 		Gtk::TreeModelColumn<struct dvb_frontend_parameters>	column_frontend_parameters;
 		Gtk::TreeModelColumn<guint>								column_polarisation;
-		Gtk::TreeModelColumn<guint>								column_signal_strength;
+		Gtk::TreeModelColumn<Glib::ustring>							column_signal_strength;
 	};
 
 	ModelColumns columns;

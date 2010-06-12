@@ -136,6 +136,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_scanned_channels->set_model(list_store);
 	tree_view_scanned_channels->append_column(_("Service Name"), columns.column_name);
+	tree_view_scanned_channels->append_column(_("Signal Strength"), columns.column_signal_strength);
 	
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scanned_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
@@ -413,7 +414,7 @@ void ScanDialog::add_channel_row(const Channel& channel, guint signal_strength)
 	row[columns.column_name]				= channel.name;
 	row[columns.column_frontend_parameters]	= channel.transponder.frontend_parameters;
 	row[columns.column_polarisation]		= channel.transponder.polarisation;
-	row[columns.column_signal_strength]		= signal_strength;
+	row[columns.column_signal_strength]		= Glib::ustring::compose("%1%%", ((0xFFFF & signal_strength) * 100)/65356);
 	tree_view_scanned_channels->get_selection()->select(row);
 
 	channel_count++;
