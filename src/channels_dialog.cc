@@ -60,6 +60,21 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
 }
 
+gboolean ChannelsDialog::does_channel_exist(const Glib::ustring& channel_name)
+{
+	const Gtk::TreeModel::Children& children = list_store->children();
+	for (Gtk::TreeModel::Children::const_iterator iterator = children.begin(); iterator != children.end(); iterator++)
+	{		
+		Gtk::TreeModel::Row row	= *iterator;
+		if (row[columns.column_name] == channel_name)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 gboolean ChannelsDialog::import_channel(const Channel& channel)
 {
 	gboolean abort_import = false;
@@ -154,7 +169,14 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 				else if (action == CHANNEL_CONFLICT_RENAME)
 				{
 					g_debug("Renaming new channel");
-					channel_name = Glib::ustring::compose("%1 (%2)", channel.name, channel.service_id);
+					guint index = 2;
+
+					Glib::ustring channel_name = Glib::ustring::compose("%1 (%2)", channel.name, index);
+					while (does_channel_exist(channel_name))
+					{
+						index++;
+						channel_name = Glib::ustring::compose("%1 (%2)", channel.name, index);
+					}
 					add_channel = true;
 				}
 			}

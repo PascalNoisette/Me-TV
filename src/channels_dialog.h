@@ -57,7 +57,8 @@ private:
 	
 	void show_scan_dialog();
 	gboolean import_channel(const Channel& channel);
-	
+	gboolean does_channel_exist(const Glib::ustring& channel_name);
+
 	void on_show();
 	void on_button_scan_clicked();
 	void on_button_edit_selected_channel_clicked();
