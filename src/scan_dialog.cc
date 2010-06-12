@@ -394,7 +394,7 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 					throw Exception(_("Failed to import: importing a channels.conf is only supported with DVB-T, DVB-C, DVB-S and ATSC"));
 			}
 
-			add_channel_row(channel);
+			add_channel_row(channel, 0);
 		}		
 	}
 
@@ -404,7 +404,7 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 	g_debug("Finished importing channels");
 }
 
-void ScanDialog::add_channel_row(const Channel& channel)
+void ScanDialog::add_channel_row(const Channel& channel, guint signal_strength)
 {	
 	Gtk::TreeModel::iterator iterator = list_store->append();
 	
@@ -413,6 +413,7 @@ void ScanDialog::add_channel_row(const Channel& channel)
 	row[columns.column_name]				= channel.name;
 	row[columns.column_frontend_parameters]	= channel.transponder.frontend_parameters;
 	row[columns.column_polarisation]		= channel.transponder.polarisation;
+	row[columns.column_signal_strength]		= signal_strength;
 	tree_view_scanned_channels->get_selection()->select(row);
 
 	channel_count++;
@@ -566,7 +567,7 @@ void ScanDialog::on_button_scan_wizard_add_clicked()
 	hide();
 }
 
-void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint service_id, const Glib::ustring& name, const guint polarisation)
+void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint service_id, const Glib::ustring& name, const guint polarisation, guint signal_strength)
 {
 	if (scan_thread != NULL && !scan_thread->is_terminated())
 	{
@@ -602,7 +603,7 @@ void ScanDialog::on_signal_service(const struct dvb_frontend_parameters& fronten
 		channel.transponder.frontend_parameters = frontend_parameters;
 		channel.transponder.polarisation		= polarisation;
 
-		add_channel_row(channel);
+		add_channel_row(channel, signal_strength);
 	}
 }
 

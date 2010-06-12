@@ -71,12 +71,14 @@ private:
 			add(column_name);
 			add(column_frontend_parameters);
 			add(column_polarisation); // for DVB-S only
+			add(column_signal_strength); // for DVB-S only
 		}
 
 		Gtk::TreeModelColumn<guint>								column_id;
 		Gtk::TreeModelColumn<Glib::ustring>						column_name;
 		Gtk::TreeModelColumn<struct dvb_frontend_parameters>	column_frontend_parameters;
 		Gtk::TreeModelColumn<guint>								column_polarisation;
+		Gtk::TreeModelColumn<guint>								column_signal_strength;
 	};
 
 	ModelColumns columns;
@@ -90,7 +92,8 @@ private:
 	void on_button_scan_wizard_cancel_clicked();
 	void on_button_scan_wizard_add_clicked();
 	void on_button_scan_stop_clicked();
-	void on_signal_service(const struct dvb_frontend_parameters& frontend_parameters, guint id, const Glib::ustring& name, const guint polarisation);
+	void on_signal_service(const struct dvb_frontend_parameters& frontend_parameters,
+		guint id, const Glib::ustring& name, const guint polarisation, guint signal_strength);
 	void on_signal_progress(guint step, gsize total);
 	void on_signal_complete();
 	void on_file_chooser_button_scan_file_set();
@@ -99,7 +102,7 @@ private:
 	void on_hide();	
 	void stop_scan();
 	void update_channel_count();
-	void add_channel_row(const Channel& channel);
+	void add_channel_row(const Channel& channel, guint signal_strength);
 	guint convert_string_to_value(const StringTable* table, const gchar* text);
 
 	void process_terrestrial_line(const Glib::ustring& line);

@@ -75,7 +75,8 @@ void Scanner::tune_to(Frontend& frontend, const Transponder& transponder)
 				transponder.frontend_parameters,
 				sds.services[i].id,
 				service_name,
-				transponder.polarisation);
+				transponder.polarisation,
+			    frontend.get_signal_strength());
 		}
 
 		g_debug("Got %u transponders from NIT", (guint)nis.transponders.size());
@@ -130,7 +131,8 @@ void Scanner::atsc_tune_to(Frontend& frontend, const Transponder& transponder)
 					transponder.frontend_parameters,
 					vc->program_number,
 					Glib::ustring::compose("%1-%2 %3", vc->major_channel_number, vc->minor_channel_number, vc->short_name),
-					transponder.polarisation);
+					transponder.polarisation,
+				    frontend.get_signal_strength());
 		}
 	}
 	catch(const Exception& exception)

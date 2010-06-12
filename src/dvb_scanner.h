@@ -42,7 +42,7 @@ namespace Dvb
 		void start(Frontend& frontend, TransponderList& transponders);
 		void terminate();
 			
-		sigc::signal<void,const struct dvb_frontend_parameters&, guint, const Glib::ustring&, const guint> signal_service;
+		sigc::signal<void,const struct dvb_frontend_parameters&, guint, const Glib::ustring&, const guint, guint> signal_service;
 		sigc::signal<void, guint, gsize> signal_progress;
 		sigc::signal<void> signal_complete;
 	};

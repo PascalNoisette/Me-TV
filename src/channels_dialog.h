@@ -26,6 +26,14 @@
 class ChannelsDialog : public Gtk::Dialog
 {
 private:
+	typedef enum
+	{
+		CHANNEL_CONFLICT_ACTION_NONE,
+		CHANNEL_CONFLICT_OVERWRITE,
+		CHANNEL_CONFLICT_KEEP,
+		CHANNEL_CONFLICT_RENAME,
+	} ChannelConflictAction;
+	
 	class ModelColumns : public Gtk::TreeModelColumnRecord
 	{
 	public:
@@ -45,6 +53,7 @@ private:
 	Glib::RefPtr<Gtk::ListStore>		list_store;
 	const Glib::RefPtr<Gtk::Builder>	builder;
 	Gtk::TreeView*						tree_view_displayed_channels;
+	ChannelConflictAction				channel_conflict_action;
 	
 	void show_scan_dialog();
 	gboolean import_channel(const Channel& channel);

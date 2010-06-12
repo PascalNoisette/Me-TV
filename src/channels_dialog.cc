@@ -36,6 +36,7 @@ ChannelsDialog::ChannelsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::
 	Gtk::Dialog(cobject), builder(builder)
 {
 	Gtk::Button* button = NULL;
+	channel_conflict_action = CHANNEL_CONFLICT_ACTION_NONE;
 
 	builder->get_widget("button_scan", button);
 	button->signal_clicked().connect(sigc::mem_fun(*this, &ChannelsDialog::on_button_scan_clicked));
@@ -63,7 +64,7 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 {
 	gboolean abort_import = false;
 	gboolean add = true;
-
+	
 	const Gtk::TreeModel::Children& children = list_store->children();
 	for (Gtk::TreeModel::Children::const_iterator iterator = children.begin(); iterator != children.end(); iterator++)
 	{		
@@ -71,38 +72,75 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 		if (row[columns.column_name] == channel.name)
 		{
 			g_debug("Channel import: conflict with '%s'", channel.name.c_str());
-			
+
 			add = false;
 
-			Glib::ustring message = Glib::ustring::compose(
-				_("A channel named '%1' already exists.  Do you want to overwrite it?"),
-				channel.name);
-			
-			Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE, true);
-			dialog.add_button(_("Overwrite existing channel"), Gtk::RESPONSE_ACCEPT);
-			dialog.add_button(_("Keep existing channel"), Gtk::RESPONSE_REJECT);
-			dialog.add_button(_("Cancel scan/import"), Gtk::RESPONSE_CANCEL);
-
-			Glib::ustring title = PACKAGE_NAME " - ";
-			title +=  _("Channel conflict");
-			dialog.set_title(title);
-			dialog.set_icon_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv.xpm");
-			int response = dialog.run();
-
-			switch (response)
+			if (channel_conflict_action != CHANNEL_CONFLICT_ACTION_NONE)
 			{
-				case Gtk::RESPONSE_ACCEPT: // Overwrite
-					g_debug("Channel accepted");
-					row[columns.column_name]	= channel.name;
-					row[columns.column_channel]	= channel;
-					break;
-				case Gtk::RESPONSE_REJECT:
-					g_debug("Channel rejected");
-					break;
-				default: // Cancel
-					g_debug("Import cancelled");
-					abort_import = true;
-					break;
+				g_debug("Repeating channel conflict action");
+			}
+			else
+			{
+				Glib::ustring message = Glib::ustring::compose(
+					_("A channel named <b>'%1'</b> already exists."),
+					encode_xml(channel.name));
+
+				Gtk::Label* label_channel_conflict_message = NULL;
+				builder->get_widget("label_channel_conflict_message", label_channel_conflict_message);
+				label_channel_conflict_message->set_label(message);
+
+				Gtk::Dialog* dialog_channel_conflict = NULL;
+				builder->get_widget("dialog_channel_conflict", dialog_channel_conflict);
+
+				switch (dialog_channel_conflict->run())
+				{
+					case 0: /// OK
+					{
+						Gtk::RadioButton* radio_button_channel_conflict_overwrite = NULL;
+						Gtk::RadioButton* radio_button_channel_conflict_keep = NULL;
+						Gtk::RadioButton* radio_button_channel_conflict_rename = NULL;
+						Gtk::CheckButton* check_button_channel_conflict_repeat = NULL;
+
+						builder->get_widget("radio_button_channel_conflict_overwrite", radio_button_channel_conflict_overwrite);
+						builder->get_widget("radio_button_channel_conflict_keep", radio_button_channel_conflict_keep);
+						builder->get_widget("radio_button_channel_conflict_rename", radio_button_channel_conflict_rename);
+						builder->get_widget("check_button_channel_conflict_repeat", check_button_channel_conflict_repeat);
+
+						ChannelConflictAction action = CHANNEL_CONFLICT_ACTION_NONE;
+					
+						if (radio_button_channel_conflict_overwrite->get_active())
+						{
+							g_debug("Overwriting channel");
+							action = CHANNEL_CONFLICT_OVERWRITE;
+
+							row[columns.column_name] = channel.name;
+							row[columns.column_channel] = channel;
+						}
+						else if (radio_button_channel_conflict_keep->get_active())
+						{
+							g_debug("Keeping channel");
+							action = CHANNEL_CONFLICT_KEEP;
+						}
+						else if (radio_button_channel_conflict_rename->get_active())
+						{
+							g_debug("Renaming channel");
+							action = CHANNEL_CONFLICT_RENAME;
+							row[columns.column_name] = Glib::ustring::compose("%1 (%2)", channel.name, channel.service_id);
+						}
+
+						if (check_button_channel_conflict_repeat->get_active())
+						{
+							g_debug("Set repeating channel conflict action");
+							channel_conflict_action = action;						
+						}
+					}
+						break;
+				
+					default: // Cancel channel import
+						g_debug("Import cancelled");
+						abort_import = true;
+						break;
+				}
 			}
 		}		
 	}

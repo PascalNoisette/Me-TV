@@ -2,6 +2,9 @@
 
 	* 1.2.6
 	* Clearing demuxers on channel stream destroy
+	* Added signal strength column to scan dialog
+	* Added rename option to channel conflict actions
+	* Added repeat option for channel conflict
 
 2010-06-12  Michael Lamothe <michael.lamothe@gmail.com>
 
