@@ -59,6 +59,7 @@ void FrontendThread::start()
 	if (is_terminated())
 	{
 		g_debug("Starting frontend thread (%s)", frontend.get_path().c_str());
+		transponder.frontend_parameters.frequency = 0;
 		Thread::start();
 	}
 }

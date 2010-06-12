@@ -246,6 +246,7 @@ void ScanDialog::stop_scan()
 		scan_thread = NULL;
 
 		get_application().stream_manager.start();
+		get_application().select_channel_to_play();
 	}
 }
 
