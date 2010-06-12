@@ -12,6 +12,7 @@ me-tv \- a digital television (DVB) viewer for GNOME
 .I [-m|--minimised]
 .I [--disable-epg]
 .I [--disable-epg-thread]
+.I [--no-screensaver-inhibit]
 .I [--read-timeout]
 .I [--display=DISPLAY]
 
@@ -46,6 +47,9 @@ Stops the rendering of the EPG event buttons on the UI.
 .TP
 .B --disable-epg-thread
 Disable the EPG thread.  Me TV will stop collecting EPG events.
+.TP
+.B --no-screensaver-inhibit
+Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME Screensaver.
 .TP
 .B --read-timeout
 How long to wait (in seconds) before timing out while waiting for data from demuxer (default 5)

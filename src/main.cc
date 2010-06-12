@@ -102,6 +102,10 @@ int main (int argc, char *argv[])
 	disable_epg_option_entry.set_long_name("disable-epg");
 	disable_epg_option_entry.set_description(_("Stops the rendering of the EPG event buttons on the UI."));
 
+	Glib::OptionEntry no_screensaver_inhibit_option_entry;
+	no_screensaver_inhibit_option_entry.set_long_name("no-screensaver-inhibit");
+	no_screensaver_inhibit_option_entry.set_description(_("Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME Screensaver."));
+
 	Glib::OptionEntry read_timeout_option_entry;
 	read_timeout_option_entry.set_long_name("read-timeout");
 	read_timeout_option_entry.set_description(_("How long to wait (in seconds) before timing out while waiting for data from demuxer (default 5)."));
@@ -112,6 +116,7 @@ int main (int argc, char *argv[])
 	option_group.add_entry(minimised_option_entry, minimised_mode);
 	option_group.add_entry(disable_epg_thread_option_entry, disable_epg_thread);
 	option_group.add_entry(disable_epg_option_entry, disable_epg);
+	option_group.add_entry(no_screensaver_inhibit_option_entry, no_screensaver_inhibit);
 	option_group.add_entry(read_timeout_option_entry, read_timeout);
 
 	Glib::OptionContext option_context;
@@ -119,10 +124,10 @@ int main (int argc, char *argv[])
 	option_context.set_description(ME_TV_DESCRIPTION);
 	option_context.set_main_group(option_group);
 		
-	option_context.parse(argc, argv);
-
 	try
 	{
+		option_context.parse(argc, argv);
+
 		UniqueApp* unique_application = unique_app_new_with_commands(
 			"org.lamothe.me-tv", NULL,
 		    "run", (UniqueCommand)1,

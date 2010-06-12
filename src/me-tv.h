@@ -34,6 +34,7 @@ extern bool safe_mode;
 extern bool minimised_mode;
 extern bool disable_epg_thread;
 extern bool disable_epg;
+extern bool no_screensaver_inhibit;
 extern gint read_timeout;
 
 typedef std::vector<Glib::ustring> StringArray;

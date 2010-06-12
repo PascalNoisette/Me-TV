@@ -860,6 +860,15 @@ void MainWindow::inhibit_screensaver(gboolean activate)
 {
 	GError*	error = NULL;
 
+	if (no_screensaver_inhibit)
+	{
+		if (activate)
+		{
+			g_debug("Screensaver inhibit disabled");
+		}
+		return;
+	}
+
 	if (get_application().get_dbus_connection() == NULL)
 	{
 		g_debug("No DBus connection, can't (un)inhibit");
