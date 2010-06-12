@@ -2482,6 +2482,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
     <property name="window_position">center-on-parent</property>
     <property name="icon">me-tv.xpm</property>
     <property name="type_hint">normal</property>
+    <property name="transient_for">dialog_channels</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox14">
