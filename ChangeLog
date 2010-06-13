@@ -8,6 +8,7 @@
 	* Added command line option for no screensaver inhibit
 	* Put comnmand line parse in try/catch so command line errors get reported
 	* Auto audio/subtitle selection does not delay anymore
+	* Selected better default for epg_page_size
 
 2010-06-12  Michael Lamothe <michael.lamothe@gmail.com>
 

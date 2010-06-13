@@ -65,12 +65,12 @@ Application::Application()
 
 	if (get_int_configuration_value("epg_span_hours") == 0)
 	{
-		set_int_configuration_value("epg_span_hours", 1);
+		set_int_configuration_value("epg_span_hours", 3);
 	}
 
 	if (get_int_configuration_value("epg_page_size") == 0)
 	{
-		set_int_configuration_value("epg_page_size", 1);
+		set_int_configuration_value("epg_page_size", 20);
 	}
 	
 	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
