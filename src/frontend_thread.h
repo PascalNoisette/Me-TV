@@ -32,7 +32,6 @@ class FrontendThread : public Thread
 private:
 	ChannelStreamList	streams;
 	EpgThread*			epg_thread;
-	Dvb::Transponder	transponder;
 	int					fd;
 		
 	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);

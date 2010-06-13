@@ -55,14 +55,24 @@ void TransponderList::add(const Transponder& transponder)
 
 bool Transponder::operator==(const Transponder& transponder) const
 {
-	return transponder.frontend_parameters.frequency == frontend_parameters.frequency && (
-		(transponder.frontend_type == FE_OFDM && transponder.frontend_parameters.u.ofdm.bandwidth == frontend_parameters.u.ofdm.bandwidth) ||
-		(transponder.frontend_type == FE_ATSC && transponder.frontend_parameters.u.vsb.modulation == frontend_parameters.u.vsb.modulation) ||
-		(transponder.frontend_type == FE_QAM && transponder.frontend_parameters.u.qam.modulation == frontend_parameters.u.qam.modulation)
-	);
+	return transponder == frontend_parameters;
 }
 
 bool Transponder::operator!=(const Transponder& transponder) const
 {
-	return !(transponder.frontend_parameters.frequency == frontend_parameters.frequency);
+	return transponder != frontend_parameters;
+}
+
+bool Transponder::operator==(struct dvb_frontend_parameters p) const
+{
+	return frontend_parameters.frequency == p.frequency && (
+		(frontend_type == FE_OFDM && frontend_parameters.u.ofdm.bandwidth == p.u.ofdm.bandwidth) ||
+		(frontend_type == FE_ATSC && frontend_parameters.u.vsb.modulation == p.u.vsb.modulation) ||
+		(frontend_type == FE_QAM && frontend_parameters.u.qam.modulation == p.u.qam.modulation)
+	);
+}
+
+bool Transponder::operator!=(struct dvb_frontend_parameters p) const
+{
+	return !(*this == p);
 }

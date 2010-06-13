@@ -29,7 +29,6 @@ FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Frontend"), frontend(
 	g_debug("Creating FrontendThread (%s)", frontend.get_path().c_str());
 	
 	epg_thread = NULL;
-	transponder.frontend_parameters.frequency = 0;
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
 
@@ -59,7 +58,6 @@ void FrontendThread::start()
 	if (is_terminated())
 	{
 		g_debug("Starting frontend thread (%s)", frontend.get_path().c_str());
-		transponder.frontend_parameters.frequency = 0;
 		Thread::start();
 	}
 }
@@ -165,11 +163,10 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 	const Channel& channel = channel_stream.channel;
 	
 	channel_stream.clear_demuxers();
-	if (channel.transponder != transponder)
+	if (channel.transponder != frontend.get_frontend_parameters())
 	{
 		stop_epg_thread();
 		frontend.tune_to(channel.transponder);
-		transponder = channel_stream.channel.transponder;
 		start_epg_thread();
 	}
 	
@@ -411,7 +408,7 @@ void FrontendThread::start_recording(Channel& channel, const Glib::ustring& desc
 		{
 			g_debug("Channel '%s' is currently not being recorded", channel.name.c_str());
 
-			if (channel.transponder != transponder)
+			if (channel.transponder != frontend.get_frontend_parameters())
 			{
 				g_debug("Need to change transponders to record this channel");
 
