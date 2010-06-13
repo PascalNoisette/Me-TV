@@ -601,6 +601,11 @@ void MainWindow::play(const Glib::ustring& mrl)
 {
 	Application& application = get_application();
 	
+	if (engine == NULL)
+	{
+		create_engine();
+	}
+	
 	Glib::ustring preferred_language = application.get_preferred_language();
 
 	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_audio/action_audio_streams"))->get_submenu();
@@ -691,14 +696,10 @@ void MainWindow::play(const Glib::ustring& mrl)
 		count++;
 	}
 
-	if (engine == NULL)
-	{
-		create_engine();
-		if (engine != NULL)
-		{			
-			engine->play(mrl);
-			inhibit_screensaver(true);
-		}
+	if (engine != NULL)
+	{			
+		engine->play(mrl);
+		inhibit_screensaver(true);
 	}
 }
 
