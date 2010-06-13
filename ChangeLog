@@ -1,4 +1,4 @@
-2010-06-13  Michael Lamothe <michael.lamothe@gmail.com>
+2010-06-14  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.2.6
 	* Clearing demuxers on channel stream destroy
@@ -7,6 +7,7 @@
 	* Added repeat option for channel conflict
 	* Added command line option for no screensaver inhibit
 	* Put comnmand line parse in try/catch so command line errors get reported
+	* Auto audio/subtitle selection does not delay anymore
 
 2010-06-12  Michael Lamothe <michael.lamothe@gmail.com>
 
