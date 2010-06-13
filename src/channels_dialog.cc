@@ -171,7 +171,7 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 					g_debug("Renaming new channel");
 					guint index = 2;
 
-					Glib::ustring channel_name = Glib::ustring::compose("%1 (%2)", channel.name, index);
+					channel_name = Glib::ustring::compose("%1 (%2)", channel.name, index);
 					while (does_channel_exist(channel_name))
 					{
 						index++;
@@ -202,6 +202,7 @@ void ChannelsDialog::show_scan_dialog()
 
 	FullscreenBugWorkaround fullscreen_bug_workaround;
 	
+	channel_conflict_action = CHANNEL_CONFLICT_ACTION_NONE;
 	ScanDialog& scan_dialog = ScanDialog::create(builder);
 	scan_dialog.show();
 	Gtk::Main::run(scan_dialog);
