@@ -6,8 +6,8 @@
 	* Added rename option to channel conflict actions
 	* Added repeat option for channel conflict
 	* Added command line option for no screensaver inhibit
-	* Put comnmand line parse in try/catch so command line errors get reported
-	* Auto audio/subtitle selection does not delay anymore
+	* Put command line parse in try/catch so command line errors get reported
+	* Auto audio/subtitle selection does not delay any more
 	* Selected better default for epg_page_size
 
 2010-06-12  Michael Lamothe <michael.lamothe@gmail.com>
