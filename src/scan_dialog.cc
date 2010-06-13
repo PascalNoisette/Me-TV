@@ -137,6 +137,8 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	tree_view_scanned_channels->set_model(list_store);
 	tree_view_scanned_channels->append_column(_("Service Name"), columns.column_name);
 	tree_view_scanned_channels->append_column(_("Signal Strength"), columns.column_signal_strength);
+	tree_view_scanned_channels->set_enable_search(true);
+	tree_view_scanned_channels->set_search_column(columns.column_name);
 	
 	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_scanned_channels->get_selection();
 	selection->set_mode(Gtk::SELECTION_MULTIPLE);
