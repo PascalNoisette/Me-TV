@@ -59,6 +59,8 @@ Glib::ustring ui_info =
 	"		</menu>"
 	"		<menu action='action_audio'>"
 	"			<menuitem action='toggle_action_mute'/>"
+	"			<menuitem action='action_increase_volume'/>"
+	"			<menuitem action='action_decrease_volume'/>"
 	"			<menu action='action_audio_streams'>"
 	"			</menu>"
 	"			<menu action='action_audio_channels'>"
@@ -155,6 +157,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_epg_event_search));
 	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences));
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
+	action_increase_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_increase_volume));
+	action_decrease_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_decrease_volume));
 	
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
@@ -791,6 +795,16 @@ void MainWindow::on_about()
 void MainWindow::on_mute()
 {
 	set_mute_state(toggle_action_mute->get_active());
+}
+
+void MainWindow::on_increase_volume()
+{
+  engine->volume_increase();
+}
+
+void MainWindow::on_decrease_volume()
+{
+  engine->volume_decrease();
 }
 
 void MainWindow::set_mute_state(gboolean state)

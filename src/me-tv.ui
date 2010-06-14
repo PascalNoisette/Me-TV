@@ -2613,4 +2613,14 @@ If you've just upgraded Me TV then this is probably what you want to do.
       <action-widget response="0">button_channel_conflict_ok</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkAction" id="action_increase_volume">
+    <property name="label">Increase Volume</property>
+    <property name="short_label">Increase Volume</property>
+    <property name="stock_id">gnome-stock-volume</property>
+  </object>
+  <object class="GtkAction" id="action_decrease_volume">
+    <property name="label">Decrease Volume</property>
+    <property name="short_label">Decrease Volume</property>
+    <property name="stock_id">gnome-stock-volume</property>
+  </object>
 </interface>

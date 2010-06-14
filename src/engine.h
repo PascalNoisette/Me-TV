@@ -52,6 +52,8 @@ public:
 	void stop();
 	void pause(gboolean state);
 	void set_mute_state(gboolean state);
+	void volume_increase();
+	void volume_decrease();
 	void set_subtitle_stream(gint stream);
 	void set_audio_stream(gint stream);
 	void set_audio_channel_state(AudioChannelState state);

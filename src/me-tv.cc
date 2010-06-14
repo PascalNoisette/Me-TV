@@ -44,6 +44,8 @@ Glib::RefPtr<Gtk::Action> action_epg_event_search;
 Glib::RefPtr<Gtk::Action> action_preferences;
 Glib::RefPtr<Gtk::Action> action_quit;
 Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
+Glib::RefPtr<Gtk::Action> action_increase_volume;
+Glib::RefPtr<Gtk::Action> action_decrease_volume;
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to)
 {

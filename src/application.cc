@@ -97,6 +97,8 @@ Application::Application()
 	action_preferences = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_preferences"));
 	action_quit = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_quit"));
 	action_scheduled_recordings = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_scheduled_recordings"));
+	action_increase_volume = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_increase_volume"));
+	action_decrease_volume = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_decrease_volume"));
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create();
 	action_group->add(toggle_action_record, Gtk::AccelKey("R"));
@@ -110,6 +112,8 @@ Application::Application()
 	action_group->add(action_preferences);
 	action_group->add(action_quit);
 	action_group->add(action_scheduled_recordings);
+	action_group->add(action_increase_volume, Gtk::AccelKey("plus"));
+	action_group->add(action_decrease_volume, Gtk::AccelKey("minus"));
 
 	action_group->add(Gtk::Action::create("action_file", _("_File")));
 	action_group->add(Gtk::Action::create("action_view", _("_View")));

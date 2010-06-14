@@ -215,6 +215,26 @@ void Engine::set_mute_state(gboolean state)
 	}
 }
 
+void Engine::volume_increase()
+{
+  g_debug("Engine::volume_increase()");
+  
+  if (pid != -1)
+	{
+		sendKeyEvent(XK_plus, 0);
+	}
+}
+
+void Engine::volume_decrease()
+{
+  g_debug("Engine::volume_decrease()");
+  
+  if (pid != -1)
+	{
+		sendKeyEvent(XK_minus, 0);
+	}
+}
+
 void Engine::set_audio_channel_state(AudioChannelState state)
 {
 	if (audio_channel_state != state)

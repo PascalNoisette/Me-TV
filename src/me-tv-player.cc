@@ -50,6 +50,7 @@ static double				pixel_aspect;
 static int					running = 0;
 static int					width = 320, height = 200;
 static AudioChannelState	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
+static int volume = 100;
 
 #define INPUT_MOTION (ExposureMask | KeyPressMask | StructureNotifyMask | PropertyChangeMask)
 
@@ -184,7 +185,35 @@ int set_audio_channel_state(AudioChannelState state)
 void set_mute_state(bool mute)
 {
 	printf("me-tv-player (xine): Setting mute state to %s\n", mute ? "true" : "false");
-	xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, mute ? 0 : 100);
+	
+	if(mute)
+	{
+	  volume = xine_get_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL);
+	}
+	
+	xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, mute ? 0 : volume);
+}
+
+void set_volume_state(int percent)
+{
+  if(percent < 0)
+  {
+    percent = 0;
+  }
+  else if(percent > 200)
+  {
+    percent = 200;
+  }
+  
+  printf("me-tv-player (xine): Setting volume to %d%\n", percent);
+  
+  volume = percent;
+  xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, percent);
+}
+
+int get_volume_state()
+{
+  return xine_get_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL);
 }
   
 void set_deinterlacer_state(bool deinterlace)
@@ -431,6 +460,14 @@ int main(int argc, char **argv)
 							xine_set_param(stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
 						}
 						break;
+						
+				  case XK_minus:
+				    set_volume_state(get_volume_state() - 10);
+				    break;
+				    
+				  case XK_plus:
+				    set_volume_state(get_volume_state() + 10);
+				    break;
 							
 					default:
 						if (key_event->keycode >= XK_0 && key_event->keycode <= XK_9)
