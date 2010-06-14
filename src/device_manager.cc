@@ -47,38 +47,41 @@ DeviceManager::DeviceManager()
 		frontend_path = get_frontend_path(adapter_count, frontend_count);
 		while (Gio::File::create_for_path(frontend_path)->query_exists())
 		{
-			Dvb::Frontend* frontend = new Dvb::Frontend(*adapter, frontend_count);
-			try
+			if (devices.empty() || devices.find(frontend_path) == Glib::ustring::npos)
 			{
-				frontend->open();
-				if (!is_frontend_supported(*frontend))
+				Dvb::Frontend* frontend = new Dvb::Frontend(*adapter, frontend_count);
+				try
 				{
-					g_debug("Frontend not supported");
-				}
-				else
-				{					
-					frontends.push_back(frontend);
-
-					Glib::ustring frontend_type = "Unknown";
-
-					switch(frontend->get_frontend_type())
+					frontend->open();
+					if (!is_frontend_supported(*frontend))
 					{
-					case FE_ATSC: frontend_type = "ATSC"; break;
-					case FE_OFDM: frontend_type = "DVB-T"; break;
-					case FE_QAM: frontend_type = "DVB-C"; break;
-					case FE_QPSK: frontend_type = "DVB-S"; break;
-					default: break;
+						g_debug("Frontend not supported");
 					}
+					else
+					{					
+						frontends.push_back(frontend);
+
+						Glib::ustring frontend_type = "Unknown";
+
+						switch(frontend->get_frontend_type())
+						{
+						case FE_ATSC: frontend_type = "ATSC"; break;
+						case FE_OFDM: frontend_type = "DVB-T"; break;
+						case FE_QAM: frontend_type = "DVB-C"; break;
+						case FE_QPSK: frontend_type = "DVB-S"; break;
+						default: break;
+						}
 		
-					g_message("Device: '%s' (%s) at \"%s\"",
-						frontend->get_frontend_info().name,
-					    frontend_type.c_str(),
-					    frontend->get_path().c_str());
+						g_message("Device: '%s' (%s) at \"%s\"",
+							frontend->get_frontend_info().name,
+							frontend_type.c_str(),
+							frontend->get_path().c_str());
+					}
 				}
-			}
-			catch(...)
-			{
-				g_debug("Failed to load '%s'", frontend_path.c_str());
+				catch(...)
+				{
+					g_debug("Failed to load '%s'", frontend_path.c_str());
+				}
 			}
 			
 			frontend_path = get_frontend_path(adapter_count, ++frontend_count);

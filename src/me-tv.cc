@@ -24,13 +24,14 @@
 #include <glib/gprintf.h>
 #include "application.h"
 
-bool	verbose_logging			= false;
-bool	safe_mode				= false;
-bool	minimised_mode			= false;
-bool	disable_epg_thread		= false;
-bool	disable_epg				= false;
-bool	no_screensaver_inhibit	= false;
-gint	read_timeout			= 5;
+bool			verbose_logging			= false;
+bool			safe_mode				= false;
+bool			minimised_mode			= false;
+bool			disable_epg_thread		= false;
+bool			disable_epg				= false;
+bool			no_screensaver_inhibit	= false;
+Glib::ustring	devices;
+gint			read_timeout			= 5;
 
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_fullscreen;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;

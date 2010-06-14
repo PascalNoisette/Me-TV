@@ -106,6 +106,10 @@ int main (int argc, char *argv[])
 	no_screensaver_inhibit_option_entry.set_long_name("no-screensaver-inhibit");
 	no_screensaver_inhibit_option_entry.set_description(_("Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME Screensaver."));
 
+	Glib::OptionEntry devices_option_entry;
+	devices_option_entry.set_long_name("devices");
+	devices_option_entry.set_description(_("Only use the specified frontend devices (e.g. --devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"));
+
 	Glib::OptionEntry read_timeout_option_entry;
 	read_timeout_option_entry.set_long_name("read-timeout");
 	read_timeout_option_entry.set_description(_("How long to wait (in seconds) before timing out while waiting for data from demuxer (default 5)."));
@@ -117,6 +121,7 @@ int main (int argc, char *argv[])
 	option_group.add_entry(disable_epg_thread_option_entry, disable_epg_thread);
 	option_group.add_entry(disable_epg_option_entry, disable_epg);
 	option_group.add_entry(no_screensaver_inhibit_option_entry, no_screensaver_inhibit);
+	option_group.add_entry(devices_option_entry, devices);
 	option_group.add_entry(read_timeout_option_entry, read_timeout);
 
 	Glib::OptionContext option_context;

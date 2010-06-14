@@ -29,13 +29,14 @@
 #include <vector>
 #include <gtkmm.h>
 
-extern bool verbose_logging;
-extern bool safe_mode;
-extern bool minimised_mode;
-extern bool disable_epg_thread;
-extern bool disable_epg;
-extern bool no_screensaver_inhibit;
-extern gint read_timeout;
+extern bool				verbose_logging;
+extern bool				safe_mode;
+extern bool				minimised_mode;
+extern bool				disable_epg_thread;
+extern bool				disable_epg;
+extern bool				no_screensaver_inhibit;
+extern Glib::ustring	devices;
+extern gint				read_timeout;
 
 typedef std::vector<Glib::ustring> StringArray;
 typedef std::list<Glib::ustring> StringList;
