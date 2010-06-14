@@ -335,14 +335,15 @@ int main(int argc, char **argv)
 	}
 
 	set_mute_state(strcmp(argv[6], "true") == 0);
-	set_audio_stream(atoi(argv[7]));
-	set_subtitle_stream(atoi(argv[8]));
 	
 	if ((!xine_open(stream, mrl)) || (!xine_play(stream, 0, 0)))
 	{
 		fprintf(stderr, "me-tv-player (xine): Failed to open mrl '%s'\n", mrl);
 		return -1;
 	}
+
+	set_audio_stream(atoi(argv[7]));
+	set_subtitle_stream(atoi(argv[8]));
 
 	running = 1;
 
