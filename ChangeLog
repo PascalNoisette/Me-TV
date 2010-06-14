@@ -1,3 +1,9 @@
+2010-06-15  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.2.7
+	* Fix for auto subtitle/audio stream selection
+	* Added --devices command line option
+
 2010-06-14  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.2.6
