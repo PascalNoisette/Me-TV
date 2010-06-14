@@ -47,7 +47,7 @@ DeviceManager::DeviceManager()
 		frontend_path = get_frontend_path(adapter_count, frontend_count);
 		while (Gio::File::create_for_path(frontend_path)->query_exists())
 		{
-			if (devices.empty() || devices.find(frontend_path) == Glib::ustring::npos)
+			if (devices.empty() || devices.find(frontend_path) != Glib::ustring::npos)
 			{
 				Dvb::Frontend* frontend = new Dvb::Frontend(*adapter, frontend_count);
 				try
