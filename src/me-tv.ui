@@ -2072,6 +2072,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <property name="image">image_volume</property>
                 <property name="relief">none</property>
                 <property name="focus_on_click">False</property>
+                <property name="orientation">vertical</property>
+                <property name="value">1</property>
                 <property name="size">button</property>
                 <property name="icons">audio-volume-muted
 audio-volume-high

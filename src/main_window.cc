@@ -28,6 +28,7 @@
 #include "epg_event_search_dialog.h"
 #include "engine.h"
 #include <gtkmm.h>
+#include <gtkmm/volumebutton.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <dbus/dbus-glib.h>
@@ -156,6 +157,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget("toggle_button_fullscreen", toggle_button);
 	gtk_activatable_set_related_action(GTK_ACTIVATABLE(toggle_button->gobj()), GTK_ACTION(toggle_action_fullscreen->gobj()));
 	toggle_button->set_label("");
+
+	Gtk::VolumeButton* volume_button = NULL;
+	builder->get_widget("volume_button", volume_button);
+	volume_button->signal_value_changed().connect(sigc::mem_fun(*this, &MainWindow::on_button_volume_value_changed));
 
 	Gtk::Button* button = NULL;
 	builder->get_widget("button_epg_search", button);
@@ -804,6 +809,15 @@ void MainWindow::on_decrease_volume()
 	if (engine != NULL)
 	{
 		engine->volume_decrease();
+	}
+}
+
+void MainWindow::on_button_volume_value_changed(double value)
+{
+	g_debug("Value: %f", value);
+	if (engine != NULL)
+	{
+		engine->set_volume(value);
 	}
 }
 

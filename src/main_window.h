@@ -78,13 +78,6 @@ private:
 	void on_show();
 	void on_hide();
 			
-	void create_engine();
-public:
-	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
-	virtual ~MainWindow();
-		
-	static MainWindow* create(Glib::RefPtr<Gtk::Builder> builder);
-		
 	void on_next_channel();
 	void on_previous_channel();
 	void on_change_view_mode();
@@ -98,10 +91,19 @@ public:
 	void on_mute();
 	void on_increase_volume();
 	void on_decrease_volume();
+	void on_button_volume_value_changed(double value);
 	void on_audio_channel_both();
 	void on_audio_channel_left();
 	void on_audio_channel_right();
 	void on_about();
+
+	void create_engine();
+public:
+	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
+	virtual ~MainWindow();
+		
+	static MainWindow* create(Glib::RefPtr<Gtk::Builder> builder);
+		
 	void on_exception();
 
 	void show_channels_dialog();
