@@ -29,8 +29,7 @@
 typedef enum
 {
 	VIEW_MODE_VIDEO,
-	VIEW_MODE_CONTROLS,
-	VIEW_MODE_EPG
+	VIEW_MODE_CONTROLS
 } ViewMode;
 
 class MainWindow : public Gtk::Window
@@ -97,6 +96,8 @@ public:
 	void on_preferences();
 	void on_fullscreen();
 	void on_mute();
+	void on_increase_volume();
+	void on_decrease_volume();
 	void on_audio_channel_both();
 	void on_audio_channel_left();
 	void on_audio_channel_right();

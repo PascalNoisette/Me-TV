@@ -59,6 +59,8 @@ Glib::ustring ui_info =
 	"		</menu>"
 	"		<menu action='action_audio'>"
 	"			<menuitem action='toggle_action_mute'/>"
+	"			<menuitem action='action_increase_volume'/>"
+	"			<menuitem action='action_decrease_volume'/>"
 	"			<menu action='action_audio_streams'>"
 	"			</menu>"
 	"			<menu action='action_audio_channels'>"
@@ -71,13 +73,6 @@ Glib::ustring ui_info =
 	"			<menuitem action='action_about'/>"
 	"		</menu>"
 	"	</menubar>"
-	"	<toolbar name='toolbar'>"
-	"		<toolitem action='toggle_action_record'/>"
-	"		<toolitem action='toggle_action_mute'/>"
-	"		<toolitem action='action_scheduled_recordings'/>"
-	"		<toolitem action='action_epg_event_search'/>"
-	"		<toolitem action='toggle_action_fullscreen'/>"
-	"	</toolbar>"
 	"</ui>";
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
@@ -85,8 +80,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 {
 	g_debug("MainWindow constructor");
 
-	view_mode				= VIEW_MODE_EPG;
-	prefullscreen_view_mode	= VIEW_MODE_EPG;
+	view_mode				= VIEW_MODE_CONTROLS;
+	prefullscreen_view_mode	= VIEW_MODE_CONTROLS;
 	last_update_time		= 0;
 	timeout_source			= 0;
 	channel_change_timeout	= 0;
@@ -97,7 +92,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	maximise_forced			= false;
 	screensaver_inhibit_cookie	= 0;
 	
-	builder->get_widget("statusbar", statusbar);
 	builder->get_widget("drawing_area_video", drawing_area_video);
 	drawing_area_video->set_double_buffered(false);
 	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_expose_event));
@@ -130,7 +124,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	ui_manager->add_ui_from_string(ui_info);
 
 	Gtk::Widget* menu_bar = (Gtk::MenuBar*)ui_manager->get_widget("/menu_bar");
-	Gtk::Toolbar* toolbar = (Gtk::Toolbar*)ui_manager->get_widget("/toolbar");
 
 	Gtk::VBox* vbox_main_window = NULL;
 	builder->get_widget("vbox_main_window", vbox_main_window);
@@ -138,9 +131,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	vbox_main_window->pack_start(*menu_bar, Gtk::PACK_SHRINK);
 	vbox_main_window->reorder_child(*menu_bar, 0);
 	
-	vbox_main_window->pack_start(*toolbar, Gtk::PACK_SHRINK);
-	vbox_main_window->reorder_child(*toolbar, 1);
-
 	menu_bar->show_all();
 	set_view_mode(view_mode);
 
@@ -155,7 +145,27 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_epg_event_search));
 	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences));
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
+	action_increase_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_increase_volume));
+	action_decrease_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_decrease_volume));
+
+	Gtk::ToggleButton* toggle_button = NULL;
+	builder->get_widget("toggle_button_record", toggle_button);
+	gtk_activatable_set_related_action(GTK_ACTIVATABLE(toggle_button->gobj()), GTK_ACTION(toggle_action_record->gobj()));
+	toggle_button->set_label("");
 	
+	builder->get_widget("toggle_button_fullscreen", toggle_button);
+	gtk_activatable_set_related_action(GTK_ACTIVATABLE(toggle_button->gobj()), GTK_ACTION(toggle_action_fullscreen->gobj()));
+	toggle_button->set_label("");
+
+	Gtk::Button* button = NULL;
+	builder->get_widget("button_epg_search", button);
+	gtk_activatable_set_related_action(GTK_ACTIVATABLE(button->gobj()), GTK_ACTION(action_epg_event_search->gobj()));
+	button->set_label("");
+	
+	builder->get_widget("button_scheduled_recordings", button);
+	gtk_activatable_set_related_action(GTK_ACTIVATABLE(button->gobj()), GTK_ACTION(action_scheduled_recordings->gobj()));
+	button->set_label("");
+		
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
 
@@ -229,18 +239,7 @@ void MainWindow::show_preferences_dialog()
 
 void MainWindow::on_change_view_mode()
 {
-	if (view_mode == VIEW_MODE_VIDEO)
-	{
-		set_view_mode(VIEW_MODE_EPG);
-	}
-	else if (view_mode == VIEW_MODE_EPG)
-	{
-		set_view_mode(VIEW_MODE_CONTROLS);
-	}
-	else
-	{
-		set_view_mode(VIEW_MODE_VIDEO);
-	}
+	set_view_mode(view_mode == VIEW_MODE_VIDEO ? VIEW_MODE_CONTROLS : VIEW_MODE_VIDEO);
 	update();
 }
 
@@ -386,16 +385,13 @@ void MainWindow::set_view_mode(ViewMode mode)
 	Gtk::Widget* widget = NULL;
 
 	widget = ui_manager->get_widget("/menu_bar");
-	widget->property_visible() = (mode == VIEW_MODE_EPG) || (mode == VIEW_MODE_CONTROLS);
-	
-	widget = ui_manager->get_widget("/toolbar");
-	widget->property_visible() = (mode == VIEW_MODE_EPG) || (mode == VIEW_MODE_CONTROLS);
-	
-	builder->get_widget("statusbar", widget);
-	widget->property_visible() = (mode == VIEW_MODE_EPG) || (mode == VIEW_MODE_CONTROLS);
-	
-	builder->get_widget("vbox_epg", widget);
-	widget->property_visible() = (mode == VIEW_MODE_EPG);
+	widget->property_visible() = (mode == VIEW_MODE_CONTROLS);
+		
+	builder->get_widget("scrolled_window_epg", widget);
+	widget->property_visible() = (mode == VIEW_MODE_CONTROLS);
+
+	builder->get_widget("hbox_controls", widget);
+	widget->property_visible() = (mode == VIEW_MODE_CONTROLS);
 	
 	view_mode = mode;
 }
@@ -443,19 +439,21 @@ void MainWindow::on_menu_item_subtitle_stream_activate(guint index)
 void MainWindow::update()
 {	
 	Application& application = get_application();
-	Glib::ustring status_text;
+	Glib::ustring program_title;
 	Glib::ustring window_title = "Me TV - It's TV for me computer";
 
 	if (application.stream_manager.has_display_stream())
 	{
 		Channel& channel = application.stream_manager.get_display_channel();
 		window_title = "Me TV - " + channel.get_text();
-		status_text = channel.get_text();
+		program_title = channel.get_text();
 	}
 
 	set_title(window_title);
-	statusbar->pop();
-	statusbar->push(status_text);
+	
+	Gtk::Label* label = NULL;
+	builder->get_widget("label_program_title", label);
+	label->set_text(program_title);
 
 	widget_epg->update();
 }
@@ -791,6 +789,22 @@ void MainWindow::on_about()
 void MainWindow::on_mute()
 {
 	set_mute_state(toggle_action_mute->get_active());
+}
+
+void MainWindow::on_increase_volume()
+{
+	if (engine != NULL)
+	{
+		engine->volume_increase();
+	}
+}
+
+void MainWindow::on_decrease_volume()
+{
+	if (engine != NULL)
+	{
+		engine->volume_decrease();
+	}
 }
 
 void MainWindow::set_mute_state(gboolean state)

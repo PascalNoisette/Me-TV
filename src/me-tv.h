@@ -75,5 +75,7 @@ extern Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
 extern Glib::RefPtr<Gtk::Action> action_epg_event_search;
 extern Glib::RefPtr<Gtk::Action> action_about;
 extern Glib::RefPtr<Gtk::Action> action_quit;
+extern Glib::RefPtr<Gtk::Action> action_increase_volume;
+extern Glib::RefPtr<Gtk::Action> action_decrease_volume;
 
 #endif
