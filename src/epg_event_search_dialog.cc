@@ -34,7 +34,7 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType* cobject, const Glib::
 	Gtk::Dialog(cobject), builder(builder), image_record(Gtk::Stock::MEDIA_RECORD, Gtk::ICON_SIZE_MENU)
 {	
 	Gtk::Button* button = NULL;
-	builder->get_widget("button_epg_event_search", button);
+	builder->get_widget("button_epg_event_search_find", button);
 	button->signal_clicked().connect(sigc::mem_fun(*this, &EpgEventSearchDialog::search));
 
 	list_store_search = Gtk::ListStore::create(search_columns);

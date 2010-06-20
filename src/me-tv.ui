@@ -2055,8 +2055,13 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="related_action">toggle_action_record</property>
-                <property name="image">image_record</property>
                 <property name="relief">none</property>
+                <child>
+                  <object class="GtkImage" id="image_record">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-media-record</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -2064,35 +2069,21 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </packing>
             </child>
             <child>
-              <object class="GtkVolumeButton" id="volume_button">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="has_tooltip">True</property>
-                <property name="image">image_volume</property>
-                <property name="relief">none</property>
-                <property name="focus_on_click">False</property>
-                <property name="orientation">vertical</property>
-                <property name="value">1</property>
-                <property name="size">button</property>
-                <property name="icons">audio-volume-muted
-audio-volume-high
-audio-volume-low
-audio-volume-medium</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="position">1</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
-              <object class="GtkButton" id="button_scheduled_recordings">
+              <object class="GtkButton" id="button_epg_event_searc">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="image">image_scheduled_recordings</property>
+                <property name="related_action">action_epg_event_search</property>
                 <property name="relief">none</property>
-                <property name="image_position">right</property>
+                <child>
+                  <object class="GtkImage" id="image_epg_event_search">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-find</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -2100,12 +2091,18 @@ audio-volume-medium</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_epg_search">
+              <object class="GtkButton" id="button_scheduled_recordings">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="image">image_epg_search</property>
+                <property name="related_action">action_scheduled_recordings</property>
                 <property name="relief">none</property>
+                <child>
+                  <object class="GtkImage" id="image_scheduled_recordings">
+                    <property name="visible">True</property>
+                    <property name="icon_name">appointment-soon</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -2117,8 +2114,14 @@ audio-volume-medium</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="image">image_fullscreen</property>
+                <property name="related_action">toggle_action_fullscreen</property>
                 <property name="relief">none</property>
+                <child>
+                  <object class="GtkImage" id="image_fullscreen">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-fullscreen</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -2128,15 +2131,13 @@ audio-volume-medium</property>
             <child>
               <object class="GtkLabel" id="label_program_title">
                 <property name="visible">True</property>
+                <property name="xalign">0</property>
                 <property name="label" translatable="yes">Program title</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>
                 <property name="position">5</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
             </child>
             <child>
               <object class="GtkButton" id="button_epg_previous">
@@ -2147,8 +2148,11 @@ audio-volume-medium</property>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">7</property>
+                <property name="position">6</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
             <child>
               <object class="GtkButton" id="button_epg_now">
@@ -2304,7 +2308,7 @@ audio-volume-medium</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_epg_event_search">
+              <object class="GtkButton" id="button_epg_event_search_find">
                 <property name="label">gtk-find</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2385,6 +2389,7 @@ audio-volume-medium</property>
   </object>
   <object class="GtkToggleAction" id="toggle_action_record">
     <property name="stock_id">gtk-media-record</property>
+    <property name="icon_name">accessories-dictionary</property>
   </object>
   <object class="GtkAction" id="action_next_channel">
     <property name="label">Next Channel</property>
@@ -2691,26 +2696,6 @@ audio-volume-medium</property>
     <property name="label">Decrease Volume</property>
     <property name="short_label">Decrease Volume</property>
     <property name="stock_id">gnome-stock-volume</property>
-  </object>
-  <object class="GtkImage" id="image_record">
-    <property name="visible">True</property>
-    <property name="stock">gtk-media-record</property>
-  </object>
-  <object class="GtkImage" id="image_volume">
-    <property name="visible">True</property>
-    <property name="icon_name">audio-volume-high</property>
-  </object>
-  <object class="GtkImage" id="image_scheduled_recordings">
-    <property name="visible">True</property>
-    <property name="icon_name">appointment-soon</property>
-  </object>
-  <object class="GtkImage" id="image_epg_search">
-    <property name="visible">True</property>
-    <property name="stock">gtk-find</property>
-  </object>
-  <object class="GtkImage" id="image_fullscreen">
-    <property name="visible">True</property>
-    <property name="stock">gtk-fullscreen</property>
   </object>
   <object class="GtkImage" id="image_back">
     <property name="visible">True</property>

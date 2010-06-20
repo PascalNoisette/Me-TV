@@ -149,27 +149,14 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_increase_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_increase_volume));
 	action_decrease_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_decrease_volume));
 
-	Gtk::ToggleButton* toggle_button = NULL;
-	builder->get_widget("toggle_button_record", toggle_button);
-	gtk_activatable_set_related_action(GTK_ACTIVATABLE(toggle_button->gobj()), GTK_ACTION(toggle_action_record->gobj()));
-	toggle_button->set_label("");
-	
-	builder->get_widget("toggle_button_fullscreen", toggle_button);
-	gtk_activatable_set_related_action(GTK_ACTIVATABLE(toggle_button->gobj()), GTK_ACTION(toggle_action_fullscreen->gobj()));
-	toggle_button->set_label("");
+	Gtk::HBox* hbox_controls = NULL;
+	builder->get_widget("hbox_controls", hbox_controls);
 
-	Gtk::VolumeButton* volume_button = NULL;
-	builder->get_widget("volume_button", volume_button);
+	Gtk::VolumeButton* volume_button = new Gtk::VolumeButton();
 	volume_button->signal_value_changed().connect(sigc::mem_fun(*this, &MainWindow::on_button_volume_value_changed));
-
-	Gtk::Button* button = NULL;
-	builder->get_widget("button_epg_search", button);
-	gtk_activatable_set_related_action(GTK_ACTIVATABLE(button->gobj()), GTK_ACTION(action_epg_event_search->gobj()));
-	button->set_label("");
-	
-	builder->get_widget("button_scheduled_recordings", button);
-	gtk_activatable_set_related_action(GTK_ACTIVATABLE(button->gobj()), GTK_ACTION(action_scheduled_recordings->gobj()));
-	button->set_label("");
+	volume_button->show();
+	hbox_controls->pack_start(*volume_button, false, false);
+	hbox_controls->reorder_child(*volume_button, 1);
 		
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
@@ -814,7 +801,6 @@ void MainWindow::on_decrease_volume()
 
 void MainWindow::on_button_volume_value_changed(double value)
 {
-	g_debug("Value: %f", value);
 	if (engine != NULL)
 	{
 		engine->set_volume(value);
