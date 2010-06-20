@@ -25,6 +25,7 @@
 #include "gtk_epg_widget.h"
 #include "engine.h"
 #include <dbus/dbus.h>
+#include <gtkmm/volumebutton.h>
 
 typedef enum
 {
@@ -43,6 +44,7 @@ private:
 	gboolean								is_cursor_visible;
 	Gtk::HScale*							h_scale_position;
 	Gtk::Statusbar*							statusbar;
+	Gtk::VolumeButton*						volume_button;
 	ViewMode								view_mode;
 	ViewMode								prefullscreen_view_mode;
 	guint									last_update_time;

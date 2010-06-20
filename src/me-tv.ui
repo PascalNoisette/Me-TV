@@ -1986,9 +1986,6 @@ If you've just upgraded Me TV then this is probably what you want to do.
           <placeholder/>
         </child>
         <child>
-          <placeholder/>
-        </child>
-        <child>
           <object class="GtkVPaned" id="vpaned_main">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -2069,9 +2066,6 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
               <object class="GtkButton" id="button_epg_event_searc">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2087,7 +2081,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -2106,7 +2100,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">3</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -2125,7 +2119,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">4</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
@@ -2136,7 +2130,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <property name="use_markup">True</property>
               </object>
               <packing>
-                <property name="position">5</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child>
@@ -2148,11 +2142,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">6</property>
+                <property name="position">5</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
             </child>
             <child>
               <object class="GtkButton" id="button_epg_now">
@@ -2163,7 +2154,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">8</property>
+                <property name="position">6</property>
               </packing>
             </child>
             <child>
@@ -2175,7 +2166,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">9</property>
+                <property name="position">7</property>
               </packing>
             </child>
             <child>
@@ -2185,7 +2176,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <property name="label" translatable="yes">Page:</property>
               </object>
               <packing>
-                <property name="position">10</property>
+                <property name="position">8</property>
               </packing>
             </child>
             <child>
@@ -2200,7 +2191,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">11</property>
+                <property name="position">9</property>
               </packing>
             </child>
           </object>

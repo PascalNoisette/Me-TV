@@ -460,21 +460,13 @@ int main(int argc, char **argv)
 							xine_set_param(stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
 						}
 						break;
-						
-					case XK_minus:
-						set_volume_state(get_volume_state() - 10);
-						break;
-
-					case XK_plus:
-						set_volume_state(get_volume_state() + 10);
-						break;
-							
+													
 					default:
-						if (key_event->keycode >= XK_0 && key_event->keycode <= XK_9)
+						if (key_event->keycode >= XK_0 && key_event->keycode <= XK_colon)
 						{
-							if (key_event->state == XK_Control_L & XK_Control_R)
+							if (key_event->state == (XK_Control_L & XK_Control_R))
 							{
-								set_volume_state(((key_event->keycode - XK_0) * 100)/9);
+								set_volume_state((key_event->keycode - XK_0) * 10);
 							}
 							else if (key_event->state == XK_Control_L)
 							{

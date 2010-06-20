@@ -215,26 +215,6 @@ void Engine::set_mute_state(gboolean state)
 	}
 }
 
-void Engine::volume_increase()
-{
-	g_debug("Engine::volume_increase()");
-
-	if (pid != -1)
-	{
-		sendKeyEvent(XK_plus, 0);
-	}
-}
-
-void Engine::volume_decrease()
-{
-	g_debug("Engine::volume_decrease()");
-
-	if (pid != -1)
-	{
-		sendKeyEvent(XK_minus, 0);
-	}
-}
-
 void Engine::set_audio_channel_state(AudioChannelState state)
 {
 	if (audio_channel_state != state)
@@ -266,6 +246,8 @@ void Engine::set_volume(float value)
 {
 	if (pid != -1)
 	{
+		g_debug("Setting volume: %f", value);
+		// At value = 1.0 the key will be a colon (XK_colon)
 		sendKeyEvent(XK_0 + (int)(value * 10), XK_Control_L & XK_Control_R);
 	}
 }

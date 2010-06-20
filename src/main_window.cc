@@ -28,7 +28,6 @@
 #include "epg_event_search_dialog.h"
 #include "engine.h"
 #include <gtkmm.h>
-#include <gtkmm/volumebutton.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <dbus/dbus-glib.h>
@@ -152,11 +151,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	Gtk::HBox* hbox_controls = NULL;
 	builder->get_widget("hbox_controls", hbox_controls);
 
-	Gtk::VolumeButton* volume_button = new Gtk::VolumeButton();
+	volume_button = new Gtk::VolumeButton();
 	volume_button->signal_value_changed().connect(sigc::mem_fun(*this, &MainWindow::on_button_volume_value_changed));
-	volume_button->show();
+	volume_button->set_value(1);
 	hbox_controls->pack_start(*volume_button, false, false);
 	hbox_controls->reorder_child(*volume_button, 1);
+	volume_button->show();
 		
 	last_motion_time = time(NULL);
 	timeout_source = gdk_threads_add_timeout(1000, &MainWindow::on_timeout, this);
@@ -583,6 +583,7 @@ void MainWindow::create_engine()
 	Application& application = get_application();
 	engine = new Engine();
 	engine->set_mute_state(mute_state);
+	engine->set_volume(volume_button->get_value());
 	
 	g_debug("Engine created");
 }
@@ -785,18 +786,12 @@ void MainWindow::on_mute()
 
 void MainWindow::on_increase_volume()
 {
-	if (engine != NULL)
-	{
-		engine->volume_increase();
-	}
+	volume_button->set_value(volume_button->get_value() + 0.1);
 }
 
 void MainWindow::on_decrease_volume()
 {
-	if (engine != NULL)
-	{
-		engine->volume_decrease();
-	}
+	volume_button->set_value(volume_button->get_value() - 0.1);
 }
 
 void MainWindow::on_button_volume_value_changed(double value)
