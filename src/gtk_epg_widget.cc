@@ -461,6 +461,5 @@ bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent
 
 void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
 {
-	FullscreenBugWorkaround fullscreen_bug_workaround;
 	EpgEventDialog::create(builder).show_epg_event(epg_event);
 }

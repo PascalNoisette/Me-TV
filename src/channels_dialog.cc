@@ -200,8 +200,6 @@ void ChannelsDialog::show_scan_dialog()
 	// Check that there is a device
 	get_application().device_manager.check_frontend();
 
-	FullscreenBugWorkaround fullscreen_bug_workaround;
-	
 	channel_conflict_action = CHANNEL_CONFLICT_ACTION_NONE;
 	ScanDialog& scan_dialog = ScanDialog::create(builder);
 	scan_dialog.show();

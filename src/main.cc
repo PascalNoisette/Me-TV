@@ -43,7 +43,7 @@ static UniqueResponse on_message_received (
 	switch (command)
     {
 		case 1:
-			get_application().get_main_window().present();
+			action_present->activate();
 			response = UNIQUE_RESPONSE_OK;
 			break;
 			

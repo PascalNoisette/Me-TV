@@ -89,12 +89,14 @@ Application::Application()
 	toggle_action_fullscreen = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_fullscreen"));
 	toggle_action_mute = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_mute"));
 	toggle_action_record = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_record"));
+	toggle_action_visibility = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_visibility"));
 
 	action_about = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_about"));
 	action_channels = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_channels"));
 	action_change_view_mode = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_change_view_mode"));
 	action_epg_event_search = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_epg_event_search"));
 	action_preferences = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_preferences"));
+	action_present = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_present"));
 	action_quit = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_quit"));
 	action_scheduled_recordings = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_scheduled_recordings"));
 	action_increase_volume = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_increase_volume"));
@@ -104,12 +106,14 @@ Application::Application()
 	action_group->add(toggle_action_record, Gtk::AccelKey("R"));
 	action_group->add(toggle_action_fullscreen, Gtk::AccelKey("F"));
 	action_group->add(toggle_action_mute, Gtk::AccelKey("M"));
+	action_group->add(toggle_action_visibility);
 
 	action_group->add(action_about, Gtk::AccelKey("F1"));
 	action_group->add(action_channels);
 	action_group->add(action_change_view_mode, Gtk::AccelKey("V"));
 	action_group->add(action_epg_event_search);
 	action_group->add(action_preferences);
+	action_group->add(action_present);
 	action_group->add(action_quit);
 	action_group->add(action_scheduled_recordings);
 	action_group->add(action_increase_volume, Gtk::AccelKey("plus"));
@@ -207,7 +211,6 @@ void Application::on_record()
 
 void Application::on_quit()
 {
-	get_application().get_main_window().hide();
 	Gtk::Main::quit();
 }
 
@@ -586,11 +589,13 @@ void Application::set_display_channel(Channel& channel)
 	main_window->stop_engine();
 	try
 	{
+		signal_channel_changing(channel.name);
 		stream_manager.start_display(channel);
+		signal_channel_changed(channel.name);
 	}
 	catch (...)
 	{
-		main_window->on_exception();
+		signal_channel_change_failed(channel.name);
 	}
 	toggle_action_record->set_active(stream_manager.is_recording(stream_manager.get_display_channel()));
 

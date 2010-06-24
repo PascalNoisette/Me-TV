@@ -36,16 +36,22 @@ gint			read_timeout			= 5;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_fullscreen;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
+Glib::RefPtr<Gtk::ToggleAction> toggle_action_visibility;
 
 Glib::RefPtr<Gtk::Action> action_about;
 Glib::RefPtr<Gtk::Action> action_channels;
 Glib::RefPtr<Gtk::Action> action_change_view_mode;
+Glib::RefPtr<Gtk::Action> action_decrease_volume;
 Glib::RefPtr<Gtk::Action> action_epg_event_search;
+Glib::RefPtr<Gtk::Action> action_increase_volume;
 Glib::RefPtr<Gtk::Action> action_preferences;
+Glib::RefPtr<Gtk::Action> action_present;
 Glib::RefPtr<Gtk::Action> action_quit;
 Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
-Glib::RefPtr<Gtk::Action> action_increase_volume;
-Glib::RefPtr<Gtk::Action> action_decrease_volume;
+
+sigc::signal<void, const Glib::ustring&> signal_channel_changing;
+sigc::signal<void, const Glib::ustring&> signal_channel_changed;
+sigc::signal<void, const Glib::ustring&> signal_channel_change_failed;
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to)
 {

@@ -53,7 +53,6 @@ private:
 	gint									output_fd;
 	Glib::StaticRecMutex					mutex;
 	gboolean								mute_state;
-	gboolean								maximise_forced;
 	guint									channel_change_timeout;
 	guint									temp_channel_number;
 	sigc::connection						connection_exception;
@@ -66,6 +65,7 @@ private:
 	void add_channel_number(guint channel_number);
 	void toggle_mute();
 	void set_mute_state(gboolean state);
+	void set_status_text(const Glib::ustring& text);
 	
 	bool on_delete_event(GdkEventAny* event);
 	bool on_motion_notify_event(GdkEventMotion* event);
@@ -76,28 +76,32 @@ private:
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
 	void on_menu_item_audio_stream_activate(guint audio_stream_index);
 	void on_menu_item_subtitle_stream_activate(guint audio_stream_index);
+	void on_channel_changing(const Glib::ustring& channel_name);
+	void on_channel_changed(const Glib::ustring& channel_name);
+	void on_channel_change_failed(const Glib::ustring& channel_name);
 
 	void on_show();
 	void on_hide();
 			
-	void on_next_channel();
-	void on_previous_channel();
-	void on_change_view_mode();
-	void on_devices();
-	void on_channels();
-	void on_scheduled_recordings();
-	void on_epg_event_search();
-	void on_meters();
-	void on_preferences();
-	void on_fullscreen();
-	void on_mute();
-	void on_increase_volume();
-	void on_decrease_volume();
-	void on_button_volume_value_changed(double value);
+	void on_about();
 	void on_audio_channel_both();
 	void on_audio_channel_left();
 	void on_audio_channel_right();
-	void on_about();
+	void on_button_volume_value_changed(double value);
+	void on_change_view_mode();
+	void on_channels();
+	void on_decrease_volume();
+	void on_devices();
+	void on_epg_event_search();
+	void on_fullscreen();
+	void on_increase_volume();
+	void on_meters();
+	void on_mute();
+	void on_next_channel();
+	void on_preferences();
+	void on_previous_channel();
+	void on_present();
+	void on_scheduled_recordings();
 
 	void create_engine();
 public:

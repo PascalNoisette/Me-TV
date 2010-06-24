@@ -67,15 +67,21 @@ void split_string(std::vector<Glib::ustring>& parts, const Glib::ustring& text, 
 extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_fullscreen;
 extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;
 extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
+extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_visibility;
 
+extern Glib::RefPtr<Gtk::Action> action_about;
 extern Glib::RefPtr<Gtk::Action> action_channels;
 extern Glib::RefPtr<Gtk::Action> action_change_view_mode;
-extern Glib::RefPtr<Gtk::Action> action_preferences;
-extern Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
-extern Glib::RefPtr<Gtk::Action> action_epg_event_search;
-extern Glib::RefPtr<Gtk::Action> action_about;
-extern Glib::RefPtr<Gtk::Action> action_quit;
-extern Glib::RefPtr<Gtk::Action> action_increase_volume;
 extern Glib::RefPtr<Gtk::Action> action_decrease_volume;
+extern Glib::RefPtr<Gtk::Action> action_epg_event_search;
+extern Glib::RefPtr<Gtk::Action> action_increase_volume;
+extern Glib::RefPtr<Gtk::Action> action_preferences;
+extern Glib::RefPtr<Gtk::Action> action_present;
+extern Glib::RefPtr<Gtk::Action> action_quit;
+extern Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
+
+extern sigc::signal<void, const Glib::ustring&> signal_channel_changing;
+extern sigc::signal<void, const Glib::ustring&> signal_channel_changed;
+extern sigc::signal<void, const Glib::ustring&> signal_channel_change_failed;
 
 #endif

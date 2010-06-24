@@ -224,27 +224,3 @@ guint IntComboBox::get_active_value()
 	
 	throw Exception(_("Failed to get active integer value"));
 }
-
-FullscreenBugWorkaround::FullscreenBugWorkaround()
-{
-	apply = false;
-
-	if (get_application().get_boolean_configuration_value("fullscreen_bug_workaround"))
-	{
-		MainWindow& main_window = get_application().get_main_window();
-		apply = main_window.is_fullscreen();
-		if (apply)
-		{
-			main_window.unfullscreen(false);
-		}
-	}
-}
-
-FullscreenBugWorkaround::~FullscreenBugWorkaround()
-{
-	if (apply)
-	{
-		MainWindow& main_window = get_application().get_main_window();
-		main_window.fullscreen(false);
-	}
-}

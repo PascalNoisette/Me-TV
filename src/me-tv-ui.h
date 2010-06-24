@@ -130,13 +130,4 @@ public:
 	~GdkUnlock();
 };
 
-class FullscreenBugWorkaround
-{
-private:
-	gboolean apply;
-public:
-	FullscreenBugWorkaround();
-	~FullscreenBugWorkaround();
-};
-
 #endif

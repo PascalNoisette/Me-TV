@@ -2,6 +2,7 @@
 
 	* 1.3.0
 	* UI change to reduce vertical requirement
+	* Removed fullscreen bug workaround
 
 2010-06-15  Michael Lamothe <michael.lamothe@gmail.com>
 

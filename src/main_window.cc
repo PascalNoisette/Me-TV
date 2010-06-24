@@ -89,7 +89,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	engine					= NULL;
 	output_fd				= -1;
 	mute_state				= false;
-	maximise_forced			= false;
 	screensaver_inhibit_cookie	= 0;
 	
 	builder->get_widget("drawing_area_video", drawing_area_video);
@@ -138,15 +137,21 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	toggle_action_fullscreen->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_fullscreen));
 	toggle_action_mute->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_mute));
+	toggle_action_visibility->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::toggle_visibility));
 
 	action_about->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about));
 	action_channels->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_channels_dialog));
 	action_change_view_mode->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_change_view_mode));
-	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_epg_event_search));
-	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences));
-	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
-	action_increase_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_increase_volume));
 	action_decrease_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_decrease_volume));
+	action_epg_event_search->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_epg_event_search));
+	action_increase_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_increase_volume));
+	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences));
+	action_present->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_present));
+	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
+
+	signal_channel_changing.connect(sigc::mem_fun(*this, &MainWindow::on_channel_changing));
+	signal_channel_changed.connect(sigc::mem_fun(*this, &MainWindow::on_channel_changed));
+	signal_channel_change_failed.connect(sigc::mem_fun(*this, &MainWindow::on_channel_change_failed));
 
 	Gtk::HBox* hbox_controls = NULL;
 	builder->get_widget("hbox_controls", hbox_controls);
@@ -186,8 +191,6 @@ MainWindow* MainWindow::create(Glib::RefPtr<Gtk::Builder> builder)
 
 void MainWindow::show_channels_dialog()
 {
-	FullscreenBugWorkaround fullscreen_bug_workaround;
-
 	if (get_application().stream_manager.is_recording())
 	{
 		throw Exception(_("Please stop all recordings before editing channels"));
@@ -221,8 +224,6 @@ void MainWindow::show_channels_dialog()
 
 void MainWindow::show_preferences_dialog()
 {
-	FullscreenBugWorkaround fullscreen_bug_workaround;
-
 	PreferencesDialog& preferences_dialog = PreferencesDialog::create(builder);
 	preferences_dialog.run();
 	preferences_dialog.hide();
@@ -260,10 +261,11 @@ bool MainWindow::on_event_box_video_button_pressed(GdkEventButton* event_button)
 
 bool MainWindow::on_motion_notify_event(GdkEventMotion* event_motion)
 {
+	Gtk::Widget* widget = NULL;
+
 	last_motion_time = time(NULL);
 	if (!is_cursor_visible)
 	{
-		Gtk::Widget* widget = NULL;
 		builder->get_widget("event_box_video", widget);
 		Glib::RefPtr<Gdk::Window> event_box_video = widget->get_window();
 		if (event_box_video)
@@ -272,6 +274,10 @@ bool MainWindow::on_motion_notify_event(GdkEventMotion* event_motion)
 			is_cursor_visible = true;
 		}
 	}
+
+	builder->get_widget("hbox_controls", widget);
+	widget->show();
+
 	return true;
 }
 
@@ -342,6 +348,12 @@ void MainWindow::on_timeout()
 				event_box_video->set_cursor(Gdk::Cursor(hidden_cursor));
 				is_cursor_visible = false;
 			}
+
+			if (view_mode != VIEW_MODE_VIDEO)
+			{
+				builder->get_widget("hbox_controls", widget);
+				widget->hide();
+			}
 		}
 	
 		// Update EPG
@@ -390,8 +402,6 @@ void MainWindow::set_view_mode(ViewMode mode)
 
 void MainWindow::show_scheduled_recordings_dialog()
 {
-	FullscreenBugWorkaround fullscreen_bug_workaround;
-
 	ScheduledRecordingsDialog& scheduled_recordings_dialog = ScheduledRecordingsDialog::create(builder);
 	scheduled_recordings_dialog.run();
 	scheduled_recordings_dialog.hide();
@@ -401,8 +411,6 @@ void MainWindow::show_scheduled_recordings_dialog()
 
 void MainWindow::show_epg_event_search_dialog()
 {
-	FullscreenBugWorkaround fullscreen_bug_workaround;
-
 	EpgEventSearchDialog& epg_event_search_dialog = EpgEventSearchDialog::get(builder);
 	epg_event_search_dialog.run();
 	epg_event_search_dialog.hide();
@@ -426,28 +434,6 @@ void MainWindow::on_menu_item_subtitle_stream_activate(guint index)
 	{
 		engine->set_subtitle_stream(index);
 	}
-}
-
-void MainWindow::update()
-{	
-	Application& application = get_application();
-	Glib::ustring program_title;
-	Glib::ustring window_title = "Me TV - It's TV for me computer";
-
-	if (application.stream_manager.has_display_stream())
-	{
-		Channel& channel = application.stream_manager.get_display_channel();
-		window_title = "Me TV - " + channel.get_text();
-		program_title = channel.get_text();
-	}
-
-	set_title(window_title);
-	
-	Gtk::Label* label = NULL;
-	builder->get_widget("label_program_title", label);
-	label->set_text(program_title);
-
-	widget_epg->update();
 }
 
 void MainWindow::on_show()
@@ -694,6 +680,37 @@ void MainWindow::play(const Glib::ustring& mrl)
 	}
 }
 
+void MainWindow::update()
+{	
+	Application& application = get_application();
+	Glib::ustring program_title;
+	Glib::ustring window_title = "Me TV - It's TV for me computer";
+
+	if (application.stream_manager.has_display_stream())
+	{
+		Channel& channel = application.stream_manager.get_display_channel();
+		window_title = "Me TV - " + channel.get_text();
+		program_title = channel.get_text();
+
+		set_status_text(program_title);
+	}
+
+	set_title(window_title);
+	
+	widget_epg->update();
+}
+
+void MainWindow::set_status_text(const Glib::ustring& text)
+{
+	Gtk::Label* label = NULL;
+	builder->get_widget("label_status_text", label);
+	label->set_text(text);
+
+	Gtk::Widget* widget = NULL;
+	builder->get_widget("hbox_controls", widget);
+	widget->show();	
+}
+
 void MainWindow::start_engine()
 {
 	if (property_visible())
@@ -769,10 +786,13 @@ void MainWindow::on_preferences()
 	show_preferences_dialog();
 }
 
+void MainWindow::on_present()
+{
+	present();
+}
+
 void MainWindow::on_about()
 {
-	FullscreenBugWorkaround fullscreen_bug_workaround;
-
 	Gtk::Dialog* about_dialog = NULL;
 	builder->get_widget("dialog_about", about_dialog);
 	about_dialog->run();
@@ -818,32 +838,22 @@ void MainWindow::on_fullscreen()
 {
 	if (toggle_action_fullscreen->get_active())
 	{
-		if (get_application().get_boolean_configuration_value("fullscreen_bug_workaround"))
-		{
-			maximise_forced = true;
-			get_window()->maximize();
-		}	
-
 		fullscreen();
 	}
 	else
 	{
 		unfullscreen();
-
-		if (maximise_forced)
-		{
-			get_window()->unmaximize();
-			maximise_forced = false;
-		}
 	}
 }
 
 void MainWindow::show_error_dialog(const Glib::ustring& message)
 {
-	Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
-	dialog.set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
-	dialog.set_title(PACKAGE_NAME " - Error");
-	dialog.run();
+	set_status_text(message);
+
+//	Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+//	dialog.set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
+//	dialog.set_title(PACKAGE_NAME " - Error");
+//	dialog.run();
 }
 
 void MainWindow::on_exception()
@@ -933,4 +943,19 @@ void MainWindow::inhibit_screensaver(gboolean activate)
 			}
 		}
 	}
+}
+
+void MainWindow::on_channel_changing(const Glib::ustring& channel_name)
+{
+	set_status_text(_("Changing channel to ") + channel_name + " ...");
+}
+
+void MainWindow::on_channel_changed(const Glib::ustring& channel_name)
+{
+	set_status_text(_("Channel changed to ") + channel_name);
+}
+
+void MainWindow::on_channel_change_failed(const Glib::ustring& channel_name)
+{
+	set_status_text(_("Failed to change to channel ") + channel_name);
 }

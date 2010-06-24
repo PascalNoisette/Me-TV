@@ -51,7 +51,6 @@ void PreferencesDialog::run()
 	Gtk::CheckButton* check_button_show_epg_header = NULL;
 	Gtk::CheckButton* check_button_show_epg_time = NULL;
 	Gtk::CheckButton* check_button_show_epg_tooltips = NULL;
-	Gtk::CheckButton* check_button_fullscreen_bug_workaround = NULL;
 	Gtk::CheckButton* check_button_display_status_icon = NULL;
 	Gtk::CheckButton* check_button_show_channel_number = NULL;
 	Gtk::CheckButton* check_button_remove_colon = NULL;
@@ -70,7 +69,6 @@ void PreferencesDialog::run()
 	builder->get_widget("check_button_show_epg_header", check_button_show_epg_header);
 	builder->get_widget("check_button_show_epg_time", check_button_show_epg_time);
 	builder->get_widget("check_button_show_epg_tooltips", check_button_show_epg_tooltips);
-	builder->get_widget("check_button_fullscreen_bug_workaround", check_button_fullscreen_bug_workaround);
 	builder->get_widget("check_button_display_status_icon", check_button_display_status_icon);
 	builder->get_widget("check_button_show_channel_number", check_button_show_channel_number);
 	builder->get_widget("check_button_remove_colon", check_button_remove_colon);
@@ -130,7 +128,6 @@ void PreferencesDialog::run()
 	check_button_show_epg_header->set_active(application.get_boolean_configuration_value("show_epg_header"));
 	check_button_show_epg_time->set_active(application.get_boolean_configuration_value("show_epg_time"));
 	check_button_show_epg_tooltips->set_active(application.get_boolean_configuration_value("show_epg_tooltips"));
-	check_button_fullscreen_bug_workaround->set_active(application.get_boolean_configuration_value("fullscreen_bug_workaround"));
 	check_button_display_status_icon->set_active(application.get_boolean_configuration_value("display_status_icon"));
 	check_button_show_channel_number->set_active(application.get_boolean_configuration_value("show_channel_number"));
 	check_button_remove_colon->set_active(application.get_boolean_configuration_value("remove_colon"));
@@ -151,7 +148,6 @@ void PreferencesDialog::run()
 		application.set_boolean_configuration_value("show_epg_header", check_button_show_epg_header->get_active());
 		application.set_boolean_configuration_value("show_epg_time", check_button_show_epg_time->get_active());
 		application.set_boolean_configuration_value("show_epg_tooltips", check_button_show_epg_tooltips->get_active());
-		application.set_boolean_configuration_value("fullscreen_bug_workaround", check_button_fullscreen_bug_workaround->get_active());
 		application.set_boolean_configuration_value("display_status_icon", check_button_display_status_icon->get_active());
 		application.set_boolean_configuration_value("show_channel_number", check_button_show_channel_number->get_active());
 		application.set_boolean_configuration_value("remove_colon", check_button_remove_colon->get_active());

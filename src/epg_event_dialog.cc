@@ -81,7 +81,7 @@ void EpgEventDialog::show_epg_event(EpgEvent& epg_event)
 		break;
 
 	case 2:
-		get_application().get_main_window().show_scheduled_recordings_dialog();
+		action_scheduled_recordings->activate();
 		break;
 			
 	default:
