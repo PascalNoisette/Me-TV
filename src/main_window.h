@@ -36,27 +36,27 @@ typedef enum
 class MainWindow : public Gtk::Window
 {
 private:
-	const Glib::RefPtr<Gtk::Builder>		builder;
-	Gtk::DrawingArea*						drawing_area_video;
-	GtkEpgWidget*							widget_epg;
-	guint									last_motion_time;
-	GdkCursor*								hidden_cursor;
-	gboolean								is_cursor_visible;
-	Gtk::HScale*							h_scale_position;
-	Gtk::Statusbar*							statusbar;
-	Gtk::VolumeButton*						volume_button;
-	ViewMode								view_mode;
-	ViewMode								prefullscreen_view_mode;
-	guint									last_update_time;
-	guint									timeout_source;
-	Engine*									engine;
-	gint									output_fd;
-	Glib::StaticRecMutex					mutex;
-	gboolean								mute_state;
-	guint									channel_change_timeout;
-	guint									temp_channel_number;
-	sigc::connection						connection_exception;
-	guint									screensaver_inhibit_cookie;
+	const Glib::RefPtr<Gtk::Builder>	builder;
+	Gtk::DrawingArea*					drawing_area_video;
+	GtkEpgWidget*						widget_epg;
+	guint								last_motion_time;
+	GdkCursor*							hidden_cursor;
+	gboolean							is_cursor_visible;
+	Gtk::MenuBar*						menu_bar;
+	Gtk::VolumeButton*					volume_button;
+	Gtk::HBox*							hbox_controls;
+	ViewMode							view_mode;
+	ViewMode							prefullscreen_view_mode;
+	guint								last_update_time;
+	guint								timeout_source;
+	Engine*								engine;
+	gint								output_fd;
+	Glib::StaticRecMutex				mutex;
+	gboolean							mute_state;
+	guint								channel_change_timeout;
+	guint								temp_channel_number;
+	sigc::connection					connection_exception;
+	guint								screensaver_inhibit_cookie;
 	
 	void stop();
 	void set_view_mode(ViewMode display_mode);

@@ -80,23 +80,34 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 {
 	g_debug("MainWindow constructor");
 
-	view_mode				= VIEW_MODE_CONTROLS;
-	prefullscreen_view_mode	= VIEW_MODE_CONTROLS;
-	last_update_time		= 0;
-	timeout_source			= 0;
-	channel_change_timeout	= 0;
-	temp_channel_number		= 0;
-	engine					= NULL;
-	output_fd				= -1;
-	mute_state				= false;
+	view_mode					= VIEW_MODE_CONTROLS;
+	prefullscreen_view_mode		= VIEW_MODE_CONTROLS;
+	last_update_time			= 0;
+	timeout_source				= 0;
+	channel_change_timeout		= 0;
+	temp_channel_number			= 0;
+	engine						= NULL;
+	output_fd					= -1;
+	mute_state					= false;
 	screensaver_inhibit_cookie	= 0;
 	
+	is_cursor_visible = true;
+	gchar     bits[] = {0};
+	GdkColor  color = {0, 0, 0, 0};
+	GdkPixmap* pixmap = gdk_bitmap_create_from_data(NULL, bits, 1, 1);
+	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
+
+	add_accel_group(ui_manager->get_accel_group());
+	ui_manager->add_ui_from_string(ui_info);
+
 	builder->get_widget("drawing_area_video", drawing_area_video);
 	drawing_area_video->set_double_buffered(false);
 	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_expose_event));
 	
 	builder->get_widget_derived("scrolled_window_epg", widget_epg);
-		
+	builder->get_widget("hbox_controls", hbox_controls);
+	menu_bar = (Gtk::MenuBar*)ui_manager->get_widget("/menu_bar");
+	
 	Gtk::EventBox* event_box_video = NULL;
 	builder->get_widget("event_box_video", event_box_video);
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
@@ -109,21 +120,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	Gtk::AboutDialog* dialog_about = NULL;
 	builder->get_widget("dialog_about", dialog_about);
 	dialog_about->set_version(VERSION);
-
-	is_cursor_visible = true;
-	gchar     bits[] = {0};
-	GdkColor  color = {0, 0, 0, 0};
-	GdkPixmap* pixmap = gdk_bitmap_create_from_data(NULL, bits, 1, 1);
-	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
 	
 	Application& application = get_application();
 	set_keep_above(application.get_boolean_configuration_value("keep_above"));
 	
-	add_accel_group(ui_manager->get_accel_group());
-	ui_manager->add_ui_from_string(ui_info);
-
-	Gtk::Widget* menu_bar = (Gtk::MenuBar*)ui_manager->get_widget("/menu_bar");
-
 	Gtk::VBox* vbox_main_window = NULL;
 	builder->get_widget("vbox_main_window", vbox_main_window);
 
@@ -152,9 +152,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	signal_channel_changing.connect(sigc::mem_fun(*this, &MainWindow::on_channel_changing));
 	signal_channel_changed.connect(sigc::mem_fun(*this, &MainWindow::on_channel_changed));
 	signal_channel_change_failed.connect(sigc::mem_fun(*this, &MainWindow::on_channel_change_failed));
-
-	Gtk::HBox* hbox_controls = NULL;
-	builder->get_widget("hbox_controls", hbox_controls);
 
 	volume_button = new Gtk::VolumeButton();
 	volume_button->signal_value_changed().connect(sigc::mem_fun(*this, &MainWindow::on_button_volume_value_changed));
@@ -275,8 +272,8 @@ bool MainWindow::on_motion_notify_event(GdkEventMotion* event_motion)
 		}
 	}
 
-	builder->get_widget("hbox_controls", widget);
-	widget->show();
+	hbox_controls->show();
+	menu_bar->show();
 
 	return true;
 }
@@ -349,10 +346,10 @@ void MainWindow::on_timeout()
 				is_cursor_visible = false;
 			}
 
-			if (view_mode != VIEW_MODE_VIDEO)
+			if (view_mode == VIEW_MODE_VIDEO)
 			{
-				builder->get_widget("hbox_controls", widget);
-				widget->hide();
+				hbox_controls->hide();
+				menu_bar->hide();
 			}
 		}
 	
@@ -394,9 +391,12 @@ void MainWindow::set_view_mode(ViewMode mode)
 	builder->get_widget("scrolled_window_epg", widget);
 	widget->property_visible() = (mode == VIEW_MODE_CONTROLS);
 
-	builder->get_widget("hbox_controls", widget);
-	widget->property_visible() = (mode == VIEW_MODE_CONTROLS);
-	
+	hbox_controls->property_visible() = (mode == VIEW_MODE_CONTROLS);
+
+	Gtk::HBox* hbox_epg_controls = NULL;
+	builder->get_widget("hbox_epg_controls", hbox_epg_controls);
+	hbox_epg_controls->property_visible() = (mode == VIEW_MODE_CONTROLS);
+
 	view_mode = mode;
 }
 
@@ -706,9 +706,7 @@ void MainWindow::set_status_text(const Glib::ustring& text)
 	builder->get_widget("label_status_text", label);
 	label->set_text(text);
 
-	Gtk::Widget* widget = NULL;
-	builder->get_widget("hbox_controls", widget);
-	widget->show();	
+	hbox_controls->show();	
 }
 
 void MainWindow::start_engine()
