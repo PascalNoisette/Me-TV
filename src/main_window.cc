@@ -844,14 +844,9 @@ void MainWindow::on_fullscreen()
 	}
 }
 
-void MainWindow::show_error_dialog(const Glib::ustring& message)
+void MainWindow::show_error(const Glib::ustring& message)
 {
 	set_status_text(message);
-
-//	Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
-//	dialog.set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
-//	dialog.set_title(PACKAGE_NAME " - Error");
-//	dialog.run();
 }
 
 void MainWindow::on_exception()
@@ -862,15 +857,15 @@ void MainWindow::on_exception()
 	}
 	catch (const Exception& exception)
 	{
-		show_error_dialog(exception.what());
+		show_error(exception.what());
 	}
 	catch (const Glib::Error& exception)
 	{
-		show_error_dialog(exception.what());
+		show_error(exception.what());
 	}
 	catch (...)
 	{
-		show_error_dialog("Unhandled exception");
+		show_error("Unhandled exception");
 	}
 }
 

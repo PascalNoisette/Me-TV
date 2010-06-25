@@ -116,7 +116,7 @@ public:
 	void show_preferences_dialog();
 	void show_scheduled_recordings_dialog();
 	void show_epg_event_search_dialog();
-	void show_error_dialog(const Glib::ustring& message);
+	void show_error(const Glib::ustring& message);
 	
 	void toggle_visibility();
 	void update();

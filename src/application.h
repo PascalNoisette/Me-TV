@@ -82,8 +82,6 @@ public:
 	gboolean				initialise_database();
 	Data::Schema			get_schema() const { return schema; }
 
-	void show_error_dialog(const Glib::ustring& message);
-		
 	const Glib::ustring& get_database_filename();
 	void update();
 		

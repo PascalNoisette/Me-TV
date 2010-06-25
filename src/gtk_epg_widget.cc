@@ -169,11 +169,18 @@ void GtkEpgWidget::update_table()
 			{
 				guint hour_time = start_time + (hour * 60 * 60);
 				Glib::ustring hour_time_text = get_local_time_text(hour_time, "%c");
-				Gtk::Button& button = attach_button(hour_time_text, false,
+
+				Gtk::Frame* frame = Gtk::manage(new Gtk::Frame());
+				Gtk::Label* label = Gtk::manage(new Gtk::Label(hour_time_text));
+				label->set_alignment(0,0.5);
+				label->show();
+				frame->add(*label);
+				frame->set_shadow_type(Gtk::SHADOW_OUT);
+				
+				attach_widget(*frame,
 				    hour * COLUMNS_PER_HOUR + 1,
 				    (hour+1) * COLUMNS_PER_HOUR + 1,
 				    0, 1, Gtk::FILL | Gtk::EXPAND);
-				button.set_sensitive(false);
 			}
 			row++;
 		}
@@ -191,12 +198,13 @@ void GtkEpgWidget::update_table()
 		{
 			channel_end = channels.size();
 		}
-		
+
+		Gtk::RadioButtonGroup group;
 		for (guint channel_index = channel_start; channel_index < channel_end; channel_index++)
 		{
 			Channel& channel = channels[channel_index];
 			gboolean selected = stream_manager.has_display_stream() && (stream_manager.get_display_channel() == channel);
-			create_channel_row(channel, row++, selected, start_time, channel_index + 1,
+			create_channel_row(group, channel, row++, selected, start_time, channel_index + 1,
 				show_channel_number, show_epg_time, show_epg_tooltips);
 		}
 		get_window()->thaw_updates();
@@ -205,7 +213,7 @@ void GtkEpgWidget::update_table()
 	vadjustment->set_value(vvalue);
 }
 
-void GtkEpgWidget::create_channel_row(Channel& channel,
+void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& channel,
 	guint table_row, gboolean selected, guint start_time, guint channel_number,
 	gboolean show_channel_number, gboolean show_epg_time, gboolean show_epg_tooltips)
 {
@@ -217,7 +225,7 @@ void GtkEpgWidget::create_channel_row(Channel& channel,
 	
 	gboolean record_channel = get_application().stream_manager.is_recording(channel);
 	
-	Gtk::ToggleButton& channel_button = attach_toggle_button(channel_text, record_channel, 0, 1, table_row, table_row + 1);
+	Gtk::RadioButton& channel_button = attach_radio_button(group, channel_text, record_channel, 0, 1, table_row, table_row + 1);
 
 	if (selected)
 	{
@@ -229,13 +237,6 @@ void GtkEpgWidget::create_channel_row(Channel& channel,
 	}
 	
 	channel_button.set_active(selected);
-	channel_button.signal_clicked().connect(
-		sigc::bind<guint>
-		(
-			sigc::mem_fun(*this, &GtkEpgWidget::on_button_channel_clicked),
-			channel.channel_id
-		)
-	);
 	channel_button.signal_button_press_event().connect(
 		sigc::bind<guint>
 		(
@@ -343,9 +344,11 @@ void GtkEpgWidget::create_channel_row(Channel& channel,
 	}
 }
 
-Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text, gboolean record, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
+Gtk::RadioButton& GtkEpgWidget::attach_radio_button(Gtk::RadioButtonGroup& group, const Glib::ustring& text, gboolean record, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
 {
-	Gtk::ToggleButton* button = new Gtk::ToggleButton();
+	Gtk::RadioButton* button = Gtk::manage(new Gtk::RadioButton(group));
+	button->property_draw_indicator() = false;
+	button->set_active(false);
 	button->set_alignment(0, 0.5);
 
 	Gtk::HBox* hbox = Gtk::manage(new Gtk::HBox());
@@ -353,6 +356,7 @@ Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text,
 	Gtk::Label* label = Gtk::manage(new Gtk::Label(text));
 	label->set_use_markup(true);
 	label->set_alignment(0, 0.5);
+	label->set_padding(3, 0);
 	hbox->pack_start(*label, true, true);
 
 	if (record == true)
@@ -362,7 +366,7 @@ Gtk::ToggleButton& GtkEpgWidget::attach_toggle_button(const Glib::ustring& text,
 		hbox->pack_end(*image, false, false);
 	}
 	
-	button->add(*hbox);	
+	button->add(*hbox);
 	button->show_all();
 
 	attach_widget(*button, left_attach, right_attach, top_attach, bottom_attach, attach_options);
@@ -411,12 +415,6 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 	widget.show();
 }
 
-void GtkEpgWidget::on_button_channel_clicked(guint channel_id)
-{
-	get_application().set_display_channel_by_id(channel_id);
-	update_table();
-}
-
 bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, guint channel_id)
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
@@ -433,6 +431,10 @@ bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, guint ch
 		}
 
 		update_table();
+	}
+	else if (event->button == 1)
+	{
+		get_application().set_display_channel_by_id(channel_id);
 	}
 
 	return false;

@@ -584,24 +584,29 @@ void Application::set_display_channel_number(guint channel_index)
 
 void Application::set_display_channel(Channel& channel)
 {
-	g_message(_("Changing channel to '%s'"), channel.name.c_str());
+	bool success = false;
 
+	g_message(_("Changing channel to '%s'"), channel.name.c_str());	
 	main_window->stop_engine();
 	try
 	{
 		signal_channel_changing(channel.name);
 		stream_manager.start_display(channel);
 		signal_channel_changed(channel.name);
+
+		success = true;
 	}
 	catch (...)
 	{
 		signal_channel_change_failed(channel.name);
 	}
-	toggle_action_record->set_active(stream_manager.is_recording(stream_manager.get_display_channel()));
 
-	main_window->start_engine();
-	
-	set_int_configuration_value("last_channel", channel.channel_id);
+	if (success)
+	{
+		toggle_action_record->set_active(stream_manager.is_recording(stream_manager.get_display_channel()));
+		main_window->start_engine();
+		set_int_configuration_value("last_channel", channel.channel_id);
+	}
 
 	update();
 
