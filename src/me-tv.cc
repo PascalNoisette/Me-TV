@@ -206,3 +206,18 @@ void split_string(std::vector<Glib::ustring>& parts, const Glib::ustring& text, 
 	}
 	g_strfreev(temp_parts);
 }
+
+Glib::ustring trim_string(const Glib::ustring& s)
+{
+	Glib::ustring result;
+	
+	glong length = s.bytes();
+	if (length > 0)
+	{
+		gchar buffer[length + 1];
+		s.copy(buffer, length);
+		buffer[length] = 0;
+		result = g_strstrip(buffer);
+	}
+	return result;
+}

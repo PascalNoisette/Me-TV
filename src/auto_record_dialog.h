@@ -34,7 +34,7 @@ private:
 			add(column_title);
 		}
 
-		Gtk::TreeModelColumn<guint>			column_title;
+		Gtk::TreeModelColumn<Glib::ustring>	column_title;
 	};
 	
 	ModelColumns						columns;
@@ -42,10 +42,9 @@ private:
 	const Glib::RefPtr<Gtk::Builder>	builder;
 	Gtk::TreeView*						tree_view_auto_record;
 
-	void tree_view_column_validated_on_cell_data(Gtk::CellRenderer* renderer, const Gtk::TreeModel::iterator& iter);
-	void cellrenderer_validated_on_editing_started(Gtk::CellEditable* cell_editable, const Glib::ustring& path);
-	void cellrenderer_validated_on_edited(const Glib::ustring& path_string, const Glib::ustring& new_text);
-
+	void on_add();
+	void on_delete();
+	
 public:	
 	AutoRecordDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 

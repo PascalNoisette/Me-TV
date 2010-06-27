@@ -52,6 +52,7 @@ Glib::ustring convert_value_to_string(const StringTable* table, guint value);
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to);
 Glib::ustring encode_xml(const Glib::ustring& s);
+Glib::ustring trim_string(const Glib::ustring& s);
 
 guint get_local_time();
 Glib::ustring get_local_time_text(const gchar* format);

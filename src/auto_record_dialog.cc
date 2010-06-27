@@ -36,6 +36,14 @@ AutoRecordDialog::AutoRecordDialog(BaseObjectType* cobject, const Glib::RefPtr<G
 	list_store = Gtk::ListStore::create(columns);
 	tree_view_auto_record->set_model(list_store);
 	tree_view_auto_record->append_column_editable(_("Title"), columns.column_title);
+
+	Gtk::Button* button_auto_record_add = NULL;
+	builder->get_widget("button_auto_record_add", button_auto_record_add);
+	button_auto_record_add->signal_clicked().connect(sigc::mem_fun(*this, &AutoRecordDialog::on_add));
+
+	Gtk::Button* button_auto_record_delete = NULL;
+	builder->get_widget("button_auto_record_delete", button_auto_record_delete);
+	button_auto_record_delete->signal_clicked().connect(sigc::mem_fun(*this, &AutoRecordDialog::on_delete));
 }
 
 void AutoRecordDialog::run()
@@ -43,6 +51,47 @@ void AutoRecordDialog::run()
 	Application& application = get_application();
 
 	StringList auto_record_list = application.get_string_list_configuration_value("auto_record");
+
+	list_store->clear();
+	for (StringList::iterator iterator = auto_record_list.begin(); iterator != auto_record_list.end(); iterator++)
+	{
+		(*(list_store->append()))[columns.column_title] = *iterator;
+	}
 	
-	Gtk::Dialog::run();
+	if (Gtk::Dialog::run() == 0)
+	{
+		auto_record_list.clear();
+		
+		Gtk::TreeModel::Children children = list_store->children();
+		for (Gtk::TreeIter iterator = children.begin(); iterator != children.end(); iterator++)
+		{			
+			Glib::ustring title = trim_string((*iterator)[columns.column_title]);
+			if (!title.empty())
+			{
+				auto_record_list.push_back(title);
+			}
+		}
+
+		application.set_string_list_configuration_value("auto_record", auto_record_list);
+	}
+
+	hide();
+}
+
+void AutoRecordDialog::on_add()
+{
+	Gtk::TreeIter iterator = list_store->append();
+	(*iterator)[columns.column_title] = "";
+	tree_view_auto_record->get_selection()->select(iterator);
+}
+
+void AutoRecordDialog::on_delete()
+{
+	Glib::RefPtr<Gtk::TreeSelection> selection = tree_view_auto_record->get_selection();	
+	if (selection->count_selected_rows() == 0)
+	{
+		throw Exception(_("No row selected"));
+	}
+	
+	list_store->erase(selection->get_selected());
 }
