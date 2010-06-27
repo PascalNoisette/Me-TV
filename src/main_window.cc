@@ -48,6 +48,7 @@ Glib::ustring ui_info =
 	"			<menuitem action='action_change_view_mode'/>"
 	"			<separator/>"
 	"			<menuitem action='action_scheduled_recordings'/>"
+	"			<menuitem action='action_auto_record'/>"
 	"			<menuitem action='action_epg_event_search'/>"
 	"			<menuitem action='action_channels'/>"
 	"			<menuitem action='action_preferences'/>"
@@ -140,6 +141,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	toggle_action_visibility->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::toggle_visibility));
 
 	action_about->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about));
+	action_auto_record->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_auto_record));
 	action_channels->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::show_channels_dialog));
 	action_change_view_mode->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_change_view_mode));
 	action_decrease_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_decrease_volume));
@@ -795,6 +797,14 @@ void MainWindow::on_about()
 	builder->get_widget("dialog_about", about_dialog);
 	about_dialog->run();
 	about_dialog->hide();
+}
+
+void MainWindow::on_auto_record()
+{
+	Gtk::Dialog* dialog_auto_record = NULL;
+	builder->get_widget("dialog_auto_record", dialog_auto_record);
+	dialog_auto_record->run();
+	dialog_auto_record->hide();
 }
 
 void MainWindow::on_mute()

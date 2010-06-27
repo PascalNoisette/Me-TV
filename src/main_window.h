@@ -84,6 +84,7 @@ private:
 	void on_hide();
 			
 	void on_about();
+	void on_auto_record();
 	void on_audio_channel_both();
 	void on_audio_channel_left();
 	void on_audio_channel_right();

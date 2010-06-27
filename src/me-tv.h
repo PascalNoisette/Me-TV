@@ -70,6 +70,7 @@ extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
 extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_visibility;
 
 extern Glib::RefPtr<Gtk::Action> action_about;
+extern Glib::RefPtr<Gtk::Action> action_auto_record;
 extern Glib::RefPtr<Gtk::Action> action_channels;
 extern Glib::RefPtr<Gtk::Action> action_change_view_mode;
 extern Glib::RefPtr<Gtk::Action> action_decrease_volume;

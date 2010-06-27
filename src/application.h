@@ -110,8 +110,6 @@ public:
 	const Glib::ustring& get_application_dir() const { return application_dir; }
 	DBusGConnection* get_dbus_connection() const { return dbus_connection; }
 	
-	MainWindow& get_main_window();
-
 	void select_channel_to_play();
 };
 

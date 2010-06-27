@@ -39,6 +39,7 @@ Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_visibility;
 
 Glib::RefPtr<Gtk::Action> action_about;
+Glib::RefPtr<Gtk::Action> action_auto_record;
 Glib::RefPtr<Gtk::Action> action_channels;
 Glib::RefPtr<Gtk::Action> action_change_view_mode;
 Glib::RefPtr<Gtk::Action> action_decrease_volume;

@@ -92,6 +92,7 @@ Application::Application()
 	toggle_action_visibility = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_visibility"));
 
 	action_about = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_about"));
+	action_auto_record = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_auto_record"));
 	action_channels = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_channels"));
 	action_change_view_mode = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_change_view_mode"));
 	action_epg_event_search = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_epg_event_search"));
@@ -109,6 +110,7 @@ Application::Application()
 	action_group->add(toggle_action_visibility);
 
 	action_group->add(action_about, Gtk::AccelKey("F1"));
+	action_group->add(action_auto_record);
 	action_group->add(action_channels);
 	action_group->add(action_change_view_mode, Gtk::AccelKey("V"));
 	action_group->add(action_epg_event_search);
@@ -516,12 +518,12 @@ void Application::run()
 		}	
 
 		if (!minimised_mode)	
-		{	
-			main_window->show();	
+		{
+			action_present->activate();
 	
 			if (safe_mode)	
-			{	
-				main_window->show_preferences_dialog();	
+			{
+				action_preferences->activate();
 			}	
 		}
 
@@ -530,7 +532,7 @@ void Application::run()
 		
 		if (channels.empty())
 		{
-			main_window->show_channels_dialog();	
+			action_channels->activate();
 		}
 	}
 	catch(...)
@@ -611,16 +613,6 @@ void Application::set_display_channel(Channel& channel)
 	update();
 
 	g_message(_("Channel changed to %s"), channel.name.c_str());
-}
-
-MainWindow& Application::get_main_window()
-{
-	if (main_window == NULL)
-	{
-		throw Exception(_("Main window has not been created"));
-	}
-	
-	return *main_window;
 }
 
 void Application::check_scheduled_recordings()
