@@ -7,6 +7,8 @@
 	* Added volume control
 	* Fix for auto subtitle/audio stream selection
 	* Added --devices command line option
+	* Added auto record feature
+	* Channels/EPG events no longer save if not dirty
 
 2010-06-14  Michael Lamothe <michael.lamothe@gmail.com>
 

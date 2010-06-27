@@ -331,6 +331,21 @@
 				</long>
 			</locale>
 		</schema>
+
+		<schema>
+			<key>/schemas/apps/me-tv/auto_search</key>
+			<applyto>/apps/me-tv/auto_search</applyto>
+			<owner>me-tv</owner>
+			<type>list</type>
+			<list_type>string</list_type>
+			<default>[]</default>
+			<locale name="C">
+				<short>EPG event titles to auto record</short>
+				<long>
+					Me TV will schedule programs that have titles that contain these words.
+				</long>
+			</locale>
+		</schema>
 	</schemalist>
 
 </gconfschemafile>
