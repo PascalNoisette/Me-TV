@@ -708,8 +708,6 @@ void MainWindow::set_status_text(const Glib::ustring& text)
 	Gtk::Label* label = NULL;
 	builder->get_widget("label_status_text", label);
 	label->set_text(text);
-
-	hbox_controls->show();	
 }
 
 void MainWindow::start_engine()
