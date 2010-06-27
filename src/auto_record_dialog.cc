@@ -73,6 +73,8 @@ void AutoRecordDialog::run()
 		}
 
 		application.set_string_list_configuration_value("auto_record", auto_record_list);
+
+		application.check_auto_record();
 	}
 
 	hide();

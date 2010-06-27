@@ -31,6 +31,7 @@ class EpgEvents
 private:
 	EpgEventList			list;
 	Glib::StaticRecMutex	mutex;
+	gboolean				dirty;
 	
 	void set_saved(guint epg_event_id);
 public:
@@ -45,6 +46,7 @@ public:
 	void			load(Data::Connection& connection, guint channel_id);
 	void			save(Data::Connection& connection, guint channel_id);
 	EpgEventList	search(const Glib::ustring& text, gboolean search_description);
+	gboolean		is_dirty() const { return dirty; }
 };
 
 #endif

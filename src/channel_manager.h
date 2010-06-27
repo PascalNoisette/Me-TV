@@ -29,6 +29,8 @@ class ChannelManager
 private:
 	Glib::StaticRecMutex mutex;
 	ChannelArray channels;
+	gboolean dirty;
+	
 public:
 	ChannelManager();
 		
@@ -50,6 +52,8 @@ public:
 	Channel& get_channel_by_index(guint number);
 	Channel* find_channel(guint frequency, guint service_id);
 	Channel* find_channel(guint channel_id);
+
+	gboolean is_dirty();
 };
 
 #endif

@@ -709,7 +709,13 @@ gboolean Application::on_timeout()
 			check_scheduled_recordings();
 			scheduled_recording_manager.save(connection);
 			channel_manager.prune_epg();
-			channel_manager.save(connection);
+
+			if (channel_manager.is_dirty())
+			{
+				channel_manager.save(connection);
+				check_auto_record();
+			}
+			
 			update();
 		}
 		last_seconds = seconds;
@@ -720,6 +726,45 @@ gboolean Application::on_timeout()
 	}
 	
 	return true;
+}
+
+void Application::check_auto_record()
+{
+	StringList auto_record_list = get_string_list_configuration_value("auto_record");
+	ChannelArray channels = channel_manager.get_channels();
+
+	g_debug("Searching for auto record EPG events");
+	for (StringList::iterator iterator = auto_record_list.begin(); iterator != auto_record_list.end(); iterator++)
+	{
+		Glib::ustring title = (*iterator).uppercase();
+		g_debug("Searching for '%s'", title.c_str());
+
+		for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
+		{
+			Channel& channel = *i;
+
+			EpgEventList list = channel.epg_events.search(title, false);
+
+			for (EpgEventList::iterator j = list.begin(); j != list.end(); j++)
+			{
+				EpgEvent& epg_event = *j;
+
+				gboolean record = scheduled_recording_manager.is_recording(epg_event);
+				if (!record)
+				{
+					try
+					{
+						g_debug("Trying to auto record '%s' (%d)", epg_event.get_title().c_str(), epg_event.event_id);
+						scheduled_recording_manager.set_scheduled_recording(epg_event);
+					}
+					catch(...)
+					{
+						on_error();
+					}
+				}
+			}
+		}
+	}				
 }
 
 Glib::StaticRecMutex& Application::get_mutex()

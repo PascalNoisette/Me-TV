@@ -48,6 +48,28 @@ public:
 ChannelManager::ChannelManager()
 {
 	g_static_rec_mutex_init(mutex.gobj());
+	dirty = true;
+}
+
+gboolean ChannelManager::is_dirty()
+{
+	gboolean result = dirty;
+
+	if (!result)
+	{
+		for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
+		{
+			Channel& channel = *i;
+
+			if (channel.epg_events.is_dirty())
+			{
+				result = true;
+				break;
+			}
+		}
+	}
+
+	return result;
 }
 
 void ChannelManager::load(Data::Connection& connection)
@@ -223,6 +245,8 @@ void ChannelManager::save(Data::Connection& connection)
 	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
 	adapter_epg_event_text.delete_rows("EPG_EVENT_ID NOT IN (SELECT EPG_EVENT_ID FROM EPG_EVENT)");
 
+	dirty = false;
+	
 	g_debug("EPG events saved");	
 }
 

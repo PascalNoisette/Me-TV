@@ -100,7 +100,8 @@ public:
 	void set_display_channel(Channel& channel);
 	void set_display_channel_by_id(guint channel_id);
 	void set_display_channel_number(guint display_channel_number);
-	
+
+	void check_auto_record();
 	void check_scheduled_recordings();
 	void start_recording(Channel& channel);
 	void start_recording(Channel& channel, const ScheduledRecording& scheduled_recording);

@@ -26,6 +26,7 @@
 EpgEvents::EpgEvents()
 {
 	g_static_rec_mutex_init(mutex.gobj());
+	dirty = true;
 }
 
 EpgEvents::~EpgEvents()
@@ -81,6 +82,8 @@ gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)
 		    epg_event.channel_id,
 		    epg_event.get_start_time_text().c_str(),
 		    epg_event.version_number);
+
+		dirty = true;
 	}
 	
 	return add;
@@ -255,6 +258,7 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id)
 		}
 	}
 	adapter_epg_event_text.replace_rows(data_table_epg_event_text);
+	dirty = false;
 	
 	g_debug("EPG events saved");
 }
