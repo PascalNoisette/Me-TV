@@ -333,8 +333,8 @@
 		</schema>
 
 		<schema>
-			<key>/schemas/apps/me-tv/auto_search</key>
-			<applyto>/apps/me-tv/auto_search</applyto>
+			<key>/schemas/apps/me-tv/auto_record</key>
+			<applyto>/apps/me-tv/auto_record</applyto>
 			<owner>me-tv</owner>
 			<type>list</type>
 			<list_type>string</list_type>
