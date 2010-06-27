@@ -69,6 +69,7 @@ void Engine::play(const Glib::ustring& mrl)
 	argv.push_back(mute_state ? "true" : "false");
 	argv.push_back(Glib::ustring::compose("%1", audio_stream));
 	argv.push_back(Glib::ustring::compose("%1", subtitle_stream));
+	argv.push_back(Glib::ustring::compose("%1", (int)(volume * 100)));
 
 	g_debug("=================================================");
 	for (StringList::iterator i = argv.begin(); i != argv.end(); i++)
@@ -244,9 +245,11 @@ void Engine::set_audio_channel_state(AudioChannelState state)
 
 void Engine::set_volume(float value)
 {
+	g_debug("Setting volume: %f", value);
+	volume = value;
+	
 	if (pid != -1)
 	{
-		g_debug("Setting volume: %f", value);
 		// At value = 1.0 the key will be a colon (XK_colon)
 		sendKeyEvent(XK_0 + (int)(value * 10), XK_Control_L & XK_Control_R);
 	}

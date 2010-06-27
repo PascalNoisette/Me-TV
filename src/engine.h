@@ -42,6 +42,7 @@ private:
 	AudioChannelState	audio_channel_state;
 	gint				audio_stream;
 	gint				subtitle_stream;
+	float				volume;
 	Glib::ustring		mrl;
 	Window				window;
 

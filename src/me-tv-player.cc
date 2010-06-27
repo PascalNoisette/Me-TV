@@ -196,19 +196,19 @@ void set_mute_state(bool mute)
 
 void set_volume_state(int percent)
 {
-  if(percent < 0)
-  {
-    percent = 0;
-  }
-  else if(percent > 200)
-  {
-    percent = 200;
-  }
-  
-  printf("me-tv-player (xine): Setting volume to %d%\n", percent);
-  
-  volume = percent;
-  xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, percent);
+	if (percent < 0)
+	{
+		percent = 0;
+	}
+	else if (percent > 200)
+	{
+		percent = 200;
+	}
+
+	printf("me-tv-player (xine): Setting volume to %d\n", percent);
+
+	volume = percent;
+	xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, percent);
 }
 
 int get_volume_state()
@@ -243,7 +243,7 @@ int main(int argc, char **argv)
 	const char*		video_driver = "auto";
 	const char*		audio_driver = "auto";
 
-	if (argc != 9)
+	if (argc != 10)
 	{
 		fprintf(stderr, "me-tv-player (xine): Invalid number of parameters\n");
 		return -1;
@@ -373,6 +373,7 @@ int main(int argc, char **argv)
 
 	set_audio_stream(atoi(argv[7]));
 	set_subtitle_stream(atoi(argv[8]));
+	set_volume_state(atoi(argv[9]));
 
 	running = 1;
 
