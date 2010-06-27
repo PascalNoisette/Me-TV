@@ -26,7 +26,7 @@
 
 class ScheduledRecordingsDialog : public Gtk::Dialog
 {
-private:	
+private:
 	class ModelColumns : public Gtk::TreeModel::ColumnRecord
 	{
 	public:

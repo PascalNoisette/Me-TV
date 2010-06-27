@@ -594,12 +594,6 @@ found in /usr/share/common-licenses/GPL file.</property>
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="list_store_auto_record">
-    <columns>
-      <!-- column-name Title -->
-      <column type="gchar"/>
-    </columns>
-  </object>
   <object class="GtkDialog" id="dialog_scheduled_recordings">
     <property name="can_focus">True</property>
     <property name="has_focus">True</property>
@@ -2807,7 +2801,6 @@ If you've just upgraded Me TV then this is probably what you want to do.
                   <object class="GtkTreeView" id="tree_view_auto_record">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="model">list_store_auto_record</property>
                     <property name="headers_visible">False</property>
                     <property name="enable_search">False</property>
                     <property name="search_column">0</property>

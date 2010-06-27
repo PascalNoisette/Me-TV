@@ -26,6 +26,7 @@
 #include "preferences_dialog.h"
 #include "scheduled_recordings_dialog.h"
 #include "epg_event_search_dialog.h"
+#include "auto_record_dialog.h"
 #include "engine.h"
 #include <gtkmm.h>
 #include <gdk/gdkx.h>
@@ -801,10 +802,9 @@ void MainWindow::on_about()
 
 void MainWindow::on_auto_record()
 {
-	Gtk::Dialog* dialog_auto_record = NULL;
-	builder->get_widget("dialog_auto_record", dialog_auto_record);
-	dialog_auto_record->run();
-	dialog_auto_record->hide();
+	AutoRecordDialog& auto_record_dialog = AutoRecordDialog::create(builder);
+	auto_record_dialog.run();
+	auto_record_dialog.hide();
 }
 
 void MainWindow::on_mute()

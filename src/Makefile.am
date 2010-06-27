@@ -115,7 +115,9 @@ me_tv_SOURCES = \
 	epg_event_dialog.cc \
 	epg_event_dialog.h \
 	edit_channel_dialog.cc \
-	edit_channel_dialog.h
+	edit_channel_dialog.h \
+	auto_record_dialog.cc \
+	auto_record_dialog.h
 
 me_tv_LDFLAGS = \
 	-Wl,--as-needed `getconf \

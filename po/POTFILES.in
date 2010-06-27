@@ -9,6 +9,8 @@ src/application.cc
 src/application.h
 src/atsc_text.cc
 src/atsc_text.h
+src/auto_record_dialog.cc
+src/auto_record_dialog.h
 src/buffer.cc
 src/buffer.h
 src/channel.cc
