@@ -2807,7 +2807,6 @@ If you've just upgraded Me TV then this is probably what you want to do.
                         <property name="headers_visible">False</property>
                         <property name="enable_search">False</property>
                         <property name="search_column">0</property>
-                        <property name="enable_grid_lines">horizontal</property>
                       </object>
                     </child>
                   </object>
