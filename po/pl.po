@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-06-18 21:15-0400\n"
-"PO-Revision-Date: 2010-06-27 04:33+0000\n"
+"PO-Revision-Date: 2010-06-28 04:51+0000\n"
 "Last-Translator: Michael Lamothe <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-06-28 03:59+0000\n"
+"X-Launchpad-Export-Date: 2010-06-29 03:53+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -42,7 +42,7 @@ msgstr "Wyświetlaj datę/czas w nagłówku EPG"
 
 #: ../me-tv.schemas.in.h:5
 msgid "Drop out of fullscreen mode when showing dialogs"
-msgstr ""
+msgstr "Opuść tryb pełnoekranowy podczas pokazywania okien dialogowych"
 
 #: ../me-tv.schemas.in.h:6
 msgid ""
@@ -154,13 +154,15 @@ msgstr "Ustawia sterownik obrazu do użycia dla odtwarzacza."
 
 #: ../me-tv.schemas.in.h:22
 msgid "Show a tool tip when hovering over an EPG event."
-msgstr ""
+msgstr "Pokaż podpowiedzi podczas najazdu nad wpis EPG."
 
 #: ../me-tv.schemas.in.h:23
 msgid ""
 "Some file systems do not support a colon in a filename (e.g. FAT32). This "
 "option tells Me TV to remove it from the recording filename."
 msgstr ""
+"Niektóre systemy plików nie obsługują dwukropka w nazwie pliku (np. FAT32). "
+"Ta opcja przekazuje Me TV aby usunąć je z nazwy nagrania."
 
 #: ../me-tv.schemas.in.h:24
 msgid ""
