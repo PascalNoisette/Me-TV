@@ -602,6 +602,7 @@ void MainWindow::play(const Glib::ustring& mrl)
 	Mpeg::Stream& stream = application.stream_manager.get_display_stream().stream;
 	std::vector<Mpeg::AudioStream>& audio_streams = stream.audio_streams;
 	guint count = 0;
+	gboolean selected = false;
 
 	g_debug("Audio streams: %zu", audio_streams.size());
 	for (std::vector<Mpeg::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); i++)
@@ -628,9 +629,10 @@ void MainWindow::play(const Glib::ustring& mrl)
 			)
 		);
 
-		if (!preferred_language.empty() && (preferred_language == audio_stream.language))
+		if (!preferred_language.empty() && (preferred_language == audio_stream.language) && !selected)
 		{
 			menu_item->set_active(true);
+			selected = true;
 		}
 
 		count++;
@@ -639,6 +641,7 @@ void MainWindow::play(const Glib::ustring& mrl)
 	std::vector<Mpeg::SubtitleStream>& subtitle_streams = stream.subtitle_streams;
 	Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
 	count = 0;
+	selected = false;
 	
 	Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
 	menu_item_subtitle_none->show_all();
@@ -668,9 +671,10 @@ void MainWindow::play(const Glib::ustring& mrl)
 			)
 		);
 		
-		if (!preferred_language.empty() && (preferred_language == subtitle_stream.language))
+		if (!preferred_language.empty() && (preferred_language == subtitle_stream.language) && !selected)
 		{
 			menu_item->set_active(true);
+			selected = true;
 		}
 
 		count++;
