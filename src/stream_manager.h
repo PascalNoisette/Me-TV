@@ -30,10 +30,9 @@ private:
 	FrontendThreadList frontend_threads;
 		
 public:
+	void initialise();
 	~StreamManager();
-	
-	void load();
-		
+			
 	guint get_last_epg_update_time();
 	FrontendThreadList& get_frontend_threads() { return frontend_threads; };
 

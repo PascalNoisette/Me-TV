@@ -129,7 +129,6 @@ void EpgThread::run()
 	try
 	{
 		Application&					application				= get_application();
-		ChannelManager&					channel_manager			= application.channel_manager;
 		Glib::ustring					demux_path				= frontend.get_adapter().get_demux_path();
 		EITDemuxers						demuxers(demux_path);
 		Dvb::SI::SectionParser			parser;

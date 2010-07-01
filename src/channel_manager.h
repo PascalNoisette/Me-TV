@@ -32,7 +32,7 @@ private:
 	gboolean dirty;
 	
 public:
-	ChannelManager();
+	void initialise();
 		
 	void load(Data::Connection& connection);
 	void save(Data::Connection& connection);

@@ -25,6 +25,18 @@
 #include "dvb_transponder.h"
 #include "dvb_si.h"
 
+void StreamManager::initialise()
+{
+	g_debug("Creating stream manager");
+	FrontendList& frontends = device_manager.get_frontends();
+	for(FrontendList::iterator i = frontends.begin(); i != frontends.end(); i++)
+	{
+		g_debug("Creating frontend thread");
+		FrontendThread* frontend_thread = new FrontendThread(**i);
+		frontend_threads.push_back(frontend_thread);
+	}
+}
+
 StreamManager::~StreamManager()
 {
 	g_debug("Destroying StreamManager");
@@ -38,18 +50,6 @@ StreamManager::~StreamManager()
 		i = frontend_threads.erase(i);
 	}
 	g_debug("StreamManager destroyed");
-}
-
-void StreamManager::load()
-{
-	g_debug("Creating stream manager");
-	FrontendList& frontends = get_application().device_manager.get_frontends();
-	for(FrontendList::iterator i = frontends.begin(); i != frontends.end(); i++)
-	{
-		g_debug("Creating frontend thread");
-		FrontendThread* frontend_thread = new FrontendThread(**i);
-		frontend_threads.push_back(frontend_thread);
-	}
 }
 
 guint StreamManager::get_last_epg_update_time()
@@ -328,7 +328,7 @@ FrontendThread& StreamManager::get_display_frontend_thread()
 {
 	FrontendThread* free_frontend_thread = NULL;
 	
-	Dvb::Transponder& current_transponder = get_application().stream_manager.get_display_channel().transponder;
+	Dvb::Transponder& current_transponder = stream_manager.get_display_channel().transponder;
 	for (FrontendThreadList::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		FrontendThread& frontend_thread = **i;

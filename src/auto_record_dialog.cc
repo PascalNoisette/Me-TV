@@ -48,9 +48,7 @@ AutoRecordDialog::AutoRecordDialog(BaseObjectType* cobject, const Glib::RefPtr<G
 
 void AutoRecordDialog::run()
 {
-	Application& application = get_application();
-
-	StringList auto_record_list = application.get_string_list_configuration_value("auto_record");
+	StringList auto_record_list = configuration_manager.get_string_list_value("auto_record");
 
 	list_store->clear();
 	for (StringList::iterator iterator = auto_record_list.begin(); iterator != auto_record_list.end(); iterator++)
@@ -72,9 +70,9 @@ void AutoRecordDialog::run()
 			}
 		}
 
-		application.set_string_list_configuration_value("auto_record", auto_record_list);
+		configuration_manager.set_string_list_value("auto_record", auto_record_list);
 
-		application.check_auto_record();
+		get_application().check_auto_record();
 	}
 
 	hide();

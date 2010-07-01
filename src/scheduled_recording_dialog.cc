@@ -40,7 +40,7 @@ ScheduledRecordingDialog::ScheduledRecordingDialog(BaseObjectType* cobject, cons
 	
 	builder->get_widget("entry_description", entry_description);
 	builder->get_widget_derived("combo_box_channel", channel_combo_box);
-	channel_combo_box->load(get_application().channel_manager.get_channels());
+	channel_combo_box->load(channel_manager.get_channels());
 	builder->get_widget("calendar_start_time_date", calendar_start_time_date);
 	builder->get_widget("spin_button_start_time_hour", spin_button_start_time_hour);
 	builder->get_widget("spin_button_start_time_minute", spin_button_start_time_minute);
@@ -96,8 +96,8 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, EpgEvent& epg_eve
 	scheduled_recording_id = 0;
 
 	Application& application = get_application();
-	guint before = application.get_int_configuration_value("record_extra_before");
-	guint after = application.get_int_configuration_value("record_extra_after");
+	guint before = configuration_manager.get_int_value("record_extra_before");
+	guint after = configuration_manager.get_int_value("record_extra_after");
 
 	channel_combo_box->set_selected_channel_id(epg_event.channel_id);
 	entry_description->set_text(epg_event.get_title());
@@ -121,7 +121,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 	if (populate_default)
 	{	
 		scheduled_recording_id = 0;	
-		Channel& channel = get_application().stream_manager.get_display_channel();		
+		Channel& channel = stream_manager.get_display_channel();		
 		channel_combo_box->set_selected_channel_id(channel.channel_id);
 		entry_description->set_text(_("Unknown description"));
 		recurring_combo_box->set_active(0);
@@ -139,7 +139,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 		g_debug("Pressed OK on scheduled recording dialog");
 		ScheduledRecording scheduled_recording = get_scheduled_recording();
 		g_debug("Got SR details for '%s'", scheduled_recording.description.c_str());
-		get_application().scheduled_recording_manager.set_scheduled_recording(scheduled_recording);
+		scheduled_recording_manager.set_scheduled_recording(scheduled_recording);
 	}
 		
 	return dialog_response;

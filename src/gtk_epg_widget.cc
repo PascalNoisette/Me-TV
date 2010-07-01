@@ -34,7 +34,7 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
 	builder->get_widget("table_epg", table_epg);
 	builder->get_widget("scrolled_window_epg", scrolled_window_epg);
 	
-	epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
+	epg_span_hours = configuration_manager.get_int_value("epg_span_hours");
 	Gtk::Button* button = NULL;
 	
 	builder->get_widget("button_epg_now", button);
@@ -102,9 +102,7 @@ void GtkEpgWidget::clear()
 
 void GtkEpgWidget::update_pages()
 {
-	Application& application = get_application();
-
-	guint epg_page_size = application.get_int_configuration_value("epg_page_size");
+	guint epg_page_size = configuration_manager.get_int_value("epg_page_size");
 	if (epg_page_size == 0)
 	{
 		return;
@@ -115,7 +113,7 @@ void GtkEpgWidget::update_pages()
 	
 	guint epg_page_count = max;
 	
-	const ChannelArray& channels = application.channel_manager.get_channels();
+	const ChannelArray& channels = channel_manager.get_channels();
 	guint channel_count = channels.size();
 	guint new_epg_page_count = channel_count == 0 ? 1 : ((channel_count-1) / epg_page_size) + 1;
 	
@@ -142,7 +140,7 @@ void GtkEpgWidget::update_table()
 		
 		clear();
 		
-		epg_span_hours = get_application().get_int_configuration_value("epg_span_hours");
+		epg_span_hours = configuration_manager.get_int_value("epg_span_hours");
 
 		Gtk::Widget* widget = NULL;
 
@@ -152,8 +150,6 @@ void GtkEpgWidget::update_table()
 		builder->get_widget("button_epg_now", widget);
 		widget->set_sensitive(offset > 0);
 		
-		ChannelManager& channel_manager = get_application().channel_manager;
-		StreamManager& stream_manager = get_application().stream_manager;
 		ChannelArray& channels = channel_manager.get_channels();
 
 		table_epg->resize(epg_span_hours * COLUMNS_PER_HOUR + 1, channels.size() + 1);
@@ -162,7 +158,7 @@ void GtkEpgWidget::update_table()
 		start_time = (start_time / COLUMNS_PER_HOUR) * COLUMNS_PER_HOUR;
 		
 		guint row = 0;
-		gboolean show_epg_header = get_application().get_boolean_configuration_value("show_epg_header");
+		gboolean show_epg_header = configuration_manager.get_boolean_value("show_epg_header");
 		if (show_epg_header)
 		{
 			for (guint hour = 0; hour < epg_span_hours; hour++)
@@ -187,10 +183,10 @@ void GtkEpgWidget::update_table()
 		start_time += timezone;
 
 		gint epg_page = spin_button_epg_page->is_visible() ? spin_button_epg_page->get_value_as_int() : 1;
-		guint epg_page_size = get_application().get_int_configuration_value("epg_page_size");
-		gboolean show_channel_number = get_application().get_boolean_configuration_value("show_channel_number");
-		gboolean show_epg_time = get_application().get_boolean_configuration_value("show_epg_time");
-		gboolean show_epg_tooltips = get_application().get_boolean_configuration_value("show_epg_tooltips");
+		guint epg_page_size = configuration_manager.get_int_value("epg_page_size");
+		gboolean show_channel_number = configuration_manager.get_boolean_value("show_channel_number");
+		gboolean show_epg_time = configuration_manager.get_boolean_value("show_epg_time");
+		gboolean show_epg_tooltips = configuration_manager.get_boolean_value("show_epg_tooltips");
 		guint channel_start = (epg_page-1) * epg_page_size;
 		guint channel_end = channel_start + epg_page_size;
 
@@ -223,7 +219,7 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 		channel_text = Glib::ustring::compose("<i>%1.</i> ", channel_number) + channel_text;
 	}
 	
-	gboolean record_channel = get_application().stream_manager.is_recording(channel);
+	gboolean record_channel = stream_manager.is_recording(channel);
 	
 	Gtk::RadioButton& channel_button = attach_radio_button(group, channel_text, record_channel, 0, 1, table_row, table_row + 1);
 
@@ -301,7 +297,7 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 					}
 					text += encode_xml(epg_event.get_title());
 
-					gboolean record = get_application().scheduled_recording_manager.is_recording(epg_event);
+					gboolean record = scheduled_recording_manager.is_recording(epg_event);
 					
 					Gtk::Button& button = attach_button(text, record, start_column + 1, end_column + 1, table_row, table_row + 1);
 					button.signal_clicked().connect(
@@ -419,9 +415,9 @@ bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, guint ch
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
-		Channel& channel = get_application().channel_manager.get_channel_by_id(channel_id);
+		Channel& channel = channel_manager.get_channel_by_id(channel_id);
 
-		if (get_application().stream_manager.is_recording(channel))
+		if (stream_manager.is_recording(channel))
 		{
 			get_application().stop_recording(channel);
 		}
@@ -434,7 +430,7 @@ bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, guint ch
 	}
 	else if (event->button == 1)
 	{
-		get_application().set_display_channel_by_id(channel_id);
+		signal_channel_change(channel_id);
 	}
 
 	return false;
@@ -444,8 +440,6 @@ bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
-		ScheduledRecordingManager& scheduled_recording_manager = get_application().scheduled_recording_manager;
-
 		if (scheduled_recording_manager.is_recording(epg_event))
 		{
 			scheduled_recording_manager.remove_scheduled_recording(epg_event);

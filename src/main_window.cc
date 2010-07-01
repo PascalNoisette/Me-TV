@@ -123,8 +123,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget("dialog_about", dialog_about);
 	dialog_about->set_version(VERSION);
 	
-	Application& application = get_application();
-	set_keep_above(application.get_boolean_configuration_value("keep_above"));
+	set_keep_above(configuration_manager.get_boolean_value("keep_above"));
 	
 	Gtk::VBox* vbox_main_window = NULL;
 	builder->get_widget("vbox_main_window", vbox_main_window);
@@ -152,9 +151,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_present->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_present));
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
 
-	signal_channel_changing.connect(sigc::mem_fun(*this, &MainWindow::on_channel_changing));
-	signal_channel_changed.connect(sigc::mem_fun(*this, &MainWindow::on_channel_changed));
-	signal_channel_change_failed.connect(sigc::mem_fun(*this, &MainWindow::on_channel_change_failed));
+	signal_channel_change.connect(sigc::mem_fun(*this, &MainWindow::change_display_channel));
+	signal_update.connect(sigc::mem_fun(*this, &MainWindow::update));
 
 	volume_button = new Gtk::VolumeButton();
 	volume_button->signal_value_changed().connect(sigc::mem_fun(*this, &MainWindow::on_button_volume_value_changed));
@@ -191,7 +189,7 @@ MainWindow* MainWindow::create(Glib::RefPtr<Gtk::Builder> builder)
 
 void MainWindow::show_channels_dialog()
 {
-	if (get_application().stream_manager.is_recording())
+	if (stream_manager.is_recording())
 	{
 		throw Exception(_("Please stop all recordings before editing channels"));
 	}
@@ -202,22 +200,16 @@ void MainWindow::show_channels_dialog()
 
 	if (dialog_result == Gtk::RESPONSE_OK)
 	{
-		if (get_application().stream_manager.is_recording())
+		if (stream_manager.is_recording())
 		{
 			throw Exception(_("Cannot update channels while recording"));
 		}
 
 		const ChannelArray& channels = channels_dialog.get_channels();
-		get_application().stream_manager.stop();
-		get_application().channel_manager.set_channels(channels);
-		get_application().stream_manager.start();
-		get_application().select_channel_to_play();
-
-		StreamManager& stream_manager = get_application().stream_manager;
-		if (stream_manager.has_display_stream())
-		{
-			get_application().set_display_channel(stream_manager.get_display_channel());
-		}
+		stream_manager.stop();
+		channel_manager.set_channels(channels);
+		stream_manager.start();
+		select_channel_to_play();
 	}
 	update();
 }
@@ -334,7 +326,7 @@ void MainWindow::on_timeout()
 			// Reset the temporary channel number for the next run
 			temp_channel_number = 0;		
 
-			get_application().set_display_channel_number(channel_index);
+			change_display_channel(channel_manager.get_channel_by_index(channel_index).channel_id);
 		}
 	
 		// Hide the mouse
@@ -357,7 +349,7 @@ void MainWindow::on_timeout()
 		}
 	
 		// Update EPG
-		guint last_epg_update_time = get_application().stream_manager.get_last_epg_update_time();
+		guint last_epg_update_time = stream_manager.get_last_epg_update_time();
 		if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 		{
 			update();
@@ -440,13 +432,11 @@ void MainWindow::on_menu_item_subtitle_stream_activate(guint index)
 }
 
 void MainWindow::on_show()
-{
-	Application& application = get_application();
-	
-	gint x = application.get_int_configuration_value("x");
-	gint y = application.get_int_configuration_value("y");
-	gint width = application.get_int_configuration_value("width");
-	gint height = application.get_int_configuration_value("height");
+{	
+	gint x = configuration_manager.get_int_value("x");
+	gint y = configuration_manager.get_int_value("y");
+	gint width = configuration_manager.get_int_value("width");
+	gint height = configuration_manager.get_int_value("height");
 		
 	if (width > 0 && height > 0)
 	{
@@ -458,12 +448,7 @@ void MainWindow::on_show()
 	Gtk::Window::on_show();
 	Gdk::Window::process_all_updates();
 
-	if (get_application().stream_manager.has_display_stream())
-	{
-		start_engine();
-	}
-	
-	if (application.get_boolean_configuration_value("keep_above"))
+	if (configuration_manager.get_boolean_value("keep_above"))
 	{
 		set_keep_above();
 	}
@@ -471,7 +456,8 @@ void MainWindow::on_show()
 	Gtk::EventBox* event_box_video = NULL;
 	builder->get_widget("event_box_video", event_box_video);
 	event_box_video->resize_children();
-	update();
+
+	select_channel_to_play();	
 }
 
 void MainWindow::on_hide()
@@ -480,7 +466,7 @@ void MainWindow::on_hide()
 
 	stop_engine();
 	Gtk::Window::on_hide();
-	if (!get_application().get_boolean_configuration_value("display_status_icon"))
+	if (!configuration_manager.get_boolean_value("display_status_icon"))
 	{
 		Gtk::Main::quit();
 	}
@@ -498,14 +484,28 @@ void MainWindow::save_geometry()
 		get_position(x, y);
 		get_size(width, height);
 		
-		Application& application = get_application();
-		application.set_int_configuration_value("x", x);
-		application.set_int_configuration_value("y", y);
-		application.set_int_configuration_value("width", width);
-		application.set_int_configuration_value("height", height);
+		configuration_manager.set_int_value("x", x);
+		configuration_manager.set_int_value("y", y);
+		configuration_manager.set_int_value("width", width);
+		configuration_manager.set_int_value("height", height);
 
 		g_debug("Saved geometry (%d, %d, %d, %d)", x, y, width, height);
 	}
+}
+
+void MainWindow::change_display_channel(guint channel_id)
+{
+	Channel& channel = channel_manager.get_channel_by_id(channel_id);
+
+	g_message(_("Changing display channel to '%s'"), channel.name.c_str());	
+	stop_engine();
+	stream_manager.start_display(channel);
+	configuration_manager.set_int_value("last_channel", channel.channel_id);
+	start_engine();
+	toggle_action_record->set_active(stream_manager.is_recording(channel));
+	g_message(_("Display channel changed to %s"), channel.name.c_str());
+
+	update();
 }
 
 void MainWindow::toggle_visibility()
@@ -578,15 +578,13 @@ void MainWindow::create_engine()
 }
 
 void MainWindow::play(const Glib::ustring& mrl)
-{
-	Application& application = get_application();
-	
+{	
 	if (engine == NULL)
 	{
 		create_engine();
 	}
 	
-	Glib::ustring preferred_language = application.get_preferred_language();
+	Glib::ustring preferred_language = get_application().get_preferred_language();
 
 	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_audio/action_audio_streams"))->get_submenu();
 	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_video/action_subtitle_streams"))->get_submenu();
@@ -599,7 +597,7 @@ void MainWindow::play(const Glib::ustring& mrl)
 
 	Gtk::RadioMenuItem::Group audio_streams_menu_group;
 
-	Mpeg::Stream& stream = application.stream_manager.get_display_stream().stream;
+	Mpeg::Stream& stream = stream_manager.get_display_stream().stream;
 	std::vector<Mpeg::AudioStream>& audio_streams = stream.audio_streams;
 	guint count = 0;
 	gboolean selected = false;
@@ -688,14 +686,13 @@ void MainWindow::play(const Glib::ustring& mrl)
 }
 
 void MainWindow::update()
-{	
-	Application& application = get_application();
+{
 	Glib::ustring program_title;
 	Glib::ustring window_title = "Me TV - It's TV for me computer";
 
-	if (application.stream_manager.has_display_stream())
+	if (stream_manager.has_display_stream())
 	{
-		Channel& channel = application.stream_manager.get_display_channel();
+		Channel& channel = stream_manager.get_display_channel();
 		window_title = "Me TV - " + channel.get_text();
 		program_title = channel.get_text();
 
@@ -718,8 +715,8 @@ void MainWindow::start_engine()
 {
 	if (property_visible())
 	{
-		play(get_application().stream_manager.get_display_stream().filename);
-	}
+		play(stream_manager.get_display_stream().filename);
+	}	
 }
 
 void MainWindow::stop_engine()
@@ -953,17 +950,24 @@ void MainWindow::inhibit_screensaver(gboolean activate)
 	}
 }
 
-void MainWindow::on_channel_changing(const Glib::ustring& channel_name)
+void MainWindow::select_channel_to_play()
 {
-	set_status_text(_("Changing channel to ") + channel_name + " ...");
+	ChannelArray& channels = channel_manager.get_channels();
+	if (channels.size() > 0)
+	{
+		gint channel_id = configuration_manager.get_int_value("last_channel");
+		Channel* channel = channel_manager.find_channel(channel_id);
+		if (channel != NULL)
+		{
+			g_debug("Last channel '%d' found", channel_id);
+		}
+		else
+		{
+			g_debug("Last channel '%d' not found", channel_id);
+			channel_id = channels[0].channel_id;
+		}
+		
+		change_display_channel(channel_id);
+	}
 }
 
-void MainWindow::on_channel_changed(const Glib::ustring& channel_name)
-{
-	set_status_text(_("Channel changed to ") + channel_name);
-}
-
-void MainWindow::on_channel_change_failed(const Glib::ustring& channel_name)
-{
-	set_status_text(_("Failed to change to channel ") + channel_name);
-}

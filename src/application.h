@@ -23,21 +23,26 @@
 
 #include "me-tv.h"
 #include <gtkmm.h>
-#include <gconfmm.h>
 #include <dbus/dbus-glib.h>
+#include "status_icon.h"
+
 #include "device_manager.h"
 #include "channel_manager.h"
 #include "scheduled_recording_manager.h"
-#include "main_window.h"
-#include "status_icon.h"
 #include "stream_manager.h"
+#include "configuration_manager.h"
+
+extern ChannelManager				channel_manager;
+extern ScheduledRecordingManager	scheduled_recording_manager;
+extern DeviceManager				device_manager;
+extern StreamManager				stream_manager;
+extern ConfigurationManager			configuration_manager;
 
 class Application
 {
 private:
 	static Application*					current;
 	Glib::RefPtr<Gtk::Builder>			builder;
-	MainWindow*							main_window;
 	StatusIcon*							status_icon;
 	Glib::ustring						preferred_language;
 	Glib::StaticRecMutex				mutex;
@@ -46,14 +51,8 @@ private:
 	Data::Schema						schema;
 	Glib::ustring						database_filename;
 	gboolean							database_initialised;
-	Glib::RefPtr<Gnome::Conf::Client>	gconf_client;
 	DBusGConnection*					dbus_connection;
 	
-	void set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value);
-	void set_int_configuration_default(const Glib::ustring& key, gint value);
-	void set_boolean_configuration_default(const Glib::ustring& key, gboolean value);	
-	Glib::ustring get_configuration_path(const Glib::ustring& key);
-
 	void make_directory_with_parents(const Glib::ustring& path);
 		
 	void on_display_channel_changed(const Channel& channel);
@@ -67,15 +66,11 @@ private:
 public:
 	Application();
 	~Application();
-		
+
 	void run();
 	void quit();
 	static Application& get_current();
 	
-	ChannelManager				channel_manager;
-	ScheduledRecordingManager	scheduled_recording_manager;
-	DeviceManager				device_manager;
-	StreamManager				stream_manager;
 	Data::Connection			connection;
 
 	Glib::StaticRecMutex&	get_mutex();
@@ -84,23 +79,9 @@ public:
 
 	const Glib::ustring& get_database_filename();
 	void update();
-		
-	StringList	get_string_list_configuration_value(const Glib::ustring& key);
-	Glib::ustring	get_string_configuration_value(const Glib::ustring& key);
-	gint			get_int_configuration_value(const Glib::ustring& key);
-	gboolean		get_boolean_configuration_value(const Glib::ustring& key);
-
-	void set_string_list_configuration_value(const Glib::ustring& key, const StringList& value);
-	void set_string_configuration_value(const Glib::ustring& key, const Glib::ustring& value);
-	void set_int_configuration_value(const Glib::ustring& key, gint value);
-	void set_boolean_configuration_value(const Glib::ustring& key, gboolean value);
 	
 	Glib::RefPtr<Gtk::Builder> get_builder() { return builder; }
 	
-	void set_display_channel(Channel& channel);
-	void set_display_channel_by_id(guint channel_id);
-	void set_display_channel_number(guint display_channel_number);
-
 	void check_auto_record();
 	void check_scheduled_recordings();
 	void start_recording(Channel& channel);
@@ -110,8 +91,6 @@ public:
 	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 	const Glib::ustring& get_application_dir() const { return application_dir; }
 	DBusGConnection* get_dbus_connection() const { return dbus_connection; }
-	
-	void select_channel_to_play();
 };
 
 Application& get_application();

@@ -66,7 +66,26 @@ private:
 	void toggle_mute();
 	void set_mute_state(gboolean state);
 	void set_status_text(const Glib::ustring& text);
-	
+	void change_display_channel(guint channel_id);
+	void select_channel_to_play();
+
+	void play(const Glib::ustring& mrl);
+	void pause(gboolean state);
+	void restart_engine();
+	void start_engine();
+	void stop_engine();
+	void update();
+
+	void toggle_visibility();
+	void save_geometry();
+
+	void fullscreen(gboolean change_mode = true);
+	void unfullscreen(gboolean restore_mode = true);
+	gboolean is_fullscreen();
+
+	gboolean is_screensaver_inhibited() { return (screensaver_inhibit_cookie != 0); }
+	void inhibit_screensaver(gboolean activate);
+
 	bool on_delete_event(GdkEventAny* event);
 	bool on_motion_notify_event(GdkEventMotion* event);
 	bool on_drawing_area_expose_event(GdkEventExpose* event);
@@ -118,23 +137,6 @@ public:
 	void show_scheduled_recordings_dialog();
 	void show_epg_event_search_dialog();
 	void show_error(const Glib::ustring& message);
-	
-	void toggle_visibility();
-	void update();
-	void save_geometry();
-
-	void play(const Glib::ustring& mrl);
-	void pause(gboolean state);
-	void restart_engine();
-	void start_engine();
-	void stop_engine();
-
-	void fullscreen(gboolean change_mode = true);
-	void unfullscreen(gboolean restore_mode = true);
-	gboolean is_fullscreen();
-
-	gboolean is_screensaver_inhibited() { return (screensaver_inhibit_cookie != 0); }
-	void inhibit_screensaver(gboolean activate);
 };
 
 #endif

@@ -31,7 +31,7 @@ Glib::ustring DeviceManager::get_frontend_path(guint adapter, guint frontend_ind
 	return Glib::ustring::compose("/dev/dvb/adapter%1/frontend%2", adapter, frontend_index);
 }
 	
-DeviceManager::DeviceManager()
+void DeviceManager::initialise()
 {
 	Glib::ustring frontend_path;
 	
@@ -89,10 +89,6 @@ DeviceManager::DeviceManager()
 
 		adapter_path = get_adapter_path(++adapter_count);
 	}
-}
-
-DeviceManager::~DeviceManager()
-{
 }
 
 gboolean DeviceManager::is_frontend_supported(const Dvb::Frontend& test_frontend)

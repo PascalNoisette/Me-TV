@@ -81,7 +81,7 @@ void ScheduledRecordingsDialog::on_button_scheduled_recordings_add_clicked()
 
 void ScheduledRecordingsDialog::on_button_scheduled_recordings_delete_clicked()
 {
-	get_application().scheduled_recording_manager.remove_scheduled_recording(
+	scheduled_recording_manager.remove_scheduled_recording(
 		get_selected_scheduled_recording_id());
 	update();
 }
@@ -93,9 +93,8 @@ void ScheduledRecordingsDialog::on_button_scheduled_recordings_edit_clicked()
 
 void ScheduledRecordingsDialog::update()
 {
-	ChannelManager& channel_manager = get_application().channel_manager;
 	list_store->clear();
-	ScheduledRecordingList& scheduled_recordings = get_application().scheduled_recording_manager.scheduled_recordings;
+	ScheduledRecordingList& scheduled_recordings = scheduled_recording_manager.scheduled_recordings;
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
 		ScheduledRecording& scheduled_recording = *i;
@@ -125,7 +124,7 @@ void ScheduledRecordingsDialog::update()
 
 void ScheduledRecordingsDialog::show_scheduled_recording(guint scheduled_recording_id)
 {
-	ScheduledRecording scheduled_recording = get_application().scheduled_recording_manager.get_scheduled_recording(scheduled_recording_id);
+	ScheduledRecording scheduled_recording = scheduled_recording_manager.get_scheduled_recording(scheduled_recording_id);
 
 	ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
 	scheduled_recording_dialog.run(this, scheduled_recording);

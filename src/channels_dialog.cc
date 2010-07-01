@@ -198,7 +198,7 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 void ChannelsDialog::show_scan_dialog()
 {
 	// Check that there is a device
-	get_application().device_manager.check_frontend();
+	device_manager.check_frontend();
 
 	channel_conflict_action = CHANNEL_CONFLICT_ACTION_NONE;
 	ScanDialog& scan_dialog = ScanDialog::create(builder);
@@ -279,10 +279,8 @@ void ChannelsDialog::on_show()
 {
 	list_store->clear();
 	
-	Application& application = get_application();
-
-	ChannelArray& channels = application.channel_manager.get_channels();
-	if (channels.empty() && !application.device_manager.get_frontends().empty())
+	ChannelArray& channels = channel_manager.get_channels();
+	if (channels.empty() && !device_manager.get_frontends().empty())
 	{
 		show_scan_dialog();
 	}

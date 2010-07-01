@@ -31,6 +31,8 @@ StatusIcon::StatusIcon()
 	status_icon->signal_activate().connect(sigc::mem_fun(*this, &StatusIcon::on_activate));
 	status_icon->signal_popup_menu().connect(sigc::mem_fun(*this, &StatusIcon::on_popup_menu));
 
+	signal_update.connect(sigc::mem_fun(*this, &StatusIcon::update));
+
 	Gtk::MenuItem* menu_item = NULL;
 	Gtk::ImageMenuItem* image_menu_item = NULL;
 	
@@ -76,9 +78,9 @@ void StatusIcon::update()
 	Application& application = get_application();
 	Glib::ustring title;
 
-	status_icon->set_visible(application.get_boolean_configuration_value("display_status_icon"));
+	status_icon->set_visible(configuration_manager.get_boolean_value("display_status_icon"));
 
-	FrontendThreadList& frontend_threads = application.stream_manager.get_frontend_threads();
+	FrontendThreadList& frontend_threads = stream_manager.get_frontend_threads();
 	for (FrontendThreadList::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 	{
 		FrontendThread& frontend_thread = **i;
@@ -112,7 +114,7 @@ void StatusIcon::update()
 	
 	status_icon->set_tooltip(title);
 
-	if (get_application().stream_manager.is_recording())
+	if (stream_manager.is_recording())
 	{
 		status_icon->set("me-tv-recording");
 	}

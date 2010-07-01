@@ -39,8 +39,7 @@ private:
 	static gboolean is_frontend_supported(const Dvb::Frontend& frontend);
 
 public:
-	DeviceManager();
-	~DeviceManager();
+	void initialise();
 		
 	Dvb::Frontend* find_frontend_by_path(const Glib::ustring& path);
 	FrontendList& get_frontends() { return frontends; };

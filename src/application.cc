@@ -21,9 +21,10 @@
 #include "application.h"
 #include "data.h"
 #include "crc32.h"
+#include "me-tv-ui.h"
+#include "main_window.h"
 #include <dbus/dbus-glib-lowlevel.h>
 
-#define GCONF_PATH					"/apps/me-tv"
 #define CURRENT_DATABASE_VERSION	6
 
 Application* Application::current = NULL;
@@ -45,7 +46,6 @@ Application::Application()
 	g_static_rec_mutex_init(mutex.gobj());
 
 	current					= this;
-	main_window				= NULL;
 	status_icon				= NULL;
 	timeout_source			= 0;
 	database_initialised	= false;
@@ -60,19 +60,7 @@ Application::Application()
 #endif
 
 	Crc32::init();
-	
-	gconf_client = Gnome::Conf::Client::get_default_client();
-
-	if (get_int_configuration_value("epg_span_hours") == 0)
-	{
-		set_int_configuration_value("epg_span_hours", 3);
-	}
-
-	if (get_int_configuration_value("epg_page_size") == 0)
-	{
-		set_int_configuration_value("epg_page_size", 20);
-	}
-	
+		
 	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	make_directory_with_parents (application_dir);
 
@@ -141,7 +129,7 @@ Application::Application()
 
 	ui_manager = Gtk::UIManager::create();
 	ui_manager->insert_action_group(action_group);
-
+	
 	GError *error = NULL;
 	dbus_connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 	if (dbus_connection == NULL)
@@ -164,12 +152,6 @@ Application::~Application()
 	{
 		delete status_icon;
 		status_icon = NULL;
-	}
-
-	if (main_window != NULL)
-	{
-		delete main_window;
-		main_window = NULL;
 	}
 
 	if (database_initialised)
@@ -385,104 +367,6 @@ gboolean Application::initialise_database()
 	return result;
 }
 
-Glib::ustring Application::get_configuration_path(const Glib::ustring& key)
-{
-	return Glib::ustring::compose(GCONF_PATH"/%1", key);
-}
-
-void Application::set_string_configuration_default(const Glib::ustring& key, const Glib::ustring& value)
-{
-	Glib::ustring path = get_configuration_path(key);
-	Gnome::Conf::Value v = gconf_client->get(path);
-	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
-	{
-		g_debug("Setting string configuration value '%s' = '%s'", key.c_str(), value.c_str());
-		gconf_client->set(path, value);
-	}
-}
-
-void Application::set_int_configuration_default(const Glib::ustring& key, gint value)
-{
-	Glib::ustring path = get_configuration_path(key);
-	Gnome::Conf::Value v = gconf_client->get(path);
-	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
-	{
-		g_debug("Setting int configuration value '%s' = '%d'", path.c_str(), value);
-		gconf_client->set(path, value);
-	}
-}
-
-void Application::set_boolean_configuration_default(const Glib::ustring& key, gboolean value)
-{
-	Glib::ustring path = get_configuration_path(key);
-	Gnome::Conf::Value v = gconf_client->get(path);
-	if (v.get_type() == Gnome::Conf::VALUE_INVALID)
-	{
-		g_debug("Setting int configuration value '%s' = '%s'", path.c_str(), value ? "true" : "false");
-		gconf_client->set(path, (bool)value);
-	}
-}
-
-StringList Application::get_string_list_configuration_value(const Glib::ustring& key)
-{
-	return gconf_client->get_string_list(get_configuration_path(key));
-}
-
-Glib::ustring Application::get_string_configuration_value(const Glib::ustring& key)
-{
-	return gconf_client->get_string(get_configuration_path(key));
-}
-
-gint Application::get_int_configuration_value(const Glib::ustring& key)
-{
-	return gconf_client->get_int(get_configuration_path(key));
-}
-
-gint Application::get_boolean_configuration_value(const Glib::ustring& key)
-{
-	return gconf_client->get_bool(get_configuration_path(key));
-}
-
-void Application::set_string_list_configuration_value(const Glib::ustring& key, const StringList& value)
-{
-	gconf_client->set_string_list(get_configuration_path(key), value);
-}
-
-void Application::set_string_configuration_value(const Glib::ustring& key, const Glib::ustring& value)
-{
-	gconf_client->set(get_configuration_path(key), value);
-}
-
-void Application::set_int_configuration_value(const Glib::ustring& key, gint value)
-{
-	gconf_client->set(get_configuration_path(key), (gint)value);
-}
-
-void Application::set_boolean_configuration_value(const Glib::ustring& key, gboolean value)
-{
-	gconf_client->set(get_configuration_path(key), (bool)value);
-}
-
-void Application::select_channel_to_play()
-{
-	ChannelArray& channels = channel_manager.get_channels();
-	if (channels.size() > 0)
-	{
-		gint last_channel_id = get_application().get_int_configuration_value("last_channel");
-		Channel* last_channel = channel_manager.find_channel(last_channel_id);
-		if (last_channel != NULL)
-		{
-			g_debug("Last channel '%d' found", last_channel_id);
-			set_display_channel_by_id(last_channel_id);
-		}
-		else
-		{
-			g_debug("Last channel '%d' not found", last_channel_id);
-			set_display_channel(channels[0]);
-		}
-	}
-}
-
 void Application::run()
 {
 	GdkLock gdk_lock;
@@ -494,27 +378,26 @@ void Application::run()
 
 	g_debug("Me TV database initialised");
 
+	configuration_manager.initialise();
+
 	status_icon = new StatusIcon();
-	main_window = MainWindow::create(builder);
+	MainWindow::create(builder);
 
 	try
-	{	
+	{
+		device_manager.initialise();
+		channel_manager.initialise();
 		channel_manager.load(connection);
-			
-		stream_manager.load();
+		scheduled_recording_manager.initialise();
+		stream_manager.initialise();
 		stream_manager.start();
 
 		ChannelArray& channels = channel_manager.get_channels();	
 
 		const FrontendList& frontends = device_manager.get_frontends();	
-		if (!frontends.empty())	
+		if (!frontends.empty())
 		{
 			scheduled_recording_manager.load(connection);	
-
-			if (!channels.empty())
-			{	
-				select_channel_to_play();	
-			}
 		}	
 
 		if (!minimised_mode)	
@@ -537,7 +420,8 @@ void Application::run()
 	}
 	catch(...)
 	{
-		main_window->on_exception();
+		// TODO: Make sure that MainWindow gets this
+//		main_window->on_exception();
 	}
 
 	timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
@@ -556,63 +440,14 @@ Application& Application::get_current()
 
 void Application::update()
 {
-	preferred_language = get_string_configuration_value("preferred_language");	
+	preferred_language = configuration_manager.get_string_value("preferred_language");	
 
 	if (stream_manager.has_display_stream())
 	{
 		toggle_action_record->set_active(stream_manager.is_recording(stream_manager.get_display_channel()));
 	}
-	
-	if (main_window != NULL)
-	{
-		main_window->update();
-	}
-	
-	if (status_icon != NULL)
-	{
-		status_icon->update();
-	}
-}
 
-void Application::set_display_channel_by_id(guint channel_id)
-{
-	set_display_channel(channel_manager.get_channel_by_id(channel_id));
-}
-
-void Application::set_display_channel_number(guint channel_index)
-{
-	set_display_channel(channel_manager.get_channel_by_index(channel_index));
-}
-
-void Application::set_display_channel(Channel& channel)
-{
-	bool success = false;
-
-	g_message(_("Changing channel to '%s'"), channel.name.c_str());	
-	main_window->stop_engine();
-	try
-	{
-		signal_channel_changing(channel.name);
-		stream_manager.start_display(channel);
-		signal_channel_changed(channel.name);
-
-		success = true;
-	}
-	catch (...)
-	{
-		signal_channel_change_failed(channel.name);
-	}
-
-	if (success)
-	{
-		toggle_action_record->set_active(stream_manager.is_recording(stream_manager.get_display_channel()));
-		main_window->start_engine();
-		set_int_configuration_value("last_channel", channel.channel_id);
-	}
-
-	update();
-
-	g_message(_("Channel changed to %s"), channel.name.c_str());
+	signal_update();
 }
 
 void Application::check_scheduled_recordings()
@@ -730,7 +565,7 @@ gboolean Application::on_timeout()
 
 void Application::check_auto_record()
 {
-	StringList auto_record_list = get_string_list_configuration_value("auto_record");
+	StringList auto_record_list = configuration_manager.get_string_list_value("auto_record");
 	ChannelArray channels = channel_manager.get_channels();
 
 	g_debug("Searching for auto record EPG events");

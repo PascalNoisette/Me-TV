@@ -42,7 +42,7 @@ Dvb::SI::Event::Event()
 
 SectionParser::SectionParser()
 {
-	text_encoding = get_application().get_string_configuration_value("text_encoding");
+	text_encoding = configuration_manager.get_string_value("text_encoding");
 }
 
 // this method takes a bitmask as supplied by the NIT-section (satellite delivery system descriptor) for the FEC_INNER and converts them to a linux-style FEC value according to EN 300 468, v 1.9.1

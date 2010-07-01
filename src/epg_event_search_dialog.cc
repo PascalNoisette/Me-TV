@@ -80,10 +80,9 @@ void EpgEventSearchDialog::search()
 	
 	list_store_results->clear();
 
-	Application& application = get_application();
 	bool found = false;
 
-	StringList recent_searches = application.get_string_list_configuration_value("recent_searches");
+	StringList recent_searches = configuration_manager.get_string_list_value("recent_searches");
 	list_store_search->clear();
 
     for (StringList::iterator i = recent_searches.begin(); i != recent_searches.end(); i++)
@@ -100,13 +99,13 @@ void EpgEventSearchDialog::search()
 	{
 		(*list_store_search->append())[search_columns.column_text] = text;
 		recent_searches.push_back(text);
-		application.set_string_list_configuration_value("recent_searches", recent_searches);
+		configuration_manager.set_string_list_value("recent_searches", recent_searches);
 	}
 
 	int got_results = false;
 
 	bool search_description = check->get_active();
-	ChannelArray channels = application.channel_manager.get_channels();
+	ChannelArray channels = channel_manager.get_channels();
 	for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
 	{
 		Channel& channel = *i;
@@ -119,7 +118,7 @@ void EpgEventSearchDialog::search()
 			
 			Gtk::TreeModel::Row row = *(list_store_results->append());
 
-			gboolean record = application.scheduled_recording_manager.is_recording(epg_event);
+			gboolean record = scheduled_recording_manager.is_recording(epg_event);
 			if (record)
 			{
 				row[results_columns.column_image] = pixbuf_record;
@@ -131,7 +130,7 @@ void EpgEventSearchDialog::search()
 			row[results_columns.column_start_time_text]	= epg_event.get_start_time_text();
 			row[results_columns.column_duration]		= epg_event.get_duration_text();
 			row[results_columns.column_channel]			= epg_event.channel_id;
-			row[results_columns.column_channel_name]	= application.channel_manager.get_channel_by_id(epg_event.channel_id).name;
+			row[results_columns.column_channel_name]	= channel_manager.get_channel_by_id(epg_event.channel_id).name;
 			row[results_columns.column_epg_event]		= epg_event;			
 		}
 
@@ -174,8 +173,6 @@ void EpgEventSearchDialog::on_event_search_button_press_event(GdkEventButton* bu
 			Gtk::TreeModel::iterator i = list_store_results->get_iter(path);
 			EpgEvent epg_event = (*i)[results_columns.column_epg_event];
 
-			ScheduledRecordingManager& scheduled_recording_manager = get_application().scheduled_recording_manager;
-
 			if (scheduled_recording_manager.is_recording(epg_event))
 			{
 				scheduled_recording_manager.remove_scheduled_recording(epg_event);
@@ -195,7 +192,7 @@ void EpgEventSearchDialog::on_show()
 	list_store_search->clear();
 
 	Application& application = get_application();
-	StringList recent_searches = application.get_string_list_configuration_value("recent_searches");
+	StringList recent_searches = configuration_manager.get_string_list_value("recent_searches");
 
 	list_store_search->clear();
 	for (StringList::iterator i = recent_searches.begin(); i != recent_searches.end(); i++)

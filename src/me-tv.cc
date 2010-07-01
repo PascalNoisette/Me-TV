@@ -33,6 +33,12 @@ bool			no_screensaver_inhibit	= false;
 Glib::ustring	devices;
 gint			read_timeout			= 5;
 
+ChannelManager				channel_manager;
+ScheduledRecordingManager	scheduled_recording_manager;
+DeviceManager				device_manager;
+StreamManager				stream_manager;
+ConfigurationManager		configuration_manager;
+
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_fullscreen;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
@@ -50,9 +56,8 @@ Glib::RefPtr<Gtk::Action> action_present;
 Glib::RefPtr<Gtk::Action> action_quit;
 Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
 
-sigc::signal<void, const Glib::ustring&> signal_channel_changing;
-sigc::signal<void, const Glib::ustring&> signal_channel_changed;
-sigc::signal<void, const Glib::ustring&> signal_channel_change_failed;
+sigc::signal<void, guint> signal_channel_change;
+sigc::signal<void> signal_update;
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to)
 {

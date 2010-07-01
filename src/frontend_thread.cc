@@ -345,7 +345,7 @@ Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& des
 		filename.replace(position, 1, "_");
 	}
 
-	if (get_application().get_boolean_configuration_value("remove_colon"))
+	if (configuration_manager.get_boolean_value("remove_colon"))
 	{
 		while ((position = filename.find(':')) != Glib::ustring::npos )
 		{
@@ -356,7 +356,7 @@ Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& des
 	Glib::ustring fixed_filename = Glib::filename_from_utf8(filename);
 	
 	return Glib::build_filename(
-	    get_application().get_string_configuration_value("recording_directory"),
+	    configuration_manager.get_string_value("recording_directory"),
 	    fixed_filename);
 }
 

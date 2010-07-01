@@ -21,7 +21,7 @@
 #include "scheduled_recording_manager.h"
 #include "application.h"
 
-ScheduledRecordingManager::ScheduledRecordingManager()
+void ScheduledRecordingManager::initialise()
 {
 	g_static_rec_mutex_init(mutex.gobj());
 }
@@ -144,8 +144,8 @@ void ScheduledRecordingManager::set_scheduled_recording(EpgEvent& epg_event)
 	ScheduledRecording scheduled_recording;
 	
 	Application& application = get_application();
-	guint before = application.get_int_configuration_value("record_extra_before");
-	guint after = application.get_int_configuration_value("record_extra_after");
+	guint before = configuration_manager.get_int_value("record_extra_before");
+	guint after = configuration_manager.get_int_value("record_extra_after");
 	
 	scheduled_recording.channel_id				= epg_event.channel_id;
 	scheduled_recording.description				= epg_event.get_title();
@@ -168,12 +168,12 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 	g_debug("Setting scheduled recording");
 	
-	Channel& channel = get_application().channel_manager.get_channel_by_id(scheduled_recording.channel_id);
+	Channel& channel = channel_manager.get_channel_by_id(scheduled_recording.channel_id);
 
 	if (scheduled_recording.device.empty())
 	{
 		g_debug("Looking for an available frontend for scheduled recording");
-		FrontendList& frontends = get_application().device_manager.get_frontends();
+		FrontendList& frontends = device_manager.get_frontends();
 		for (FrontendList::iterator j = frontends.begin(); j != frontends.end(); j++)
 		{
 			Glib::ustring device = (*j)->get_path();
@@ -183,7 +183,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 			{
 				ScheduledRecording& current = *i;
 
-				Channel& current_channel = get_application().channel_manager.get_channel_by_id(current.channel_id);
+				Channel& current_channel = channel_manager.get_channel_by_id(current.channel_id);
 
 				// Check for conflict
 				if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
@@ -214,7 +214,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 	{
 		ScheduledRecording& current = *i;
 
-		Channel& current_channel = get_application().channel_manager.get_channel_by_id(current.channel_id);
+		Channel& current_channel = channel_manager.get_channel_by_id(current.channel_id);
 
 		// Check for conflict
 		if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
@@ -374,7 +374,7 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 				scheduled_recording.start_time,
 				scheduled_recording.duration,
 				record ? "true  " : "false ",
-				application.channel_manager.get_channel_by_id(scheduled_recording.channel_id).name.c_str(),
+				channel_manager.get_channel_by_id(scheduled_recording.channel_id).name.c_str(),
 				scheduled_recording.device.c_str(),
 				scheduled_recording.description.c_str());
 			

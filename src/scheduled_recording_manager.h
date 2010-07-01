@@ -33,7 +33,7 @@ private:
 	Glib::StaticRecMutex	mutex;
 
 public:
-	ScheduledRecordingManager();
+	void initialise();
 		
 	ScheduledRecordingList scheduled_recordings;
 

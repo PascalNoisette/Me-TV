@@ -123,7 +123,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	notebook_scan_wizard->set_show_tabs(false);
 		
-	frontend = *(get_application().device_manager.get_frontends().begin());
+	frontend = *(device_manager.get_frontends().begin());
 	Glib::ustring device_name = frontend->get_frontend_info().name;
 
 	Gtk::Label* label = NULL;
@@ -247,8 +247,7 @@ void ScanDialog::stop_scan()
 		delete scan_thread;
 		scan_thread = NULL;
 
-		get_application().stream_manager.start();
-		get_application().select_channel_to_play();
+		stream_manager.start();
 	}
 }
 
@@ -554,7 +553,7 @@ void ScanDialog::on_button_scan_wizard_next_clicked()
 		scanner.signal_service.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_service));
 		scanner.signal_progress.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_progress));
 		scanner.signal_complete.connect(sigc::mem_fun(*this, &ScanDialog::on_signal_complete));
-		get_application().stream_manager.stop();
+		stream_manager.stop();
 		scan_thread->start();
 	}
 	else if (radio_button_import->get_active())

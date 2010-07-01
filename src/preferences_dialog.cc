@@ -20,6 +20,7 @@
 
 #include "preferences_dialog.h"
 #include "application.h"
+#include "me-tv-ui.h"
 
 PreferencesDialog& PreferencesDialog::create(Glib::RefPtr<Gtk::Builder> builder)
 {
@@ -35,8 +36,6 @@ PreferencesDialog::PreferencesDialog(BaseObjectType* cobject, const Glib::RefPtr
 
 void PreferencesDialog::run()
 {
-	Application& application = get_application();
-	
 	Gtk::FileChooserButton* file_chooser_button_recording_directory = NULL;
 	Gtk::SpinButton* spin_button_record_extra_before = NULL;
 	Gtk::SpinButton* spin_button_record_extra_after = NULL;
@@ -114,43 +113,43 @@ void PreferencesDialog::run()
 	combo_box_deinterlace_type->append_text("standard");
 	combo_box_deinterlace_type->append_text("tvtime");
 	
-	file_chooser_button_recording_directory->set_filename(application.get_string_configuration_value("recording_directory"));
-	spin_button_record_extra_before->set_value(application.get_int_configuration_value("record_extra_before"));
-	spin_button_record_extra_after->set_value(application.get_int_configuration_value("record_extra_after"));
-	spin_button_epg_span_hours->set_value(application.get_int_configuration_value("epg_span_hours"));
-	spin_button_epg_page_size->set_value(application.get_int_configuration_value("epg_page_size"));
-	combo_box_entry_preferred_language->get_entry()->set_text(application.get_string_configuration_value("preferred_language"));
-	combo_box_entry_video_driver->get_entry()->set_text(application.get_string_configuration_value("video_driver"));
-	combo_box_entry_audio_driver->get_entry()->set_text(application.get_string_configuration_value("audio_driver"));
-	combo_box_deinterlace_type->set_active_text(application.get_string_configuration_value("deinterlace_type"));
-	combo_box_entry_text_encoding->get_entry()->set_text(application.get_string_configuration_value("text_encoding"));
-	check_button_keep_above->set_active(application.get_boolean_configuration_value("keep_above"));
-	check_button_show_epg_header->set_active(application.get_boolean_configuration_value("show_epg_header"));
-	check_button_show_epg_time->set_active(application.get_boolean_configuration_value("show_epg_time"));
-	check_button_show_epg_tooltips->set_active(application.get_boolean_configuration_value("show_epg_tooltips"));
-	check_button_display_status_icon->set_active(application.get_boolean_configuration_value("display_status_icon"));
-	check_button_show_channel_number->set_active(application.get_boolean_configuration_value("show_channel_number"));
-	check_button_remove_colon->set_active(application.get_boolean_configuration_value("remove_colon"));
+	file_chooser_button_recording_directory->set_filename(configuration_manager.get_string_value("recording_directory"));
+	spin_button_record_extra_before->set_value(configuration_manager.get_int_value("record_extra_before"));
+	spin_button_record_extra_after->set_value(configuration_manager.get_int_value("record_extra_after"));
+	spin_button_epg_span_hours->set_value(configuration_manager.get_int_value("epg_span_hours"));
+	spin_button_epg_page_size->set_value(configuration_manager.get_int_value("epg_page_size"));
+	combo_box_entry_preferred_language->get_entry()->set_text(configuration_manager.get_string_value("preferred_language"));
+	combo_box_entry_video_driver->get_entry()->set_text(configuration_manager.get_string_value("video_driver"));
+	combo_box_entry_audio_driver->get_entry()->set_text(configuration_manager.get_string_value("audio_driver"));
+	combo_box_deinterlace_type->set_active_text(configuration_manager.get_string_value("deinterlace_type"));
+	combo_box_entry_text_encoding->get_entry()->set_text(configuration_manager.get_string_value("text_encoding"));
+	check_button_keep_above->set_active(configuration_manager.get_boolean_value("keep_above"));
+	check_button_show_epg_header->set_active(configuration_manager.get_boolean_value("show_epg_header"));
+	check_button_show_epg_time->set_active(configuration_manager.get_boolean_value("show_epg_time"));
+	check_button_show_epg_tooltips->set_active(configuration_manager.get_boolean_value("show_epg_tooltips"));
+	check_button_display_status_icon->set_active(configuration_manager.get_boolean_value("display_status_icon"));
+	check_button_show_channel_number->set_active(configuration_manager.get_boolean_value("show_channel_number"));
+	check_button_remove_colon->set_active(configuration_manager.get_boolean_value("remove_colon"));
 	
 	if (Dialog::run() == Gtk::RESPONSE_OK)
 	{
-		application.set_string_configuration_value("recording_directory", file_chooser_button_recording_directory->get_filename());
-		application.set_int_configuration_value("record_extra_before", (int)spin_button_record_extra_before->get_value());
-		application.set_int_configuration_value("record_extra_after", (int)spin_button_record_extra_after->get_value());
-		application.set_int_configuration_value("epg_span_hours", (int)spin_button_epg_span_hours->get_value());
-		application.set_int_configuration_value("epg_page_size", (int)spin_button_epg_page_size->get_value());
-		application.set_string_configuration_value("preferred_language", combo_box_entry_preferred_language->get_entry()->get_text());
-		application.set_string_configuration_value("video_driver", combo_box_entry_video_driver->get_entry()->get_text());
-		application.set_string_configuration_value("audio_driver", combo_box_entry_audio_driver->get_entry()->get_text());
-		application.set_string_configuration_value("deinterlace_type", combo_box_deinterlace_type->get_active_text());
-		application.set_string_configuration_value("text_encoding", combo_box_entry_text_encoding->get_entry()->get_text());
-		application.set_boolean_configuration_value("keep_above", check_button_keep_above->get_active());
-		application.set_boolean_configuration_value("show_epg_header", check_button_show_epg_header->get_active());
-		application.set_boolean_configuration_value("show_epg_time", check_button_show_epg_time->get_active());
-		application.set_boolean_configuration_value("show_epg_tooltips", check_button_show_epg_tooltips->get_active());
-		application.set_boolean_configuration_value("display_status_icon", check_button_display_status_icon->get_active());
-		application.set_boolean_configuration_value("show_channel_number", check_button_show_channel_number->get_active());
-		application.set_boolean_configuration_value("remove_colon", check_button_remove_colon->get_active());
+		configuration_manager.set_string_value("recording_directory", file_chooser_button_recording_directory->get_filename());
+		configuration_manager.set_int_value("record_extra_before", (int)spin_button_record_extra_before->get_value());
+		configuration_manager.set_int_value("record_extra_after", (int)spin_button_record_extra_after->get_value());
+		configuration_manager.set_int_value("epg_span_hours", (int)spin_button_epg_span_hours->get_value());
+		configuration_manager.set_int_value("epg_page_size", (int)spin_button_epg_page_size->get_value());
+		configuration_manager.set_string_value("preferred_language", combo_box_entry_preferred_language->get_entry()->get_text());
+		configuration_manager.set_string_value("video_driver", combo_box_entry_video_driver->get_entry()->get_text());
+		configuration_manager.set_string_value("audio_driver", combo_box_entry_audio_driver->get_entry()->get_text());
+		configuration_manager.set_string_value("deinterlace_type", combo_box_deinterlace_type->get_active_text());
+		configuration_manager.set_string_value("text_encoding", combo_box_entry_text_encoding->get_entry()->get_text());
+		configuration_manager.set_boolean_value("keep_above", check_button_keep_above->get_active());
+		configuration_manager.set_boolean_value("show_epg_header", check_button_show_epg_header->get_active());
+		configuration_manager.set_boolean_value("show_epg_time", check_button_show_epg_time->get_active());
+		configuration_manager.set_boolean_value("show_epg_tooltips", check_button_show_epg_tooltips->get_active());
+		configuration_manager.set_boolean_value("display_status_icon", check_button_display_status_icon->get_active());
+		configuration_manager.set_boolean_value("show_channel_number", check_button_show_channel_number->get_active());
+		configuration_manager.set_boolean_value("remove_colon", check_button_remove_colon->get_active());
 
 		get_application().update();
 	}

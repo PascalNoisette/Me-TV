@@ -82,8 +82,7 @@ extern Glib::RefPtr<Gtk::Action> action_present;
 extern Glib::RefPtr<Gtk::Action> action_quit;
 extern Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
 
-extern sigc::signal<void, const Glib::ustring&> signal_channel_changing;
-extern sigc::signal<void, const Glib::ustring&> signal_channel_changed;
-extern sigc::signal<void, const Glib::ustring&> signal_channel_change_failed;
+extern sigc::signal<void, guint> signal_channel_change;
+extern sigc::signal<void> signal_update;
 
 #endif

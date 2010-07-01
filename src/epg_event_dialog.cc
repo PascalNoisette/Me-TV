@@ -21,6 +21,7 @@
 #include "epg_event_dialog.h"
 #include "me-tv.h"
 #include "application.h"
+#include "main_window.h"
 #include "scheduled_recording_dialog.h"
 
 EpgEventDialog& EpgEventDialog::create(Glib::RefPtr<Gtk::Builder> builder)
@@ -53,7 +54,7 @@ void EpgEventDialog::show_epg_event(EpgEvent& epg_event)
 	builder->get_widget("label_program_information", label_program_information);
 	label_program_information->set_label(information);
 
-	gboolean is_scheduled = get_application().scheduled_recording_manager.is_recording(epg_event);
+	gboolean is_scheduled = scheduled_recording_manager.is_recording(epg_event);
 	Gtk::HBox* hbox_program_dialog_scheduled = NULL;
 	builder->get_widget("hbox_program_dialog_scheduled", hbox_program_dialog_scheduled);
 	hbox_program_dialog_scheduled->property_visible() = is_scheduled;

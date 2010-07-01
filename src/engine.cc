@@ -63,9 +63,9 @@ void Engine::play(const Glib::ustring& mrl)
 	argv.push_back("me-tv-player");
 	argv.push_back(Glib::ustring::compose("fifo://%1", mrl));
 	argv.push_back(Glib::ustring::compose("%1", window));
-	argv.push_back(application.get_string_configuration_value("video_driver"));
-	argv.push_back(application.get_string_configuration_value("audio_driver"));
-	argv.push_back(application.get_string_configuration_value("deinterlace_type"));
+	argv.push_back(configuration_manager.get_string_value("video_driver"));
+	argv.push_back(configuration_manager.get_string_value("audio_driver"));
+	argv.push_back(configuration_manager.get_string_value("deinterlace_type"));
 	argv.push_back(mute_state ? "true" : "false");
 	argv.push_back(Glib::ustring::compose("%1", audio_stream));
 	argv.push_back(Glib::ustring::compose("%1", subtitle_stream));
