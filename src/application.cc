@@ -530,16 +530,16 @@ gboolean Application::on_timeout()
 		guint seconds = now % 60;
 		if (last_seconds > seconds)
 		{
-			check_scheduled_recordings();
-			scheduled_recording_manager.save(connection);
-			channel_manager.prune_epg();
-
 			if (channel_manager.is_dirty())
 			{
 				channel_manager.save(connection);
 				check_auto_record();
 			}
 			
+			check_scheduled_recordings();
+			scheduled_recording_manager.save(connection);
+			channel_manager.prune_epg();
+
 			signal_update();
 		}
 		last_seconds = seconds;
@@ -568,7 +568,6 @@ void Application::check_auto_record()
 			Channel& channel = *i;
 
 			EpgEventList list = channel.epg_events.search(title, false);
-
 			for (EpgEventList::iterator j = list.begin(); j != list.end(); j++)
 			{
 				EpgEvent& epg_event = *j;
@@ -588,7 +587,7 @@ void Application::check_auto_record()
 				}
 			}
 		}
-	}				
+	}
 }
 
 Glib::StaticRecMutex& Application::get_mutex()

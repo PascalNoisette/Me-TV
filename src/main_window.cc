@@ -147,6 +147,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_increase_volume->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_increase_volume));
 	action_preferences->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_preferences));
 	action_present->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_present));
+	action_quit->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::hide));
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
 
 	signal_start_display.connect(sigc::mem_fun(*this, &MainWindow::on_start_display));
