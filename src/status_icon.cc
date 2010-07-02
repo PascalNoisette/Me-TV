@@ -109,7 +109,7 @@ void StatusIcon::update()
 
 	if (title.empty())
 	{
-		title = _("Not available");
+		title = _("Me TV is idle");
 	}
 	
 	status_icon->set_tooltip(title);
