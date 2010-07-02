@@ -151,6 +151,6 @@ void PreferencesDialog::run()
 		configuration_manager.set_boolean_value("show_channel_number", check_button_show_channel_number->get_active());
 		configuration_manager.set_boolean_value("remove_colon", check_button_remove_colon->get_active());
 
-		get_application().update();
+		signal_update();
 	}
 }

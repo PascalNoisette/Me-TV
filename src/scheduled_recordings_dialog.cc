@@ -129,8 +129,6 @@ void ScheduledRecordingsDialog::show_scheduled_recording(guint scheduled_recordi
 	ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
 	scheduled_recording_dialog.run(this, scheduled_recording);
 	scheduled_recording_dialog.hide();
-
-	update();
 }
 
 void ScheduledRecordingsDialog::on_row_activated(const Gtk::TreeModel::Path& tree_model_path, Gtk::TreeViewColumn* column)

@@ -78,7 +78,6 @@ public:
 	Data::Schema			get_schema() const { return schema; }
 
 	const Glib::ustring& get_database_filename();
-	void update();
 	
 	Glib::RefPtr<Gtk::Builder> get_builder() { return builder; }
 	
@@ -88,7 +87,6 @@ public:
 	void start_recording(Channel& channel, const ScheduledRecording& scheduled_recording);
 	void stop_recording(Channel& channel);
 		
-	const Glib::ustring& get_preferred_language() const { return preferred_language; }
 	const Glib::ustring& get_application_dir() const { return application_dir; }
 	DBusGConnection* get_dbus_connection() const { return dbus_connection; }
 };

@@ -25,26 +25,6 @@
 
 #define MAX_CHANNELS	10000
 
-class LockLogger
-{
-private:
-	Glib::ustring description;
-	Glib::RecMutex& mutex;
-public:
-	LockLogger(Glib::RecMutex& mutex, const Glib::ustring& description)
-		: description(description), mutex(mutex)
-	{
-		//g_debug(">>> Locking (%s)", description.c_str());
-		mutex.lock();
-	}
-
-	~LockLogger()
-	{
-		//g_debug("<<< UnLocking (%s)", description.c_str());
-		mutex.unlock();
-	}
-};
-
 void ChannelManager::initialise()
 {
 	g_static_rec_mutex_init(mutex.gobj());
@@ -55,6 +35,7 @@ gboolean ChannelManager::is_dirty()
 {
 	gboolean result = dirty;
 
+	Glib::RecMutex::Lock lock(mutex);
 	if (!result)
 	{
 		for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
@@ -74,7 +55,7 @@ gboolean ChannelManager::is_dirty()
 
 void ChannelManager::load(Data::Connection& connection)
 {
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	Glib::RecMutex::Lock lock(mutex);
 
 	Application& application = get_application();
 
@@ -151,7 +132,7 @@ void ChannelManager::save(Data::Connection& connection)
 	// Update sort_order = 0 to flag unused channels for removal later
 	adapter_channel.update_rows("sort_order = 0");
 
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	Glib::RecMutex::Lock lock(mutex);
 
 	int channel_count = 0;
 	for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
@@ -254,7 +235,7 @@ Channel* ChannelManager::find_channel(guint channel_id)
 {
 	Channel* channel = NULL;
 
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	Glib::RecMutex::Lock lock(mutex);
 	
 	for (ChannelArray::iterator iterator = channels.begin(); iterator != channels.end() && channel == NULL; iterator++)
 	{
@@ -270,7 +251,7 @@ Channel* ChannelManager::find_channel(guint channel_id)
 
 Channel& ChannelManager::get_channel_by_index(guint index)
 {
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	Glib::RecMutex::Lock lock(mutex);
 
 	if (index >= channels.size())
 	{
@@ -282,7 +263,7 @@ Channel& ChannelManager::get_channel_by_index(guint index)
 
 Channel& ChannelManager::get_channel_by_id(guint channel_id)
 {
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	Glib::RecMutex::Lock lock(mutex);
 
 	Channel* channel = find_channel(channel_id);
 
@@ -296,7 +277,7 @@ Channel& ChannelManager::get_channel_by_id(guint channel_id)
 
 void ChannelManager::add_channels(const ChannelArray& c)
 {
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	Glib::RecMutex::Lock lock(mutex);
 
 	for (ChannelArray::const_iterator iterator = c.begin(); iterator != c.end(); iterator++)
 	{
@@ -306,12 +287,12 @@ void ChannelManager::add_channels(const ChannelArray& c)
 
 void ChannelManager::add_channel(const Channel& channel)
 {
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	Glib::RecMutex::Lock lock(mutex);
 
 	if (channels.size() >= MAX_CHANNELS)
 	{
 		Glib::ustring message = Glib::ustring::compose(ngettext(
-			"Failed to add channel: You cannot have more than %1 channel",
+			"Failed to add channel: You cannot have more than 1 channel",
 			"Failed to add channel: You cannot have more than %1 channels",
 			MAX_CHANNELS), MAX_CHANNELS);
 		throw Exception(message);
@@ -341,7 +322,7 @@ const ChannelArray& ChannelManager::get_channels() const
 
 void ChannelManager::clear()
 {
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	Glib::RecMutex::Lock lock(mutex);
 	channels.clear();
 	g_debug("Channels cleared");
 }
@@ -350,7 +331,7 @@ Channel* ChannelManager::find_channel(guint frequency, guint service_id)
 {
 	Channel* result = NULL;
 	
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	Glib::RecMutex::Lock lock(mutex);
 	for (ChannelArray::iterator iterator = channels.begin(); iterator != channels.end() && result == NULL; iterator++)
 	{
 		Channel& channel = *iterator;
@@ -367,7 +348,7 @@ void ChannelManager::set_channels(const ChannelArray& new_channels)
 {
 	g_debug("Setting channels");
 	
-	LockLogger lock(mutex, __PRETTY_FUNCTION__);
+	Glib::RecMutex::Lock lock(mutex);
 
 	clear();
 	add_channels(new_channels);
@@ -380,6 +361,7 @@ void ChannelManager::set_channels(const ChannelArray& new_channels)
 
 void ChannelManager::prune_epg()
 {
+	Glib::RecMutex::Lock lock(mutex);
 	ChannelArray::iterator iterator = channels.begin();
 	while (iterator != channels.end())
 	{

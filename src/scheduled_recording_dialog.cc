@@ -141,6 +141,7 @@ gint ScheduledRecordingDialog::run(Gtk::Window* transient_for, gboolean populate
 		g_debug("Got SR details for '%s'", scheduled_recording.description.c_str());
 		scheduled_recording_manager.set_scheduled_recording(scheduled_recording);
 	}
+	signal_update();
 		
 	return dialog_response;
 }

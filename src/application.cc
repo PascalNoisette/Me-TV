@@ -190,7 +190,7 @@ void Application::on_record()
 		g_debug("Recording stopped");
 	}
 
-	update();
+	signal_update();
 }
 
 void Application::on_quit()
@@ -420,8 +420,7 @@ void Application::run()
 	}
 	catch(...)
 	{
-		// TODO: Make sure that MainWindow gets this
-//		main_window->on_exception();
+		on_error();
 	}
 
 	timeout_source = gdk_threads_add_timeout(1000, &Application::on_timeout, this);
@@ -436,18 +435,6 @@ Application& Application::get_current()
 	}
 	
 	return *current;
-}
-
-void Application::update()
-{
-	preferred_language = configuration_manager.get_string_value("preferred_language");	
-
-	if (stream_manager.has_display_stream())
-	{
-		toggle_action_record->set_active(stream_manager.is_recording(stream_manager.get_display_channel()));
-	}
-
-	signal_update();
 }
 
 void Application::check_scheduled_recordings()
@@ -551,7 +538,7 @@ gboolean Application::on_timeout()
 				check_auto_record();
 			}
 			
-			update();
+			signal_update();
 		}
 		last_seconds = seconds;
 	}
@@ -610,17 +597,17 @@ Glib::StaticRecMutex& Application::get_mutex()
 void Application::start_recording(Channel& channel)
 {
 	stream_manager.start_recording(channel);
-	update();
+	signal_update();
 }
 
 void Application::start_recording(Channel& channel, const ScheduledRecording& scheduled_recording)
 {
 	stream_manager.start_recording(channel, scheduled_recording);
-	update();
+	signal_update();
 }
 
 void Application::stop_recording(Channel& channel)
 {
 	stream_manager.stop_recording(channel);
-	update();
+	signal_update();
 }

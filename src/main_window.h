@@ -55,7 +55,6 @@ private:
 	gboolean							mute_state;
 	guint								channel_change_timeout;
 	guint								temp_channel_number;
-	sigc::connection					connection_exception;
 	guint								screensaver_inhibit_cookie;
 	
 	void stop();
@@ -66,7 +65,6 @@ private:
 	void toggle_mute();
 	void set_mute_state(gboolean state);
 	void set_status_text(const Glib::ustring& text);
-	void change_display_channel(guint channel_id);
 	void select_channel_to_play();
 
 	void play(const Glib::ustring& mrl);
@@ -74,7 +72,6 @@ private:
 	void restart_engine();
 	void start_engine();
 	void stop_engine();
-	void update();
 
 	void toggle_visibility();
 	void save_geometry();
@@ -95,9 +92,11 @@ private:
 	bool on_event_box_video_button_pressed(GdkEventButton* event);
 	void on_menu_item_audio_stream_activate(guint audio_stream_index);
 	void on_menu_item_subtitle_stream_activate(guint audio_stream_index);
-	void on_channel_changing(const Glib::ustring& channel_name);
-	void on_channel_changed(const Glib::ustring& channel_name);
-	void on_channel_change_failed(const Glib::ustring& channel_name);
+
+	void on_start_display(guint channel_id);
+	void on_stop_display();
+	void on_update();
+	void on_error(const Glib::ustring& message);
 
 	void on_show();
 	void on_hide();

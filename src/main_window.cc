@@ -134,8 +134,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	menu_bar->show_all();
 	set_view_mode(view_mode);
 
-	connection_exception = Glib::add_exception_handler(sigc::mem_fun(*this, &MainWindow::on_exception));
-
 	toggle_action_fullscreen->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_fullscreen));
 	toggle_action_mute->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_mute));
 	toggle_action_visibility->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::toggle_visibility));
@@ -151,8 +149,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	action_present->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_present));
 	action_scheduled_recordings->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_scheduled_recordings));
 
-	signal_channel_change.connect(sigc::mem_fun(*this, &MainWindow::change_display_channel));
-	signal_update.connect(sigc::mem_fun(*this, &MainWindow::update));
+	signal_start_display.connect(sigc::mem_fun(*this, &MainWindow::on_start_display));
+	signal_stop_display.connect(sigc::mem_fun(*this, &MainWindow::on_stop_display));
+	signal_update.connect(sigc::mem_fun(*this, &MainWindow::on_update));
+	signal_error.connect(sigc::mem_fun(*this, &MainWindow::on_error));
 
 	volume_button = new Gtk::VolumeButton();
 	volume_button->signal_value_changed().connect(sigc::mem_fun(*this, &MainWindow::on_button_volume_value_changed));
@@ -169,7 +169,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 MainWindow::~MainWindow()
 {
-	connection_exception.disconnect();
 	stop_engine();
 	if (timeout_source != 0)
 	{
@@ -211,7 +210,7 @@ void MainWindow::show_channels_dialog()
 		stream_manager.start();
 		select_channel_to_play();
 	}
-	update();
+	signal_update();
 }
 
 void MainWindow::show_preferences_dialog()
@@ -219,13 +218,12 @@ void MainWindow::show_preferences_dialog()
 	PreferencesDialog& preferences_dialog = PreferencesDialog::create(builder);
 	preferences_dialog.run();
 	preferences_dialog.hide();
-	update();
 }
 
 void MainWindow::on_change_view_mode()
 {
 	set_view_mode(view_mode == VIEW_MODE_VIDEO ? VIEW_MODE_CONTROLS : VIEW_MODE_VIDEO);
-	update();
+	signal_update();
 }
 
 bool MainWindow::on_delete_event(GdkEventAny* event)
@@ -324,9 +322,10 @@ void MainWindow::on_timeout()
 			guint channel_index = temp_channel_number - 1;
 
 			// Reset the temporary channel number for the next run
-			temp_channel_number = 0;		
+			temp_channel_number = 0;
 
-			change_display_channel(channel_manager.get_channel_by_index(channel_index).channel_id);
+			signal_stop_display();
+			signal_start_display(channel_manager.get_channel_by_index(channel_index).channel_id);
 		}
 	
 		// Hide the mouse
@@ -352,7 +351,7 @@ void MainWindow::on_timeout()
 		guint last_epg_update_time = stream_manager.get_last_epg_update_time();
 		if ((last_epg_update_time > last_update_time) || (now - last_update_time > UPDATE_INTERVAL))
 		{
-			update();
+			signal_update();
 			last_update_time = now;
 		}
 	
@@ -400,8 +399,7 @@ void MainWindow::show_scheduled_recordings_dialog()
 	ScheduledRecordingsDialog& scheduled_recordings_dialog = ScheduledRecordingsDialog::create(builder);
 	scheduled_recordings_dialog.run();
 	scheduled_recordings_dialog.hide();
-
-	update();
+	signal_update();
 }
 
 void MainWindow::show_epg_event_search_dialog()
@@ -409,8 +407,7 @@ void MainWindow::show_epg_event_search_dialog()
 	EpgEventSearchDialog& epg_event_search_dialog = EpgEventSearchDialog::get(builder);
 	epg_event_search_dialog.run();
 	epg_event_search_dialog.hide();
-
-	update();
+	signal_update();
 }
 
 void MainWindow::on_menu_item_audio_stream_activate(guint index)
@@ -464,7 +461,7 @@ void MainWindow::on_hide()
 {
 	save_geometry();
 
-	stop_engine();
+	signal_stop_display();
 	Gtk::Window::on_hide();
 	if (!configuration_manager.get_boolean_value("display_status_icon"))
 	{
@@ -491,21 +488,6 @@ void MainWindow::save_geometry()
 
 		g_debug("Saved geometry (%d, %d, %d, %d)", x, y, width, height);
 	}
-}
-
-void MainWindow::change_display_channel(guint channel_id)
-{
-	Channel& channel = channel_manager.get_channel_by_id(channel_id);
-
-	g_message(_("Changing display channel to '%s'"), channel.name.c_str());	
-	stop_engine();
-	stream_manager.start_display(channel);
-	configuration_manager.set_int_value("last_channel", channel.channel_id);
-	start_engine();
-	toggle_action_record->set_active(stream_manager.is_recording(channel));
-	g_message(_("Display channel changed to %s"), channel.name.c_str());
-
-	update();
 }
 
 void MainWindow::toggle_visibility()
@@ -583,8 +565,8 @@ void MainWindow::play(const Glib::ustring& mrl)
 	{
 		create_engine();
 	}
-	
-	Glib::ustring preferred_language = get_application().get_preferred_language();
+
+	Glib::ustring preferred_language = configuration_manager.get_string_value("preferred_language");
 
 	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_audio/action_audio_streams"))->get_submenu();
 	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_video/action_subtitle_streams"))->get_submenu();
@@ -685,7 +667,7 @@ void MainWindow::play(const Glib::ustring& mrl)
 	}
 }
 
-void MainWindow::update()
+void MainWindow::on_update()
 {
 	Glib::ustring program_title;
 	Glib::ustring window_title = "Me TV - It's TV for me computer";
@@ -772,13 +754,13 @@ void MainWindow::on_channels()
 void MainWindow::on_scheduled_recordings()
 {
 	show_scheduled_recordings_dialog();
-	get_application().update();
+	signal_update();
 }
 
 void MainWindow::on_epg_event_search()
 {
 	show_epg_event_search_dialog();
-	get_application().update();
+	signal_update();
 }
 
 void MainWindow::on_preferences()
@@ -953,7 +935,11 @@ void MainWindow::inhibit_screensaver(gboolean activate)
 void MainWindow::select_channel_to_play()
 {
 	ChannelArray& channels = channel_manager.get_channels();
-	if (channels.size() > 0)
+	if (channels.size() == 0)
+	{
+		g_debug("No channels, nothing to play");
+	}
+	else
 	{
 		gint channel_id = configuration_manager.get_int_value("last_channel");
 		Channel* channel = channel_manager.find_channel(channel_id);
@@ -966,8 +952,31 @@ void MainWindow::select_channel_to_play()
 			g_debug("Last channel '%d' not found", channel_id);
 			channel_id = channels[0].channel_id;
 		}
-		
-		change_display_channel(channel_id);
+
+		if (!device_manager.get_frontends().empty())
+		{
+			signal_start_display(channel_id);
+		}
 	}
 }
 
+void MainWindow::on_start_display(guint channel_id)
+{
+	Channel& channel = channel_manager.get_channel_by_id(channel_id);
+
+	configuration_manager.set_int_value("last_channel", channel.channel_id);
+	start_engine();
+	toggle_action_record->set_active(stream_manager.is_recording(channel));
+	signal_update();
+}
+
+void MainWindow::on_stop_display()
+{
+	stop_engine();
+	signal_update();
+}
+
+void MainWindow::on_error(const Glib::ustring& message)
+{
+	show_error(message);
+}

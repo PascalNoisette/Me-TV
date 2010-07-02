@@ -161,8 +161,6 @@ int main (int argc, char *argv[])
 	{
 		g_message(_("An unhandled error occurred"));		
 	}
-
-	g_message("Me TV terminated");
 	
 	return 0;
 }

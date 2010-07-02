@@ -77,7 +77,7 @@ void EpgEventDialog::show_epg_event(EpgEvent& epg_event)
 			ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
 			scheduled_recording_dialog.run(MainWindow::create(builder), epg_event);
 			scheduled_recording_dialog.hide();
-			get_application().update();
+			signal_update();
 		}
 		break;
 

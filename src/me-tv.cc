@@ -56,8 +56,10 @@ Glib::RefPtr<Gtk::Action> action_present;
 Glib::RefPtr<Gtk::Action> action_quit;
 Glib::RefPtr<Gtk::Action> action_scheduled_recordings;
 
-sigc::signal<void, guint> signal_channel_change;
+sigc::signal<void, guint> signal_start_display;
+sigc::signal<void> signal_stop_display;
 sigc::signal<void> signal_update;
+sigc::signal<void, Glib::ustring> signal_error;
 
 void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to)
 {
@@ -133,15 +135,16 @@ void on_error()
 	}
 	catch (const Exception& exception)
 	{
-		g_message("Exception: %s", exception.what().c_str());
+		signal_error(exception.what());
 	}
 	catch (const Glib::Error& exception)
 	{
-		g_message("Exception: %s", exception.what().c_str());
+		signal_error(exception.what());
 	}
 	catch (...)
 	{
 		g_message("Unhandled exception");
+		signal_error("Unhandled exception");
 	}
 }
 

@@ -430,7 +430,7 @@ bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, guint ch
 	}
 	else if (event->button == 1)
 	{
-		signal_channel_change(channel_id);
+		signal_start_display(channel_id);
 	}
 
 	return false;
@@ -449,7 +449,7 @@ bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent
 			scheduled_recording_manager.set_scheduled_recording(epg_event);
 		}
 
-		get_application().update();
+		signal_update();
 	}
 
 	return false;
