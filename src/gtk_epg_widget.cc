@@ -413,6 +413,8 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 
 bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, guint channel_id)
 {
+	device_manager.check_frontend();
+		
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
 		Channel& channel = channel_manager.get_channel_by_id(channel_id);

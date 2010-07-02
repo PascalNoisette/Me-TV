@@ -169,6 +169,8 @@ void Application::on_record()
 
 	if (toggle_action_record->get_active())
 	{
+		device_manager.check_frontend();
+		
 		try
 		{
 			start_recording(stream_manager.get_display_channel());
@@ -489,7 +491,7 @@ void Application::action_after(guint action)
 	{
 		if (dbus_connection == NULL)
 		{
-			throw Exception("BBus connection not available");
+			throw Exception(_("DBus connection not available"));
 		}
 		
 		g_message("Computer shutdown by scheduled recording");
@@ -500,13 +502,13 @@ void Application::action_after(guint action)
 			"org.gnome.SessionManager");
 		if (proxy == NULL)
 		{
-			throw Exception("Failed to get org.gnome.SessionManager proxy");
+			throw Exception(_("Failed to get org.gnome.SessionManager proxy"));
 		}
 		
 		GError* error = NULL;
 		if (!dbus_g_proxy_call(proxy, "Shutdown", &error, G_TYPE_INVALID, G_TYPE_INVALID))
 		{
-			throw Exception("Failed to call Shutdown method");
+			throw Exception(_("Failed to call Shutdown method"));
 		}
 
 		g_message("Shutdown requested");
@@ -553,7 +555,7 @@ gboolean Application::on_timeout()
 void Application::check_auto_record()
 {
 	StringList auto_record_list = configuration_manager.get_string_list_value("auto_record");
-	ChannelArray channels = channel_manager.get_channels();
+	ChannelArray& channels = channel_manager.get_channels();
 
 	g_debug("Searching for auto record EPG events");
 	for (StringList::iterator iterator = auto_record_list.begin(); iterator != auto_record_list.end(); iterator++)
