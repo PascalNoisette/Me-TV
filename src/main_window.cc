@@ -965,6 +965,7 @@ void MainWindow::on_start_display(guint channel_id)
 	Channel& channel = channel_manager.get_channel_by_id(channel_id);
 
 	configuration_manager.set_int_value("last_channel", channel.channel_id);
+	stream_manager.start_display(channel);
 	start_engine();
 	toggle_action_record->set_active(stream_manager.is_recording(channel));
 	signal_update();
@@ -972,6 +973,7 @@ void MainWindow::on_start_display(guint channel_id)
 
 void MainWindow::on_stop_display()
 {
+	stream_manager.stop_display();
 	stop_engine();
 	signal_update();
 }
