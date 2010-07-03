@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-06-18 21:15-0400\n"
-"PO-Revision-Date: 2010-07-01 16:42+0000\n"
+"PO-Revision-Date: 2010-07-02 04:25+0000\n"
 "Last-Translator: thelinuxer <thelinuxer@gmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n % 100 >= "
 "3 && n % 100 <= 10 ? 3 : n % 100 >= 11 && n % 100 <= 99 ? 4 : 5;\n"
-"X-Launchpad-Export-Date: 2010-07-02 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-07-03 03:59+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -960,7 +960,7 @@ msgstr[1] ""
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
-msgstr ""
+msgstr " "
 
 #: ../src/epg_event_search_dialog.cc:60
 msgid "Title"
