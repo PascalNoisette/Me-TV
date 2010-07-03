@@ -2081,7 +2081,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="related_action">toggle_action_record</property>
+                <property name="related_action">toggle_action_record_current</property>
                 <property name="relief">none</property>
                 <child>
                   <object class="GtkImage" id="image_record">
@@ -2422,7 +2422,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
       <action-widget response="0">button_epg_event_search_close</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkToggleAction" id="toggle_action_record">
+  <object class="GtkToggleAction" id="toggle_action_record_current">
     <property name="stock_id">gtk-media-record</property>
     <property name="icon_name">accessories-dictionary</property>
   </object>

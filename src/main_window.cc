@@ -41,7 +41,7 @@ Glib::ustring ui_info =
 	"<ui>"
 	"	<menubar name='menu_bar'>"
 	"		<menu action='action_file'>"
-	"			<menuitem action='toggle_action_record'/>"
+	"			<menuitem action='toggle_action_record_current'/>"
 	"			<separator/>"
 	"			<menuitem action='action_quit'/>"
 	"		</menu>"
@@ -969,7 +969,6 @@ void MainWindow::on_start_display(guint channel_id)
 	stream_manager.start_display(channel);
 	stop_engine();
 	start_engine();
-	toggle_action_record->set_active(stream_manager.is_recording(channel));
 	signal_update();
 }
 

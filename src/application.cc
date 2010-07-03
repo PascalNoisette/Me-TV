@@ -76,7 +76,7 @@ Application::Application()
 	
 	toggle_action_fullscreen = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_fullscreen"));
 	toggle_action_mute = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_mute"));
-	toggle_action_record = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_record"));
+	toggle_action_record_current = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_record_current"));
 	toggle_action_visibility = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_visibility"));
 
 	action_about = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_about"));
@@ -92,7 +92,7 @@ Application::Application()
 	action_decrease_volume = Glib::RefPtr<Gtk::Action>::cast_dynamic(builder->get_object("action_decrease_volume"));
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create();
-	action_group->add(toggle_action_record, Gtk::AccelKey("R"));
+	action_group->add(toggle_action_record_current, Gtk::AccelKey("R"));
 	action_group->add(toggle_action_fullscreen, Gtk::AccelKey("F"));
 	action_group->add(toggle_action_mute, Gtk::AccelKey("M"));
 	action_group->add(toggle_action_visibility);
@@ -125,7 +125,7 @@ Application::Application()
 	action_group->add(Gtk::RadioAction::create(radio_button_group_audio_channel, "action_audio_channel_right", _("_Right")));
 	
 	action_quit->signal_activate().connect(sigc::ptr_fun(Gtk::Main::quit));
-	toggle_action_record->signal_activate().connect(sigc::mem_fun(*this, &Application::on_record));
+	toggle_action_record_current->signal_activate().connect(sigc::mem_fun(*this, &Application::on_record_current));
 
 	ui_manager = Gtk::UIManager::create();
 	ui_manager->insert_action_group(action_group);
@@ -163,11 +163,11 @@ Application::~Application()
 	g_debug("Application destructor complete");
 }
 
-void Application::on_record()
+void Application::on_record_current()
 {
 	Glib::RecMutex::Lock lock(mutex);
 
-	if (toggle_action_record->get_active())
+	if (toggle_action_record_current->get_active())
 	{
 		device_manager.check_frontend();
 		
@@ -177,12 +177,12 @@ void Application::on_record()
 		}
 		catch (const Glib::Exception& exception)
 		{
-			toggle_action_record->set_active(false);
+			toggle_action_record_current->set_active(false);
 			throw Exception(exception.what());
 		}
 		catch (...)
 		{
-			toggle_action_record->set_active(false);
+			toggle_action_record_current->set_active(false);
 			throw Exception(_("Failed to start recording"));
 		}
 	}

@@ -69,7 +69,7 @@ void split_string(std::vector<Glib::ustring>& parts, const Glib::ustring& text, 
 
 extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_fullscreen;
 extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;
-extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
+extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_record_current;
 extern Glib::RefPtr<Gtk::ToggleAction> toggle_action_visibility;
 
 extern Glib::RefPtr<Gtk::Action> action_about;

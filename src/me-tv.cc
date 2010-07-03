@@ -43,7 +43,7 @@ ConfigurationManager		configuration_manager;
 
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_fullscreen;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;
-Glib::RefPtr<Gtk::ToggleAction> toggle_action_record;
+Glib::RefPtr<Gtk::ToggleAction> toggle_action_record_current;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_visibility;
 
 Glib::RefPtr<Gtk::Action> action_about;

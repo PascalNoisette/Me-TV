@@ -28,7 +28,8 @@ class StreamManager
 {
 private:
 	FrontendThreadList frontend_threads;
-		
+	
+	void update_record_action();
 public:
 	void initialise();
 	~StreamManager();

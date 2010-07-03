@@ -59,7 +59,7 @@ private:
 	gboolean on_timeout();
 	void action_after(guint action);
 
-	void on_record();
+	void on_record_current();
 	void on_quit();
 	
 public:
