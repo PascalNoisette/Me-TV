@@ -11,6 +11,7 @@
 	* Channels/EPG events no longer save if not dirty
 	* Display stream is stopped when main window is closed
 	* Fix to only select first preferred language stream
+	* Added description to EPG tooltips
 
 2010-06-14  Michael Lamothe <michael.lamothe@gmail.com>
 
