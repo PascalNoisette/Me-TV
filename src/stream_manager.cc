@@ -253,6 +253,7 @@ void StreamManager::start_display(Channel& channel)
 			g_debug("Found a frontend already tuned to the correct transponder");
 			stop_display();
 			frontend_thread.start_display(channel);
+			update_record_action();
 			found = true;
 			break;
 		}
@@ -274,6 +275,7 @@ void StreamManager::start_display(Channel& channel)
 				g_debug("Selected idle frontend '%s' for display", frontend_thread.frontend.get_name().c_str());
 				stop_display();
 				frontend_thread.start_display(channel);
+				update_record_action();
 				found = true;
 				break;
 			}
@@ -296,6 +298,7 @@ void StreamManager::stop_display()
 		FrontendThread& frontend_thread = **i;
 		frontend_thread.stop_display();
 	}
+	update_record_action();
 }
 
 Channel& StreamManager::get_display_channel()
