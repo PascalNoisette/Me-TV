@@ -252,7 +252,7 @@
 			<applyto>/apps/me-tv/show_epg_time</applyto>
 			<owner>me-tv</owner>
 			<type>bool</type>
-			<default>true</default>
+			<default>false</default>
 			<locale name="C">
 				<short>Display the time span in the EPG buttons.</short>
 				<long>
@@ -280,7 +280,7 @@
 			<applyto>/apps/me-tv/show_epg_tooltips</applyto>
 			<owner>me-tv</owner>
 			<type>bool</type>
-			<default>false</default>
+			<default>true</default>
 			<locale name="C">
 				<short>Show a tool tip when hovering over an EPG event.</short>
 				<long>

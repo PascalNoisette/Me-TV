@@ -320,6 +320,21 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 					{
 						Glib::ustring tooltip_text = get_local_time_text(converted_start_time, "%A, %B %d\n%H:%M");
 						tooltip_text += get_local_time_text(converted_start_time + epg_event.duration, " - %H:%M");
+						Glib::ustring subtitle = trim_string(epg_event.get_subtitle());
+						Glib::ustring description = trim_string(epg_event.get_description());
+						if (!subtitle.empty())
+						{
+							tooltip_text += "\n" + subtitle;
+							if (!description.empty())
+							{
+								tooltip_text += " - ";
+							}
+						}
+						else if (!description.empty())
+						{
+							tooltip_text += "\n";
+						}
+						tooltip_text += description;
 						button.set_tooltip_text(tooltip_text);
 					}
 				}
