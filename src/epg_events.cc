@@ -268,7 +268,7 @@ EpgEventList EpgEvents::search(const Glib::ustring& text, gboolean search_descri
 	EpgEventList result;
 
 	guint now = get_local_time();
-	
+
 	Glib::RecMutex::Lock lock(mutex);
 	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
 	{

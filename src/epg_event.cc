@@ -57,7 +57,6 @@ EpgEventText EpgEvent::get_default_text() const
 {
 	EpgEventText result;
 	gboolean found = false;
-	Glib::ustring preferred_language = configuration_manager.get_string_value("preferred_language");
 	
 	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end() && !found; i++)
 	{

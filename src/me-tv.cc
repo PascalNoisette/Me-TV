@@ -33,6 +33,8 @@ bool			no_screensaver_inhibit	= false;
 Glib::ustring	devices;
 gint			read_timeout			= 5;
 
+Glib::ustring preferred_language;
+
 ChannelManager				channel_manager;
 ScheduledRecordingManager	scheduled_recording_manager;
 DeviceManager				device_manager;

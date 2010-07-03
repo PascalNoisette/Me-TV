@@ -44,7 +44,6 @@ private:
 	static Application*					current;
 	Glib::RefPtr<Gtk::Builder>			builder;
 	StatusIcon*							status_icon;
-	Glib::ustring						preferred_language;
 	Glib::StaticRecMutex				mutex;
 	guint								timeout_source;
 	Glib::ustring						application_dir;

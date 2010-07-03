@@ -38,6 +38,8 @@ extern bool				no_screensaver_inhibit;
 extern Glib::ustring	devices;
 extern gint				read_timeout;
 
+extern Glib::ustring	preferred_language;
+
 typedef std::vector<Glib::ustring> StringArray;
 typedef std::list<Glib::ustring> StringList;
 

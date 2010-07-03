@@ -381,6 +381,7 @@ void Application::run()
 	g_debug("Me TV database initialised");
 
 	configuration_manager.initialise();
+	preferred_language = configuration_manager.get_string_value("preferred_language");
 
 	status_icon = new StatusIcon();
 	MainWindow::create(builder);
@@ -583,7 +584,7 @@ void Application::check_auto_record()
 					catch(...)
 					{
 						on_error();
-					}
+					}			
 				}
 			}
 		}
