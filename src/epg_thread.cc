@@ -245,6 +245,11 @@ void EpgThread::run()
 									epg_event_text.title				= event_text.title;
 									epg_event_text.subtitle				= event_text.subtitle;
 									epg_event_text.description			= event_text.description;
+
+									if (epg_event_text.subtitle == "-")
+									{
+										epg_event_text.subtitle.clear();
+									}
 						
 									epg_event.texts.push_back(epg_event_text);
 								}

@@ -184,7 +184,14 @@ void EpgEvents::load(Data::Connection& connection, guint channel_id)
 			epg_event_text.title				= row_epg_event_text["title"].string_value;
 			epg_event_text.subtitle				= row_epg_event_text["subtitle"].string_value;
 			epg_event_text.description			= row_epg_event_text["description"].string_value;
-							
+		
+			// This is temporary
+			if (epg_event_text.subtitle == "-")
+			{
+				epg_event_text.subtitle.clear();
+				epg_event.save = true;
+			}
+	
 			epg_event.texts.push_back(epg_event_text);
 		}			
 		

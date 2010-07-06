@@ -1,3 +1,10 @@
+TBA  Michael Lamothe <michael.lamothe@gmail.com>
+
+	* 1.3.1
+	* Fixed issue with hyphens in man page
+	* Made window hide more responsive
+	* Treating a single hyphen in the EPG as blank
+
 2010-07-04  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.3.0
