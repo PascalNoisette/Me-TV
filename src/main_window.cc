@@ -462,8 +462,8 @@ void MainWindow::on_hide()
 {
 	save_geometry();
 
-	signal_stop_display();
 	Gtk::Window::on_hide();
+	signal_stop_display();
 	if (!configuration_manager.get_boolean_value("display_status_icon"))
 	{
 		Gtk::Main::quit();
