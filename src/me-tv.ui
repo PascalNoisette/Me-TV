@@ -19,7 +19,7 @@
         <property name="visible">True</property>
         <property name="spacing">2</property>
         <child>
-          <object class="GtkScrolledWindow" id="scrolled_window_program_information">
+          <object class="GtkScrolledWindow" id="scrolled_window_epg_event_information">
             <property name="height_request">200</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -27,12 +27,12 @@
             <property name="vscrollbar_policy">automatic</property>
             <property name="shadow_type">etched-out</property>
             <child>
-              <object class="GtkViewport" id="viewport_program_information">
+              <object class="GtkViewport" id="viewport_epg_event_information">
                 <property name="visible">True</property>
                 <property name="resize_mode">queue</property>
                 <property name="shadow_type">etched-in</property>
                 <child>
-                  <object class="GtkLabel" id="label_program_information">
+                  <object class="GtkLabel" id="label_epg_event_information">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
                     <property name="yalign">0</property>
@@ -50,7 +50,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox_program_dialog_scheduled">
+          <object class="GtkHBox" id="hbox_epg_event_dialog_scheduled">
             <property name="visible">True</property>
             <child>
               <object class="GtkImage" id="image1">
@@ -85,7 +85,20 @@
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="button_program_dialog_view_schedule">
+              <object class="GtkButton" id="button_epg_event_dialog_watch_now">
+                <property name="label" translatable="yes">Watch Now</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button_epg_event_dialog_view_schedule">
                 <property name="label" translatable="yes">View Schedule</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -98,7 +111,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_program_dialog_record">
+              <object class="GtkButton" id="button_epg_event_dialog_record">
                 <property name="label">gtk-media-record</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -112,7 +125,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_program_dialog_close">
+              <object class="GtkButton" id="button_epg_event_dialog_close">
                 <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -123,7 +136,7 @@
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="pack_type">end</property>
-                <property name="position">0</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>
@@ -136,9 +149,10 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="2">button_program_dialog_view_schedule</action-widget>
-      <action-widget response="1">button_program_dialog_record</action-widget>
-      <action-widget response="-7">button_program_dialog_close</action-widget>
+      <action-widget response="0">button_epg_event_dialog_watch_now</action-widget>
+      <action-widget response="2">button_epg_event_dialog_view_schedule</action-widget>
+      <action-widget response="1">button_epg_event_dialog_record</action-widget>
+      <action-widget response="-7">button_epg_event_dialog_close</action-widget>
     </action-widgets>
   </object>
   <object class="GtkAboutDialog" id="dialog_about">
