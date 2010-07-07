@@ -77,7 +77,10 @@ void EpgEventDialog::show_epg_event(EpgEvent& epg_event)
 
 	switch(result)
 	{
-	case 1:
+	case 0: // Close
+		break;
+			
+	case 1: // Record
 		{
 			ScheduledRecordingDialog& scheduled_recording_dialog = ScheduledRecordingDialog::create(builder);
 			scheduled_recording_dialog.run(MainWindow::create(builder), epg_event);
@@ -86,10 +89,14 @@ void EpgEventDialog::show_epg_event(EpgEvent& epg_event)
 		}
 		break;
 
-	case 2:
+	case 2: // Record
 		action_scheduled_recordings->activate();
 		break;
 			
+	case 3: // Watch Now
+		signal_start_display(epg_event.channel_id);
+		break;
+
 	default:
 		break;
 	}

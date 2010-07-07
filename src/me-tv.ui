@@ -149,7 +149,7 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="0">button_epg_event_dialog_watch_now</action-widget>
+      <action-widget response="3">button_epg_event_dialog_watch_now</action-widget>
       <action-widget response="2">button_epg_event_dialog_view_schedule</action-widget>
       <action-widget response="1">button_epg_event_dialog_record</action-widget>
       <action-widget response="-7">button_epg_event_dialog_close</action-widget>
