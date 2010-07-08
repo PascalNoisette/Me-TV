@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-06-18 21:15-0400\n"
-"PO-Revision-Date: 2010-06-19 02:04+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2010-07-07 20:27+0000\n"
+"Last-Translator: Ben Brunt <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-06-20 03:44+0000\n"
+"X-Launchpad-Export-Date: 2010-07-08 04:07+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -310,7 +310,7 @@ msgstr "<b>Device:</b>"
 
 #: ../src/me-tv.ui.h:5
 msgid "A channel named 'xxx' already exists."
-msgstr ""
+msgstr "A channel named 'xxx' already exists."
 
 #: ../src/me-tv.ui.h:6
 msgid ""
@@ -366,7 +366,7 @@ msgstr "Auto scan"
 
 #: ../src/me-tv.ui.h:15
 msgid "Cancel channel import"
-msgstr ""
+msgstr "Cancel channel import"
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel Frequency : "
@@ -495,7 +495,7 @@ msgstr "Italy"
 
 #: ../src/me-tv.ui.h:51
 msgid "Keep the existing channel"
-msgstr ""
+msgstr "Keep the existing channel"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - About"
@@ -503,7 +503,7 @@ msgstr "Me TV - About"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Channel conflict"
-msgstr ""
+msgstr "Me TV - Channel conflict"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - Channels Editor"
@@ -559,7 +559,7 @@ msgstr "Once"
 
 #: ../src/me-tv.ui.h:67
 msgid "Overwrite the existing channel"
-msgstr ""
+msgstr "Overwrite the existing channel"
 
 #: ../src/me-tv.ui.h:68
 msgid "Page:"
@@ -591,11 +591,11 @@ msgstr "Remove colon from recording filenames"
 
 #: ../src/me-tv.ui.h:75
 msgid "Rename the new channel to a unique name"
-msgstr ""
+msgstr "Rename the new channel to a unique name"
 
 #: ../src/me-tv.ui.h:76
 msgid "Repeat this action for all channel conflicts"
-msgstr ""
+msgstr "Repeat this action for all channel conflicts"
 
 #: ../src/me-tv.ui.h:77
 msgid "SI"
@@ -842,7 +842,7 @@ msgstr "Frequency (Hz)"
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
-msgstr ""
+msgstr "A channel named <b>'%1'</b> already exists."
 
 #: ../src/channels_dialog.cc:233
 msgid "No channel selected"
@@ -1146,12 +1146,16 @@ msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
+"Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
+"Screensaver."
 
 #: ../src/main.cc:111
 msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 msgstr ""
+"Only use the specified frontend devices (e.g. --"
+"devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 
 #: ../src/main.cc:115
 msgid ""
@@ -1223,7 +1227,7 @@ msgstr "Service Name"
 
 #: ../src/scan_dialog.cc:139
 msgid "Signal Strength"
-msgstr ""
+msgstr "Signal Strength"
 
 #: ../src/scan_dialog.cc:160
 msgid "Canada"
