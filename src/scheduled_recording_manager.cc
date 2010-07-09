@@ -158,6 +158,50 @@ void ScheduledRecordingManager::set_scheduled_recording(EpgEvent& epg_event)
 	set_scheduled_recording(scheduled_recording);
 }
 
+gboolean ScheduledRecordingManager::is_device_available(const Glib::ustring& device, const ScheduledRecording& scheduled_recording)
+{
+	Channel& channel = channel_manager.get_channel_by_id(scheduled_recording.channel_id);
+
+	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
+	{
+		ScheduledRecording& current = *i;
+
+		Channel& current_channel = channel_manager.get_channel_by_id(current.channel_id);
+
+		if (
+		    current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
+			channel.transponder != current_channel.transponder &&
+		    scheduled_recording.overlaps(current) &&
+		    device == current.device
+		    )
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void ScheduledRecordingManager::select_device(ScheduledRecording& scheduled_recording)
+{
+	g_debug("Looking for an available device for scheduled recording");
+	
+	Channel& channel = channel_manager.get_channel_by_id(scheduled_recording.channel_id);
+
+	FrontendList& frontends = device_manager.get_frontends();
+	for (FrontendList::iterator j = frontends.begin(); j != frontends.end(); j++)
+	{
+		Glib::ustring device = (*j)->get_path();
+
+		if (is_device_available(device, scheduled_recording))
+		{
+			g_debug("Found available frontend '%s'", device.c_str());
+			scheduled_recording.device = device;
+			return;
+		}
+	}
+}
+
 void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& scheduled_recording)
 {
 	Glib::RecMutex::Lock lock(mutex);
@@ -172,42 +216,12 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 	if (scheduled_recording.device.empty())
 	{
-		g_debug("Looking for an available frontend for scheduled recording");
-		FrontendList& frontends = device_manager.get_frontends();
-		for (FrontendList::iterator j = frontends.begin(); j != frontends.end(); j++)
+		select_device(scheduled_recording);
+
+		if (scheduled_recording.device.empty())
 		{
-			Glib::ustring device = (*j)->get_path();
-			gboolean device_conflict = false;
-
-			for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
-			{
-				ScheduledRecording& current = *i;
-
-				Channel& current_channel = channel_manager.get_channel_by_id(current.channel_id);
-
-				// Check for conflict
-				if (current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
-					channel.transponder != current_channel.transponder &&
-					scheduled_recording.overlaps(current) &&
-					device == current.device)
-				{
-					g_debug("'%s' is busy at that time", device.c_str());
-					device_conflict = true;
-				}
-			}
-
-			if (!device_conflict)
-			{
-				g_debug("Found available frontend '%s'", device.c_str());
-				scheduled_recording.device = device;
-				break;
-			}
+			throw Exception(_("Failed to set scheduled recording: There are no devices available at that time"));
 		}
-	}
-
-	if (scheduled_recording.device.empty())
-	{
-		throw Exception(_("Failed to set scheduled recording: There are no devices available at that time"));
 	}
 
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)

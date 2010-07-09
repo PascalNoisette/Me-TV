@@ -97,9 +97,9 @@ void StatusIcon::update()
 			ChannelStream& stream = **j;
 			switch (stream.type)
 			{
-			case CHANNEL_STREAM_TYPE_DISPLAY: title += "Now showing: "; break;
-			case CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING: title += "Recording (Scheduled): "; break;
-			case CHANNEL_STREAM_TYPE_RECORDING: title += "Recording: "; break;
+			case CHANNEL_STREAM_TYPE_DISPLAY:				title += "Now showing: "; break;
+			case CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING:	title += "Recording (Scheduled): "; break;
+			case CHANNEL_STREAM_TYPE_RECORDING:				title += "Recording: "; break;
 			default: break;
 			}
 

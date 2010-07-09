@@ -32,6 +32,9 @@ class ScheduledRecordingManager
 private:
 	Glib::StaticRecMutex	mutex;
 
+	gboolean is_device_available(const Glib::ustring& device, const ScheduledRecording& scheduled_recording);
+	void select_device(ScheduledRecording& scheduled_recording);
+
 public:
 	void initialise();
 		
