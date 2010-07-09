@@ -426,7 +426,7 @@ found in /usr/share/common-licenses/GPL file.</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <object class="GtkTable" id="table1">
+              <object class="GtkTable" id="table_advanced">
                 <property name="visible">True</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
@@ -552,24 +552,6 @@ found in /usr/share/common-licenses/GPL file.</property>
       <!-- column-name Code -->
       <column type="gchararray"/>
     </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">All</col>
-        <col id="1" translatable="yes"></col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Australia</col>
-        <col id="1" translatable="yes">AU</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Italy</col>
-        <col id="1" translatable="yes">IT</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Slovenia</col>
-        <col id="1" translatable="yes">SI</col>
-      </row>
-    </data>
   </object>
   <object class="GtkListStore" id="list_store_recurring">
     <columns>

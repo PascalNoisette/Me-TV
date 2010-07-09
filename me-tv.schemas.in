@@ -296,7 +296,7 @@
 			<type>string</type>
 			<default></default>
 			<locale name="C">
-				<short>Preferred language to us when selecting streams.</short>
+				<short>Preferred language to use when selecting streams.</short>
 				<long>
 					If more than one stream is available in a different language then Me TV will use the preffered one.
 				</long>

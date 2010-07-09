@@ -158,6 +158,7 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	combo_box_auto_scan_range->clear_items();
 	combo_box_auto_scan_range->append_text(_("Australia"),		"AU");
 	combo_box_auto_scan_range->append_text(_("Canada"),			"CA");
+	combo_box_auto_scan_range->append_text(_("Czech Republic"),		"CZ");
 	combo_box_auto_scan_range->append_text(_("Finland"),		"FI");
 	combo_box_auto_scan_range->append_text(_("France"),			"FR");
 	combo_box_auto_scan_range->append_text(_("Germany"),		"DE");
@@ -736,6 +737,23 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, const Glib::ustrin
 			
 			add_scan_range(177500000, 226500000, 7000000, frontend_parameters);
 			add_scan_range(529500000, 816500000, 7000000, frontend_parameters);
+		}
+		else if (range == "CZ")
+		/* see http://www.digitalnitelevize.cz/informace/dvb-t/dvb-t-v-ceske-republice.html */
+		{
+			/* broadcast networks 1, 2, 3 and regional */
+			frontend_parameters.u.ofdm.bandwidth				= BANDWIDTH_8_MHZ;
+			frontend_parameters.u.ofdm.code_rate_HP				= FEC_2_3;
+			frontend_parameters.u.ofdm.code_rate_LP				= FEC_2_3;
+			frontend_parameters.u.ofdm.constellation			= QAM_64;
+			frontend_parameters.u.ofdm.transmission_mode		= TRANSMISSION_MODE_8K;
+			frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_1_4;
+			add_scan_range(474000000, 842000000, 8000000, frontend_parameters);
+
+			/* broadcast network 4 (testing, MPEG4, possible changes) */
+			/* note: EPG encoding: ISO 8859-2 */
+			frontend_parameters.u.ofdm.guard_interval			= GUARD_INTERVAL_1_8;
+			add_scan_range(802000000, 826000000, 8000000, frontend_parameters);
 		}
 		else if (range == "DE" || range == "IT")
 		{

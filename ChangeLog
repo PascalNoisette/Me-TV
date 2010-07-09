@@ -6,6 +6,8 @@ TBA  Michael Lamothe <michael.lamothe@gmail.com>
 	* Treating a single hyphen in the EPG subtitle as blank
 	* Added Watch Now button to EPG event dialog
 	* Status icon now shows SR description rather than channel description for SRs
+	* Added CZ scan range (patch from Luboš Staněk)
+	* Fixed issues with non-translatable strings in UI file (patch from Luboš Staněk)
 
 2010-07-04  Michael Lamothe <michael.lamothe@gmail.com>
 
