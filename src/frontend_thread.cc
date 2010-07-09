@@ -271,7 +271,15 @@ void FrontendThread::start_display(Channel& channel)
 		throw SystemException(Glib::ustring::compose(_("Failed to open FIFO for reading '%1'"), fifo_path));
 	}
 
-	ChannelStream* channel_stream = new ChannelStream(CHANNEL_STREAM_TYPE_DISPLAY, channel, fifo_path);
+	Glib::ustring description;
+
+	EpgEvent epg_event;
+	if (channel.epg_events.get_current(epg_event))
+	{
+		description = epg_event.get_title();
+	}
+
+	ChannelStream* channel_stream = new ChannelStream(CHANNEL_STREAM_TYPE_DISPLAY, channel, fifo_path, description);
 	close(fd);
 	setup_dvb(*channel_stream);
 	streams.push_back(channel_stream);
@@ -308,15 +316,6 @@ Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& des
 	Glib::ustring start_time = get_local_time_text("%c");
 	Glib::ustring filename;
 	Glib::ustring title = description;
-	
-	if (title.empty())
-	{
-		EpgEvent epg_event;
-		if (channel.epg_events.get_current(epg_event))
-		{
-			title = epg_event.get_title();
-		}
-	}
 	
 	if (title.empty())
 	{
@@ -436,7 +435,7 @@ void FrontendThread::start_recording(Channel& channel, const Glib::ustring& desc
 
 			ChannelStream* channel_stream = new ChannelStream(
 				scheduled ? CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING : CHANNEL_STREAM_TYPE_RECORDING,
-				channel, make_recording_filename(channel, scheduled ? description : ""));
+				channel, make_recording_filename(channel, description), description);
 			setup_dvb(*channel_stream);
 			streams.push_back(channel_stream);
 		}

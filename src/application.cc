@@ -467,8 +467,7 @@ void Application::check_scheduled_recordings()
 			{
 				ChannelStream& channel_stream = **j;
 				guint scheduled_recording_id = scheduled_recording_manager.is_recording(channel_stream.channel);
-				if (
-				    channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
+				if (channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
 					(signed)scheduled_recording_id >= 0)
 				{
 					stream_manager.stop_recording(channel_stream.channel);

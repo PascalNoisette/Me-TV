@@ -41,7 +41,7 @@ private:
 		
 public:
 	ChannelStream(ChannelStreamType type, Channel& channel, const Glib::ustring& filename,
-		const Glib::ustring& description = "");
+		const Glib::ustring& description);
 	~ChannelStream();
 
 	Glib::RefPtr<Glib::IOChannel>	output_channel;
