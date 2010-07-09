@@ -103,7 +103,7 @@ void StatusIcon::update()
 			default: break;
 			}
 
-			title += stream.channel.get_text();
+			title += stream.description;
 		}
 	}
 

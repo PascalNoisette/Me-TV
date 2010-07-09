@@ -5,6 +5,7 @@ TBA  Michael Lamothe <michael.lamothe@gmail.com>
 	* Made window hide more responsive
 	* Treating a single hyphen in the EPG subtitle as blank
 	* Added Watch Now button to EPG event dialog
+	* Status icon now shows SR description rather than channel description for SRs
 
 2010-07-04  Michael Lamothe <michael.lamothe@gmail.com>
 
