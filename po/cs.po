@@ -9,15 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-18 21:15-0400\n"
-"PO-Revision-Date: 2010-07-08 08:42+0000\n"
-"Last-Translator: David Štancl <Unknown>\n"
+"POT-Creation-Date: 2010-07-10 13:57+1000\n"
+"PO-Revision-Date: 2010-07-09 04:59+0000\n"
+"Last-Translator: Michael Lamothe <Unknown>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-07-09 04:14+0000\n"
+"X-Launchpad-Export-Date: 2010-07-10 04:15+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -39,8 +39,8 @@ msgid "Displays the date/time header in the EPG"
 msgstr "V EPG se zobrazí hlavička s datem a časem"
 
 #: ../me-tv.schemas.in.h:5
-msgid "Drop out of fullscreen mode when showing dialogs"
-msgstr "Při zobrazování dialogů odejít z režimu celé obrazovky"
+msgid "EPG event titles to auto record"
+msgstr ""
 
 #: ../me-tv.schemas.in.h:6
 msgid ""
@@ -105,62 +105,59 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:14
 msgid ""
+"Me TV will schedule programs that have titles that contain these words."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:15
+msgid ""
 "Most digital video is transmitted in an interlaced format which should be "
 "corrected before viewing. Options are \"none\", \"standard\", \"tvtime\""
 msgstr ""
 "Většina digitálního videa je přenášena v prokládaném režimu, který musí být "
 "před přehráváním upraven. Možnosti jsou \"none\", \"standard\", \"tvtime\"."
 
-#: ../me-tv.schemas.in.h:15
+#: ../me-tv.schemas.in.h:16
 msgid ""
 "Most of the time the text encoding can be automatically determined but "
 "sometimes it needs a hint such as iso6937."
 msgstr ""
 "Většina kódování je rozpoznána automaticky, ale některé (např. iso6937) ne."
 
-#: ../me-tv.schemas.in.h:16
-msgid "Preferred language to us when selecting streams."
-msgstr "Preferovaný jazyk pro výběr kanálů."
-
 #: ../me-tv.schemas.in.h:17
+msgid "Preferred language to use when selecting streams."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:18
 msgid "Recent EPG event searches"
 msgstr "Poslední hledání v EPG"
 
-#: ../me-tv.schemas.in.h:18
+#: ../me-tv.schemas.in.h:19
 msgid "Remove the colon ':' from the recording filename"
 msgstr "Odstranit dvojtečku ':' z názvu nahrávaného souboru"
 
-#: ../me-tv.schemas.in.h:19
+#: ../me-tv.schemas.in.h:20
 msgid "Sets the \"Always On Top\" attribute on the main window."
 msgstr "Nastaví atribut hlavního okna \"Vždy na vrchu\"."
 
-#: ../me-tv.schemas.in.h:20
+#: ../me-tv.schemas.in.h:21
 msgid "Sets the audio driver for libvlc to use."
 msgstr "Nastaví ovladač zvuku pro libvlc"
 
-#: ../me-tv.schemas.in.h:21
+#: ../me-tv.schemas.in.h:22
 msgid "Sets the video driver for the player to use."
 msgstr "Nastaví ovladač videa"
 
-#: ../me-tv.schemas.in.h:22
+#: ../me-tv.schemas.in.h:23
 msgid "Show a tool tip when hovering over an EPG event."
 msgstr "Při pohybu nad EPG zobrazit popisek."
 
-#: ../me-tv.schemas.in.h:23
+#: ../me-tv.schemas.in.h:24
 msgid ""
 "Some file systems do not support a colon in a filename (e.g. FAT32). This "
 "option tells Me TV to remove it from the recording filename."
 msgstr ""
 "Některé souborové systémy (např. FAT32) nepodporují dvojtečku v názvech "
 "souborů. Při zaškrtnutí bude dvojtečka z názvu souboru odstraněna."
-
-#: ../me-tv.schemas.in.h:24
-msgid ""
-"Some window managers don't like showing dialogs such as the EPG dialog over "
-"a fullscreen, \"Always On Top\" window such as the main window. This option "
-"tells Me TV to come out of fullscreen mode while those dialogs are shown and "
-"return to fullscreen mode when the dialog is closed."
-msgstr ""
 
 #: ../me-tv.schemas.in.h:25
 msgid "Tells Me TV to display an icon the notification area."
@@ -310,22 +307,14 @@ msgstr ""
 "většinou používá program <i>scan</i>, který se spouští z příkazové řádky."
 
 #: ../src/me-tv.ui.h:7
-msgid "AU"
-msgstr "AU"
-
-#: ../src/me-tv.ui.h:8
 msgid "Advanced"
 msgstr "Pokročilé"
 
-#: ../src/me-tv.ui.h:9
+#: ../src/me-tv.ui.h:8
 msgid "After:"
 msgstr "Po:"
 
-#: ../src/me-tv.ui.h:10
-msgid "All"
-msgstr "Vše"
-
-#: ../src/me-tv.ui.h:11
+#: ../src/me-tv.ui.h:9
 msgid ""
 "An initial scan file is used to seed the tuner with some initial parameters "
 "to help it find DVB services.  Many popular initial scan files are available "
@@ -333,96 +322,94 @@ msgid ""
 "distributions.  Look for <i>dvb-apps</i> in your package management system."
 msgstr ""
 
-#: ../src/me-tv.ui.h:12
+#: ../src/me-tv.ui.h:10
 msgid "Audio driver:"
 msgstr "Zvukový ovladač:"
 
-#: ../src/me-tv.ui.h:13 ../src/scan_dialog.cc:159
-msgid "Australia"
-msgstr "Austrálie"
-
-#: ../src/me-tv.ui.h:14
+#: ../src/me-tv.ui.h:11
 msgid "Auto scan"
 msgstr "Automatické hledání"
 
-#: ../src/me-tv.ui.h:15
+#: ../src/me-tv.ui.h:12
 msgid "Cancel channel import"
 msgstr "Import kanálů stornován"
 
-#: ../src/me-tv.ui.h:16
+#: ../src/me-tv.ui.h:13
 msgid "Channel Frequency : "
 msgstr "Frekvence kanálu: "
 
-#: ../src/me-tv.ui.h:17
+#: ../src/me-tv.ui.h:14
 msgid "Channel Name : "
 msgstr "Název kanálu: "
 
-#: ../src/me-tv.ui.h:18
+#: ../src/me-tv.ui.h:15
 msgid "Channel:"
 msgstr "Kanál:"
 
-#: ../src/me-tv.ui.h:19
+#: ../src/me-tv.ui.h:16
 msgid "Close Me TV"
 msgstr "Zavřít Me TV"
 
-#: ../src/me-tv.ui.h:20
+#: ../src/me-tv.ui.h:17
 msgid "Copyright &#xA9; Michael Lamothe"
 msgstr "Copyright &#xA9; Michael Lamothe"
 
-#: ../src/me-tv.ui.h:21
+#: ../src/me-tv.ui.h:18
 msgid "Deinterlace Type:"
 msgstr "Způsob odstranění prokládání:"
 
-#: ../src/me-tv.ui.h:22
+#: ../src/me-tv.ui.h:19
 msgid "Description:"
 msgstr "Popis:"
 
-#: ../src/me-tv.ui.h:23
+#: ../src/me-tv.ui.h:20
 msgid "Device Text"
 msgstr "Text zařízení"
 
-#: ../src/me-tv.ui.h:24
+#: ../src/me-tv.ui.h:21
 msgid "Do Nothing"
 msgstr "Nedělat nic"
 
-#: ../src/me-tv.ui.h:25
+#: ../src/me-tv.ui.h:22
 msgid "Drag and drop the channels to reorder them."
 msgstr "Chytněte a přetáhněte kanály, které chcete přeskupit."
 
-#: ../src/me-tv.ui.h:26
+#: ../src/me-tv.ui.h:23
 msgid "Duration:"
 msgstr "Doba trvání:"
 
-#: ../src/me-tv.ui.h:27
+#: ../src/me-tv.ui.h:24
 msgid "EPG event information"
 msgstr "Informace o události z EPG"
 
-#: ../src/me-tv.ui.h:28
+#: ../src/me-tv.ui.h:25
+msgid ""
+"EPG event titles that contain the following entries will be automatically "
+"recorded."
+msgstr ""
+
+#: ../src/me-tv.ui.h:26
 msgid "EPG page size: "
 msgstr "Velikost stránky EPG: "
 
-#: ../src/me-tv.ui.h:29
+#: ../src/me-tv.ui.h:27
 msgid "EPG span: "
 msgstr "Rozsah EPG: "
 
-#: ../src/me-tv.ui.h:30
+#: ../src/me-tv.ui.h:28
 msgid "Every day"
 msgstr "Každý den"
 
-#: ../src/me-tv.ui.h:31
+#: ../src/me-tv.ui.h:29
 msgid "Every week"
 msgstr "Každý týden"
 
-#: ../src/me-tv.ui.h:32
+#: ../src/me-tv.ui.h:30
 msgid "Every weekday"
 msgstr "Každý pracovní den"
 
-#: ../src/me-tv.ui.h:33
-msgid "Fullscreen workaround"
-msgstr "Řešení plné obrazovky"
-
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
-#: ../src/me-tv.ui.h:35
+#: ../src/me-tv.ui.h:32
 msgid ""
 "GNU General Public License:\n"
 "\n"
@@ -484,147 +471,143 @@ msgstr ""
 "be\n"
 "found in /usr/share/common-licenses/GPL file."
 
-#: ../src/me-tv.ui.h:48
-msgid "IT"
-msgstr "IT"
-
-#: ../src/me-tv.ui.h:49
+#: ../src/me-tv.ui.h:45
 msgid "Import a channels.conf"
 msgstr "Importovat soubor channels.conf"
 
-#: ../src/me-tv.ui.h:50 ../src/scan_dialog.cc:164
-msgid "Italy"
-msgstr "Itálie"
-
-#: ../src/me-tv.ui.h:51
+#: ../src/me-tv.ui.h:46
 msgid "Keep the existing channel"
 msgstr "Zachovat existující kanál"
 
-#: ../src/me-tv.ui.h:52
+#: ../src/me-tv.ui.h:47
 msgid "Me TV - About"
 msgstr "O aplikaci Me TV"
 
-#: ../src/me-tv.ui.h:53
+#: ../src/me-tv.ui.h:48
+msgid "Me TV - Auto Record"
+msgstr ""
+
+#: ../src/me-tv.ui.h:49
 msgid "Me TV - Channel conflict"
 msgstr "Me TV - konflikt kanálů"
 
-#: ../src/me-tv.ui.h:54
+#: ../src/me-tv.ui.h:50
 msgid "Me TV - Channels Editor"
 msgstr "Me TV - Konfigurace kanálů"
 
-#: ../src/me-tv.ui.h:55
+#: ../src/me-tv.ui.h:51
 msgid "Me TV - EPG Event Search"
 msgstr "Me TV - hledání v EPG"
 
-#: ../src/me-tv.ui.h:56
+#: ../src/me-tv.ui.h:52
 msgid "Me TV - Edit Channel"
 msgstr "Me TV - úprava kanálu"
 
-#: ../src/me-tv.ui.h:57
+#: ../src/me-tv.ui.h:53
+msgid "Me TV - It's TV for me computer"
+msgstr "Me TV - televize pro můj počítač"
+
+#: ../src/me-tv.ui.h:54
 msgid "Me TV - Main Window"
 msgstr "Me TV - Hlavní okno"
 
-#: ../src/me-tv.ui.h:58
+#: ../src/me-tv.ui.h:55
 msgid "Me TV - Preferences Window"
 msgstr "Me TV - Okno možností"
 
-#: ../src/me-tv.ui.h:59
+#: ../src/me-tv.ui.h:56
 msgid "Me TV - Program Details"
 msgstr "Me TV - Podrobnosti programu"
 
-#: ../src/me-tv.ui.h:60
+#: ../src/me-tv.ui.h:57
 msgid "Me TV - Scan Wizard"
 msgstr "Me TV - Průvodce laděním"
 
-#: ../src/me-tv.ui.h:61
+#: ../src/me-tv.ui.h:58
 msgid "Me TV - Scheduled Recording"
 msgstr "Me TV - Plánovaný záznam"
 
-#: ../src/me-tv.ui.h:62
+#: ../src/me-tv.ui.h:59
 msgid "Me TV - Scheduled Recordings"
 msgstr "Me TV - Plánování záznamů"
 
-#: ../src/me-tv.ui.h:63
+#: ../src/me-tv.ui.h:60
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
 msgstr "Me TV je přehrávač digitálního televizního vysílání (DVB) pro GNOME"
 
-#: ../src/me-tv.ui.h:64
+#: ../src/me-tv.ui.h:61
 msgid "Me TV project website"
 msgstr "Stránky projektu Me TV"
 
-#: ../src/me-tv.ui.h:65
+#: ../src/me-tv.ui.h:62
 msgid "Now"
 msgstr "Nyní"
 
-#: ../src/me-tv.ui.h:66
+#: ../src/me-tv.ui.h:63
 msgid "Once"
 msgstr "Jednou"
 
-#: ../src/me-tv.ui.h:67
+#: ../src/me-tv.ui.h:64
 msgid "Overwrite the existing channel"
 msgstr "Přepsat existující kanál"
 
-#: ../src/me-tv.ui.h:68
+#: ../src/me-tv.ui.h:65
 msgid "Page:"
 msgstr "Stránka:"
 
-#: ../src/me-tv.ui.h:69
+#: ../src/me-tv.ui.h:66
 msgid "Preferred language:"
 msgstr "Preferovaný jazyk:"
 
-#: ../src/me-tv.ui.h:70
+#: ../src/me-tv.ui.h:67
 msgid "Record extra after: "
 msgstr "Nahrát navíc po: "
 
-#: ../src/me-tv.ui.h:71
+#: ../src/me-tv.ui.h:68
 msgid "Record extra before: "
 msgstr "Nahrát navíc před: "
 
-#: ../src/me-tv.ui.h:72
+#: ../src/me-tv.ui.h:69
 msgid "Recording directory: "
 msgstr "Adresář pro nahrávání: "
 
-#: ../src/me-tv.ui.h:73
+#: ../src/me-tv.ui.h:70
 msgid "Recurring:"
 msgstr "Opakování:"
 
-#: ../src/me-tv.ui.h:74
+#: ../src/me-tv.ui.h:71
 msgid "Remove colon from recording filenames"
 msgstr "Odstranit dvojtečku z názvu souborů"
 
-#: ../src/me-tv.ui.h:75
+#: ../src/me-tv.ui.h:72
 msgid "Rename the new channel to a unique name"
 msgstr ""
 
-#: ../src/me-tv.ui.h:76
+#: ../src/me-tv.ui.h:73
 msgid "Repeat this action for all channel conflicts"
 msgstr "Opakovat tuto akci pro všechny konfliktní kanály"
 
-#: ../src/me-tv.ui.h:77
-msgid "SI"
-msgstr "SI"
-
-#: ../src/me-tv.ui.h:78
+#: ../src/me-tv.ui.h:74
 msgid "Scan Progress"
 msgstr "Průběh ladění"
 
-#: ../src/me-tv.ui.h:79
+#: ../src/me-tv.ui.h:75
 msgid "Scan using an initial scan file"
 msgstr "Skenovat za použití souboru"
 
-#: ../src/me-tv.ui.h:80
+#: ../src/me-tv.ui.h:76
 msgid "Scanning/Importing"
 msgstr "Ladím/Importuji"
 
-#: ../src/me-tv.ui.h:81
+#: ../src/me-tv.ui.h:77
 msgid "Search description"
 msgstr "Hledat v popisech"
 
-#: ../src/me-tv.ui.h:82
+#: ../src/me-tv.ui.h:78
 msgid "Search:"
 msgstr "Hledat:"
 
-#: ../src/me-tv.ui.h:83
+#: ../src/me-tv.ui.h:79
 msgid "See https://launchpad.net/me-tv"
 msgstr ""
 "Aktivní překladatelé:\n"
@@ -633,85 +616,85 @@ msgstr ""
 "Přispěli:\n"
 "Jiří Andrys <Unknown>"
 
-#: ../src/me-tv.ui.h:84
+#: ../src/me-tv.ui.h:80
 msgid "Select A Recording Directory"
 msgstr "Vyberte adresář pro nahrávání"
 
-#: ../src/me-tv.ui.h:85
+#: ../src/me-tv.ui.h:81
 msgid "Select Scan File"
 msgstr "Zvolte ladící soubor"
 
-#: ../src/me-tv.ui.h:86
+#: ../src/me-tv.ui.h:82
 msgid "Select a channels.conf file"
 msgstr "Vyberte soubor channels.conf"
 
-#: ../src/me-tv.ui.h:87
+#: ../src/me-tv.ui.h:83
 msgid "Select a file"
 msgstr "Zvolte soubor"
 
-#: ../src/me-tv.ui.h:88
+#: ../src/me-tv.ui.h:84
 msgid "Set \"Always on Top\" at startup"
 msgstr "Při spuštění nastavit \"Vždy navrchu\""
 
-#: ../src/me-tv.ui.h:89
+#: ../src/me-tv.ui.h:85
 msgid "Show EPG header"
 msgstr "Zobrazit záhlaví EPG"
 
-#: ../src/me-tv.ui.h:90
+#: ../src/me-tv.ui.h:86
 msgid "Show a status icon in the notification area"
 msgstr "Zobrazit stavovou ikonu v oznamovací oblasti"
 
-#: ../src/me-tv.ui.h:91
+#: ../src/me-tv.ui.h:87
 msgid "Show channel number"
 msgstr "Zobrazit číslo kanálu"
 
-#: ../src/me-tv.ui.h:92
+#: ../src/me-tv.ui.h:88
 msgid "Show time on EPG event buttons"
 msgstr "Zobrazit čas na tlačítkách událostí EPG"
 
-#: ../src/me-tv.ui.h:93
+#: ../src/me-tv.ui.h:89
 msgid "Show tooltips for EPG event buttons"
 msgstr "Zobrazovat bubliny pro tlačítka událostí EPG"
 
-#: ../src/me-tv.ui.h:94
+#: ../src/me-tv.ui.h:90
 msgid "Shutdown"
 msgstr "Vypnout"
 
-#: ../src/me-tv.ui.h:95 ../src/scan_dialog.cc:168
-msgid "Slovenia"
-msgstr "Slovinsko"
-
-#: ../src/me-tv.ui.h:96
+#: ../src/me-tv.ui.h:91
 msgid "Start Date:"
 msgstr "Datum začátku:"
 
-#: ../src/me-tv.ui.h:97
+#: ../src/me-tv.ui.h:92
 msgid "Start Time:"
 msgstr "Čas začátku:"
 
-#: ../src/me-tv.ui.h:98
+#: ../src/me-tv.ui.h:93
 msgid "Text encoding:"
 msgstr "Kódování textu:"
 
-#: ../src/me-tv.ui.h:99
+#: ../src/me-tv.ui.h:94
 msgid ""
 "This option will only work if your DVB setup supports auto scanning.  "
 "Currently, this feature is only supported on DVB-T and ATSC devices."
 msgstr ""
 
-#: ../src/me-tv.ui.h:100
+#: ../src/me-tv.ui.h:95
 msgid "This program is scheduled for recording."
 msgstr "V tomto programu je naplánováno nahrávání."
 
-#: ../src/me-tv.ui.h:101
+#: ../src/me-tv.ui.h:96
 msgid "Video driver:"
 msgstr "Video ovladač:"
 
-#: ../src/me-tv.ui.h:102
+#: ../src/me-tv.ui.h:97
 msgid "View Schedule"
 msgstr "Zobrazit plánování"
 
-#: ../src/me-tv.ui.h:103
+#: ../src/me-tv.ui.h:98
+msgid "Watch Now"
+msgstr ""
+
+#: ../src/me-tv.ui.h:99
 msgid ""
 "Your Me TV database is too old to use this version of Me TV.  Would you like "
 "to clear the Me TV database?  All of your channels, EPG events and scheduled "
@@ -727,15 +710,15 @@ msgstr ""
 "Jestliže máte novější verzi Me TV, budete to muset udělat.\n"
 "<i>Me TV databáze se nachází v ~/.local/share/me-tv.db.</i>"
 
-#: ../src/me-tv.ui.h:108
+#: ../src/me-tv.ui.h:104
 msgid "_Delete my old Me TV data!"
 msgstr "_Smaž moje stará Me TV data!"
 
-#: ../src/me-tv.ui.h:109
+#: ../src/me-tv.ui.h:105
 msgid "channels"
 msgstr "kanály"
 
-#: ../src/application.cc:42
+#: ../src/application.cc:43
 msgid "Application has already been initialised"
 msgstr "Aplikace již byla inicializována"
 
@@ -743,99 +726,104 @@ msgstr "Aplikace již byla inicializována"
 msgid "The SQLite version is not thread-safe"
 msgstr "Verze SQLite není \"thread-safe\""
 
-#: ../src/application.cc:114
+#: ../src/application.cc:112
 msgid "_File"
 msgstr "_Soubor"
 
-#: ../src/application.cc:115
+#: ../src/application.cc:113
 msgid "_View"
 msgstr "_Zobrazit"
 
-#: ../src/application.cc:116
+#: ../src/application.cc:114
 msgid "_Video"
 msgstr "_Video"
 
-#: ../src/application.cc:117
+#: ../src/application.cc:115
 msgid "_Audio"
 msgstr "_Zvuk"
 
-#: ../src/application.cc:118
+#: ../src/application.cc:116
 msgid "_Help"
 msgstr "_Nápověda"
 
-#: ../src/application.cc:120
+#: ../src/application.cc:118
 msgid "Subtitles"
 msgstr "Titulky"
 
-#: ../src/application.cc:121
+#: ../src/application.cc:119
 msgid "_Streams"
 msgstr "_Proudy"
 
-#: ../src/application.cc:122
+#: ../src/application.cc:120
 msgid "_Channels"
 msgstr "_Kanály"
 
-#: ../src/application.cc:125
+#: ../src/application.cc:123
 msgid "_Both"
 msgstr "_Oba"
 
-#: ../src/application.cc:126
+#: ../src/application.cc:124
 msgid "_Left"
 msgstr "_Levý"
 
-#: ../src/application.cc:127
+#: ../src/application.cc:125
 msgid "_Right"
 msgstr "_Pravý"
 
-#: ../src/application.cc:139
+#: ../src/application.cc:137
 msgid "Failed to get DBus session"
 msgstr "Selhalo záskání relace DBus"
 
-#: ../src/application.cc:192
+#: ../src/application.cc:186
 msgid "Failed to start recording"
 msgstr "Nepodařilo se začít nahrávání"
 
-#: ../src/application.cc:483
+#: ../src/application.cc:378
 msgid "Failed to initialise database"
 msgstr "Nepodařilo se inicializovat databázi"
 
-#: ../src/application.cc:542
+#: ../src/application.cc:437
 msgid "Application has not been initialised"
 msgstr "Aplikace nebyla inicializována"
 
-#: ../src/application.cc:580
-#, c-format
-msgid "Changing channel to '%s'"
-msgstr "Přepínám na kanál na '%s'"
+#: ../src/application.cc:494
+msgid "DBus connection not available"
+msgstr ""
 
-#: ../src/application.cc:599
-#, c-format
-msgid "Channel changed to %s"
-msgstr "Kanál přepnut na %s"
+#: ../src/application.cc:505
+msgid "Failed to get org.gnome.SessionManager proxy"
+msgstr ""
 
-#: ../src/application.cc:606
-msgid "Main window has not been created"
-msgstr "Hlavní okno nebylo vytvořeno"
+#: ../src/application.cc:511
+msgid "Failed to call Shutdown method"
+msgstr ""
 
-#: ../src/channel_manager.cc:110 ../src/channel_manager.cc:183
+#: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
+msgid "Title"
+msgstr "Název"
+
+#: ../src/auto_record_dialog.cc:93
+msgid "No row selected"
+msgstr ""
+
+#: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
 msgid "Unknown frontend type"
 msgstr "Neznámý typ rozhraní"
 
-#: ../src/channel_manager.cc:253
+#: ../src/channel_manager.cc:258
 msgid "Invalid channel index"
 msgstr "Neplatný index kanálu"
 
-#: ../src/channel_manager.cc:267
+#: ../src/channel_manager.cc:272
 msgid "Channel '%1' not found"
 msgstr "Kanál '%1' nebyl nalezen"
 
-#: ../src/channel_manager.cc:290
-msgid "Failed to add channel: You cannot have more than %1 channel"
+#: ../src/channel_manager.cc:295
+msgid "Failed to add channel: You cannot have more than 1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-msgstr[0] "Selhalo přidání kanálu: Nemůžete mít více než %1 kanál"
-msgstr[1] "Selhalo přidání kanálu: Nemůžete mít více než %1 kanály"
-msgstr[2] "Selhalo přidání kanálu: Nemůžete mít více než %1 kanálů"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
@@ -849,11 +837,11 @@ msgstr "Frekvence (Hz)"
 msgid "A channel named <b>'%1'</b> already exists."
 msgstr "Kanál nazvaný <b>%1</b> již existuje."
 
-#: ../src/channels_dialog.cc:233
+#: ../src/channels_dialog.cc:231
 msgid "No channel selected"
 msgstr "Nebyl vybrán žádný kanál"
 
-#: ../src/channels_dialog.cc:238
+#: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
 msgstr "Vyberte jen jeden kanál"
 
@@ -889,7 +877,7 @@ msgstr "Primární klíče musí být pouze celočíselné"
 msgid "Failed to create TableAdapter: Table has no columns"
 msgstr "Nepodařilo se vytvořit tabulku Adapter: tabulka nemá sloupce"
 
-#: ../src/device_manager.cc:138
+#: ../src/device_manager.cc:134
 msgid "There are no DVB devices available"
 msgstr "Žádná DVB zařízení nejsou k dispozici"
 
@@ -1018,26 +1006,26 @@ msgstr "Selhal převod do UTF-8: %1"
 msgid "Window ID was 0"
 msgstr "ID okna bylo 0"
 
-#: ../src/epg_event.cc:80
+#: ../src/epg_event.cc:79
 msgid "Unknown title"
 msgstr "Neznámý název"
 
-#: ../src/epg_event.cc:81
+#: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
 msgstr "Neznámý podtitul"
 
-#: ../src/epg_event.cc:82 ../src/scheduled_recording_dialog.cc:126
+#: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
 msgstr "Neznámý popis"
 
-#: ../src/epg_event.cc:101 ../src/scheduled_recording.cc:47
+#: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
 msgstr[0] "1 hodina"
 msgstr[1] "%1 hodiny"
 msgstr[2] "%1 hodin"
 
-#: ../src/epg_event.cc:109 ../src/scheduled_recording.cc:55
+#: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
 msgstr[0] "1 minuta"
@@ -1047,10 +1035,6 @@ msgstr[2] "%1 minut"
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
 msgstr " "
-
-#: ../src/epg_event_search_dialog.cc:60
-msgid "Title"
-msgstr "Název"
 
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
@@ -1071,23 +1055,19 @@ msgstr "Doba trvání"
 msgid "No search text specified"
 msgstr "Nebyl zadán text, který se má najít"
 
-#: ../src/epg_event_search_dialog.cc:143
+#: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
 msgstr "Žádné výsledky"
 
-#: ../src/epg_event_search_dialog.cc:155
+#: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
 msgstr "Nebyla vybrána událost z EPG"
-
-#: ../src/epg_events.cc:305
-msgid "EPG event not found"
-msgstr "EPG událost nebyla nalezena"
 
 #: ../src/epg_thread.cc:71
 msgid "No demuxers"
 msgstr "Žádné demultiplexory"
 
-#: ../src/epg_thread.cc:211
+#: ../src/epg_thread.cc:210
 #, c-format
 msgid "Unknown source_id %u"
 msgstr "Neznámé source_id %u"
@@ -1104,11 +1084,11 @@ msgstr "Selhalo vytvoření FIFO '%1'"
 msgid "Failed to open FIFO for reading '%1'"
 msgstr "Selhalo otevření FIFO pro čtení '%1'"
 
-#: ../src/gtk_epg_widget.cc:285 ../src/gtk_epg_widget.cc:340
+#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
 msgid "-"
 msgstr "-"
 
-#: ../src/gtk_epg_widget.cc:285 ../src/gtk_epg_widget.cc:340
+#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
 msgid "Unknown program"
 msgstr "Neznámý program"
 
@@ -1178,31 +1158,31 @@ msgstr "Zobrazit možnosti nápovědy Me TV"
 msgid "An unhandled error occurred"
 msgstr "Nastala neošetřená chyba"
 
-#: ../src/main_window.cc:191
+#: ../src/main_window.cc:194
 msgid "Please stop all recordings before editing channels"
 msgstr "Před úpravou kanálů ukončete všechna nahrávání"
 
-#: ../src/main_window.cc:202
+#: ../src/main_window.cc:205
 msgid "Cannot update channels while recording"
 msgstr "Nelze upravovat kanály během nahrávání"
 
-#: ../src/main_window.cc:589
+#: ../src/main_window.cc:551
 msgid "Failed to start engine: Engine has already been started"
 msgstr "Selhalo spuštění knihovny přehrávače: knihovna již byla spuštěna"
 
-#: ../src/main_window.cc:663
+#: ../src/main_window.cc:627
 msgid "None"
 msgstr "Nic"
 
-#: ../src/me-tv.cc:75
+#: ../src/me-tv.cc:93
 msgid "Failed to get time"
 msgstr "Selhalo zjištění času"
 
-#: ../src/me-tv.cc:153
+#: ../src/me-tv.cc:172
 msgid "Failed to find a value for '%1'"
 msgstr "Selhalo nalezení hodnoty pro '%1'"
 
-#: ../src/me-tv.cc:178
+#: ../src/me-tv.cc:197
 msgid "Failed to find a text value for '%1'"
 msgstr "Selhalo nalezení textové hodnoty pro '%1'"
 
@@ -1234,39 +1214,55 @@ msgstr "Název služby"
 msgid "Signal Strength"
 msgstr "Síla signálu"
 
+#: ../src/scan_dialog.cc:159
+msgid "Australia"
+msgstr "Austrálie"
+
 #: ../src/scan_dialog.cc:160
 msgid "Canada"
 msgstr "Kanada"
 
 #: ../src/scan_dialog.cc:161
+msgid "Czech Republic"
+msgstr ""
+
+#: ../src/scan_dialog.cc:162
 msgid "Finland"
 msgstr "Finsko"
 
-#: ../src/scan_dialog.cc:162
+#: ../src/scan_dialog.cc:163
 msgid "France"
 msgstr "Francie"
 
-#: ../src/scan_dialog.cc:163
+#: ../src/scan_dialog.cc:164
 msgid "Germany"
 msgstr "Německo"
 
 #: ../src/scan_dialog.cc:165
+msgid "Italy"
+msgstr "Itálie"
+
+#: ../src/scan_dialog.cc:166
 msgid "Lithuania"
 msgstr "Litva"
 
-#: ../src/scan_dialog.cc:166
+#: ../src/scan_dialog.cc:167
 msgid "New Zealand"
 msgstr "Nový Zéland"
 
-#: ../src/scan_dialog.cc:167
+#: ../src/scan_dialog.cc:168
 msgid "Spain"
 msgstr "Španělsko"
 
 #: ../src/scan_dialog.cc:169
+msgid "Slovenia"
+msgstr "Slovinsko"
+
+#: ../src/scan_dialog.cc:170
 msgid "United Kingdom"
 msgstr "UK"
 
-#: ../src/scan_dialog.cc:170
+#: ../src/scan_dialog.cc:171
 msgid "United States"
 msgstr "USA"
 
@@ -1311,15 +1307,15 @@ msgstr "Hledání kanálů dokončeno"
 msgid "No auto scan range was specified"
 msgstr "Nebyl zadán rozsah skenování"
 
-#: ../src/scan_dialog.cc:792
+#: ../src/scan_dialog.cc:809
 msgid "Unknown scan range '%1'"
 msgstr "Neznámý rozsah skenování %1"
 
-#: ../src/scan_dialog.cc:807
+#: ../src/scan_dialog.cc:824
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr "Automatické skenování je k dispozici jen u zařízení DVB-T a ATSC"
 
-#: ../src/scheduled_recording_manager.cc:210
+#: ../src/scheduled_recording_manager.cc:223
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
@@ -1327,7 +1323,7 @@ msgstr ""
 "Nepodařilo se naplánovat nahrávání: žádná zařízení v ten čas nejsou k "
 "dispozici"
 
-#: ../src/scheduled_recording_manager.cc:227
+#: ../src/scheduled_recording_manager.cc:241
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
@@ -1335,7 +1331,7 @@ msgstr ""
 "Nepodařilo se naplánovat nahrávání, protože koliduje s jiným, které bylo "
 "nazváno '%1'."
 
-#: ../src/scheduled_recording_manager.cc:248
+#: ../src/scheduled_recording_manager.cc:262
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which is scheduled for the same time on the same "
@@ -1344,7 +1340,7 @@ msgstr ""
 "Nepodařilo se naplánovat nahrávání, protože už je jiné s názvem '%1' a je ve "
 "stejném čase na stejném kanále."
 
-#: ../src/scheduled_recording_manager.cc:408
+#: ../src/scheduled_recording_manager.cc:422
 msgid "Scheduled recording '%1' not found"
 msgstr "Naplánované nahrávání '%1' není dostupné"
 
@@ -1368,26 +1364,70 @@ msgstr "Zařízení"
 msgid "No scheduled recording selected"
 msgstr "Není vybráno žádné naplánované nahrávání"
 
-#: ../src/status_icon.cc:110
-msgid "Not available"
-msgstr "Není k dispozici"
+#: ../src/status_icon.cc:112
+msgid "Me TV is idle"
+msgstr ""
 
-#: ../src/stream_manager.cc:114
+#: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
 msgstr "Nepodařilo se najít frontend %1 pro naplánované nahrávání"
 
-#: ../src/stream_manager.cc:189 ../src/stream_manager.cc:272
+#: ../src/stream_manager.cc:200 ../src/stream_manager.cc:286
 msgid "Failed to get available frontend"
 msgstr "Nepodařilo se najít volný frontend"
 
-#: ../src/stream_manager.cc:310
+#: ../src/stream_manager.cc:325
 msgid "Failed to get display stream"
 msgstr "Nepodařilo se získat zobrazovací proud"
 
-#: ../src/stream_manager.cc:357
+#: ../src/stream_manager.cc:372
 msgid "Failed to get display frontend thread"
 msgstr "Nepodařilo se získat vlákno pro zobrazení frontendu"
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
 msgstr " vlákno již bylo spuštěno"
+
+#~ msgid "Main window has not been created"
+#~ msgstr "Hlavní okno nebylo vytvořeno"
+
+#~ msgid "Failed to add channel: You cannot have more than %1 channel"
+#~ msgid_plural "Failed to add channel: You cannot have more than %1 channels"
+#~ msgstr[0] "Selhalo přidání kanálu: Nemůžete mít více než %1 kanál"
+#~ msgstr[1] "Selhalo přidání kanálu: Nemůžete mít více než %1 kanály"
+#~ msgstr[2] "Selhalo přidání kanálu: Nemůžete mít více než %1 kanálů"
+
+#~ msgid "Preferred language to us when selecting streams."
+#~ msgstr "Preferovaný jazyk pro výběr kanálů."
+
+#~ msgid "AU"
+#~ msgstr "AU"
+
+#~ msgid "All"
+#~ msgstr "Vše"
+
+#~ msgid "IT"
+#~ msgstr "IT"
+
+#~ msgid "Fullscreen workaround"
+#~ msgstr "Řešení plné obrazovky"
+
+#~ msgid "SI"
+#~ msgstr "SI"
+
+#, c-format
+#~ msgid "Channel changed to %s"
+#~ msgstr "Kanál přepnut na %s"
+
+#, c-format
+#~ msgid "Changing channel to '%s'"
+#~ msgstr "Přepínám na kanál na '%s'"
+
+#~ msgid "Not available"
+#~ msgstr "Není k dispozici"
+
+#~ msgid "Drop out of fullscreen mode when showing dialogs"
+#~ msgstr "Při zobrazování dialogů odejít z režimu celé obrazovky"
+
+#~ msgid "EPG event not found"
+#~ msgstr "EPG událost nebyla nalezena"
