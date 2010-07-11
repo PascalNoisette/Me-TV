@@ -7,6 +7,7 @@ TBA  Michael Lamothe <michael.lamothe@gmail.com>
 	* Added Watch Now button to EPG event dialog
 	* Status icon now shows SR description rather than channel description for SRs
 	* Added CZ scan range (patch from Luboš Staněk)
+	* Added cze to preferred languages list
 	* Fixed issues with non-translatable strings in UI file (patch from Luboš Staněk)
 	* EPG thread now stays running when no streams are in running
 	* Better message when unable to talk to gnome-screensaver

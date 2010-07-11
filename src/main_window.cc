@@ -937,10 +937,10 @@ void MainWindow::inhibit_screensaver(gboolean activate)
 		}
 		catch (const Exception& exception)
 		{
-			Glib::ustring message = Glib::ustring::compose(
+			Glib::ustring message = Glib::ustring::compose(_(
 				"An error occurred while trying to communicate with the GNOME screensaver. " \
 				"To stop this message from displaying you can use the --no-screensaver-inhibit " \
-			    "command line option.  The error message was '%1'", exception.what());
+			    "command line option.  The error message was '%1'"), exception.what());
 			show_error(message);
 		}
 	}
