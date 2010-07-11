@@ -107,5 +107,3 @@ void ChannelStream::write(guchar* buffer, gsize length)
 		}
 	}
 }
-
-

@@ -8,6 +8,7 @@ TBA  Michael Lamothe <michael.lamothe@gmail.com>
 	* Status icon now shows SR description rather than channel description for SRs
 	* Added CZ scan range (patch from Luboš Staněk)
 	* Fixed issues with non-translatable strings in UI file (patch from Luboš Staněk)
+	* EPG thread now stays running when no streams are in running
 
 2010-07-04  Michael Lamothe <michael.lamothe@gmail.com>
 

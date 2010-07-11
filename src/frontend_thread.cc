@@ -49,6 +49,7 @@ FrontendThread::~FrontendThread()
 	::close(fd);
 	
 	stop();
+	stop_epg_thread();
 	
 	g_debug("FrontendThread destroyed (%s)", frontend.get_path().c_str());
 }
@@ -65,7 +66,6 @@ void FrontendThread::start()
 void FrontendThread::stop()
 {
 	g_debug("Stopping frontend thread (%s)", frontend.get_path().c_str());
-	stop_epg_thread();
 	join(true);
 	g_debug("Frontend thread stopped and joined (%s)", frontend.get_path().c_str());
 }
@@ -167,8 +167,8 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 	{
 		stop_epg_thread();
 		frontend.tune_to(channel.transponder);
-		start_epg_thread();
 	}
+	start_epg_thread();
 	
 	Dvb::Demuxer demuxer_pat(demux_path);
 	demuxer_pat.set_filter(PAT_PID, PAT_ID);
@@ -224,10 +224,12 @@ void FrontendThread::start_epg_thread()
 {
 	if (!disable_epg_thread)
 	{
-		stop_epg_thread();
-		epg_thread = new EpgThread(frontend);
-		epg_thread->start();
-		g_debug("EPG thread started");
+		if (epg_thread == NULL)
+		{
+			epg_thread = new EpgThread(frontend);
+			epg_thread->start();
+			g_debug("EPG thread started");
+		}
 	}
 }
 
