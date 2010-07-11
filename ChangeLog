@@ -9,6 +9,7 @@ TBA  Michael Lamothe <michael.lamothe@gmail.com>
 	* Added CZ scan range (patch from Luboš Staněk)
 	* Fixed issues with non-translatable strings in UI file (patch from Luboš Staněk)
 	* EPG thread now stays running when no streams are in running
+	* Better message when unable to talk to gnome-screensaver
 
 2010-07-04  Michael Lamothe <michael.lamothe@gmail.com>
 
