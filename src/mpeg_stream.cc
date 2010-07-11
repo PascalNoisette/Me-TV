@@ -50,7 +50,7 @@ gboolean Mpeg::Stream::is_pid_used(guint pid)
 	gboolean used = false;
 	guint index = 0;
 	
-	if (video_streams.size() > 0)
+	if (!video_streams.empty())
 	{
 		used = (pid==video_streams[0].pid);
 	}
@@ -136,7 +136,7 @@ void Mpeg::Stream::build_pmt(guchar* buffer)
 	
 	Mpeg::VideoStream video_stream;
 	
-	if (video_streams.size() > 0)
+	if (!video_streams.empty())
 	{
 		video_stream = video_streams[0];
 	}

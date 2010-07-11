@@ -57,7 +57,7 @@ void ChannelStream::clear_demuxers()
 	Lock lock(mutex, "ChannelStream::clear_demuxers()");
 	
 	g_debug("Removing demuxers");
-	while (demuxers.size() > 0)
+	while (!demuxers.empty())
 	{
 		Dvb::Demuxer* demuxer = demuxers.front();
 		demuxers.pop_front();

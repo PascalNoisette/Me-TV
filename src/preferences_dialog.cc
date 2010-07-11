@@ -73,12 +73,13 @@ void PreferencesDialog::run()
 	builder->get_widget("check_button_remove_colon", check_button_remove_colon);
 
 	combo_box_entry_preferred_language->clear_items();
+	combo_box_entry_preferred_language->append_text("cze");
 	combo_box_entry_preferred_language->append_text("eng");
 	combo_box_entry_preferred_language->append_text("fin");
+	combo_box_entry_preferred_language->append_text("fre");
 	combo_box_entry_preferred_language->append_text("ger");
 	combo_box_entry_preferred_language->append_text("swe");
-	combo_box_entry_preferred_language->append_text("fre");
-
+	
 	combo_box_entry_video_driver->clear_items();
 	combo_box_entry_video_driver->append_text("aadxr3");
 	combo_box_entry_video_driver->append_text("DirectFB");

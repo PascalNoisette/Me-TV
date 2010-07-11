@@ -61,7 +61,7 @@ EpgEventText EpgEvent::get_default_text() const
 	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end() && !found; i++)
 	{
 		EpgEventText text = *i;
-		if (preferred_language.size() > 0 && preferred_language == text.language)
+		if (!preferred_language.empty() && preferred_language == text.language)
 		{
 			found = true;
 			result = text;
@@ -70,7 +70,7 @@ EpgEventText EpgEvent::get_default_text() const
 
 	if (!found)
 	{
-		if (texts.size() > 0)
+		if (!texts.empty())
 		{
 			result = *(texts.begin());
 		}

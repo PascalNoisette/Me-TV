@@ -89,7 +89,7 @@ void StatusIcon::update()
 		ChannelStreamList& streams = frontend_thread.get_streams();
 		for (ChannelStreamList::iterator j = streams.begin(); j != streams.end(); j++)
 		{
-			if (title.size() > 0)
+			if (!title.empty())
 			{
 				title += "\n";
 			}

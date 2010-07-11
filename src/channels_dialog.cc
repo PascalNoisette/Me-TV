@@ -225,7 +225,7 @@ void ChannelsDialog::on_button_edit_selected_channel_clicked()
 	get_window()->freeze_updates();
 	Glib::RefPtr<Gtk::TreeSelection> tree_selection = tree_view_displayed_channels->get_selection();
 	std::list<Gtk::TreeModel::Path> selected_channels = tree_selection->get_selected_rows();
-	if (selected_channels.size() == 0)
+	if (selected_channels.empty())
 	{
 		get_window()->thaw_updates();
 		throw Exception(_("No channel selected"));
@@ -249,7 +249,7 @@ void ChannelsDialog::on_button_remove_selected_channels_clicked()
 	get_window()->freeze_updates();
 	Glib::RefPtr<Gtk::TreeSelection> tree_selection = tree_view_displayed_channels->get_selection();
 	std::list<Gtk::TreeModel::Path> selected_channels = tree_selection->get_selected_rows();
-	while (selected_channels.size() > 0)
+	while (!selected_channels.empty())
 	{		
 		list_store->erase(list_store->get_iter(*selected_channels.begin()));
 		selected_channels = tree_selection->get_selected_rows();
