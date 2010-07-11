@@ -1,4 +1,4 @@
-TBA  Michael Lamothe <michael.lamothe@gmail.com>
+2010-07-15  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.3.1
 	* Fixed issue with hyphens in man page
@@ -6,11 +6,12 @@ TBA  Michael Lamothe <michael.lamothe@gmail.com>
 	* Treating a single hyphen in the EPG subtitle as blank
 	* Added Watch Now button to EPG event dialog
 	* Status icon now shows SR description rather than channel description for SRs
-	* Added CZ scan range (patch from Luboš Staněk)
 	* Added cze to preferred languages list
+	* Added CZ scan range (patch from Luboš Staněk)
 	* Fixed issues with non-translatable strings in UI file (patch from Luboš Staněk)
 	* EPG thread now stays running when no streams are in running
 	* Better message when unable to talk to gnome-screensaver
+	* Scheduled recording manager should now only save if dirty
 
 2010-07-04  Michael Lamothe <michael.lamothe@gmail.com>
 

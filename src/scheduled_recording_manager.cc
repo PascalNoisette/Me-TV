@@ -31,7 +31,7 @@ void ScheduledRecordingManager::load(Data::Connection& connection)
 	Glib::RecMutex::Lock lock(mutex);
 	
 	g_debug("Loading scheduled recordings");
-
+	
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
 	Data::TableAdapter adapter(connection, table);
 	
@@ -56,11 +56,20 @@ void ScheduledRecordingManager::load(Data::Connection& connection)
 
 		scheduled_recordings.push_back(scheduled_recording);
 	}
+	
+	dirty = false;
+
 	g_debug("Scheduled recordings loaded");
 }
 
 void ScheduledRecordingManager::save(Data::Connection& connection)
 {
+	if (!dirty)
+	{
+		g_debug("Scheduled recordings are not dirty, not saving");
+		return;
+	}
+	
 	Glib::RecMutex::Lock lock(mutex);
 
 	g_debug("Saving %d scheduled recordings", (int)scheduled_recordings.size());
@@ -135,6 +144,8 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	}
 	Glib::ustring clause = Glib::ustring::compose("(start_time + duration) < %1 AND recurring_type = %2", now, SCHEDULED_RECORDING_RECURRING_TYPE_ONCE);
 	adapter.delete_rows(clause);
+
+	dirty = false;
 
 	g_debug("Scheduled recordings saved");
 }
@@ -294,6 +305,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 	{
 		g_debug("Adding scheduled recording");
 		scheduled_recordings.push_back(scheduled_recording);
+		dirty = true;
 	}
 
 	// Have to save to update the scheduled recording ID
@@ -326,6 +338,7 @@ void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recor
 			adapter.delete_row(scheduled_recording_id);
 			
 			found = true;
+			dirty = true;
 		}
 	}	
 	g_debug("Scheduled recording deleted");
