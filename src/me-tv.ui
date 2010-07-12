@@ -814,13 +814,13 @@ found in /usr/share/common-licenses/GPL file.</property>
               <object class="GtkHBox" id="hbox5">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkComboBoxEntry" id="combo_box_entry_preferred_language">
+                  <object class="GtkEntry" id="entry_preferred_language">
                     <property name="visible">True</property>
-                    <property name="model">liststore_string</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">&#x25CF;</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>

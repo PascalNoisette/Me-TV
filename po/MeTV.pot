@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-12 01:44+1000\n"
+"POT-Creation-Date: 2010-07-12 21:51+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1224,26 +1224,26 @@ msgstr ""
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:223
+#: ../src/scheduled_recording_manager.cc:234
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:241
+#: ../src/scheduled_recording_manager.cc:252
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:262
+#: ../src/scheduled_recording_manager.cc:273
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:422
+#: ../src/scheduled_recording_manager.cc:435
 msgid "Scheduled recording '%1' not found"
 msgstr ""
 

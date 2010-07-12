@@ -41,7 +41,7 @@ void PreferencesDialog::run()
 	Gtk::SpinButton* spin_button_record_extra_after = NULL;
 	Gtk::SpinButton* spin_button_epg_span_hours = NULL;
 	Gtk::SpinButton* spin_button_epg_page_size = NULL;
-	ComboBoxEntryText* combo_box_entry_preferred_language = NULL;
+	Gtk::Entry* entry_preferred_language = NULL;
 	ComboBoxEntryText* combo_box_entry_video_driver = NULL;
 	ComboBoxEntryText* combo_box_entry_audio_driver = NULL;
 	ComboBoxText* combo_box_deinterlace_type = NULL;
@@ -59,7 +59,7 @@ void PreferencesDialog::run()
 	builder->get_widget("spin_button_record_extra_after", spin_button_record_extra_after);
 	builder->get_widget("spin_button_epg_span_hours", spin_button_epg_span_hours);
 	builder->get_widget("spin_button_epg_page_size", spin_button_epg_page_size);
-	builder->get_widget_derived("combo_box_entry_preferred_language", combo_box_entry_preferred_language);
+	builder->get_widget("entry_preferred_language", entry_preferred_language);
 	builder->get_widget_derived("combo_box_entry_video_driver", combo_box_entry_video_driver);
 	builder->get_widget_derived("combo_box_entry_audio_driver", combo_box_entry_audio_driver);
 	builder->get_widget_derived("combo_box_deinterlace_type", combo_box_deinterlace_type);
@@ -71,14 +71,6 @@ void PreferencesDialog::run()
 	builder->get_widget("check_button_display_status_icon", check_button_display_status_icon);
 	builder->get_widget("check_button_show_channel_number", check_button_show_channel_number);
 	builder->get_widget("check_button_remove_colon", check_button_remove_colon);
-
-	combo_box_entry_preferred_language->clear_items();
-	combo_box_entry_preferred_language->append_text("cze");
-	combo_box_entry_preferred_language->append_text("eng");
-	combo_box_entry_preferred_language->append_text("fin");
-	combo_box_entry_preferred_language->append_text("fre");
-	combo_box_entry_preferred_language->append_text("ger");
-	combo_box_entry_preferred_language->append_text("swe");
 	
 	combo_box_entry_video_driver->clear_items();
 	combo_box_entry_video_driver->append_text("aadxr3");
@@ -119,7 +111,7 @@ void PreferencesDialog::run()
 	spin_button_record_extra_after->set_value(configuration_manager.get_int_value("record_extra_after"));
 	spin_button_epg_span_hours->set_value(configuration_manager.get_int_value("epg_span_hours"));
 	spin_button_epg_page_size->set_value(configuration_manager.get_int_value("epg_page_size"));
-	combo_box_entry_preferred_language->get_entry()->set_text(configuration_manager.get_string_value("preferred_language"));
+	entry_preferred_language->set_text(configuration_manager.get_string_value("preferred_language"));
 	combo_box_entry_video_driver->get_entry()->set_text(configuration_manager.get_string_value("video_driver"));
 	combo_box_entry_audio_driver->get_entry()->set_text(configuration_manager.get_string_value("audio_driver"));
 	combo_box_deinterlace_type->set_active_text(configuration_manager.get_string_value("deinterlace_type"));
@@ -139,7 +131,7 @@ void PreferencesDialog::run()
 		configuration_manager.set_int_value("record_extra_after", (int)spin_button_record_extra_after->get_value());
 		configuration_manager.set_int_value("epg_span_hours", (int)spin_button_epg_span_hours->get_value());
 		configuration_manager.set_int_value("epg_page_size", (int)spin_button_epg_page_size->get_value());
-		configuration_manager.set_string_value("preferred_language", combo_box_entry_preferred_language->get_entry()->get_text());
+		configuration_manager.set_string_value("preferred_language", entry_preferred_language->get_text());
 		configuration_manager.set_string_value("video_driver", combo_box_entry_video_driver->get_entry()->get_text());
 		configuration_manager.set_string_value("audio_driver", combo_box_entry_audio_driver->get_entry()->get_text());
 		configuration_manager.set_string_value("deinterlace_type", combo_box_deinterlace_type->get_active_text());
