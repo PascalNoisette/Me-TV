@@ -12,6 +12,7 @@
 	* Better message when unable to talk to gnome-screensaver
 	* Scheduled recording manager should now only save if dirty
 	* Preferred language is now an entry
+	* Fixed change channel when scheduled recording starts on another transponder
 
 2010-07-04  Michael Lamothe <michael.lamothe@gmail.com>
 
