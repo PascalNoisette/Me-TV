@@ -431,7 +431,7 @@ void FrontendThread::start_recording(Channel& channel, const Glib::ustring& desc
 
 				if (was_display)
 				{
-					start_display(channel);
+					signal_start_display(channel.channel_id);
 				}
 			}
 
