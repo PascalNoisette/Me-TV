@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-07-12 01:44+1000\n"
-"PO-Revision-Date: 2010-07-11 04:34+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"POT-Creation-Date: 2010-07-12 21:51+1000\n"
+"PO-Revision-Date: 2010-07-13 00:16+0000\n"
+"Last-Translator: Maciej Jędrusik <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-07-12 04:03+0000\n"
+"X-Launchpad-Export-Date: 2010-07-13 04:03+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -114,7 +114,7 @@ msgstr ""
 #: ../me-tv.schemas.in.h:14
 msgid ""
 "Me TV will schedule programs that have titles that contain these words."
-msgstr ""
+msgstr "Me TV zaplanuje programy, które mają tytuły zawierające te słowa."
 
 #: ../me-tv.schemas.in.h:15
 msgid ""
@@ -175,23 +175,27 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:26
 msgid "The directory to use for recordings."
-msgstr ""
+msgstr "Katalog do którego będą zapisywane nagrania."
 
 #: ../me-tv.schemas.in.h:27
 msgid ""
 "The directory to use for recordings. This value defaults to the users home "
 "directory."
 msgstr ""
+"Katalog do którego będą zapisywane nagrania. Wartość domyślna to katalog "
+"/home użytkownika."
 
 #: ../me-tv.schemas.in.h:28
 msgid "The height of the window before Me TV was last closed"
-msgstr ""
+msgstr "Wysokość okna przed ostatnim zamknięciem programu Me TV"
 
 #: ../me-tv.schemas.in.h:29
 msgid ""
 "The height of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
+"Wysokość okna przed ostatnim zamknięciem programu Me TV. Me TV używa tej "
+"wartości, aby spróbować przywrócić główne okno do jego poprzedniej geometrii."
 
 #: ../me-tv.schemas.in.h:30
 msgid "The last channel tuned to."
@@ -205,7 +209,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:32
 msgid "The number of channels to show before paging."
-msgstr ""
+msgstr "Liczba kanałów do wyświetlenia przed stronicowaniem."
 
 #: ../me-tv.schemas.in.h:33
 msgid "The number of hours for the EPG to span on one page."
@@ -217,33 +221,43 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:35
 msgid "The width of the window before Me TV was last closed"
-msgstr ""
+msgstr "Szerokość okna przed ostatnim zamknięciem programu Me TV"
 
 #: ../me-tv.schemas.in.h:36
 msgid ""
 "The width of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
+"Szerokość okna przed ostatnim zamknięciem programu Me TV. Me TV używa tej "
+"wartości, aby spróbować przywrócić główne okno do jego poprzedniej geometrii."
 
 #: ../me-tv.schemas.in.h:37
 msgid "The x position of the window before Me TV was last closed"
 msgstr ""
+"Położenie współrzędnej x okna przed ostatnim zamknięciem programu Me TV"
 
 #: ../me-tv.schemas.in.h:38
 msgid ""
 "The x position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"Położenie współrzędnej x okna przed ostatnim zamknięciem programu Me TV. Me "
+"TV używa tej wartości, aby spróbować przywrócić główne okno do jego "
+"poprzedniej geometrii."
 
 #: ../me-tv.schemas.in.h:39
 msgid "The y position of the window before Me TV was last closed"
 msgstr ""
+"Położenie współrzędnej y okna przed ostatnim zamknięciem programu Me TV"
 
 #: ../me-tv.schemas.in.h:40
 msgid ""
 "The y position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"Położenie współrzędnej y okna przed ostatnim zamknięciem programu Me TV. Me "
+"TV używa tej wartości, aby spróbować przywrócić główne okno do jego "
+"poprzedniej geometrii."
 
 #: ../me-tv.schemas.in.h:41
 msgid ""
@@ -291,7 +305,7 @@ msgstr "<b>Urządzenie:</b>"
 
 #: ../src/me-tv.ui.h:5
 msgid "A channel named 'xxx' already exists."
-msgstr ""
+msgstr "Kanał nazwany 'xxx' już istnieje."
 
 #: ../src/me-tv.ui.h:6
 msgid ""
@@ -300,6 +314,10 @@ msgid ""
 "application. The <i>scan</i> command line application is the most common way "
 "to generate a channels.conf file."
 msgstr ""
+"Plik channels.conf to popularny format pliku do przechowywania kanałów, "
+"który może być również kompatybilny z wieloma aplikacjami. Możesz go również "
+"pozyskać z innych programów DVB. Aplikacja <i>skan</i> wiersza poleceń jest "
+"najbardziej popularnym sposobem generowanie pliku channels.conf."
 
 #: ../src/me-tv.ui.h:7
 msgid "Advanced"
@@ -327,15 +345,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:12
 msgid "Cancel channel import"
-msgstr ""
+msgstr "Anuluj import kanałów"
 
 #: ../src/me-tv.ui.h:13
 msgid "Channel Frequency : "
-msgstr ""
+msgstr "Częstotliwość kanału : "
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Name : "
-msgstr ""
+msgstr "Nazwa kanału : "
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel:"
@@ -343,7 +361,7 @@ msgstr "Kanał:"
 
 #: ../src/me-tv.ui.h:16
 msgid "Close Me TV"
-msgstr ""
+msgstr "Zamknij Me TV"
 
 #: ../src/me-tv.ui.h:17
 msgid "Copyright &#xA9; Michael Lamothe"
@@ -382,6 +400,8 @@ msgid ""
 "EPG event titles that contain the following entries will be automatically "
 "recorded."
 msgstr ""
+"Nazwy wydarzeń w EPG, które zawierają następujące wpisy zostaną "
+"automatycznie nagrane."
 
 #: ../src/me-tv.ui.h:26
 msgid "EPG page size: "
@@ -401,7 +421,7 @@ msgstr "Co tydzień"
 
 #: ../src/me-tv.ui.h:30
 msgid "Every weekday"
-msgstr ""
+msgstr "Każdy dzień tygodnia"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:32
@@ -428,7 +448,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:45
 msgid "Import a channels.conf"
-msgstr ""
+msgstr "Zaimportuj plik channel.conf"
 
 #: ../src/me-tv.ui.h:46
 msgid "Keep the existing channel"
@@ -452,7 +472,7 @@ msgstr "Me TV - Edytor kanałów"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - EPG Event Search"
-msgstr ""
+msgstr "Me TV - Wyszukiwarka wydarzeń w EPG"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - Edit Channel"
@@ -532,7 +552,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:71
 msgid "Remove colon from recording filenames"
-msgstr ""
+msgstr "Usuń dwukropek z nazw plików nagrań"
 
 #: ../src/me-tv.ui.h:72
 msgid "Rename the new channel to a unique name"
@@ -548,7 +568,7 @@ msgstr "Postęp skanowania"
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan using an initial scan file"
-msgstr ""
+msgstr "Skanuj przy użyciu pliku skanowania wstępnego"
 
 #: ../src/me-tv.ui.h:76
 msgid "Scanning/Importing"
@@ -627,10 +647,12 @@ msgid ""
 "This option will only work if your DVB setup supports auto scanning.  "
 "Currently, this feature is only supported on DVB-T and ATSC devices."
 msgstr ""
+"Ta opcja będzie działać tylko wtedy, gdy konfiguracja DVB obsługuje "
+"skanowanie automatyczne."
 
 #: ../src/me-tv.ui.h:95
 msgid "This program is scheduled for recording."
-msgstr ""
+msgstr "Ten program jest zaplanowany do nagrania."
 
 #: ../src/me-tv.ui.h:96
 msgid "Video driver:"
@@ -642,7 +664,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:98
 msgid "Watch Now"
-msgstr ""
+msgstr "Oglądaj Teraz"
 
 #: ../src/me-tv.ui.h:99
 msgid ""
@@ -1264,13 +1286,13 @@ msgstr ""
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:223
+#: ../src/scheduled_recording_manager.cc:234
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:241
+#: ../src/scheduled_recording_manager.cc:252
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
@@ -1278,14 +1300,14 @@ msgstr ""
 "Błąd zapisu zaplanowanego nagrania. Konflikt z innym zaplanowanym nagraniem "
 "o nazwie '%1'."
 
-#: ../src/scheduled_recording_manager.cc:262
+#: ../src/scheduled_recording_manager.cc:273
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:422
+#: ../src/scheduled_recording_manager.cc:435
 msgid "Scheduled recording '%1' not found"
 msgstr "Nie znaleziono zaplanowanego nagrania '%1'"
 
