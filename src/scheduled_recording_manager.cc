@@ -201,7 +201,6 @@ void ScheduledRecordingManager::select_device(ScheduledRecording& scheduled_reco
 	g_debug("Looking for an available device for scheduled recording");
 	
 	Channel& channel = channel_manager.get_channel_by_id(scheduled_recording.channel_id);
-	Channel& display_channel = stream_manager.get_display_channel();
 
 	FrontendList& frontends = device_manager.get_frontends();
 	for (FrontendList::iterator j = frontends.begin(); j != frontends.end(); j++)
@@ -212,7 +211,15 @@ void ScheduledRecordingManager::select_device(ScheduledRecording& scheduled_reco
 		{
 			scheduled_recording.device = device;
 
-			if (channel.transponder == display_channel.transponder)
+			if (stream_manager.has_display_stream())
+			{
+				Channel& display_channel = stream_manager.get_display_channel();
+				if (channel.transponder == display_channel.transponder)
+				{
+					return;
+				}
+			}
+			else
 			{
 				return;
 			}
@@ -242,6 +249,8 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 		{
 			throw Exception(_("Failed to set scheduled recording: There are no devices available at that time"));
 		}
+
+		g_debug("Device selected: '%s'", scheduled_recording.device.c_str());
 	}
 
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
