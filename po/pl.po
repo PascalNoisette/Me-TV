@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-07-12 21:51+1000\n"
-"PO-Revision-Date: 2010-07-13 00:16+0000\n"
+"PO-Revision-Date: 2010-07-13 22:32+0000\n"
 "Last-Translator: Maciej Jędrusik <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-07-13 04:03+0000\n"
+"X-Launchpad-Export-Date: 2010-07-14 03:52+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -42,7 +42,7 @@ msgstr "Wyświetlaj datę/czas w nagłówku EPG"
 
 #: ../me-tv.schemas.in.h:5
 msgid "EPG event titles to auto record"
-msgstr ""
+msgstr "Wydarzenie w EPG do nagrywania automatycznego"
 
 #: ../me-tv.schemas.in.h:6
 msgid ""
@@ -135,7 +135,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:17
 msgid "Preferred language to use when selecting streams."
-msgstr ""
+msgstr "Preferowany język do użycia podczas wybierania strumieni."
 
 #: ../me-tv.schemas.in.h:18
 msgid "Recent EPG event searches"
@@ -264,6 +264,8 @@ msgid ""
 "This is used to store what channel the user was last watching so it can be "
 "returned when restarting."
 msgstr ""
+"Ten jest używany do przechowywania informacji, który kanał był ostatnio "
+"oglądany, więc może on być odtworzony w przypadku ponownego uruchomienia."
 
 #: ../me-tv.schemas.in.h:42
 msgid "This will show the timespan of an EPG event in a tooltip."
@@ -277,7 +279,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:44
 msgid "Whether the video should be deinterlaced."
-msgstr ""
+msgstr "Czy wideo powinno być poddane operacji usunięcia przeplotu."
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
@@ -341,7 +343,7 @@ msgstr "Sterownik dźwięku:"
 
 #: ../src/me-tv.ui.h:11
 msgid "Auto scan"
-msgstr ""
+msgstr "Skanowanie automatyczne"
 
 #: ../src/me-tv.ui.h:12
 msgid "Cancel channel import"
@@ -369,7 +371,7 @@ msgstr "Prawa autorskie &#xA9; Michael Lamothe"
 
 #: ../src/me-tv.ui.h:18
 msgid "Deinterlace Type:"
-msgstr ""
+msgstr "Rodzaj usunięcia przeplotu:"
 
 #: ../src/me-tv.ui.h:19
 msgid "Description:"
@@ -445,6 +447,38 @@ msgid ""
 "be\n"
 "found in /usr/share/common-licenses/GPL file."
 msgstr ""
+"This is an unofficial translation of the GNU General Public License into "
+"Polish. It was not published by the Free Software Foundation, and does not "
+"legally state the distribution terms for software that uses the GNU GPL--"
+"only the original English text of the GNU GPL does that. However, we hope "
+"that this translation will help Polish speakers understand the GNU GPL "
+"better.\n"
+"\n"
+"To jest nieoficjalne tłumaczenie Powszechnej Licencji Publicznej GNU na "
+"polski. Nie zostało opublikowane przez Free Software Foundation i pod "
+"względem prawnym nie stanowi warunków rozpowszechniania oprogramowania "
+"stosującego GNU GPL – ustanawia je wyłącznie oryginalny angielski tekst "
+"licencji GNU GPL. Jednak mamy nadzieję, że pomoże ono lepiej zrozumieć "
+"Licencję osobom mówiącym po polsku. \n"
+"\n"
+"Powszechna Licencja Publiczna GNU:\n"
+"\n"
+"Ten program jest wolnym oprogramowaniem; możesz go rozprowadzać dalej i/lub "
+"modyfikować na\n"
+"podstawie Powszechnej Licencji Publicznej GNU opublikowanej przez Fundację "
+"Wolnego \n"
+"Oprogramowania; albo w wersji 2 tej licencji albo którejś z późniejszych\n"
+"wersji.\n"
+"\n"
+"Niniejszy program rozpowszechniany jest z nadzieją, że będzie on użyteczny, "
+"ale BEZ JAKIEJKOLWIEK\n"
+"GWARANCJI; nawet bez dorozumiewanej gwarancji POKUPNOŚCI lub PRZYDATNOŚCI DO "
+"OKREŚLONEGO\n"
+"CELU. Sprawdź \"Powszechna Licencja Publiczna GNU\", aby dowiedzieć się "
+"więcej szczegółów.\n"
+"\n"
+"W systemach Debian, pełny tekst Powszechnej Licencji Publicznej GNU można\n"
+"znaleźć w pliku /usr/share/common-licenses/GPL"
 
 #: ../src/me-tv.ui.h:45
 msgid "Import a channels.conf"
@@ -452,7 +486,7 @@ msgstr "Zaimportuj plik channel.conf"
 
 #: ../src/me-tv.ui.h:46
 msgid "Keep the existing channel"
-msgstr ""
+msgstr "Pozostaw istniejący kanał"
 
 #: ../src/me-tv.ui.h:47
 msgid "Me TV - About"
@@ -460,11 +494,11 @@ msgstr "Me TV - O programie"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - Auto Record"
-msgstr ""
+msgstr "Me TV - Nagrywanie automatyczne"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Channel conflict"
-msgstr ""
+msgstr "Me TV - Konflikt kanałów"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channels Editor"
@@ -476,11 +510,11 @@ msgstr "Me TV - Wyszukiwarka wydarzeń w EPG"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - Edit Channel"
-msgstr ""
+msgstr "Me TV - Edycja kanału"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - It's TV for me computer"
-msgstr ""
+msgstr "Me TV - telewizja dla mojego komputera"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - Main Window"
@@ -524,7 +558,7 @@ msgstr "Raz"
 
 #: ../src/me-tv.ui.h:64
 msgid "Overwrite the existing channel"
-msgstr ""
+msgstr "Nadpisz istniejący kanał"
 
 #: ../src/me-tv.ui.h:65
 msgid "Page:"
@@ -556,11 +590,11 @@ msgstr "Usuń dwukropek z nazw plików nagrań"
 
 #: ../src/me-tv.ui.h:72
 msgid "Rename the new channel to a unique name"
-msgstr ""
+msgstr "Zmień nazwę nowego kanału na nazwę unikalną"
 
 #: ../src/me-tv.ui.h:73
 msgid "Repeat this action for all channel conflicts"
-msgstr ""
+msgstr "Powtórz tą akcję dla wszystkich konfliktów"
 
 #: ../src/me-tv.ui.h:74
 msgid "Scan Progress"
@@ -576,7 +610,7 @@ msgstr "Skanowanie/Importowanie"
 
 #: ../src/me-tv.ui.h:77
 msgid "Search description"
-msgstr ""
+msgstr "Opis szukania"
 
 #: ../src/me-tv.ui.h:78
 msgid "Search:"
@@ -628,7 +662,7 @@ msgstr "Pokazuj chmurki do audycji w EPG"
 
 #: ../src/me-tv.ui.h:90
 msgid "Shutdown"
-msgstr ""
+msgstr "Wyłącz"
 
 #: ../src/me-tv.ui.h:91
 msgid "Start Date:"
@@ -660,7 +694,7 @@ msgstr "Sterownik obrazu:"
 
 #: ../src/me-tv.ui.h:97
 msgid "View Schedule"
-msgstr ""
+msgstr "Zobacz harmonogram"
 
 #: ../src/me-tv.ui.h:98
 msgid "Watch Now"
@@ -676,6 +710,14 @@ msgid ""
 "\n"
 "<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
 msgstr ""
+"Twoja baza danych Me TV jest za stara, aby skorzystać z tej wersji programu. "
+"Czy chcesz usunąć swoją bazę danych? Wszystkie kanały, wydarzenia w EPG i "
+"zaplanowane nagrania będą <b>usunięte</ b>.\n"
+"\n"
+"Jeśli właśnie zaktualizowałeś program Me TV, zatem jest prawdopodobne, że "
+"chcesz to zrobić.\n"
+"\n"
+"<i>Baza danych Me TV znajduje się w ~ /.local/share/me-tv.db.</ i>"
 
 #: ../src/me-tv.ui.h:104
 msgid "_Delete my old Me TV data!"
@@ -719,7 +761,7 @@ msgstr "Napisy"
 
 #: ../src/application.cc:119
 msgid "_Streams"
-msgstr ""
+msgstr "_Strumienie"
 
 #: ../src/application.cc:120
 msgid "_Channels"
@@ -739,15 +781,15 @@ msgstr "_Prawo"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
-msgstr ""
+msgstr "Nie udało się uzyskać sesji DBus"
 
 #: ../src/application.cc:186
 msgid "Failed to start recording"
-msgstr ""
+msgstr "Nie udało się rozpocząć nagrywania"
 
 #: ../src/application.cc:378
 msgid "Failed to initialise database"
-msgstr ""
+msgstr "Nie udało się zainicjować bazy danych"
 
 #: ../src/application.cc:437
 msgid "Application has not been initialised"
@@ -755,11 +797,11 @@ msgstr "Aplikacja nie została zainicjowana"
 
 #: ../src/application.cc:494
 msgid "DBus connection not available"
-msgstr ""
+msgstr "Połączenie DBus nie jest dostępne"
 
 #: ../src/application.cc:505
 msgid "Failed to get org.gnome.SessionManager proxy"
-msgstr ""
+msgstr "Nie udało się uzyskać proxy org.gnome.SessionManager"
 
 #: ../src/application.cc:511
 msgid "Failed to call Shutdown method"
@@ -771,7 +813,7 @@ msgstr "Tytuł"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
-msgstr ""
+msgstr "Nie wybrano rzędu"
 
 #: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
@@ -789,8 +831,9 @@ msgstr "Nie znaleziono kanału '%1'"
 #: ../src/channel_manager.cc:295
 msgid "Failed to add channel: You cannot have more than 1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-msgstr[0] ""
+msgstr[0] "Nie udało się dodać kanału: Nie możesz mieć więcej niż 1 kanału"
 msgstr[1] ""
+"Nie udało się dodać kanału: Nie możnesz mieć więcej niż %1 kanałów"
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
@@ -802,15 +845,15 @@ msgstr "Częstotliwość (Hz)"
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
-msgstr ""
+msgstr "Kanał nazwany <b>'%1'</b> już isntnieje."
 
 #: ../src/channels_dialog.cc:231
 msgid "No channel selected"
-msgstr ""
+msgstr "Nie wybrano kanału"
 
 #: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
-msgstr ""
+msgstr "Wybierz tylko jeden kanał"
 
 #: ../src/data.cc:50 ../src/data.cc:55
 msgid "Failed to prepare statement: %1"
@@ -830,7 +873,7 @@ msgstr "Nie można skończyć raportu"
 
 #: ../src/data.cc:105
 msgid "Failed to execute statement: %1"
-msgstr ""
+msgstr "Nie udało się wykonać polecenia: %1"
 
 #: ../src/data.cc:176
 msgid "Failed to connect to Me TV database '%1'"
@@ -842,11 +885,11 @@ msgstr ""
 
 #: ../src/data.cc:315
 msgid "Failed to create TableAdapter: Table has no columns"
-msgstr ""
+msgstr "Nie udało się utworzyć TableAdapter: Tabela nie ma kolumn"
 
 #: ../src/device_manager.cc:134
 msgid "There are no DVB devices available"
-msgstr ""
+msgstr "Nie ma dostępnych urządzeń DVB"
 
 #: ../src/dvb_demuxer.cc:37
 msgid "Failed to open demux device"
@@ -904,7 +947,7 @@ msgstr ""
 #: ../src/dvb_frontend.cc:75
 #, c-format
 msgid "Frontend::tune_to(%d)"
-msgstr ""
+msgstr "Frontend::tune_to(%d)"
 
 #: ../src/dvb_frontend.cc:111
 msgid "Failed to tune device"
@@ -952,15 +995,15 @@ msgstr "Błąd przy odczycie poziomu sygnału"
 
 #: ../src/dvb_si.cc:411
 msgid "Failed to convert channel name"
-msgstr ""
+msgstr "Nie można przekonwertować nazwy kanału"
 
 #: ../src/dvb_si.cc:568
 msgid "ASSERT: offset > end_descriptor_offset"
-msgstr ""
+msgstr "ASSERT: offset > end_descriptor_offset"
 
 #: ../src/dvb_si.cc:579
 msgid "ASSERT: offset > end_section_offset"
-msgstr ""
+msgstr "ASSERT: offset > end_section_offset"
 
 #: ../src/dvb_si.cc:794
 msgid "No message"
@@ -980,11 +1023,11 @@ msgstr "Tytuł nieznany"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Nieznany podtytuł"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
-msgstr ""
+msgstr "Nieznany opis"
 
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
@@ -1021,7 +1064,7 @@ msgstr "Długość"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
-msgstr ""
+msgstr "Brak określonego tekstu do wyszukania"
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
@@ -1029,7 +1072,7 @@ msgstr "Brak wyników"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
-msgstr ""
+msgstr "Brak wybranego wydarzenia EPG"
 
 #: ../src/epg_thread.cc:71
 msgid "No demuxers"
@@ -1038,7 +1081,7 @@ msgstr "Brak demuxer'a"
 #: ../src/epg_thread.cc:210
 #, c-format
 msgid "Unknown source_id %u"
-msgstr ""
+msgstr "Nieznany source_id %u"
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
@@ -1050,7 +1093,7 @@ msgstr "Nie można utworzyć FIFO '%1'"
 
 #: ../src/frontend_thread.cc:273
 msgid "Failed to open FIFO for reading '%1'"
-msgstr ""
+msgstr "Nie udało się otworzyć FIFO do odczytu '% 1"
 
 #: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
 msgid "-"
@@ -1058,7 +1101,7 @@ msgstr "-"
 
 #: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
 msgid "Unknown program"
-msgstr ""
+msgstr "Nieznany program"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for the GNOME desktop"
@@ -1094,7 +1137,7 @@ msgstr ""
 
 #: ../src/main.cc:103
 msgid "Stops the rendering of the EPG event buttons on the UI."
-msgstr ""
+msgstr "Zatrzymuje renderowanie przycisków wydarzeń w EPG na UI."
 
 #: ../src/main.cc:107
 msgid ""
@@ -1107,6 +1150,8 @@ msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 msgstr ""
+"Używaj tylko określonych urządzeń frontendu (e.g. --"
+"devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 
 #: ../src/main.cc:115
 msgid ""
@@ -1124,11 +1169,11 @@ msgstr "Wystąpił nieoczekiwany błąd"
 
 #: ../src/main_window.cc:194
 msgid "Please stop all recordings before editing channels"
-msgstr ""
+msgstr "Proszę zatrzymać wszystkie nagrania przed edycją kanałów"
 
 #: ../src/main_window.cc:205
 msgid "Cannot update channels while recording"
-msgstr ""
+msgstr "Nie można zaktualizować kanałów podczas nagrywania"
 
 #: ../src/main_window.cc:551
 msgid "Failed to start engine: Engine has already been started"
@@ -1144,6 +1189,9 @@ msgid ""
 "stop this message from displaying you can use the --no-screensaver-inhibit "
 "command line option.  The error message was '%1'"
 msgstr ""
+"Wystąpił błąd podczas próby kontaktu z wygaszaczem GNOME. Aby wyłączyć "
+"wyświetlanie tego komunikatu, możesz \r\n"
+"użyć komendę --no-screensaver-inhibit w terminalu. Komunikat błędu '% 1'"
 
 #: ../src/me-tv.cc:93
 msgid "Failed to get time"
@@ -1159,11 +1207,11 @@ msgstr "Brak tekstowej wartości dla '%1'"
 
 #: ../src/me-tv-ui.cc:88 ../src/me-tv-ui.cc:103
 msgid "Failed to get active text value"
-msgstr ""
+msgstr "Nie udało się uzyskać aktywnych wartości tekstowych"
 
 #: ../src/me-tv-ui.cc:225
 msgid "Failed to get active integer value"
-msgstr ""
+msgstr "Nie udało się uzyskać aktywnej wartości całkowitej"
 
 #: ../src/mpeg_stream.cc:317
 msgid "Failed to find Program Map PID for service"
@@ -1195,7 +1243,7 @@ msgstr "Kanada"
 
 #: ../src/scan_dialog.cc:161
 msgid "Czech Republic"
-msgstr ""
+msgstr "Czechy"
 
 #: ../src/scan_dialog.cc:162
 msgid "Finland"
@@ -1268,7 +1316,7 @@ msgstr "Rozpoczęcie skanowania"
 
 #: ../src/scan_dialog.cc:630
 msgid "%1/%2 (%3 channels)"
-msgstr ""
+msgstr "%1/%2 (%3 kanały)"
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
@@ -1276,21 +1324,22 @@ msgstr "Skanowanie ukończone"
 
 #: ../src/scan_dialog.cc:715
 msgid "No auto scan range was specified"
-msgstr ""
+msgstr "Zakres skanowania automatycznego nie został określony"
 
 #: ../src/scan_dialog.cc:809
 msgid "Unknown scan range '%1'"
-msgstr ""
+msgstr "Nieznany zakres skanowania '%1'"
 
 #: ../src/scan_dialog.cc:824
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
+"Skanowanie automatyczne jest obsługiwane tylko w urządzeniach DVB-T i ATSC"
 
 #: ../src/scheduled_recording_manager.cc:234
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
-msgstr ""
+msgstr "Nie udało się zaplanować nagrywania: Nie ma dostępnych urządzeń"
 
 #: ../src/scheduled_recording_manager.cc:252
 msgid ""
@@ -1306,6 +1355,8 @@ msgid ""
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
+"Nie udało się zaplanować nagrywania, ponieważ masz już jedno o nazwie '% 1', "
+"które odbędzie się w tym samym czasie na tym samym kanale."
 
 #: ../src/scheduled_recording_manager.cc:435
 msgid "Scheduled recording '%1' not found"
@@ -1333,19 +1384,19 @@ msgstr "Nie wybrano zaplanowanego nagrania"
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
-msgstr ""
+msgstr "Me TV jest bezczynny"
 
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
-msgstr ""
+msgstr "Nie udało się znaleźć frontendu '% 1' dla zaplanowanego nagrywania"
 
 #: ../src/stream_manager.cc:200 ../src/stream_manager.cc:286
 msgid "Failed to get available frontend"
-msgstr ""
+msgstr "Nie udało się uzyskać dostępnego frontendu"
 
 #: ../src/stream_manager.cc:325
 msgid "Failed to get display stream"
-msgstr ""
+msgstr "Nie udało się uzyskać strumienia obrazu"
 
 #: ../src/stream_manager.cc:372
 msgid "Failed to get display frontend thread"
