@@ -9,15 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-10 13:57+1000\n"
-"PO-Revision-Date: 2010-07-09 04:59+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"POT-Creation-Date: 2010-07-12 21:51+1000\n"
+"PO-Revision-Date: 2010-07-19 13:21+0000\n"
+"Last-Translator: Jiří Novák <Unknown>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-07-10 04:15+0000\n"
+"X-Launchpad-Export-Date: 2010-07-20 04:02+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -25,6 +25,8 @@ msgid ""
 "By default, the EPG header is visible but disabling it can minimise screen "
 "real estate by reducing the vertical EPG size."
 msgstr ""
+"Standartně je zobrazena hlavička EPG. Jejím zakázáním je možno zmenšit "
+"horizontální velikost EPG."
 
 #: ../me-tv.schemas.in.h:2
 msgid "Display a channel number next to the channel name in the EPG."
@@ -40,7 +42,7 @@ msgstr "V EPG se zobrazí hlavička s datem a časem"
 
 #: ../me-tv.schemas.in.h:5
 msgid "EPG event titles to auto record"
-msgstr ""
+msgstr "Události EPG k automatickému zaznamenávání"
 
 #: ../me-tv.schemas.in.h:6
 msgid ""
@@ -125,7 +127,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:17
 msgid "Preferred language to use when selecting streams."
-msgstr ""
+msgstr "Preferovaný jazyk vybíraných streamů."
 
 #: ../me-tv.schemas.in.h:18
 msgid "Recent EPG event searches"
@@ -386,7 +388,7 @@ msgstr "Informace o události z EPG"
 msgid ""
 "EPG event titles that contain the following entries will be automatically "
 "recorded."
-msgstr ""
+msgstr "EPG události obsahující tyto položky budou automaticky zaznamenány."
 
 #: ../src/me-tv.ui.h:26
 msgid "EPG page size: "
@@ -485,7 +487,7 @@ msgstr "O aplikaci Me TV"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - Auto Record"
-msgstr ""
+msgstr "Me TV - Automatické zaznamenávání"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Channel conflict"
@@ -581,7 +583,7 @@ msgstr "Odstranit dvojtečku z názvu souborů"
 
 #: ../src/me-tv.ui.h:72
 msgid "Rename the new channel to a unique name"
-msgstr ""
+msgstr "Přejmenovat nový kanál"
 
 #: ../src/me-tv.ui.h:73
 msgid "Repeat this action for all channel conflicts"
@@ -677,6 +679,9 @@ msgid ""
 "This option will only work if your DVB setup supports auto scanning.  "
 "Currently, this feature is only supported on DVB-T and ATSC devices."
 msgstr ""
+"Tato volba funguje pouze pokud Váš DVB adaptér podporuje automatické "
+"skanovaní. V současné době je tato volba podporována pouze při použití DVB-T "
+"a ATSC zařízení."
 
 #: ../src/me-tv.ui.h:95
 msgid "This program is scheduled for recording."
@@ -692,7 +697,7 @@ msgstr "Zobrazit plánování"
 
 #: ../src/me-tv.ui.h:98
 msgid "Watch Now"
-msgstr ""
+msgstr "Sledovat"
 
 #: ../src/me-tv.ui.h:99
 msgid ""
@@ -788,7 +793,7 @@ msgstr "Aplikace nebyla inicializována"
 
 #: ../src/application.cc:494
 msgid "DBus connection not available"
-msgstr ""
+msgstr "Není spojení s DBus"
 
 #: ../src/application.cc:505
 msgid "Failed to get org.gnome.SessionManager proxy"
@@ -804,7 +809,7 @@ msgstr "Název"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
-msgstr ""
+msgstr "Není zvolen žádný řádek"
 
 #: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
@@ -822,8 +827,9 @@ msgstr "Kanál '%1' nebyl nalezen"
 #: ../src/channel_manager.cc:295
 msgid "Failed to add channel: You cannot have more than 1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nemohu přidat kanál: Nelze mít více než jeden kanál"
+msgstr[1] "Nemohu přidat kanál: Nelze mít více než %1 kanálů"
+msgstr[2] "Nemohu přidat kanál: Nelze mít více než %1 kanálů"
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
@@ -1076,11 +1082,11 @@ msgstr "Neznámé source_id %u"
 msgid "Failed to get error message"
 msgstr "Selhalo zjištění chybové zprávy"
 
-#: ../src/frontend_thread.cc:264
+#: ../src/frontend_thread.cc:266
 msgid "Failed to create FIFO '%1'"
 msgstr "Selhalo vytvoření FIFO '%1'"
 
-#: ../src/frontend_thread.cc:271
+#: ../src/frontend_thread.cc:273
 msgid "Failed to open FIFO for reading '%1'"
 msgstr "Selhalo otevření FIFO pro čtení '%1'"
 
@@ -1174,6 +1180,16 @@ msgstr "Selhalo spuštění knihovny přehrávače: knihovna již byla spuštěn
 msgid "None"
 msgstr "Nic"
 
+#: ../src/main_window.cc:941
+msgid ""
+"An error occurred while trying to communicate with the GNOME screensaver. To "
+"stop this message from displaying you can use the --no-screensaver-inhibit "
+"command line option.  The error message was '%1'"
+msgstr ""
+"Nastala chyba při komunikaci s šetřičem obrazovky GNOME. Pokud chcete "
+"zamezit dalšímu zobrazování této zprávy, můžete požít přepínač --no-"
+"screensaver. Chybová zpráva byla '%1'"
+
 #: ../src/me-tv.cc:93
 msgid "Failed to get time"
 msgstr "Selhalo zjištění času"
@@ -1224,7 +1240,7 @@ msgstr "Kanada"
 
 #: ../src/scan_dialog.cc:161
 msgid "Czech Republic"
-msgstr ""
+msgstr "Česká republika"
 
 #: ../src/scan_dialog.cc:162
 msgid "Finland"
@@ -1315,7 +1331,7 @@ msgstr "Neznámý rozsah skenování %1"
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr "Automatické skenování je k dispozici jen u zařízení DVB-T a ATSC"
 
-#: ../src/scheduled_recording_manager.cc:223
+#: ../src/scheduled_recording_manager.cc:234
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
@@ -1323,7 +1339,7 @@ msgstr ""
 "Nepodařilo se naplánovat nahrávání: žádná zařízení v ten čas nejsou k "
 "dispozici"
 
-#: ../src/scheduled_recording_manager.cc:241
+#: ../src/scheduled_recording_manager.cc:252
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
@@ -1331,7 +1347,7 @@ msgstr ""
 "Nepodařilo se naplánovat nahrávání, protože koliduje s jiným, které bylo "
 "nazváno '%1'."
 
-#: ../src/scheduled_recording_manager.cc:262
+#: ../src/scheduled_recording_manager.cc:273
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which is scheduled for the same time on the same "
@@ -1340,7 +1356,7 @@ msgstr ""
 "Nepodařilo se naplánovat nahrávání, protože už je jiné s názvem '%1' a je ve "
 "stejném čase na stejném kanále."
 
-#: ../src/scheduled_recording_manager.cc:422
+#: ../src/scheduled_recording_manager.cc:435
 msgid "Scheduled recording '%1' not found"
 msgstr "Naplánované nahrávání '%1' není dostupné"
 
@@ -1366,7 +1382,7 @@ msgstr "Není vybráno žádné naplánované nahrávání"
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
-msgstr ""
+msgstr "Me TV je nečinné"
 
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
