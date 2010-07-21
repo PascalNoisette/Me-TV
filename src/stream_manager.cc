@@ -152,7 +152,14 @@ void StreamManager::start_recording(Channel& channel)
 	if (!recording)
 	{
 		gboolean found = false;
+		EpgEvent epg_event;
+		Glib::ustring description;
 		
+		if (channel.epg_events.get_current(epg_event))
+		{
+			description = epg_event.get_title();
+		}
+
 		g_debug("Not currently recording '%s'", channel.name.c_str());
 		for (FrontendThreadList::iterator i = frontend_threads.begin(); i != frontend_threads.end(); i++)
 		{
@@ -167,7 +174,7 @@ void StreamManager::start_recording(Channel& channel)
 			    channel.transponder.frontend_parameters.frequency)
 			{
 				g_debug("Found a frontend already tuned to the correct transponder");
-				frontend_thread.start_recording(channel, channel.name, false);
+				frontend_thread.start_recording(channel, description, false);
 				update_record_action();
 				found = true;
 				break;
@@ -188,7 +195,7 @@ void StreamManager::start_recording(Channel& channel)
 				if (frontend_thread.get_streams().empty())
 				{
 					g_debug("Selected idle frontend '%s' for recording", frontend_thread.frontend.get_name().c_str());
-					frontend_thread.start_recording(channel, channel.name, false);
+					frontend_thread.start_recording(channel, description, false);
 					update_record_action();
 					found = true;
 					break;
