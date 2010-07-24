@@ -41,6 +41,7 @@ ChannelStream::ChannelStream(ChannelStreamType t, Channel& c, const Glib::ustrin
 	output_channel->set_encoding("");
 	output_channel->set_flags(output_channel->get_flags() & Glib::IO_FLAG_NONBLOCK);
 	output_channel->set_buffer_size(TS_PACKET_SIZE * PACKET_BUFFER_SIZE);
+	last_insert_time = 0;
 	
 	g_debug("Added new channel stream '%s' -> '%s'", channel.name.c_str(), filename.c_str());
 }
@@ -92,18 +93,28 @@ void ChannelStream::write(guchar* buffer, gsize length)
 	{
 		try
 		{
+			time_t now = time(NULL);
+			if (now - last_insert_time > 2)
+			{
+				last_insert_time = now;
+
+				guchar data[TS_PACKET_SIZE];
+
+				stream.build_pat(data);
+				write(data, TS_PACKET_SIZE);
+
+				stream.build_pmt(data);
+				write(data, TS_PACKET_SIZE);
+
+			}
+
 			gsize bytes_written = 0;
 			output_channel->write((const gchar*)buffer, length, bytes_written);
 		}
 		catch(...)
 		{
-			static time_t previous = 0;
-			time_t now = time(NULL);
-			if (now != previous)
-			{
-				g_debug("No output connected");
-				previous = now;
-			}
+			g_debug("Failed to write to output channel");
 		}
 	}
 }
+

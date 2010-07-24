@@ -50,7 +50,6 @@ static double				pixel_aspect;
 static int					running = 0;
 static int					width = 320, height = 200;
 static AudioChannelState	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
-static int volume = 100;
 
 #define INPUT_MOTION (ExposureMask | KeyPressMask | StructureNotifyMask | PropertyChangeMask)
 
@@ -185,13 +184,7 @@ int set_audio_channel_state(AudioChannelState state)
 void set_mute_state(bool mute)
 {
 	printf("me-tv-player (xine): Setting mute state to %s\n", mute ? "true" : "false");
-	
-	if(mute)
-	{
-	  volume = xine_get_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL);
-	}
-	
-	xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, mute ? 0 : volume);
+	xine_set_param(stream, XINE_PARAM_AUDIO_MUTE, mute ? 1 : 0);
 }
 
 void set_volume_state(int percent)
@@ -207,13 +200,12 @@ void set_volume_state(int percent)
 
 	printf("me-tv-player (xine): Setting volume to %d\n", percent);
 
-	volume = percent;
 	xine_set_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL, percent);
 }
 
 int get_volume_state()
 {
-  return xine_get_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL);
+	return xine_get_param(stream, XINE_PARAM_AUDIO_AMP_LEVEL);
 }
   
 void set_deinterlacer_state(bool deinterlace)
@@ -363,8 +355,6 @@ int main(int argc, char **argv)
 		set_deinterlacer_state(false);
 	}
 
-	set_mute_state(strcmp(argv[6], "true") == 0);
-	
 	if ((!xine_open(stream, mrl)) || (!xine_play(stream, 0, 0)))
 	{
 		fprintf(stderr, "me-tv-player (xine): Failed to open mrl '%s'\n", mrl);
@@ -373,6 +363,7 @@ int main(int argc, char **argv)
 
 	set_audio_stream(atoi(argv[7]));
 	set_subtitle_stream(atoi(argv[8]));
+	set_mute_state(strcmp(argv[6], "true") == 0);
 	set_volume_state(atoi(argv[9]));
 
 	running = 1;

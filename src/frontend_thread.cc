@@ -79,11 +79,7 @@ void FrontendThread::run()
 	pfds[0].events = POLLIN;
 	
 	guchar buffer[TS_PACKET_SIZE * PACKET_BUFFER_SIZE];
-	guchar pat[TS_PACKET_SIZE];
-	guchar pmt[TS_PACKET_SIZE];
 
-	guint last_insert_time = 0;
-	
 	g_debug("Entering FrontendThread loop (%s)", frontend.get_path().c_str());
 	while (!is_terminated())
 	{
@@ -111,25 +107,6 @@ void FrontendThread::run()
 
 				Glib::ustring message = Glib::ustring::compose("Frontend read failed (%1)", frontend.get_path().c_str());
 				throw SystemException(message);
-			}
-
-			// Insert PAT/PMT every second second
-			time_t now = time(NULL);
-			if (now - last_insert_time > 2)
-			{
-				g_debug("Writing PAT/PMT header");
-
-				for (ChannelStreamList::iterator i = streams.begin(); i != streams.end(); i++)
-				{
-					ChannelStream& channel_stream = **i;
-
-					channel_stream.stream.build_pat(pat);
-					channel_stream.stream.build_pmt(pmt);
-
-					channel_stream.write(pat, TS_PACKET_SIZE);
-					channel_stream.write(pmt, TS_PACKET_SIZE);
-				}
-				last_insert_time = now;
 			}
 
 			for (guint offset = 0; offset < (guint)bytes_read; offset += TS_PACKET_SIZE)

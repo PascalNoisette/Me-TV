@@ -38,6 +38,7 @@ class ChannelStream
 private:
 	Dvb::DemuxerList				demuxers;
 	Glib::StaticRecMutex			mutex;
+	guint					last_insert_time;
 		
 public:
 	ChannelStream(ChannelStreamType type, Channel& channel, const Glib::ustring& filename,
