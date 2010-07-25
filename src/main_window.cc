@@ -102,6 +102,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	add_accel_group(ui_manager->get_accel_group());
 	ui_manager->add_ui_from_string(ui_info);
 
+	builder->get_widget("label_time", label_time);
+
 	builder->get_widget("drawing_area_video", drawing_area_video);
 	drawing_area_video->set_double_buffered(false);
 	drawing_area_video->signal_expose_event().connect(sigc::mem_fun(*this, &MainWindow::on_drawing_area_expose_event));
@@ -310,7 +312,9 @@ void MainWindow::on_timeout()
 	try
 	{
 		guint now = time(NULL);
-	
+
+		label_time->set_text(get_local_time_text(now,"%H:%M"));
+		
 		if (channel_change_timeout > 1)
 		{
 			channel_change_timeout--;

@@ -45,6 +45,7 @@ private:
 	Gtk::MenuBar*						menu_bar;
 	Gtk::VolumeButton*					volume_button;
 	Gtk::HBox*							hbox_controls;
+	Gtk::Label*							label_time;
 	ViewMode							view_mode;
 	ViewMode							prefullscreen_view_mode;
 	guint								last_update_time;
