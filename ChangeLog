@@ -1,10 +1,12 @@
-TBA  Michael Lamothe <michael.lamothe@gmail.com>
+2010-08-04  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.3.2
 	* Fixed recording filename on instant record
 	* Fixed mute when changing channels
 	* Moved PAT/PMT write timer to channel stream class
 	* Added time to status bar
+	* Added next/previous day buttons to EPG
+	* Fixed end time calculation when scheduling a recording after event has started
 
 2010-07-15  Michael Lamothe <michael.lamothe@gmail.com>
 

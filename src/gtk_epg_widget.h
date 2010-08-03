@@ -41,6 +41,8 @@ private:
 	
 	void previous();
 	void next();
+	void previous_day();
+	void next_day();
 		
 	bool on_button_program_press_event(GdkEventButton* event, EpgEvent& epg_event);
 	bool on_button_channel_press_event(GdkEventButton* event, guint channel_id);

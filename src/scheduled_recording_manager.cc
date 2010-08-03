@@ -157,14 +157,26 @@ void ScheduledRecordingManager::set_scheduled_recording(EpgEvent& epg_event)
 	Application& application = get_application();
 	guint before = configuration_manager.get_int_value("record_extra_before");
 	guint after = configuration_manager.get_int_value("record_extra_after");
+
+	guint now = get_local_time();
 	
 	scheduled_recording.channel_id				= epg_event.channel_id;
 	scheduled_recording.description				= epg_event.get_title();
 	scheduled_recording.recurring_type			= SCHEDULED_RECORDING_RECURRING_TYPE_ONCE;
 	scheduled_recording.action_after			= SCHEDULED_RECORDING_ACTION_AFTER_NONE;
 	scheduled_recording.start_time				= convert_to_utc_time(epg_event.start_time - (before * 60));
-	scheduled_recording.duration				= epg_event.duration + ((before + after) * 60);
-	scheduled_recording.device					= "";
+
+	if (now < (scheduled_recording.start_time - before))
+	{
+		scheduled_recording.duration = epg_event.duration + ((before + after) * 60);
+	}
+	else
+	{
+		guint end_time = scheduled_recording.start_time + scheduled_recording.duration;
+		scheduled_recording.duration = end_time - now + (after * 60);
+	}
+	
+	scheduled_recording.device = "";
 	
 	set_scheduled_recording(scheduled_recording);
 }

@@ -26,10 +26,9 @@
 #include <X11/Xlib.h>
 #include <unique/unique.h>
 
-#define ME_TV_SUMMARY _("Me TV is a digital television viewer for the GNOME desktop")
+#define ME_TV_SUMMARY _("Me TV is a digital television viewer for GTK")
 #define ME_TV_DESCRIPTION _("Me TV was developed for the modern digital lounge room with a PC for a media centre that is capable "\
-	"of normal PC tasks (web surfing, word processing and watching TV). It is not designed to be a "\
-	"full-blown media centre such as MythTV but will integrate well with an existing GNOME desktop.\n")
+	"of normal PC tasks (web surfing, word processing and watching TV).\n")
 
 static UniqueResponse on_message_received (
 	UniqueApp*			app,

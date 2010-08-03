@@ -2181,15 +2181,27 @@ If you've just upgraded Me TV then this is probably what you want to do.
               <object class="GtkHBox" id="hbox_epg_controls">
                 <property name="visible">True</property>
                 <child>
+                  <object class="GtkButton" id="button_epg_previous_day">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">image_epg_previous_day</property>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkButton" id="button_epg_previous">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="image">image_back</property>
+                    <property name="image">image_epg_back</property>
+                    <property name="xalign">0.51999998092651367</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="position">0</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -2201,7 +2213,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -2209,11 +2221,22 @@ If you've just upgraded Me TV then this is probably what you want to do.
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="image">image_forward</property>
+                    <property name="image">image_epg_forward</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="position">2</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="button_epg_next_day">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">image_epg_next_day</property>
+                  </object>
+                  <packing>
+                    <property name="position">4</property>
                   </packing>
                 </child>
                 <child>
@@ -2224,7 +2247,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="position">3</property>
+                    <property name="position">5</property>
                   </packing>
                 </child>
                 <child>
@@ -2239,7 +2262,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">4</property>
+                    <property name="position">6</property>
                   </packing>
                 </child>
               </object>
@@ -2759,11 +2782,11 @@ If you've just upgraded Me TV then this is probably what you want to do.
   <object class="GtkToggleAction" id="toggle_action_visibility">
     <property name="label">Toggle Visibility</property>
   </object>
-  <object class="GtkImage" id="image_back">
+  <object class="GtkImage" id="image_epg_back">
     <property name="visible">True</property>
     <property name="stock">gtk-go-back</property>
   </object>
-  <object class="GtkImage" id="image_forward">
+  <object class="GtkImage" id="image_epg_forward">
     <property name="visible">True</property>
     <property name="stock">gtk-go-forward</property>
   </object>
@@ -2918,5 +2941,13 @@ If you've just upgraded Me TV then this is probably what you want to do.
       <action-widget response="-1">button1</action-widget>
       <action-widget response="0">button_auro_record_ok</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkImage" id="image_epg_previous_day">
+    <property name="visible">True</property>
+    <property name="stock">gtk-goto-first</property>
+  </object>
+  <object class="GtkImage" id="image_epg_next_day">
+    <property name="visible">True</property>
+    <property name="stock">gtk-goto-last</property>
   </object>
 </interface>

@@ -46,6 +46,12 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
 	builder->get_widget("button_epg_next", button);
 	button->signal_clicked().connect(sigc::mem_fun(*this, &GtkEpgWidget::next));
 
+	builder->get_widget("button_epg_previous_day", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &GtkEpgWidget::previous_day));
+
+	builder->get_widget("button_epg_next_day", button);
+	button->signal_clicked().connect(sigc::mem_fun(*this, &GtkEpgWidget::next_day));
+
 	builder->get_widget("label_epg_page", label_epg_page);
 	builder->get_widget("spin_button_epg_page", spin_button_epg_page);
 	spin_button_epg_page->signal_changed().connect(sigc::mem_fun(*this, &GtkEpgWidget::on_spin_button_epg_page_changed));
@@ -53,12 +59,7 @@ GtkEpgWidget::GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
 
 void GtkEpgWidget::set_offset(gint value)
 {
-	if (value < 0)
-	{
-		value = 0;
-	}
 	offset = value;
-
 	update();
 }
 
@@ -70,6 +71,16 @@ void GtkEpgWidget::previous()
 void GtkEpgWidget::next()
 {
 	set_offset(offset + (epg_span_hours*60*60));
+}
+
+void GtkEpgWidget::previous_day()
+{
+	set_offset(offset - (24*60*60));
+}
+
+void GtkEpgWidget::next_day()
+{
+	set_offset(offset + (24*60*60));
 }
 
 void GtkEpgWidget::on_spin_button_epg_page_changed()
@@ -144,11 +155,8 @@ void GtkEpgWidget::update_table()
 
 		Gtk::Widget* widget = NULL;
 
-		builder->get_widget("button_epg_previous", widget);
-		widget->set_sensitive(offset > 0);
-		
 		builder->get_widget("button_epg_now", widget);
-		widget->set_sensitive(offset > 0);
+		widget->set_sensitive(offset != 0);
 		
 		ChannelArray& channels = channel_manager.get_channels();
 
