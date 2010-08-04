@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-06-18 21:15-0400\n"
+"POT-Creation-Date: 2010-07-25 17:40-0400\n"
 "PO-Revision-Date: 2010-06-19 01:48+0000\n"
 "Last-Translator: Michael Lamothe <Unknown>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2010-06-20 03:44+0000\n"
+"X-Launchpad-Export-Date: 2010-08-04 04:02+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -39,7 +39,7 @@ msgid "Displays the date/time header in the EPG"
 msgstr "Mostra o cabeçalho data/tempo no EPG"
 
 #: ../me-tv.schemas.in.h:5
-msgid "Drop out of fullscreen mode when showing dialogs"
+msgid "EPG event titles to auto record"
 msgstr ""
 
 #: ../me-tv.schemas.in.h:6
@@ -106,6 +106,11 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:14
 msgid ""
+"Me TV will schedule programs that have titles that contain these words."
+msgstr ""
+
+#: ../me-tv.schemas.in.h:15
+msgid ""
 "Most digital video is transmitted in an interlaced format which should be "
 "corrected before viewing. Options are \"none\", \"standard\", \"tvtime\""
 msgstr ""
@@ -113,41 +118,41 @@ msgstr ""
 "devia ser corrigido antes de ser assistido. As opções são \"nenhum\", "
 "\"padrão\", \"tvtime\""
 
-#: ../me-tv.schemas.in.h:15
+#: ../me-tv.schemas.in.h:16
 msgid ""
 "Most of the time the text encoding can be automatically determined but "
 "sometimes it needs a hint such as iso6937."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:16
-msgid "Preferred language to us when selecting streams."
-msgstr "Idioma preferido para nós ao selecionar transmissões."
-
 #: ../me-tv.schemas.in.h:17
-msgid "Recent EPG event searches"
+msgid "Preferred language to use when selecting streams."
 msgstr ""
 
 #: ../me-tv.schemas.in.h:18
+msgid "Recent EPG event searches"
+msgstr ""
+
+#: ../me-tv.schemas.in.h:19
 msgid "Remove the colon ':' from the recording filename"
 msgstr "Remover os dois pontos ':' do nome de arquivo de gravação"
 
-#: ../me-tv.schemas.in.h:19
+#: ../me-tv.schemas.in.h:20
 msgid "Sets the \"Always On Top\" attribute on the main window."
 msgstr "Define o menu de janela \"Sempre ao topo\"."
 
-#: ../me-tv.schemas.in.h:20
+#: ../me-tv.schemas.in.h:21
 msgid "Sets the audio driver for libvlc to use."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:21
+#: ../me-tv.schemas.in.h:22
 msgid "Sets the video driver for the player to use."
 msgstr "Definir driver de vídeo para o player usar."
 
-#: ../me-tv.schemas.in.h:22
+#: ../me-tv.schemas.in.h:23
 msgid "Show a tool tip when hovering over an EPG event."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:23
+#: ../me-tv.schemas.in.h:24
 msgid ""
 "Some file systems do not support a colon in a filename (e.g. FAT32). This "
 "option tells Me TV to remove it from the recording filename."
@@ -155,14 +160,6 @@ msgstr ""
 "Alguns arquivos de sistema não suportam dois pontos em um nome de arquivo "
 "(ex: FAT32). Esta opção diz ao Me TV para removê-los do nome de arquivo da "
 "gravação."
-
-#: ../me-tv.schemas.in.h:24
-msgid ""
-"Some window managers don't like showing dialogs such as the EPG dialog over "
-"a fullscreen, \"Always On Top\" window such as the main window. This option "
-"tells Me TV to come out of fullscreen mode while those dialogs are shown and "
-"return to fullscreen mode when the dialog is closed."
-msgstr ""
 
 #: ../me-tv.schemas.in.h:25
 msgid "Tells Me TV to display an icon the notification area."
@@ -296,27 +293,27 @@ msgid " minutes"
 msgstr " minutos"
 
 #: ../src/me-tv.ui.h:3
+msgid "00:00"
+msgstr ""
+
+#: ../src/me-tv.ui.h:4
 msgid ":"
 msgstr ":"
 
-#: ../src/me-tv.ui.h:4
+#: ../src/me-tv.ui.h:5
 msgid "<b>Device:</b>"
 msgstr "<b>Dispositivo:</b>"
 
-#: ../src/me-tv.ui.h:5
+#: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
 msgstr ""
 
-#: ../src/me-tv.ui.h:6
+#: ../src/me-tv.ui.h:7
 msgid ""
 "A channels.conf file is a common file format for storing channels and can be "
 "read by many applications.  You may have one of these from another DVB "
 "application. The <i>scan</i> command line application is the most common way "
 "to generate a channels.conf file."
-msgstr ""
-
-#: ../src/me-tv.ui.h:7
-msgid "AU"
 msgstr ""
 
 #: ../src/me-tv.ui.h:8
@@ -328,10 +325,6 @@ msgid "After:"
 msgstr "Depois:"
 
 #: ../src/me-tv.ui.h:10
-msgid "All"
-msgstr "Todos"
-
-#: ../src/me-tv.ui.h:11
 msgid ""
 "An initial scan file is used to seed the tuner with some initial parameters "
 "to help it find DVB services.  Many popular initial scan files are available "
@@ -339,96 +332,94 @@ msgid ""
 "distributions.  Look for <i>dvb-apps</i> in your package management system."
 msgstr ""
 
-#: ../src/me-tv.ui.h:12
+#: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
 msgstr "Driver de áudio:"
 
-#: ../src/me-tv.ui.h:13 ../src/scan_dialog.cc:159
-msgid "Australia"
-msgstr "Austrália"
-
-#: ../src/me-tv.ui.h:14
+#: ../src/me-tv.ui.h:12
 msgid "Auto scan"
 msgstr "Auto busca"
 
-#: ../src/me-tv.ui.h:15
+#: ../src/me-tv.ui.h:13
 msgid "Cancel channel import"
 msgstr ""
 
-#: ../src/me-tv.ui.h:16
+#: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
 msgstr "Frequência do Canal: "
 
-#: ../src/me-tv.ui.h:17
+#: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
 msgstr "Nome do Canal: "
 
-#: ../src/me-tv.ui.h:18
+#: ../src/me-tv.ui.h:16
 msgid "Channel:"
 msgstr "Canal:"
 
-#: ../src/me-tv.ui.h:19
+#: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
 msgstr "Fechar Me TV"
 
-#: ../src/me-tv.ui.h:20
+#: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
 msgstr "Copyright &#xA9; Michael Lamothe"
 
-#: ../src/me-tv.ui.h:21
+#: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
 msgstr "Tipo de desentrelaçamento"
 
-#: ../src/me-tv.ui.h:22
+#: ../src/me-tv.ui.h:20
 msgid "Description:"
 msgstr "Descrição:"
 
-#: ../src/me-tv.ui.h:23
+#: ../src/me-tv.ui.h:21
 msgid "Device Text"
 msgstr "Texto do dispositivo"
 
-#: ../src/me-tv.ui.h:24
+#: ../src/me-tv.ui.h:22
 msgid "Do Nothing"
 msgstr "Não Fazer Nada"
 
-#: ../src/me-tv.ui.h:25
+#: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
 msgstr "Arraste e solte os canais para reorganizá-los."
 
-#: ../src/me-tv.ui.h:26
+#: ../src/me-tv.ui.h:24
 msgid "Duration:"
 msgstr "Duração:"
 
-#: ../src/me-tv.ui.h:27
+#: ../src/me-tv.ui.h:25
 msgid "EPG event information"
 msgstr ""
 
-#: ../src/me-tv.ui.h:28
+#: ../src/me-tv.ui.h:26
+msgid ""
+"EPG event titles that contain the following entries will be automatically "
+"recorded."
+msgstr ""
+
+#: ../src/me-tv.ui.h:27
 msgid "EPG page size: "
 msgstr ""
 
-#: ../src/me-tv.ui.h:29
+#: ../src/me-tv.ui.h:28
 msgid "EPG span: "
 msgstr ""
 
-#: ../src/me-tv.ui.h:30
+#: ../src/me-tv.ui.h:29
 msgid "Every day"
 msgstr "Todo dia"
 
-#: ../src/me-tv.ui.h:31
+#: ../src/me-tv.ui.h:30
 msgid "Every week"
 msgstr "Toda semana"
 
-#: ../src/me-tv.ui.h:32
+#: ../src/me-tv.ui.h:31
 msgid "Every weekday"
 msgstr "Todo dia da semana"
 
-#: ../src/me-tv.ui.h:33
-msgid "Fullscreen workaround"
-msgstr ""
-
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
-#: ../src/me-tv.ui.h:35
+#: ../src/me-tv.ui.h:33
 msgid ""
 "GNU General Public License:\n"
 "\n"
@@ -466,229 +457,225 @@ msgstr ""
 "Em sistemas Debian, o texto completo da Licença Pública Geral pode ser\n"
 "encontrado no arquivo GPL em /usr/share/common-licenses/GPL"
 
-#: ../src/me-tv.ui.h:48
-msgid "IT"
-msgstr ""
-
-#: ../src/me-tv.ui.h:49
+#: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
 msgstr "Importar um canal.conf"
 
-#: ../src/me-tv.ui.h:50 ../src/scan_dialog.cc:164
-msgid "Italy"
-msgstr "Itália"
-
-#: ../src/me-tv.ui.h:51
+#: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
 msgstr ""
 
-#: ../src/me-tv.ui.h:52
+#: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
 msgstr "Sobre - Me TV"
 
-#: ../src/me-tv.ui.h:53
+#: ../src/me-tv.ui.h:49
+msgid "Me TV - Auto Record"
+msgstr ""
+
+#: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
 msgstr ""
 
-#: ../src/me-tv.ui.h:54
+#: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
 msgstr "Editor de canais - Me TV"
 
-#: ../src/me-tv.ui.h:55
+#: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
 msgstr ""
 
-#: ../src/me-tv.ui.h:56
+#: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
 msgstr "Editar Canal - Me TV"
 
-#: ../src/me-tv.ui.h:57
+#: ../src/me-tv.ui.h:54
+msgid "Me TV - It's TV for me computer"
+msgstr ""
+
+#: ../src/me-tv.ui.h:55
 msgid "Me TV - Main Window"
 msgstr "Janela principal - Me TV"
 
-#: ../src/me-tv.ui.h:58
+#: ../src/me-tv.ui.h:56
 msgid "Me TV - Preferences Window"
 msgstr "Janela de preferências - Me TV"
 
-#: ../src/me-tv.ui.h:59
+#: ../src/me-tv.ui.h:57
 msgid "Me TV - Program Details"
 msgstr "Detalhes do Programa - Me TV"
 
-#: ../src/me-tv.ui.h:60
+#: ../src/me-tv.ui.h:58
 msgid "Me TV - Scan Wizard"
 msgstr "Assistente de Busca - Me TV"
 
-#: ../src/me-tv.ui.h:61
+#: ../src/me-tv.ui.h:59
 msgid "Me TV - Scheduled Recording"
 msgstr "Gravação agendada - Me TV"
 
-#: ../src/me-tv.ui.h:62
+#: ../src/me-tv.ui.h:60
 msgid "Me TV - Scheduled Recordings"
 msgstr "Gravações Agendadas - Me TV"
 
-#: ../src/me-tv.ui.h:63
+#: ../src/me-tv.ui.h:61
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
 msgstr "Me TV é um visualizador de TV Digital (DVB) para o GNOME"
 
-#: ../src/me-tv.ui.h:64
+#: ../src/me-tv.ui.h:62
 msgid "Me TV project website"
 msgstr "Website do projeto Me TV"
 
-#: ../src/me-tv.ui.h:65
+#: ../src/me-tv.ui.h:63
 msgid "Now"
 msgstr "Agora"
 
-#: ../src/me-tv.ui.h:66
+#: ../src/me-tv.ui.h:64
 msgid "Once"
 msgstr "Uma vez"
 
-#: ../src/me-tv.ui.h:67
+#: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
 msgstr ""
 
-#: ../src/me-tv.ui.h:68
+#: ../src/me-tv.ui.h:66
 msgid "Page:"
 msgstr "Página:"
 
-#: ../src/me-tv.ui.h:69
+#: ../src/me-tv.ui.h:67
 msgid "Preferred language:"
 msgstr "Idioma preferido:"
 
-#: ../src/me-tv.ui.h:70
+#: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
 msgstr "Gravar extra depois: "
 
-#: ../src/me-tv.ui.h:71
+#: ../src/me-tv.ui.h:69
 msgid "Record extra before: "
 msgstr "Gravar extra antes: "
 
-#: ../src/me-tv.ui.h:72
+#: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
 msgstr "Diretório de gravação: "
 
-#: ../src/me-tv.ui.h:73
+#: ../src/me-tv.ui.h:71
 msgid "Recurring:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:74
+#: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
 msgstr "Remover dois pontos dos nomes de arquivo de gravação"
 
-#: ../src/me-tv.ui.h:75
+#: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
 msgstr ""
 
-#: ../src/me-tv.ui.h:76
+#: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
 msgstr ""
 
-#: ../src/me-tv.ui.h:77
-msgid "SI"
-msgstr ""
-
-#: ../src/me-tv.ui.h:78
+#: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
 msgstr "Progresso da Busca"
 
-#: ../src/me-tv.ui.h:79
+#: ../src/me-tv.ui.h:76
 msgid "Scan using an initial scan file"
 msgstr "Buscar usando um arquivo de busca inicial"
 
-#: ../src/me-tv.ui.h:80
+#: ../src/me-tv.ui.h:77
 msgid "Scanning/Importing"
 msgstr "Escaneando/Importando"
 
-#: ../src/me-tv.ui.h:81
+#: ../src/me-tv.ui.h:78
 msgid "Search description"
 msgstr "Descrição da busca"
 
-#: ../src/me-tv.ui.h:82
+#: ../src/me-tv.ui.h:79
 msgid "Search:"
 msgstr "Procurar:"
 
-#: ../src/me-tv.ui.h:83
+#: ../src/me-tv.ui.h:80
 msgid "See https://launchpad.net/me-tv"
 msgstr "Veja https://launchpad.net/me-tv"
 
-#: ../src/me-tv.ui.h:84
+#: ../src/me-tv.ui.h:81
 msgid "Select A Recording Directory"
 msgstr "Selecione um Diretório de Gravação"
 
-#: ../src/me-tv.ui.h:85
+#: ../src/me-tv.ui.h:82
 msgid "Select Scan File"
 msgstr "Selecione o arquivo de procura"
 
-#: ../src/me-tv.ui.h:86
+#: ../src/me-tv.ui.h:83
 msgid "Select a channels.conf file"
 msgstr "Selecione um arquivo channels.conf"
 
-#: ../src/me-tv.ui.h:87
+#: ../src/me-tv.ui.h:84
 msgid "Select a file"
 msgstr "Selecionar um arquivo"
 
-#: ../src/me-tv.ui.h:88
+#: ../src/me-tv.ui.h:85
 msgid "Set \"Always on Top\" at startup"
 msgstr "Ajustar para \"sempre no topo\" na inicialização"
 
-#: ../src/me-tv.ui.h:89
+#: ../src/me-tv.ui.h:86
 msgid "Show EPG header"
 msgstr "Exibir cabeçalhos EPG"
 
-#: ../src/me-tv.ui.h:90
+#: ../src/me-tv.ui.h:87
 msgid "Show a status icon in the notification area"
 msgstr "Mostrar um ícone de status na área de notificação"
 
-#: ../src/me-tv.ui.h:91
+#: ../src/me-tv.ui.h:88
 msgid "Show channel number"
 msgstr "Mostrar número do canal"
 
-#: ../src/me-tv.ui.h:92
+#: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
 msgstr "Exibir tempo em botões de eventos EGP"
 
-#: ../src/me-tv.ui.h:93
+#: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
 msgstr "Exibir dicas para botões de eventos EPG"
 
-#: ../src/me-tv.ui.h:94
+#: ../src/me-tv.ui.h:91
 msgid "Shutdown"
 msgstr "Desligar"
 
-#: ../src/me-tv.ui.h:95 ../src/scan_dialog.cc:168
-msgid "Slovenia"
-msgstr "Eslovênia"
-
-#: ../src/me-tv.ui.h:96
+#: ../src/me-tv.ui.h:92
 msgid "Start Date:"
 msgstr "Data Inicial:"
 
-#: ../src/me-tv.ui.h:97
+#: ../src/me-tv.ui.h:93
 msgid "Start Time:"
 msgstr "Hora de início:"
 
-#: ../src/me-tv.ui.h:98
+#: ../src/me-tv.ui.h:94
 msgid "Text encoding:"
 msgstr "Codificação do texto:"
 
-#: ../src/me-tv.ui.h:99
+#: ../src/me-tv.ui.h:95
 msgid ""
 "This option will only work if your DVB setup supports auto scanning.  "
 "Currently, this feature is only supported on DVB-T and ATSC devices."
 msgstr ""
 
-#: ../src/me-tv.ui.h:100
+#: ../src/me-tv.ui.h:96
 msgid "This program is scheduled for recording."
 msgstr ""
 
-#: ../src/me-tv.ui.h:101
+#: ../src/me-tv.ui.h:97
 msgid "Video driver:"
 msgstr "Driver de vídeo:"
 
-#: ../src/me-tv.ui.h:102
+#: ../src/me-tv.ui.h:98
 msgid "View Schedule"
 msgstr "Visualisar Programação"
 
-#: ../src/me-tv.ui.h:103
+#: ../src/me-tv.ui.h:99
+msgid "Watch Now"
+msgstr ""
+
+#: ../src/me-tv.ui.h:100
 msgid ""
 "Your Me TV database is too old to use this version of Me TV.  Would you like "
 "to clear the Me TV database?  All of your channels, EPG events and scheduled "
@@ -707,15 +694,15 @@ msgstr ""
 "\n"
 "<i>O banco de dados do Me TV está localizado em  ~/.local/share/me-tv.db.</i>"
 
-#: ../src/me-tv.ui.h:108
+#: ../src/me-tv.ui.h:105
 msgid "_Delete my old Me TV data!"
 msgstr "E_xcluir meus dados antigos do Me TV!"
 
-#: ../src/me-tv.ui.h:109
+#: ../src/me-tv.ui.h:106
 msgid "channels"
 msgstr "canais"
 
-#: ../src/application.cc:42
+#: ../src/application.cc:43
 msgid "Application has already been initialised"
 msgstr "O aplicativo já iniciou"
 
@@ -723,98 +710,104 @@ msgstr "O aplicativo já iniciou"
 msgid "The SQLite version is not thread-safe"
 msgstr ""
 
-#: ../src/application.cc:114
+#: ../src/application.cc:112
 msgid "_File"
 msgstr "_Arquivo"
 
-#: ../src/application.cc:115
+#: ../src/application.cc:113
 msgid "_View"
 msgstr "_Ver"
 
-#: ../src/application.cc:116
+#: ../src/application.cc:114
 msgid "_Video"
 msgstr "Ví_deo"
 
-#: ../src/application.cc:117
+#: ../src/application.cc:115
 msgid "_Audio"
 msgstr "Áud_io"
 
-#: ../src/application.cc:118
+#: ../src/application.cc:116
 msgid "_Help"
 msgstr "Aj_uda"
 
-#: ../src/application.cc:120
+#: ../src/application.cc:118
 msgid "Subtitles"
 msgstr "Legendas"
 
-#: ../src/application.cc:121
+#: ../src/application.cc:119
 msgid "_Streams"
 msgstr "_Transmissões"
 
-#: ../src/application.cc:122
+#: ../src/application.cc:120
 msgid "_Channels"
 msgstr "_Canais"
 
-#: ../src/application.cc:125
+#: ../src/application.cc:123
 msgid "_Both"
 msgstr "Ambo_s"
 
-#: ../src/application.cc:126
+#: ../src/application.cc:124
 msgid "_Left"
 msgstr "Es_querda"
 
-#: ../src/application.cc:127
+#: ../src/application.cc:125
 msgid "_Right"
 msgstr "Di_reita"
 
-#: ../src/application.cc:139
+#: ../src/application.cc:137
 msgid "Failed to get DBus session"
 msgstr ""
 
-#: ../src/application.cc:192
+#: ../src/application.cc:186
 msgid "Failed to start recording"
 msgstr "Falhou ao iniciar gravação"
 
-#: ../src/application.cc:483
+#: ../src/application.cc:378
 msgid "Failed to initialise database"
 msgstr "Falha ao inicial banco de dados"
 
-#: ../src/application.cc:542
+#: ../src/application.cc:437
 msgid "Application has not been initialised"
 msgstr "O Aplicativo não foi inicializado"
 
-#: ../src/application.cc:580
-#, c-format
-msgid "Changing channel to '%s'"
-msgstr "Mudando canal para '%s'"
+#: ../src/application.cc:494
+msgid "DBus connection not available"
+msgstr ""
 
-#: ../src/application.cc:599
-#, c-format
-msgid "Channel changed to %s"
-msgstr "Canal mudado para %s"
+#: ../src/application.cc:505
+msgid "Failed to get org.gnome.SessionManager proxy"
+msgstr ""
 
-#: ../src/application.cc:606
-msgid "Main window has not been created"
-msgstr "A janela principal não foi criada"
+#: ../src/application.cc:511
+msgid "Failed to call Shutdown method"
+msgstr ""
 
-#: ../src/channel_manager.cc:110 ../src/channel_manager.cc:183
+#: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
+msgid "Title"
+msgstr "Título"
+
+#: ../src/auto_record_dialog.cc:93
+msgid "No row selected"
+msgstr ""
+
+#: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
 msgid "Unknown frontend type"
 msgstr "Tipo de frontend desconhecido"
 
-#: ../src/channel_manager.cc:253
+#: ../src/channel_manager.cc:258
 msgid "Invalid channel index"
 msgstr "Índice de canal inválido"
 
-#: ../src/channel_manager.cc:267
+#: ../src/channel_manager.cc:272
 msgid "Channel '%1' not found"
 msgstr "O canal '%1' não foi encontrado."
 
-#: ../src/channel_manager.cc:290
-msgid "Failed to add channel: You cannot have more than %1 channel"
+#: ../src/channel_manager.cc:295
+msgid "Failed to add channel: You cannot have more than 1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-msgstr[0] "Falha ao adicionar canal: Você não pode ter mais que %1 canal"
-msgstr[1] "Falha ao adicionar canais: Você não pode ter mais que %1 canais"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
@@ -828,11 +821,11 @@ msgstr "Frequência (Hz)"
 msgid "A channel named <b>'%1'</b> already exists."
 msgstr ""
 
-#: ../src/channels_dialog.cc:233
+#: ../src/channels_dialog.cc:231
 msgid "No channel selected"
 msgstr ""
 
-#: ../src/channels_dialog.cc:238
+#: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
 msgstr "Selecionar somente um canal"
 
@@ -868,7 +861,7 @@ msgstr ""
 msgid "Failed to create TableAdapter: Table has no columns"
 msgstr ""
 
-#: ../src/device_manager.cc:138
+#: ../src/device_manager.cc:134
 msgid "There are no DVB devices available"
 msgstr ""
 
@@ -997,25 +990,25 @@ msgstr "Falha ao converter para UTF-8: %1"
 msgid "Window ID was 0"
 msgstr "ID da janela foi 0"
 
-#: ../src/epg_event.cc:80
+#: ../src/epg_event.cc:79
 msgid "Unknown title"
 msgstr "Título desconhecido"
 
-#: ../src/epg_event.cc:81
+#: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
 msgstr "Legenda desconhecida"
 
-#: ../src/epg_event.cc:82 ../src/scheduled_recording_dialog.cc:126
+#: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
 msgstr "Descrição desconhecida"
 
-#: ../src/epg_event.cc:101 ../src/scheduled_recording.cc:47
+#: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
 msgstr[0] "1 hora"
 msgstr[1] "%1 horas"
 
-#: ../src/epg_event.cc:109 ../src/scheduled_recording.cc:55
+#: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
 msgstr[0] "1 minuto"
@@ -1024,10 +1017,6 @@ msgstr[1] "%1 minutos"
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
 msgstr " "
-
-#: ../src/epg_event_search_dialog.cc:60
-msgid "Title"
-msgstr "Título"
 
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
@@ -1048,23 +1037,19 @@ msgstr "Duração"
 msgid "No search text specified"
 msgstr "Busca não especificada"
 
-#: ../src/epg_event_search_dialog.cc:143
+#: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
 msgstr "Sem resultados"
 
-#: ../src/epg_event_search_dialog.cc:155
+#: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
-msgstr ""
-
-#: ../src/epg_events.cc:305
-msgid "EPG event not found"
 msgstr ""
 
 #: ../src/epg_thread.cc:71
 msgid "No demuxers"
 msgstr ""
 
-#: ../src/epg_thread.cc:211
+#: ../src/epg_thread.cc:210
 #, c-format
 msgid "Unknown source_id %u"
 msgstr ""
@@ -1073,19 +1058,19 @@ msgstr ""
 msgid "Failed to get error message"
 msgstr "Falha ao obter mensagem de erro"
 
-#: ../src/frontend_thread.cc:264
+#: ../src/frontend_thread.cc:243
 msgid "Failed to create FIFO '%1'"
 msgstr "Erro ao criar FIFO '%1'"
 
-#: ../src/frontend_thread.cc:271
+#: ../src/frontend_thread.cc:250
 msgid "Failed to open FIFO for reading '%1'"
 msgstr ""
 
-#: ../src/gtk_epg_widget.cc:285 ../src/gtk_epg_widget.cc:340
+#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
 msgid "-"
 msgstr "-"
 
-#: ../src/gtk_epg_widget.cc:285 ../src/gtk_epg_widget.cc:340
+#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
 msgid "Unknown program"
 msgstr "Programa desconhecido"
 
@@ -1148,31 +1133,38 @@ msgstr "Mostrar opções de ajuda do Me TV"
 msgid "An unhandled error occurred"
 msgstr "Um erro desconhecido ocorreu"
 
-#: ../src/main_window.cc:191
+#: ../src/main_window.cc:196
 msgid "Please stop all recordings before editing channels"
 msgstr ""
 
-#: ../src/main_window.cc:202
+#: ../src/main_window.cc:207
 msgid "Cannot update channels while recording"
 msgstr ""
 
-#: ../src/main_window.cc:589
+#: ../src/main_window.cc:555
 msgid "Failed to start engine: Engine has already been started"
 msgstr "Falha ao iniciar mecanismo: O mecanismo já foi inicializado"
 
-#: ../src/main_window.cc:663
+#: ../src/main_window.cc:631
 msgid "None"
 msgstr "Nada"
 
-#: ../src/me-tv.cc:75
+#: ../src/main_window.cc:945
+msgid ""
+"An error occurred while trying to communicate with the GNOME screensaver. To "
+"stop this message from displaying you can use the --no-screensaver-inhibit "
+"command line option.  The error message was '%1'"
+msgstr ""
+
+#: ../src/me-tv.cc:93
 msgid "Failed to get time"
 msgstr "Falha ao obter tempo"
 
-#: ../src/me-tv.cc:153
+#: ../src/me-tv.cc:172
 msgid "Failed to find a value for '%1'"
 msgstr "Falha ao pesquisar um valor para '%1'"
 
-#: ../src/me-tv.cc:178
+#: ../src/me-tv.cc:197
 msgid "Failed to find a text value for '%1'"
 msgstr "Falha ao pesquisar um valor de texto para '%1'"
 
@@ -1204,39 +1196,55 @@ msgstr "Nome do serviço"
 msgid "Signal Strength"
 msgstr ""
 
+#: ../src/scan_dialog.cc:159
+msgid "Australia"
+msgstr "Austrália"
+
 #: ../src/scan_dialog.cc:160
 msgid "Canada"
 msgstr "Canadá"
 
 #: ../src/scan_dialog.cc:161
+msgid "Czech Republic"
+msgstr ""
+
+#: ../src/scan_dialog.cc:162
 msgid "Finland"
 msgstr "Finlândia"
 
-#: ../src/scan_dialog.cc:162
+#: ../src/scan_dialog.cc:163
 msgid "France"
 msgstr "França"
 
-#: ../src/scan_dialog.cc:163
+#: ../src/scan_dialog.cc:164
 msgid "Germany"
 msgstr "Alemanha"
 
 #: ../src/scan_dialog.cc:165
+msgid "Italy"
+msgstr "Itália"
+
+#: ../src/scan_dialog.cc:166
 msgid "Lithuania"
 msgstr "Lituânia"
 
-#: ../src/scan_dialog.cc:166
+#: ../src/scan_dialog.cc:167
 msgid "New Zealand"
 msgstr ""
 
-#: ../src/scan_dialog.cc:167
+#: ../src/scan_dialog.cc:168
 msgid "Spain"
 msgstr "Espanha"
 
 #: ../src/scan_dialog.cc:169
+msgid "Slovenia"
+msgstr "Eslovênia"
+
+#: ../src/scan_dialog.cc:170
 msgid "United Kingdom"
 msgstr "Reino Unido"
 
-#: ../src/scan_dialog.cc:170
+#: ../src/scan_dialog.cc:171
 msgid "United States"
 msgstr "Estados Unidos"
 
@@ -1281,21 +1289,21 @@ msgstr "Busca completa"
 msgid "No auto scan range was specified"
 msgstr ""
 
-#: ../src/scan_dialog.cc:792
+#: ../src/scan_dialog.cc:809
 msgid "Unknown scan range '%1'"
 msgstr ""
 
-#: ../src/scan_dialog.cc:807
+#: ../src/scan_dialog.cc:824
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:210
+#: ../src/scheduled_recording_manager.cc:250
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:227
+#: ../src/scheduled_recording_manager.cc:270
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
@@ -1303,7 +1311,7 @@ msgstr ""
 "Falhou ao salvar gravação agendada por que está conflitando com outra "
 "gravação agendada chamada '%1'."
 
-#: ../src/scheduled_recording_manager.cc:248
+#: ../src/scheduled_recording_manager.cc:291
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which is scheduled for the same time on the same "
@@ -1312,7 +1320,7 @@ msgstr ""
 "Falhou ao salvar a gravação agendada por que você já tem uma gravação "
 "agendada chamada '%1', que está agendado para o mesmo horário no mesmo canal."
 
-#: ../src/scheduled_recording_manager.cc:408
+#: ../src/scheduled_recording_manager.cc:453
 msgid "Scheduled recording '%1' not found"
 msgstr "Não foi encontrada a gravação agendada '%1'."
 
@@ -1336,26 +1344,51 @@ msgstr "Dispositivo"
 msgid "No scheduled recording selected"
 msgstr "Não foi selecionada nenhuma gravação agendada"
 
-#: ../src/status_icon.cc:110
-msgid "Not available"
-msgstr "Indisponível"
+#: ../src/status_icon.cc:112
+msgid "Me TV is idle"
+msgstr ""
 
-#: ../src/stream_manager.cc:114
+#: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
 msgstr ""
 
-#: ../src/stream_manager.cc:189 ../src/stream_manager.cc:272
+#: ../src/stream_manager.cc:207 ../src/stream_manager.cc:293
 msgid "Failed to get available frontend"
 msgstr ""
 
-#: ../src/stream_manager.cc:310
+#: ../src/stream_manager.cc:332
 msgid "Failed to get display stream"
 msgstr ""
 
-#: ../src/stream_manager.cc:357
+#: ../src/stream_manager.cc:379
 msgid "Failed to get display frontend thread"
 msgstr ""
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
 msgstr " thread já foi iniciada"
+
+#~ msgid "Preferred language to us when selecting streams."
+#~ msgstr "Idioma preferido para nós ao selecionar transmissões."
+
+#~ msgid "All"
+#~ msgstr "Todos"
+
+#, c-format
+#~ msgid "Channel changed to %s"
+#~ msgstr "Canal mudado para %s"
+
+#, c-format
+#~ msgid "Changing channel to '%s'"
+#~ msgstr "Mudando canal para '%s'"
+
+#~ msgid "Main window has not been created"
+#~ msgstr "A janela principal não foi criada"
+
+#~ msgid "Failed to add channel: You cannot have more than %1 channel"
+#~ msgid_plural "Failed to add channel: You cannot have more than %1 channels"
+#~ msgstr[0] "Falha ao adicionar canal: Você não pode ter mais que %1 canal"
+#~ msgstr[1] "Falha ao adicionar canais: Você não pode ter mais que %1 canais"
+
+#~ msgid "Not available"
+#~ msgstr "Indisponível"
