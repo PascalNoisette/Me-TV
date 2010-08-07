@@ -103,6 +103,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	ui_manager->add_ui_from_string(ui_info);
 
 	builder->get_widget("label_time", label_time);
+	label_time->hide();
 
 	builder->get_widget("drawing_area_video", drawing_area_video);
 	drawing_area_video->set_double_buffered(false);
@@ -277,6 +278,7 @@ bool MainWindow::on_motion_notify_event(GdkEventMotion* event_motion)
 void MainWindow::unfullscreen(gboolean restore_mode)
 {
 	Gtk::Window::unfullscreen();
+	label_time->hide();
 	
 	if (restore_mode)
 	{
@@ -291,6 +293,7 @@ void MainWindow::fullscreen(gboolean change_mode)
 	{
 		set_view_mode(VIEW_MODE_VIDEO);
 	}
+	label_time->show();
 	
 	Gtk::Window::fullscreen();
 }
