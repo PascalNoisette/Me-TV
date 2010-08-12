@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-08-10 22:45+0000\n"
+"PO-Revision-Date: 2010-08-11 23:07+0000\n"
 "Last-Translator: DAG Software <Unknown>\n"
 "Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
-"X-Launchpad-Export-Date: 2010-08-11 04:08+0000\n"
+"X-Launchpad-Export-Date: 2010-08-12 04:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -145,47 +145,52 @@ msgstr "Nastaví atribút hlavného okna na \"Vždy na vrchu\"."
 
 #: ../me-tv.schemas.in.h:21
 msgid "Sets the audio driver for libvlc to use."
-msgstr "Nastaví ovládač zvuku pre libvlc"
+msgstr "Nastaví ovládač zvuku ktorý má libvlc použiť"
 
 #: ../me-tv.schemas.in.h:22
 msgid "Sets the video driver for the player to use."
-msgstr ""
+msgstr "Nastaví ovládač videa ktorý má prehrávač použiť"
 
 #: ../me-tv.schemas.in.h:23
 msgid "Show a tool tip when hovering over an EPG event."
-msgstr ""
+msgstr "Zobraziť štítok pri pohybe nad EPG udalosťou."
 
 #: ../me-tv.schemas.in.h:24
 msgid ""
 "Some file systems do not support a colon in a filename (e.g. FAT32). This "
 "option tells Me TV to remove it from the recording filename."
 msgstr ""
+"Niektoré súborové systémy nepodporujú dvojbodku v názvoch súborov (napr. "
+"FAT32). Táto možnosť hovorí Me TV že má byť odstránená z názvu nahraného "
+"súboru."
 
 #: ../me-tv.schemas.in.h:25
 msgid "Tells Me TV to display an icon the notification area."
-msgstr ""
+msgstr "Hovorí Me TV že má zobrazovať ikonu v oznamovacej oblasti."
 
 #: ../me-tv.schemas.in.h:26
 msgid "The directory to use for recordings."
-msgstr "Adresár použitý pre nahrávanie."
+msgstr "Priečinok použitý pre nahrávky."
 
 #: ../me-tv.schemas.in.h:27
 msgid ""
 "The directory to use for recordings. This value defaults to the users home "
 "directory."
 msgstr ""
-"Adresár použitý pre nahrávanie. Predvolene je to používateľov domovský "
-"priečinok."
+"Priečinok použitý pre nahrávky. Predvolená hodnota je domovský priečinok "
+"používateľa."
 
 #: ../me-tv.schemas.in.h:28
 msgid "The height of the window before Me TV was last closed"
-msgstr ""
+msgstr "Výška okna pred tým než bol Me TV naposledy zatvorený"
 
 #: ../me-tv.schemas.in.h:29
 msgid ""
 "The height of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
+"Výška okna pred tým než bol Me TV naposledy zatvorený. Me TV použije túto "
+"hodnotu pre obnovenie hlavného okna do pôvodného tvaru."
 
 #: ../me-tv.schemas.in.h:30
 msgid "The last channel tuned to."
@@ -196,68 +201,79 @@ msgid ""
 "The number of channels to show before paging, this is deliberately set low "
 "to reduce preformance issues."
 msgstr ""
+"Počet kanálov na zobrazenie pred stránkovaním, toto je zámerne nastavené "
+"nízko na zredukovanie výkonových problémov."
 
 #: ../me-tv.schemas.in.h:32
 msgid "The number of channels to show before paging."
-msgstr ""
+msgstr "Počet kanálov na zobrazenie pred stránkovaním."
 
 #: ../me-tv.schemas.in.h:33
 msgid "The number of hours for the EPG to span on one page."
-msgstr ""
+msgstr "Počet hodín pre rozpätie stránky EPG."
 
 #: ../me-tv.schemas.in.h:34
 msgid "The text endoding that the DVB information is in."
-msgstr ""
+msgstr "Kódovanie textu v ktorom je DVB informácia."
 
 #: ../me-tv.schemas.in.h:35
 msgid "The width of the window before Me TV was last closed"
-msgstr ""
+msgstr "Šírka okna pred tým než bol Me TV naposledy zatvorený"
 
 #: ../me-tv.schemas.in.h:36
 msgid ""
 "The width of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
+"Šírka okna pred tým než bol Me TV naposledy zatvorený. Me TV použije túto "
+"hodnotu pre obnovenie hlavného okna do pôvodnej pozície."
 
 #: ../me-tv.schemas.in.h:37
 msgid "The x position of the window before Me TV was last closed"
-msgstr ""
+msgstr "X pozícia okna pred tým než bol Me TV naposledy zatvorený"
 
 #: ../me-tv.schemas.in.h:38
 msgid ""
 "The x position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"X pozícia okna pred tým než bol Me TV naposledy zatvorený. Me TV použije "
+"túto hodnotu pre obnovenie hlavného okna do pôvodnej pozície."
 
 #: ../me-tv.schemas.in.h:39
 msgid "The y position of the window before Me TV was last closed"
-msgstr ""
+msgstr "Y pozícia okna pred tým než bol Me TV naposledy zatvorený"
 
 #: ../me-tv.schemas.in.h:40
 msgid ""
 "The y position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"Y pozícia okna pred tým než bol Me TV naposledy zatvorený. Me TV použije "
+"túto hodnotu pre obnovenie hlavného okna do pôvodnej pozície."
 
 #: ../me-tv.schemas.in.h:41
 msgid ""
 "This is used to store what channel the user was last watching so it can be "
 "returned when restarting."
 msgstr ""
+"Toto sa používa na ukladanie kanála, ktorý používateľ naposledy pozeral aby "
+"sa zobrazil po ďalšom spustení."
 
 #: ../me-tv.schemas.in.h:42
 msgid "This will show the timespan of an EPG event in a tooltip."
-msgstr ""
+msgstr "Toto zobrazí časové rozpätie EPG udalostí v štítku."
 
 #: ../me-tv.schemas.in.h:43
 msgid ""
 "When this setting is false Me TV will terminate when the main window is "
 "closed."
 msgstr ""
+"Keď toto nastavenie je \"false\", Me TV sa ukončí pri zavretí hlavného okna."
 
 #: ../me-tv.schemas.in.h:44
 msgid "Whether the video should be deinterlaced."
-msgstr ""
+msgstr "Či má byť z videa odstránené prekladanie."
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
@@ -277,7 +293,7 @@ msgstr " minút"
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
-msgstr ""
+msgstr "00:00"
 
 #: ../src/me-tv.ui.h:4
 msgid ":"
@@ -289,7 +305,7 @@ msgstr "<b>Zariadenie:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
-msgstr ""
+msgstr "Kanál nazvaný 'xxx' už existuje."
 
 #: ../src/me-tv.ui.h:7
 msgid ""
@@ -298,10 +314,14 @@ msgid ""
 "application. The <i>scan</i> command line application is the most common way "
 "to generate a channels.conf file."
 msgstr ""
+"Súbor channels.conf je bežný formát súboru pre ukladanie kanálov a môže byť "
+"prečítaný mnohými programami. Možná už máte nejaký z iného DVB programu. "
+"Program príkazového riadku <i>scan</i> je najbežnejšia cesta na vytvorenie "
+"súboru channels.conf."
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
-msgstr "Pokročilé"
+msgstr "Rozšírené"
 
 #: ../src/me-tv.ui.h:9
 msgid "After:"
@@ -314,26 +334,31 @@ msgid ""
 "from the LinuxTV dvb-apps package which is included in most Linux "
 "distributions.  Look for <i>dvb-apps</i> in your package management system."
 msgstr ""
+"Počiatočný súbor skenu sa používa na seedovanie tuneru s nejakými "
+"počiatočnými parametrami na pomoc pri nájdení DVB služieb. Veľa obľúbených "
+"počiatočných súborov skenu je dostupných z LinuxTV dvb-apps balíčku ktorý je "
+"zahrnutý vo väčšine Linuxových distribúcií. Pohľadajte <i>dvb-apps</i> vo "
+"vašom systéme na správu balíčkov."
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
-msgstr "Audio ovládač:"
+msgstr "Zvukový ovládač:"
 
 #: ../src/me-tv.ui.h:12
 msgid "Auto scan"
-msgstr ""
+msgstr "Automatické hľadanie"
 
 #: ../src/me-tv.ui.h:13
 msgid "Cancel channel import"
-msgstr ""
+msgstr "Zrušiť import kanálov"
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
-msgstr ""
+msgstr "Frekvencia kanálu: "
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
-msgstr ""
+msgstr "Názov kanálu: "
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel:"
@@ -341,7 +366,7 @@ msgstr "Kanál:"
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
-msgstr ""
+msgstr "Zavrieť Me TV"
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
@@ -349,7 +374,7 @@ msgstr "Copyright &#xA9; Michael Lamothe"
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
-msgstr ""
+msgstr "Spôsob odstránenia prekladania:"
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
@@ -365,7 +390,7 @@ msgstr "Nerobiť nič"
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
-msgstr ""
+msgstr "Potiahnite a pustite kanály, ktoré chcete preusporiadať."
 
 #: ../src/me-tv.ui.h:24
 msgid "Duration:"
@@ -373,13 +398,15 @@ msgstr "Trvanie:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
-msgstr ""
+msgstr "Informácie o udalosti EPG"
 
 #: ../src/me-tv.ui.h:26
 msgid ""
 "EPG event titles that contain the following entries will be automatically "
 "recorded."
 msgstr ""
+"Názvy EPG udalostí ktoré obsahujú nasledujúce položky budú automaticky "
+"zaznamenané."
 
 #: ../src/me-tv.ui.h:27
 msgid "EPG page size: "
@@ -399,7 +426,7 @@ msgstr "Každý týždeň"
 
 #: ../src/me-tv.ui.h:31
 msgid "Every weekday"
-msgstr ""
+msgstr "Každý pracovný den"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:33
@@ -448,19 +475,19 @@ msgstr "Importovať channels.conf"
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
-msgstr ""
+msgstr "Nechať existujúci kanál"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
-msgstr "O aplikácii Me TV"
+msgstr "O programe Me TV"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
-msgstr ""
+msgstr "Me TV - Automatické zaznamenávanie"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr ""
+msgstr "Me TV - konflikt kanálov"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
@@ -468,15 +495,15 @@ msgstr "Me TV - Editor kanálov"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
-msgstr ""
+msgstr "Me TV - hľadanie EPG udalostí"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
-msgstr ""
+msgstr "Me TV - upraviť kanál"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - It's TV for me computer"
-msgstr ""
+msgstr "Me TV - televízia pre môj počítač"
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Main Window"
@@ -484,15 +511,15 @@ msgstr "Me TV - Hlavné okno"
 
 #: ../src/me-tv.ui.h:56
 msgid "Me TV - Preferences Window"
-msgstr "Me TV - Okno možností"
+msgstr "Me TV - Okno nastavení"
 
 #: ../src/me-tv.ui.h:57
 msgid "Me TV - Program Details"
-msgstr "Me TV - Detaily programu"
+msgstr "Me TV - Podrobnosti o programe"
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scan Wizard"
-msgstr "Me TV - Sprievodca ladením"
+msgstr "Me TV - Sprievodca skenovaním"
 
 #: ../src/me-tv.ui.h:59
 msgid "Me TV - Scheduled Recording"
@@ -520,7 +547,7 @@ msgstr "Raz"
 
 #: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
-msgstr ""
+msgstr "Prepísať existujúci kanál"
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
@@ -540,39 +567,39 @@ msgstr "Nahrať navyše pred: "
 
 #: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
-msgstr "Adresár pre nahrávanie: "
+msgstr "Priečinok nahrávok: "
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
-msgstr ""
+msgstr "Opakovanie:"
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
-msgstr ""
+msgstr "Odstrániť dvojbodku z názvov nahraných súborov"
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr ""
+msgstr "Premenovať nový kanál"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
-msgstr ""
+msgstr "Opakovať túto akciu pre všetky konflikty kanálov"
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
-msgstr "Priebeh ladenia"
+msgstr "Priebeh skenovania"
 
 #: ../src/me-tv.ui.h:76
 msgid "Scan using an initial scan file"
-msgstr ""
+msgstr "Skenovat použitím počiatočného súboru"
 
 #: ../src/me-tv.ui.h:77
 msgid "Scanning/Importing"
-msgstr "Ladím/Importujem"
+msgstr "Skenovanie/Importovanie"
 
 #: ../src/me-tv.ui.h:78
 msgid "Search description"
-msgstr ""
+msgstr "Hľadať v popisoch"
 
 #: ../src/me-tv.ui.h:79
 msgid "Search:"
@@ -584,15 +611,15 @@ msgstr "Pozrite https://launchpad.net/me-tv"
 
 #: ../src/me-tv.ui.h:81
 msgid "Select A Recording Directory"
-msgstr "Vyberte adresár pre nahrávanie"
+msgstr "Vybrať priečinok pre nahrávky"
 
 #: ../src/me-tv.ui.h:82
 msgid "Select Scan File"
-msgstr "Zvoľte súbor ladenia"
+msgstr "Vybrať skenovací súbor"
 
 #: ../src/me-tv.ui.h:83
 msgid "Select a channels.conf file"
-msgstr "Vyberte súbor channels.conf"
+msgstr "Vybrať súbor channels.conf"
 
 #: ../src/me-tv.ui.h:84
 msgid "Select a file"
@@ -620,7 +647,7 @@ msgstr "Zobraziť čas na tlačidlách udalostí EPG"
 
 #: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
-msgstr "Zobrazovať bubliny pre tlačidlá udalostí EPG"
+msgstr "Zobrazovať štítky pre tlačidlá udalostí EPG"
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
@@ -643,10 +670,13 @@ msgid ""
 "This option will only work if your DVB setup supports auto scanning.  "
 "Currently, this feature is only supported on DVB-T and ATSC devices."
 msgstr ""
+"Táto možnosť bude fungovať iba ak váš DVB adaptér podporuje automatické "
+"skenovanie. V súčasnosti je táto funkcia podporovaná len v DVB-T a ATSC "
+"zariadeniach."
 
 #: ../src/me-tv.ui.h:96
 msgid "This program is scheduled for recording."
-msgstr ""
+msgstr "Tento program je naplánovaný na nahrávanie."
 
 #: ../src/me-tv.ui.h:97
 msgid "Video driver:"
@@ -654,11 +684,11 @@ msgstr "Video ovládač:"
 
 #: ../src/me-tv.ui.h:98
 msgid "View Schedule"
-msgstr ""
+msgstr "Zobraziť plánovanie"
 
 #: ../src/me-tv.ui.h:99
 msgid "Watch Now"
-msgstr ""
+msgstr "Pozerať teraz"
 
 #: ../src/me-tv.ui.h:100
 msgid ""
@@ -670,10 +700,18 @@ msgid ""
 "\n"
 "<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
 msgstr ""
+"Vaša Me TV databáze je príliš stará pre použitie s touto verziou Me TV. "
+"Chceli by ste vyprázdniť Me TV databázu? Všetky vaše kanály, EPG udalosti a "
+"naplánované nahrávania budú <b>vymazané</b>.\n"
+"\n"
+"Ak ste práve aktualizovali Me TV, potom toto je pravdepodobne to čo chcete "
+"urobiť.\n"
+"\n"
+"<i>Me TV databáza sa nachádza v ~/.local/share/me-tv.db.</i>"
 
 #: ../src/me-tv.ui.h:105
 msgid "_Delete my old Me TV data!"
-msgstr "_Odstrániť straré údaje Me TV!"
+msgstr "_Odstrániť moje straré Me TV dáta!"
 
 #: ../src/me-tv.ui.h:106
 msgid "channels"
@@ -685,7 +723,7 @@ msgstr "Aplikácia už bola inicializovaná"
 
 #: ../src/application.cc:58
 msgid "The SQLite version is not thread-safe"
-msgstr ""
+msgstr "Verzia SQLite nie je \"thread-safe\""
 
 #: ../src/application.cc:112
 msgid "_File"
@@ -713,7 +751,7 @@ msgstr "Titulky"
 
 #: ../src/application.cc:119
 msgid "_Streams"
-msgstr ""
+msgstr "_Streamy"
 
 #: ../src/application.cc:120
 msgid "_Channels"
@@ -733,15 +771,15 @@ msgstr "V_pravo"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
-msgstr ""
+msgstr "Zlyhalo získanie DBus relácie"
 
 #: ../src/application.cc:186
 msgid "Failed to start recording"
-msgstr ""
+msgstr "Zlyhalo začatie nahrávania"
 
 #: ../src/application.cc:378
 msgid "Failed to initialise database"
-msgstr ""
+msgstr "Zlyhalo inicializovanie databáze"
 
 #: ../src/application.cc:437
 msgid "Application has not been initialised"
@@ -749,15 +787,15 @@ msgstr "Aplikácia nebola inicializovaná"
 
 #: ../src/application.cc:494
 msgid "DBus connection not available"
-msgstr ""
+msgstr "Spojenie s DBus nie je dostupné"
 
 #: ../src/application.cc:505
 msgid "Failed to get org.gnome.SessionManager proxy"
-msgstr ""
+msgstr "Zlyhalo získanie org.gnome.SessionManager proxy"
 
 #: ../src/application.cc:511
 msgid "Failed to call Shutdown method"
-msgstr ""
+msgstr "Zlyhalo zavolanie etódy vypnutia"
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
@@ -765,7 +803,7 @@ msgstr "Názov"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
-msgstr ""
+msgstr "Nie je zvolený žiadny riadok"
 
 #: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
@@ -774,7 +812,7 @@ msgstr "Neznámy typ rozhrania"
 
 #: ../src/channel_manager.cc:258
 msgid "Invalid channel index"
-msgstr ""
+msgstr "Neplatný index kanálu"
 
 #: ../src/channel_manager.cc:272
 msgid "Channel '%1' not found"
@@ -783,8 +821,9 @@ msgstr "Kanál '%1' nebol nájdený"
 #: ../src/channel_manager.cc:295
 msgid "Failed to add channel: You cannot have more than 1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Zlyhalo pridanie kanálu: Nemôžte mať viac ako 1 kanál"
+msgstr[1] "Zlyhalo pridanie kanálu: Nemôžte mať viac ako %1 kanály"
+msgstr[2] "Zlyhalo pridanie kanálu: Nemôžte mať viac ako %1 kanálov"
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
@@ -792,19 +831,19 @@ msgstr "Názov kanála"
 
 #: ../src/channels_dialog.cc:57
 msgid "Frequency (Hz)"
-msgstr "Kmitočet (Hz)"
+msgstr "Frekvencia (Hz)"
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
-msgstr ""
+msgstr "Kanál nazvaný <b>%1</b> iž existuje."
 
 #: ../src/channels_dialog.cc:231
 msgid "No channel selected"
-msgstr ""
+msgstr "Nebol vybratý žiadny kanál"
 
 #: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
-msgstr ""
+msgstr "Vyberte len jeden kanál"
 
 #: ../src/data.cc:50 ../src/data.cc:55
 msgid "Failed to prepare statement: %1"
@@ -812,7 +851,7 @@ msgstr "Zlyhala príprava príkazu: %1"
 
 #: ../src/data.cc:62
 msgid "Prepared statement had remaining data: %1"
-msgstr ""
+msgstr "Pripravený príkaz mal zostávajúce dáta: %1"
 
 #: ../src/data.cc:67
 msgid "Failed to create statement"
