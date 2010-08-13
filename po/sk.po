@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-08-11 23:07+0000\n"
+"PO-Revision-Date: 2010-08-12 11:59+0000\n"
 "Last-Translator: DAG Software <Unknown>\n"
 "Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
-"X-Launchpad-Export-Date: 2010-08-12 04:24+0000\n"
+"X-Launchpad-Export-Date: 2010-08-13 06:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -700,7 +700,7 @@ msgid ""
 "\n"
 "<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
 msgstr ""
-"Vaša Me TV databáze je príliš stará pre použitie s touto verziou Me TV. "
+"Vaša Me TV databáza je príliš stará pre použitie s touto verziou Me TV. "
 "Chceli by ste vyprázdniť Me TV databázu? Všetky vaše kanály, EPG udalosti a "
 "naplánované nahrávania budú <b>vymazané</b>.\n"
 "\n"
@@ -779,7 +779,7 @@ msgstr "Zlyhalo začatie nahrávania"
 
 #: ../src/application.cc:378
 msgid "Failed to initialise database"
-msgstr "Zlyhalo inicializovanie databáze"
+msgstr "Zlyhalo inicializovanie databázy"
 
 #: ../src/application.cc:437
 msgid "Application has not been initialised"
@@ -795,7 +795,7 @@ msgstr "Zlyhalo získanie org.gnome.SessionManager proxy"
 
 #: ../src/application.cc:511
 msgid "Failed to call Shutdown method"
-msgstr "Zlyhalo zavolanie etódy vypnutia"
+msgstr "Zlyhalo zavolanie metódy vypnutia"
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
@@ -855,39 +855,39 @@ msgstr "Pripravený príkaz mal zostávajúce dáta: %1"
 
 #: ../src/data.cc:67
 msgid "Failed to create statement"
-msgstr "Vytvorenie príkazu zlyhalo"
+msgstr "Zlyhalo vytvorenie príkazu"
 
 #: ../src/data.cc:75
 msgid "Failed to finalise statement"
-msgstr "Dokončenie príkazu zlyhalo"
+msgstr "Zlyhalo dokončenie príkazu"
 
 #: ../src/data.cc:105
 msgid "Failed to execute statement: %1"
-msgstr ""
+msgstr "Zlyhalo spustenie príkazu: %1"
 
 #: ../src/data.cc:176
 msgid "Failed to connect to Me TV database '%1'"
-msgstr ""
+msgstr "Zlyhalo pripojenie k Me TV databáze '%1'"
 
 #: ../src/data.cc:246
 msgid "Only integers can be primary keys"
-msgstr ""
+msgstr "Primárne kľúče môžu byť len celočíselné"
 
 #: ../src/data.cc:315
 msgid "Failed to create TableAdapter: Table has no columns"
-msgstr ""
+msgstr "Zlyhalo vytvorenie tabuľky adaptéra: tabuľka nemá stĺpce"
 
 #: ../src/device_manager.cc:134
 msgid "There are no DVB devices available"
-msgstr ""
+msgstr "Niesu dostupné žiadne DVB zariadenia"
 
 #: ../src/dvb_demuxer.cc:37
 msgid "Failed to open demux device"
-msgstr "Zlyhalo otvorenie zariadenia pre demultiplexor"
+msgstr "Zlyhalo otvorenie demultiplexora"
 
 #: ../src/dvb_demuxer.cc:68
 msgid "Failed to set PES filter"
-msgstr ""
+msgstr "Zlyhalo nastavenie PES filtra"
 
 #: ../src/dvb_demuxer.cc:87
 msgid "Failed to set section filter for demuxer"
@@ -899,7 +899,7 @@ msgstr "Zlyhalo nastavenie veľkosti vyrovnávacej pamäte pre demultiplexor"
 
 #: ../src/dvb_demuxer.cc:103
 msgid "Read timeout"
-msgstr ""
+msgstr "Vypršal čas pre čítanie"
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
@@ -919,15 +919,15 @@ msgstr "Kontrola CRC32 zlyhala"
 
 #: ../src/dvb_demuxer.cc:146
 msgid "Failed to stop demuxer"
-msgstr "Zlyhalo zastavenie demultiplexoru"
+msgstr "Zlyhalo zastavenie demultiplexora"
 
 #: ../src/dvb_demuxer.cc:161
 msgid "Failed to poll"
-msgstr "Dotazovanie zlyhalo"
+msgstr "Zlyhalo vyzvanie"
 
 #: ../src/dvb_frontend.cc:51
 msgid "Failed to open tuner"
-msgstr "Zlyhalo otvorenie tuneru"
+msgstr "Zlyhalo otváranie tunera"
 
 #: ../src/dvb_frontend.cc:56
 msgid "Failed to get tuner info"
@@ -936,7 +936,7 @@ msgstr "Zlyhalo získanie informácií o tuneri"
 #: ../src/dvb_frontend.cc:75
 #, c-format
 msgid "Frontend::tune_to(%d)"
-msgstr ""
+msgstr "Frontend::tune_to(%d)"
 
 #: ../src/dvb_frontend.cc:111
 msgid "Failed to tune device"
@@ -944,47 +944,47 @@ msgstr "Zlyhalo ladenie zariadenia"
 
 #: ../src/dvb_frontend.cc:114
 msgid "Waiting for signal lock ..."
-msgstr "Čekám na zámok signálu ..."
+msgstr "Čakanie na zámok signálu ..."
 
 #: ../src/dvb_frontend.cc:116
 msgid "Got signal lock"
-msgstr "Získal som zámok signálu"
+msgstr "Zámok signálu získaný"
 
 #: ../src/dvb_frontend.cc:132
 msgid "Failed to set tone off"
-msgstr "Vypnutie tónu zlyhalo"
+msgstr "Zlyhalo vypnutie tónu"
 
 #: ../src/dvb_frontend.cc:137
 msgid "Failed to set voltage"
-msgstr "Nastavenie napätia zlyhalo"
+msgstr "Zlyhalo nastavenie napätia"
 
 #: ../src/dvb_frontend.cc:143
 msgid "Failed to send master command"
-msgstr "Odoslanie riadiaceho príkazu zlyhalo"
+msgstr "Zlyhalo odoslanie riadiaceho príkazu"
 
 #: ../src/dvb_frontend.cc:149
 msgid "Failed to send burst"
-msgstr "Odoslanie zhluku (burst) zlyhalo"
+msgstr "Zlyhalo odoslanie dávky"
 
 #: ../src/dvb_frontend.cc:155
 msgid "Failed to set tone"
-msgstr "Nastavenie tónu zlyhalo"
+msgstr "Zlyhalo nastavenie tónu"
 
 #: ../src/dvb_frontend.cc:186
 msgid "Failed to lock to channel"
-msgstr "Uzamknutie kanálu zlyhalo"
+msgstr "Zlyhalo uzamknutie kanálu"
 
 #: ../src/dvb_frontend.cc:195
 msgid "Failed to get signal strength"
-msgstr "Zistenie sily signálu zlyhalo"
+msgstr "Zlyhalo zistenie sily signálu"
 
 #: ../src/dvb_frontend.cc:205
 msgid "Failed to get signal to noise ratio"
-msgstr "Zistenie pomeru signál/šum zlyhalo"
+msgstr "Zlyhalo zistenie pomeru signál/šum"
 
 #: ../src/dvb_si.cc:411
 msgid "Failed to convert channel name"
-msgstr ""
+msgstr "Zlyhalo konvertovanie názvu kanálu"
 
 #: ../src/dvb_si.cc:568
 msgid "ASSERT: offset > end_descriptor_offset"
@@ -1000,7 +1000,7 @@ msgstr "Žiadna správa"
 
 #: ../src/dvb_si.cc:801
 msgid "Failed to convert to UTF-8: %1"
-msgstr "Prevod do UTF-8 zlyhal: %1"
+msgstr "Zlyhalo konvertovanie do UTF-8: %1"
 
 #: ../src/engine.cc:46
 msgid "Window ID was 0"
@@ -1012,7 +1012,7 @@ msgstr "Neznámy názov"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Neznámy podtitul"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
@@ -1023,7 +1023,7 @@ msgid "1 hour"
 msgid_plural "%1 hours"
 msgstr[0] "1 hodina"
 msgstr[1] "%1 hodiny"
-msgstr[2] "%1 hodin"
+msgstr[2] "%1 hodín"
 
 #: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
@@ -1053,7 +1053,7 @@ msgstr "Dĺžka"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
-msgstr ""
+msgstr "Nebol zadaný text, ktorý se má hľadať"
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
@@ -1061,7 +1061,7 @@ msgstr "Žiadne výsledky"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
-msgstr ""
+msgstr "Nebyla vybratá žiadna udalosť EPG"
 
 #: ../src/epg_thread.cc:71
 msgid "No demuxers"
@@ -1070,11 +1070,11 @@ msgstr "Žiadne demultiplexory"
 #: ../src/epg_thread.cc:210
 #, c-format
 msgid "Unknown source_id %u"
-msgstr ""
+msgstr "Neznáme source_id %u"
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
-msgstr "Zistenie chybovej správy zlyhalo"
+msgstr "Zlyhalo zistenie chybovej správy"
 
 #: ../src/frontend_thread.cc:243
 msgid "Failed to create FIFO '%1'"
@@ -1094,8 +1094,7 @@ msgstr "Neznámy program"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for the GNOME desktop"
-msgstr ""
-"Me TV je prehrávač digitálneho televízneho vysielania pre prostredie GNOME"
+msgstr "Me TV je prehrávač digitálnej televízie pre GNOME"
 
 #: ../src/main.cc:30
 msgid ""
@@ -1124,53 +1123,58 @@ msgstr "Spustiť minimalizované v oblasti upozornení"
 
 #: ../src/main.cc:99
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
-msgstr ""
+msgstr "Zakáže EPG vlákno. Me TV prestane zbierať EPG udalosti."
 
 #: ../src/main.cc:103
 msgid "Stops the rendering of the EPG event buttons on the UI."
-msgstr ""
+msgstr "Zastaví renderovanie EPG tlačítok v UI."
 
 #: ../src/main.cc:107
 msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
+"Povie Me TV aby nevolalo metódy Inhibit/UnInhibit šetriča obrazovky v GNOME."
 
 #: ../src/main.cc:111
 msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 msgstr ""
+"Použiť len vymenované zariadenia frontendu (napr. --"
+"devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 
 #: ../src/main.cc:115
 msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 5)."
 msgstr ""
+"Ako dlho čakať (v sekundách) pred preručením kým sa čaká na dáta z demuxera "
+"(pôvodne 5)"
 
 #: ../src/main.cc:117
 msgid "Show Me TV help options"
-msgstr "Zobraziť voľby nápovedy Me TV"
+msgstr "Zobraziť možnosti nápovedy Me TV"
 
 #: ../src/main.cc:162
 msgid "An unhandled error occurred"
-msgstr "Nastala neošetrená chyba"
+msgstr "Nastala neočakávaná chyba"
 
 #: ../src/main_window.cc:196
 msgid "Please stop all recordings before editing channels"
-msgstr ""
+msgstr "Prosím zastavte všetky nahrávania pred upravovaním kanálov"
 
 #: ../src/main_window.cc:207
 msgid "Cannot update channels while recording"
-msgstr ""
+msgstr "Nedajú sa aktualizovať kanály počas nahrávania"
 
 #: ../src/main_window.cc:555
 msgid "Failed to start engine: Engine has already been started"
-msgstr "Chyba spustenia prehrávača: Prehrávač už bol spustený"
+msgstr "Zlyhalo spustenie prehrávača: Prehrávač už bol spustený"
 
 #: ../src/main_window.cc:631
 msgid "None"
-msgstr "Žiadny"
+msgstr "Žiadne"
 
 #: ../src/main_window.cc:945
 msgid ""
@@ -1178,10 +1182,13 @@ msgid ""
 "stop this message from displaying you can use the --no-screensaver-inhibit "
 "command line option.  The error message was '%1'"
 msgstr ""
+"Nastala chyba pri komunikácii so šetričom obrazovky GNOME. Na zastavenie "
+"zobrazovania tejto správy, môžte požiť prepínač --no-screensaver-inhibit. "
+"Chybová správa bola '%1'"
 
 #: ../src/me-tv.cc:93
 msgid "Failed to get time"
-msgstr "Zistenie času zlyhalo"
+msgstr "Zlyhalo zistenie času"
 
 #: ../src/me-tv.cc:172
 msgid "Failed to find a value for '%1'"
@@ -1193,15 +1200,15 @@ msgstr "Zlyhalo nájdenie textovej hodnoty pre '%1'"
 
 #: ../src/me-tv-ui.cc:88 ../src/me-tv-ui.cc:103
 msgid "Failed to get active text value"
-msgstr ""
+msgstr "Zlyhalo získanie aktívnej textovej hodnoty"
 
 #: ../src/me-tv-ui.cc:225
 msgid "Failed to get active integer value"
-msgstr ""
+msgstr "Zlyhalo získanie aktívnej celočíselnej hodnoty"
 
 #: ../src/mpeg_stream.cc:317
 msgid "Failed to find Program Map PID for service"
-msgstr ""
+msgstr "Zlyhalo nájdenie Program Map PID pre službu"
 
 #: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
 msgid "Unknown language"
@@ -1209,7 +1216,7 @@ msgstr "Neznámy jazyk"
 
 #: ../src/scan_dialog.cc:32
 msgid "Me TV - Error"
-msgstr ""
+msgstr "Me TV - chyba"
 
 #: ../src/scan_dialog.cc:138
 msgid "Service Name"
@@ -1229,7 +1236,7 @@ msgstr "Kanada"
 
 #: ../src/scan_dialog.cc:161
 msgid "Czech Republic"
-msgstr ""
+msgstr "Česká republika"
 
 #: ../src/scan_dialog.cc:162
 msgid "Finland"
@@ -1265,7 +1272,7 @@ msgstr "Slovinsko"
 
 #: ../src/scan_dialog.cc:170
 msgid "United Kingdom"
-msgstr "Spojené Kráľovstvo"
+msgstr "Veľká Británia"
 
 #: ../src/scan_dialog.cc:171
 msgid "United States"
@@ -1273,7 +1280,7 @@ msgstr "USA"
 
 #: ../src/scan_dialog.cc:299
 msgid "Importing channels"
-msgstr ""
+msgstr "Importujú sa kanály"
 
 #: ../src/scan_dialog.cc:325 ../src/scan_dialog.cc:347
 #: ../src/scan_dialog.cc:365 ../src/scan_dialog.cc:384
@@ -1285,6 +1292,8 @@ msgid ""
 "Failed to import: importing a channels.conf is only supported with DVB-T, "
 "DVB-C, DVB-S and ATSC"
 msgstr ""
+"Zlyhalo importovanie: importovanie channels.conf je podporované len s DVB-T, "
+"DVB-C, DVB-S a ATSC"
 
 #: ../src/scan_dialog.cc:491
 msgid "Me TV cannot process a line in the initial tuning file"
@@ -1296,39 +1305,43 @@ msgstr "Nebol vybraný žiadny súbor ladenia"
 
 #: ../src/scan_dialog.cc:551
 msgid "Starting scanner"
-msgstr ""
+msgstr "Začína sa skenovanie"
 
 #: ../src/scan_dialog.cc:630
 msgid "%1/%2 (%3 channels)"
-msgstr ""
+msgstr "%1/%2 (%3 kanály)"
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
-msgstr "Hľadanie dokončené"
+msgstr "Skenovanie dokončené"
 
 #: ../src/scan_dialog.cc:715
 msgid "No auto scan range was specified"
-msgstr ""
+msgstr "Nebol zadaný rozsah automatického skenovania"
 
 #: ../src/scan_dialog.cc:809
 msgid "Unknown scan range '%1'"
-msgstr ""
+msgstr "Neznámy rozsah skenovania '%1'"
 
 #: ../src/scan_dialog.cc:824
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
+"Automatické skenovanie je podporované len v DVB-T a ATSC zariadeniach"
 
 #: ../src/scheduled_recording_manager.cc:250
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
 msgstr ""
+"Zlyhalo naplánovanie nahrávania: Niesu dostupné žiadne zariadenia v tom čase"
 
 #: ../src/scheduled_recording_manager.cc:270
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
 msgstr ""
+"Zlyhalo uloženie naplánovaného nahrávania, pretože je v konflikte s iným "
+"naplánovaným nahrávaním nazvaním '%1'."
 
 #: ../src/scheduled_recording_manager.cc:291
 msgid ""
@@ -1336,10 +1349,13 @@ msgid ""
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
+"Zlyhalo uloženie naplánovaného nahrávania, pretože už máte naplánované "
+"nahrávanie nazvané '%1' ktoré je naplánované v rovnakom čase na tom istom "
+"kanáli."
 
 #: ../src/scheduled_recording_manager.cc:453
 msgid "Scheduled recording '%1' not found"
-msgstr ""
+msgstr "Naplánované nahrávanie '%1' nenájdené"
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
@@ -1359,27 +1375,27 @@ msgstr "Zariadenie"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
-msgstr ""
+msgstr "Nie je vybreté žiadne naplánované nahrávanie"
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
-msgstr ""
+msgstr "Me TV je nečinné"
 
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
-msgstr ""
+msgstr "Zlyhalo nájdenie frontendu '%1' pre naplánované nahrávanie"
 
 #: ../src/stream_manager.cc:207 ../src/stream_manager.cc:293
 msgid "Failed to get available frontend"
-msgstr ""
+msgstr "Zlyhalo získanie dostupného frontendu"
 
 #: ../src/stream_manager.cc:332
 msgid "Failed to get display stream"
-msgstr ""
+msgstr "Zlyhalo získanie zobrazovacieho stremu"
 
 #: ../src/stream_manager.cc:379
 msgid "Failed to get display frontend thread"
-msgstr ""
+msgstr "Zlyhalo získanie vlákna pre zobrazenie frontendu"
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
