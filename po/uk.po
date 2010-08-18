@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-08-16 08:54+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2010-08-17 13:56+0000\n"
+"Last-Translator: Fedik <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-08-17 07:19+0000\n"
+"X-Launchpad-Export-Date: 2010-08-18 10:49+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -156,141 +156,164 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:23
 msgid "Show a tool tip when hovering over an EPG event."
-msgstr ""
+msgstr "Показувати виринаючу підказку при наведені курсора на подію EPG"
 
 #: ../me-tv.schemas.in.h:24
 msgid ""
 "Some file systems do not support a colon in a filename (e.g. FAT32). This "
 "option tells Me TV to remove it from the recording filename."
 msgstr ""
+"Деякі файлові системи, не підтримують дві крапки в іменах файлів (наприклад "
+"FAT32, NTFS). Це налаштування вказує Me TV видаляти їх з імені записаного "
+"файлу."
 
 #: ../me-tv.schemas.in.h:25
 msgid "Tells Me TV to display an icon the notification area."
-msgstr ""
+msgstr "Вказує Me TV відображати значок в області сповіщення."
 
 #: ../me-tv.schemas.in.h:26
 msgid "The directory to use for recordings."
-msgstr ""
+msgstr "Папка для зберігання записів."
 
 #: ../me-tv.schemas.in.h:27
 msgid ""
 "The directory to use for recordings. This value defaults to the users home "
 "directory."
 msgstr ""
+"Каталог, який використовується для зберігання записів. За замовчуванням, "
+"використовується домашня тека користувача."
 
 #: ../me-tv.schemas.in.h:28
 msgid "The height of the window before Me TV was last closed"
-msgstr ""
+msgstr "Висота вікна  Me TV перед закриттям."
 
 #: ../me-tv.schemas.in.h:29
 msgid ""
 "The height of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
+"Висота вікна  Me TV перед його закриттям. Me TV використовує це значення, "
+"для відновлення розмірів головного вікна, до попереднього значення, при "
+"наступному ввімкненні."
 
 #: ../me-tv.schemas.in.h:30
 msgid "The last channel tuned to."
-msgstr ""
+msgstr "Останній налаштований канал"
 
 #: ../me-tv.schemas.in.h:31
 msgid ""
 "The number of channels to show before paging, this is deliberately set low "
 "to reduce preformance issues."
 msgstr ""
+"Кількість каналів, що відображаються перед гортанням. Навмисно встановлено "
+"занижене значення, для запобігання проблем з продуктивністю."
 
 #: ../me-tv.schemas.in.h:32
 msgid "The number of channels to show before paging."
-msgstr ""
+msgstr "Кількість каналів, що відображаються перед гортанням."
 
 #: ../me-tv.schemas.in.h:33
 msgid "The number of hours for the EPG to span on one page."
-msgstr ""
+msgstr "Кількість каналів, що відображаються на одній сторінці телепрограми"
 
 #: ../me-tv.schemas.in.h:34
 msgid "The text endoding that the DVB information is in."
-msgstr ""
+msgstr "Кодування тексту, в якому надається DVB інформація."
 
 #: ../me-tv.schemas.in.h:35
 msgid "The width of the window before Me TV was last closed"
-msgstr ""
+msgstr "Ширина вікна, перед закриттям Me TV"
 
 #: ../me-tv.schemas.in.h:36
 msgid ""
 "The width of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
+"Ширина вікна  Me TV, перед його закриттям. Me TV використовує це значення, "
+"для відновлення розмірів головного вікна, до попереднього значення, при "
+"наступному ввімкненні."
 
 #: ../me-tv.schemas.in.h:37
 msgid "The x position of the window before Me TV was last closed"
-msgstr ""
+msgstr "Позиція вікна по горизонталі, де знаходився Me TV перед закриттям."
 
 #: ../me-tv.schemas.in.h:38
 msgid ""
 "The x position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"Позиція вікна по горизонталі, де знаходився Me TV перед закриттям. Me TV "
+"використовує це значення, для відновлення розташування вікна, до "
+"попереднього значення, при наступному ввімкненні."
 
 #: ../me-tv.schemas.in.h:39
 msgid "The y position of the window before Me TV was last closed"
-msgstr ""
+msgstr "Позиція вікна по вертикалі, де знаходився Me TV перед закриттям."
 
 #: ../me-tv.schemas.in.h:40
 msgid ""
 "The y position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"Позиція вікна по вертикалі, де знаходився Me TV перед закриттям. Me TV "
+"використовує це значення, для відновлення розташування вікна, до "
+"попереднього значення, при наступному ввімкненні."
 
 #: ../me-tv.schemas.in.h:41
 msgid ""
 "This is used to store what channel the user was last watching so it can be "
 "returned when restarting."
 msgstr ""
+"Зберігає останній переглянутий канал, щоб ввімкнути його при наступному "
+"старті."
 
 #: ../me-tv.schemas.in.h:42
 msgid "This will show the timespan of an EPG event in a tooltip."
-msgstr ""
+msgstr "Показує часовий діапазон EPG події в підказці."
 
 #: ../me-tv.schemas.in.h:43
 msgid ""
 "When this setting is false Me TV will terminate when the main window is "
 "closed."
 msgstr ""
+"Коли опція не увімкнена, Me TV повністю закривається, при закритті головного "
+"вікна."
 
 #: ../me-tv.schemas.in.h:44
 msgid "Whether the video should be deinterlaced."
-msgstr ""
+msgstr "Чи використовувати деінтерлейсинг для відео."
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
-msgstr ""
+msgstr "Програма для перегляду цифрового телебачення (DVB), для GNOME"
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
-msgstr ""
+msgstr "Me TV"
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
-msgstr ""
+msgstr " годин"
 
 #: ../src/me-tv.ui.h:2
 msgid " minutes"
-msgstr ""
+msgstr " хвилин"
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
-msgstr ""
+msgstr "00:00"
 
 #: ../src/me-tv.ui.h:4
 msgid ":"
-msgstr ""
+msgstr ":"
 
 #: ../src/me-tv.ui.h:5
 msgid "<b>Device:</b>"
-msgstr ""
+msgstr "<b>Пристрій:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
-msgstr ""
+msgstr "Канал з ім'ям  'xxx' уже існує."
 
 #: ../src/me-tv.ui.h:7
 msgid ""
@@ -302,11 +325,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
-msgstr ""
+msgstr "Додатково"
 
 #: ../src/me-tv.ui.h:9
 msgid "After:"
-msgstr ""
+msgstr "Після:"
 
 #: ../src/me-tv.ui.h:10
 msgid ""
@@ -318,63 +341,63 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
-msgstr ""
+msgstr "Аудіодрайвер:"
 
 #: ../src/me-tv.ui.h:12
 msgid "Auto scan"
-msgstr ""
+msgstr "Автоматичне сканування"
 
 #: ../src/me-tv.ui.h:13
 msgid "Cancel channel import"
-msgstr ""
+msgstr "Скасувати імпорт каналів"
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
-msgstr ""
+msgstr "Частота каналу : "
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
-msgstr ""
+msgstr "Назва каналу : "
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel:"
-msgstr ""
+msgstr "Канал:"
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
-msgstr ""
+msgstr "Закрити Me TV"
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
-msgstr ""
+msgstr "Копірайт &#xA9; Michael Lamothe"
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
-msgstr ""
+msgstr "Тип деінтерлейсингу:"
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
-msgstr ""
+msgstr "Опис:"
 
 #: ../src/me-tv.ui.h:21
 msgid "Device Text"
-msgstr ""
+msgstr "Текст пристрою"
 
 #: ../src/me-tv.ui.h:22
 msgid "Do Nothing"
-msgstr ""
+msgstr "Нічого не робити"
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
-msgstr ""
+msgstr "Перетягуйте канали для сортування"
 
 #: ../src/me-tv.ui.h:24
 msgid "Duration:"
-msgstr ""
+msgstr "Тривалість:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
-msgstr ""
+msgstr "Інформація про EPG подію"
 
 #: ../src/me-tv.ui.h:26
 msgid ""
@@ -384,23 +407,23 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:27
 msgid "EPG page size: "
-msgstr ""
+msgstr "EPG размір сторінки: "
 
 #: ../src/me-tv.ui.h:28
 msgid "EPG span: "
-msgstr ""
+msgstr "EPG діапазон: "
 
 #: ../src/me-tv.ui.h:29
 msgid "Every day"
-msgstr ""
+msgstr "Щодня"
 
 #: ../src/me-tv.ui.h:30
 msgid "Every week"
-msgstr ""
+msgstr "Щотижня"
 
 #: ../src/me-tv.ui.h:31
 msgid "Every weekday"
-msgstr ""
+msgstr "Кожен будній день"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:33
@@ -424,82 +447,95 @@ msgid ""
 "be\n"
 "found in /usr/share/common-licenses/GPL file."
 msgstr ""
+"GNU General Public License:\n"
+"Ця програма є безкоштовною; ви можете розповсюджувати її чи змінювати за\n"
+"правилам GNU General Public License, які опубліковані Фондом вільно "
+"розповсюджуваного програмного забезпечення (версії 2 або більш пізньої).\n"
+"\n"
+"Ця програма розповсюджується з надією на те, що вона буде корисною, але БЕЗ "
+"ВСІЛЯКИХ ГАРАНТІЙ;\n"
+" вона ніколи не планувалась як ПЛАТНА чи ПРИДАТНА ДЛЯ ЯКИХ НЕ БУДЬ "
+"ЦІЛЕЙ(див. GNU General Public License для додаткової інформації).\n"
+"\n"
+"В системах Debian повний текст GNU General Public License можна знайти за "
+"адресою /usr/share/common-licenses/GPL."
 
 #: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
-msgstr ""
+msgstr "Імпортувати channels.conf"
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
-msgstr ""
+msgstr "Зберегти існуючий канал"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
-msgstr ""
+msgstr "Me TV - Про програму"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
-msgstr ""
+msgstr "Me TV - Авто запис"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr ""
+msgstr "Me TV - Конфлікт каналів"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
-msgstr ""
+msgstr "Me TV - Редактор каналів"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
-msgstr ""
+msgstr "Me TV - Пошук EPG подій"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
-msgstr ""
+msgstr "Me TV - Редагувати канал"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - It's TV for me computer"
-msgstr ""
+msgstr "Me TV - Це ТБ для мого комп'тера"
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Main Window"
-msgstr ""
+msgstr "Me TV - Головне вікно"
 
 #: ../src/me-tv.ui.h:56
 msgid "Me TV - Preferences Window"
-msgstr ""
+msgstr "Me TV - Вікно налаштувань"
 
 #: ../src/me-tv.ui.h:57
 msgid "Me TV - Program Details"
-msgstr ""
+msgstr "Me TV - Інформація про програму"
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scan Wizard"
-msgstr ""
+msgstr "Me TV - майстер сканування"
 
 #: ../src/me-tv.ui.h:59
 msgid "Me TV - Scheduled Recording"
-msgstr ""
+msgstr "Me TV - Запланований запис"
 
 #: ../src/me-tv.ui.h:60
 msgid "Me TV - Scheduled Recordings"
-msgstr ""
+msgstr "Me TV - Заплановані записи"
 
 #: ../src/me-tv.ui.h:61
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
 msgstr ""
+"Me TV - це програма для перегляду цифрового телебачення (DVB), для GNOME"
 
 #: ../src/me-tv.ui.h:62
 msgid "Me TV project website"
-msgstr ""
+msgstr "Me TV - сайт проекту"
 
 #: ../src/me-tv.ui.h:63
 msgid "Now"
-msgstr ""
+msgstr "Зараз"
 
 #: ../src/me-tv.ui.h:64
 msgid "Once"
-msgstr ""
+msgstr "Один раз"
 
 #: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
@@ -507,43 +543,43 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
-msgstr ""
+msgstr "Сторінка:"
 
 #: ../src/me-tv.ui.h:67
 msgid "Preferred language:"
-msgstr ""
+msgstr "Бажана мова:"
 
 #: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
-msgstr ""
+msgstr "Додатково записати після: "
 
 #: ../src/me-tv.ui.h:69
 msgid "Record extra before: "
-msgstr ""
+msgstr "Додатково записати перед: "
 
 #: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
-msgstr ""
+msgstr "Папка для запису: "
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
-msgstr ""
+msgstr "Поточна:"
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
-msgstr ""
+msgstr "Видаляти \":\" із ймен записаних файлів"
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr ""
+msgstr "Дати новому каналу унікальну назву."
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
-msgstr ""
+msgstr "Застосувати цю дію до всіх конфліктуючих каналів"
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
-msgstr ""
+msgstr "Хід сканування"
 
 #: ../src/me-tv.ui.h:76
 msgid "Scan using an initial scan file"
@@ -551,75 +587,75 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:77
 msgid "Scanning/Importing"
-msgstr ""
+msgstr "Сканування/Імпорт"
 
 #: ../src/me-tv.ui.h:78
 msgid "Search description"
-msgstr ""
+msgstr "Пошук опису"
 
 #: ../src/me-tv.ui.h:79
 msgid "Search:"
-msgstr ""
+msgstr "Пошук:"
 
 #: ../src/me-tv.ui.h:80
 msgid "See https://launchpad.net/me-tv"
-msgstr ""
+msgstr "Дивіться https://launchpad.net/me-tv"
 
 #: ../src/me-tv.ui.h:81
 msgid "Select A Recording Directory"
-msgstr ""
+msgstr "Вибрати папку для зберігання записів"
 
 #: ../src/me-tv.ui.h:82
 msgid "Select Scan File"
-msgstr ""
+msgstr "Вибрати файл для сканування"
 
 #: ../src/me-tv.ui.h:83
 msgid "Select a channels.conf file"
-msgstr ""
+msgstr "Вибрати channels.conf файл"
 
 #: ../src/me-tv.ui.h:84
 msgid "Select a file"
-msgstr ""
+msgstr "Вибрати файл"
 
 #: ../src/me-tv.ui.h:85
 msgid "Set \"Always on Top\" at startup"
-msgstr ""
+msgstr "Встановити \"Завжди з верху\" при старті"
 
 #: ../src/me-tv.ui.h:86
 msgid "Show EPG header"
-msgstr ""
+msgstr "Показати заголовок EPG"
 
 #: ../src/me-tv.ui.h:87
 msgid "Show a status icon in the notification area"
-msgstr ""
+msgstr "Показати значок статусу в області сповіщень"
 
 #: ../src/me-tv.ui.h:88
 msgid "Show channel number"
-msgstr ""
+msgstr "Показати номер каналу"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
-msgstr ""
+msgstr "Показувати час на кнопці EPG подій"
 
 #: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
-msgstr ""
+msgstr "Показувати підказки для кнопок EPG"
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
-msgstr ""
+msgstr "Вимкнути"
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
-msgstr ""
+msgstr "Дата початку:"
 
 #: ../src/me-tv.ui.h:93
 msgid "Start Time:"
-msgstr ""
+msgstr "Час початку:"
 
 #: ../src/me-tv.ui.h:94
 msgid "Text encoding:"
-msgstr ""
+msgstr "Кодування тексту:"
 
 #: ../src/me-tv.ui.h:95
 msgid ""
@@ -633,15 +669,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:97
 msgid "Video driver:"
-msgstr ""
+msgstr "Відеодрайвер:"
 
 #: ../src/me-tv.ui.h:98
 msgid "View Schedule"
-msgstr ""
+msgstr "Показати розклад"
 
 #: ../src/me-tv.ui.h:99
 msgid "Watch Now"
-msgstr ""
+msgstr "Дивитись зараз"
 
 #: ../src/me-tv.ui.h:100
 msgid ""
@@ -653,22 +689,29 @@ msgid ""
 "\n"
 "<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
 msgstr ""
+"Ваша база даних Me TV застаріла, для використання в новій версії Me TV. "
+"Очистити її ? Всі Ваші канали, налаштування EPG та розклад записів, будуть  "
+"<b>видалені</b>.\n"
+"\n"
+"Якщо Ви тільки, що оновили Me TV, то це кращий варіант.\n"
+"\n"
+"<i>База даних Me TV розташована за адресою ~/.local/share/me-tv.db.</i>"
 
 #: ../src/me-tv.ui.h:105
 msgid "_Delete my old Me TV data!"
-msgstr ""
+msgstr "Видалити мої застарілі дані Me TV!"
 
 #: ../src/me-tv.ui.h:106
 msgid "channels"
-msgstr ""
+msgstr "канали"
 
 #: ../src/application.cc:43
 msgid "Application has already been initialised"
-msgstr ""
+msgstr "Додаток вже ініціалізовано"
 
 #: ../src/application.cc:58
 msgid "The SQLite version is not thread-safe"
-msgstr ""
+msgstr "Версія SQLite не є потоково-безпечною"
 
 #: ../src/application.cc:112
 msgid "_File"
