@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-08-17 13:56+0000\n"
+"PO-Revision-Date: 2010-08-18 14:22+0000\n"
 "Last-Translator: Fedik <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-08-18 10:49+0000\n"
+"X-Launchpad-Export-Date: 2010-08-19 04:06+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -715,67 +715,67 @@ msgstr "Версія SQLite не є потоково-безпечною"
 
 #: ../src/application.cc:112
 msgid "_File"
-msgstr ""
+msgstr "_Файл"
 
 #: ../src/application.cc:113
 msgid "_View"
-msgstr ""
+msgstr "_Перегляд"
 
 #: ../src/application.cc:114
 msgid "_Video"
-msgstr ""
+msgstr "_Відео"
 
 #: ../src/application.cc:115
 msgid "_Audio"
-msgstr ""
+msgstr "_Аудіо"
 
 #: ../src/application.cc:116
 msgid "_Help"
-msgstr ""
+msgstr "_Довідка"
 
 #: ../src/application.cc:118
 msgid "Subtitles"
-msgstr ""
+msgstr "Субтитри"
 
 #: ../src/application.cc:119
 msgid "_Streams"
-msgstr ""
+msgstr "_Потоки"
 
 #: ../src/application.cc:120
 msgid "_Channels"
-msgstr ""
+msgstr "_Канали"
 
 #: ../src/application.cc:123
 msgid "_Both"
-msgstr ""
+msgstr "_Обидва"
 
 #: ../src/application.cc:124
 msgid "_Left"
-msgstr ""
+msgstr "_Ліворуч"
 
 #: ../src/application.cc:125
 msgid "_Right"
-msgstr ""
+msgstr "_Праворуч"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
-msgstr ""
+msgstr "Не вдалось отримати DBus сесію"
 
 #: ../src/application.cc:186
 msgid "Failed to start recording"
-msgstr ""
+msgstr "Не вдалось розпочати запис"
 
 #: ../src/application.cc:378
 msgid "Failed to initialise database"
-msgstr ""
+msgstr "Не вдалось ініціалізувати базу даних"
 
 #: ../src/application.cc:437
 msgid "Application has not been initialised"
-msgstr ""
+msgstr "Програма не була ініціалізована"
 
 #: ../src/application.cc:494
 msgid "DBus connection not available"
-msgstr ""
+msgstr "DBus з'єдняння не доступне"
 
 #: ../src/application.cc:505
 msgid "Failed to get org.gnome.SessionManager proxy"
@@ -787,24 +787,24 @@ msgstr ""
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
-msgstr ""
+msgstr "Назва"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
-msgstr ""
+msgstr "Немає обраних рядків"
 
 #: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
 msgid "Unknown frontend type"
-msgstr ""
+msgstr "Невідомий тип оболонки"
 
 #: ../src/channel_manager.cc:258
 msgid "Invalid channel index"
-msgstr ""
+msgstr "Невірний індекс каналів"
 
 #: ../src/channel_manager.cc:272
 msgid "Channel '%1' not found"
-msgstr ""
+msgstr "Канал '%1' не знайдено"
 
 #: ../src/channel_manager.cc:295
 msgid "Failed to add channel: You cannot have more than 1 channel"
@@ -814,27 +814,27 @@ msgstr[1] ""
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
-msgstr ""
+msgstr "Назва каналу"
 
 #: ../src/channels_dialog.cc:57
 msgid "Frequency (Hz)"
-msgstr ""
+msgstr "Частота (Гц)"
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
-msgstr ""
+msgstr "Канал з назвою <b>'%1'</b> уже існує"
 
 #: ../src/channels_dialog.cc:231
 msgid "No channel selected"
-msgstr ""
+msgstr "Канал не обрано"
 
 #: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
-msgstr ""
+msgstr "Оберіть лише один канал"
 
 #: ../src/data.cc:50 ../src/data.cc:55
 msgid "Failed to prepare statement: %1"
-msgstr ""
+msgstr "Не вдалось підготовити інструкцію: %1"
 
 #: ../src/data.cc:62
 msgid "Prepared statement had remaining data: %1"
@@ -842,23 +842,23 @@ msgstr ""
 
 #: ../src/data.cc:67
 msgid "Failed to create statement"
-msgstr ""
+msgstr "Не вдалося створити інструкцію"
 
 #: ../src/data.cc:75
 msgid "Failed to finalise statement"
-msgstr ""
+msgstr "Не вдалося завершити інструкцію"
 
 #: ../src/data.cc:105
 msgid "Failed to execute statement: %1"
-msgstr ""
+msgstr "Не вдалося виконати інструкцію: %1"
 
 #: ../src/data.cc:176
 msgid "Failed to connect to Me TV database '%1'"
-msgstr ""
+msgstr "Збій підключення до бази даних Me TV '%1'"
 
 #: ../src/data.cc:246
 msgid "Only integers can be primary keys"
-msgstr ""
+msgstr "Тільки цілі числа можуть бути первинними ключами"
 
 #: ../src/data.cc:315
 msgid "Failed to create TableAdapter: Table has no columns"
@@ -870,11 +870,11 @@ msgstr ""
 
 #: ../src/dvb_demuxer.cc:37
 msgid "Failed to open demux device"
-msgstr ""
+msgstr "Не вдалось відкрити пристрій мікшування"
 
 #: ../src/dvb_demuxer.cc:68
 msgid "Failed to set PES filter"
-msgstr ""
+msgstr "Помилка встановлення фільтра PES"
 
 #: ../src/dvb_demuxer.cc:87
 msgid "Failed to set section filter for demuxer"
