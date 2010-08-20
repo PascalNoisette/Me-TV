@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-08-18 14:22+0000\n"
+"PO-Revision-Date: 2010-08-19 17:02+0000\n"
 "Last-Translator: Fedik <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-08-19 04:06+0000\n"
+"X-Launchpad-Export-Date: 2010-08-20 04:05+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -878,47 +878,47 @@ msgstr "Помилка встановлення фільтра PES"
 
 #: ../src/dvb_demuxer.cc:87
 msgid "Failed to set section filter for demuxer"
-msgstr ""
+msgstr "Помилка встановлення секційного фільтру мікшера"
 
 #: ../src/dvb_demuxer.cc:95
 msgid "Failed to set demuxer buffer size"
-msgstr ""
+msgstr "Не вдалося встановити розмір буферу мікшера"
 
 #: ../src/dvb_demuxer.cc:103
 msgid "Read timeout"
-msgstr ""
+msgstr "Час очікування читання вичерпано"
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
-msgstr ""
+msgstr "Не вдалося прочитати дані з мфкшера"
 
 #: ../src/dvb_demuxer.cc:122
 msgid "Failed to read header"
-msgstr ""
+msgstr "Не вдалося прочитати заголовок"
 
 #: ../src/dvb_demuxer.cc:133
 msgid "Failed to read section"
-msgstr ""
+msgstr "Не вдалося прочитати секцію"
 
 #: ../src/dvb_demuxer.cc:138
 msgid "CRC32 check failed"
-msgstr ""
+msgstr "Помилка перевірки CRC32"
 
 #: ../src/dvb_demuxer.cc:146
 msgid "Failed to stop demuxer"
-msgstr ""
+msgstr "Не вдалося зупинити микшер"
 
 #: ../src/dvb_demuxer.cc:161
 msgid "Failed to poll"
-msgstr ""
+msgstr "Помилка опитування"
 
 #: ../src/dvb_frontend.cc:51
 msgid "Failed to open tuner"
-msgstr ""
+msgstr "Помилка відкриття тюнера"
 
 #: ../src/dvb_frontend.cc:56
 msgid "Failed to get tuner info"
-msgstr ""
+msgstr "помилка отримання інформаії з тюнера"
 
 #: ../src/dvb_frontend.cc:75
 #, c-format
@@ -927,95 +927,97 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:111
 msgid "Failed to tune device"
-msgstr ""
+msgstr "Помилка налаштування пристрою"
 
 #: ../src/dvb_frontend.cc:114
 msgid "Waiting for signal lock ..."
-msgstr ""
+msgstr "Очікування захвату сигналу..."
 
 #: ../src/dvb_frontend.cc:116
 msgid "Got signal lock"
-msgstr ""
+msgstr "Сигнал отримано"
 
 #: ../src/dvb_frontend.cc:132
 msgid "Failed to set tone off"
-msgstr ""
+msgstr "Не вдалось вимкнути тон"
 
 #: ../src/dvb_frontend.cc:137
 msgid "Failed to set voltage"
-msgstr ""
+msgstr "Не вдалось встановити напругу"
 
 #: ../src/dvb_frontend.cc:143
 msgid "Failed to send master command"
-msgstr ""
+msgstr "Не вдалось надіслати майстер-команду"
 
 #: ../src/dvb_frontend.cc:149
 msgid "Failed to send burst"
-msgstr ""
+msgstr "Не вдалось надіслати імпульс"
 
 #: ../src/dvb_frontend.cc:155
 msgid "Failed to set tone"
-msgstr ""
+msgstr "Не вдалось встановити тон"
 
 #: ../src/dvb_frontend.cc:186
 msgid "Failed to lock to channel"
-msgstr ""
+msgstr "Не вдалось захватити канал"
 
 #: ../src/dvb_frontend.cc:195
 msgid "Failed to get signal strength"
-msgstr ""
+msgstr "Не вдалось отримати силу сигналу"
 
 #: ../src/dvb_frontend.cc:205
 msgid "Failed to get signal to noise ratio"
-msgstr ""
+msgstr "Не вдалось отримати показник сигнал/шум"
 
 #: ../src/dvb_si.cc:411
 msgid "Failed to convert channel name"
-msgstr ""
+msgstr "Не вдалось конвертувати назву каналу"
 
 #: ../src/dvb_si.cc:568
 msgid "ASSERT: offset > end_descriptor_offset"
-msgstr ""
+msgstr "Додати значення: offset > end_descriptor_offset"
 
 #: ../src/dvb_si.cc:579
 msgid "ASSERT: offset > end_section_offset"
-msgstr ""
+msgstr "Додати значення: offset > end_section_offset"
 
 #: ../src/dvb_si.cc:794
 msgid "No message"
-msgstr ""
+msgstr "Немає повідомлень"
 
 #: ../src/dvb_si.cc:801
 msgid "Failed to convert to UTF-8: %1"
-msgstr ""
+msgstr "Не вдалось перетворити в UTF-8: %1"
 
 #: ../src/engine.cc:46
 msgid "Window ID was 0"
-msgstr ""
+msgstr "ID вікна був 0"
 
 #: ../src/epg_event.cc:79
 msgid "Unknown title"
-msgstr ""
+msgstr "Невідома назва"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Невідомі субтитри"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
-msgstr ""
+msgstr "Невідомий опис"
 
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 година"
+msgstr[1] "%1 години"
+msgstr[2] "%1 годин"
 
 #: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 хвилина"
+msgstr[1] "%1 хвилини"
+msgstr[2] "%1 хвилин"
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
@@ -1024,62 +1026,62 @@ msgstr " "
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
-msgstr ""
+msgstr "Канал"
 
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr ""
+msgstr "Час початку"
 
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr ""
+msgstr "Тривалість"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
-msgstr ""
+msgstr "Нічого не знайдено"
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
-msgstr ""
+msgstr "Результатів немає"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
-msgstr ""
+msgstr "Не обрано EPG подію"
 
 #: ../src/epg_thread.cc:71
 msgid "No demuxers"
-msgstr ""
+msgstr "Мікшери відсутні"
 
 #: ../src/epg_thread.cc:210
 #, c-format
 msgid "Unknown source_id %u"
-msgstr ""
+msgstr "Невідомий source_id %u"
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
-msgstr ""
+msgstr "Не вдалось отримати повідомлення про помилку"
 
 #: ../src/frontend_thread.cc:243
 msgid "Failed to create FIFO '%1'"
-msgstr ""
+msgstr "Не вдалось створити FIFO '%1'"
 
 #: ../src/frontend_thread.cc:250
 msgid "Failed to open FIFO for reading '%1'"
-msgstr ""
+msgstr "Помилка відкриття FIFO для читання '%1'"
 
 #: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
 msgid "Unknown program"
-msgstr ""
+msgstr "Невідома програма"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for the GNOME desktop"
-msgstr ""
+msgstr "Me TV - це програма перегляду цифрового ТБ, для GNOME"
 
 #: ../src/main.cc:30
 msgid ""
@@ -1091,23 +1093,23 @@ msgstr ""
 
 #: ../src/main.cc:85
 msgid "Enable verbose messages"
-msgstr ""
+msgstr "Ввімкнути детальні повідомлення"
 
 #: ../src/main.cc:90
 msgid "Start in safe mode"
-msgstr ""
+msgstr "Запустити в безпечному режимі"
 
 #: ../src/main.cc:95
 msgid "Start minimised in notification area"
-msgstr ""
+msgstr "Запустити згорнутим в область сповіщень"
 
 #: ../src/main.cc:99
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
-msgstr ""
+msgstr "Відключити телепрограму. Me TV припинить збирати EPG події"
 
 #: ../src/main.cc:103
 msgid "Stops the rendering of the EPG event buttons on the UI."
-msgstr ""
+msgstr "Зупинка виводу кнопок телепрограми в інтерфейсі."
 
 #: ../src/main.cc:107
 msgid ""
@@ -1129,15 +1131,15 @@ msgstr ""
 
 #: ../src/main.cc:117
 msgid "Show Me TV help options"
-msgstr ""
+msgstr "Показвути підказки Me TV"
 
 #: ../src/main.cc:162
 msgid "An unhandled error occurred"
-msgstr ""
+msgstr "Виникла необроблена помилка"
 
 #: ../src/main_window.cc:196
 msgid "Please stop all recordings before editing channels"
-msgstr ""
+msgstr "Будь ласка, перед редагуванням каналів, зупиніть запис"
 
 #: ../src/main_window.cc:207
 msgid "Cannot update channels while recording"
@@ -1149,7 +1151,7 @@ msgstr ""
 
 #: ../src/main_window.cc:631
 msgid "None"
-msgstr ""
+msgstr "Немає"
 
 #: ../src/main_window.cc:945
 msgid ""
@@ -1160,19 +1162,19 @@ msgstr ""
 
 #: ../src/me-tv.cc:93
 msgid "Failed to get time"
-msgstr ""
+msgstr "Не вдалось отримати час"
 
 #: ../src/me-tv.cc:172
 msgid "Failed to find a value for '%1'"
-msgstr ""
+msgstr "Не вдалось знайти значення для '%1'"
 
 #: ../src/me-tv.cc:197
 msgid "Failed to find a text value for '%1'"
-msgstr ""
+msgstr "Не вдалось знайти текстове значення для '%1'"
 
 #: ../src/me-tv-ui.cc:88 ../src/me-tv-ui.cc:103
 msgid "Failed to get active text value"
-msgstr ""
+msgstr "Збій отримання активного текстового значення"
 
 #: ../src/me-tv-ui.cc:225
 msgid "Failed to get active integer value"
