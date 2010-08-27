@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-08-24 05:33+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2010-08-26 20:15+0000\n"
+"Last-Translator: Wolle <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-08-25 04:15+0000\n"
+"X-Launchpad-Export-Date: 2010-08-27 03:59+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -349,6 +349,11 @@ msgid ""
 "from the LinuxTV dvb-apps package which is included in most Linux "
 "distributions.  Look for <i>dvb-apps</i> in your package management system."
 msgstr ""
+"Eine Initial-Scan-Datei wird verwendet um das Empfangsgerät mit "
+"verschiedenen Anfagsparametern zu initialisieren, welche beim Finden von DVB "
+"Diensten helfen. Viele gängige Initial-Scan-Dateien stehen im LinuxTV dvb-"
+"apps Paket zur Verfügungen, welches in den meisten Linux Distributionen "
+"enthalten ist. Suchen Sie nach <i>dvb-apps<i> in Ihrer Paketverwaltung."
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
@@ -384,7 +389,7 @@ msgstr "Copyright &#xA9; Michael Lamothe"
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
-msgstr ""
+msgstr "Deinterlace Methode:"
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
@@ -408,13 +413,15 @@ msgstr "Dauer:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
-msgstr ""
+msgstr "EPG Event Information"
 
 #: ../src/me-tv.ui.h:26
 msgid ""
 "EPG event titles that contain the following entries will be automatically "
 "recorded."
 msgstr ""
+"EPG Event Titel welche die folgenden Einträge enthalten, werden automatisch "
+"aufgezeichnet."
 
 #: ../src/me-tv.ui.h:27
 msgid "EPG page size: "
@@ -434,7 +441,7 @@ msgstr "Wöchentlich"
 
 #: ../src/me-tv.ui.h:31
 msgid "Every weekday"
-msgstr ""
+msgstr "An jedem Wochentag"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:33
@@ -480,7 +487,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
-msgstr ""
+msgstr "Eine channels.conf Datei importieren."
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
@@ -492,11 +499,11 @@ msgstr "Über Me TV"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
-msgstr ""
+msgstr "Me TV - Automatische Aufnahme"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr ""
+msgstr "Me TV - Kanal Konflikt"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
@@ -504,7 +511,7 @@ msgstr "Me TV - Sendereditor"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
-msgstr ""
+msgstr "Me TV - EPG Event Suche"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
@@ -584,15 +591,15 @@ msgstr "Wiederkehrend:"
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
-msgstr ""
+msgstr "Entferne Doppelpunkt von Aufnahme Dateinamen"
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr ""
+msgstr "Für den neuen Kanal einen eindeutigen Namen vergeben"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
-msgstr ""
+msgstr "Diese Aktion für alle Kanal Konflikte wiederholen"
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
@@ -600,7 +607,7 @@ msgstr "Suchfortschritt"
 
 #: ../src/me-tv.ui.h:76
 msgid "Scan using an initial scan file"
-msgstr ""
+msgstr "Scannen mit Initial-Scan-Datei"
 
 #: ../src/me-tv.ui.h:77
 msgid "Scanning/Importing"
@@ -608,7 +615,7 @@ msgstr "Sendersuchlauf / Import"
 
 #: ../src/me-tv.ui.h:78
 msgid "Search description"
-msgstr ""
+msgstr "Suchbeschreibung"
 
 #: ../src/me-tv.ui.h:79
 msgid "Search:"
@@ -679,10 +686,13 @@ msgid ""
 "This option will only work if your DVB setup supports auto scanning.  "
 "Currently, this feature is only supported on DVB-T and ATSC devices."
 msgstr ""
+"Diese Option funktioniert nur, wenn Ihr DVB-Empfänger den automatischen "
+"Suchlauf unterstützt. Diese Fuktion wird zur Zeit nur von DVB-T- und ATSC-"
+"Geräten unterstützt."
 
 #: ../src/me-tv.ui.h:96
 msgid "This program is scheduled for recording."
-msgstr ""
+msgstr "Dieses Programm ist für die Aufnahme geplant."
 
 #: ../src/me-tv.ui.h:97
 msgid "Video driver:"
@@ -694,7 +704,7 @@ msgstr "Geplante Aufzeichnungen"
 
 #: ../src/me-tv.ui.h:99
 msgid "Watch Now"
-msgstr ""
+msgstr "Jetzt ansehen"
 
 #: ../src/me-tv.ui.h:100
 msgid ""
@@ -777,7 +787,7 @@ msgstr "_Rechter"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
-msgstr ""
+msgstr "DBus - Sitzung konnte nicht eröffnet werden"
 
 #: ../src/application.cc:186
 msgid "Failed to start recording"
@@ -785,7 +795,7 @@ msgstr "Aufnahme konnte nicht gestartet werden"
 
 #: ../src/application.cc:378
 msgid "Failed to initialise database"
-msgstr ""
+msgstr "Initialisierung der Datenbank fehlgeschlagen"
 
 #: ../src/application.cc:437
 msgid "Application has not been initialised"
@@ -793,7 +803,7 @@ msgstr "Anwendung wurde nicht initialisiert"
 
 #: ../src/application.cc:494
 msgid "DBus connection not available"
-msgstr ""
+msgstr "DBus - Verbindung ist nicht verfügbar"
 
 #: ../src/application.cc:505
 msgid "Failed to get org.gnome.SessionManager proxy"
@@ -801,7 +811,7 @@ msgstr ""
 
 #: ../src/application.cc:511
 msgid "Failed to call Shutdown method"
-msgstr ""
+msgstr "Fehler beim Aufruf der Methode für das Herunterfahren"
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
@@ -809,7 +819,7 @@ msgstr "Titel"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
-msgstr ""
+msgstr "Keine Zeile ausgewählt"
 
 #: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
@@ -828,7 +838,11 @@ msgstr "Sender '%1' nicht gefunden"
 msgid "Failed to add channel: You cannot have more than 1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
 msgstr[0] ""
+"Kanal konnte nicht hinzugefügt werden: Sie können nicht mehr als einen Kanal "
+"verwenden"
 msgstr[1] ""
+"Kanal konnte nicht hinzugefügt werden: Sie können nicht mehr als %1 Kanäle "
+"verwenden"
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
@@ -840,7 +854,7 @@ msgstr "Frequenz (Hz)"
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
-msgstr ""
+msgstr "Ein Kanal mit dem Namen <b>'%1'</b> existiert bereits."
 
 #: ../src/channels_dialog.cc:231
 msgid "No channel selected"
@@ -848,7 +862,7 @@ msgstr "Kein Kanal ausgewählt"
 
 #: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
-msgstr ""
+msgstr "Nur einen Kanal auswählen"
 
 #: ../src/data.cc:50 ../src/data.cc:55
 msgid "Failed to prepare statement: %1"
@@ -881,10 +895,11 @@ msgstr "Fehler: Only integers can be primary keys"
 #: ../src/data.cc:315
 msgid "Failed to create TableAdapter: Table has no columns"
 msgstr ""
+"Fehler beim erstellen von TableAdapter: Die Tabelle besitzt keine Zeilen"
 
 #: ../src/device_manager.cc:134
 msgid "There are no DVB devices available"
-msgstr ""
+msgstr "Es sind keine DVB-Geräte verfügbar"
 
 #: ../src/dvb_demuxer.cc:37
 msgid "Failed to open demux device"
@@ -904,7 +919,7 @@ msgstr "Setzen der Puffergröße des Demuxers fehlgeschlagen"
 
 #: ../src/dvb_demuxer.cc:103
 msgid "Read timeout"
-msgstr ""
+msgstr "Zeitüberschreitung beim Lesen"
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
@@ -1017,7 +1032,7 @@ msgstr "Unbekannter Titel"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Unbekannter Untertitel"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
@@ -1056,7 +1071,7 @@ msgstr "Dauer"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
-msgstr ""
+msgstr "Kein Suchtext angegeben"
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
@@ -1064,7 +1079,7 @@ msgstr "Keine Ergebnisse"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
-msgstr ""
+msgstr "Kein EPG Event ausgewählt"
 
 #: ../src/epg_thread.cc:71
 msgid "No demuxers"
@@ -1073,7 +1088,7 @@ msgstr "Keine Demuxer"
 #: ../src/epg_thread.cc:210
 #, c-format
 msgid "Unknown source_id %u"
-msgstr ""
+msgstr "Unbekannte Quell_id %u"
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
@@ -1145,6 +1160,8 @@ msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 msgstr ""
+"Nur die angegebenen frontend Geräte verwenden (z.B. --"
+"devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 
 #: ../src/main.cc:115
 msgid ""
@@ -1162,11 +1179,11 @@ msgstr "Ein unbehandelter Fehler ist aufgetreten"
 
 #: ../src/main_window.cc:196
 msgid "Please stop all recordings before editing channels"
-msgstr ""
+msgstr "Bitte vor dem Bearbeiten von Kanälen alle Aufnahmen beenden"
 
 #: ../src/main_window.cc:207
 msgid "Cannot update channels while recording"
-msgstr ""
+msgstr "Während dem Aufnehmen können die Kanäle nicht aktualisiert werden"
 
 #: ../src/main_window.cc:555
 msgid "Failed to start engine: Engine has already been started"
@@ -1182,6 +1199,9 @@ msgid ""
 "stop this message from displaying you can use the --no-screensaver-inhibit "
 "command line option.  The error message was '%1'"
 msgstr ""
+"Ein Fehler ist bei der Kommunikation mit dem GNOME Bildschirmschoner "
+"aufgetreten. Um die Anzeige dieser Meldung zu verhindern benutzen Sie die --"
+"no-screensaver-inhibit Kommandozeilenoption. Die Fehlermeldung lautete '%1'"
 
 #: ../src/me-tv.cc:93
 msgid "Failed to get time"
@@ -1205,7 +1225,7 @@ msgstr "Fehler: Failed to get active integer value"
 
 #: ../src/mpeg_stream.cc:317
 msgid "Failed to find Program Map PID for service"
-msgstr ""
+msgstr "Für den Dienst konnte keine Program Map PID gefunden werden."
 
 #: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
 msgid "Unknown language"
@@ -1229,23 +1249,23 @@ msgstr "Australien"
 
 #: ../src/scan_dialog.cc:160
 msgid "Canada"
-msgstr ""
+msgstr "Kanada"
 
 #: ../src/scan_dialog.cc:161
 msgid "Czech Republic"
-msgstr ""
+msgstr "Tschechische Republik"
 
 #: ../src/scan_dialog.cc:162
 msgid "Finland"
-msgstr ""
+msgstr "Finnland"
 
 #: ../src/scan_dialog.cc:163
 msgid "France"
-msgstr ""
+msgstr "Frankreich"
 
 #: ../src/scan_dialog.cc:164
 msgid "Germany"
-msgstr ""
+msgstr "Deutschland"
 
 #: ../src/scan_dialog.cc:165
 msgid "Italy"
@@ -1253,15 +1273,15 @@ msgstr "Italien"
 
 #: ../src/scan_dialog.cc:166
 msgid "Lithuania"
-msgstr ""
+msgstr "Litauen"
 
 #: ../src/scan_dialog.cc:167
 msgid "New Zealand"
-msgstr ""
+msgstr "Neuseeland"
 
 #: ../src/scan_dialog.cc:168
 msgid "Spain"
-msgstr ""
+msgstr "Spanien"
 
 #: ../src/scan_dialog.cc:169
 msgid "Slovenia"
@@ -1269,11 +1289,11 @@ msgstr "Slowenien"
 
 #: ../src/scan_dialog.cc:170
 msgid "United Kingdom"
-msgstr ""
+msgstr "Großbritannien"
 
 #: ../src/scan_dialog.cc:171
 msgid "United States"
-msgstr ""
+msgstr "USA - Vereinigte Staaten von Amerika"
 
 #: ../src/scan_dialog.cc:299
 msgid "Importing channels"
@@ -1314,11 +1334,11 @@ msgstr "Sendersuchlauf abgeschlossen"
 
 #: ../src/scan_dialog.cc:715
 msgid "No auto scan range was specified"
-msgstr ""
+msgstr "Kein Auto-Scan Bereich festgelegt"
 
 #: ../src/scan_dialog.cc:809
 msgid "Unknown scan range '%1'"
-msgstr ""
+msgstr "Unbekannter Scan Bereich '%1'"
 
 #: ../src/scan_dialog.cc:824
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
@@ -1329,6 +1349,8 @@ msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
 msgstr ""
+"Fehler beim Einrichten geplanter Aufnahmen: Zu diesem Zeitpunkt stehen keine "
+"Geräte zur Verfügung"
 
 #: ../src/scheduled_recording_manager.cc:270
 msgid ""
@@ -1344,6 +1366,8 @@ msgid ""
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
+"Konnte geplante Aufnahme nicht speichern da bereits eine geplante Aufnahme "
+"namens '%1' zur selben Zeit und auf dem selben Sender vorhanden ist."
 
 #: ../src/scheduled_recording_manager.cc:453
 msgid "Scheduled recording '%1' not found"
@@ -1355,11 +1379,11 @@ msgstr "Beschreibung"
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Record"
-msgstr ""
+msgstr "Aufnehmen"
 
 #: ../src/scheduled_recordings_dialog.cc:55
 msgid "After"
-msgstr ""
+msgstr "Danach"
 
 #: ../src/scheduled_recordings_dialog.cc:56
 msgid "Device"
@@ -1371,23 +1395,24 @@ msgstr "Keine geplante Aufnahme ausgewählt."
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
-msgstr ""
+msgstr "Me TV ist im Leerlauf"
 
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
 msgstr ""
+"Fehler: Frontend '%1' konnte für die Aufnahmeplanung nicht gefunden werden"
 
 #: ../src/stream_manager.cc:207 ../src/stream_manager.cc:293
 msgid "Failed to get available frontend"
-msgstr ""
+msgstr "Fehler: Kein frontend verfügbar"
 
 #: ../src/stream_manager.cc:332
 msgid "Failed to get display stream"
-msgstr ""
+msgstr "Fehler: Display Stream nicht erreichbar"
 
 #: ../src/stream_manager.cc:379
 msgid "Failed to get display frontend thread"
-msgstr ""
+msgstr "Fehler: Kein Anzeige-frontend verfügbar"
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
