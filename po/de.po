@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-08-27 06:49+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2010-08-29 10:21+0000\n"
+"Last-Translator: Wolle <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-08-28 04:02+0000\n"
+"X-Launchpad-Export-Date: 2010-08-30 04:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -308,7 +308,7 @@ msgstr " Minuten"
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
-msgstr ""
+msgstr "00:00"
 
 #: ../src/me-tv.ui.h:4
 msgid ":"
@@ -767,7 +767,7 @@ msgstr "Untertitel"
 
 #: ../src/application.cc:119
 msgid "_Streams"
-msgstr ""
+msgstr "_Streams"
 
 #: ../src/application.cc:120
 msgid "_Channels"
@@ -807,7 +807,7 @@ msgstr "DBus - Verbindung ist nicht verfügbar"
 
 #: ../src/application.cc:505
 msgid "Failed to get org.gnome.SessionManager proxy"
-msgstr ""
+msgstr "Erreichen des org.gnome.SessionManager Proxy fehlgeschlagen"
 
 #: ../src/application.cc:511
 msgid "Failed to call Shutdown method"
@@ -1154,6 +1154,8 @@ msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
+"Weist Me TV an nicht die Bildschirmschoner Sperr-/Entsperrfunktion für GNOME "
+"Bildschirmschoner aufzurufen."
 
 #: ../src/main.cc:111
 msgid ""
@@ -1343,6 +1345,7 @@ msgstr "Unbekannter Scan Bereich '%1'"
 #: ../src/scan_dialog.cc:824
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
+"Der automatische Suchlauf wird nur auf DVB-T und ATSC Geräten untersützt."
 
 #: ../src/scheduled_recording_manager.cc:250
 msgid ""
