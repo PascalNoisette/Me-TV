@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-09-08 08:31+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2010-09-24 15:22+0000\n"
+"Last-Translator: GTriderXC <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-09-09 05:09+0000\n"
+"X-Launchpad-Export-Date: 2010-09-29 05:39+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -171,7 +171,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:25
 msgid "Tells Me TV to display an icon the notification area."
-msgstr ""
+msgstr "Ikona Me TV będzie wyświetlana w obszarze powiadomień."
 
 #: ../me-tv.schemas.in.h:26
 msgid "The directory to use for recordings."
@@ -199,13 +199,15 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:30
 msgid "The last channel tuned to."
-msgstr ""
+msgstr "Ostatnio oglądany kanał."
 
 #: ../me-tv.schemas.in.h:31
 msgid ""
 "The number of channels to show before paging, this is deliberately set low "
 "to reduce preformance issues."
 msgstr ""
+"Ilość kanałów do wyświetlenia przed rozpoczęciem procesu stronicowania. "
+"Celowo domyślnie ustawiona jest niska wartość aby nie spowalniać systemu."
 
 #: ../me-tv.schemas.in.h:32
 msgid "The number of channels to show before paging."
@@ -213,11 +215,11 @@ msgstr "Liczba kanałów do wyświetlenia przed stronicowaniem."
 
 #: ../me-tv.schemas.in.h:33
 msgid "The number of hours for the EPG to span on one page."
-msgstr ""
+msgstr "Ilość godzin wyświetlania na stronie informacji EPG."
 
 #: ../me-tv.schemas.in.h:34
 msgid "The text endoding that the DVB information is in."
-msgstr ""
+msgstr "Dekodowanie tekstu, zawierającego informacje DVB."
 
 #: ../me-tv.schemas.in.h:35
 msgid "The width of the window before Me TV was last closed"
@@ -270,12 +272,16 @@ msgstr ""
 #: ../me-tv.schemas.in.h:42
 msgid "This will show the timespan of an EPG event in a tooltip."
 msgstr ""
+"Dzięki temu ustawieniu czas wydarzenia EPG będzie pokazywany jako podpowiedź "
+"obok kursora myszy."
 
 #: ../me-tv.schemas.in.h:43
 msgid ""
 "When this setting is false Me TV will terminate when the main window is "
 "closed."
 msgstr ""
+"Jeśli to ustawienie jest nieprawidłowe, Me TV zakończy pracę, gdy główne "
+"okno zostanie zamknięte."
 
 #: ../me-tv.schemas.in.h:44
 msgid "Whether the video should be deinterlaced."
@@ -299,7 +305,7 @@ msgstr " minut(y)"
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
-msgstr ""
+msgstr "00:00"
 
 #: ../src/me-tv.ui.h:4
 msgid ":"
@@ -340,6 +346,11 @@ msgid ""
 "from the LinuxTV dvb-apps package which is included in most Linux "
 "distributions.  Look for <i>dvb-apps</i> in your package management system."
 msgstr ""
+"Plik skanowania startowego pozwala na dostarczenie informacji, pomagających "
+"znaleźć serwisy DVB. W większości dystrybucji systemu Linuks, w pakiecie "
+"LinuxTV dvb-apps, dostępnych jest wiele popularnych plików tego typu. "
+"Poszukaj <i>dvb-abbs<i> w menedżerze pakietów lub centrum oprogramowania "
+"Twojego systemu."
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
@@ -399,7 +410,7 @@ msgstr "Czas:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
-msgstr ""
+msgstr "Informacja o wydarzeniach EPG"
 
 #: ../src/me-tv.ui.h:26
 msgid ""
@@ -586,7 +597,7 @@ msgstr "Nagrywaj do: "
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
-msgstr ""
+msgstr "Powtarzanie:"
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
@@ -737,7 +748,7 @@ msgstr "Aplikacja została już uruchomiona"
 
 #: ../src/application.cc:58
 msgid "The SQLite version is not thread-safe"
-msgstr ""
+msgstr "Wątki tej wersji SQLite nie są bezpieczne"
 
 #: ../src/application.cc:112
 msgid "_File"
@@ -809,7 +820,7 @@ msgstr "Nie udało się uzyskać proxy org.gnome.SessionManager"
 
 #: ../src/application.cc:511
 msgid "Failed to call Shutdown method"
-msgstr ""
+msgstr "Nie zdołano poprawnie wykonać polecenia zamknięcia."
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
@@ -826,7 +837,7 @@ msgstr "Nieznany frontend"
 
 #: ../src/channel_manager.cc:258
 msgid "Invalid channel index"
-msgstr ""
+msgstr "Niepoprawny indeks kanałów"
 
 #: ../src/channel_manager.cc:272
 msgid "Channel '%1' not found"
@@ -835,9 +846,9 @@ msgstr "Nie znaleziono kanału '%1'"
 #: ../src/channel_manager.cc:295
 msgid "Failed to add channel: You cannot have more than 1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-msgstr[0] "Nie udało się dodać kanału: Nie możesz mieć więcej niż 1 kanału"
-msgstr[1] ""
-"Nie udało się dodać kanału: Nie możnesz mieć więcej niż %1 kanałów"
+msgstr[0] "Nie udało się dodać kanału: nie możesz mieć więcej niż %1 kanału"
+msgstr[1] "Nie udało się dodać kanału: nie możesz mieć więcej niż %1 kanałów"
+msgstr[2] "-"
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
@@ -865,7 +876,7 @@ msgstr "Nie można utworzyć raportu: %1"
 
 #: ../src/data.cc:62
 msgid "Prepared statement had remaining data: %1"
-msgstr ""
+msgstr "Przygotowana deklaracja posiadała pozostawione dane: %1"
 
 #: ../src/data.cc:67
 msgid "Failed to create statement"
@@ -885,7 +896,7 @@ msgstr "Połączenie z bazą danych Me TV '%1' nie powiodło się"
 
 #: ../src/data.cc:246
 msgid "Only integers can be primary keys"
-msgstr ""
+msgstr "Tylko liczby całkowite mogą być kluczami głównymi"
 
 #: ../src/data.cc:315
 msgid "Failed to create TableAdapter: Table has no columns"
@@ -913,7 +924,7 @@ msgstr "Nie powiodło się ustawianie rozmiaru buforu demuxer'a"
 
 #: ../src/dvb_demuxer.cc:103
 msgid "Read timeout"
-msgstr ""
+msgstr "Czas wczytywania"
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
@@ -937,7 +948,7 @@ msgstr "Nie powiodło się zatrzymywanie demuxer'a"
 
 #: ../src/dvb_demuxer.cc:161
 msgid "Failed to poll"
-msgstr ""
+msgstr "Nie zdołano zsumować"
 
 #: ../src/dvb_frontend.cc:51
 msgid "Failed to open tuner"
@@ -1125,7 +1136,7 @@ msgstr ""
 
 #: ../src/main.cc:85
 msgid "Enable verbose messages"
-msgstr ""
+msgstr "Zezwól na rozwlekłe wiadomości"
 
 #: ../src/main.cc:90
 msgid "Start in safe mode"
@@ -1137,7 +1148,7 @@ msgstr "Uruchom w trybie zminimalizowanym - ikona w obszarze powiadamiania"
 
 #: ../src/main.cc:99
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
-msgstr ""
+msgstr "Wyłączanie wątku EPG. Me TV przestanie zbierać wydarzenia EPG."
 
 #: ../src/main.cc:103
 msgid "Stops the rendering of the EPG event buttons on the UI."
@@ -1148,6 +1159,8 @@ msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
+"Ta funkcja zapobiega wywoływaniu wygaszacza ekranu (metodami "
+"Inhibit/Uninhibit) w środowisku GNOME."
 
 #: ../src/main.cc:111
 msgid ""
@@ -1161,7 +1174,7 @@ msgstr ""
 msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 5)."
-msgstr ""
+msgstr "Ile sekund czekać na dane z demuxera (domyślnie 5)?"
 
 #: ../src/main.cc:117
 msgid "Show Me TV help options"
@@ -1219,7 +1232,7 @@ msgstr "Nie udało się uzyskać aktywnej wartości całkowitej"
 
 #: ../src/mpeg_stream.cc:317
 msgid "Failed to find Program Map PID for service"
-msgstr ""
+msgstr "Nie zdołano odnaleźć PID dla tej usługi w tabeli programów (PMT)."
 
 #: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
 msgid "Unknown language"
@@ -1296,7 +1309,7 @@ msgstr "Importowanie kanałów"
 #: ../src/scan_dialog.cc:325 ../src/scan_dialog.cc:347
 #: ../src/scan_dialog.cc:365 ../src/scan_dialog.cc:384
 msgid "Invalid parameter count on line %1"
-msgstr ""
+msgstr "Niepoprawny parametr obliczania w linii %1"
 
 #: ../src/scan_dialog.cc:398
 msgid ""
@@ -1404,7 +1417,7 @@ msgstr "Nie udało się uzyskać strumienia obrazu"
 
 #: ../src/stream_manager.cc:379
 msgid "Failed to get display frontend thread"
-msgstr ""
+msgstr "Nie zdołano pobrać frontendu wyświetlania dla tego wątku."
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
@@ -1418,13 +1431,6 @@ msgstr " już jest rozpoczęty"
 
 #~ msgid "All"
 #~ msgstr "Wszystko"
-
-#~ msgid "Failed to add channel: You cannot have more than %1 channel"
-#~ msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-#~ msgstr[0] ""
-#~ "Błąd podczas dodawania kanału. Nie możesz mieć więcej niż %1 kanał"
-#~ msgstr[1] ""
-#~ "Błąd podczas dodawania kanału. Nie możesz mieć więcej niż %1 kanałów"
 
 #~ msgid "Not available"
 #~ msgstr "Niedostępny"

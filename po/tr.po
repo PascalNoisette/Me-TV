@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-07-07 04:34+0000\n"
-"Last-Translator: linuxseven <linuxseven@mynet.com>\n"
+"PO-Revision-Date: 2010-09-14 12:46+0000\n"
+"Last-Translator: cornetto <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-08-04 04:01+0000\n"
+"X-Launchpad-Export-Date: 2010-09-29 05:39+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -300,11 +300,11 @@ msgstr "Ses sürücüsü:"
 
 #: ../src/me-tv.ui.h:12
 msgid "Auto scan"
-msgstr ""
+msgstr "Otomatik tarama"
 
 #: ../src/me-tv.ui.h:13
 msgid "Cancel channel import"
-msgstr ""
+msgstr "Kanal içeri yüklemesini iptal et"
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
@@ -312,7 +312,7 @@ msgstr "Kanal Frekansı: "
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
-msgstr ""
+msgstr "Kanal Adı: "
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel:"
