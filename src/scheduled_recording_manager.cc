@@ -38,6 +38,8 @@ void ScheduledRecordingManager::load(Data::Connection& connection)
 	Glib::ustring where = Glib::ustring::compose(
 		"((start_time + duration) > %1 OR recurring_type != 0)", time(NULL));
 	Data::DataTable data_table = adapter.select_rows(where, "start_time");
+
+	dirty = false;
 	
 	scheduled_recordings.clear();
 	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
@@ -55,9 +57,11 @@ void ScheduledRecordingManager::load(Data::Connection& connection)
 		scheduled_recording.device					= row["device"].string_value;
 
 		scheduled_recordings.push_back(scheduled_recording);
+
+		guint now = time(NULL);
+		if(scheduled_recording.start_time + scheduled_recording.duration < now)
+			dirty = true;
 	}
-	
-	dirty = false;
 
 	g_debug("Scheduled recordings loaded");
 }
@@ -69,6 +73,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 		g_debug("Scheduled recordings are not dirty, not saving");
 		return;
 	}
+	g_debug("Scheduled recordings are dirty, saving");
 	
 	Glib::RecMutex::Lock lock(mutex);
 
@@ -111,7 +116,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 	{
 		Data::Row& row = *i;
-		g_message("ScheduledRecordingManager::save/clear ID: %d", row["scheduled_recording_id"].int_value); 
+		g_debug("ScheduledRecordingManager::save/clear ID: %d", row["scheduled_recording_id"].int_value); 
 
 		if(row["recurring_type"].int_value == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYDAY)
 		{
@@ -428,6 +433,10 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 			if (record)
 			{
 				results.push_back(scheduled_recording);
+			}
+			if(scheduled_recording.get_end_time() < scheduled_recording_now)
+			{
+				dirty = true;
 			}
 		}
 	}
