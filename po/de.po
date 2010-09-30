@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-09-20 15:13+0000\n"
+"POT-Creation-Date: 2010-09-29 20:05-0400\n"
+"PO-Revision-Date: 2010-09-29 07:59+0000\n"
 "Last-Translator: Daniel Schury <das.surst@googlemail.com>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-09-29 05:39+0000\n"
+"X-Launchpad-Export-Date: 2010-09-30 05:02+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -1102,54 +1102,48 @@ msgstr "Fehler beim Erstellen des FIFO '%1'"
 msgid "Failed to open FIFO for reading '%1'"
 msgstr "Fehler: Failed to open FIFO for reading '%1'"
 
-#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
+#: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "-"
 msgstr "-"
 
-#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
+#: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
 msgstr "Unbekanntes Programm"
 
 #: ../src/main.cc:29
-msgid "Me TV is a digital television viewer for the GNOME desktop"
-msgstr "Me TV ist ein Programm zum digitalen Fernsehen für den GNOME Desktop"
+msgid "Me TV is a digital television viewer for GTK"
+msgstr ""
 
 #: ../src/main.cc:30
 msgid ""
 "Me TV was developed for the modern digital lounge room with a PC for a media "
 "centre that is capable of normal PC tasks (web surfing, word processing and "
-"watching TV). It is not designed to be a full-blown media centre such as "
-"MythTV but will integrate well with an existing GNOME desktop.\n"
+"watching TV).\n"
 msgstr ""
-"Me TV wurde für das moderne, digitale Wohnzimmer mit einem PC als Media "
-"Center entworfen, welcher auch für normale PC-Aufgaben ( Websurfing, "
-"Textverarbeitung und Fernsehen) genutzt wird. Es wurde nicht als "
-"vollwertiges Media Center wie beispielsweise MythTV konzipiert, sondern soll "
-"sich gut in einen vorhandenen GNOME Desktop einfügen.\n"
 
-#: ../src/main.cc:85
+#: ../src/main.cc:84
 msgid "Enable verbose messages"
 msgstr "Aktiviere ausführliche Meldungen"
 
-#: ../src/main.cc:90
+#: ../src/main.cc:89
 msgid "Start in safe mode"
 msgstr "Im sicheren Modus starten"
 
-#: ../src/main.cc:95
+#: ../src/main.cc:94
 msgid "Start minimised in notification area"
 msgstr "Minimiert im Benachrichtigungsfeld starten"
 
-#: ../src/main.cc:99
+#: ../src/main.cc:98
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
 msgstr ""
 "EPG-Thread deaktivieren. Me TV wird den elektronischen Programmführer nicht "
 "mehr aktualisieren."
 
-#: ../src/main.cc:103
+#: ../src/main.cc:102
 msgid "Stops the rendering of the EPG event buttons on the UI."
 msgstr "Deaktiviert die Anzeige des aktuellen Fernsehprogramms."
 
-#: ../src/main.cc:107
+#: ../src/main.cc:106
 msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
@@ -1157,7 +1151,7 @@ msgstr ""
 "Weist Me TV an nicht die Bildschirmschoner Sperr-/Entsperrfunktion für GNOME "
 "Bildschirmschoner aufzurufen."
 
-#: ../src/main.cc:111
+#: ../src/main.cc:110
 msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
@@ -1165,7 +1159,7 @@ msgstr ""
 "Nur die angegebenen frontend Geräte verwenden (z.B. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 
-#: ../src/main.cc:115
+#: ../src/main.cc:114
 msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 5)."
@@ -1173,31 +1167,31 @@ msgstr ""
 "Wie lange (in Sekunden) gewartet werden soll, bevor das Warten auf Daten vom "
 "Demuxer abgebrochen werden soll (Vorgabe 5)."
 
-#: ../src/main.cc:117
+#: ../src/main.cc:116
 msgid "Show Me TV help options"
 msgstr "Zeige Me TV Hilfeoptionen"
 
-#: ../src/main.cc:162
+#: ../src/main.cc:161
 msgid "An unhandled error occurred"
 msgstr "Ein unbehandelter Fehler ist aufgetreten"
 
-#: ../src/main_window.cc:196
+#: ../src/main_window.cc:197
 msgid "Please stop all recordings before editing channels"
 msgstr "Bitte vor dem Bearbeiten von Kanälen alle Aufnahmen beenden"
 
-#: ../src/main_window.cc:207
+#: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
 msgstr "Während dem Aufnehmen können die Kanäle nicht aktualisiert werden"
 
-#: ../src/main_window.cc:555
+#: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
 msgstr "Konnte Engine nicht starten: Engine läuft bereits"
 
-#: ../src/main_window.cc:631
+#: ../src/main_window.cc:634
 msgid "None"
 msgstr "Keine"
 
-#: ../src/main_window.cc:945
+#: ../src/main_window.cc:948
 msgid ""
 "An error occurred while trying to communicate with the GNOME screensaver. To "
 "stop this message from displaying you can use the --no-screensaver-inhibit "
@@ -1349,7 +1343,7 @@ msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
 "Der automatische Suchlauf wird nur auf DVB-T und ATSC Geräten untersützt."
 
-#: ../src/scheduled_recording_manager.cc:250
+#: ../src/scheduled_recording_manager.cc:257
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
@@ -1357,7 +1351,7 @@ msgstr ""
 "Fehler beim Einrichten geplanter Aufnahmen: Zu diesem Zeitpunkt stehen keine "
 "Geräte zur Verfügung"
 
-#: ../src/scheduled_recording_manager.cc:270
+#: ../src/scheduled_recording_manager.cc:277
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
@@ -1365,7 +1359,7 @@ msgstr ""
 "Die geplante Aufnahme konnte nicht gespeichert werden, weil ein Konflikt mit "
 "der geplanten Aufnahme '%1' entsteht."
 
-#: ../src/scheduled_recording_manager.cc:291
+#: ../src/scheduled_recording_manager.cc:298
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which is scheduled for the same time on the same "
@@ -1374,7 +1368,7 @@ msgstr ""
 "Konnte geplante Aufnahme nicht speichern da bereits eine geplante Aufnahme "
 "namens '%1' zur selben Zeit und auf dem selben Sender vorhanden ist."
 
-#: ../src/scheduled_recording_manager.cc:453
+#: ../src/scheduled_recording_manager.cc:464
 msgid "Scheduled recording '%1' not found"
 msgstr "Geplante Aufnahme '%1' wurde nicht gefunden."
 
@@ -1428,6 +1422,21 @@ msgstr " Thread wurde schon gestartet"
 
 #~ msgid "Main window has not been created"
 #~ msgstr "Das Hauptfenster wurde nicht erstellt"
+
+#~ msgid "Me TV is a digital television viewer for the GNOME desktop"
+#~ msgstr "Me TV ist ein Programm zum digitalen Fernsehen für den GNOME Desktop"
+
+#~ msgid ""
+#~ "Me TV was developed for the modern digital lounge room with a PC for a media "
+#~ "centre that is capable of normal PC tasks (web surfing, word processing and "
+#~ "watching TV). It is not designed to be a full-blown media centre such as "
+#~ "MythTV but will integrate well with an existing GNOME desktop.\n"
+#~ msgstr ""
+#~ "Me TV wurde für das moderne, digitale Wohnzimmer mit einem PC als Media "
+#~ "Center entworfen, welcher auch für normale PC-Aufgaben ( Websurfing, "
+#~ "Textverarbeitung und Fernsehen) genutzt wird. Es wurde nicht als "
+#~ "vollwertiges Media Center wie beispielsweise MythTV konzipiert, sondern soll "
+#~ "sich gut in einen vorhandenen GNOME Desktop einfügen.\n"
 
 #~ msgid "Failed to add channel: You cannot have more than %1 channel"
 #~ msgid_plural "Failed to add channel: You cannot have more than %1 channels"
