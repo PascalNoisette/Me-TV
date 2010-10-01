@@ -323,6 +323,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 		current.channel_id = scheduled_recording.channel_id;
 		current.start_time = scheduled_recording.start_time;
 		current.duration = scheduled_recording.duration;
+		dirty = true;
 	}
 	
 	// If the scheduled recording is new then add it
