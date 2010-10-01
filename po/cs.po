@@ -9,15 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-08-28 06:42+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"POT-Creation-Date: 2010-09-29 20:05-0400\n"
+"PO-Revision-Date: 2010-09-30 06:55+0000\n"
+"Last-Translator: David Štancl <Unknown>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-08-29 04:06+0000\n"
+"X-Launchpad-Export-Date: 2010-10-01 08:59+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -25,8 +25,8 @@ msgid ""
 "By default, the EPG header is visible but disabling it can minimise screen "
 "real estate by reducing the vertical EPG size."
 msgstr ""
-"Standartně je zobrazena hlavička EPG. Jejím zakázáním je možno zmenšit "
-"horizontální velikost EPG."
+"Standardně je zobrazena hlavička EPG. Jejím zakázáním je možno zmenšit "
+"vertikální velikost EPG."
 
 #: ../me-tv.schemas.in.h:2
 msgid "Display a channel number next to the channel name in the EPG."
@@ -1101,59 +1101,53 @@ msgstr "Selhalo vytvoření FIFO '%1'"
 msgid "Failed to open FIFO for reading '%1'"
 msgstr "Selhalo otevření FIFO pro čtení '%1'"
 
-#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
+#: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "-"
 msgstr "-"
 
-#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
+#: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
 msgstr "Neznámý program"
 
 #: ../src/main.cc:29
-msgid "Me TV is a digital television viewer for the GNOME desktop"
-msgstr "Me TV je přehrávač digitálního televizního vysílání (DVB) pro GNOME"
+msgid "Me TV is a digital television viewer for GTK"
+msgstr "Me TV je digitální televize pro GTK"
 
 #: ../src/main.cc:30
 msgid ""
 "Me TV was developed for the modern digital lounge room with a PC for a media "
 "centre that is capable of normal PC tasks (web surfing, word processing and "
-"watching TV). It is not designed to be a full-blown media centre such as "
-"MythTV but will integrate well with an existing GNOME desktop.\n"
+"watching TV).\n"
 msgstr ""
-"Me TV bylo vyvinuto pro moderní digitální obývací pokoj s počítačem jako "
-"multimediálním centrem, který je schopen běžných počítačových úloh "
-"(prohlížení webu, zpracování textu a sledování TV). Není navrženo zastoupit "
-"kompletní multimediální centrum jako je MythTV, ale začlení se dobře do "
-"existujícího desktopu GNOME.\n"
 
-#: ../src/main.cc:85
+#: ../src/main.cc:84
 msgid "Enable verbose messages"
 msgstr "Povolit podrobná hlášení"
 
-#: ../src/main.cc:90
+#: ../src/main.cc:89
 msgid "Start in safe mode"
 msgstr "Spustit v bezpečném režimu"
 
-#: ../src/main.cc:95
+#: ../src/main.cc:94
 msgid "Start minimised in notification area"
 msgstr "Spustit minimalizovaně v oznamovací oblasti"
 
-#: ../src/main.cc:99
+#: ../src/main.cc:98
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
 msgstr "Vypne EPG vlákno. Me TV přestane sbírat EPG události."
 
-#: ../src/main.cc:103
+#: ../src/main.cc:102
 msgid "Stops the rendering of the EPG event buttons on the UI."
 msgstr "Zastaví renderování EPG tlačítek v UI."
 
-#: ../src/main.cc:107
+#: ../src/main.cc:106
 msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
 "Me TV nebude používat metody Inhibit/UnInhibit šetřiče obrazovky v GNOME."
 
-#: ../src/main.cc:111
+#: ../src/main.cc:110
 msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
@@ -1161,7 +1155,7 @@ msgstr ""
 "Použít jen vyjmenovaná zařízení frontendu (např. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 
-#: ../src/main.cc:115
+#: ../src/main.cc:114
 msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 5)."
@@ -1169,31 +1163,31 @@ msgstr ""
 "Jak dlouho čekat (v sekundách) na vypršení časového limitu pro čekání na "
 "data z demultiplexoru (výchozí: 5s)."
 
-#: ../src/main.cc:117
+#: ../src/main.cc:116
 msgid "Show Me TV help options"
 msgstr "Zobrazit možnosti nápovědy Me TV"
 
-#: ../src/main.cc:162
+#: ../src/main.cc:161
 msgid "An unhandled error occurred"
 msgstr "Nastala neošetřená chyba"
 
-#: ../src/main_window.cc:196
+#: ../src/main_window.cc:197
 msgid "Please stop all recordings before editing channels"
 msgstr "Před úpravou kanálů ukončete všechna nahrávání"
 
-#: ../src/main_window.cc:207
+#: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
 msgstr "Nelze upravovat kanály během nahrávání"
 
-#: ../src/main_window.cc:555
+#: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
 msgstr "Selhalo spuštění knihovny přehrávače: knihovna již byla spuštěna"
 
-#: ../src/main_window.cc:631
+#: ../src/main_window.cc:634
 msgid "None"
 msgstr "Nic"
 
-#: ../src/main_window.cc:945
+#: ../src/main_window.cc:948
 msgid ""
 "An error occurred while trying to communicate with the GNOME screensaver. To "
 "stop this message from displaying you can use the --no-screensaver-inhibit "
@@ -1344,7 +1338,7 @@ msgstr "Neznámý rozsah skenování %1"
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr "Automatické skenování je k dispozici jen u zařízení DVB-T a ATSC"
 
-#: ../src/scheduled_recording_manager.cc:250
+#: ../src/scheduled_recording_manager.cc:257
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
@@ -1352,7 +1346,7 @@ msgstr ""
 "Nepodařilo se naplánovat nahrávání: žádná zařízení v ten čas nejsou k "
 "dispozici"
 
-#: ../src/scheduled_recording_manager.cc:270
+#: ../src/scheduled_recording_manager.cc:277
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
@@ -1360,7 +1354,7 @@ msgstr ""
 "Nepodařilo se naplánovat nahrávání, protože koliduje s jiným, které bylo "
 "nazváno '%1'."
 
-#: ../src/scheduled_recording_manager.cc:291
+#: ../src/scheduled_recording_manager.cc:298
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which is scheduled for the same time on the same "
@@ -1369,7 +1363,7 @@ msgstr ""
 "Nepodařilo se naplánovat nahrávání, protože už je jiné s názvem '%1' a je ve "
 "stejném čase na stejném kanále."
 
-#: ../src/scheduled_recording_manager.cc:453
+#: ../src/scheduled_recording_manager.cc:464
 msgid "Scheduled recording '%1' not found"
 msgstr "Naplánované nahrávání '%1' není dostupné"
 
@@ -1419,6 +1413,21 @@ msgstr " vlákno již bylo spuštěno"
 
 #~ msgid "Main window has not been created"
 #~ msgstr "Hlavní okno nebylo vytvořeno"
+
+#~ msgid "Me TV is a digital television viewer for the GNOME desktop"
+#~ msgstr "Me TV je přehrávač digitálního televizního vysílání (DVB) pro GNOME"
+
+#~ msgid ""
+#~ "Me TV was developed for the modern digital lounge room with a PC for a media "
+#~ "centre that is capable of normal PC tasks (web surfing, word processing and "
+#~ "watching TV). It is not designed to be a full-blown media centre such as "
+#~ "MythTV but will integrate well with an existing GNOME desktop.\n"
+#~ msgstr ""
+#~ "Me TV bylo vyvinuto pro moderní digitální obývací pokoj s počítačem jako "
+#~ "multimediálním centrem, který je schopen běžných počítačových úloh "
+#~ "(prohlížení webu, zpracování textu a sledování TV). Není navrženo zastoupit "
+#~ "kompletní multimediální centrum jako je MythTV, ale začlení se dobře do "
+#~ "existujícího desktopu GNOME.\n"
 
 #~ msgid "Failed to add channel: You cannot have more than %1 channel"
 #~ msgid_plural "Failed to add channel: You cannot have more than %1 channels"
