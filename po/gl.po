@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-10-01 11:46+0000\n"
-"Last-Translator: estevo <esteban.paz@gmail.com>\n"
+"PO-Revision-Date: 2010-10-03 14:47+0000\n"
+"Last-Translator: Manuel Xosé Lemos <Unknown>\n"
 "Language-Team: Galician <gl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-10-02 05:19+0000\n"
+"X-Launchpad-Export-Date: 2010-10-04 05:07+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -587,11 +587,11 @@ msgstr "Eliminar os dous puntos «:» dos nomes de ficheiros"
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr "Renomea a nova canle con un nome único"
+msgstr "Renomear a nova canle cun nome único"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
-msgstr "Repite esta acción para tódalas canles en conflito"
+msgstr "Repetir esta acción para todas as canles en conflito"
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
@@ -659,7 +659,7 @@ msgstr "Mostrar as mensaxes emerxentes nos botóns de eventos da GEP"
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
-msgstr "Apagado"
+msgstr "Apagar"
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
@@ -803,7 +803,7 @@ msgstr "Produciuse un erro ao obter o proxy de org.gnome.SessionManager"
 
 #: ../src/application.cc:511
 msgid "Failed to call Shutdown method"
-msgstr "Erro ó chamares ó método Apagar"
+msgstr "Produciuse un erro ao chamar ao método Apagar"
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
@@ -811,7 +811,7 @@ msgstr "Título"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
-msgstr "Fila non seleccionada"
+msgstr "Non se seleccionou ningunha fila"
 
 #: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
@@ -1104,7 +1104,7 @@ msgstr "Programa descoñecido"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for GTK"
-msgstr "Me TV é un visor de televisión dixital para GTK"
+msgstr "Me TV é un visualizador de televisión dixital (TDT) para GTK"
 
 #: ../src/main.cc:30
 msgid ""
@@ -1112,9 +1112,9 @@ msgid ""
 "centre that is capable of normal PC tasks (web surfing, word processing and "
 "watching TV).\n"
 msgstr ""
-"Me TV foi desenvolto para o moderno salón dixital con un PC como centro "
-"multimedia que é capaz de facer tarefas normais do PC (navegación web, "
-"procesamento de textos e ver TV).\n"
+"Me TV foi desenvolvido para os modernos salóns dixitais cun PC como centro "
+"multimedia que ademáis é quen de facer as tarefas normais dun PC (navegación "
+"web, procesamento de texto e ver a televisión).\n"
 
 #: ../src/main.cc:84
 msgid "Enable verbose messages"
@@ -1178,7 +1178,7 @@ msgstr "Non se pode actualizar canles durante a gravación"
 
 #: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
-msgstr "Produciuse un fallo ao iniciar o motor: O motor xa foi iniciado"
+msgstr "Produciuse un fallo ao iniciar o motor: o motor xa foi iniciado"
 
 #: ../src/main_window.cc:634
 msgid "None"
@@ -1384,7 +1384,7 @@ msgstr "Dispositivo"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
-msgstr "Non hai ningunha gravación programada"
+msgstr "Non se selleccionou ningunha gravación programada"
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
