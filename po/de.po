@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-09-29 07:59+0000\n"
-"Last-Translator: Daniel Schury <das.surst@googlemail.com>\n"
+"PO-Revision-Date: 2010-10-07 14:03+0000\n"
+"Last-Translator: Kraven <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-09-30 05:02+0000\n"
+"X-Launchpad-Export-Date: 2010-10-08 04:53+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -143,7 +143,7 @@ msgstr "Zuletzt gesuchte EPG-Events"
 
 #: ../me-tv.schemas.in.h:19
 msgid "Remove the colon ':' from the recording filename"
-msgstr "Entferne den Doppelpunkt ':' vom Namen der Datei."
+msgstr "Doppelpunkt \":\" aus Aufnahme-Dateinamen entfernen"
 
 #: ../me-tv.schemas.in.h:20
 msgid "Sets the \"Always On Top\" attribute on the main window."
@@ -168,9 +168,8 @@ msgid ""
 "Some file systems do not support a colon in a filename (e.g. FAT32). This "
 "option tells Me TV to remove it from the recording filename."
 msgstr ""
-"Einige Dateisysteme unterstützen keinen Doppelpunkt im Dateinamen (z.B. "
-"FAT32). Me TV wird mittels dieser Option alle Doppelpunkte im Dateinamen der "
-"Aufnahme entfernen."
+"Einige Dateisysteme unterstützen in einem Dateinamen keinen Doppelpunkt (z. "
+"B. FAT32). Me TV entfernt diese aus dem Aufnahme-Dateinamen."
 
 #: ../me-tv.schemas.in.h:25
 msgid "Tells Me TV to display an icon the notification area."
@@ -179,28 +178,27 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:26
 msgid "The directory to use for recordings."
-msgstr "Für Aufnahmen zu verwendender Ordner."
+msgstr "Der für Aufnahmen zu verwendende Ordner."
 
 #: ../me-tv.schemas.in.h:27
 msgid ""
 "The directory to use for recordings. This value defaults to the users home "
 "directory."
 msgstr ""
-"Das Verzeichnis in dem Aufzeichnungen abgespeichert werden. Die "
-"Standardeinstellung ist das home Verzeichnis des angemeldeten Nutzers."
+"Der für Aufnahmen zu verwendende Ordner. Dies ist standardmäßig der "
+"persönliche Ordner"
 
 #: ../me-tv.schemas.in.h:28
 msgid "The height of the window before Me TV was last closed"
-msgstr "Die Höhe des Fensters bevor Me TV geschlossen wurde."
+msgstr "Die Fensterhöhe, bevor Me TV zuletzt geschlossen wurde"
 
 #: ../me-tv.schemas.in.h:29
 msgid ""
 "The height of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
-"Die Höhe des Fensters, bevor Me TV zuletzt geschlossen wurde. Me TV benutzt "
-"diesen Wert, um das Hauptfenster nach den vorherigen geometrischen "
-"Einstellungen wieder zu öffnen."
+"Die Fensterhöhe, bevor Me TV zuletzt geschlossen wurde. Me TV verwendet "
+"diesen Wert, um die Hauptfenstergeometrie wiederherzustellen."
 
 #: ../me-tv.schemas.in.h:30
 msgid "The last channel tuned to."
@@ -229,42 +227,42 @@ msgstr "Die Textkodierung, welche die DVB-Information enthält"
 
 #: ../me-tv.schemas.in.h:35
 msgid "The width of the window before Me TV was last closed"
-msgstr "Breite des Fensters bevor Me TV zuletzt geschlossen wurde."
+msgstr "Die Fensterbreite, bevor Me TV zuletzt geschlossen wurde"
 
 #: ../me-tv.schemas.in.h:36
 msgid ""
 "The width of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
-"Breite des Fensters bevor Me TV zuletzt geschlossen wurde. Me TV verwendet "
-"diesen Wert um das Hauptfenster in der zuletzt benutzen Geometrie "
-"wiederherzustellen."
+"Die Fensterhöhe, bevor Me TV zuletzt geschlossen wurde. Me TV verwendet "
+"diesen Wert, um die Hauptfenstergeometrie wiederherzustellen."
 
 #: ../me-tv.schemas.in.h:37
 msgid "The x position of the window before Me TV was last closed"
-msgstr "Die x-Position des Fensters bevor Me TV zuletzt geschlossen wurde."
+msgstr ""
+"Die horizontale Position des Fensters, bevor Me TV zuletzt geschlossen wurde"
 
 #: ../me-tv.schemas.in.h:38
 msgid ""
 "The x position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
-"Die x-Position des Fensters bevor Me TV zuletzt geschlossen wurde. Me TV "
-"verwendet diesen Wert um das Hauptfenster in der zuletzt benutzen Geometrie "
+"Die horizontale Position des Fensters, bevor Me TV zuletzt geschlossen "
+"wurde. Me TV verwendet diesen Wert, um die Hauptfenstergeometrie "
 "wiederherzustellen."
 
 #: ../me-tv.schemas.in.h:39
 msgid "The y position of the window before Me TV was last closed"
-msgstr "Die y-Position des Fensters bevor Me TV zuletzt geschlossen wurde."
+msgstr ""
+"Die vertikale Position des Fensters, bevor Me TV zuletzt geschlossen wurde"
 
 #: ../me-tv.schemas.in.h:40
 msgid ""
 "The y position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
-"Die y-Position des Fensters bevor Me TV zuletzt geschlossen wurde. Me TV "
-"verwendet diesen Wert um das Hauptfenster in der zuletzt benutzen Geometrie "
-"wiederherzustellen."
+"Die vertikale Position des Fensters, bevor Me TV zuletzt geschlossen wurde. "
+"Me TV verwendet diesen Wert, um die Hauptfenstergeometrie wiederherzustellen."
 
 #: ../me-tv.schemas.in.h:41
 msgid ""
@@ -284,7 +282,8 @@ msgid ""
 "When this setting is false Me TV will terminate when the main window is "
 "closed."
 msgstr ""
-"Die Einstellung 'false' beendet Me TV wenn das Hauptfenster geschlossen wird."
+"Wenn diese Einstellung falsch ist, wird Me TV beendet, wenn das Hauptfenster "
+"geschlossen wird."
 
 #: ../me-tv.schemas.in.h:44
 msgid "Whether the video should be deinterlaced."
@@ -381,7 +380,7 @@ msgstr "Sender:"
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
-msgstr "Me TV schließen"
+msgstr "Me TV beenden"
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
@@ -420,8 +419,8 @@ msgid ""
 "EPG event titles that contain the following entries will be automatically "
 "recorded."
 msgstr ""
-"EPG Event Titel welche die folgenden Einträge enthalten, werden automatisch "
-"aufgezeichnet."
+"Sendungen, die im elektronischen Programmführer (EPG) folgende Einträge "
+"enthalten, werden automatisch aufgezeichnet."
 
 #: ../src/me-tv.ui.h:27
 msgid "EPG page size: "
@@ -507,11 +506,11 @@ msgstr "Me TV - Kanal Konflikt"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
-msgstr "Me TV - Sendereditor"
+msgstr "Me TV - Sender bearbeiten"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
-msgstr "Me TV - EPG Event Suche"
+msgstr "Me TV - Elektronischer Programmführer-Ereignisse suchen"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
@@ -547,11 +546,11 @@ msgstr "Me TV - Zeitgesteuerte Aufnahmen"
 
 #: ../src/me-tv.ui.h:61
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
-msgstr "Me TV ist eine GNOME-Anwendung für digitales Fernsehen (DVB)"
+msgstr "Me TV ist eine Anwendung für Digitalfernsehen (DVB) für GNOME"
 
 #: ../src/me-tv.ui.h:62
 msgid "Me TV project website"
-msgstr "Projektseite von Me TV"
+msgstr "Me TV-Projekt-Website"
 
 #: ../src/me-tv.ui.h:63
 msgid "Now"
@@ -575,15 +574,15 @@ msgstr "Bevorzugte Sprache:"
 
 #: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
-msgstr "Puffer nach Aufnahme "
+msgstr "Aufzeichnung später beenden: "
 
 #: ../src/me-tv.ui.h:69
 msgid "Record extra before: "
-msgstr "Puffer vor Aufnahme "
+msgstr "Aufzeichnung früher beginnen: "
 
 #: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
-msgstr "Aufnahmeverzeichnis: "
+msgstr "Aufnahmeordner: "
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
@@ -591,7 +590,7 @@ msgstr "Wiederkehrend:"
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
-msgstr "Entferne Doppelpunkt von Aufnahme Dateinamen"
+msgstr "Doppelpunkt aus Aufnahme-Dateinamen entfernen"
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
@@ -627,7 +626,7 @@ msgstr "Besuchen Sie https://launchpad.net/me-tv"
 
 #: ../src/me-tv.ui.h:81
 msgid "Select A Recording Directory"
-msgstr "Aufnahmeverzeichnis wählen"
+msgstr "Aufnahmeordner wählen"
 
 #: ../src/me-tv.ui.h:82
 msgid "Select Scan File"
@@ -716,18 +715,18 @@ msgid ""
 "\n"
 "<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
 msgstr ""
-"Die Me TV Datenbank ist zu alt um mit dieser Version von Me TV verwendet zu "
-"werden. Soll die Me TV Datenbank geleert werden? Alle eingestellten Kanäle, "
-"EPG Ereignisse und geplante Aufnahmen werden dadurch <b>gelöscht</b>.\n"
+"Die Me TV-Datenbank ist zu alt, um sie mit dieser Version von Me TV zu "
+"verwenden. Möchten Sie die Me TV-Datenbank löschen?  Alle  Sender, "
+"Elektronischer Programmführer-Ereignisse und geplante Aufnahmen werden "
+"<b>gelöscht</b>.\n"
 "\n"
-"Falls Me TV vor kurzem auf den neuesten Stand gebracht wurde, ist dies "
-"empfohlen.\n"
+"Wenn Sie Me TV aktualisiert haben, wird dies empfohlen.\n"
 "\n"
-"<i>Die Me TV Datenbank befindet sich in ~/.local/share/me-tv.db.</i>"
+"<i>Die Me TV-Datenbank befindet sich in ~/.local/share/me-tv.db.</i>"
 
 #: ../src/me-tv.ui.h:105
 msgid "_Delete my old Me TV data!"
-msgstr "_Lösche meine alten Me TV-Daten!"
+msgstr "Alte Me TV-Daten _löschen!"
 
 #: ../src/me-tv.ui.h:106
 msgid "channels"
@@ -791,7 +790,7 @@ msgstr "DBus - Sitzung konnte nicht eröffnet werden"
 
 #: ../src/application.cc:186
 msgid "Failed to start recording"
-msgstr "Aufnahme konnte nicht gestartet werden"
+msgstr "Beim Starten der Aufnahme ist ein Fehler aufgetreten"
 
 #: ../src/application.cc:378
 msgid "Failed to initialise database"
@@ -886,7 +885,9 @@ msgstr "Fehler: Failed to execute statement: %1"
 
 #: ../src/data.cc:176
 msgid "Failed to connect to Me TV database '%1'"
-msgstr "Konnte nicht mit der Me TV-Datenbank '%1' verbinden"
+msgstr ""
+"Es ist ein Fehler beim Herstellen einer Verbindung mit der Me TV-Datenbank "
+"\"%1\" aufgetreten"
 
 #: ../src/data.cc:246
 msgid "Only integers can be primary keys"
@@ -1112,7 +1113,7 @@ msgstr "Unbekanntes Programm"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for GTK"
-msgstr ""
+msgstr "Me TV ist ein digitaler TV-Betrachter für GTK"
 
 #: ../src/main.cc:30
 msgid ""
@@ -1120,6 +1121,9 @@ msgid ""
 "centre that is capable of normal PC tasks (web surfing, word processing and "
 "watching TV).\n"
 msgstr ""
+"Me TV wurde für moderne digitale Wohnzimmer, mit einem PC als "
+"Medienzentrale, der normale PC-Aufgaben (Textverarbeitung, Web-Surfen und "
+"Fernsehen), entwickelt.\n"
 
 #: ../src/main.cc:84
 msgid "Enable verbose messages"
@@ -1148,8 +1152,8 @@ msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
-"Weist Me TV an nicht die Bildschirmschoner Sperr-/Entsperrfunktion für GNOME "
-"Bildschirmschoner aufzurufen."
+"Bildschirmschoner sperren/freigeben-Methoden für GNOME-Bildschirmschoner "
+"nicht aufrufen."
 
 #: ../src/main.cc:110
 msgid ""
@@ -1169,7 +1173,7 @@ msgstr ""
 
 #: ../src/main.cc:116
 msgid "Show Me TV help options"
-msgstr "Zeige Me TV Hilfeoptionen"
+msgstr "Me TV-Hilfeoptionen anzeigen"
 
 #: ../src/main.cc:161
 msgid "An unhandled error occurred"
@@ -1177,11 +1181,11 @@ msgstr "Ein unbehandelter Fehler ist aufgetreten"
 
 #: ../src/main_window.cc:197
 msgid "Please stop all recordings before editing channels"
-msgstr "Bitte vor dem Bearbeiten von Kanälen alle Aufnahmen beenden"
+msgstr "Bitte vor dem Bearbeiten von Sendern alle Aufnahmen beenden"
 
 #: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
-msgstr "Während dem Aufnehmen können die Kanäle nicht aktualisiert werden"
+msgstr "Sender können während der Aufnahme nicht aktualisiert werden."
 
 #: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
@@ -1348,16 +1352,16 @@ msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
 msgstr ""
-"Fehler beim Einrichten geplanter Aufnahmen: Zu diesem Zeitpunkt stehen keine "
-"Geräte zur Verfügung"
+"Die geplante Aufnahme ist fehlgeschlagen: Zu diesem Zeitpunkt sind keine "
+"Geräte verfügbar"
 
 #: ../src/scheduled_recording_manager.cc:277
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
 msgstr ""
-"Die geplante Aufnahme konnte nicht gespeichert werden, weil ein Konflikt mit "
-"der geplanten Aufnahme '%1' entsteht."
+"Die geplante Aufnahme konnte nicht gespeichert werden, da ein Konflikt mit "
+"einer anderen geplanten Aufnahme \"%1\" aufgetreten ist."
 
 #: ../src/scheduled_recording_manager.cc:298
 msgid ""
@@ -1365,12 +1369,13 @@ msgid ""
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
-"Konnte geplante Aufnahme nicht speichern da bereits eine geplante Aufnahme "
-"namens '%1' zur selben Zeit und auf dem selben Sender vorhanden ist."
+"Die geplante Aufnahme konnte nicht gespeichert werden, da ein Konflikt mit "
+"einer anderen geplanten Aufnahme \"%1\" aufgetreten ist, die zur gleichen "
+"Zeit auf dem gleichen Sender geplant ist."
 
 #: ../src/scheduled_recording_manager.cc:464
 msgid "Scheduled recording '%1' not found"
-msgstr "Geplante Aufnahme '%1' wurde nicht gefunden."
+msgstr "Geplante Aufnahme \"%1\" wurde nicht gefunden"
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
@@ -1378,7 +1383,7 @@ msgstr "Beschreibung"
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Record"
-msgstr "Aufnehmen"
+msgstr "Aufnahme"
 
 #: ../src/scheduled_recordings_dialog.cc:55
 msgid "After"
@@ -1390,16 +1395,15 @@ msgstr "Gerät"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
-msgstr "Keine geplante Aufnahme ausgewählt."
+msgstr "Keine geplante Aufnahme ausgewählt"
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
-msgstr "Me TV ist im Leerlauf"
+msgstr "Me TV befindet sich im Leerlauf"
 
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
-msgstr ""
-"Fehler: Frontend '%1' konnte für die Aufnahmeplanung nicht gefunden werden"
+msgstr "Frontend \"%1\" für geplante Aufnahme konnte nicht gefunden werden"
 
 #: ../src/stream_manager.cc:207 ../src/stream_manager.cc:293
 msgid "Failed to get available frontend"
