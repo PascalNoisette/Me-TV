@@ -1,4 +1,4 @@
-# Turkish translation for me-tv
+# Estonian translation for me-tv
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the me-tv package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-10-16 07:37+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
-"Language-Team: Turkish <tr@li.org>\n"
+"PO-Revision-Date: 2010-10-16 17:38+0000\n"
+"Last-Translator: lyyser <Unknown>\n"
+"Language-Team: Estonian <et@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Launchpad-Export-Date: 2010-10-17 05:03+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
@@ -142,11 +142,11 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:25
 msgid "Tells Me TV to display an icon the notification area."
-msgstr "İkon alanında Me TV ikon dosyasını gösterir."
+msgstr ""
 
 #: ../me-tv.schemas.in.h:26
 msgid "The directory to use for recordings."
-msgstr "Kayıtların tutulacağı klasör."
+msgstr ""
 
 #: ../me-tv.schemas.in.h:27
 msgid ""
@@ -166,7 +166,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:30
 msgid "The last channel tuned to."
-msgstr "Açılan son kanal."
+msgstr ""
 
 #: ../me-tv.schemas.in.h:31
 msgid ""
@@ -205,12 +205,10 @@ msgid ""
 "The x position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
-"Pencerenin Me TV'nin en son kapatıldığındaki  x pozisyonu. Me TV bu değeri "
-"ana pencereyi yeniden onarmak için kullanır."
 
 #: ../me-tv.schemas.in.h:39
 msgid "The y position of the window before Me TV was last closed"
-msgstr "Pencerenin Me TV'nin en son kapatıldığındaki  y pozisyonu"
+msgstr ""
 
 #: ../me-tv.schemas.in.h:40
 msgid ""
@@ -240,7 +238,7 @@ msgstr ""
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
-msgstr "GNOME için sayısal televizyon (DVB) görüntüleyici."
+msgstr ""
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
@@ -248,11 +246,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
-msgstr " saat"
+msgstr ""
 
 #: ../src/me-tv.ui.h:2
 msgid " minutes"
-msgstr " dakika"
+msgstr ""
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
@@ -264,7 +262,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:5
 msgid "<b>Device:</b>"
-msgstr "<b>Aygıt:</b>"
+msgstr ""
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
@@ -280,11 +278,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
-msgstr "Gelişmiş"
+msgstr ""
 
 #: ../src/me-tv.ui.h:9
 msgid "After:"
-msgstr "Sonra:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:10
 msgid ""
@@ -296,31 +294,31 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
-msgstr "Ses sürücüsü:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:12
 msgid "Auto scan"
-msgstr "Otomatik tarama"
+msgstr ""
 
 #: ../src/me-tv.ui.h:13
 msgid "Cancel channel import"
-msgstr "Kanal içeri yüklemesini iptal et"
+msgstr ""
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
-msgstr "Kanal Frekansı: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
-msgstr "Kanal Adı: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel:"
-msgstr "Kanal:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
-msgstr "Kapat Me TV"
+msgstr ""
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
@@ -332,15 +330,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
-msgstr "Açıklama:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:21
 msgid "Device Text"
-msgstr "Donanım Yazı Dosyası"
+msgstr ""
 
 #: ../src/me-tv.ui.h:22
 msgid "Do Nothing"
-msgstr "Hiçbir Şey Yapma"
+msgstr ""
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
@@ -493,19 +491,19 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
-msgstr "Sonradan ekstra kayıt: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:69
 msgid "Record extra before: "
-msgstr "Önceden ekstra kayıt: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
-msgstr "Kayıt dizini: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
-msgstr "Yinelenen:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
@@ -521,7 +519,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
-msgstr "Tarama İşlemi"
+msgstr ""
 
 #: ../src/me-tv.ui.h:76
 msgid "Scan using an initial scan file"
@@ -529,23 +527,23 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:77
 msgid "Scanning/Importing"
-msgstr "Tarıyor / Dıştan alıyor"
+msgstr ""
 
 #: ../src/me-tv.ui.h:78
 msgid "Search description"
-msgstr "Arama açıklaması"
+msgstr ""
 
 #: ../src/me-tv.ui.h:79
 msgid "Search:"
-msgstr "Arama:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:80
 msgid "See https://launchpad.net/me-tv"
-msgstr "https://launchpad.net/me-tv 'ye bakınız"
+msgstr ""
 
 #: ../src/me-tv.ui.h:81
 msgid "Select A Recording Directory"
-msgstr "Bir Kayıt Dizini Seçiniz"
+msgstr ""
 
 #: ../src/me-tv.ui.h:82
 msgid "Select Scan File"
@@ -557,7 +555,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:84
 msgid "Select a file"
-msgstr "Bir dosya seçiniz"
+msgstr ""
 
 #: ../src/me-tv.ui.h:85
 msgid "Set \"Always on Top\" at startup"
@@ -565,7 +563,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:86
 msgid "Show EPG header"
-msgstr "EPG başlığını göster"
+msgstr ""
 
 #: ../src/me-tv.ui.h:87
 msgid "Show a status icon in the notification area"
@@ -577,7 +575,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
-msgstr "EPG etkinlik düğmelerinde zamanı göster"
+msgstr ""
 
 #: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
@@ -585,11 +583,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
-msgstr "Kapat"
+msgstr ""
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
-msgstr "Başlama Tarihi:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:93
 msgid "Start Time:"
@@ -615,11 +613,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:98
 msgid "View Schedule"
-msgstr "Programı Gör"
+msgstr ""
 
 #: ../src/me-tv.ui.h:99
 msgid "Watch Now"
-msgstr "Şimdi İzle"
+msgstr ""
 
 #: ../src/me-tv.ui.h:100
 msgid ""
@@ -634,7 +632,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:105
 msgid "_Delete my old Me TV data!"
-msgstr "_Eski Me tv veri dosyalarını  sil !"
+msgstr ""
 
 #: ../src/me-tv.ui.h:106
 msgid "channels"
@@ -674,7 +672,7 @@ msgstr ""
 
 #: ../src/application.cc:119
 msgid "_Streams"
-msgstr "_Yayın"
+msgstr ""
 
 #: ../src/application.cc:120
 msgid "_Channels"
@@ -698,11 +696,11 @@ msgstr ""
 
 #: ../src/application.cc:186
 msgid "Failed to start recording"
-msgstr "Kayıt başlangıcı başarısız oldu"
+msgstr ""
 
 #: ../src/application.cc:378
 msgid "Failed to initialise database"
-msgstr "Veritabanı tanımlama hatası"
+msgstr ""
 
 #: ../src/application.cc:437
 msgid "Application has not been initialised"
@@ -710,7 +708,7 @@ msgstr ""
 
 #: ../src/application.cc:494
 msgid "DBus connection not available"
-msgstr "DBus bağlantısı mevcut değil"
+msgstr ""
 
 #: ../src/application.cc:505
 msgid "Failed to get org.gnome.SessionManager proxy"
@@ -722,7 +720,7 @@ msgstr ""
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
-msgstr "Başlık"
+msgstr ""
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
@@ -753,7 +751,7 @@ msgstr ""
 
 #: ../src/channels_dialog.cc:57
 msgid "Frequency (Hz)"
-msgstr "Frekans (Hz)"
+msgstr ""
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
@@ -761,11 +759,11 @@ msgstr ""
 
 #: ../src/channels_dialog.cc:231
 msgid "No channel selected"
-msgstr "Kanal ismi seçilmedi"
+msgstr ""
 
 #: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
-msgstr "Sadece bir kanal seçiniz"
+msgstr ""
 
 #: ../src/data.cc:50 ../src/data.cc:55
 msgid "Failed to prepare statement: %1"
@@ -954,7 +952,7 @@ msgstr[1] ""
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
-msgstr " "
+msgstr ""
 
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
@@ -1134,7 +1132,7 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:159
 msgid "Australia"
-msgstr "Avusturalya"
+msgstr ""
 
 #: ../src/scan_dialog.cc:160
 msgid "Canada"
@@ -1217,7 +1215,7 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
-msgstr ""
+msgstr "Skanneerimine valmis"
 
 #: ../src/scan_dialog.cc:715
 msgid "No auto scan range was specified"
@@ -1256,7 +1254,7 @@ msgstr ""
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
-msgstr ""
+msgstr "Kirjeldus"
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Record"
@@ -1264,11 +1262,11 @@ msgstr ""
 
 #: ../src/scheduled_recordings_dialog.cc:55
 msgid "After"
-msgstr ""
+msgstr "Pärast"
 
 #: ../src/scheduled_recordings_dialog.cc:56
 msgid "Device"
-msgstr ""
+msgstr "Seade"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
@@ -1297,6 +1295,3 @@ msgstr ""
 #: ../src/thread.cc:49
 msgid " thread has already been started"
 msgstr ""
-
-#~ msgid "All"
-#~ msgstr "Tümü"
