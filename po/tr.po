@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-10-16 07:37+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2010-10-18 00:13+0000\n"
+"Last-Translator: 58zarali <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-10-17 05:03+0000\n"
+"X-Launchpad-Export-Date: 2010-10-18 05:06+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -943,14 +943,12 @@ msgstr ""
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 saat"
 
 #: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 dakika"
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
@@ -959,7 +957,7 @@ msgstr " "
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
-msgstr ""
+msgstr "Kanal"
 
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
@@ -969,7 +967,7 @@ msgstr ""
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr ""
+msgstr "Süre"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
@@ -1006,7 +1004,7 @@ msgstr ""
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
@@ -1083,7 +1081,7 @@ msgstr ""
 
 #: ../src/main_window.cc:634
 msgid "None"
-msgstr ""
+msgstr "Boş"
 
 #: ../src/main_window.cc:948
 msgid ""
@@ -1126,7 +1124,7 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:138
 msgid "Service Name"
-msgstr ""
+msgstr "Hizmet Adı"
 
 #: ../src/scan_dialog.cc:139
 msgid "Signal Strength"
@@ -1134,55 +1132,55 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:159
 msgid "Australia"
-msgstr "Avusturalya"
+msgstr "Avustralya"
 
 #: ../src/scan_dialog.cc:160
 msgid "Canada"
-msgstr ""
+msgstr "Kanada"
 
 #: ../src/scan_dialog.cc:161
 msgid "Czech Republic"
-msgstr ""
+msgstr "Çek Cumhuriyeti"
 
 #: ../src/scan_dialog.cc:162
 msgid "Finland"
-msgstr ""
+msgstr "Finlandiya"
 
 #: ../src/scan_dialog.cc:163
 msgid "France"
-msgstr ""
+msgstr "Fransa"
 
 #: ../src/scan_dialog.cc:164
 msgid "Germany"
-msgstr ""
+msgstr "Almanya"
 
 #: ../src/scan_dialog.cc:165
 msgid "Italy"
-msgstr ""
+msgstr "İtalya"
 
 #: ../src/scan_dialog.cc:166
 msgid "Lithuania"
-msgstr ""
+msgstr "Litvanya"
 
 #: ../src/scan_dialog.cc:167
 msgid "New Zealand"
-msgstr ""
+msgstr "Yeni Zellanda"
 
 #: ../src/scan_dialog.cc:168
 msgid "Spain"
-msgstr ""
+msgstr "İspanya"
 
 #: ../src/scan_dialog.cc:169
 msgid "Slovenia"
-msgstr ""
+msgstr "Slovenya"
 
 #: ../src/scan_dialog.cc:170
 msgid "United Kingdom"
-msgstr ""
+msgstr "İngiltere"
 
 #: ../src/scan_dialog.cc:171
 msgid "United States"
-msgstr ""
+msgstr "Amerika"
 
 #: ../src/scan_dialog.cc:299
 msgid "Importing channels"
@@ -1209,7 +1207,7 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:551
 msgid "Starting scanner"
-msgstr ""
+msgstr "Tarayıcı başlıyor"
 
 #: ../src/scan_dialog.cc:630
 msgid "%1/%2 (%3 channels)"
@@ -1217,7 +1215,7 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
-msgstr ""
+msgstr "Tarama tamamlandı"
 
 #: ../src/scan_dialog.cc:715
 msgid "No auto scan range was specified"
@@ -1256,11 +1254,11 @@ msgstr ""
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
-msgstr ""
+msgstr "Açıklama"
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Record"
-msgstr ""
+msgstr "Kayıt"
 
 #: ../src/scheduled_recordings_dialog.cc:55
 msgid "After"
@@ -1268,7 +1266,7 @@ msgstr ""
 
 #: ../src/scheduled_recordings_dialog.cc:56
 msgid "Device"
-msgstr ""
+msgstr "Aygıt"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
