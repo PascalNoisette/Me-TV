@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-10-22 18:38+0000\n"
+"PO-Revision-Date: 2010-10-23 18:20+0000\n"
 "Last-Translator: lyyser <Unknown>\n"
 "Language-Team: Estonian <et@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-10-23 05:03+0000\n"
+"X-Launchpad-Export-Date: 2010-10-24 05:06+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -535,11 +535,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:79
 msgid "Search:"
-msgstr ""
+msgstr "Otsi:"
 
 #: ../src/me-tv.ui.h:80
 msgid "See https://launchpad.net/me-tv"
-msgstr ""
+msgstr "Vaata https://launchpad.net/me-tv"
 
 #: ../src/me-tv.ui.h:81
 msgid "Select A Recording Directory"
@@ -555,11 +555,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:84
 msgid "Select a file"
-msgstr ""
+msgstr "Vali fail"
 
 #: ../src/me-tv.ui.h:85
 msgid "Set \"Always on Top\" at startup"
-msgstr ""
+msgstr "Sea \"Alati pealmine\" käivitumisel"
 
 #: ../src/me-tv.ui.h:86
 msgid "Show EPG header"
@@ -571,7 +571,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:88
 msgid "Show channel number"
-msgstr ""
+msgstr "Näita kanli nummert"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
@@ -583,19 +583,19 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
-msgstr ""
+msgstr "Väljalülitamine"
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
-msgstr ""
+msgstr "Alguskuupäev:"
 
 #: ../src/me-tv.ui.h:93
 msgid "Start Time:"
-msgstr ""
+msgstr "Algusaeg:"
 
 #: ../src/me-tv.ui.h:94
 msgid "Text encoding:"
-msgstr ""
+msgstr "Teksti kodeering:"
 
 #: ../src/me-tv.ui.h:95
 msgid ""
@@ -609,7 +609,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:97
 msgid "Video driver:"
-msgstr ""
+msgstr "Videoajur:"
 
 #: ../src/me-tv.ui.h:98
 msgid "View Schedule"
@@ -632,15 +632,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:105
 msgid "_Delete my old Me TV data!"
-msgstr ""
+msgstr "_Kusuta minu vanad Me TV andmed!"
 
 #: ../src/me-tv.ui.h:106
 msgid "channels"
-msgstr ""
+msgstr "kanalid"
 
 #: ../src/application.cc:43
 msgid "Application has already been initialised"
-msgstr ""
+msgstr "Rakendsu on juba paigaldatud"
 
 #: ../src/application.cc:58
 msgid "The SQLite version is not thread-safe"
@@ -648,27 +648,27 @@ msgstr ""
 
 #: ../src/application.cc:112
 msgid "_File"
-msgstr ""
+msgstr "_Fail"
 
 #: ../src/application.cc:113
 msgid "_View"
-msgstr ""
+msgstr "_Vaade"
 
 #: ../src/application.cc:114
 msgid "_Video"
-msgstr ""
+msgstr "_Video"
 
 #: ../src/application.cc:115
 msgid "_Audio"
-msgstr ""
+msgstr "_Audio"
 
 #: ../src/application.cc:116
 msgid "_Help"
-msgstr ""
+msgstr "_Abi"
 
 #: ../src/application.cc:118
 msgid "Subtitles"
-msgstr ""
+msgstr "Subtiitrid"
 
 #: ../src/application.cc:119
 msgid "_Streams"
@@ -676,7 +676,7 @@ msgstr ""
 
 #: ../src/application.cc:120
 msgid "_Channels"
-msgstr ""
+msgstr "_Kanalid"
 
 #: ../src/application.cc:123
 msgid "_Both"
@@ -684,11 +684,11 @@ msgstr ""
 
 #: ../src/application.cc:124
 msgid "_Left"
-msgstr ""
+msgstr "_Vasak"
 
 #: ../src/application.cc:125
 msgid "_Right"
-msgstr ""
+msgstr "_Parem"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
@@ -720,7 +720,7 @@ msgstr ""
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
-msgstr ""
+msgstr "Pealkiri"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
@@ -733,11 +733,11 @@ msgstr ""
 
 #: ../src/channel_manager.cc:258
 msgid "Invalid channel index"
-msgstr ""
+msgstr "Vigane kanali indeks"
 
 #: ../src/channel_manager.cc:272
 msgid "Channel '%1' not found"
-msgstr ""
+msgstr "Kanalit '%1' ei leitud"
 
 #: ../src/channel_manager.cc:295
 msgid "Failed to add channel: You cannot have more than 1 channel"
@@ -747,7 +747,7 @@ msgstr[1] ""
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
-msgstr ""
+msgstr "Kanali nimi"
 
 #: ../src/channels_dialog.cc:57
 msgid "Frequency (Hz)"
@@ -932,42 +932,42 @@ msgstr ""
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Tundamtu subtiiter"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
-msgstr ""
+msgstr "Tundamtu kirjeldus"
 
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 tund"
+msgstr[1] "%1 tundi"
 
 #: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 minut"
+msgstr[1] "%1 minutit"
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
-msgstr ""
+msgstr " "
 
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
-msgstr ""
+msgstr "Kanal"
 
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr ""
+msgstr "Algusaeg"
 
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr ""
+msgstr "Kestvus"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
@@ -975,7 +975,7 @@ msgstr ""
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
-msgstr ""
+msgstr "Tulemusi pole"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
@@ -988,11 +988,11 @@ msgstr ""
 #: ../src/epg_thread.cc:210
 #, c-format
 msgid "Unknown source_id %u"
-msgstr ""
+msgstr "Tundmatu allika_id %u"
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
-msgstr ""
+msgstr "Ei suutnud leida veateadet"
 
 #: ../src/frontend_thread.cc:243
 msgid "Failed to create FIFO '%1'"
@@ -1004,11 +1004,11 @@ msgstr ""
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
-msgstr ""
+msgstr "Tundmatu programm"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for GTK"
