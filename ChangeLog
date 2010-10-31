@@ -2,6 +2,7 @@
 
 	* 1.3.3
 	* Moved screensaver inhibit to player
+	* Changed channels.conf parser to accept VSB_8
 
 2010-08-08  Michael Lamothe <michael.lamothe@gmail.com>
 
