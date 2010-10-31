@@ -56,7 +56,6 @@ private:
 	gboolean							mute_state;
 	guint								channel_change_timeout;
 	guint								temp_channel_number;
-	guint								screensaver_inhibit_cookie;
 	
 	void stop();
 	void set_view_mode(ViewMode display_mode);
@@ -80,9 +79,6 @@ private:
 	void fullscreen(gboolean change_mode = true);
 	void unfullscreen(gboolean restore_mode = true);
 	gboolean is_fullscreen();
-
-	gboolean is_screensaver_inhibited() { return (screensaver_inhibit_cookie != 0); }
-	void inhibit_screensaver(gboolean activate);
 
 	bool on_delete_event(GdkEventAny* event);
 	bool on_motion_notify_event(GdkEventMotion* event);

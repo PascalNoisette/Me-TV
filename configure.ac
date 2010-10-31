@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([Me TV], [1.3.2], [http://launchpad.net/me-tv], me-tv)
+AC_INIT([Me TV], [1.3.3], [http://launchpad.net/me-tv], me-tv)
 AC_COPYRIGHT([Michael Lamothe <michael.lamothe@gmail.com>])
 AC_CONFIG_SRCDIR([src/main.cc])
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -197,7 +197,7 @@ src/Makefile
 po/Makefile.in
 ])
 AC_CONFIG_HEADERS([config.h:config.h.in])
-PKG_CHECK_MODULES(ME_TV_PLAYER, libxine >= $LIBXINE_REQUIRED)
+PKG_CHECK_MODULES(ME_TV_PLAYER, libxine >= $LIBXINE_REQUIRED dbus-glib-1)
 AC_OUTPUT
 
 

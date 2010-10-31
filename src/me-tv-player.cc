@@ -30,6 +30,10 @@
 #include <xine.h>
 #include <xine/xineutils.h>
 
+#include <glib.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
 typedef enum
 {
 	AUDIO_CHANNEL_STATE_BOTH = 0,
@@ -50,6 +54,8 @@ static double				pixel_aspect;
 static int					running = 0;
 static int					width = 320, height = 200;
 static AudioChannelState	audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
+static uint					screensaver_inhibit_cookie	= 0;
+static DBusGConnection*		dbus_connection = NULL;
 
 #define INPUT_MOTION (ExposureMask | KeyPressMask | StructureNotifyMask | PropertyChangeMask)
 
@@ -226,6 +232,69 @@ void set_subtitle_stream(int channel)
 	xine_set_param(stream, XINE_PARAM_SPU_CHANNEL, channel);
 }
 
+void inhibit_screensaver(gboolean activate)
+{
+	GError*	error = NULL;
+
+	if (dbus_connection == NULL)
+	{
+		g_debug("No DBus connection, can't (un)inhibit");
+	}
+	else
+	{
+		DBusGProxy* proxy = dbus_g_proxy_new_for_name(dbus_connection,
+			"org.gnome.ScreenSaver",
+			"/org/gnome/ScreenSaver",
+			"org.gnome.ScreenSaver");
+
+		if (proxy == NULL)
+		{
+			g_debug("Failed to get org.gnome.ScreenSaver proxy");
+			return;
+		}
+
+		if (activate)
+		{
+			if (screensaver_inhibit_cookie != 0)
+			{
+				g_debug("Screensaver is already being inhibited by Me TV");
+			}
+			else
+			{
+				if (!dbus_g_proxy_call(proxy, "Inhibit", &error,
+					G_TYPE_STRING, "Me TV Player", G_TYPE_STRING, "Watching TV", G_TYPE_INVALID,
+					G_TYPE_UINT, &screensaver_inhibit_cookie, G_TYPE_INVALID))
+				{
+					g_debug("Failed to call Inhibit method\n");
+					return;
+				}
+
+				g_debug("Got screensaver inhibit cookie: %d", screensaver_inhibit_cookie);
+				g_debug("Screensaver inhibited");
+			}
+		}
+		else
+		{
+			if (screensaver_inhibit_cookie == 0)
+			{
+				g_debug("Screensaver is not currently inhibited");
+			}
+			else
+			{
+				if (!dbus_g_proxy_call(proxy, "UnInhibit", &error,
+					G_TYPE_UINT, &screensaver_inhibit_cookie, G_TYPE_INVALID, G_TYPE_INVALID))
+				{
+					g_debug("Failed to call UnInhibit method");
+					return;
+				}
+				screensaver_inhibit_cookie = 0;
+
+				g_debug("Screensaver uninhibited");
+			}
+		}
+	}
+}
+
 int main(int argc, char **argv)
 {
 	char			configfile[2048];
@@ -239,6 +308,15 @@ int main(int argc, char **argv)
 	{
 		fprintf(stderr, "me-tv-player (xine): Invalid number of parameters\n");
 		return -1;
+	}
+
+	g_type_init ();
+
+	GError *error = NULL;
+	dbus_connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	if (dbus_connection == NULL)
+	{
+		g_debug("Failed to get DBus session");
 	}
 	
 	mrl = argv[1];
@@ -368,6 +446,7 @@ int main(int argc, char **argv)
 
 	running = 1;
 
+	inhibit_screensaver(true);
 	while (running)
 	{
 		XEvent xevent;
@@ -479,6 +558,8 @@ int main(int argc, char **argv)
 		}
 	}
   
+	inhibit_screensaver(false);
+	
 	xine_close(stream);
 	xine_event_dispose_queue(event_queue);
 	xine_dispose(stream);

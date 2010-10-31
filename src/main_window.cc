@@ -91,7 +91,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	engine						= NULL;
 	output_fd					= -1;
 	mute_state					= false;
-	screensaver_inhibit_cookie	= 0;
 	
 	is_cursor_visible = true;
 	gchar     bits[] = {0};
@@ -671,7 +670,6 @@ void MainWindow::play(const Glib::ustring& mrl)
 	if (engine != NULL)
 	{			
 		engine->play(mrl);
-		inhibit_screensaver(true);
 	}
 }
 
@@ -715,7 +713,6 @@ void MainWindow::stop_engine()
 
 	if (engine != NULL)
 	{
-		inhibit_screensaver(false);
 		engine->stop();
 		delete engine;
 		engine = NULL;
@@ -870,86 +867,6 @@ void MainWindow::on_exception()
 	catch (...)
 	{
 		show_error("Unhandled exception");
-	}
-}
-
-void MainWindow::inhibit_screensaver(gboolean activate)
-{
-	GError*	error = NULL;
-
-	if (no_screensaver_inhibit)
-	{
-		if (activate)
-		{
-			g_debug("Screensaver inhibit disabled");
-		}
-		return;
-	}
-
-	if (get_application().get_dbus_connection() == NULL)
-	{
-		g_debug("No DBus connection, can't (un)inhibit");
-	}
-	else
-	{
-		try
-		{
-			DBusGProxy* proxy = dbus_g_proxy_new_for_name(get_application().get_dbus_connection(),
-				"org.gnome.ScreenSaver",
-				"/org/gnome/ScreenSaver",
-				"org.gnome.ScreenSaver");
-
-			if (proxy == NULL)
-			{
-				throw Exception("Failed to get org.gnome.ScreenSaver proxy");
-			}
-
-			if (activate)
-			{
-				if (screensaver_inhibit_cookie != 0)
-				{
-					g_debug("Screensaver is already being inhibited");
-				}
-				else
-				{
-					if (!dbus_g_proxy_call(proxy, "Inhibit", &error,
-						G_TYPE_STRING, PACKAGE_NAME, G_TYPE_STRING, "Watching TV", G_TYPE_INVALID,
-						G_TYPE_UINT, &screensaver_inhibit_cookie, G_TYPE_INVALID))
-					{
-						throw Exception("Failed to call Inhibit method");
-					}
-	
-					g_debug("Got screensaver inhibit cookie: %d", screensaver_inhibit_cookie);
-					g_debug("Screensaver inhibited");
-				}
-			}
-			else
-			{
-				if (screensaver_inhibit_cookie == 0)
-				{
-					g_debug("Screensaver is not currently inhibited");
-				}
-				else
-				{
-					if (!dbus_g_proxy_call(proxy, "UnInhibit", &error,
-						G_TYPE_UINT, &screensaver_inhibit_cookie, G_TYPE_INVALID, G_TYPE_INVALID))
-					{
-						throw Exception("Failed to call UnInhibit method");
-					}
-					screensaver_inhibit_cookie = 0;
-
-					g_debug("Screensaver uninhibited");
-				}
-			}
-		}
-		catch (const Exception& exception)
-		{
-			Glib::ustring message = Glib::ustring::compose(_(
-				"An error occurred while trying to communicate with the GNOME screensaver. " \
-				"To stop this message from displaying you can use the --no-screensaver-inhibit " \
-			    "command line option.  The error message was '%1'"), exception.what());
-			show_error(message);
-		}
 	}
 }
 
