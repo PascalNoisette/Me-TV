@@ -84,7 +84,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
 		ScheduledRecording& scheduled_recording = *i;
-		guint now = time(NULL);
+		time_t now = time(NULL);
 		if (scheduled_recording.get_end_time() > now || scheduled_recording.recurring_type != 0)
 		{
 			Data::Row row;
@@ -390,11 +390,9 @@ void ScheduledRecordingManager::remove_scheduled_recording(EpgEvent& epg_event)
 	}	
 }
 
-guint scheduled_recording_now = 0;
-
-guint is_old(ScheduledRecording& scheduled_recording)
+guint is_old(ScheduledRecording& scheduled_recording, time_t now)
 {
-	return (scheduled_recording.get_end_time() < scheduled_recording_now && scheduled_recording.recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_ONCE);
+	return (scheduled_recording.get_end_time() < now && scheduled_recording.recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_ONCE);
 }
 
 ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
@@ -406,14 +404,29 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 
 	Application& application = get_application();
 
-	scheduled_recording_now = time(NULL);
-	g_debug("Removing scheduled recordings older than %d", scheduled_recording_now);
-	scheduled_recordings.remove_if(is_old);
-
+	time_t now = time(NULL);
+	g_debug("Removing scheduled recordings older than %u", (guint)now);
+	bool done = false;
+	
+	ScheduledRecordingList::iterator i = scheduled_recordings.begin();
+	while (i != scheduled_recordings.end())
+	{
+		if (is_old(*i, now))
+		{
+			guint action = (*i).action_after;
+			i = scheduled_recordings.erase(i);
+			action_after(action);
+		}
+		else
+		{
+			i++;
+		}
+	}
+	
 	if (!scheduled_recordings.empty())
 	{
-		guint now = time(NULL);
-		g_debug("Now: %d", now);
+		time_t now = time(NULL);
+		g_debug("Now: %u", (guint)now);
 		g_debug("=============================================================================================");
 		g_debug("#ID | Start Time | Duration | Record | Channel    | Device                      | Description");
 		g_debug("=============================================================================================");
@@ -422,9 +435,9 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 			ScheduledRecording& scheduled_recording = *i;
 				
 			gboolean record = scheduled_recording.is_in(now);
-			g_debug("%3d | %d | %8d | %s | %10s | %27s | %s",
+			g_debug("%3d | %u | %8d | %s | %10s | %27s | %s",
 				scheduled_recording.scheduled_recording_id,
-				scheduled_recording.start_time,
+				(guint)scheduled_recording.start_time,
 				scheduled_recording.duration,
 				record ? "true  " : "false ",
 				channel_manager.get_channel_by_id(scheduled_recording.channel_id).name.c_str(),
@@ -435,7 +448,8 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 			{
 				results.push_back(scheduled_recording);
 			}
-			if(scheduled_recording.get_end_time() < scheduled_recording_now)
+			
+			if(scheduled_recording.get_end_time() < now)
 			{
 				dirty = true;
 			}
@@ -479,11 +493,7 @@ guint ScheduledRecordingManager::is_recording(const Channel& channel)
 		ScheduledRecording& scheduled_recording = *i;
 		if (scheduled_recording.is_in(now) && scheduled_recording.channel_id == channel.channel_id)
 		{
-			return -1;
-		}
-		else if (scheduled_recording.is_in(now-60) && scheduled_recording.channel_id == channel.channel_id)
-		{
-			return scheduled_recording.action_after;
+			return scheduled_recording.scheduled_recording_id;
 		}
 	}
 	return 0;
@@ -506,4 +516,40 @@ gboolean ScheduledRecordingManager::is_recording(const EpgEvent& epg_event)
 	}
 	
 	return false;
+}
+
+void ScheduledRecordingManager::action_after(guint action)
+{
+	if (action == SCHEDULED_RECORDING_ACTION_AFTER_CLOSE)
+	{
+		g_message("Me TV closed by Scheduled Recording");
+		action_quit->activate();
+	}
+	else if (action == SCHEDULED_RECORDING_ACTION_AFTER_SHUTDOWN)
+	{
+		DBusGConnection* dbus_connection = get_application().get_dbus_connection();
+		if (dbus_connection == NULL)
+		{
+			throw Exception(_("DBus connection not available"));
+		}
+		
+		g_message("Computer shutdown by scheduled recording");
+		
+		DBusGProxy* proxy = dbus_g_proxy_new_for_name(dbus_connection,
+			"org.gnome.SessionManager",
+			"/org/gnome/SessionManager",
+			"org.gnome.SessionManager");
+		if (proxy == NULL)
+		{
+			throw Exception(_("Failed to get org.gnome.SessionManager proxy"));
+		}
+		
+		GError* error = NULL;
+		if (!dbus_g_proxy_call(proxy, "Shutdown", &error, G_TYPE_INVALID, G_TYPE_INVALID))
+		{
+			throw Exception(_("Failed to call Shutdown method"));
+		}
+
+		g_message("Shutdown requested");
+	}
 }

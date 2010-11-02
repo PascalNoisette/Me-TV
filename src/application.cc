@@ -467,51 +467,14 @@ void Application::check_scheduled_recordings()
 			{
 				ChannelStream& channel_stream = **j;
 				guint scheduled_recording_id = scheduled_recording_manager.is_recording(channel_stream.channel);
-				if (channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING &&
-					(signed)scheduled_recording_id >= 0)
+				if (channel_stream.type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING && (signed)scheduled_recording_id >= 0)
 				{
 					stream_manager.stop_recording(channel_stream.channel);
-					action_after(scheduled_recording_id);
 					check = true;
 					break;
 				}
 			}
 		}
-	}
-}
-
-void Application::action_after(guint action)
-{
-	if (action == SCHEDULED_RECORDING_ACTION_AFTER_CLOSE)
-	{
-		g_message("Me TV closed by Scheduled Recording");
-		action_quit->activate();
-	}
-	else if (action == SCHEDULED_RECORDING_ACTION_AFTER_SHUTDOWN)
-	{
-		if (dbus_connection == NULL)
-		{
-			throw Exception(_("DBus connection not available"));
-		}
-		
-		g_message("Computer shutdown by scheduled recording");
-		
-		DBusGProxy* proxy = dbus_g_proxy_new_for_name(dbus_connection,
-			"org.gnome.SessionManager",
-			"/org/gnome/SessionManager",
-			"org.gnome.SessionManager");
-		if (proxy == NULL)
-		{
-			throw Exception(_("Failed to get org.gnome.SessionManager proxy"));
-		}
-		
-		GError* error = NULL;
-		if (!dbus_g_proxy_call(proxy, "Shutdown", &error, G_TYPE_INVALID, G_TYPE_INVALID))
-		{
-			throw Exception(_("Failed to call Shutdown method"));
-		}
-
-		g_message("Shutdown requested");
 	}
 }
 

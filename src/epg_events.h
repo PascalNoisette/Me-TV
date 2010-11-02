@@ -40,7 +40,7 @@ public:
 		
 	gboolean		add_epg_event(const EpgEvent& epg_event);
 	gboolean		get_current(EpgEvent& epg_event);
-	EpgEventList	get_list(guint start_time, guint end_time);
+	EpgEventList	get_list(time_t start_time, time_t end_time);
 	void			prune();
 	void			load(Data::Connection& connection, guint channel_id);
 	void			save(Data::Connection& connection, guint channel_id);

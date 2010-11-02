@@ -58,7 +58,7 @@ Glib::ustring ScheduledRecording::get_duration_text() const
 	return result;
 }
 
-guint ScheduledRecording::get_end_time() const
+time_t ScheduledRecording::get_end_time() const
 {
 	return start_time + duration;
 }
@@ -68,12 +68,12 @@ Glib::ustring ScheduledRecording::get_end_time_text() const
 	return get_local_time_text(get_end_time(), "%c");
 }
 
-gboolean ScheduledRecording::is_in(guint at) const
+gboolean ScheduledRecording::is_in(time_t at) const
 {
-	return start_time <= at && start_time+duration > at;
+	return start_time <= at && (time_t)(start_time + duration) > at;
 }
 
-gboolean ScheduledRecording::is_in(guint s, guint e) const
+gboolean ScheduledRecording::is_in(time_t s, time_t e) const
 {
 	return start_time < s && get_end_time() > e;
 }

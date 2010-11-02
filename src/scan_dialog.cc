@@ -122,7 +122,10 @@ ScanDialog::ScanDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	button->signal_clicked().connect(sigc::mem_fun(*this, &ScanDialog::on_button_scan_stop_clicked));
 
 	notebook_scan_wizard->set_show_tabs(false);
-		
+
+	// Check that we do have an frontend device
+	device_manager.check_frontend();
+	
 	frontend = *(device_manager.get_frontends().begin());
 	Glib::ustring device_name = frontend->get_frontend_info().name;
 
@@ -303,8 +306,26 @@ void ScanDialog::import_channels_conf(const Glib::ustring& channels_conf_path)
 	button->hide();
 	notebook_scan_wizard->next_page();
 
-	while (file->read_line(line) == Glib::IO_STATUS_NORMAL)
+	gboolean done = false;
+	
+	while (!done)
 	{
+		Glib::IOStatus io_status;
+
+		try
+		{
+			io_status = file->read_line(line);
+		}
+		catch(...)
+		{
+			throw Exception(_("Failed to read data from file.  Please ensure that the channels file is UTF-8 encoded."));
+		}
+		
+		if (io_status != Glib::IO_STATUS_NORMAL)
+		{
+			break;
+		}
+
 		ChannelsConfLine channels_conf_line(line);
 		guint parameter_count = channels_conf_line.get_parameter_count();
 

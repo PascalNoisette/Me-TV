@@ -93,7 +93,7 @@ gboolean EpgEvents::get_current(EpgEvent& epg_event)
 {
 	EpgEvent result;
 	gboolean found = false;
-	guint now = get_local_time();
+	time_t now = get_local_time();
 	
 	Glib::RecMutex::Lock lock(mutex);
 	for (EpgEventList::iterator i = list.begin(); i != list.end() && found == false; i++)
@@ -109,7 +109,7 @@ gboolean EpgEvents::get_current(EpgEvent& epg_event)
 	return found;
 }
 
-EpgEventList EpgEvents::get_list(guint start_time, guint end_time)
+EpgEventList EpgEvents::get_list(time_t start_time, time_t end_time)
 {
 	EpgEventList result;
 	
@@ -117,7 +117,7 @@ EpgEventList EpgEvents::get_list(guint start_time, guint end_time)
 	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
 	{
 		EpgEvent& epg_event = *i;
-		guint epg_event_end_time = epg_event.get_end_time();
+		time_t epg_event_end_time = epg_event.get_end_time();
 		if(
 			(epg_event.start_time >= start_time && epg_event.start_time <= end_time) ||
 			(epg_event_end_time >= start_time && epg_event_end_time <= end_time) ||
@@ -131,7 +131,7 @@ EpgEventList EpgEvents::get_list(guint start_time, guint end_time)
 	return result;
 }
 
-guint prune_before_time = 0;
+time_t prune_before_time = 0;
 
 bool is_old(EpgEvent& epg_event)
 {
@@ -274,7 +274,7 @@ EpgEventList EpgEvents::search(const Glib::ustring& text, gboolean search_descri
 {
 	EpgEventList result;
 
-	guint now = get_local_time();
+	time_t now = get_local_time();
 
 	Glib::RecMutex::Lock lock(mutex);
 	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)

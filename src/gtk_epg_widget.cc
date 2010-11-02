@@ -218,7 +218,7 @@ void GtkEpgWidget::update_table()
 }
 
 void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& channel,
-	guint table_row, gboolean selected, guint start_time, guint channel_number,
+	guint table_row, gboolean selected, time_t start_time, guint channel_number,
 	gboolean show_channel_number, gboolean show_epg_time, gboolean show_epg_tooltips)
 {
 	Glib::ustring channel_text = Glib::ustring::compose("<b>%1</b>", encode_xml(channel.name));
@@ -251,7 +251,7 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 	);
 	
 	guint total_number_columns = 0;
-	guint end_time = start_time + epg_span_hours*60*60;
+	time_t end_time = start_time + epg_span_hours*60*60;
 	guint last_event_end_time = 0;
 	guint number_columns = epg_span_hours * COLUMNS_PER_HOUR + 1;
 

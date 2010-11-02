@@ -57,7 +57,6 @@ private:
 	void on_display_channel_changed(const Channel& channel);
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
-	void action_after(guint action);
 
 	void on_record_current();
 	void on_quit();

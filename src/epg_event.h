@@ -46,14 +46,14 @@ public:
 	guint				channel_id;
 	guint				version_number;
 	guint				event_id;
-	guint				start_time;
+	time_t				start_time;
 	guint				duration;
 	gboolean			save;
 	EpgEventTextList	texts;
 	
 	EpgEvent();
 		
-	guint get_end_time() const { return start_time + duration; }
+	time_t get_end_time() const { return start_time + duration; }
 	EpgEventText get_default_text() const;
 	Glib::ustring get_title() const;
 	Glib::ustring get_subtitle() const;

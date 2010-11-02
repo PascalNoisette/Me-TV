@@ -45,6 +45,7 @@ public:
 	void load(Data::Connection& connection);
 	void save(Data::Connection& connection);
 
+	void action_after(guint action);
 	void set_scheduled_recording(EpgEvent& epg_event);
 	void set_scheduled_recording(ScheduledRecording& scheduled_recording);
 	void remove_scheduled_recording(guint scheduled_recording_id);		

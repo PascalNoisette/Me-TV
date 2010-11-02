@@ -73,7 +73,7 @@ void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::us
 	}
 }
 
-guint get_local_time()
+time_t get_local_time()
 {
 	return convert_to_local_time(time(NULL));
 }

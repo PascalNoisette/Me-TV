@@ -40,8 +40,8 @@ void EpgEventDialog::show_epg_event(EpgEvent& epg_event)
 {
 	const EpgEventText& epg_event_text = epg_event.get_default_text();
 
-	guint end_time = epg_event.start_time + epg_event.duration;
-	guint now = get_local_time();
+	time_t end_time = epg_event.start_time + epg_event.duration;
+	time_t now = get_local_time();
 	
 	Glib::ustring information = Glib::ustring::compose(
 	    	"<b>%1</b>\n<b><i>%2</i></b>\n<i>%4 (%5)</i>\n\n%3",

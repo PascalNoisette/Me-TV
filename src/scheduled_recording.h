@@ -41,7 +41,7 @@ public:
 	guint			recurring_type;
 	guint			action_after;
 	guint			channel_id;
-	guint			start_time;
+	time_t			start_time;
 	guint			duration;
 	Glib::ustring	device;
 		
@@ -49,11 +49,11 @@ public:
 		
 	Glib::ustring get_start_time_text() const;
 	Glib::ustring get_duration_text() const;
-	guint get_end_time() const;
+	time_t get_end_time() const;
 	Glib::ustring get_end_time_text() const;
 		
-	gboolean is_in(guint at) const;
-	gboolean is_in(guint start_time, guint end_time) const;
+	gboolean is_in(time_t at) const;
+	gboolean is_in(time_t start_time, time_t end_time) const;
 	gboolean overlaps(const ScheduledRecording& scheduled_recording) const;
 };
 

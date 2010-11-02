@@ -56,7 +56,7 @@ void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::us
 Glib::ustring encode_xml(const Glib::ustring& s);
 Glib::ustring trim_string(const Glib::ustring& s);
 
-guint get_local_time();
+time_t get_local_time();
 Glib::ustring get_local_time_text(const gchar* format);
 Glib::ustring get_local_time_text(time_t t, const gchar* format);
 guint convert_to_local_time(guint utc);

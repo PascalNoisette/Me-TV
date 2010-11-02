@@ -197,9 +197,6 @@ gboolean ChannelsDialog::import_channel(const Channel& channel)
 
 void ChannelsDialog::show_scan_dialog()
 {
-	// Check that there is a device
-	device_manager.check_frontend();
-
 	channel_conflict_action = CHANNEL_CONFLICT_ACTION_NONE;
 	ScanDialog& scan_dialog = ScanDialog::create(builder);
 	scan_dialog.show();
