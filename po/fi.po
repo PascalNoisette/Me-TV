@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-25 17:40-0400\n"
-"PO-Revision-Date: 2010-06-25 04:26+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"POT-Creation-Date: 2010-09-29 20:05-0400\n"
+"PO-Revision-Date: 2010-11-01 16:19+0000\n"
+"Last-Translator: Esa Rautiainen <Unknown>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-08-04 04:01+0000\n"
+"X-Launchpad-Export-Date: 2010-11-02 05:03+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -278,6 +278,10 @@ msgid ""
 "application. The <i>scan</i> command line application is the most common way "
 "to generate a channels.conf file."
 msgstr ""
+"Tiedosto channels.conf on yleinen tiedostomuoto kanavatietojen "
+"tallentamiseen ja useat sovellukset osaavat sitä lukea. Olet voinut saada "
+"sellaisen jonkin toisen DVB sovelluksen mukana. Yleisin tapa channels.conf "
+"tiedoston luomiseen on käyttää <i>scan</i> komentorivisovellusta."
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
@@ -345,7 +349,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
-msgstr ""
+msgstr "Raahaa ja pudota kanavia järjestääksesi ne uudelleen."
 
 #: ../src/me-tv.ui.h:24
 msgid "Duration:"
@@ -371,15 +375,15 @@ msgstr "EPG:n aikaväli: "
 
 #: ../src/me-tv.ui.h:29
 msgid "Every day"
-msgstr ""
+msgstr "Joka päivä"
 
 #: ../src/me-tv.ui.h:30
 msgid "Every week"
-msgstr ""
+msgstr "Joka viikko"
 
 #: ../src/me-tv.ui.h:31
 msgid "Every weekday"
-msgstr ""
+msgstr "Joka viikonpäivä"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:33
@@ -422,7 +426,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr ""
+msgstr "Me TV - Kanava ristiriita"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
@@ -430,11 +434,11 @@ msgstr "Me TV - Kanavamuokkain"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
-msgstr ""
+msgstr "Me TV - EPG ohjelmatietojen haku"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
-msgstr ""
+msgstr "Me TV - Muokkaa kanavaa"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - It's TV for me computer"
@@ -474,11 +478,11 @@ msgstr "Me TV:n projektisivusto"
 
 #: ../src/me-tv.ui.h:63
 msgid "Now"
-msgstr ""
+msgstr "Nyt"
 
 #: ../src/me-tv.ui.h:64
 msgid "Once"
-msgstr ""
+msgstr "Kerran"
 
 #: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
@@ -486,7 +490,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
-msgstr ""
+msgstr "Sivu:"
 
 #: ../src/me-tv.ui.h:67
 msgid "Preferred language:"
@@ -1005,94 +1009,88 @@ msgstr ""
 msgid "Failed to open FIFO for reading '%1'"
 msgstr ""
 
-#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
+#: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "-"
 msgstr ""
 
-#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
+#: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
 msgstr "Tuntematon ohjelma"
 
 #: ../src/main.cc:29
-msgid "Me TV is a digital television viewer for the GNOME desktop"
-msgstr "Me TV on digitaalisen television katseluohjelma Gnome-työpöydälle"
+msgid "Me TV is a digital television viewer for GTK"
+msgstr ""
 
 #: ../src/main.cc:30
 msgid ""
 "Me TV was developed for the modern digital lounge room with a PC for a media "
 "centre that is capable of normal PC tasks (web surfing, word processing and "
-"watching TV). It is not designed to be a full-blown media centre such as "
-"MythTV but will integrate well with an existing GNOME desktop.\n"
+"watching TV).\n"
 msgstr ""
-"Me TV kehitettiin nykyaikaisia digitaalisia olohuoneita varten, joissa PC "
-"toimii mediakeskuksena jolla voi tehdä kaikkia tavallisia asioita (WWW-"
-"selaus, tekstinkäsittely ja television katsominen). Sitä ei kehitetty "
-"kokonaiseksi mediakeskusohjelmistoksi, kuten MythTV, mutta se integroituu "
-"hyvin olemassa olevaan Gnome-työpöytään.\n"
 
-#: ../src/main.cc:85
+#: ../src/main.cc:84
 msgid "Enable verbose messages"
 msgstr "Ota käyttöön suurempi viestien määrä"
 
-#: ../src/main.cc:90
+#: ../src/main.cc:89
 msgid "Start in safe mode"
 msgstr "Käynnistä turvallisessa tilassa"
 
-#: ../src/main.cc:95
+#: ../src/main.cc:94
 msgid "Start minimised in notification area"
 msgstr "Käynnistä pienennettynä ilmoitusalueella"
 
-#: ../src/main.cc:99
+#: ../src/main.cc:98
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
 msgstr ""
 
-#: ../src/main.cc:103
+#: ../src/main.cc:102
 msgid "Stops the rendering of the EPG event buttons on the UI."
 msgstr ""
 
-#: ../src/main.cc:107
+#: ../src/main.cc:106
 msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
 
-#: ../src/main.cc:111
+#: ../src/main.cc:110
 msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 msgstr ""
 
-#: ../src/main.cc:115
+#: ../src/main.cc:114
 msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 5)."
 msgstr ""
 
-#: ../src/main.cc:117
+#: ../src/main.cc:116
 msgid "Show Me TV help options"
 msgstr "Näytä Me TV:n ohjevalitsimet"
 
-#: ../src/main.cc:162
+#: ../src/main.cc:161
 msgid "An unhandled error occurred"
 msgstr "Tapahtui käsittelemätön virhe"
 
-#: ../src/main_window.cc:196
+#: ../src/main_window.cc:197
 msgid "Please stop all recordings before editing channels"
 msgstr ""
 
-#: ../src/main_window.cc:207
+#: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
 msgstr ""
 
-#: ../src/main_window.cc:555
+#: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
 msgstr "Moottoria ei voi käynnistää: moottori on jo käynnistetty"
 
-#: ../src/main_window.cc:631
+#: ../src/main_window.cc:634
 msgid "None"
 msgstr ""
 
-#: ../src/main_window.cc:945
+#: ../src/main_window.cc:948
 msgid ""
 "An error occurred while trying to communicate with the GNOME screensaver. To "
 "stop this message from displaying you can use the --no-screensaver-inhibit "
@@ -1238,26 +1236,26 @@ msgstr ""
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:250
+#: ../src/scheduled_recording_manager.cc:257
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:270
+#: ../src/scheduled_recording_manager.cc:277
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:291
+#: ../src/scheduled_recording_manager.cc:298
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:453
+#: ../src/scheduled_recording_manager.cc:464
 msgid "Scheduled recording '%1' not found"
 msgstr ""
 
@@ -1307,6 +1305,21 @@ msgstr " säie on jo käynnistetty"
 
 #~ msgid "Main window has not been created"
 #~ msgstr "Pääikkunaa ei ole luotu"
+
+#~ msgid "Me TV is a digital television viewer for the GNOME desktop"
+#~ msgstr "Me TV on digitaalisen television katseluohjelma Gnome-työpöydälle"
+
+#~ msgid ""
+#~ "Me TV was developed for the modern digital lounge room with a PC for a media "
+#~ "centre that is capable of normal PC tasks (web surfing, word processing and "
+#~ "watching TV). It is not designed to be a full-blown media centre such as "
+#~ "MythTV but will integrate well with an existing GNOME desktop.\n"
+#~ msgstr ""
+#~ "Me TV kehitettiin nykyaikaisia digitaalisia olohuoneita varten, joissa PC "
+#~ "toimii mediakeskuksena jolla voi tehdä kaikkia tavallisia asioita (WWW-"
+#~ "selaus, tekstinkäsittely ja television katsominen). Sitä ei kehitetty "
+#~ "kokonaiseksi mediakeskusohjelmistoksi, kuten MythTV, mutta se integroituu "
+#~ "hyvin olemassa olevaan Gnome-työpöytään.\n"
 
 #~ msgid "Failed to add channel: You cannot have more than %1 channel"
 #~ msgid_plural "Failed to add channel: You cannot have more than %1 channels"
