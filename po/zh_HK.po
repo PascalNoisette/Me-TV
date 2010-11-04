@@ -1,4 +1,4 @@
-# Slovak translation for me-tv
+# Chinese (Hong Kong) translation for me-tv
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the me-tv package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-11-03 21:28+0000\n"
-"Last-Translator: DAG Software <Unknown>\n"
-"Language-Team: Slovak <sk@li.org>\n"
+"PO-Revision-Date: 2010-11-03 07:57+0000\n"
+"Last-Translator: Walter Cheuk <wwycheuk@gmail.com>\n"
+"Language-Team: Chinese (Hong Kong) <zh_HK@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Launchpad-Export-Date: 2010-11-04 05:05+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
@@ -23,46 +23,40 @@ msgid ""
 "By default, the EPG header is visible but disabling it can minimise screen "
 "real estate by reducing the vertical EPG size."
 msgstr ""
-"V predvolenom nastavení je hlavičku EPG vidieť, ale jej vypnutím môžete "
-"reálne minimalizovať obrazovku tým, že znížite vertikálnu veľkosť EPG."
 
 #: ../me-tv.schemas.in.h:2
 msgid "Display a channel number next to the channel name in the EPG."
-msgstr "Zobraziť číslo kanálu vedľa názvu kanála v EPG."
+msgstr "電子節目表頻道名後顯示頻道號"
 
 #: ../me-tv.schemas.in.h:3
 msgid "Display the time span in the EPG buttons."
-msgstr "Zobraziť časový interval v tlačidlách EPG."
+msgstr "於電子節目表按鍵顯示時間區間"
 
 #: ../me-tv.schemas.in.h:4
 msgid "Displays the date/time header in the EPG"
-msgstr "Zobraziť dátum/čas v EPG"
+msgstr ""
 
 #: ../me-tv.schemas.in.h:5
 msgid "EPG event titles to auto record"
-msgstr "Udalosti EPG na automatické zaznamenávanie"
+msgstr ""
 
 #: ../me-tv.schemas.in.h:6
 msgid ""
 "Extra default time (in minutes) to append to the end of a scheduled recording"
-msgstr ""
-"Extra predvolený čas (v minútach) pridaný ku koncu plánovaného nahrávania"
+msgstr "預錄後附加之額外時間（分鐘）"
 
 #: ../me-tv.schemas.in.h:7
 msgid ""
 "Extra default time (in minutes) to append to the end of a scheduled "
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
-msgstr ""
-"Extra predvolený čas (v minútach) pridaný ku koncu plánovaného nahrávania. "
-"Táto predvolená hodnota môže byť nahradená nastavením plánovaného nahrávania."
+msgstr "預錄後附加之額外時間（分鐘）。此為預設值，實際值可在預錄設定變更。"
 
 #: ../me-tv.schemas.in.h:8
 msgid ""
 "Extra default time (in minutes) to append to the start of a scheduled "
 "recording"
 msgstr ""
-"Extra predvolený čas (v minútach) pridaný ku začiatku plánovaného nahrávania"
 
 #: ../me-tv.schemas.in.h:9
 msgid ""
@@ -70,242 +64,209 @@ msgid ""
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr ""
-"Extra predvolený čas (v minútach) pridaný ku začiatku plánovaného "
-"nahrávania. Táto predvolená hodnota môže byť nahradená nastavením "
-"plánovaného nahrávania."
 
 #: ../me-tv.schemas.in.h:10
 msgid ""
 "If more than one stream is available in a different language then Me TV will "
 "use the preffered one."
-msgstr ""
-"Ak je k dispozícii viac ako jeden stream v rôznych jazykoch potom Me TV bude "
-"používať ten preferovaný."
+msgstr "串流有多於一種語言時使用最愛語言"
 
 #: ../me-tv.schemas.in.h:11
 msgid ""
 "If you want to reduce the vertical size of your EPG then use this setting in "
 "combination with show_epg_tooltips."
 msgstr ""
-"Ak chcete znížiť vertikálnu veľkosť vášho EPG potom použite tieto nastavenia "
-"v kombinácii s show_epg_tooltips."
 
 #: ../me-tv.schemas.in.h:12
 msgid ""
 "Me TV uses libvlc to play sound, this setting tells libvlc which mechanism "
 "to use when playing sound."
-msgstr ""
-"Me TV používa libvlc na prehrávanie zvuku, toto nastavenie hovorí libvlc, "
-"aký mechanizmus sa má použiť pri prehrávaní zvuku."
+msgstr "Me TV 使用 libvlc 發聲，此設定通知 libvlc 以何機制發聲。"
 
 #: ../me-tv.schemas.in.h:13
 msgid ""
 "Me TV uses libvlc to render video, this setting tells libvlc which mechanism "
 "to use when drawing."
-msgstr ""
-"Me TV používa libvlc na vykresľovanie obrazu, toto nastavenie hovorí libvlc, "
-"aký mechanizmus sa má použiť pri vykresľovaní."
+msgstr "Me TV 使用 libvlc 顯像，此設定通知 libvlc 以何機制顯像。"
 
 #: ../me-tv.schemas.in.h:14
 msgid ""
 "Me TV will schedule programs that have titles that contain these words."
-msgstr "Me TV naplánuje programy ktoré majú v názve tieto slová."
+msgstr "Me TV 會錄影名稱有此字詞之節目。"
 
 #: ../me-tv.schemas.in.h:15
 msgid ""
 "Most digital video is transmitted in an interlaced format which should be "
 "corrected before viewing. Options are \"none\", \"standard\", \"tvtime\""
-msgstr ""
-"Väčšina digitálneho videa je prenášaná v prekladanom formáte, ktorý by mal "
-"byť opravený pred zobrazením. Možnosti sú \"none\", \"standard\", \"tvtime\"."
+msgstr "數碼視訊多以交錯格式傳送，觀看前要修正。選擇有「無」、「標準」、「電視時間」。"
 
 #: ../me-tv.schemas.in.h:16
 msgid ""
 "Most of the time the text encoding can be automatically determined but "
 "sometimes it needs a hint such as iso6937."
-msgstr ""
-"Väčšina času kódovania môže byť automaticky určená, ale niekedy to potrebuje "
-"nápovedu ako iso6937."
+msgstr "文字編碼通常能自動分辨，但有時要配以修飾詞如「iso6937」。"
 
 #: ../me-tv.schemas.in.h:17
 msgid "Preferred language to use when selecting streams."
-msgstr "Preferovaný jazyk na použitie pri vyberaní streamov."
+msgstr "選取串流之最愛語言"
 
 #: ../me-tv.schemas.in.h:18
 msgid "Recent EPG event searches"
-msgstr "Nedávne hľadania udalostí EPG"
+msgstr ""
 
 #: ../me-tv.schemas.in.h:19
 msgid "Remove the colon ':' from the recording filename"
-msgstr "Odstráňte dvojbodku ':' z nahraného názvu súboru"
+msgstr "錄影檔名不要冒號「:」"
 
 #: ../me-tv.schemas.in.h:20
 msgid "Sets the \"Always On Top\" attribute on the main window."
-msgstr "Nastaví atribút hlavného okna na \"Vždy na vrchu\"."
+msgstr "主視窗置頂"
 
 #: ../me-tv.schemas.in.h:21
 msgid "Sets the audio driver for libvlc to use."
-msgstr "Nastaví ovládač zvuku ktorý má libvlc použiť"
+msgstr "設定 libvlc 使用之音訊驅動程式"
 
 #: ../me-tv.schemas.in.h:22
 msgid "Sets the video driver for the player to use."
-msgstr "Nastaví ovládač videa ktorý má prehrávač použiť"
+msgstr "設定播放器使用之視訊驅動程式"
 
 #: ../me-tv.schemas.in.h:23
 msgid "Show a tool tip when hovering over an EPG event."
-msgstr "Zobraziť štítok pri pohybe nad EPG udalosťou."
+msgstr ""
 
 #: ../me-tv.schemas.in.h:24
 msgid ""
 "Some file systems do not support a colon in a filename (e.g. FAT32). This "
 "option tells Me TV to remove it from the recording filename."
-msgstr ""
-"Niektoré súborové systémy nepodporujú dvojbodku v názvoch súborov (napr. "
-"FAT32). Táto možnosť hovorí Me TV že má byť odstránená z názvu nahraného "
-"súboru."
+msgstr "某些檔案系統如 FAT32 不讓檔案名有冒號。此選項通知 Me TV 將其自錄影檔名移除。"
 
 #: ../me-tv.schemas.in.h:25
 msgid "Tells Me TV to display an icon the notification area."
-msgstr "Hovorí Me TV že má zobrazovať ikonu v oznamovacej oblasti."
+msgstr "Me TV 於通告區顯示圖示"
 
 #: ../me-tv.schemas.in.h:26
 msgid "The directory to use for recordings."
-msgstr "Priečinok použitý pre nahrávky."
+msgstr "置放錄影目錄"
 
 #: ../me-tv.schemas.in.h:27
 msgid ""
 "The directory to use for recordings. This value defaults to the users home "
 "directory."
-msgstr ""
-"Priečinok použitý pre nahrávky. Predvolená hodnota je domovský priečinok "
-"používateľa."
+msgstr "置放錄影之目錄。預設為用戶家目錄。"
 
 #: ../me-tv.schemas.in.h:28
 msgid "The height of the window before Me TV was last closed"
-msgstr "Výška okna pred tým než bol Me TV naposledy zatvorený"
+msgstr "Me TV 對上一次關閉時視窗高度"
 
 #: ../me-tv.schemas.in.h:29
 msgid ""
 "The height of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
-"Výška okna pred tým než bol Me TV naposledy zatvorený. Me TV použije túto "
-"hodnotu pre obnovenie hlavného okna do pôvodného tvaru."
 
 #: ../me-tv.schemas.in.h:30
 msgid "The last channel tuned to."
-msgstr "Posledný naladený kanál."
+msgstr "最後觀看頻道"
 
 #: ../me-tv.schemas.in.h:31
 msgid ""
 "The number of channels to show before paging, this is deliberately set low "
 "to reduce preformance issues."
 msgstr ""
-"Počet kanálov na zobrazenie pred stránkovaním, toto je zámerne nastavené "
-"nízko na zredukovanie výkonových problémov."
 
 #: ../me-tv.schemas.in.h:32
 msgid "The number of channels to show before paging."
-msgstr "Počet kanálov na zobrazenie pred stránkovaním."
+msgstr ""
 
 #: ../me-tv.schemas.in.h:33
 msgid "The number of hours for the EPG to span on one page."
-msgstr "Počet hodín pre rozpätie stránky EPG."
+msgstr "電子節目表每版顯示時間"
 
 #: ../me-tv.schemas.in.h:34
 msgid "The text endoding that the DVB information is in."
-msgstr "Kódovanie textu v ktorom je DVB informácia."
+msgstr "DVB 資訊文字編碼"
 
 #: ../me-tv.schemas.in.h:35
 msgid "The width of the window before Me TV was last closed"
-msgstr "Šírka okna pred tým než bol Me TV naposledy zatvorený"
+msgstr "Me TV 對上一次關閉時視窗寬度"
 
 #: ../me-tv.schemas.in.h:36
 msgid ""
 "The width of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
-"Šírka okna pred tým než bol Me TV naposledy zatvorený. Me TV použije túto "
-"hodnotu pre obnovenie hlavného okna do pôvodnej pozície."
 
 #: ../me-tv.schemas.in.h:37
 msgid "The x position of the window before Me TV was last closed"
-msgstr "X pozícia okna pred tým než bol Me TV naposledy zatvorený"
+msgstr ""
 
 #: ../me-tv.schemas.in.h:38
 msgid ""
 "The x position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
-"X pozícia okna pred tým než bol Me TV naposledy zatvorený. Me TV použije "
-"túto hodnotu pre obnovenie hlavného okna do pôvodnej pozície."
 
 #: ../me-tv.schemas.in.h:39
 msgid "The y position of the window before Me TV was last closed"
-msgstr "Y pozícia okna pred tým než bol Me TV naposledy zatvorený"
+msgstr ""
 
 #: ../me-tv.schemas.in.h:40
 msgid ""
 "The y position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
-"Y pozícia okna pred tým než bol Me TV naposledy zatvorený. Me TV použije "
-"túto hodnotu pre obnovenie hlavného okna do pôvodnej pozície."
 
 #: ../me-tv.schemas.in.h:41
 msgid ""
 "This is used to store what channel the user was last watching so it can be "
 "returned when restarting."
-msgstr ""
-"Toto sa používa na ukladanie kanála, ktorý používateľ naposledy pozeral aby "
-"sa zobrazil po ďalšom spustení."
+msgstr "記起最後觀看頻道好讓下次開啟時自動打開"
 
 #: ../me-tv.schemas.in.h:42
 msgid "This will show the timespan of an EPG event in a tooltip."
-msgstr "Toto zobrazí časové rozpätie EPG udalostí v štítku."
+msgstr ""
 
 #: ../me-tv.schemas.in.h:43
 msgid ""
 "When this setting is false Me TV will terminate when the main window is "
 "closed."
-msgstr ""
-"Keď toto nastavenie je \"false\", Me TV sa ukončí pri zavretí hlavného okna."
+msgstr "此值為否時關閉主視窗 Me TV 自動結束"
 
 #: ../me-tv.schemas.in.h:44
 msgid "Whether the video should be deinterlaced."
-msgstr "Či má byť z videa odstránené prekladanie."
+msgstr ""
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
-msgstr "Prehrávač digitálnej televízie (DVB) pre GNOME"
+msgstr "GNOME 數碼電視觀賞程式"
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
-msgstr "Me TV"
+msgstr ""
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
-msgstr " hodín"
+msgstr " 小時"
 
 #: ../src/me-tv.ui.h:2
 msgid " minutes"
-msgstr " minút"
+msgstr " 分鐘"
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
-msgstr "00:00"
+msgstr ""
 
 #: ../src/me-tv.ui.h:4
 msgid ":"
-msgstr ":"
+msgstr ""
 
 #: ../src/me-tv.ui.h:5
 msgid "<b>Device:</b>"
-msgstr "<b>Zariadenie:</b>"
+msgstr "<b>裝置:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
-msgstr "Kanál nazvaný 'xxx' už existuje."
+msgstr "已有名為「xxx」之頻道"
 
 #: ../src/me-tv.ui.h:7
 msgid ""
@@ -314,18 +275,14 @@ msgid ""
 "application. The <i>scan</i> command line application is the most common way "
 "to generate a channels.conf file."
 msgstr ""
-"Súbor channels.conf je bežný formát súboru pre ukladanie kanálov a môže byť "
-"prečítaný mnohými programami. Možná už máte nejaký z iného DVB programu. "
-"Program príkazového riadku <i>scan</i> je najbežnejšia cesta na vytvorenie "
-"súboru channels.conf."
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
-msgstr "Rozšírené"
+msgstr "進階"
 
 #: ../src/me-tv.ui.h:9
 msgid "After:"
-msgstr "Po:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:10
 msgid ""
@@ -334,99 +291,92 @@ msgid ""
 "from the LinuxTV dvb-apps package which is included in most Linux "
 "distributions.  Look for <i>dvb-apps</i> in your package management system."
 msgstr ""
-"Počiatočný súbor skenu sa používa na seedovanie tuneru s nejakými "
-"počiatočnými parametrami na pomoc pri nájdení DVB služieb. Veľa obľúbených "
-"počiatočných súborov skenu je dostupných z LinuxTV dvb-apps balíčku ktorý je "
-"zahrnutý vo väčšine Linuxových distribúcií. Pohľadajte <i>dvb-apps</i> vo "
-"vašom systéme na správu balíčkov."
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
-msgstr "Zvukový ovládač:"
+msgstr "音訊驅動:"
 
 #: ../src/me-tv.ui.h:12
 msgid "Auto scan"
-msgstr "Automatické hľadanie"
+msgstr "自動掃描"
 
 #: ../src/me-tv.ui.h:13
 msgid "Cancel channel import"
-msgstr "Zrušiť import kanálov"
+msgstr "取消匯入頻道"
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
-msgstr "Frekvencia kanálu: "
+msgstr "頻道頻率: "
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
-msgstr "Názov kanálu: "
+msgstr "頻道名稱: "
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel:"
-msgstr "Kanál:"
+msgstr "頻道:"
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
-msgstr "Zavrieť Me TV"
+msgstr "關閉 Me TV"
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
-msgstr "Copyright &#xA9; Michael Lamothe"
+msgstr ""
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
-msgstr "Spôsob odstránenia prekladania:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
-msgstr "Popis:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:21
 msgid "Device Text"
-msgstr "Text zariadenia"
+msgstr ""
 
 #: ../src/me-tv.ui.h:22
 msgid "Do Nothing"
-msgstr "Nerobiť nič"
+msgstr ""
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
-msgstr "Potiahnite a pustite kanály, ktoré chcete preusporiadať."
+msgstr ""
 
 #: ../src/me-tv.ui.h:24
 msgid "Duration:"
-msgstr "Trvanie:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
-msgstr "Informácie o udalosti EPG"
+msgstr "電子節目指南事件資訊"
 
 #: ../src/me-tv.ui.h:26
 msgid ""
 "EPG event titles that contain the following entries will be automatically "
 "recorded."
 msgstr ""
-"Názvy EPG udalostí ktoré obsahujú nasledujúce položky budú automaticky "
-"zaznamenané."
 
 #: ../src/me-tv.ui.h:27
 msgid "EPG page size: "
-msgstr "Veľkosť EPG stránky: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:28
 msgid "EPG span: "
-msgstr "Rozsah EPG: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:29
 msgid "Every day"
-msgstr "Každý deň"
+msgstr "每天"
 
 #: ../src/me-tv.ui.h:30
 msgid "Every week"
-msgstr "Každý týždeň"
+msgstr "每週"
 
 #: ../src/me-tv.ui.h:31
 msgid "Every weekday"
-msgstr "Každý pracovný den"
+msgstr "週一至五"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:33
@@ -450,245 +400,224 @@ msgid ""
 "be\n"
 "found in /usr/share/common-licenses/GPL file."
 msgstr ""
-"GNU General Public License:\n"
-"\n"
-"This program is free software; you can redistribute it and/or modify it "
-"under\n"
-"the terms of the GNU General Public License as published by the Free "
-"Software\n"
-"Foundation; either version 2 of the License, or (at your option) any later\n"
-"version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY\n"
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A\n"
-"PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
-"\n"
-"On Debian systems, the complete text of the GNU General Public License can "
-"be\n"
-"found in /usr/share/common-licenses/GPL file."
 
 #: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
-msgstr "Importovať channels.conf"
+msgstr "匯入channels.conf"
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
-msgstr "Nechať existujúci kanál"
+msgstr "保留現有頻道"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
-msgstr "O programe Me TV"
+msgstr ""
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
-msgstr "Me TV - Automatické zaznamenávanie"
+msgstr ""
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr "Me TV - konflikt kanálov"
+msgstr ""
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
-msgstr "Me TV - Editor kanálov"
+msgstr ""
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
-msgstr "Me TV - hľadanie EPG udalostí"
+msgstr ""
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
-msgstr "Me TV - upraviť kanál"
+msgstr ""
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - It's TV for me computer"
-msgstr "Me TV - televízia pre môj počítač"
+msgstr ""
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Main Window"
-msgstr "Me TV - Hlavné okno"
+msgstr ""
 
 #: ../src/me-tv.ui.h:56
 msgid "Me TV - Preferences Window"
-msgstr "Me TV - Okno nastavení"
+msgstr ""
 
 #: ../src/me-tv.ui.h:57
 msgid "Me TV - Program Details"
-msgstr "Me TV - Podrobnosti o programe"
+msgstr ""
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scan Wizard"
-msgstr "Me TV - Sprievodca skenovaním"
+msgstr ""
 
 #: ../src/me-tv.ui.h:59
 msgid "Me TV - Scheduled Recording"
-msgstr "Me TV - Plánované nahrávanie"
+msgstr ""
 
 #: ../src/me-tv.ui.h:60
 msgid "Me TV - Scheduled Recordings"
-msgstr "Me TV - Plánované nahrávania"
+msgstr ""
 
 #: ../src/me-tv.ui.h:61
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
-msgstr "Me TV je prehrávač digitálnej televízie (DVB) pre GNOME"
+msgstr "Me TV 是專為GNOME而設的數碼電視(DVB)播放器"
 
 #: ../src/me-tv.ui.h:62
 msgid "Me TV project website"
-msgstr "Stránky projektu Me TV"
+msgstr ""
 
 #: ../src/me-tv.ui.h:63
 msgid "Now"
-msgstr "Teraz"
+msgstr ""
 
 #: ../src/me-tv.ui.h:64
 msgid "Once"
-msgstr "Raz"
+msgstr ""
 
 #: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
-msgstr "Prepísať existujúci kanál"
+msgstr "覆蓋已有頻道"
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
-msgstr "Stránka:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:67
 msgid "Preferred language:"
-msgstr "Preferovaný jazyk:"
+msgstr "最愛語言:"
 
 #: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
-msgstr "Nahrať navyše po: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:69
 msgid "Record extra before: "
-msgstr "Nahrať navyše pred: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
-msgstr "Priečinok nahrávok: "
+msgstr "錄影目錄: "
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
-msgstr "Opakovanie:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
-msgstr "Odstrániť dvojbodku z názvov nahraných súborov"
+msgstr "自錄影檔名刪除冒號"
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr "Premenovať nový kanál"
+msgstr "將新頻道改為獨有名稱"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
-msgstr "Opakovať túto akciu pre všetky konflikty kanálov"
+msgstr ""
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
-msgstr "Priebeh skenovania"
+msgstr "掃描進度"
 
 #: ../src/me-tv.ui.h:76
 msgid "Scan using an initial scan file"
-msgstr "Skenovat použitím počiatočného súboru"
+msgstr ""
 
 #: ../src/me-tv.ui.h:77
 msgid "Scanning/Importing"
-msgstr "Skenovanie/Importovanie"
+msgstr "正掃描或匯入"
 
 #: ../src/me-tv.ui.h:78
 msgid "Search description"
-msgstr "Hľadať v popisoch"
+msgstr ""
 
 #: ../src/me-tv.ui.h:79
 msgid "Search:"
-msgstr "Hľadať:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:80
 msgid "See https://launchpad.net/me-tv"
-msgstr "Pozrite https://launchpad.net/me-tv"
+msgstr ""
 
 #: ../src/me-tv.ui.h:81
 msgid "Select A Recording Directory"
-msgstr "Vybrať priečinok pre nahrávky"
+msgstr "選擇錄影檔存放資料夾"
 
 #: ../src/me-tv.ui.h:82
 msgid "Select Scan File"
-msgstr "Vybrať skenovací súbor"
+msgstr "選取掃描檔"
 
 #: ../src/me-tv.ui.h:83
 msgid "Select a channels.conf file"
-msgstr "Vybrať súbor channels.conf"
+msgstr "選取 channels.conf 檔案"
 
 #: ../src/me-tv.ui.h:84
 msgid "Select a file"
-msgstr "Vybrať súbor"
+msgstr "選取檔案"
 
 #: ../src/me-tv.ui.h:85
 msgid "Set \"Always on Top\" at startup"
-msgstr "Nastaviť \"Vždy navrchu\" pri spustení"
+msgstr "開始時將視窗設為「置頂」"
 
 #: ../src/me-tv.ui.h:86
 msgid "Show EPG header"
-msgstr "Zobraziť hlavičku EPG"
+msgstr ""
 
 #: ../src/me-tv.ui.h:87
 msgid "Show a status icon in the notification area"
-msgstr "Zobraziť stavovú ikonu v oblasti upozornení"
+msgstr "在系統通告區顯示狀態圖示"
 
 #: ../src/me-tv.ui.h:88
 msgid "Show channel number"
-msgstr "Zobraziť číslo kanálu"
+msgstr "顯示頻道編號"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
-msgstr "Zobraziť čas na tlačidlách udalostí EPG"
+msgstr ""
 
 #: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
-msgstr "Zobrazovať štítky pre tlačidlá udalostí EPG"
+msgstr ""
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
-msgstr "Vypnúť"
+msgstr ""
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
-msgstr "Dátum začiatku:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:93
 msgid "Start Time:"
-msgstr "Čas začiatku:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:94
 msgid "Text encoding:"
-msgstr "Kódovanie textu:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:95
 msgid ""
 "This option will only work if your DVB setup supports auto scanning.  "
 "Currently, this feature is only supported on DVB-T and ATSC devices."
 msgstr ""
-"Táto možnosť bude fungovať iba ak váš DVB adaptér podporuje automatické "
-"skenovanie. V súčasnosti je táto funkcia podporovaná len v DVB-T a ATSC "
-"zariadeniach."
 
 #: ../src/me-tv.ui.h:96
 msgid "This program is scheduled for recording."
-msgstr "Tento program je naplánovaný na nahrávanie."
+msgstr "本節目已加入預錄"
 
 #: ../src/me-tv.ui.h:97
 msgid "Video driver:"
-msgstr "Video ovládač:"
+msgstr ""
 
 #: ../src/me-tv.ui.h:98
 msgid "View Schedule"
-msgstr "Zobraziť plánovanie"
+msgstr "檢視預錄表"
 
 #: ../src/me-tv.ui.h:99
 msgid "Watch Now"
-msgstr "Pozerať teraz"
+msgstr "立即看"
 
 #: ../src/me-tv.ui.h:100
 msgid ""
@@ -700,401 +629,393 @@ msgid ""
 "\n"
 "<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
 msgstr ""
-"Vaša Me TV databáza je príliš stará pre použitie s touto verziou Me TV. "
-"Chceli by ste vyprázdniť Me TV databázu? Všetky vaše kanály, EPG udalosti a "
-"naplánované nahrávania budú <b>vymazané</b>.\n"
+"閣下之 Me TV 資料庫太舊，無法用於此版本之 Me TV。要否清空此 Me TV "
+"資料庫？閣下所有頻道、電子節目指南事件及預錄皆會<b>刪除</b>。\n"
 "\n"
-"Ak ste práve aktualizovali Me TV, potom toto je pravdepodobne to čo chcete "
-"urobiť.\n"
+"如閣下剛剛更新 Me TV，通常要如此做。\n"
 "\n"
-"<i>Me TV databáza sa nachádza v ~/.local/share/me-tv.db.</i>"
+"<i>Me TV 資料庫位於 ~/.local/share/me-tv.db</i>"
 
 #: ../src/me-tv.ui.h:105
 msgid "_Delete my old Me TV data!"
-msgstr "_Odstrániť moje straré Me TV dáta!"
+msgstr "刪除我的舊 Me TV 資料(_D)！"
 
 #: ../src/me-tv.ui.h:106
 msgid "channels"
-msgstr "kanály"
+msgstr "頻道"
 
 #: ../src/application.cc:43
 msgid "Application has already been initialised"
-msgstr "Aplikácia už bola inicializovaná"
+msgstr "應用程式已初始化"
 
 #: ../src/application.cc:58
 msgid "The SQLite version is not thread-safe"
-msgstr "Verzia SQLite nie je \"thread-safe\""
+msgstr ""
 
 #: ../src/application.cc:112
 msgid "_File"
-msgstr "_Súbor"
+msgstr "檔案(_F)"
 
 #: ../src/application.cc:113
 msgid "_View"
-msgstr "_Zobraziť"
+msgstr "檢視(_V)"
 
 #: ../src/application.cc:114
 msgid "_Video"
-msgstr "_Video"
+msgstr "影片(_V)"
 
 #: ../src/application.cc:115
 msgid "_Audio"
-msgstr "_Zvuk"
+msgstr "音訊(_A)"
 
 #: ../src/application.cc:116
 msgid "_Help"
-msgstr "_Nápoveda"
+msgstr ""
 
 #: ../src/application.cc:118
 msgid "Subtitles"
-msgstr "Titulky"
+msgstr "字幕"
 
 #: ../src/application.cc:119
 msgid "_Streams"
-msgstr "_Streamy"
+msgstr "串流(_S)"
 
 #: ../src/application.cc:120
 msgid "_Channels"
-msgstr "_Kanály"
+msgstr "頻道(_C)"
 
 #: ../src/application.cc:123
 msgid "_Both"
-msgstr "_Obidve"
+msgstr ""
 
 #: ../src/application.cc:124
 msgid "_Left"
-msgstr "V_ľavo"
+msgstr "左聲道(_L)"
 
 #: ../src/application.cc:125
 msgid "_Right"
-msgstr "V_pravo"
+msgstr "右聲道(_R)"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
-msgstr "Zlyhalo získanie DBus relácie"
+msgstr "無法取得 DBus 工作階段"
 
 #: ../src/application.cc:186
 msgid "Failed to start recording"
-msgstr "Zlyhalo začatie nahrávania"
+msgstr "無法錄影"
 
 #: ../src/application.cc:378
 msgid "Failed to initialise database"
-msgstr "Zlyhalo inicializovanie databázy"
+msgstr ""
 
 #: ../src/application.cc:437
 msgid "Application has not been initialised"
-msgstr "Aplikácia nebola inicializovaná"
+msgstr "應用程式還未初始化"
 
 #: ../src/application.cc:494
 msgid "DBus connection not available"
-msgstr "Spojenie s DBus nie je dostupné"
+msgstr ""
 
 #: ../src/application.cc:505
 msgid "Failed to get org.gnome.SessionManager proxy"
-msgstr "Zlyhalo získanie org.gnome.SessionManager proxy"
+msgstr ""
 
 #: ../src/application.cc:511
 msgid "Failed to call Shutdown method"
-msgstr "Zlyhalo zavolanie metódy vypnutia"
+msgstr ""
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
-msgstr "Názov"
+msgstr "節目名"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
-msgstr "Nie je zvolený žiadny riadok"
+msgstr ""
 
 #: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
 msgid "Unknown frontend type"
-msgstr "Neznámy typ rozhrania"
+msgstr "前端類型不明"
 
 #: ../src/channel_manager.cc:258
 msgid "Invalid channel index"
-msgstr "Neplatný index kanálu"
+msgstr "頻道索引無效"
 
 #: ../src/channel_manager.cc:272
 msgid "Channel '%1' not found"
-msgstr "Kanál '%1' nebol nájdený"
+msgstr "找不到「%1」頻道"
 
 #: ../src/channel_manager.cc:295
 msgid "Failed to add channel: You cannot have more than 1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-msgstr[0] "Zlyhalo pridanie kanálu: Nemôžte mať viac ako 1 kanál"
-msgstr[1] "Zlyhalo pridanie kanálu: Nemôžte mať viac ako %1 kanály"
-msgstr[2] "Zlyhalo pridanie kanálu: Nemôžte mať viac ako %1 kanálov"
+msgstr[0] "無法添加頻道：不能多於 %1 個頻道"
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
-msgstr "Názov kanála"
+msgstr "頻道名"
 
 #: ../src/channels_dialog.cc:57
 msgid "Frequency (Hz)"
-msgstr "Frekvencia (Hz)"
+msgstr "頻率 (Hz)"
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
-msgstr "Kanál nazvaný <b>%1</b> iž existuje."
+msgstr "已有名為<b>'%1'</b>之頻道"
 
 #: ../src/channels_dialog.cc:231
 msgid "No channel selected"
-msgstr "Nebol vybratý žiadny kanál"
+msgstr "未選取頻道"
 
 #: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
-msgstr "Vyberte len jeden kanál"
+msgstr ""
 
 #: ../src/data.cc:50 ../src/data.cc:55
 msgid "Failed to prepare statement: %1"
-msgstr "Zlyhala príprava príkazu: %1"
+msgstr ""
 
 #: ../src/data.cc:62
 msgid "Prepared statement had remaining data: %1"
-msgstr "Pripravený príkaz mal zostávajúce dáta: %1"
+msgstr ""
 
 #: ../src/data.cc:67
 msgid "Failed to create statement"
-msgstr "Zlyhalo vytvorenie príkazu"
+msgstr ""
 
 #: ../src/data.cc:75
 msgid "Failed to finalise statement"
-msgstr "Zlyhalo dokončenie príkazu"
+msgstr ""
 
 #: ../src/data.cc:105
 msgid "Failed to execute statement: %1"
-msgstr "Zlyhalo spustenie príkazu: %1"
+msgstr ""
 
 #: ../src/data.cc:176
 msgid "Failed to connect to Me TV database '%1'"
-msgstr "Zlyhalo pripojenie k Me TV databáze '%1'"
+msgstr ""
 
 #: ../src/data.cc:246
 msgid "Only integers can be primary keys"
-msgstr "Primárne kľúče môžu byť len celočíselné"
+msgstr ""
 
 #: ../src/data.cc:315
 msgid "Failed to create TableAdapter: Table has no columns"
-msgstr "Zlyhalo vytvorenie tabuľky adaptéra: tabuľka nemá stĺpce"
+msgstr ""
 
 #: ../src/device_manager.cc:134
 msgid "There are no DVB devices available"
-msgstr "Niesu dostupné žiadne DVB zariadenia"
+msgstr "無可用 DVB 裝置"
 
 #: ../src/dvb_demuxer.cc:37
 msgid "Failed to open demux device"
-msgstr "Zlyhalo otvorenie demultiplexora"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:68
 msgid "Failed to set PES filter"
-msgstr "Zlyhalo nastavenie PES filtra"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:87
 msgid "Failed to set section filter for demuxer"
-msgstr "Zlyhalo nastavenie filtra sekcie pre demultiplexor"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:95
 msgid "Failed to set demuxer buffer size"
-msgstr "Zlyhalo nastavenie veľkosti vyrovnávacej pamäte pre demultiplexor"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:103
 msgid "Read timeout"
-msgstr "Vypršal čas pre čítanie"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
-msgstr "Zlyhalo čítanie údajov z demultiplexoru"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:122
 msgid "Failed to read header"
-msgstr "Zlyhalo čítanie hlavičky"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:133
 msgid "Failed to read section"
-msgstr "Zlyhalo čítanie sekcie"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:138
 msgid "CRC32 check failed"
-msgstr "Kontrola CRC32 zlyhala"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:146
 msgid "Failed to stop demuxer"
-msgstr "Zlyhalo zastavenie demultiplexora"
+msgstr ""
 
 #: ../src/dvb_demuxer.cc:161
 msgid "Failed to poll"
-msgstr "Zlyhalo vyzvanie"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:51
 msgid "Failed to open tuner"
-msgstr "Zlyhalo otváranie tunera"
+msgstr "無法打開調頻器"
 
 #: ../src/dvb_frontend.cc:56
 msgid "Failed to get tuner info"
-msgstr "Zlyhalo získanie informácií o tuneri"
+msgstr "無法取得調頻器資訊"
 
 #: ../src/dvb_frontend.cc:75
 #, c-format
 msgid "Frontend::tune_to(%d)"
-msgstr "Frontend::tune_to(%d)"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:111
 msgid "Failed to tune device"
-msgstr "Zlyhalo ladenie zariadenia"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:114
 msgid "Waiting for signal lock ..."
-msgstr "Čakanie na zámok signálu ..."
+msgstr "正等待訊號鎖定..."
 
 #: ../src/dvb_frontend.cc:116
 msgid "Got signal lock"
-msgstr "Zámok signálu získaný"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:132
 msgid "Failed to set tone off"
-msgstr "Zlyhalo vypnutie tónu"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:137
 msgid "Failed to set voltage"
-msgstr "Zlyhalo nastavenie napätia"
+msgstr "無法設定電壓"
 
 #: ../src/dvb_frontend.cc:143
 msgid "Failed to send master command"
-msgstr "Zlyhalo odoslanie riadiaceho príkazu"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:149
 msgid "Failed to send burst"
-msgstr "Zlyhalo odoslanie dávky"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:155
 msgid "Failed to set tone"
-msgstr "Zlyhalo nastavenie tónu"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:186
 msgid "Failed to lock to channel"
-msgstr "Zlyhalo uzamknutie kanálu"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:195
 msgid "Failed to get signal strength"
-msgstr "Zlyhalo zistenie sily signálu"
+msgstr "無法取得訊號強度"
 
 #: ../src/dvb_frontend.cc:205
 msgid "Failed to get signal to noise ratio"
-msgstr "Zlyhalo zistenie pomeru signál/šum"
+msgstr "無法取得訊噪比"
 
 #: ../src/dvb_si.cc:411
 msgid "Failed to convert channel name"
-msgstr "Zlyhalo konvertovanie názvu kanálu"
+msgstr "無法轉換頻道名"
 
 #: ../src/dvb_si.cc:568
 msgid "ASSERT: offset > end_descriptor_offset"
-msgstr "PREHLÁSENIE: offset > end_descriptor_offset"
+msgstr ""
 
 #: ../src/dvb_si.cc:579
 msgid "ASSERT: offset > end_section_offset"
-msgstr "PREHLÁSENIE: offset > end_section_offset"
+msgstr ""
 
 #: ../src/dvb_si.cc:794
 msgid "No message"
-msgstr "Žiadna správa"
+msgstr "無訊息"
 
 #: ../src/dvb_si.cc:801
 msgid "Failed to convert to UTF-8: %1"
-msgstr "Zlyhalo konvertovanie do UTF-8: %1"
+msgstr "無法轉換至 UTF-8: %1"
 
 #: ../src/engine.cc:46
 msgid "Window ID was 0"
-msgstr "ID okna bolo 0"
+msgstr ""
 
 #: ../src/epg_event.cc:79
 msgid "Unknown title"
-msgstr "Neznámy názov"
+msgstr "不知名節目"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr "Neznámy podtitul"
+msgstr "不知名字幕"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
-msgstr "Neznámy popis"
+msgstr ""
 
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
-msgstr[0] "1 hodina"
-msgstr[1] "%1 hodiny"
-msgstr[2] "%1 hodín"
+msgstr[0] "%1 小時"
 
 #: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] "1 minúta"
-msgstr[1] "%1 minúty"
-msgstr[2] "%1 minút"
+msgstr[0] "%1 分鐘"
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
-msgstr " "
+msgstr ""
 
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
-msgstr "Kanál"
+msgstr "頻道"
 
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr "Čas začiatku"
+msgstr ""
 
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr "Dĺžka"
+msgstr "長度"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
-msgstr "Nebol zadaný text, ktorý se má hľadať"
+msgstr ""
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
-msgstr "Žiadne výsledky"
+msgstr "無結果"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
-msgstr "Nebyla vybratá žiadna udalosť EPG"
+msgstr ""
 
 #: ../src/epg_thread.cc:71
 msgid "No demuxers"
-msgstr "Žiadne demultiplexory"
+msgstr ""
 
 #: ../src/epg_thread.cc:210
 #, c-format
 msgid "Unknown source_id %u"
-msgstr "Neznáme source_id %u"
+msgstr ""
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
-msgstr "Zlyhalo zistenie chybovej správy"
+msgstr ""
 
 #: ../src/frontend_thread.cc:243
 msgid "Failed to create FIFO '%1'"
-msgstr "Zlyhalo vytvorenie FIFO '%1'"
+msgstr ""
 
 #: ../src/frontend_thread.cc:250
 msgid "Failed to open FIFO for reading '%1'"
-msgstr "Zlyhalo otvorenie FIFO pre čítanie '%1'"
+msgstr ""
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "-"
-msgstr "-"
+msgstr ""
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
-msgstr "Neznámy program"
+msgstr "不知名節目"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for GTK"
-msgstr "Me TV je digitálna televízia pre GTK"
+msgstr "Me TV 是為 GTK 而設之數碼電視觀賞程式"
 
 #: ../src/main.cc:30
 msgid ""
@@ -1102,43 +1023,39 @@ msgid ""
 "centre that is capable of normal PC tasks (web surfing, word processing and "
 "watching TV).\n"
 msgstr ""
-"Me TV bol vyvíjaný pre modernú digitálnu obývačku s počítačom ako "
-"multimediálnym centrom, ktoré je schopné plniť aj bežné úlohy počítača "
-"(prehliadanie internetu, spracovanie textu a sledovanie televízie).\n"
 
 #: ../src/main.cc:84
 msgid "Enable verbose messages"
-msgstr "Povoliť podrobné hlásenia"
+msgstr "啟用詳盡訊息"
 
 #: ../src/main.cc:89
 msgid "Start in safe mode"
-msgstr "Spustiť v bezpečnom režime"
+msgstr ""
 
 #: ../src/main.cc:94
 msgid "Start minimised in notification area"
-msgstr "Spustiť minimalizované v oblasti upozornení"
+msgstr ""
 
 #: ../src/main.cc:98
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
-msgstr "Zakáže EPG vlákno. Me TV prestane zbierať EPG udalosti."
+msgstr ""
 
 #: ../src/main.cc:102
 msgid "Stops the rendering of the EPG event buttons on the UI."
-msgstr "Zastaví renderovanie EPG tlačítok v UI."
+msgstr ""
 
 #: ../src/main.cc:106
 msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
-"Povie Me TV aby nevolalo metódy Inhibit/UnInhibit šetriča obrazovky v GNOME."
 
 #: ../src/main.cc:110
 msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 msgstr ""
-"Použiť len vymenované zariadenia frontendu (napr. --"
+"只用特定前端金裝置 (如 --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 
 #: ../src/main.cc:114
@@ -1146,32 +1063,30 @@ msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 5)."
 msgstr ""
-"Ako dlho čakať (v sekundách) pred preručením kým sa čaká na dáta z demuxera "
-"(pôvodne 5)"
 
 #: ../src/main.cc:116
 msgid "Show Me TV help options"
-msgstr "Zobraziť možnosti nápovedy Me TV"
+msgstr ""
 
 #: ../src/main.cc:161
 msgid "An unhandled error occurred"
-msgstr "Nastala neočakávaná chyba"
+msgstr ""
 
 #: ../src/main_window.cc:197
 msgid "Please stop all recordings before editing channels"
-msgstr "Prosím zastavte všetky nahrávania pred upravovaním kanálov"
+msgstr "修改頻道前請先停止錄影"
 
 #: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
-msgstr "Nedajú sa aktualizovať kanály počas nahrávania"
+msgstr "錄影時不能更新頻道"
 
 #: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
-msgstr "Zlyhalo spustenie prehrávača: Prehrávač už bol spustený"
+msgstr ""
 
 #: ../src/main_window.cc:634
 msgid "None"
-msgstr "Žiadne"
+msgstr "無"
 
 #: ../src/main_window.cc:948
 msgid ""
@@ -1179,166 +1094,157 @@ msgid ""
 "stop this message from displaying you can use the --no-screensaver-inhibit "
 "command line option.  The error message was '%1'"
 msgstr ""
-"Nastala chyba pri komunikácii so šetričom obrazovky GNOME. Na zastavenie "
-"zobrazovania tejto správy, môžte požiť prepínač --no-screensaver-inhibit. "
-"Chybová správa bola '%1'"
 
 #: ../src/me-tv.cc:93
 msgid "Failed to get time"
-msgstr "Zlyhalo zistenie času"
+msgstr "無法取得時間"
 
 #: ../src/me-tv.cc:172
 msgid "Failed to find a value for '%1'"
-msgstr "Zlyhalo nájdenie hodnoty pre '%1'"
+msgstr "找不到 '%1'"
 
 #: ../src/me-tv.cc:197
 msgid "Failed to find a text value for '%1'"
-msgstr "Zlyhalo nájdenie textovej hodnoty pre '%1'"
+msgstr "找不到 '%1' 文字"
 
 #: ../src/me-tv-ui.cc:88 ../src/me-tv-ui.cc:103
 msgid "Failed to get active text value"
-msgstr "Zlyhalo získanie aktívnej textovej hodnoty"
+msgstr ""
 
 #: ../src/me-tv-ui.cc:225
 msgid "Failed to get active integer value"
-msgstr "Zlyhalo získanie aktívnej celočíselnej hodnoty"
+msgstr ""
 
 #: ../src/mpeg_stream.cc:317
 msgid "Failed to find Program Map PID for service"
-msgstr "Zlyhalo nájdenie Program Map PID pre službu"
+msgstr ""
 
 #: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
 msgid "Unknown language"
-msgstr "Neznámy jazyk"
+msgstr "不知名語言"
 
 #: ../src/scan_dialog.cc:32
 msgid "Me TV - Error"
-msgstr "Me TV - chyba"
+msgstr ""
 
 #: ../src/scan_dialog.cc:138
 msgid "Service Name"
-msgstr "Názov služby"
+msgstr "服務名稱"
 
 #: ../src/scan_dialog.cc:139
 msgid "Signal Strength"
-msgstr "Sila signálu"
+msgstr "訊號強度"
 
 #: ../src/scan_dialog.cc:159
 msgid "Australia"
-msgstr "Austrália"
+msgstr "澳洲"
 
 #: ../src/scan_dialog.cc:160
 msgid "Canada"
-msgstr "Kanada"
+msgstr "加拿大"
 
 #: ../src/scan_dialog.cc:161
 msgid "Czech Republic"
-msgstr "Česká republika"
+msgstr "捷克"
 
 #: ../src/scan_dialog.cc:162
 msgid "Finland"
-msgstr "Fínsko"
+msgstr "芬蘭"
 
 #: ../src/scan_dialog.cc:163
 msgid "France"
-msgstr "Francúzsko"
+msgstr "法國"
 
 #: ../src/scan_dialog.cc:164
 msgid "Germany"
-msgstr "Nemecko"
+msgstr "德國"
 
 #: ../src/scan_dialog.cc:165
 msgid "Italy"
-msgstr "Taliansko"
+msgstr "意大利"
 
 #: ../src/scan_dialog.cc:166
 msgid "Lithuania"
-msgstr "Litva"
+msgstr "立陶宛"
 
 #: ../src/scan_dialog.cc:167
 msgid "New Zealand"
-msgstr "Nový Zéland"
+msgstr "紐西蘭"
 
 #: ../src/scan_dialog.cc:168
 msgid "Spain"
-msgstr "Španielsko"
+msgstr "西班牙"
 
 #: ../src/scan_dialog.cc:169
 msgid "Slovenia"
-msgstr "Slovinsko"
+msgstr "斯洛文尼亞"
 
 #: ../src/scan_dialog.cc:170
 msgid "United Kingdom"
-msgstr "Veľká Británia"
+msgstr "英國"
 
 #: ../src/scan_dialog.cc:171
 msgid "United States"
-msgstr "USA"
+msgstr "美國"
 
 #: ../src/scan_dialog.cc:299
 msgid "Importing channels"
-msgstr "Importujú sa kanály"
+msgstr "正匯入頻道"
 
 #: ../src/scan_dialog.cc:325 ../src/scan_dialog.cc:347
 #: ../src/scan_dialog.cc:365 ../src/scan_dialog.cc:384
 msgid "Invalid parameter count on line %1"
-msgstr "Neplatný počet parametrov na riadku %1"
+msgstr "第 %1 行之參數數目有問題"
 
 #: ../src/scan_dialog.cc:398
 msgid ""
 "Failed to import: importing a channels.conf is only supported with DVB-T, "
 "DVB-C, DVB-S and ATSC"
 msgstr ""
-"Zlyhalo importovanie: importovanie channels.conf je podporované len s DVB-T, "
-"DVB-C, DVB-S a ATSC"
 
 #: ../src/scan_dialog.cc:491
 msgid "Me TV cannot process a line in the initial tuning file"
-msgstr "Me TV nemôže spracovať riadok vo východzom súbore ladenia"
+msgstr "初始調頻檔有一行無法處理"
 
 #: ../src/scan_dialog.cc:524
 msgid "No tuning file has been selected"
-msgstr "Nebol vybraný žiadny súbor ladenia"
+msgstr "未選取調頻檔"
 
 #: ../src/scan_dialog.cc:551
 msgid "Starting scanner"
-msgstr "Začína sa skenovanie"
+msgstr "正開始掃描"
 
 #: ../src/scan_dialog.cc:630
 msgid "%1/%2 (%3 channels)"
-msgstr "%1/%2 (%3 kanály)"
+msgstr "%1/%2 (%3 個頻道)"
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
-msgstr "Skenovanie dokončené"
+msgstr ""
 
 #: ../src/scan_dialog.cc:715
 msgid "No auto scan range was specified"
-msgstr "Nebol zadaný rozsah automatického skenovania"
+msgstr "未指定自動掃描範圍"
 
 #: ../src/scan_dialog.cc:809
 msgid "Unknown scan range '%1'"
-msgstr "Neznámy rozsah skenovania '%1'"
+msgstr "無法理解掃描範圍 '%1'"
 
 #: ../src/scan_dialog.cc:824
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
-"Automatické skenovanie je podporované len v DVB-T a ATSC zariadeniach"
 
 #: ../src/scheduled_recording_manager.cc:257
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
-msgstr ""
-"Zlyhalo naplánovanie nahrávania: Niesu dostupné žiadne zariadenia v tom čase"
+msgstr "無法設定預錄: 未有可用裝置"
 
 #: ../src/scheduled_recording_manager.cc:277
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
-msgstr ""
-"Zlyhalo uloženie naplánovaného nahrávania, pretože je v konflikte s iným "
-"naplánovaným nahrávaním nazvaním '%1'."
+msgstr "無法儲存預錄，因其與另一預錄 '%1' 有衝突"
 
 #: ../src/scheduled_recording_manager.cc:298
 msgid ""
@@ -1346,93 +1252,51 @@ msgid ""
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
-"Zlyhalo uloženie naplánovaného nahrávania, pretože už máte naplánované "
-"nahrávanie nazvané '%1' ktoré je naplánované v rovnakom čase na tom istom "
-"kanáli."
 
 #: ../src/scheduled_recording_manager.cc:464
 msgid "Scheduled recording '%1' not found"
-msgstr "Naplánované nahrávanie '%1' nenájdené"
+msgstr "找不到預錄 '%1'"
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
-msgstr "Popis"
+msgstr ""
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Record"
-msgstr "Nahrávanie"
+msgstr "錄影"
 
 #: ../src/scheduled_recordings_dialog.cc:55
 msgid "After"
-msgstr "Po"
+msgstr ""
 
 #: ../src/scheduled_recordings_dialog.cc:56
 msgid "Device"
-msgstr "Zariadenie"
+msgstr "裝置"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
-msgstr "Nie je vybreté žiadne naplánované nahrávanie"
+msgstr "未選取預錄"
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
-msgstr "Me TV je nečinné"
+msgstr "Me TV 未有工作"
 
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
-msgstr "Zlyhalo nájdenie frontendu '%1' pre naplánované nahrávanie"
+msgstr "找不到用於預錄之前端 '%1'"
 
 #: ../src/stream_manager.cc:207 ../src/stream_manager.cc:293
 msgid "Failed to get available frontend"
-msgstr "Zlyhalo získanie dostupného frontendu"
+msgstr "找不到可用前端裝置"
 
 #: ../src/stream_manager.cc:332
 msgid "Failed to get display stream"
-msgstr "Zlyhalo získanie zobrazovacieho stremu"
+msgstr "找不到顯示串流"
 
 #: ../src/stream_manager.cc:379
 msgid "Failed to get display frontend thread"
-msgstr "Zlyhalo získanie vlákna pre zobrazenie frontendu"
+msgstr ""
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
-msgstr " vlákno už bolo spustené"
-
-#~ msgid "Preferred language to us when selecting streams."
-#~ msgstr "Preferovaný jazyk pre nami vybraný stream."
-
-#~ msgid "AU"
-#~ msgstr "AU"
-
-#~ msgid "All"
-#~ msgstr "Všetko"
-
-#~ msgid "IT"
-#~ msgstr "IT"
-
-#~ msgid "Main window has not been created"
-#~ msgstr "Hlavné okno nebolo vytvorené"
-
-#~ msgid "Failed to add channel: You cannot have more than %1 channel"
-#~ msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-#~ msgstr[0] "Zlyhalo pridanie kanálu: Nemôžete mať viac ako %1 kanálov"
-#~ msgstr[1] "Zlyhalo pridanie kanálu: Nemôžete mať viac ako %1 kanál"
-#~ msgstr[2] "Zlyhalo pridanie kanálu: Nemôžete mať viac ako %1 kanály"
-
-#~ msgid ""
-#~ "Me TV was developed for the modern digital lounge room with a PC for a media "
-#~ "centre that is capable of normal PC tasks (web surfing, word processing and "
-#~ "watching TV). It is not designed to be a full-blown media centre such as "
-#~ "MythTV but will integrate well with an existing GNOME desktop.\n"
-#~ msgstr ""
-#~ "Me TV bolo vyvinuté pre modernú digitálnu obývačku s počítačom ako "
-#~ "multimediálne cetrum, ktorý je schopný plniť úlohu normálneho PC "
-#~ "(prehliadanie internetu, spracovanie textu a sledovanie TV). Nie je "
-#~ "navrhnuté ako náhrada kompletného multimediálneho centra, ako je MythTV, ale "
-#~ "začlení sa dobre s existujúcim prostredím GNOME.\n"
-
-#~ msgid "Not available"
-#~ msgstr "Nie je k dispozícií"
-
-#~ msgid "Me TV is a digital television viewer for the GNOME desktop"
-#~ msgstr "Me TV je prehrávač digitálnej televízie pre GNOME"
+msgstr ""
