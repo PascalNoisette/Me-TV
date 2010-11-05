@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-10-08 07:26+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2010-11-05 02:40+0000\n"
+"Last-Translator: Kraven <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-10-09 12:25+0000\n"
+"X-Launchpad-Export-Date: 2010-11-05 04:59+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -23,12 +23,12 @@ msgid ""
 "By default, the EPG header is visible but disabling it can minimise screen "
 "real estate by reducing the vertical EPG size."
 msgstr ""
-"Standardmäßig ist der EPG Kopf sichtbar, durch die Verkleinerung der EPG "
-"Größe kann der benutzte Bildschirmbereich verkleinert werden."
+"Standardmäßig ist der EPG-Kopfbereich sichtbar, aber eine Deaktivierung kann "
+"den Bildschirmbereich durch Verringerung der vertikalen EPG-Größe minimieren."
 
 #: ../me-tv.schemas.in.h:2
 msgid "Display a channel number next to the channel name in the EPG."
-msgstr "Zeige die Kanal-Nummer neben dem Kanal-Namen im EPG."
+msgstr "Kanalnummer neben dem Kanalnamen im EPG anzeigen."
 
 #: ../me-tv.schemas.in.h:3
 msgid "Display the time span in the EPG buttons."
@@ -209,12 +209,12 @@ msgid ""
 "The number of channels to show before paging, this is deliberately set low "
 "to reduce preformance issues."
 msgstr ""
-"Die Anzahl der angezeigten Kanäle ist vor dem blättern bewusst "
-"heruntergesetzt, um Performanceprobleme zu vermeiden."
+"Die Anzahl der Kanäle, die vor Seitenwechsel anzuzeigen sind, wird "
+"absichtlich niedrig eingestellt, um Leistungsprobleme zu reduzieren."
 
 #: ../me-tv.schemas.in.h:32
 msgid "The number of channels to show before paging."
-msgstr "Die Anzahl der angezeigten Kanäle vor dem blättern."
+msgstr "Die Anzahl der Kanäle, die vor Seitenwechsel anzuzeigen sind."
 
 #: ../me-tv.schemas.in.h:33
 msgid "The number of hours for the EPG to span on one page."
@@ -275,7 +275,9 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:42
 msgid "This will show the timespan of an EPG event in a tooltip."
-msgstr "Zeigt die Dauer eines EPG-Ereignisses in einem Tooltipp an."
+msgstr ""
+"Dies zeigt die Zeitspanne von einem EPG-Ereignis in einer QuickInfo "
+"angezeigt."
 
 #: ../me-tv.schemas.in.h:43
 msgid ""
@@ -291,7 +293,8 @@ msgstr "Ob Zeilenentflechtung (Deinterlacing) benutzt  werden soll."
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
-msgstr "Ein Programm für digitales Fernsehen (DVB) für GNOME"
+msgstr ""
+"Eine Anwendung zum Betrachten von digitalem Fernsehen (DVB) unter GNOME"
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
@@ -319,7 +322,7 @@ msgstr "<b>Gerät:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
-msgstr "Ein Kanal mit diesem Namen existiert bereits."
+msgstr "Ein Kanal mit diesem Namen ist bereits vorhanden."
 
 #: ../src/me-tv.ui.h:7
 msgid ""
@@ -348,11 +351,11 @@ msgid ""
 "from the LinuxTV dvb-apps package which is included in most Linux "
 "distributions.  Look for <i>dvb-apps</i> in your package management system."
 msgstr ""
-"Eine Initial-Scan-Datei wird verwendet um das Empfangsgerät mit "
-"verschiedenen Anfagsparametern zu initialisieren, welche beim Finden von DVB "
-"Diensten helfen. Viele gängige Initial-Scan-Dateien stehen im LinuxTV dvb-"
-"apps Paket zur Verfügungen, welches in den meisten Linux Distributionen "
-"enthalten ist. Suchen Sie nach <i>dvb-apps<i> in Ihrer Paketverwaltung."
+"Eine anfängliche Suchdatei wird verwendet, um dem Tuner einige anfängliche "
+"Parameter für DVB-Dienste bereitzustellen. Viele beliebte anfängliche "
+"Suchdateien sind im LinuxTV DVB-Anwendungspaket verfügbar, das in den "
+"meisten Linuxdistributionen enthalten ist. Suchen Sie nach <i>dvb-apps</i> "
+"in Ihrer Paketverwaltung."
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
@@ -364,7 +367,7 @@ msgstr "Automatische Suche"
 
 #: ../src/me-tv.ui.h:13
 msgid "Cancel channel import"
-msgstr "Kanalimport abbrechen"
+msgstr "Sender importieren abbrechen"
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
@@ -388,7 +391,7 @@ msgstr "Copyright &#xA9; Michael Lamothe"
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
-msgstr "Deinterlace Methode:"
+msgstr "Deinterlace Typ:"
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
@@ -412,7 +415,7 @@ msgstr "Dauer:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
-msgstr "EPG Event Information"
+msgstr "EPG-Ereignisinformationen"
 
 #: ../src/me-tv.ui.h:26
 msgid ""
@@ -424,11 +427,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:27
 msgid "EPG page size: "
-msgstr "EPG - Sender je Seite: "
+msgstr "EPG-Seitengröße: "
 
 #: ../src/me-tv.ui.h:28
 msgid "EPG span: "
-msgstr "EPG - Zeitspanne: "
+msgstr "EPG-Zeitspanne: "
 
 #: ../src/me-tv.ui.h:29
 msgid "Every day"
@@ -486,11 +489,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
-msgstr "Eine channels.conf Datei importieren."
+msgstr "Importieren einer channels.conf"
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
-msgstr "Existierende Sender behalten"
+msgstr "Vorhandenen Sender behalten"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
@@ -502,7 +505,7 @@ msgstr "Me TV - Automatische Aufnahme"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr "Me TV - Kanal Konflikt"
+msgstr "Me TV - Senderkonflikt"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
@@ -518,7 +521,7 @@ msgstr "Me TV - Sender bearbeiten"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - It's TV for me computer"
-msgstr "Me TV - It's TV for me computer"
+msgstr "Me TV - Ist Fernsehen für mein Rechner"
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Main Window"
@@ -542,15 +545,16 @@ msgstr "Me TV - Geplante Aufnahme"
 
 #: ../src/me-tv.ui.h:60
 msgid "Me TV - Scheduled Recordings"
-msgstr "Me TV - Zeitgesteuerte Aufnahmen"
+msgstr "Me-TV - Geplante Aufnahmen"
 
 #: ../src/me-tv.ui.h:61
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
-msgstr "Me TV ist eine Anwendung für Digitalfernsehen (DVB) für GNOME"
+msgstr ""
+"Me TV ist eine Anwendung zum Betrachten von Digitalfernsehen (DVB) für GNOME"
 
 #: ../src/me-tv.ui.h:62
 msgid "Me TV project website"
-msgstr "Me TV-Projekt-Website"
+msgstr "Me TV-Projekt-Webseite"
 
 #: ../src/me-tv.ui.h:63
 msgid "Now"
@@ -562,7 +566,7 @@ msgstr "Einmal"
 
 #: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
-msgstr "Überschreibe die existierenden Sender"
+msgstr "Vorhandenen Kanal überschreiben"
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
@@ -598,7 +602,7 @@ msgstr "Für den neuen Kanal einen eindeutigen Namen vergeben"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
-msgstr "Diese Aktion für alle Kanal Konflikte wiederholen"
+msgstr "Diese Aktion für alle Senderkonflikte wiederholen"
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
@@ -606,11 +610,11 @@ msgstr "Suchfortschritt"
 
 #: ../src/me-tv.ui.h:76
 msgid "Scan using an initial scan file"
-msgstr "Scannen mit Initial-Scan-Datei"
+msgstr "Unter Verwendung einer anfänglichen Suchdatei suchen"
 
 #: ../src/me-tv.ui.h:77
 msgid "Scanning/Importing"
-msgstr "Sendersuchlauf / Import"
+msgstr "Duchsuchen/Importieren"
 
 #: ../src/me-tv.ui.h:78
 msgid "Search description"
@@ -626,15 +630,15 @@ msgstr "Besuchen Sie https://launchpad.net/me-tv"
 
 #: ../src/me-tv.ui.h:81
 msgid "Select A Recording Directory"
-msgstr "Aufnahmeordner wählen"
+msgstr "Aufnahmeordner auswählen"
 
 #: ../src/me-tv.ui.h:82
 msgid "Select Scan File"
-msgstr "eine Datei zum Überprüfen aussuchen"
+msgstr "Suchdatei auswählen"
 
 #: ../src/me-tv.ui.h:83
 msgid "Select a channels.conf file"
-msgstr "Wähle eine channels.conf-Datei"
+msgstr "Eine channels.conf-Datei auswählen"
 
 #: ../src/me-tv.ui.h:84
 msgid "Select a file"
@@ -646,23 +650,23 @@ msgstr "Beim Start \"immer im Vordergrund\" aktivieren"
 
 #: ../src/me-tv.ui.h:86
 msgid "Show EPG header"
-msgstr "Zeige EPG-Header"
+msgstr "EPG-Kopfbereich anzeigen"
 
 #: ../src/me-tv.ui.h:87
 msgid "Show a status icon in the notification area"
-msgstr "Zeige ein Symbol im Benachrichtigungsfeld"
+msgstr "Symbol im Infobereich anzeigen"
 
 #: ../src/me-tv.ui.h:88
 msgid "Show channel number"
-msgstr "Zeige Sendernummer"
+msgstr "Sendernummer anzeigen"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
-msgstr "Zeige Zeit auf den EPG Eventbuttons"
+msgstr "Zeit auf EPG-Ereignisschaltflächen anzeigen"
 
 #: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
-msgstr "Zeige Tooltipps für die EPG Eventbuttons"
+msgstr "QuickInfos für EPG-Ereignisschaltflächen anzeigen"
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
@@ -691,7 +695,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:96
 msgid "This program is scheduled for recording."
-msgstr "Dieses Programm ist für die Aufnahme geplant."
+msgstr "Dieses Sendung ist für die Aufnahme geplant."
 
 #: ../src/me-tv.ui.h:97
 msgid "Video driver:"
@@ -754,7 +758,7 @@ msgstr "_Video"
 
 #: ../src/application.cc:115
 msgid "_Audio"
-msgstr "A_udio"
+msgstr "_Audio"
 
 #: ../src/application.cc:116
 msgid "_Help"
@@ -778,11 +782,11 @@ msgstr "_Beide"
 
 #: ../src/application.cc:124
 msgid "_Left"
-msgstr "_Linker"
+msgstr "_Links"
 
 #: ../src/application.cc:125
 msgid "_Right"
-msgstr "_Rechter"
+msgstr "_Rechts"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
@@ -827,7 +831,7 @@ msgstr "Unbekannter Frontend-Typ"
 
 #: ../src/channel_manager.cc:258
 msgid "Invalid channel index"
-msgstr "Fehler: Invalid channel index"
+msgstr "Senderindex ungültig"
 
 #: ../src/channel_manager.cc:272
 msgid "Channel '%1' not found"
@@ -853,11 +857,11 @@ msgstr "Frequenz (Hz)"
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
-msgstr "Ein Kanal mit dem Namen <b>'%1'</b> existiert bereits."
+msgstr "Ein Sender mit dem Namen <b>\"%1\"</b> ist bereits vorhanden."
 
 #: ../src/channels_dialog.cc:231
 msgid "No channel selected"
-msgstr "Kein Kanal ausgewählt"
+msgstr "Es wurde kein Sender ausgewhlt"
 
 #: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
@@ -865,23 +869,23 @@ msgstr "Nur einen Kanal auswählen"
 
 #: ../src/data.cc:50 ../src/data.cc:55
 msgid "Failed to prepare statement: %1"
-msgstr "Fehler: Failed to prepare statement: %1"
+msgstr "Fehler beim Vorbereiten der Anweisung: %1"
 
 #: ../src/data.cc:62
 msgid "Prepared statement had remaining data: %1"
-msgstr "Fehler: Prepared statement had remaining data: %1"
+msgstr "Vorbereitete Anweisung hatte verbleibende Daten: %1"
 
 #: ../src/data.cc:67
 msgid "Failed to create statement"
-msgstr "Fehler: Failed to create statement"
+msgstr "Fehler beim Erstellen der Anweisung aufgetreten"
 
 #: ../src/data.cc:75
 msgid "Failed to finalise statement"
-msgstr "Fehler: Failed to finalise statement"
+msgstr "Fehler beim Abschließen der Anweisung aufgetreten"
 
 #: ../src/data.cc:105
 msgid "Failed to execute statement: %1"
-msgstr "Fehler: Failed to execute statement: %1"
+msgstr "Auszuführende Anweisung fehlgeschlagen: %1"
 
 #: ../src/data.cc:176
 msgid "Failed to connect to Me TV database '%1'"
@@ -891,12 +895,12 @@ msgstr ""
 
 #: ../src/data.cc:246
 msgid "Only integers can be primary keys"
-msgstr "Fehler: Only integers can be primary keys"
+msgstr "Nur ganze Zahlen können Primärschlüssel sein."
 
 #: ../src/data.cc:315
 msgid "Failed to create TableAdapter: Table has no columns"
 msgstr ""
-"Fehler beim erstellen von TableAdapter: Die Tabelle besitzt keine Zeilen"
+"Fehler beim Erstellen des TableAdapter: Tabelle enthält keine Spalten"
 
 #: ../src/device_manager.cc:134
 msgid "There are no DVB devices available"
@@ -908,15 +912,15 @@ msgstr "Öffnen des Demux-Geräts fehlgeschlagen"
 
 #: ../src/dvb_demuxer.cc:68
 msgid "Failed to set PES filter"
-msgstr "Setzen des PES-Filters fehlgeschlagen"
+msgstr "Fehler beim Festlegen des SPE-Filters aufgetreten"
 
 #: ../src/dvb_demuxer.cc:87
 msgid "Failed to set section filter for demuxer"
-msgstr "Setzen des Sektionsfilters für den Demuxer fehlgeschlagen"
+msgstr "Fehler beim Festlegen der Abschnittfilters für Demuxer aufgetreten"
 
 #: ../src/dvb_demuxer.cc:95
 msgid "Failed to set demuxer buffer size"
-msgstr "Setzen der Puffergröße des Demuxers fehlgeschlagen"
+msgstr "Fehler beim Festlegen der Demuxer-Puffergröße aufgetreten"
 
 #: ../src/dvb_demuxer.cc:103
 msgid "Read timeout"
