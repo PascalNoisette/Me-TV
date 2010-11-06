@@ -254,7 +254,10 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 		if (scheduled_recording.device.empty())
 		{
-			throw Exception(_("Failed to set scheduled recording: There are no devices available at that time"));
+			Glib::ustring message = Glib::ustring::compose(_(
+				"Failed to set scheduled recording for '%1' at %2: There are no devices available at that time"),
+				scheduled_recording.description, scheduled_recording.get_start_time_text());
+			throw Exception(message);
 		}
 
 		g_debug("Device selected: '%s'", scheduled_recording.device.c_str());

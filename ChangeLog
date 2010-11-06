@@ -1,8 +1,10 @@
-2010-11-07  Michael Lamothe <michael.lamothe@gmail.com>
+2010-11-14  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.3.4
 	* Using time_t instead of guint
 	* Refactored action after for SRs to a better location
+	* Better information about auto record conflicts
+	* Error messages not appear in status bar
 
 2010-11-01  Michael Lamothe <michael.lamothe@gmail.com>
 
