@@ -2071,11 +2071,15 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="has_tooltip">True</property>
+                <property name="tooltip_text" translatable="yes">Record</property>
                 <property name="related_action">toggle_action_record_current</property>
                 <property name="relief">none</property>
                 <child>
                   <object class="GtkImage" id="image_record">
                     <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Record</property>
                     <property name="stock">gtk-media-record</property>
                   </object>
                 </child>
@@ -2090,11 +2094,15 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="has_tooltip">True</property>
+                <property name="tooltip_text" translatable="yes">EPG Event Search</property>
                 <property name="related_action">action_epg_event_search</property>
                 <property name="relief">none</property>
                 <child>
                   <object class="GtkImage" id="image_epg_event_search">
                     <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">EPG Event Search</property>
                     <property name="stock">gtk-find</property>
                   </object>
                 </child>
@@ -2109,11 +2117,15 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="has_tooltip">True</property>
+                <property name="tooltip_text" translatable="yes">Scheduled Recordings</property>
                 <property name="related_action">action_scheduled_recordings</property>
                 <property name="relief">none</property>
                 <child>
                   <object class="GtkImage" id="image_scheduled_recordings">
                     <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Scheduled Recordings</property>
                     <property name="icon_name">appointment-soon</property>
                   </object>
                 </child>
@@ -2128,11 +2140,15 @@ If you've just upgraded Me TV then this is probably what you want to do.
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="has_tooltip">True</property>
+                <property name="tooltip_text" translatable="yes">Fullscreen</property>
                 <property name="related_action">toggle_action_fullscreen</property>
                 <property name="relief">none</property>
                 <child>
                   <object class="GtkImage" id="image_fullscreen">
                     <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Fullscreen</property>
                     <property name="stock">gtk-fullscreen</property>
                   </object>
                 </child>
@@ -2145,9 +2161,11 @@ If you've just upgraded Me TV then this is probably what you want to do.
             <child>
               <object class="GtkLabel" id="label_status_text">
                 <property name="visible">True</property>
+                <property name="has_tooltip">True</property>
                 <property name="xalign">0</property>
                 <property name="xpad">4</property>
                 <property name="label" translatable="yes">Me TV - It's TV for me computer</property>
+                <property name="selectable">True</property>
                 <property name="ellipsize">end</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
@@ -2179,6 +2197,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup">Previous Day</property>
                     <property name="image">image_epg_previous_day</property>
                   </object>
                   <packing>
@@ -2190,6 +2210,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Previous</property>
                     <property name="image">image_epg_back</property>
                     <property name="xalign">0.51999998092651367</property>
                   </object>
@@ -2204,6 +2226,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">What's on now</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -2215,6 +2239,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Next</property>
                     <property name="image">image_epg_forward</property>
                   </object>
                   <packing>
@@ -2227,6 +2253,8 @@ If you've just upgraded Me TV then this is probably what you want to do.
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text" translatable="yes">Next Day</property>
                     <property name="image">image_epg_next_day</property>
                   </object>
                   <packing>
@@ -2775,10 +2803,14 @@ If you've just upgraded Me TV then this is probably what you want to do.
   </object>
   <object class="GtkImage" id="image_epg_back">
     <property name="visible">True</property>
+    <property name="has_tooltip">True</property>
+    <property name="tooltip_text" translatable="yes">Previous</property>
     <property name="stock">gtk-go-back</property>
   </object>
   <object class="GtkImage" id="image_epg_forward">
     <property name="visible">True</property>
+    <property name="has_tooltip">True</property>
+    <property name="tooltip_text" translatable="yes">Next</property>
     <property name="stock">gtk-go-forward</property>
   </object>
   <object class="GtkAction" id="action_auto_record">
@@ -2935,10 +2967,14 @@ If you've just upgraded Me TV then this is probably what you want to do.
   </object>
   <object class="GtkImage" id="image_epg_previous_day">
     <property name="visible">True</property>
+    <property name="has_tooltip">True</property>
+    <property name="tooltip_text" translatable="yes">Previous Day</property>
     <property name="stock">gtk-goto-first</property>
   </object>
   <object class="GtkImage" id="image_epg_next_day">
     <property name="visible">True</property>
+    <property name="has_tooltip">True</property>
+    <property name="tooltip_text" translatable="yes">Next Day</property>
     <property name="stock">gtk-goto-last</property>
   </object>
 </interface>

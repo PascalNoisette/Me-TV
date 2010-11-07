@@ -68,6 +68,11 @@ Glib::ustring ScheduledRecording::get_end_time_text() const
 	return get_local_time_text(get_end_time(), "%c");
 }
 
+gboolean ScheduledRecording::is_old(time_t now) const
+{
+	return (time_t)(start_time + duration) < now;
+}
+
 gboolean ScheduledRecording::is_in(time_t at) const
 {
 	return start_time <= at && (time_t)(start_time + duration) > at;

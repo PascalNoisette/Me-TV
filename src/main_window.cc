@@ -697,6 +697,7 @@ void MainWindow::set_status_text(const Glib::ustring& text)
 	Gtk::Label* label = NULL;
 	builder->get_widget("label_status_text", label);
 	label->set_text(text);
+	label->set_tooltip_text(text);
 }
 
 void MainWindow::start_engine()

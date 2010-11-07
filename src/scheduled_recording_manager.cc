@@ -393,28 +393,22 @@ void ScheduledRecordingManager::remove_scheduled_recording(EpgEvent& epg_event)
 	}	
 }
 
-guint is_old(ScheduledRecording& scheduled_recording, time_t now)
-{
-	return (scheduled_recording.get_end_time() < now && scheduled_recording.recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_ONCE);
-}
-
 ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 {
 	ScheduledRecordingList results;
 	
+	time_t now = time(NULL);
+
 	g_debug("Checking scheduled recordings");
 	Glib::RecMutex::Lock lock(mutex);
 
-	Application& application = get_application();
-
-	time_t now = time(NULL);
+	g_debug("Now: %u", (guint)now);
 	g_debug("Removing scheduled recordings older than %u", (guint)now);
-	bool done = false;
 	
 	ScheduledRecordingList::iterator i = scheduled_recordings.begin();
 	while (i != scheduled_recordings.end())
 	{
-		if (is_old(*i, now))
+		if ((*i).is_old(now))
 		{
 			guint action = (*i).action_after;
 			i = scheduled_recordings.erase(i);
@@ -428,8 +422,6 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 	
 	if (!scheduled_recordings.empty())
 	{
-		time_t now = time(NULL);
-		g_debug("Now: %u", (guint)now);
 		g_debug("=============================================================================================");
 		g_debug("#ID | Start Time | Duration | Record | Channel    | Device                      | Description");
 		g_debug("=============================================================================================");
@@ -452,7 +444,7 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 				results.push_back(scheduled_recording);
 			}
 			
-			if(scheduled_recording.get_end_time() < now)
+			if (scheduled_recording.get_end_time() < now)
 			{
 				dirty = true;
 			}

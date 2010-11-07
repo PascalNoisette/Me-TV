@@ -51,7 +51,9 @@ public:
 	Glib::ustring get_duration_text() const;
 	time_t get_end_time() const;
 	Glib::ustring get_end_time_text() const;
-		
+
+	gboolean is_old() const { return is_old(time_t(NULL)); }
+	gboolean is_old(time_t now) const;
 	gboolean is_in(time_t at) const;
 	gboolean is_in(time_t start_time, time_t end_time) const;
 	gboolean overlaps(const ScheduledRecording& scheduled_recording) const;

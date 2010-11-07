@@ -4,7 +4,8 @@
 	* Using time_t instead of guint
 	* Refactored action after for SRs to a better location
 	* Better information about auto record conflicts
-	* Error messages not appear in status bar
+	* Error messages now appear in status bar
+	* Added tooltips to control buttons
 
 2010-11-01  Michael Lamothe <michael.lamothe@gmail.com>
 
