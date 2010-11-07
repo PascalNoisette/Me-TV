@@ -573,8 +573,6 @@ void MainWindow::play(const Glib::ustring& mrl)
 		create_engine();
 	}
 
-	Glib::ustring preferred_language = configuration_manager.get_string_value("preferred_language");
-
 	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_audio/action_audio_streams"))->get_submenu();
 	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_video/action_subtitle_streams"))->get_submenu();
 	
@@ -616,12 +614,6 @@ void MainWindow::play(const Glib::ustring& mrl)
 			)
 		);
 
-		if (!preferred_language.empty() && (preferred_language == audio_stream.language) && !selected)
-		{
-			menu_item->set_active(true);
-			selected = true;
-		}
-
 		count++;
 	}
 
@@ -658,12 +650,6 @@ void MainWindow::play(const Glib::ustring& mrl)
 			)
 		);
 		
-		if (!preferred_language.empty() && (preferred_language == subtitle_stream.language) && !selected)
-		{
-			menu_item->set_active(true);
-			selected = true;
-		}
-
 		count++;
 	}
 

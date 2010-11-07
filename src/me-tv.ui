@@ -746,7 +746,7 @@ found in /usr/share/common-licenses/GPL file.</property>
           <object class="GtkTable" id="table_preferences">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-            <property name="n_rows">17</property>
+            <property name="n_rows">16</property>
             <property name="n_columns">2</property>
             <child>
               <object class="GtkHBox" id="hbox8">
@@ -807,41 +807,6 @@ found in /usr/share/common-licenses/GPL file.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox5">
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkEntry" id="entry_preferred_language">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">●</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">5</property>
-                <property name="bottom_attach">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label_preferred_language">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Preferred language:</property>
-              </object>
-              <packing>
-                <property name="top_attach">5</property>
-                <property name="bottom_attach">6</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkHBox" id="hbox4">
                 <property name="visible">True</property>
                 <child>
@@ -862,8 +827,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">6</property>
-                <property name="bottom_attach">7</property>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
               </packing>
             </child>
             <child>
@@ -872,8 +837,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="label" translatable="yes">Video driver:</property>
               </object>
               <packing>
-                <property name="top_attach">6</property>
-                <property name="bottom_attach">7</property>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
               </packing>
             </child>
             <child>
@@ -897,8 +862,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">7</property>
-                <property name="bottom_attach">8</property>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
               </packing>
             </child>
             <child>
@@ -907,8 +872,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="label" translatable="yes">Audio driver:</property>
               </object>
               <packing>
-                <property name="top_attach">7</property>
-                <property name="bottom_attach">8</property>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
               </packing>
             </child>
             <child>
@@ -917,8 +882,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="label" translatable="yes">Text encoding:</property>
               </object>
               <packing>
-                <property name="top_attach">9</property>
-                <property name="bottom_attach">10</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
               </packing>
             </child>
             <child>
@@ -942,8 +907,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">9</property>
-                <property name="bottom_attach">10</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
               </packing>
             </child>
             <child>
@@ -959,8 +924,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">10</property>
-                <property name="bottom_attach">11</property>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
               </packing>
             </child>
             <child>
@@ -974,8 +939,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">11</property>
-                <property name="bottom_attach">12</property>
+                <property name="top_attach">10</property>
+                <property name="bottom_attach">11</property>
               </packing>
             </child>
             <child>
@@ -989,8 +954,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">12</property>
-                <property name="bottom_attach">13</property>
+                <property name="top_attach">11</property>
+                <property name="bottom_attach">12</property>
               </packing>
             </child>
             <child>
@@ -1004,8 +969,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">13</property>
-                <property name="bottom_attach">14</property>
+                <property name="top_attach">12</property>
+                <property name="bottom_attach">13</property>
               </packing>
             </child>
             <child>
@@ -1170,8 +1135,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">14</property>
-                <property name="bottom_attach">15</property>
+                <property name="top_attach">13</property>
+                <property name="bottom_attach">14</property>
               </packing>
             </child>
             <child>
@@ -1185,8 +1150,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">15</property>
-                <property name="bottom_attach">16</property>
+                <property name="top_attach">14</property>
+                <property name="bottom_attach">15</property>
               </packing>
             </child>
             <child>
@@ -1200,8 +1165,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">16</property>
-                <property name="bottom_attach">17</property>
+                <property name="top_attach">15</property>
+                <property name="bottom_attach">16</property>
               </packing>
             </child>
             <child>
@@ -1210,8 +1175,8 @@ found in /usr/share/common-licenses/GPL file.</property>
                 <property name="label" translatable="yes">Deinterlace Type:</property>
               </object>
               <packing>
-                <property name="top_attach">8</property>
-                <property name="bottom_attach">9</property>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
               </packing>
             </child>
             <child>
@@ -1233,8 +1198,8 @@ found in /usr/share/common-licenses/GPL file.</property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">8</property>
-                <property name="bottom_attach">9</property>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
               </packing>
             </child>
             <child>
