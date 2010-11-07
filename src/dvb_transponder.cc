@@ -68,7 +68,8 @@ bool Transponder::operator==(struct dvb_frontend_parameters p) const
 	return frontend_parameters.frequency == p.frequency && (
 		(frontend_type == FE_OFDM && frontend_parameters.u.ofdm.bandwidth == p.u.ofdm.bandwidth) ||
 		(frontend_type == FE_ATSC && frontend_parameters.u.vsb.modulation == p.u.vsb.modulation) ||
-		(frontend_type == FE_QAM && frontend_parameters.u.qam.modulation == p.u.qam.modulation)
+		(frontend_type == FE_QAM && frontend_parameters.u.qam.modulation == p.u.qam.modulation) ||
+	    frontend_type == FE_QPSK
 	);
 }
 
