@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-10-04 06:49+0000\n"
+"PO-Revision-Date: 2010-11-08 02:59+0000\n"
 "Last-Translator: Mantas Kriaučiūnas <mantas@akl.lt>\n"
 "Language-Team: Lithuanian <lt@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "(n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-10-05 05:09+0000\n"
+"X-Launchpad-Export-Date: 2010-11-08 05:25+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -417,7 +417,7 @@ msgstr "Importuoti iš channels.conf failo"
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
-msgstr ""
+msgstr "Palikti ankstesnius kanalo nustatymus"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
@@ -429,7 +429,7 @@ msgstr "Me TV - Automatinis įrašymas"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr ""
+msgstr "Me TV - TV kanalų konfliktas"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
@@ -489,7 +489,7 @@ msgstr "Vieną kartą"
 
 #: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
-msgstr ""
+msgstr "Pakeisti kanalo nustatymus į naujus"
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
@@ -521,7 +521,7 @@ msgstr "Nenaudoti dvitaškio įrašų failų pavadinimuose"
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr ""
+msgstr "Pavadinti naują kanalą kitu vardu"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
@@ -585,7 +585,7 @@ msgstr "Rodyti kanalo numerį"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
-msgstr ""
+msgstr "Rodyti laidos laiką EPG įvykių mygtukuose"
 
 #: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
@@ -1138,11 +1138,11 @@ msgstr "Me TV - Klaida"
 
 #: ../src/scan_dialog.cc:138
 msgid "Service Name"
-msgstr ""
+msgstr "Kanalo (paslaugos) pavadinimas"
 
 #: ../src/scan_dialog.cc:139
 msgid "Signal Strength"
-msgstr "Signalo laikas"
+msgstr "Signalo stiprumas"
 
 #: ../src/scan_dialog.cc:159
 msgid "Australia"
