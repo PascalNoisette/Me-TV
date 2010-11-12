@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-10-21 11:04+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2010-11-11 21:26+0000\n"
+"Last-Translator: Evgeniy Devyatkin <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-10-22 04:52+0000\n"
+"X-Launchpad-Export-Date: 2010-11-12 05:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -29,15 +29,15 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:2
 msgid "Display a channel number next to the channel name in the EPG."
-msgstr ""
+msgstr "Показать номер канала рядом с названием канала в EPG."
 
 #: ../me-tv.schemas.in.h:3
 msgid "Display the time span in the EPG buttons."
-msgstr ""
+msgstr "Показать промежуток времени на кнопках EPG"
 
 #: ../me-tv.schemas.in.h:4
 msgid "Displays the date/time header in the EPG"
-msgstr ""
+msgstr "Показать дату/время в заголовке EPG"
 
 #: ../me-tv.schemas.in.h:5
 msgid "EPG event titles to auto record"
@@ -47,6 +47,8 @@ msgstr ""
 msgid ""
 "Extra default time (in minutes) to append to the end of a scheduled recording"
 msgstr ""
+"Дополнительное время по умолчанию (в минутах) для добавления к концу "
+"запланированной записи"
 
 #: ../me-tv.schemas.in.h:7
 msgid ""
@@ -54,12 +56,17 @@ msgid ""
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr ""
+"Дополнительное время по умолчанию (в минутах) для добавления к концу "
+"запланированной записи. Это стандартное значение может быть переопределено "
+"при настройке запланированной записи."
 
 #: ../me-tv.schemas.in.h:8
 msgid ""
 "Extra default time (in minutes) to append to the start of a scheduled "
 "recording"
 msgstr ""
+"Дополнительное время по умолчанию (в минутах) для добавления к началу "
+"запланированной записи."
 
 #: ../me-tv.schemas.in.h:9
 msgid ""
@@ -67,18 +74,25 @@ msgid ""
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr ""
+"Дополнительное время по умолчанию (в минутах) для добавления к началу "
+"запланированной записи. Это стандартное значение может быть переопределено "
+"при настройке запланированной записи."
 
 #: ../me-tv.schemas.in.h:10
 msgid ""
 "If more than one stream is available in a different language then Me TV will "
 "use the preffered one."
 msgstr ""
+"Если доступно более чем одного потока на разных языках, то Me TV будет "
+"использовать предпочитаемый язык."
 
 #: ../me-tv.schemas.in.h:11
 msgid ""
 "If you want to reduce the vertical size of your EPG then use this setting in "
 "combination with show_epg_tooltips."
 msgstr ""
+"Если вы хотите уменьшить вертикальный размер EPG, то используйте эту "
+"настройку вместе с show_epg_tooltips."
 
 #: ../me-tv.schemas.in.h:12
 msgid ""
@@ -91,6 +105,8 @@ msgid ""
 "Me TV uses libvlc to render video, this setting tells libvlc which mechanism "
 "to use when drawing."
 msgstr ""
+"Me TV использует libvlc для рендеринга видео, этот параметр говорит libvlc "
+"какой механизм использовать при рисовании."
 
 #: ../me-tv.schemas.in.h:14
 msgid ""
@@ -309,7 +325,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
-msgstr ""
+msgstr "Частота Канала: "
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
@@ -406,7 +422,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
-msgstr ""
+msgstr "Импортировать channels.conf"
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
