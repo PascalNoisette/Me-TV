@@ -290,20 +290,6 @@
 		</schema>
 
 		<schema>
-			<key>/schemas/apps/me-tv/preferred_language</key>
-			<applyto>/apps/me-tv/preferred_language</applyto>
-			<owner>me-tv</owner>
-			<type>string</type>
-			<default></default>
-			<locale name="C">
-				<short>Preferred language to use when selecting streams.</short>
-				<long>
-					If more than one stream is available in a different language then Me TV will use the preffered one.
-				</long>
-			</locale>
-		</schema>
-
-		<schema>
 			<key>/schemas/apps/me-tv/remove_colon</key>
 			<applyto>/apps/me-tv/remove_colon</applyto>
 			<owner>me-tv</owner>
@@ -328,6 +314,35 @@
 				<short>Recent EPG event searches</short>
 				<long>
 					Recent EPG event searches
+				</long>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/me-tv/auto_record</key>
+			<applyto>/apps/me-tv/auto_record</applyto>
+			<owner>me-tv</owner>
+			<type>list</type>
+			<list_type>string</list_type>
+			<default>[]</default>
+			<locale name="C">
+				<short>EPG event titles to auto record</short>
+				<long>
+					Me TV will schedule programs that have titles that contain these words.
+				</long>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/me-tv/ignore_teletext</key>
+			<applyto>/apps/me-tv/ignore_teletext</applyto>
+			<owner>me-tv</owner>
+			<type>bool</type>
+			<default>true</default>
+			<locale name="C">
+				<short>Ignore TeleText streams when viewing and recording</short>
+				<long>
+					Some media players don't handle TeleText streams very gracefully so they are disabled by default.  They can be enabled with this setting.
 				</long>
 			</locale>
 		</schema>

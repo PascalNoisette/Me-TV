@@ -429,7 +429,11 @@ void Mpeg::Stream::parse_pms(const Buffer& buffer)
 						
 						descriptor_index += 5;
 					}
-					teletext_streams.push_back(stream);
+
+					if (!configuration_manager.get_boolean_value("ignore_teletext"))
+					{
+						teletext_streams.push_back(stream);
+					}
 				}
 				else if (find_descriptor (0x59, buffer.get_buffer() + offset + 5, descriptor_length, &desc, NULL))
 				{
