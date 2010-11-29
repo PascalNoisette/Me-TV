@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-07-25 17:40-0400\n"
+"POT-Creation-Date: 2010-09-29 20:05-0400\n"
 "PO-Revision-Date: 2010-08-24 05:37+0000\n"
 "Last-Translator: Michael Lamothe <Unknown>\n"
 "Language-Team: Malay <ms@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-08-25 04:15+0000\n"
+"X-Launchpad-Export-Date: 2010-11-29 05:10+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -1002,89 +1002,88 @@ msgstr ""
 msgid "Failed to open FIFO for reading '%1'"
 msgstr ""
 
-#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
+#: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "-"
 msgstr ""
 
-#: ../src/gtk_epg_widget.cc:282 ../src/gtk_epg_widget.cc:352
+#: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
 msgstr ""
 
 #: ../src/main.cc:29
-msgid "Me TV is a digital television viewer for the GNOME desktop"
+msgid "Me TV is a digital television viewer for GTK"
 msgstr ""
 
 #: ../src/main.cc:30
 msgid ""
 "Me TV was developed for the modern digital lounge room with a PC for a media "
 "centre that is capable of normal PC tasks (web surfing, word processing and "
-"watching TV). It is not designed to be a full-blown media centre such as "
-"MythTV but will integrate well with an existing GNOME desktop.\n"
+"watching TV).\n"
 msgstr ""
 
-#: ../src/main.cc:85
+#: ../src/main.cc:84
 msgid "Enable verbose messages"
 msgstr ""
 
-#: ../src/main.cc:90
+#: ../src/main.cc:89
 msgid "Start in safe mode"
 msgstr ""
 
-#: ../src/main.cc:95
+#: ../src/main.cc:94
 msgid "Start minimised in notification area"
 msgstr ""
 
-#: ../src/main.cc:99
+#: ../src/main.cc:98
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
 msgstr ""
 
-#: ../src/main.cc:103
+#: ../src/main.cc:102
 msgid "Stops the rendering of the EPG event buttons on the UI."
 msgstr ""
 
-#: ../src/main.cc:107
+#: ../src/main.cc:106
 msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
 
-#: ../src/main.cc:111
+#: ../src/main.cc:110
 msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 msgstr ""
 
-#: ../src/main.cc:115
+#: ../src/main.cc:114
 msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 5)."
 msgstr ""
 
-#: ../src/main.cc:117
+#: ../src/main.cc:116
 msgid "Show Me TV help options"
 msgstr ""
 
-#: ../src/main.cc:162
+#: ../src/main.cc:161
 msgid "An unhandled error occurred"
 msgstr ""
 
-#: ../src/main_window.cc:196
+#: ../src/main_window.cc:197
 msgid "Please stop all recordings before editing channels"
 msgstr ""
 
-#: ../src/main_window.cc:207
+#: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
 msgstr ""
 
-#: ../src/main_window.cc:555
+#: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
 msgstr ""
 
-#: ../src/main_window.cc:631
+#: ../src/main_window.cc:634
 msgid "None"
 msgstr ""
 
-#: ../src/main_window.cc:945
+#: ../src/main_window.cc:948
 msgid ""
 "An error occurred while trying to communicate with the GNOME screensaver. To "
 "stop this message from displaying you can use the --no-screensaver-inhibit "
@@ -1230,26 +1229,26 @@ msgstr ""
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:250
+#: ../src/scheduled_recording_manager.cc:257
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:270
+#: ../src/scheduled_recording_manager.cc:277
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:291
+#: ../src/scheduled_recording_manager.cc:298
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:453
+#: ../src/scheduled_recording_manager.cc:464
 msgid "Scheduled recording '%1' not found"
 msgstr ""
 
