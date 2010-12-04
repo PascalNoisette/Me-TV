@@ -1,4 +1,4 @@
-# Russian translation for me-tv
+# Norwegian Bokmal translation for me-tv
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the me-tv package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,14 +8,13 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-12-03 16:24+0000\n"
-"Last-Translator: Evgeniy Devyatkin <Unknown>\n"
-"Language-Team: Russian <ru@li.org>\n"
+"PO-Revision-Date: 2010-12-03 22:50+0000\n"
+"Last-Translator: Martin Dahl Moe <Unknown>\n"
+"Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Launchpad-Export-Date: 2010-12-04 05:30+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
@@ -24,20 +23,18 @@ msgid ""
 "By default, the EPG header is visible but disabling it can minimise screen "
 "real estate by reducing the vertical EPG size."
 msgstr ""
-"По умолчанию заголовок EPG видим, но его отключение может улучшить "
-"использование площади экрана уменьшением вертикального размера EPG."
 
 #: ../me-tv.schemas.in.h:2
 msgid "Display a channel number next to the channel name in the EPG."
-msgstr "Показать номер канала рядом с названием канала в EPG."
+msgstr "Vise et kanalnummer ved siden av kanalnavnet i EPG."
 
 #: ../me-tv.schemas.in.h:3
 msgid "Display the time span in the EPG buttons."
-msgstr "Показать промежуток времени на кнопках EPG"
+msgstr "Vis tidsrom i EPG-knappene."
 
 #: ../me-tv.schemas.in.h:4
 msgid "Displays the date/time header in the EPG"
-msgstr "Показать дату/время в заголовке EPG"
+msgstr ""
 
 #: ../me-tv.schemas.in.h:5
 msgid "EPG event titles to auto record"
@@ -47,8 +44,8 @@ msgstr ""
 msgid ""
 "Extra default time (in minutes) to append to the end of a scheduled recording"
 msgstr ""
-"Дополнительное время по умолчанию (в минутах) для добавления к концу "
-"запланированной записи"
+"Ekstra standard tid (i minutter) for å legge til slutten av et planlagt "
+"opptak"
 
 #: ../me-tv.schemas.in.h:7
 msgid ""
@@ -56,17 +53,14 @@ msgid ""
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr ""
-"Дополнительное время по умолчанию (в минутах) для добавления к концу "
-"запланированной записи. Это стандартное значение может быть переопределено "
-"при настройке запланированной записи."
 
 #: ../me-tv.schemas.in.h:8
 msgid ""
 "Extra default time (in minutes) to append to the start of a scheduled "
 "recording"
 msgstr ""
-"Дополнительное время по умолчанию (в минутах) для добавления к началу "
-"запланированной записи."
+"Ekstra standard tid (i minutter) for å legge til starten på et planlagt "
+"opptak"
 
 #: ../me-tv.schemas.in.h:9
 msgid ""
@@ -74,25 +68,18 @@ msgid ""
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr ""
-"Дополнительное время по умолчанию (в минутах) для добавления к началу "
-"запланированной записи. Это стандартное значение может быть переопределено "
-"при настройке запланированной записи."
 
 #: ../me-tv.schemas.in.h:10
 msgid ""
 "If more than one stream is available in a different language then Me TV will "
 "use the preffered one."
 msgstr ""
-"Если доступно более чем одного потока на разных языках, то Me TV будет "
-"использовать предпочитаемый язык."
 
 #: ../me-tv.schemas.in.h:11
 msgid ""
 "If you want to reduce the vertical size of your EPG then use this setting in "
 "combination with show_epg_tooltips."
 msgstr ""
-"Если вы хотите уменьшить вертикальный размер EPG, то используйте эту "
-"настройку вместе с show_epg_tooltips."
 
 #: ../me-tv.schemas.in.h:12
 msgid ""
@@ -105,8 +92,6 @@ msgid ""
 "Me TV uses libvlc to render video, this setting tells libvlc which mechanism "
 "to use when drawing."
 msgstr ""
-"Me TV использует libvlc для рендеринга видео, этот параметр говорит libvlc "
-"какой механизм использовать при рисовании."
 
 #: ../me-tv.schemas.in.h:14
 msgid ""
@@ -185,7 +170,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:30
 msgid "The last channel tuned to."
-msgstr ""
+msgstr "Den siste kanalen innstilt til."
 
 #: ../me-tv.schemas.in.h:31
 msgid ""
@@ -261,31 +246,31 @@ msgstr ""
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
-msgstr ""
+msgstr "Me TV"
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
-msgstr ""
+msgstr " timer"
 
 #: ../src/me-tv.ui.h:2
 msgid " minutes"
-msgstr ""
+msgstr " minutter"
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
-msgstr ""
+msgstr "00:00"
 
 #: ../src/me-tv.ui.h:4
 msgid ":"
-msgstr ""
+msgstr ":"
 
 #: ../src/me-tv.ui.h:5
 msgid "<b>Device:</b>"
-msgstr ""
+msgstr "<b>Enhet:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
-msgstr ""
+msgstr "En kanal som heter 'xxx' eksisterer allerede."
 
 #: ../src/me-tv.ui.h:7
 msgid ""
@@ -297,11 +282,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
-msgstr ""
+msgstr "Avansert"
 
 #: ../src/me-tv.ui.h:9
 msgid "After:"
-msgstr ""
+msgstr "Etter:"
 
 #: ../src/me-tv.ui.h:10
 msgid ""
@@ -313,7 +298,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
-msgstr ""
+msgstr "Lyddriver:"
 
 #: ../src/me-tv.ui.h:12
 msgid "Auto scan"
@@ -325,19 +310,19 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
-msgstr "Частота Канала: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
-msgstr "Название Канала: "
+msgstr "Kanal Navn : "
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel:"
-msgstr ""
+msgstr "Kanal:"
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
-msgstr "Закрыть Me TV"
+msgstr ""
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
@@ -349,7 +334,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
-msgstr ""
+msgstr "Beskrivelse:"
 
 #: ../src/me-tv.ui.h:21
 msgid "Device Text"
@@ -357,7 +342,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:22
 msgid "Do Nothing"
-msgstr ""
+msgstr "Ikke gjør noenting"
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
@@ -365,11 +350,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:24
 msgid "Duration:"
-msgstr ""
+msgstr "Varighet:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
-msgstr ""
+msgstr "EPG arrangements informasjon"
 
 #: ../src/me-tv.ui.h:26
 msgid ""
@@ -387,15 +372,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:29
 msgid "Every day"
-msgstr ""
+msgstr "Hver dag"
 
 #: ../src/me-tv.ui.h:30
 msgid "Every week"
-msgstr ""
+msgstr "Hver uke"
 
 #: ../src/me-tv.ui.h:31
 msgid "Every weekday"
-msgstr ""
+msgstr "Hver ukedag"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:33
@@ -422,23 +407,23 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
-msgstr "Импортировать channels.conf"
+msgstr ""
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
-msgstr "Оставить существующий канал"
+msgstr ""
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
-msgstr ""
+msgstr "Me TV - Om"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
-msgstr "Me TV - Авто Запись"
+msgstr ""
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr ""
+msgstr "Me TV - Kanal konflikt"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
@@ -450,7 +435,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
-msgstr ""
+msgstr "ME TV - Rediger Kanal"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - It's TV for me computer"
@@ -458,15 +443,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Main Window"
-msgstr ""
+msgstr "ME TV - Hoved Vindu"
 
 #: ../src/me-tv.ui.h:56
 msgid "Me TV - Preferences Window"
-msgstr ""
+msgstr "Me TV - Innstillings vindu"
 
 #: ../src/me-tv.ui.h:57
 msgid "Me TV - Program Details"
-msgstr ""
+msgstr "Me TV - Program Detaljer"
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scan Wizard"
@@ -478,39 +463,39 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:60
 msgid "Me TV - Scheduled Recordings"
-msgstr ""
+msgstr "Me TV - Tidsbestemte opptak"
 
 #: ../src/me-tv.ui.h:61
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
-msgstr ""
+msgstr "Me TV er et Digital TV (DVB) visningsprogram for GNOME"
 
 #: ../src/me-tv.ui.h:62
 msgid "Me TV project website"
-msgstr ""
+msgstr "Me TV prosjekt webside"
 
 #: ../src/me-tv.ui.h:63
 msgid "Now"
-msgstr ""
+msgstr "Nå"
 
 #: ../src/me-tv.ui.h:64
 msgid "Once"
-msgstr ""
+msgstr "En gang"
 
 #: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
-msgstr "Переписать существующий канал"
+msgstr ""
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
-msgstr ""
+msgstr "Side:"
 
 #: ../src/me-tv.ui.h:67
 msgid "Preferred language:"
-msgstr ""
+msgstr "Foretrukket språk:"
 
 #: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
-msgstr ""
+msgstr "Ta opp ytteligere etter: "
 
 #: ../src/me-tv.ui.h:69
 msgid "Record extra before: "
@@ -518,11 +503,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
-msgstr ""
+msgstr "Opptaks katalogen: "
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
-msgstr ""
+msgstr "Repeterende:"
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
@@ -530,19 +515,19 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr "Задать новому каналу уникальное имя"
+msgstr "Gi den nye kanalen et unikt navn"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
-msgstr ""
+msgstr "Gjenta denne handlingen for alle kanal konflikter"
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
-msgstr ""
+msgstr "Fremdrift i søk"
 
 #: ../src/me-tv.ui.h:76
 msgid "Scan using an initial scan file"
-msgstr "Сканировать, используя файл"
+msgstr ""
 
 #: ../src/me-tv.ui.h:77
 msgid "Scanning/Importing"
@@ -554,27 +539,27 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:79
 msgid "Search:"
-msgstr ""
+msgstr "Søk:"
 
 #: ../src/me-tv.ui.h:80
 msgid "See https://launchpad.net/me-tv"
-msgstr ""
+msgstr "Se https://launchpad.net/me-tv"
 
 #: ../src/me-tv.ui.h:81
 msgid "Select A Recording Directory"
-msgstr ""
+msgstr "Velg en opptaksmappe"
 
 #: ../src/me-tv.ui.h:82
 msgid "Select Scan File"
-msgstr ""
+msgstr "Velg en Scan Fil"
 
 #: ../src/me-tv.ui.h:83
 msgid "Select a channels.conf file"
-msgstr ""
+msgstr "Velg en channels.conf fil"
 
 #: ../src/me-tv.ui.h:84
 msgid "Select a file"
-msgstr ""
+msgstr "Velg en fil"
 
 #: ../src/me-tv.ui.h:85
 msgid "Set \"Always on Top\" at startup"
@@ -586,11 +571,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:87
 msgid "Show a status icon in the notification area"
-msgstr ""
+msgstr "Vis ett status ikon i systemstatusfeltet"
 
 #: ../src/me-tv.ui.h:88
 msgid "Show channel number"
-msgstr ""
+msgstr "Vis kanal nummer"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
@@ -602,19 +587,19 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
-msgstr ""
+msgstr "Slå av"
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
-msgstr ""
+msgstr "Start dato:"
 
 #: ../src/me-tv.ui.h:93
 msgid "Start Time:"
-msgstr ""
+msgstr "Start tid:"
 
 #: ../src/me-tv.ui.h:94
 msgid "Text encoding:"
-msgstr ""
+msgstr "Tekstkoding:"
 
 #: ../src/me-tv.ui.h:95
 msgid ""
@@ -628,15 +613,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:97
 msgid "Video driver:"
-msgstr ""
+msgstr "Videodriver:"
 
 #: ../src/me-tv.ui.h:98
 msgid "View Schedule"
-msgstr ""
+msgstr "Vis Planlegging"
 
 #: ../src/me-tv.ui.h:99
 msgid "Watch Now"
-msgstr ""
+msgstr "Se Nå"
 
 #: ../src/me-tv.ui.h:100
 msgid ""
@@ -659,7 +644,7 @@ msgstr ""
 
 #: ../src/application.cc:43
 msgid "Application has already been initialised"
-msgstr ""
+msgstr "Programmet har allerede blitt initialisert"
 
 #: ../src/application.cc:58
 msgid "The SQLite version is not thread-safe"
@@ -667,27 +652,27 @@ msgstr ""
 
 #: ../src/application.cc:112
 msgid "_File"
-msgstr ""
+msgstr "_Fil"
 
 #: ../src/application.cc:113
 msgid "_View"
-msgstr ""
+msgstr "_Vis"
 
 #: ../src/application.cc:114
 msgid "_Video"
-msgstr ""
+msgstr "_Video"
 
 #: ../src/application.cc:115
 msgid "_Audio"
-msgstr ""
+msgstr "_Lyd"
 
 #: ../src/application.cc:116
 msgid "_Help"
-msgstr ""
+msgstr "_Hjelp"
 
 #: ../src/application.cc:118
 msgid "Subtitles"
-msgstr ""
+msgstr "Undertekst"
 
 #: ../src/application.cc:119
 msgid "_Streams"
@@ -695,7 +680,7 @@ msgstr ""
 
 #: ../src/application.cc:120
 msgid "_Channels"
-msgstr ""
+msgstr "_Kanaler"
 
 #: ../src/application.cc:123
 msgid "_Both"
@@ -703,11 +688,11 @@ msgstr ""
 
 #: ../src/application.cc:124
 msgid "_Left"
-msgstr ""
+msgstr "_Venstre"
 
 #: ../src/application.cc:125
 msgid "_Right"
-msgstr ""
+msgstr "_Høyre"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
@@ -723,7 +708,7 @@ msgstr ""
 
 #: ../src/application.cc:437
 msgid "Application has not been initialised"
-msgstr ""
+msgstr "Programmet har ikke blitt initialisert"
 
 #: ../src/application.cc:494
 msgid "DBus connection not available"
@@ -739,7 +724,7 @@ msgstr ""
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
-msgstr ""
+msgstr "Tittel"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
@@ -766,7 +751,7 @@ msgstr[1] ""
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
-msgstr ""
+msgstr "Kanalnavn"
 
 #: ../src/channels_dialog.cc:57
 msgid "Frequency (Hz)"
@@ -806,7 +791,7 @@ msgstr ""
 
 #: ../src/data.cc:176
 msgid "Failed to connect to Me TV database '%1'"
-msgstr ""
+msgstr "Kunne ikke koble til Me TV databasen '% 1'"
 
 #: ../src/data.cc:246
 msgid "Only integers can be primary keys"
@@ -826,11 +811,11 @@ msgstr ""
 
 #: ../src/dvb_demuxer.cc:68
 msgid "Failed to set PES filter"
-msgstr ""
+msgstr "Kunne ikke laste PES-filter"
 
 #: ../src/dvb_demuxer.cc:87
 msgid "Failed to set section filter for demuxer"
-msgstr ""
+msgstr "Kunne ikke sette seksjons-filter for de-multiplekser"
 
 #: ../src/dvb_demuxer.cc:95
 msgid "Failed to set demuxer buffer size"
@@ -842,7 +827,7 @@ msgstr ""
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
-msgstr ""
+msgstr "Lesing av data fra demuxer feilet"
 
 #: ../src/dvb_demuxer.cc:122
 msgid "Failed to read header"
@@ -850,15 +835,15 @@ msgstr ""
 
 #: ../src/dvb_demuxer.cc:133
 msgid "Failed to read section"
-msgstr ""
+msgstr "Lesing av seksjonen feilet"
 
 #: ../src/dvb_demuxer.cc:138
 msgid "CRC32 check failed"
-msgstr ""
+msgstr "CRC32-sjekk feilet"
 
 #: ../src/dvb_demuxer.cc:146
 msgid "Failed to stop demuxer"
-msgstr ""
+msgstr "Stopping av demuxer feilet."
 
 #: ../src/dvb_demuxer.cc:161
 msgid "Failed to poll"
@@ -866,11 +851,11 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:51
 msgid "Failed to open tuner"
-msgstr ""
+msgstr "Åpning av tuner feilet"
 
 #: ../src/dvb_frontend.cc:56
 msgid "Failed to get tuner info"
-msgstr ""
+msgstr "Klarte ikke å hente info fra tuner"
 
 #: ../src/dvb_frontend.cc:75
 #, c-format
@@ -879,15 +864,15 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:111
 msgid "Failed to tune device"
-msgstr ""
+msgstr "Tuning av enhet feilet"
 
 #: ../src/dvb_frontend.cc:114
 msgid "Waiting for signal lock ..."
-msgstr ""
+msgstr "Venter på å låse signal ..."
 
 #: ../src/dvb_frontend.cc:116
 msgid "Got signal lock"
-msgstr ""
+msgstr "Fikk låst signal"
 
 #: ../src/dvb_frontend.cc:132
 msgid "Failed to set tone off"
@@ -947,27 +932,27 @@ msgstr ""
 
 #: ../src/epg_event.cc:79
 msgid "Unknown title"
-msgstr ""
+msgstr "Ukjent tittel"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Ukjent undertekst"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
-msgstr ""
+msgstr "Ukjent beskrivelse"
 
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 time"
+msgstr[1] "%1 timer"
 
 #: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 minutt"
+msgstr[1] "%1 minutter"
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
@@ -976,17 +961,17 @@ msgstr " "
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
-msgstr ""
+msgstr "Kanal"
 
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr ""
+msgstr "Start-tid"
 
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr ""
+msgstr "Varighet"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
@@ -994,7 +979,7 @@ msgstr ""
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
-msgstr ""
+msgstr "Ingen resultater"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
@@ -1011,7 +996,7 @@ msgstr ""
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
-msgstr ""
+msgstr "Kunne ikke få feilmelding"
 
 #: ../src/frontend_thread.cc:243
 msgid "Failed to create FIFO '%1'"
@@ -1023,15 +1008,15 @@ msgstr ""
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
-msgstr ""
+msgstr "Ukjent program"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for GTK"
-msgstr ""
+msgstr "Me TV er en digital Tv-seer for GTK"
 
 #: ../src/main.cc:30
 msgid ""
@@ -1046,11 +1031,11 @@ msgstr ""
 
 #: ../src/main.cc:89
 msgid "Start in safe mode"
-msgstr ""
+msgstr "Start i sikkermodus"
 
 #: ../src/main.cc:94
 msgid "Start minimised in notification area"
-msgstr ""
+msgstr "Start minimert i systemstatusfeltet"
 
 #: ../src/main.cc:98
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
@@ -1080,19 +1065,19 @@ msgstr ""
 
 #: ../src/main.cc:116
 msgid "Show Me TV help options"
-msgstr ""
+msgstr "Show Me TV hjelp alternativer"
 
 #: ../src/main.cc:161
 msgid "An unhandled error occurred"
-msgstr ""
+msgstr "En ubehandlet feil oppstod"
 
 #: ../src/main_window.cc:197
 msgid "Please stop all recordings before editing channels"
-msgstr ""
+msgstr "Vennligst stopp alle opptakene før du redigerer kanaler"
 
 #: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
-msgstr ""
+msgstr "Kan ikke oppdatere kanaler under opptak"
 
 #: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
@@ -1100,7 +1085,7 @@ msgstr ""
 
 #: ../src/main_window.cc:634
 msgid "None"
-msgstr ""
+msgstr "Ingen"
 
 #: ../src/main_window.cc:948
 msgid ""
@@ -1135,75 +1120,75 @@ msgstr ""
 
 #: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
 msgid "Unknown language"
-msgstr ""
+msgstr "Ukjent Språk"
 
 #: ../src/scan_dialog.cc:32
 msgid "Me TV - Error"
-msgstr ""
+msgstr "ME TV - Feil"
 
 #: ../src/scan_dialog.cc:138
 msgid "Service Name"
-msgstr ""
+msgstr "Tjenestenavn"
 
 #: ../src/scan_dialog.cc:139
 msgid "Signal Strength"
-msgstr ""
+msgstr "Signalstyrke"
 
 #: ../src/scan_dialog.cc:159
 msgid "Australia"
-msgstr ""
+msgstr "Australia"
 
 #: ../src/scan_dialog.cc:160
 msgid "Canada"
-msgstr ""
+msgstr "Kanada"
 
 #: ../src/scan_dialog.cc:161
 msgid "Czech Republic"
-msgstr ""
+msgstr "Tsjekkia"
 
 #: ../src/scan_dialog.cc:162
 msgid "Finland"
-msgstr ""
+msgstr "Finland"
 
 #: ../src/scan_dialog.cc:163
 msgid "France"
-msgstr ""
+msgstr "Frankrike"
 
 #: ../src/scan_dialog.cc:164
 msgid "Germany"
-msgstr ""
+msgstr "Tyskland"
 
 #: ../src/scan_dialog.cc:165
 msgid "Italy"
-msgstr ""
+msgstr "Italia"
 
 #: ../src/scan_dialog.cc:166
 msgid "Lithuania"
-msgstr ""
+msgstr "Litauen"
 
 #: ../src/scan_dialog.cc:167
 msgid "New Zealand"
-msgstr ""
+msgstr "New Zealand"
 
 #: ../src/scan_dialog.cc:168
 msgid "Spain"
-msgstr ""
+msgstr "Spania"
 
 #: ../src/scan_dialog.cc:169
 msgid "Slovenia"
-msgstr ""
+msgstr "Slovenia"
 
 #: ../src/scan_dialog.cc:170
 msgid "United Kingdom"
-msgstr ""
+msgstr "Storbritannia"
 
 #: ../src/scan_dialog.cc:171
 msgid "United States"
-msgstr ""
+msgstr "USA"
 
 #: ../src/scan_dialog.cc:299
 msgid "Importing channels"
-msgstr ""
+msgstr "Importerer kanaler"
 
 #: ../src/scan_dialog.cc:325 ../src/scan_dialog.cc:347
 #: ../src/scan_dialog.cc:365 ../src/scan_dialog.cc:384
@@ -1226,7 +1211,7 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:551
 msgid "Starting scanner"
-msgstr ""
+msgstr "Starter scannet"
 
 #: ../src/scan_dialog.cc:630
 msgid "%1/%2 (%3 channels)"
@@ -1234,7 +1219,7 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
-msgstr ""
+msgstr "Scan Ferdig"
 
 #: ../src/scan_dialog.cc:715
 msgid "No auto scan range was specified"
@@ -1273,15 +1258,15 @@ msgstr ""
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
-msgstr ""
+msgstr "Beskrivelse"
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Record"
-msgstr ""
+msgstr "Opptak"
 
 #: ../src/scheduled_recordings_dialog.cc:55
 msgid "After"
-msgstr ""
+msgstr "Etter"
 
 #: ../src/scheduled_recordings_dialog.cc:56
 msgid "Device"
@@ -1293,7 +1278,7 @@ msgstr ""
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
-msgstr ""
+msgstr "Me TV er idle"
 
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
@@ -1313,4 +1298,4 @@ msgstr ""
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
-msgstr " поток уже запущен"
+msgstr ""
