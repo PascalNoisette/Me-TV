@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-10-01 11:51+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2010-12-04 23:16+0000\n"
+"Last-Translator: Miguel Valdiri Badillo <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-11-29 05:10+0000\n"
+"X-Launchpad-Export-Date: 2010-12-05 05:05+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -23,10 +23,8 @@ msgid ""
 "By default, the EPG header is visible but disabling it can minimise screen "
 "real estate by reducing the vertical EPG size."
 msgstr ""
-"De forma predeterminada, el encabezado de EPG es visible, pero su "
-"desactivación \r\n"
-"puede reducir al mínimo espacio de la pantalla mediante la reducción del "
-"tamaño vertical EPG."
+"Por defecto, la EPG cabecera es visible pero desactivando\r\n"
+"puede minimizar la pantalla reduciendo el valor vertical del EPG"
 
 #: ../me-tv.schemas.in.h:2
 msgid "Display a channel number next to the channel name in the EPG."
@@ -42,13 +40,13 @@ msgstr "Mostrar la fecha/hora en el enecabezado del EPG"
 
 #: ../me-tv.schemas.in.h:5
 msgid "EPG event titles to auto record"
-msgstr "Titulos del evento EPG para grabaciòn automatica"
+msgstr "Títulos del evento EPG para grabación automática"
 
 #: ../me-tv.schemas.in.h:6
 msgid ""
 "Extra default time (in minutes) to append to the end of a scheduled recording"
 msgstr ""
-"Predeterminado de tiempo adicional (en minutos) para añadir al final de una "
+"Tiempo adicional pre-establecido (en minutos) para añadir al final de una "
 "grabación programada"
 
 #: ../me-tv.schemas.in.h:7
@@ -57,16 +55,16 @@ msgid ""
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr ""
-"Predeterminado de tiempo adicional (en minutos) para añadir al final de una "
-"grabación programada. Este valor puede ser anulado cuando se establezca una "
-"grabación programada."
+"Tiempo adicional predefinido (en minutos) para añadir al final de una "
+"grabación programada. El valor se anula cuando se establezca una grabación "
+"programada."
 
 #: ../me-tv.schemas.in.h:8
 msgid ""
 "Extra default time (in minutes) to append to the start of a scheduled "
 "recording"
 msgstr ""
-"Predeterminado de tiempo adicional (en minutos) para anexar al inicio de una "
+"Tiempo adicional predefinido (en minutos) para añadir al inicio de una "
 "grabación programada"
 
 #: ../me-tv.schemas.in.h:9
@@ -75,25 +73,25 @@ msgid ""
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr ""
-"Predeterminado de tiempo adicional (en minutos) para anexar al comienzo de "
-"una grabación programada. Este valor puede ser anulado cuando se establezca "
-"una grabación programada."
+"Tiempo adicional predefinido (en minutos) para anexar al comienzo de una "
+"grabación programada. Este valor puede ser anulado cuando se establezca una "
+"grabación programada."
 
 #: ../me-tv.schemas.in.h:10
 msgid ""
 "If more than one stream is available in a different language then Me TV will "
 "use the preffered one."
 msgstr ""
-"Si más de un stream está disponible en un idioma diferente entonces Me TV "
-"utilizará el preferido."
+"Si más de una secuencia está disponible en un idioma diferente entonces Me "
+"TV utilizará el preferido."
 
 #: ../me-tv.schemas.in.h:11
 msgid ""
 "If you want to reduce the vertical size of your EPG then use this setting in "
 "combination with show_epg_tooltips."
 msgstr ""
-"Si quieres reducir el tamaño vertical de la EPG a continuación, utilice esta "
-"opción en combinación con show_epg_tooltips."
+"Si desea reducir el tamaño vertical de su EPG use está configuración en "
+"combinación con show_epg_tooltips."
 
 #: ../me-tv.schemas.in.h:12
 msgid ""
@@ -115,15 +113,14 @@ msgstr ""
 msgid ""
 "Me TV will schedule programs that have titles that contain these words."
 msgstr ""
-"Me TV programará programas que tienen titulos que contienen esas palabras."
 
 #: ../me-tv.schemas.in.h:15
 msgid ""
 "Most digital video is transmitted in an interlaced format which should be "
 "corrected before viewing. Options are \"none\", \"standard\", \"tvtime\""
 msgstr ""
-"La mayoría de vídeo digital se transmite en un formato entrelazado, que debe "
-"ser corregida antes de ver. Las opciones son \"none\", \"estándar\", "
+"El vídeo digital en su mayoría se transmite en formato entrelazado que debe "
+"ser corregido antes de poderse ver. Las opciones son \"none\", \"estándar\", "
 "\"tvtime\""
 
 #: ../me-tv.schemas.in.h:16
@@ -131,12 +128,12 @@ msgid ""
 "Most of the time the text encoding can be automatically determined but "
 "sometimes it needs a hint such as iso6937."
 msgstr ""
-"La mayoría del tiempo la codificación de texto puede ser automáticamente "
-"determinado, pero a veces se necesita una pista, como iso6937."
+"Se puede determinar el tiempo de codificación de texto automáticamente, pero "
+"a veces se requiere una pista como la iso6937."
 
 #: ../me-tv.schemas.in.h:17
 msgid "Preferred language to use when selecting streams."
-msgstr "Idioma para seleccionar canales."
+msgstr ""
 
 #: ../me-tv.schemas.in.h:18
 msgid "Recent EPG event searches"
@@ -156,23 +153,24 @@ msgstr "Configura el driver de audio a usar por libvlc."
 
 #: ../me-tv.schemas.in.h:22
 msgid "Sets the video driver for the player to use."
-msgstr "Configura el driver de video a usar por el reproductor."
+msgstr "Configura el controlador de video a usar por el reproductor."
 
 #: ../me-tv.schemas.in.h:23
 msgid "Show a tool tip when hovering over an EPG event."
-msgstr "Mostrar una herramienta cuando se cierne sobre un evento EPG."
+msgstr "Muestra una ayuda cuando se desliza sobre un evento EPG."
 
 #: ../me-tv.schemas.in.h:24
 msgid ""
 "Some file systems do not support a colon in a filename (e.g. FAT32). This "
 "option tells Me TV to remove it from the recording filename."
 msgstr ""
-"Algunos archivos no soportan en el nombre de archivo dos puntos (ej. FAT32). "
-"Está opción le indica a Me TV para removerlo del nombre de archivo grabado."
+"Algunos sistemas de archivos no soportan nombres de archivo con dos puntos "
+"(ej.FAT32). Con esta opción le indicará a Me TV que lo elimine del nombre "
+"del archivo de grabación."
 
 #: ../me-tv.schemas.in.h:25
 msgid "Tells Me TV to display an icon the notification area."
-msgstr "Decir a Me TV para mostrar un icono del área de notificación."
+msgstr "Le indica a Me TV que muestre un icono en el área de anuncios."
 
 #: ../me-tv.schemas.in.h:26
 msgid "The directory to use for recordings."
@@ -207,8 +205,8 @@ msgid ""
 "The number of channels to show before paging, this is deliberately set low "
 "to reduce preformance issues."
 msgstr ""
-"El número de canales para mostrar antes de paginación, esto es "
-"deliberadamente seteado para reducir los problemas de preformance."
+"Para evitar problemas de rendimiento, el número de canales a paginar se fija "
+"deliberadamente bajo antes de mostrarlos."
 
 #: ../me-tv.schemas.in.h:32
 msgid "The number of channels to show before paging."
@@ -225,15 +223,15 @@ msgstr "La codificación del texto en el que está la información DVB."
 #: ../me-tv.schemas.in.h:35
 msgid "The width of the window before Me TV was last closed"
 msgstr ""
-"La anchura de la ventana antes de que Me Tv se cerrara por ultima vez."
+"El tamaño de la ventana antes de que se cerrara por última vez Me Tv."
 
 #: ../me-tv.schemas.in.h:36
 msgid ""
 "The width of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
-"La anchura de la ventana antes de que Me Tv se cerrara por ultima vez. Me TV "
-"utiliza este valor para tratar de restaurar la ventana principal a su "
+"El tamaño de la ventana antes de que se cerrara por última vez Me Tv. Se "
+"utilizará este valor para tratar de restaurar la ventana principal a su "
 "geometría anterior."
 
 #: ../me-tv.schemas.in.h:37
@@ -269,13 +267,14 @@ msgid ""
 "This is used to store what channel the user was last watching so it can be "
 "returned when restarting."
 msgstr ""
-"Esto se utiliza para almacenar lo que el usuario a estado viendo por ultima "
-"vez por lo que puede ser devuelto al reiniciar."
+"Esto se utiliza para que el último canal visto por el usuario sea almacenado "
+"y ser visto nuevamente al reiniciar."
 
 #: ../me-tv.schemas.in.h:42
 msgid "This will show the timespan of an EPG event in a tooltip."
 msgstr ""
-"Esto mostrará el intervalo de tiempo de un evento de EPG en una descripción."
+"Esto mostrará el intervalo de tiempo de un evento  EPG en una ayuda "
+"desplegable."
 
 #: ../me-tv.schemas.in.h:43
 msgid ""
@@ -287,7 +286,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:44
 msgid "Whether the video should be deinterlaced."
-msgstr "Si el vídeo debe ser desentrelazado."
+msgstr "Ya sea que el video sea desentrelazado."
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
@@ -295,7 +294,7 @@ msgstr "Un visor de televisión digital (DVB) para GNOME"
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
-msgstr "Me TV"
+msgstr ""
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
@@ -319,7 +318,7 @@ msgstr "<b>Dispositivo:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
-msgstr "Un canal nombrado 'xxx' ya existe."
+msgstr "Ya existe un canal con el nombre 'xxx'"
 
 #: ../src/me-tv.ui.h:7
 msgid ""
@@ -328,10 +327,6 @@ msgid ""
 "application. The <i>scan</i> command line application is the most common way "
 "to generate a channels.conf file."
 msgstr ""
-"Un archivo channels.conf usa un formato de archivo común para guardar "
-"canales y puede ser leido por muchas aplicaciones. Si has usado otra "
-"aplicación DVB, podrías tener uno de ellos. La aplicación <i>scan</i> es la "
-"manera mas común de generar un archivo channels.conf"
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
@@ -348,11 +343,11 @@ msgid ""
 "from the LinuxTV dvb-apps package which is included in most Linux "
 "distributions.  Look for <i>dvb-apps</i> in your package management system."
 msgstr ""
-"Un archivo de sintonización inicial es usado para ayudar al sintonizador a "
-"encontrar servicios DVB enviando unos parámetros iniciales. Muchos archivos "
-"populares de sintonización inicial están disponibles en el paquete de "
-"LinuxTV dvb-apps, que es incluido en muchas distribuciones Linux. Busca "
-"<i>dvb-apps</i> en tu sistema de administración de paquetes."
+"Se utiliza un archivo de sintonización inicial para brindarle al "
+"sintonizador parámetros iniciales que le permitan buscar servicios DVB. En "
+"la mayoría de las distribuciones Linux, el paquete LinuxTV dvb-apps, "
+"contiene muchos archivos populares de sintonización inicial . Busque <i>dvb-"
+"apps</i> en el sistema de administración de paquetes."
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
@@ -360,7 +355,7 @@ msgstr "Controlador de audio:"
 
 #: ../src/me-tv.ui.h:12
 msgid "Auto scan"
-msgstr "Auto scan"
+msgstr "Auto barrido"
 
 #: ../src/me-tv.ui.h:13
 msgid "Cancel channel import"
@@ -384,11 +379,11 @@ msgstr "Cerrar Me TV"
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
-msgstr "Copyright &#xA9; Michael Lamothe"
+msgstr "Derechos de Autor &#xA9; Michael Lamothe"
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
-msgstr "Tipo de desentrelazador"
+msgstr ""
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
@@ -412,7 +407,7 @@ msgstr "Duración:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
-msgstr "Información EPG del evento"
+msgstr "Información del evento EPG"
 
 #: ../src/me-tv.ui.h:26
 msgid ""
@@ -432,7 +427,7 @@ msgstr "EPG span "
 
 #: ../src/me-tv.ui.h:29
 msgid "Every day"
-msgstr "Cada día"
+msgstr "Diariamente"
 
 #: ../src/me-tv.ui.h:30
 msgid "Every week"
@@ -487,7 +482,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
-msgstr "Importar un channels.conf"
+msgstr "Importar un archivo \"channels.conf\""
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
@@ -495,7 +490,7 @@ msgstr "Guardar el canal existente"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
-msgstr "Me TV - Acerca"
+msgstr "Acerca de Me TV"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
@@ -519,7 +514,7 @@ msgstr "Me TV - Editar Canal"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - It's TV for me computer"
-msgstr "Me TV - Televisión para mi ordenador"
+msgstr "Me TV - Televisión para mi computador"
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Main Window"
@@ -535,7 +530,7 @@ msgstr "Me TV - Detalles del programa"
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scan Wizard"
-msgstr "Me TV - Asistente de Escaneo"
+msgstr "Me TV - Asistente de Barrido"
 
 #: ../src/me-tv.ui.h:59
 msgid "Me TV - Scheduled Recording"
@@ -575,15 +570,15 @@ msgstr "Idioma preferente"
 
 #: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
-msgstr "Grabación extra después: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:69
 msgid "Record extra before: "
-msgstr "Grabación extra antes: "
+msgstr ""
 
 #: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
-msgstr "Directorio de grabación "
+msgstr "Directorio de grabación: "
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
@@ -595,7 +590,7 @@ msgstr "Eliminar dos puntos de los nombres de archivos de grabación"
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr "Renombrar el canal"
+msgstr "|"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
@@ -611,7 +606,7 @@ msgstr "Escanear usando un fichero de escaneo inicial"
 
 #: ../src/me-tv.ui.h:77
 msgid "Scanning/Importing"
-msgstr "Escanear/Importar"
+msgstr "Explorar/importar"
 
 #: ../src/me-tv.ui.h:78
 msgid "Search description"
@@ -663,8 +658,7 @@ msgstr "Mostrar hora en los botones de eventos de EPG"
 
 #: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
-msgstr ""
-"Mostrar información sobre herramientas para los botones de eventos EPG"
+msgstr "Mostrar la ayuda para botones de eventos EPG"
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
@@ -687,13 +681,13 @@ msgid ""
 "This option will only work if your DVB setup supports auto scanning.  "
 "Currently, this feature is only supported on DVB-T and ATSC devices."
 msgstr ""
-"Esta opción sólo funciona si la configuración de tu DVB soporta auto-"
-"escaneo. Actualmente, esta característica sólo está soportada en "
+"Esta opción sólo funciona si la configuración de su DVB soporta auto-"
+"exploración. Actualmente, esta característica sólo está disponible en "
 "dispositivos DVB-T y ATSC"
 
 #: ../src/me-tv.ui.h:96
 msgid "This program is scheduled for recording."
-msgstr "Este programa está planificado para grabar."
+msgstr ""
 
 #: ../src/me-tv.ui.h:97
 msgid "Video driver:"
@@ -705,7 +699,7 @@ msgstr "Ver Horario"
 
 #: ../src/me-tv.ui.h:99
 msgid "Watch Now"
-msgstr "Mirar ahora"
+msgstr "Ver ahora"
 
 #: ../src/me-tv.ui.h:100
 msgid ""
@@ -718,11 +712,11 @@ msgid ""
 "<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
 msgstr ""
 "Su base de datos de Me TV es demasiado vieja para utilizar esta versión de "
-"Me TV. ¿Desea borrar la base de datos de MeTV? De todos sus canales, eventos "
-"EPG y grabaciones programadas seran <b>suprimidas</ b>.\n"
+"Me TV. ¿Desea borrar la base de datos de MeTV? Los canales, eventos EPG y "
+"grabaciones programadas todos serán <b>eliminados</ b>.\n"
 "\n"
-"Si acaba de actualizar Me TV entonces esto es probablemente es lo que usted "
-"quiere hacer.\n"
+"Si acaba de actualizar Me TV entonces esto es lo que usted probablemente "
+"haría.\n"
 "\n"
 "<i> La base de datos de Me TV esta localizada en ~/.local/share/me-tv.db.</i>"
 
@@ -887,7 +881,7 @@ msgstr "Fallo al conectar a la base de datos de Me TV '%1'"
 
 #: ../src/data.cc:246
 msgid "Only integers can be primary keys"
-msgstr "Sólo los enteros pueden ser claves primarias"
+msgstr "Solamente números enteros pueden usarse como llaves primarias"
 
 #: ../src/data.cc:315
 msgid "Failed to create TableAdapter: Table has no columns"
@@ -915,7 +909,7 @@ msgstr "Error al establecer el tamaño del buffer de decodificación"
 
 #: ../src/dvb_demuxer.cc:103
 msgid "Read timeout"
-msgstr "Tiempo de espera de lectura"
+msgstr "Lectura agotada"
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
@@ -931,7 +925,7 @@ msgstr "Error al leer sección"
 
 #: ../src/dvb_demuxer.cc:138
 msgid "CRC32 check failed"
-msgstr "Testeo del CRC32 erroneo"
+msgstr "Error en comprobación de CRC32"
 
 #: ../src/dvb_demuxer.cc:146
 msgid "Failed to stop demuxer"
@@ -952,7 +946,7 @@ msgstr "Error al obtener información del sintonizador"
 #: ../src/dvb_frontend.cc:75
 #, c-format
 msgid "Frontend::tune_to(%d)"
-msgstr "Frontend::tune_to(%d)"
+msgstr "Interfaz de usuario::tune_to(%d)"
 
 #: ../src/dvb_frontend.cc:111
 msgid "Failed to tune device"
@@ -996,7 +990,7 @@ msgstr "Error al detectar la potencia de la señal"
 
 #: ../src/dvb_frontend.cc:205
 msgid "Failed to get signal to noise ratio"
-msgstr "Error al detectar la señal del grado del ruido"
+msgstr "Error al detectar la relación señal/ruido"
 
 #: ../src/dvb_si.cc:411
 msgid "Failed to convert channel name"
@@ -1020,7 +1014,7 @@ msgstr "Error al convertir a UTF-8: %1"
 
 #: ../src/engine.cc:46
 msgid "Window ID was 0"
-msgstr "Window ID es 0"
+msgstr "El identificador de ventana es 0"
 
 #: ../src/epg_event.cc:79
 msgid "Unknown title"
@@ -1178,7 +1172,7 @@ msgstr "Por favor, detenga todas las grabaciones antes de editar los canales"
 
 #: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
-msgstr "con es posible actualizar canales mientras se graba"
+msgstr "No es posible actualizar canales durante la grabación"
 
 #: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
@@ -1204,11 +1198,11 @@ msgstr "Fallo al obtener la hora"
 
 #: ../src/me-tv.cc:172
 msgid "Failed to find a value for '%1'"
-msgstr "No se encuentra un valor igual a '%1'"
+msgstr "Error al buscar un valor para '%1'"
 
 #: ../src/me-tv.cc:197
 msgid "Failed to find a text value for '%1'"
-msgstr "No se puede encontrar un valor de texto igual a '%1'"
+msgstr "No se puede encontrar un valor de texto para '%1'"
 
 #: ../src/me-tv-ui.cc:88 ../src/me-tv-ui.cc:103
 msgid "Failed to get active text value"
@@ -1216,11 +1210,11 @@ msgstr "No se pudo obtener el valor de texto activo"
 
 #: ../src/me-tv-ui.cc:225
 msgid "Failed to get active integer value"
-msgstr "Falló al obtener valor"
+msgstr "No se pudo obtener valor entero activo"
 
 #: ../src/mpeg_stream.cc:317
 msgid "Failed to find Program Map PID for service"
-msgstr "No se pudo encontrar el programa Mapa del PID para el servicio"
+msgstr "No se pudo encontrar el PID del Mapa del Programa para el servicio"
 
 #: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
 msgid "Unknown language"
@@ -1297,7 +1291,7 @@ msgstr "Importando canales"
 #: ../src/scan_dialog.cc:325 ../src/scan_dialog.cc:347
 #: ../src/scan_dialog.cc:365 ../src/scan_dialog.cc:384
 msgid "Invalid parameter count on line %1"
-msgstr "Recuento de parámetros no válido en línea %1"
+msgstr "Conteo de parámetros en línea inválido"
 
 #: ../src/scan_dialog.cc:398
 msgid ""
@@ -1310,7 +1304,7 @@ msgstr ""
 #: ../src/scan_dialog.cc:491
 msgid "Me TV cannot process a line in the initial tuning file"
 msgstr ""
-"Me Tv no puede procesar la linea con el archivo de configuración inicial"
+"Me Tv no pudo procesar una orden del archivo de configuración inicial"
 
 #: ../src/scan_dialog.cc:524
 msgid "No tuning file has been selected"
@@ -1318,7 +1312,7 @@ msgstr "No se ha seleccionado ningún archivo de sintonización"
 
 #: ../src/scan_dialog.cc:551
 msgid "Starting scanner"
-msgstr "Comenzando el escaneo"
+msgstr "Comenzando la exploración"
 
 #: ../src/scan_dialog.cc:630
 msgid "%1/%2 (%3 channels)"
@@ -1326,7 +1320,7 @@ msgstr "%1/%2 (%3 canales)"
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
-msgstr "Escaneo completo"
+msgstr "Exploración completa"
 
 #: ../src/scan_dialog.cc:715
 msgid "No auto scan range was specified"
@@ -1338,15 +1332,16 @@ msgstr "Rango de escaneo '%1' desconocido"
 
 #: ../src/scan_dialog.cc:824
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
-msgstr "El auto-escaneo sólo está soportado para dispositivos DVB-T y ATSC"
+msgstr ""
+"La auto-exploración sólo está disponible en dispositivos DVB-T y ATSC"
 
 #: ../src/scheduled_recording_manager.cc:257
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
 msgstr ""
-"No se pudo programar la grabación: No hay dispositivos disponibles en ese "
-"tiempo"
+"No se pudo programar la grabación: No hay dispositivos disponibles para ese "
+"momento"
 
 #: ../src/scheduled_recording_manager.cc:277
 msgid ""
