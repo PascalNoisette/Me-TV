@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-12-07 19:46+0000\n"
+"PO-Revision-Date: 2010-12-08 17:56+0000\n"
 "Last-Translator: stefina <trebelnik@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-12-08 05:06+0000\n"
+"X-Launchpad-Export-Date: 2010-12-09 05:18+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -421,7 +421,7 @@ msgstr "Svaki tjedan"
 
 #: ../src/me-tv.ui.h:31
 msgid "Every weekday"
-msgstr "Svaki radni dan"
+msgstr "Radnim danom"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:33
@@ -470,7 +470,7 @@ msgstr "Zadrži postojeći program"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
-msgstr "O Me TV"
+msgstr "O Me TV-u"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
@@ -478,7 +478,7 @@ msgstr "Me TV - Auto Snimanje"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr "Me TV - Program konflikt"
+msgstr "Me TV - Program greška"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
@@ -932,23 +932,23 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:114
 msgid "Waiting for signal lock ..."
-msgstr ""
+msgstr "Pričekajte da se signal zaključa..."
 
 #: ../src/dvb_frontend.cc:116
 msgid "Got signal lock"
-msgstr ""
+msgstr "Signal zaključan"
 
 #: ../src/dvb_frontend.cc:132
 msgid "Failed to set tone off"
-msgstr ""
+msgstr "Nesupjelo isključivanje tona"
 
 #: ../src/dvb_frontend.cc:137
 msgid "Failed to set voltage"
-msgstr ""
+msgstr "Neuspjelo podešavanje voltaže"
 
 #: ../src/dvb_frontend.cc:143
 msgid "Failed to send master command"
-msgstr ""
+msgstr "Neuspjelo slanje glavne naredbe"
 
 #: ../src/dvb_frontend.cc:149
 msgid "Failed to send burst"
@@ -956,23 +956,23 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:155
 msgid "Failed to set tone"
-msgstr ""
+msgstr "Neuspjelo podešavanje tona"
 
 #: ../src/dvb_frontend.cc:186
 msgid "Failed to lock to channel"
-msgstr ""
+msgstr "Neuspjelo zaključavanje programa"
 
 #: ../src/dvb_frontend.cc:195
 msgid "Failed to get signal strength"
-msgstr ""
+msgstr "Neuspjelo dobivanje jačine signala"
 
 #: ../src/dvb_frontend.cc:205
 msgid "Failed to get signal to noise ratio"
-msgstr ""
+msgstr "Neuspjelo dobivanje omjera signala i šuma"
 
 #: ../src/dvb_si.cc:411
 msgid "Failed to convert channel name"
-msgstr ""
+msgstr "Neuspjela promjena imena programa"
 
 #: ../src/dvb_si.cc:568
 msgid "ASSERT: offset > end_descriptor_offset"
@@ -984,103 +984,105 @@ msgstr ""
 
 #: ../src/dvb_si.cc:794
 msgid "No message"
-msgstr ""
+msgstr "Nema poruke"
 
 #: ../src/dvb_si.cc:801
 msgid "Failed to convert to UTF-8: %1"
-msgstr ""
+msgstr "Neuspjelo pretvaranja u UTF-8: %1"
 
 #: ../src/engine.cc:46
 msgid "Window ID was 0"
-msgstr ""
+msgstr "ID prozora je bio 0"
 
 #: ../src/epg_event.cc:79
 msgid "Unknown title"
-msgstr ""
+msgstr "Nepoznat naslov"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Nepoznat podnaslov"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
-msgstr ""
+msgstr "Nepoznat opis"
 
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 sat"
+msgstr[1] "%1 sata"
+msgstr[2] "%1 sati"
 
 #: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 minuta"
+msgstr[1] "%1 minute"
+msgstr[2] "%1 minuta"
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
-msgstr ""
+msgstr " "
 
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
-msgstr ""
+msgstr "Program"
 
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr ""
+msgstr "Početno Vrijeme"
 
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr ""
+msgstr "Trajanje"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
-msgstr ""
+msgstr "Nije određen tekst za pretraživanje"
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
-msgstr ""
+msgstr "Nema rezultata"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
-msgstr ""
+msgstr "Nema odabranih EPG događaja"
 
 #: ../src/epg_thread.cc:71
 msgid "No demuxers"
-msgstr ""
+msgstr "Nema demuxera"
 
 #: ../src/epg_thread.cc:210
 #, c-format
 msgid "Unknown source_id %u"
-msgstr ""
+msgstr "Nepoznat izvor_id %u"
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
-msgstr ""
+msgstr "Neuspjelo dobivanje poruke o pogrešci"
 
 #: ../src/frontend_thread.cc:243
 msgid "Failed to create FIFO '%1'"
-msgstr ""
+msgstr "Neuspjelo stvaranje FIFO '%1'"
 
 #: ../src/frontend_thread.cc:250
 msgid "Failed to open FIFO for reading '%1'"
-msgstr ""
+msgstr "Neuspjelo otvaranje FIFO za čitanje '%1'"
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
-msgstr ""
+msgstr "Nepoznat program"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for GTK"
-msgstr ""
+msgstr "Me TV je digitalni televizijski preglednik za GTK"
 
 #: ../src/main.cc:30
 msgid ""
@@ -1088,68 +1090,77 @@ msgid ""
 "centre that is capable of normal PC tasks (web surfing, word processing and "
 "watching TV).\n"
 msgstr ""
+"Me TV je razvijen za moderne digitalne dnevne boravke opremljene s media "
+"center PC-om koji je spodoban obavljati svakodnevne zadatke (surfanje "
+"internetom, obrada teksta i gledanje TV-a)\n"
 
 #: ../src/main.cc:84
 msgid "Enable verbose messages"
-msgstr ""
+msgstr "Omoguči verbalne poruke"
 
 #: ../src/main.cc:89
 msgid "Start in safe mode"
-msgstr ""
+msgstr "Pokreni u sigurnom modu"
 
 #: ../src/main.cc:94
 msgid "Start minimised in notification area"
-msgstr ""
+msgstr "Pokreni minimizirano u području obavijesti"
 
 #: ../src/main.cc:98
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
-msgstr ""
+msgstr "Onemogući EPG. Me TV će prestati sakupljati EPG događaje."
 
 #: ../src/main.cc:102
 msgid "Stops the rendering of the EPG event buttons on the UI."
-msgstr ""
+msgstr "Zaustavi prikazivanje EPG događaja čak i na gumbima UI-a."
 
 #: ../src/main.cc:106
 msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
+"Naredi Me TV-u da ne uključuje čuvar zaslona Inhibit/UnInhibit metodu za "
+"GNOME čuvar zaslona."
 
 #: ../src/main.cc:110
 msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 msgstr ""
+"Samo koristi za određane frontend uređaje (npr. --"
+"devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 
 #: ../src/main.cc:114
 msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 5)."
 msgstr ""
+"Koliko dugo je potrebno čekati (u sekundama)  prije isteka vremena dok "
+"čekate podatke iz demuxera (zadano 5)."
 
 #: ../src/main.cc:116
 msgid "Show Me TV help options"
-msgstr ""
+msgstr "Prikaži Me TV opcije za pomoć"
 
 #: ../src/main.cc:161
 msgid "An unhandled error occurred"
-msgstr ""
+msgstr "Pogreška u rukovanju"
 
 #: ../src/main_window.cc:197
 msgid "Please stop all recordings before editing channels"
-msgstr ""
+msgstr "Molim, zaustavite sva snimanja prije uređivanja programa"
 
 #: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
-msgstr ""
+msgstr "Nije moguće ažurirat kanal dok se snima"
 
 #: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
-msgstr ""
+msgstr "Nemoguće je pokrenuti engine. Engine je već pokrenut"
 
 #: ../src/main_window.cc:634
 msgid "None"
-msgstr ""
+msgstr "Nijedan"
 
 #: ../src/main_window.cc:948
 msgid ""
@@ -1157,157 +1168,164 @@ msgid ""
 "stop this message from displaying you can use the --no-screensaver-inhibit "
 "command line option.  The error message was '%1'"
 msgstr ""
+"Greška je nastala kod pokušaja komunikacije sa GNOME čuvarom zaslona. Da "
+"spriječite pojavljivanje ove poruke možete koristiti --no-screensaver-"
+"inhibit linijsku naredbu.Poruka o greški je '%1'"
 
 #: ../src/me-tv.cc:93
 msgid "Failed to get time"
-msgstr ""
+msgstr "Neuspjelo dobivanje vremena"
 
 #: ../src/me-tv.cc:172
 msgid "Failed to find a value for '%1'"
-msgstr ""
+msgstr "Neuspjeli pronalazak vrijednosti za '%1'"
 
 #: ../src/me-tv.cc:197
 msgid "Failed to find a text value for '%1'"
-msgstr ""
+msgstr "Neuspjeli pronalazak tekstualne vrijednosti za '%1'"
 
 #: ../src/me-tv-ui.cc:88 ../src/me-tv-ui.cc:103
 msgid "Failed to get active text value"
-msgstr ""
+msgstr "Neuspjelo dobivanje aktivne tekstualne vrijednosti"
 
 #: ../src/me-tv-ui.cc:225
 msgid "Failed to get active integer value"
-msgstr ""
+msgstr "Neuspjelo dobivanje aktivne cijelo brojne vrijednosti"
 
 #: ../src/mpeg_stream.cc:317
 msgid "Failed to find Program Map PID for service"
-msgstr ""
+msgstr "Neuspijeli pronalazak Program Map PID za servis"
 
 #: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
 msgid "Unknown language"
-msgstr ""
+msgstr "Nepoznat jezik"
 
 #: ../src/scan_dialog.cc:32
 msgid "Me TV - Error"
-msgstr ""
+msgstr "Me TV - Greška"
 
 #: ../src/scan_dialog.cc:138
 msgid "Service Name"
-msgstr ""
+msgstr "Ime Servisa"
 
 #: ../src/scan_dialog.cc:139
 msgid "Signal Strength"
-msgstr ""
+msgstr "Jačina Signala"
 
 #: ../src/scan_dialog.cc:159
 msgid "Australia"
-msgstr ""
+msgstr "Australija"
 
 #: ../src/scan_dialog.cc:160
 msgid "Canada"
-msgstr ""
+msgstr "Kanada"
 
 #: ../src/scan_dialog.cc:161
 msgid "Czech Republic"
-msgstr ""
+msgstr "Češka Republika"
 
 #: ../src/scan_dialog.cc:162
 msgid "Finland"
-msgstr ""
+msgstr "Finska"
 
 #: ../src/scan_dialog.cc:163
 msgid "France"
-msgstr ""
+msgstr "Francuska"
 
 #: ../src/scan_dialog.cc:164
 msgid "Germany"
-msgstr ""
+msgstr "Njemačka"
 
 #: ../src/scan_dialog.cc:165
 msgid "Italy"
-msgstr ""
+msgstr "Italija"
 
 #: ../src/scan_dialog.cc:166
 msgid "Lithuania"
-msgstr ""
+msgstr "Litva"
 
 #: ../src/scan_dialog.cc:167
 msgid "New Zealand"
-msgstr ""
+msgstr "Novi Zeland"
 
 #: ../src/scan_dialog.cc:168
 msgid "Spain"
-msgstr ""
+msgstr "Španjolska"
 
 #: ../src/scan_dialog.cc:169
 msgid "Slovenia"
-msgstr ""
+msgstr "Slovenija"
 
 #: ../src/scan_dialog.cc:170
 msgid "United Kingdom"
-msgstr ""
+msgstr "Ujedinjeno Kraljevstvo"
 
 #: ../src/scan_dialog.cc:171
 msgid "United States"
-msgstr ""
+msgstr "Sjedinjene Države"
 
 #: ../src/scan_dialog.cc:299
 msgid "Importing channels"
-msgstr ""
+msgstr "Uvoz programa"
 
 #: ../src/scan_dialog.cc:325 ../src/scan_dialog.cc:347
 #: ../src/scan_dialog.cc:365 ../src/scan_dialog.cc:384
 msgid "Invalid parameter count on line %1"
-msgstr ""
+msgstr "Nevažeći broj parametara na liniji %1"
 
 #: ../src/scan_dialog.cc:398
 msgid ""
 "Failed to import: importing a channels.conf is only supported with DVB-T, "
 "DVB-C, DVB-S and ATSC"
-msgstr ""
+msgstr "Nemoguć uvoz: uvoz Channels.conf"
 
 #: ../src/scan_dialog.cc:491
 msgid "Me TV cannot process a line in the initial tuning file"
-msgstr ""
+msgstr "Me TV ne može procesuirati liniju u početnoj tuning datoteci"
 
 #: ../src/scan_dialog.cc:524
 msgid "No tuning file has been selected"
-msgstr ""
+msgstr "Tunung datoteka nije odabrana"
 
 #: ../src/scan_dialog.cc:551
 msgid "Starting scanner"
-msgstr ""
+msgstr "Pokrećem skener"
 
 #: ../src/scan_dialog.cc:630
 msgid "%1/%2 (%3 channels)"
-msgstr ""
+msgstr "%1/%2 (%3 programi)"
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
-msgstr ""
+msgstr "Skeniranje završeno"
 
 #: ../src/scan_dialog.cc:715
 msgid "No auto scan range was specified"
-msgstr ""
+msgstr "Raspon auto skeniranja nije naveden"
 
 #: ../src/scan_dialog.cc:809
 msgid "Unknown scan range '%1'"
-msgstr ""
+msgstr "Nepoznat raspon skeniranja '%1'"
 
 #: ../src/scan_dialog.cc:824
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
-msgstr ""
+msgstr "Auto skeniranje je samo podržano na DVB-T i ATSC uređajima"
 
 #: ../src/scheduled_recording_manager.cc:257
 msgid ""
 "Failed to set scheduled recording: There are no devices available at that "
 "time"
 msgstr ""
+"Nemoguće postavljanje zadanog snimanja: Nema dostupnih uređaja u zadanom "
+"vremenu"
 
 #: ../src/scheduled_recording_manager.cc:277
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
 msgstr ""
+"Nemoguće je pohraniti zadano snimanje zato što se preklapa sa drugim zadanim "
+"snimanjem pod imenom '%1'."
 
 #: ../src/scheduled_recording_manager.cc:298
 msgid ""
@@ -1315,50 +1333,53 @@ msgid ""
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
+"Nemoguće je postaviti zadano snimanje zato što je već zadano snimanje "
+"postavljeno pod imenom '%1' koje je zadano u isto vrijeme i na istom "
+"programu."
 
 #: ../src/scheduled_recording_manager.cc:464
 msgid "Scheduled recording '%1' not found"
-msgstr ""
+msgstr "Zadano snimanje '%1' nije pronađeno"
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
-msgstr ""
+msgstr "Opis"
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Record"
-msgstr ""
+msgstr "Snimaj"
 
 #: ../src/scheduled_recordings_dialog.cc:55
 msgid "After"
-msgstr ""
+msgstr "Nakon"
 
 #: ../src/scheduled_recordings_dialog.cc:56
 msgid "Device"
-msgstr ""
+msgstr "Uređaj"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
-msgstr ""
+msgstr "Zakazano snimanje nije odabrano"
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
-msgstr ""
+msgstr "Me TV je u stanju mirovanja"
 
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
-msgstr ""
+msgstr "Nije moguće pronaći frontend '%1' za zakazano snimanje"
 
 #: ../src/stream_manager.cc:207 ../src/stream_manager.cc:293
 msgid "Failed to get available frontend"
-msgstr ""
+msgstr "Nemoguće je dobti raspoloživi frontend"
 
 #: ../src/stream_manager.cc:332
 msgid "Failed to get display stream"
-msgstr ""
+msgstr "Nemoguće je dobti prikaz streama"
 
 #: ../src/stream_manager.cc:379
 msgid "Failed to get display frontend thread"
-msgstr ""
+msgstr "Nemoguće je dobti prikaz frontend thread"
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
