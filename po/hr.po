@@ -1,14 +1,14 @@
 # Croatian translation for me-tv
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the me-tv package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# FIRST AUTHOR <trebelnik2@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-12-08 17:56+0000\n"
+"PO-Revision-Date: 2010-12-09 23:23+0000\n"
 "Last-Translator: stefina <trebelnik@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-12-09 05:18+0000\n"
+"X-Launchpad-Export-Date: 2010-12-10 05:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -33,7 +33,7 @@ msgstr "Prikaži broj programa pokraj naziva programa u EPG-u."
 
 #: ../me-tv.schemas.in.h:3
 msgid "Display the time span in the EPG buttons."
-msgstr "Prilaži vremensko trajanje u EPG liniijama."
+msgstr "Prikaži vremensko trajanje u EPG liniijama."
 
 #: ../me-tv.schemas.in.h:4
 msgid "Displays the date/time header in the EPG"
@@ -55,7 +55,7 @@ msgid ""
 "recording."
 msgstr ""
 "Ekstra dodatno vrijeme (u minutama) na kraju zadanog snimanja. Ovo dodatno "
-"vrijeme može se poništiti prilikom postavljanja.zadanog snimanja"
+"vrijeme se može poništiti prilikom postavljanja.zadanog snimanja"
 
 #: ../me-tv.schemas.in.h:8
 msgid ""
@@ -70,7 +70,7 @@ msgid ""
 "recording."
 msgstr ""
 "Ekstra dodatno vrijeme (u minutama) na početku zadanog snimanja. Ovo dodatno "
-"vrijeme može se poništiti prilikom postavljanja zadanog snimanja."
+"vrijeme se može poništiti prilikom postavljanja zadanog snimanja."
 
 #: ../me-tv.schemas.in.h:10
 msgid ""
@@ -86,7 +86,7 @@ msgid ""
 "combination with show_epg_tooltips."
 msgstr ""
 "Ako želite smanjiti vertikalnu veličinu EPG-a onda koristite postavke u "
-"kombinaciji sa prikaži_epg_savjete."
+"kombinaciji sa show_epg_tooltips."
 
 #: ../me-tv.schemas.in.h:12
 msgid ""
@@ -152,7 +152,7 @@ msgstr "Postavi video driver koji koristi player."
 
 #: ../me-tv.schemas.in.h:23
 msgid "Show a tool tip when hovering over an EPG event."
-msgstr "Prikaži sadržaj kada prelazim preko EPG događaja."
+msgstr "Prikaži detalje kada prelazim preko EPG događaja."
 
 #: ../me-tv.schemas.in.h:24
 msgid ""
@@ -174,7 +174,7 @@ msgstr "Mapa za korištenje snimanja."
 msgid ""
 "The directory to use for recordings. This value defaults to the users home "
 "directory."
-msgstr "Mapa za korištenje snimanja. Ovo je zadano osobnoj korisničkoj mapi."
+msgstr "Mapa za korištenje snimanja. Ovo je zadano osobnoj mapi korisnika."
 
 #: ../me-tv.schemas.in.h:28
 msgid "The height of the window before Me TV was last closed"
@@ -210,7 +210,7 @@ msgstr "Broj sati za EPG koji će obuhvatiti na jednoj stranici."
 
 #: ../me-tv.schemas.in.h:34
 msgid "The text endoding that the DVB information is in."
-msgstr "Kodiranje teksta na kojem su DVB informacije."
+msgstr "Kodna stranica na kojem su DVB informacije."
 
 #: ../me-tv.schemas.in.h:35
 msgid "The width of the window before Me TV was last closed"
@@ -322,7 +322,7 @@ msgstr "Napredno"
 
 #: ../src/me-tv.ui.h:9
 msgid "After:"
-msgstr "Nakon:"
+msgstr "Nakon Završetka Snimanja:"
 
 #: ../src/me-tv.ui.h:10
 msgid ""
@@ -386,11 +386,11 @@ msgstr "Ne čini ništa"
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
-msgstr "\"Drag and drop\" programe da bi ste ih snimili."
+msgstr "\"Drag and drop\" funkcijom možete promijeniti redosljed programa."
 
 #: ../src/me-tv.ui.h:24
 msgid "Duration:"
-msgstr "Trajanje:"
+msgstr "Duljina Trajanja Snimanja:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
@@ -478,7 +478,7 @@ msgstr "Me TV - Auto Snimanje"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr "Me TV - Program greška"
+msgstr "Me TV - Pogreška u Uvozu Programa"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
@@ -502,19 +502,19 @@ msgstr "Me TV - Glavni Prozor"
 
 #: ../src/me-tv.ui.h:56
 msgid "Me TV - Preferences Window"
-msgstr "Me TV - Prozor s opcijama"
+msgstr "Me TV - Prozor s Opcijama"
 
 #: ../src/me-tv.ui.h:57
 msgid "Me TV - Program Details"
-msgstr "Me TV - Programski Detalji"
+msgstr "Me TV - Detaljniji Opis Sadržaja Emisije"
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scan Wizard"
-msgstr "Me TV - Čarobnjak Skeniranja"
+msgstr "Me TV - Čarobnjak Za Skeniranje"
 
 #: ../src/me-tv.ui.h:59
 msgid "Me TV - Scheduled Recording"
-msgstr "Me TV - Planirano Snimanje"
+msgstr "Me TV - Planiranje Snimanja"
 
 #: ../src/me-tv.ui.h:60
 msgid "Me TV - Scheduled Recordings"
@@ -530,7 +530,7 @@ msgstr "Me TV web stranica projekta"
 
 #: ../src/me-tv.ui.h:63
 msgid "Now"
-msgstr "Sada"
+msgstr "Trenutno se emitira"
 
 #: ../src/me-tv.ui.h:64
 msgid "Once"
@@ -550,11 +550,11 @@ msgstr "Željeni jezik:"
 
 #: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
-msgstr "Snimi dodatno nakon: "
+msgstr "Snimi dodatno vrijeme nakon početka zadanog snimanja: "
 
 #: ../src/me-tv.ui.h:69
 msgid "Record extra before: "
-msgstr "Snimi dodatno prije: "
+msgstr "Snimi dodatno vrijeme prije početka zadanog snimanja: "
 
 #: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
@@ -562,7 +562,7 @@ msgstr "Mapa snimanja: "
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
-msgstr "Ponavljajući:"
+msgstr "Ponovite Snimanje:"
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
@@ -570,11 +570,11 @@ msgstr "Ukloni kolonu iz snimljenih imena datoteka"
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr "Preimenuj novi program u jedinstveni naziv"
+msgstr "Preimenuj novi program novim nazivom"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
-msgstr "Ponovi ovu radnju za sve konflikte kanala"
+msgstr "Ponovi ovu radnju za sve konflikte programa"
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
@@ -634,11 +634,11 @@ msgstr "Prikaži broj programa"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
-msgstr "Prikaži vrijeme na EPG gumbu događaja"
+msgstr "Prikaži vrijeme na EPG događaju emisija"
 
 #: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
-msgstr "Prikaži savjete za EPG gumbe događaja"
+msgstr "Prikaži savjete za EPG događaje emisija"
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
@@ -646,15 +646,15 @@ msgstr "Isključivanje"
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
-msgstr "Početni Datum:"
+msgstr "Datum Početka Snimanja:"
 
 #: ../src/me-tv.ui.h:93
 msgid "Start Time:"
-msgstr "Početno Vrijeme:"
+msgstr "Vrijeme Početka Snimanja:"
 
 #: ../src/me-tv.ui.h:94
 msgid "Text encoding:"
-msgstr "Kodiranje teksta"
+msgstr "Kodna stranica"
 
 #: ../src/me-tv.ui.h:95
 msgid ""
@@ -694,7 +694,7 @@ msgstr ""
 "Želite li obrisati Me TV bazu podataka? Svi vaši programi EPG događaji i "
 "zakazana snimanja  bit će <b>obrisana</b>\n"
 "\n"
-"Ako ste upravo nadogradili Me TV onda je upravo to što morate učiniti.\n"
+"Ako ste upravo nadogradili Me TV onda je preproučljivo da to učinite.\n"
 "\n"
 "<i>Me TV baza podataka je locirana u ~/.local/share/me-tv.db.</i>"
 
@@ -704,11 +704,11 @@ msgstr "_Obriši moje stare Me TV podatke!"
 
 #: ../src/me-tv.ui.h:106
 msgid "channels"
-msgstr "programi"
+msgstr "programa"
 
 #: ../src/application.cc:43
 msgid "Application has already been initialised"
-msgstr "Aplikacija je već instalirana"
+msgstr "Aplikacija je već inicijalizirana"
 
 #: ../src/application.cc:58
 msgid "The SQLite version is not thread-safe"
@@ -720,7 +720,7 @@ msgstr "_Datoteka"
 
 #: ../src/application.cc:113
 msgid "_View"
-msgstr "_Prikaz"
+msgstr "_Pogled"
 
 #: ../src/application.cc:114
 msgid "_Video"
@@ -744,7 +744,7 @@ msgstr "_Streamovi"
 
 #: ../src/application.cc:120
 msgid "_Channels"
-msgstr "_Programi"
+msgstr "_Programa"
 
 #: ../src/application.cc:123
 msgid "_Both"
@@ -752,11 +752,11 @@ msgstr "_Oba"
 
 #: ../src/application.cc:124
 msgid "_Left"
-msgstr "_Lijevo"
+msgstr "_Lijevi"
 
 #: ../src/application.cc:125
 msgid "_Right"
-msgstr "_Desno"
+msgstr "_Desni"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
@@ -891,7 +891,7 @@ msgstr "Vrijeme čitanja isteklo"
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
-msgstr ""
+msgstr "Neuspjelo čitanje podataka iz demuxera"
 
 #: ../src/dvb_demuxer.cc:122
 msgid "Failed to read header"
@@ -899,15 +899,15 @@ msgstr ""
 
 #: ../src/dvb_demuxer.cc:133
 msgid "Failed to read section"
-msgstr ""
+msgstr "Neuspjelo čitanje odjeljka"
 
 #: ../src/dvb_demuxer.cc:138
 msgid "CRC32 check failed"
-msgstr ""
+msgstr "Neuspjela CRC32 provjera"
 
 #: ../src/dvb_demuxer.cc:146
 msgid "Failed to stop demuxer"
-msgstr ""
+msgstr "Neuspjelo zaustavljanje demuxera"
 
 #: ../src/dvb_demuxer.cc:161
 msgid "Failed to poll"
@@ -915,11 +915,11 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:51
 msgid "Failed to open tuner"
-msgstr ""
+msgstr "Nemoguče je otvoriti tuner"
 
 #: ../src/dvb_frontend.cc:56
 msgid "Failed to get tuner info"
-msgstr ""
+msgstr "Nemoguće je dobiti podatke o tuneru"
 
 #: ../src/dvb_frontend.cc:75
 #, c-format
@@ -928,7 +928,7 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:111
 msgid "Failed to tune device"
-msgstr ""
+msgstr "Neuspjelo podešavanje uređaja"
 
 #: ../src/dvb_frontend.cc:114
 msgid "Waiting for signal lock ..."
@@ -1017,7 +1017,7 @@ msgstr[2] "%1 sati"
 msgid "1 minute"
 msgid_plural "%1 minutes"
 msgstr[0] "1 minuta"
-msgstr[1] "%1 minute"
+msgstr[1] "%1 minuta"
 msgstr[2] "%1 minuta"
 
 #: ../src/epg_event_search_dialog.cc:59
@@ -1058,7 +1058,7 @@ msgstr "Nema demuxera"
 #: ../src/epg_thread.cc:210
 #, c-format
 msgid "Unknown source_id %u"
-msgstr "Nepoznat izvor_id %u"
+msgstr "Nepoznat source_id %u"
 
 #: ../src/exception.cc:31
 msgid "Failed to get error message"
@@ -1092,7 +1092,7 @@ msgid ""
 msgstr ""
 "Me TV je razvijen za moderne digitalne dnevne boravke opremljene s media "
 "center PC-om koji je spodoban obavljati svakodnevne zadatke (surfanje "
-"internetom, obrada teksta i gledanje TV-a)\n"
+"internetom, obradu teksta i gledanje TV-a)\n"
 
 #: ../src/main.cc:84
 msgid "Enable verbose messages"
@@ -1148,7 +1148,7 @@ msgstr "Pogreška u rukovanju"
 
 #: ../src/main_window.cc:197
 msgid "Please stop all recordings before editing channels"
-msgstr "Molim, zaustavite sva snimanja prije uređivanja programa"
+msgstr "Pozor!, zaustavite sva snimanja prije uređivanja programa"
 
 #: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
@@ -1190,7 +1190,7 @@ msgstr "Neuspjelo dobivanje aktivne tekstualne vrijednosti"
 
 #: ../src/me-tv-ui.cc:225
 msgid "Failed to get active integer value"
-msgstr "Neuspjelo dobivanje aktivne cijelo brojne vrijednosti"
+msgstr "Neuspjelo dobivanje aktivne cijelobrojne vrijednosti"
 
 #: ../src/mpeg_stream.cc:317
 msgid "Failed to find Program Map PID for service"
@@ -1277,7 +1277,9 @@ msgstr "Nevažeći broj parametara na liniji %1"
 msgid ""
 "Failed to import: importing a channels.conf is only supported with DVB-T, "
 "DVB-C, DVB-S and ATSC"
-msgstr "Nemoguć uvoz: uvoz Channels.conf"
+msgstr ""
+"Nemoguć uvoz: uvoz channels.conf je jedino moguć u DVB-T, DVB-C, DVB-S and "
+"ATSC"
 
 #: ../src/scan_dialog.cc:491
 msgid "Me TV cannot process a line in the initial tuning file"
@@ -1289,11 +1291,11 @@ msgstr "Tunung datoteka nije odabrana"
 
 #: ../src/scan_dialog.cc:551
 msgid "Starting scanner"
-msgstr "Pokrećem skener"
+msgstr "Pokrećem skeniranje"
 
 #: ../src/scan_dialog.cc:630
 msgid "%1/%2 (%3 channels)"
-msgstr "%1/%2 (%3 programi)"
+msgstr "%1/%2 (%3 programa)"
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
@@ -1324,7 +1326,7 @@ msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
 msgstr ""
-"Nemoguće je pohraniti zadano snimanje zato što se preklapa sa drugim zadanim "
+"Nemoguće je postaviti zadano snimanje zato što se preklapa sa drugim zadanim "
 "snimanjem pod imenom '%1'."
 
 #: ../src/scheduled_recording_manager.cc:298
@@ -1351,7 +1353,7 @@ msgstr "Snimaj"
 
 #: ../src/scheduled_recordings_dialog.cc:55
 msgid "After"
-msgstr "Nakon"
+msgstr "Nakon Završetka Snimanja"
 
 #: ../src/scheduled_recordings_dialog.cc:56
 msgid "Device"
