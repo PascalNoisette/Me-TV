@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-12-09 23:23+0000\n"
+"PO-Revision-Date: 2010-12-10 09:58+0000\n"
 "Last-Translator: stefina <trebelnik@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-12-10 05:16+0000\n"
+"X-Launchpad-Export-Date: 2010-12-11 05:30+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -510,7 +510,7 @@ msgstr "Me TV - Detaljniji Opis Sadržaja Emisije"
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scan Wizard"
-msgstr "Me TV - Čarobnjak Za Skeniranje"
+msgstr "Me TV - Čarobnjak za Skeniranje Programa"
 
 #: ../src/me-tv.ui.h:59
 msgid "Me TV - Scheduled Recording"
@@ -574,7 +574,7 @@ msgstr "Preimenuj novi program novim nazivom"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
-msgstr "Ponovi ovu radnju za sve konflikte programa"
+msgstr "Ponovi ovu radnju za sve duplicirane programe"
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
@@ -646,7 +646,7 @@ msgstr "Isključivanje"
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
-msgstr "Datum Početka Snimanja:"
+msgstr "Datum Snimanja:"
 
 #: ../src/me-tv.ui.h:93
 msgid "Start Time:"
@@ -744,7 +744,7 @@ msgstr "_Streamovi"
 
 #: ../src/application.cc:120
 msgid "_Channels"
-msgstr "_Programa"
+msgstr "_Kanali"
 
 #: ../src/application.cc:123
 msgid "_Both"
