@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-12-10 09:58+0000\n"
+"PO-Revision-Date: 2010-12-12 01:22+0000\n"
 "Last-Translator: stefina <trebelnik@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-12-11 05:30+0000\n"
+"X-Launchpad-Export-Date: 2010-12-12 05:05+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -382,7 +382,7 @@ msgstr "Tekst Uređaja"
 
 #: ../src/me-tv.ui.h:22
 msgid "Do Nothing"
-msgstr "Ne čini ništa"
+msgstr "Ne Čini Ništa"
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
@@ -486,7 +486,7 @@ msgstr "Me TV - Uređivač Programa"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
-msgstr "Me TV - EPG Tražitelj Događaja"
+msgstr "Me TV - EPG Tražitelj Događaja Emisija"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
@@ -518,7 +518,7 @@ msgstr "Me TV - Planiranje Snimanja"
 
 #: ../src/me-tv.ui.h:60
 msgid "Me TV - Scheduled Recordings"
-msgstr "Me TV - Planirana Snimanja"
+msgstr "Me TV - Raspored Planiranih Snimanja"
 
 #: ../src/me-tv.ui.h:61
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
@@ -642,7 +642,7 @@ msgstr "Prikaži savjete za EPG događaje emisija"
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
-msgstr "Isključivanje"
+msgstr "Isključi Računalo"
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
@@ -674,7 +674,7 @@ msgstr "Video driver:"
 
 #: ../src/me-tv.ui.h:98
 msgid "View Schedule"
-msgstr "Pogledaj raspored"
+msgstr "Pogledaj Raspored Planiranih Snimanja"
 
 #: ../src/me-tv.ui.h:99
 msgid "Watch Now"
@@ -1032,12 +1032,12 @@ msgstr "Program"
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr "Početno Vrijeme"
+msgstr "Vrijeme Početka Snimanja"
 
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr "Trajanje"
+msgstr "Trajanje Snimanja"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
@@ -1345,7 +1345,7 @@ msgstr "Zadano snimanje '%1' nije pronađeno"
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
-msgstr "Opis"
+msgstr "Naziv i Kratak Opis Emisije"
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Record"
@@ -1361,7 +1361,7 @@ msgstr "Uređaj"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
-msgstr "Zakazano snimanje nije odabrano"
+msgstr "Zadano snimanje nije odabrano"
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
@@ -1369,7 +1369,7 @@ msgstr "Me TV je u stanju mirovanja"
 
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
-msgstr "Nije moguće pronaći frontend '%1' za zakazano snimanje"
+msgstr "Nije moguće pronaći frontend '%1' za zadano snimanje"
 
 #: ../src/stream_manager.cc:207 ../src/stream_manager.cc:293
 msgid "Failed to get available frontend"
