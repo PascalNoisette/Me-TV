@@ -411,8 +411,10 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 		if ((*i).is_old(now))
 		{
 			guint action = (*i).action_after;
-			i = scheduled_recordings.erase(i);
+			remove_scheduled_recording((*i).scheduled_recording_id);
 			action_after(action);
+
+			i = scheduled_recordings.begin();
 		}
 		else
 		{

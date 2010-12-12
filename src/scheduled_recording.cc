@@ -70,7 +70,8 @@ Glib::ustring ScheduledRecording::get_end_time_text() const
 
 gboolean ScheduledRecording::is_old(time_t now) const
 {
-	return (time_t)(start_time + duration) < now;
+	return recurring_type == SCHEDULED_RECORDING_RECURRING_TYPE_ONCE &&
+		(time_t)(start_time + duration) < now;
 }
 
 gboolean ScheduledRecording::is_in(time_t at) const

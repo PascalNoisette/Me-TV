@@ -1,9 +1,10 @@
-2010-11-26  Michael Lamothe <michael.lamothe@gmail.com>
+2010-12-13  Michael Lamothe <michael.lamothe@gmail.com>
 
 	* 1.3.5
 	* Removed France from auto scan list, channels missing
 	* Added option to disable TeleText stream
 	* Fixed typo for "text_encoding" (LP: 689121)
+	* Fixed issue with recurring SRs being removed (LP: 688925)
 
 2010-11-11  Michael Lamothe <michael.lamothe@gmail.com>
 
