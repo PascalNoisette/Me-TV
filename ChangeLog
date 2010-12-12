@@ -6,6 +6,7 @@
 	* Fixed typo for "text_encoding" (LP: 689121)
 	* Fixed issue with recurring SRs being removed (LP: 688925)
 	* Using signal_toggled() to capture key presses in EPG (LP: 678452)
+	* EPG event buttons now use ellipsize.
 
 2010-11-11  Michael Lamothe <michael.lamothe@gmail.com>
 

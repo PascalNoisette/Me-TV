@@ -411,6 +411,7 @@ Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, gboolean rec
 	Gtk::Label* label = Gtk::manage(new Gtk::Label(text));
 	label->set_use_markup(true);
 	label->set_alignment(0, 0.5);
+	label->set_ellipsize(Pango::ELLIPSIZE_END);
 	hbox->pack_start(*label, true, true);
 
 	if (record == true)
