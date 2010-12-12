@@ -240,7 +240,7 @@
 			<type>string</type>
 			<default>auto</default>
 			<locale name="C">
-				<short>The text endoding that the DVB information is in.</short>
+				<short>The text encoding that the DVB information is in.</short>
 				<long>
 					Most of the time the text encoding can be automatically determined but sometimes it needs a hint such as iso6937.
 				</long>
