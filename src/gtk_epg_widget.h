@@ -44,9 +44,10 @@ private:
 	void previous_day();
 	void next_day();
 		
-	bool on_button_program_press_event(GdkEventButton* event, EpgEvent& epg_event);
-	bool on_button_channel_press_event(GdkEventButton* event, guint channel_id);
-	void on_button_program_clicked(EpgEvent& epg_event);
+	bool on_channel_button_press_event(GdkEventButton* event, guint channel_id);
+	void on_channel_button_toggled(Gtk::RadioButton* button, guint channel_id);
+	bool on_program_button_press_event(GdkEventButton* event, EpgEvent& epg_event);
+	void on_program_button_clicked(EpgEvent& epg_event);
 	void on_spin_button_epg_page_changed();
 		
 	void clear();

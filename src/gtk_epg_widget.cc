@@ -241,10 +241,18 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 	}
 	
 	channel_button.set_active(selected);
+	channel_button.signal_toggled().connect(
+		sigc::bind<Gtk::RadioButton*, guint>
+		(
+			sigc::mem_fun(*this, &GtkEpgWidget::on_channel_button_toggled),
+			&channel_button, channel.channel_id
+		),
+	    false
+	);
 	channel_button.signal_button_press_event().connect(
 		sigc::bind<guint>
 		(
-			sigc::mem_fun(*this, &GtkEpgWidget::on_button_channel_press_event),
+			sigc::mem_fun(*this, &GtkEpgWidget::on_channel_button_press_event),
 			channel.channel_id
 		),
 	    false
@@ -311,14 +319,14 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 					button.signal_clicked().connect(
 						sigc::bind<EpgEvent>
 						(
-							sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_clicked),
+							sigc::mem_fun(*this, &GtkEpgWidget::on_program_button_clicked),
 							epg_event
 						)
 					);
 					button.signal_button_press_event().connect(
 						sigc::bind<EpgEvent>
 						(
-							sigc::mem_fun(*this, &GtkEpgWidget::on_button_program_press_event),
+							sigc::mem_fun(*this, &GtkEpgWidget::on_program_button_press_event),
 							epg_event
 						),
 					    false
@@ -434,12 +442,12 @@ void GtkEpgWidget::attach_widget(Gtk::Widget& widget, guint left_attach, guint r
 	widget.show();
 }
 
-bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, guint channel_id)
-{
-	device_manager.check_frontend();
-		
+bool GtkEpgWidget::on_channel_button_press_event(GdkEventButton* event, guint channel_id)
+{		
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
+		device_manager.check_frontend();
+		
 		Channel& channel = channel_manager.get_channel_by_id(channel_id);
 
 		if (stream_manager.is_recording(channel))
@@ -453,15 +461,19 @@ bool GtkEpgWidget::on_button_channel_press_event(GdkEventButton* event, guint ch
 
 		update_table();
 	}
-	else if (event->button == 1)
-	{
-		signal_start_display(channel_id);
-	}
 
 	return false;
 }
 
-bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent& epg_event)
+void GtkEpgWidget::on_channel_button_toggled(Gtk::RadioButton* button, guint channel_id)
+{
+	if (button->get_active())
+	{
+		signal_start_display(channel_id);
+	}
+}
+
+bool GtkEpgWidget::on_program_button_press_event(GdkEventButton* event, EpgEvent& epg_event)
 {
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
 	{
@@ -480,7 +492,7 @@ bool GtkEpgWidget::on_button_program_press_event(GdkEventButton* event, EpgEvent
 	return false;
 }
 
-void GtkEpgWidget::on_button_program_clicked(EpgEvent& epg_event)
+void GtkEpgWidget::on_program_button_clicked(EpgEvent& epg_event)
 {
 	EpgEventDialog::create(builder).show_epg_event(epg_event);
 }
