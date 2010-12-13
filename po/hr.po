@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-12-12 01:22+0000\n"
+"PO-Revision-Date: 2010-12-12 15:45+0000\n"
 "Last-Translator: stefina <trebelnik@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-12-12 05:05+0000\n"
+"X-Launchpad-Export-Date: 2010-12-13 05:31+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -634,11 +634,11 @@ msgstr "Prikaži broj programa"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
-msgstr "Prikaži vrijeme na EPG događaju emisija"
+msgstr "Prikaži vrijeme na EPG događajima emisija"
 
 #: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
-msgstr "Prikaži savjete za EPG događaje emisija"
+msgstr "Prikaži sadržaj opisa za EPG događaje emisija"
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
