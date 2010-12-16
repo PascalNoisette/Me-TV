@@ -266,6 +266,7 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 	if (!disable_epg)
 	{
 		EpgEventList events = channel.epg_events.get_list(start_time, end_time);
+		gboolean first = true;
 		for (EpgEventList::iterator i = events.begin(); i != events.end(); i++)
 		{
 			EpgEvent& epg_event = *i;
@@ -295,7 +296,7 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 				{
 					guint empty_columns = start_column - total_number_columns;
 					Gtk::Button& button = attach_button(
-						empty_columns < 10 ? _("-") : _("Unknown program"), false,
+						empty_columns < 10 ? _("-") : _("Unknown program"), false, true,
 						total_number_columns + 1, start_column + 1, table_row, table_row + 1);
 					button.set_sensitive(false);
 					total_number_columns += empty_columns;
@@ -315,7 +316,8 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 
 					gboolean record = scheduled_recording_manager.is_recording(epg_event);
 					
-					Gtk::Button& button = attach_button(text, record, start_column + 1, end_column + 1, table_row, table_row + 1);
+					Gtk::Button& button = attach_button(text, record, !first, start_column + 1, end_column + 1, table_row, table_row + 1);
+					first = false;
 					button.signal_clicked().connect(
 						sigc::bind<EpgEvent>
 						(
@@ -366,7 +368,7 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 	{
 		guint empty_columns = (number_columns-1) - total_number_columns;
 		Gtk::Button& button = attach_button(
-			empty_columns < 10 ? _("-") : _("Unknown program"), false,
+			empty_columns < 10 ? _("-") : _("Unknown program"), false, true,
 			total_number_columns + 1, number_columns, table_row, table_row + 1);
 		button.set_sensitive(false);
 	}
@@ -402,7 +404,7 @@ Gtk::RadioButton& GtkEpgWidget::attach_radio_button(Gtk::RadioButtonGroup& group
 	return *button;
 }
 
-Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, gboolean record, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
+Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, gboolean record, gboolean ellipsize, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options)
 {
 	Gtk::Button* button = new Gtk::Button();
 	button->set_alignment(0, 0.5);
@@ -412,7 +414,10 @@ Gtk::Button& GtkEpgWidget::attach_button(const Glib::ustring& text, gboolean rec
 	Gtk::Label* label = Gtk::manage(new Gtk::Label(text));
 	label->set_use_markup(true);
 	label->set_alignment(0, 0.5);
-	label->set_ellipsize(Pango::ELLIPSIZE_END);
+	if (ellipsize)
+	{
+		label->set_ellipsize(Pango::ELLIPSIZE_END);
+	}
 	hbox->pack_start(*label, true, true);
 
 	if (record == true)
