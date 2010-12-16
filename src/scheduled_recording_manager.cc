@@ -187,13 +187,12 @@ gboolean ScheduledRecordingManager::is_device_available(const Glib::ustring& dev
 		Channel& current_channel = channel_manager.get_channel_by_id(current.channel_id);
 
 		if (
-			current.scheduled_recording_id != scheduled_recording.scheduled_recording_id &&
 			channel.transponder != current_channel.transponder &&
 			scheduled_recording.overlaps(current) &&
 			device == current.device
 		    )
 		{
-			g_debug("Frontend '%s' is busy recording '%s'", device.c_str(), scheduled_recording.description.c_str());
+			g_debug("Frontend '%s' is busy recording '%s'", device.c_str(), current.description.c_str());
 			return false;
 		}
 	}
