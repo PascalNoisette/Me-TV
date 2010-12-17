@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-12-15 08:58+0000\n"
+"PO-Revision-Date: 2010-12-16 14:48+0000\n"
 "Last-Translator: stefina <trebelnik@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-12-16 05:05+0000\n"
+"X-Launchpad-Export-Date: 2010-12-17 06:19+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -318,7 +318,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
-msgstr "Napredno"
+msgstr "Napredne Opcije"
 
 #: ../src/me-tv.ui.h:9
 msgid "After:"
@@ -374,7 +374,7 @@ msgstr "Deinterlace Tip:"
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
-msgstr "Opis:"
+msgstr "Naziv Emisije i Opis:"
 
 #: ../src/me-tv.ui.h:21
 msgid "Device Text"
@@ -895,7 +895,7 @@ msgstr "Neuspjelo čitanje podataka iz demuxera"
 
 #: ../src/dvb_demuxer.cc:122
 msgid "Failed to read header"
-msgstr ""
+msgstr "Neuspjelo čitanje zaglavlja"
 
 #: ../src/dvb_demuxer.cc:133
 msgid "Failed to read section"
