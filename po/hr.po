@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2011-01-06 14:12+0000\n"
-"Last-Translator: antisa <antisamail@email.t-com.hr>\n"
+"PO-Revision-Date: 2011-01-10 21:18+0000\n"
+"Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2011-01-07 05:23+0000\n"
+"X-Launchpad-Export-Date: 2011-01-11 05:31+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -912,7 +912,7 @@ msgstr "Neuspjelo zaustavljanje demuxera"
 
 #: ../src/dvb_demuxer.cc:161
 msgid "Failed to poll"
-msgstr "Failed to poll"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:51
 msgid "Failed to open tuner"
@@ -925,7 +925,7 @@ msgstr "Nemoguće je dobiti podatke o tuneru"
 #: ../src/dvb_frontend.cc:75
 #, c-format
 msgid "Frontend::tune_to(%d)"
-msgstr "Frontend::tune_to(%d)"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:111
 msgid "Failed to tune device"
@@ -953,7 +953,7 @@ msgstr "Neuspjelo slanje glavne naredbe"
 
 #: ../src/dvb_frontend.cc:149
 msgid "Failed to send burst"
-msgstr "Failed to send burst"
+msgstr ""
 
 #: ../src/dvb_frontend.cc:155
 msgid "Failed to set tone"
@@ -977,11 +977,11 @@ msgstr "Neuspjela promjena imena programa"
 
 #: ../src/dvb_si.cc:568
 msgid "ASSERT: offset > end_descriptor_offset"
-msgstr "ASSERT: offset > end_descriptor_offset"
+msgstr ""
 
 #: ../src/dvb_si.cc:579
 msgid "ASSERT: offset > end_section_offset"
-msgstr "ASSERT: offset > end_section_offset"
+msgstr ""
 
 #: ../src/dvb_si.cc:794
 msgid "No message"
