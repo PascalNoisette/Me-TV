@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Michael Lamothe
+ * Copyright (C) 2011 Michael Lamothe
  *
  * This file is part of Me TV
  *
@@ -211,26 +211,34 @@ void ScheduledRecordingManager::select_device(ScheduledRecording& scheduled_reco
 	FrontendList& frontends = device_manager.get_frontends();
 	for (FrontendList::iterator j = frontends.begin(); j != frontends.end(); j++)
 	{
-		Glib::ustring device = (*j)->get_path();
+		Dvb::Frontend* device = (*j);
+		const Glib::ustring& device_path = device->get_path();
 
-		if (is_device_available(device, scheduled_recording))
+		if (device->get_frontend_type() != channel.transponder.frontend_type)
 		{
-			scheduled_recording.device = device;
-
-			if (stream_manager.has_display_stream())
+			g_debug("Device %s is the wrong type", device_path.c_str());
+		}
+		else
+		{
+			if (is_device_available(device_path, scheduled_recording))
 			{
-				Channel& display_channel = stream_manager.get_display_channel();
-				if (channel.transponder == display_channel.transponder)
+				scheduled_recording.device = device_path;
+
+				if (stream_manager.has_display_stream())
+				{
+					Channel& display_channel = stream_manager.get_display_channel();
+					if (channel.transponder == display_channel.transponder)
+					{
+						return;
+					}
+				}
+				else
 				{
 					return;
 				}
-			}
-			else
-			{
-				return;
-			}
 
-			g_debug("Display channel is on a different transponder for '%s', looking for something better", device.c_str());
+				g_debug("Display channel is on a different transponder for '%s', looking for something better", device_path.c_str());
+			}
 		}
 	}
 }

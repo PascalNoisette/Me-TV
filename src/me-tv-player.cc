@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Michael Lamothe
+ * Copyright (C) 2011 Michael Lamothe
  *
  * This file is part of Me TV
  *
