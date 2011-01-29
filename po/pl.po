@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-11-29 05:10+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-29 05:18+0000\n"
+"X-Generator: Launchpad (build 12177)\n"
 
 #: ../me-tv.schemas.in.h:1
 msgid ""
@@ -1449,3 +1449,46 @@ msgstr " już jest rozpoczęty"
 
 #~ msgid "Drop out of fullscreen mode when showing dialogs"
 #~ msgstr "Opuść tryb pełnoekranowy podczas pokazywania okien dialogowych"
+
+#~ msgid "AU"
+#~ msgstr "AU"
+
+#~ msgid "IT"
+#~ msgstr "IT"
+
+#, c-format
+#~ msgid "Channel changed to %s"
+#~ msgstr "Kanał zmieniony na '%s'"
+
+#, c-format
+#~ msgid "Changing channel to '%s'"
+#~ msgstr "Zmiana kanału na '%s'"
+
+#~ msgid "SI"
+#~ msgstr "SI"
+
+#~ msgid ""
+#~ "Some window managers don't like showing dialogs such as the EPG dialog over "
+#~ "a fullscreen, \"Always On Top\" window such as the main window. This option "
+#~ "tells Me TV to come out of fullscreen mode while those dialogs are shown and "
+#~ "return to fullscreen mode when the dialog is closed."
+#~ msgstr ""
+#~ "Niektóre menedżery okien nie wyświetlają powiadomień takich jak EPG w trybie "
+#~ "pełnoekranowym, czy \"Zawsze na wierzchu\" jako główne okno. Ta opcja "
+#~ "pozwoli Me TV na wyjście z trybu pełnoekranowego, gdy te powiadomienia się "
+#~ "pojawią oraz powróci do niego, gdy powiadomienia zostaną zamknięte."
+
+#~ msgid "Fullscreen workaround"
+#~ msgstr "Prowizoryczny tryb pełnoekranowy"
+
+#~ msgid "EPG event not found"
+#~ msgstr "Żadne wydażenie EPG nie zostało odnalezione"
+
+#~ msgid "Failed to add channel: You cannot have more than %1 channel"
+#~ msgid_plural "Failed to add channel: You cannot have more than %1 channels"
+#~ msgstr[0] ""
+#~ "Błąd podczas dodawania kanału: nie możesz mieć więcej niż %1 kanał"
+#~ msgstr[1] ""
+#~ "Błąd podczas dodawania kanału: nie możesz mieć więcej niż %1 kanałów"
+#~ msgstr[2] ""
+#~ "Błąd podczas dodawania kanału. Nie możesz mieć więcej niż %1 kanałów"

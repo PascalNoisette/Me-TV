@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-01-11 05:31+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-29 05:17+0000\n"
+"X-Generator: Launchpad (build 12177)\n"
 
 #: ../me-tv.schemas.in.h:1
 msgid ""
@@ -1477,3 +1477,6 @@ msgstr " Thread wurde schon gestartet"
 #, c-format
 #~ msgid "Changing channel to '%s'"
 #~ msgstr "Wechsle Kanal zu '%s'"
+
+#~ msgid "EPG event not found"
+#~ msgstr "EPG Event nicht gefunden"

@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-12-16 05:05+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-29 05:18+0000\n"
+"X-Generator: Launchpad (build 12177)\n"
 
 #: ../me-tv.schemas.in.h:1
 msgid ""
@@ -81,13 +81,13 @@ msgstr ""
 msgid ""
 "Me TV uses libvlc to play sound, this setting tells libvlc which mechanism "
 "to use when playing sound."
-msgstr ""
+msgstr "Me TV 使用 libvlc 库来播放声音，这个设置告诉 libvlc 在播放声音时使用哪种机制。"
 
 #: ../me-tv.schemas.in.h:13
 msgid ""
 "Me TV uses libvlc to render video, this setting tells libvlc which mechanism "
 "to use when drawing."
-msgstr ""
+msgstr "Me TV使用 libvlc 库来为视频着色，这个设置告诉 libvlc 在着色时使用哪种机制。"
 
 #: ../me-tv.schemas.in.h:14
 msgid ""
@@ -98,7 +98,7 @@ msgstr ""
 msgid ""
 "Most digital video is transmitted in an interlaced format which should be "
 "corrected before viewing. Options are \"none\", \"standard\", \"tvtime\""
-msgstr ""
+msgstr "大部分视频使用需要在观看前更正的交错格式来传输。选项有“无”，“标准”，“TV时光(tvtime)”"
 
 #: ../me-tv.schemas.in.h:16
 msgid ""
@@ -132,7 +132,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:23
 msgid "Show a tool tip when hovering over an EPG event."
-msgstr ""
+msgstr "当鼠标悬停某个电子节目指南时显示工具提示。"
 
 #: ../me-tv.schemas.in.h:24
 msgid ""
@@ -152,7 +152,7 @@ msgstr ""
 msgid ""
 "The directory to use for recordings. This value defaults to the users home "
 "directory."
-msgstr ""
+msgstr "该目录用于记录，默认值为用户的主目录。"
 
 #: ../me-tv.schemas.in.h:28
 msgid "The height of the window before Me TV was last closed"
@@ -1306,3 +1306,18 @@ msgstr ""
 #: ../src/thread.cc:49
 msgid " thread has already been started"
 msgstr " 进程已开始"
+
+#~ msgid "Preferred language to us when selecting streams."
+#~ msgstr "在选择流时优先使用的语言。"
+
+#~ msgid "Drop out of fullscreen mode when showing dialogs"
+#~ msgstr "显示对话时退出全屏模式"
+
+#~ msgid ""
+#~ "Some window managers don't like showing dialogs such as the EPG dialog over "
+#~ "a fullscreen, \"Always On Top\" window such as the main window. This option "
+#~ "tells Me TV to come out of fullscreen mode while those dialogs are shown and "
+#~ "return to fullscreen mode when the dialog is closed."
+#~ msgstr ""
+#~ "某些窗口管理器不喜欢将类似电子节目指南的对话框显示在那些像主窗口等“总是置顶”的窗口前面。这个选项告诉 Me TV "
+#~ "在这些对话框开启时退出全屏模式，在关闭时恢复全屏。"
