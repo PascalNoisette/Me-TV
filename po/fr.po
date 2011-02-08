@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-12-20 08:07+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2011-02-07 14:06+0000\n"
+"Last-Translator: Antoine Pernot <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2011-01-29 05:17+0000\n"
+"X-Launchpad-Export-Date: 2011-02-08 05:13+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -951,7 +951,7 @@ msgstr "Échec pour récupérer les infos du tuner"
 #: ../src/dvb_frontend.cc:75
 #, c-format
 msgid "Frontend::tune_to(%d)"
-msgstr ""
+msgstr "Interface::réglée_à(%d)"
 
 #: ../src/dvb_frontend.cc:111
 msgid "Failed to tune device"
@@ -1416,7 +1416,7 @@ msgstr "Échec de la lecture du flux affiché"
 
 #: ../src/stream_manager.cc:379
 msgid "Failed to get display frontend thread"
-msgstr ""
+msgstr "Échec pour afficher le thread de l'interface."
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
