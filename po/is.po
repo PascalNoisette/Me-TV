@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2011-02-12 01:13+0000\n"
+"PO-Revision-Date: 2011-02-13 01:12+0000\n"
 "Last-Translator: Skuli Bjarnason <Unknown>\n"
 "Language-Team: Icelandic <is@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-02-12 05:22+0000\n"
+"X-Launchpad-Export-Date: 2011-02-13 04:53+0000\n"
 "X-Generator: Launchpad (build 12351)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -195,7 +195,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:33
 msgid "The number of hours for the EPG to span on one page."
-msgstr ""
+msgstr "Fjöldi klukkustunda sem á að sýna á hverri síðu."
 
 #: ../me-tv.schemas.in.h:34
 msgid "The text endoding that the DVB information is in."
@@ -210,36 +210,44 @@ msgid ""
 "The width of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
+"Breiddin á glugganum, áður en Me TV var lokað síðast. Me TV notar þetta "
+"gildi til að reyna að endurheimta aðal gluggann í fyrri stærð."
 
 #: ../me-tv.schemas.in.h:37
 msgid "The x position of the window before Me TV was last closed"
-msgstr ""
+msgstr "x staðsetningin á glugganum áður en Me TV var lokað síðast."
 
 #: ../me-tv.schemas.in.h:38
 msgid ""
 "The x position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"x staðsetningin á glugganum áður en Me TV var lokað síðast, Me TV notar "
+"þetta gildi til að reyna að endurheimta gluggann í fyrri stærð."
 
 #: ../me-tv.schemas.in.h:39
 msgid "The y position of the window before Me TV was last closed"
-msgstr ""
+msgstr "y staðsetningin á glugganum áður en Me TV var lokað síðast."
 
 #: ../me-tv.schemas.in.h:40
 msgid ""
 "The y position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"staðsetningin á glugganum áður en Me TV var lokað síðast, Me TV notar þetta "
+"gildi til að reyna að endurheimta gluggann í fyrri stærð."
 
 #: ../me-tv.schemas.in.h:41
 msgid ""
 "This is used to store what channel the user was last watching so it can be "
 "returned when restarting."
 msgstr ""
+"Þetta er notað til að geyma hvaða rás notandinn var síðast að horfa á, svo "
+"að hægt sé að stilla sjálfkrafa á þá rás aftur við endurræsingu."
 
 #: ../me-tv.schemas.in.h:42
 msgid "This will show the timespan of an EPG event in a tooltip."
-msgstr ""
+msgstr "Þetta sýnir hvaða timabil á EPG í tooltip"
 
 #: ../me-tv.schemas.in.h:43
 msgid ""
@@ -261,11 +269,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
-msgstr ""
+msgstr " klukkutímar"
 
 #: ../src/me-tv.ui.h:2
 msgid " minutes"
-msgstr ""
+msgstr " mínútur"
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
@@ -277,11 +285,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:5
 msgid "<b>Device:</b>"
-msgstr ""
+msgstr "<b>Tæki:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
-msgstr ""
+msgstr "Rás með nafn 'xxx' er þegar til."
 
 #: ../src/me-tv.ui.h:7
 msgid ""
@@ -290,6 +298,10 @@ msgid ""
 "application. The <i>scan</i> command line application is the most common way "
 "to generate a channels.conf file."
 msgstr ""
+"Channels.conf er skrá með samræmdu sniði sem inniheldur skilgreiningar fyrir "
+"útsendingar, mörg forrit geta nýtt sér þessa skrá, Þú getur haft þessa skrá "
+"frá öðru DVB forriti. <i> scan </i> forritið er algengast leiðin til að búa "
+"til búa til \"channels.conf\" skrána."
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
@@ -321,11 +333,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
-msgstr ""
+msgstr "Tíðni rása: "
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
-msgstr ""
+msgstr "Nafn rásar: "
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel:"
@@ -333,11 +345,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
-msgstr ""
+msgstr "Loka Me TV"
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
-msgstr ""
+msgstr "Höfundarréttur &#xA9; Michael Lamothe"
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
@@ -345,7 +357,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
-msgstr ""
+msgstr "Lýsing:"
 
 #: ../src/me-tv.ui.h:21
 msgid "Device Text"
@@ -353,7 +365,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:22
 msgid "Do Nothing"
-msgstr ""
+msgstr "Gera ekkert"
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
@@ -372,6 +384,8 @@ msgid ""
 "EPG event titles that contain the following entries will be automatically "
 "recorded."
 msgstr ""
+"EPG atburðirnir sem innihalda eftirfarandi upplýsingar mun verða teknir upp "
+"sjálfkrafa."
 
 #: ../src/me-tv.ui.h:27
 msgid "EPG page size: "
@@ -383,15 +397,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:29
 msgid "Every day"
-msgstr ""
+msgstr "Daglega"
 
 #: ../src/me-tv.ui.h:30
 msgid "Every week"
-msgstr ""
+msgstr "Hverja viku"
 
 #: ../src/me-tv.ui.h:31
 msgid "Every weekday"
-msgstr ""
+msgstr "Virka daga"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:33
@@ -418,19 +432,19 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
-msgstr ""
+msgstr "Lesa inn channels.conf"
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
-msgstr ""
+msgstr "Halda núverandi rás"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
-msgstr ""
+msgstr "Um Me TV"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
-msgstr ""
+msgstr "Me TV - Sjálfvirk upptaka"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
@@ -438,23 +452,23 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
-msgstr ""
+msgstr "Me TV - Rása ritill"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
-msgstr ""
+msgstr "Me TV - EPG Atburðarleit"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
-msgstr ""
+msgstr "Me TV - Breyta rás"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - It's TV for me computer"
-msgstr ""
+msgstr "Me TV - er sjónvarp fyrir tölvuna mína"
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Main Window"
-msgstr ""
+msgstr "Me TV - Aðal gluggi"
 
 #: ../src/me-tv.ui.h:56
 msgid "Me TV - Preferences Window"
@@ -478,107 +492,107 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:61
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
-msgstr ""
+msgstr "Me TV er (DVB) sjónvarpsforrit fyrir Gnome"
 
 #: ../src/me-tv.ui.h:62
 msgid "Me TV project website"
-msgstr ""
+msgstr "Vefur Me TV verkefnisins"
 
 #: ../src/me-tv.ui.h:63
 msgid "Now"
-msgstr ""
+msgstr "Núna"
 
 #: ../src/me-tv.ui.h:64
 msgid "Once"
-msgstr ""
+msgstr "Einu sinni"
 
 #: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
-msgstr ""
+msgstr "Yfirskrifa rásin"
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
-msgstr ""
+msgstr "Síða:"
 
 #: ../src/me-tv.ui.h:67
 msgid "Preferred language:"
-msgstr ""
+msgstr "Valið tungumál"
 
 #: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
-msgstr ""
+msgstr "Upptaka til viðbótar "
 
 #: ../src/me-tv.ui.h:69
 msgid "Record extra before: "
-msgstr ""
+msgstr "Upptaka áður "
 
 #: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
-msgstr ""
+msgstr "Upptökumappa "
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
-msgstr ""
+msgstr "Endurtekning:"
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
-msgstr ""
+msgstr "Fjarlægja semikommu úr skráarnöfnum"
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr ""
+msgstr "Endurskírðu rásina í nýtt einstakt nafn"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
-msgstr ""
+msgstr "Endurtaka þessa aðgerð fyrir alla árekstra"
 
 #: ../src/me-tv.ui.h:75
 msgid "Scan Progress"
-msgstr ""
+msgstr "Framvinda skönnunnar"
 
 #: ../src/me-tv.ui.h:76
 msgid "Scan using an initial scan file"
-msgstr ""
+msgstr "Skanna með því að nota skönnunarskrá"
 
 #: ../src/me-tv.ui.h:77
 msgid "Scanning/Importing"
-msgstr ""
+msgstr "Skannar / les inn"
 
 #: ../src/me-tv.ui.h:78
 msgid "Search description"
-msgstr ""
+msgstr "Leitarlýsing"
 
 #: ../src/me-tv.ui.h:79
 msgid "Search:"
-msgstr ""
+msgstr "Leita:"
 
 #: ../src/me-tv.ui.h:80
 msgid "See https://launchpad.net/me-tv"
-msgstr ""
+msgstr "Sjá https://launchpad.net/me-tv"
 
 #: ../src/me-tv.ui.h:81
 msgid "Select A Recording Directory"
-msgstr ""
+msgstr "Veldu upptökumöppu"
 
 #: ../src/me-tv.ui.h:82
 msgid "Select Scan File"
-msgstr ""
+msgstr "Veldu skönnunarskrá"
 
 #: ../src/me-tv.ui.h:83
 msgid "Select a channels.conf file"
-msgstr ""
+msgstr "Veldu channels.conf skrána"
 
 #: ../src/me-tv.ui.h:84
 msgid "Select a file"
-msgstr ""
+msgstr "Veldu skrá"
 
 #: ../src/me-tv.ui.h:85
 msgid "Set \"Always on Top\" at startup"
-msgstr ""
+msgstr "Skilgreindu \"Alltaf efst\" við ræsingu"
 
 #: ../src/me-tv.ui.h:86
 msgid "Show EPG header"
-msgstr ""
+msgstr "Sýna EPG haus"
 
 #: ../src/me-tv.ui.h:87
 msgid "Show a status icon in the notification area"
@@ -586,11 +600,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:88
 msgid "Show channel number"
-msgstr ""
+msgstr "Sýna rásarnúmer"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
-msgstr ""
+msgstr "Sýna tíma á EPG hnöppum"
 
 #: ../src/me-tv.ui.h:90
 msgid "Show tooltips for EPG event buttons"
@@ -598,15 +612,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
-msgstr ""
+msgstr "Slökkva"
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
-msgstr ""
+msgstr "Ræsidagsetning:"
 
 #: ../src/me-tv.ui.h:93
 msgid "Start Time:"
-msgstr ""
+msgstr "Ræsitími:"
 
 #: ../src/me-tv.ui.h:94
 msgid "Text encoding:"
@@ -620,19 +634,19 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:96
 msgid "This program is scheduled for recording."
-msgstr ""
+msgstr "Þessi dagskrárliður verður tekinn upp:"
 
 #: ../src/me-tv.ui.h:97
 msgid "Video driver:"
-msgstr ""
+msgstr "Vídeó rekill"
 
 #: ../src/me-tv.ui.h:98
 msgid "View Schedule"
-msgstr ""
+msgstr "Skoða dagskrá"
 
 #: ../src/me-tv.ui.h:99
 msgid "Watch Now"
-msgstr ""
+msgstr "Horfa núna"
 
 #: ../src/me-tv.ui.h:100
 msgid ""
@@ -644,18 +658,23 @@ msgid ""
 "\n"
 "<i>The Me TV database is located at ~/.local/share/me-tv.db.</i>"
 msgstr ""
+"Útgáfan þín af Me TV gagnagrunninum er of gömul til notkunar með þessari "
+"útgáfu af Me TV, Viltu tæma gagnagrunninn ? Allar rásinar þínar, EPG "
+"dagskráin og upptökudagskráin verður <b> eytt</b>.\n"
+"Ef þú varst að uppfæra Me TV er líklega það sem þú vilt gera.\n"
+"<i> Me TV gagnagrunnurinn þinn er geymdur á ~/.local/share/me-tv.db.</i>"
 
 #: ../src/me-tv.ui.h:105
 msgid "_Delete my old Me TV data!"
-msgstr ""
+msgstr "_Eyða gömlu Me TV gögnunum mínum"
 
 #: ../src/me-tv.ui.h:106
 msgid "channels"
-msgstr ""
+msgstr "rásir"
 
 #: ../src/application.cc:43
 msgid "Application has already been initialised"
-msgstr ""
+msgstr "Forritið hefur þegar verið stillt"
 
 #: ../src/application.cc:58
 msgid "The SQLite version is not thread-safe"
@@ -663,47 +682,47 @@ msgstr ""
 
 #: ../src/application.cc:112
 msgid "_File"
-msgstr ""
+msgstr "_Skrá"
 
 #: ../src/application.cc:113
 msgid "_View"
-msgstr ""
+msgstr "S_koða"
 
 #: ../src/application.cc:114
 msgid "_Video"
-msgstr ""
+msgstr "_Vídeó"
 
 #: ../src/application.cc:115
 msgid "_Audio"
-msgstr ""
+msgstr "H_ljóð"
 
 #: ../src/application.cc:116
 msgid "_Help"
-msgstr ""
+msgstr "_Hjálp"
 
 #: ../src/application.cc:118
 msgid "Subtitles"
-msgstr ""
+msgstr "textar"
 
 #: ../src/application.cc:119
 msgid "_Streams"
-msgstr ""
+msgstr "_Straumar"
 
 #: ../src/application.cc:120
 msgid "_Channels"
-msgstr ""
+msgstr "_Rásir"
 
 #: ../src/application.cc:123
 msgid "_Both"
-msgstr ""
+msgstr "_Bæði"
 
 #: ../src/application.cc:124
 msgid "_Left"
-msgstr ""
+msgstr "_Vinstri"
 
 #: ../src/application.cc:125
 msgid "_Right"
-msgstr ""
+msgstr "_Hægri"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
@@ -711,19 +730,19 @@ msgstr ""
 
 #: ../src/application.cc:186
 msgid "Failed to start recording"
-msgstr ""
+msgstr "Gat ekki ræst upptökuna"
 
 #: ../src/application.cc:378
 msgid "Failed to initialise database"
-msgstr ""
+msgstr "Gat ekki stillt gagnagrunninn"
 
 #: ../src/application.cc:437
 msgid "Application has not been initialised"
-msgstr ""
+msgstr "Forritið hefur ekki verið stillt"
 
 #: ../src/application.cc:494
 msgid "DBus connection not available"
-msgstr ""
+msgstr "DBus tenging ekki möguleg"
 
 #: ../src/application.cc:505
 msgid "Failed to get org.gnome.SessionManager proxy"
@@ -739,12 +758,12 @@ msgstr ""
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
-msgstr ""
+msgstr "Engin röð valin"
 
 #: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
 msgid "Unknown frontend type"
-msgstr ""
+msgstr "Framendi óþekktur"
 
 #: ../src/channel_manager.cc:258
 msgid "Invalid channel index"
@@ -752,13 +771,13 @@ msgstr ""
 
 #: ../src/channel_manager.cc:272
 msgid "Channel '%1' not found"
-msgstr ""
+msgstr "Rás '%1' fannst ekki"
 
 #: ../src/channel_manager.cc:295
 msgid "Failed to add channel: You cannot have more than 1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gat ekki bætt við rás: þú hefur fleiri en eina rás"
+msgstr[1] "Gat ekki bætt við rásum: þú hefur fleiri en %1 rásir"
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
@@ -766,19 +785,19 @@ msgstr ""
 
 #: ../src/channels_dialog.cc:57
 msgid "Frequency (Hz)"
-msgstr ""
+msgstr "Tíðni (Hz)"
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
-msgstr ""
+msgstr "Rás nefnd <b>'%1'</b> er þegar til."
 
 #: ../src/channels_dialog.cc:231
 msgid "No channel selected"
-msgstr ""
+msgstr "Engin rás valin"
 
 #: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
-msgstr ""
+msgstr "Veldu aðeins eina rás"
 
 #: ../src/data.cc:50 ../src/data.cc:55
 msgid "Failed to prepare statement: %1"
@@ -802,7 +821,7 @@ msgstr ""
 
 #: ../src/data.cc:176
 msgid "Failed to connect to Me TV database '%1'"
-msgstr ""
+msgstr "Gat ekki tengst Me TV gagnagrunninum '%1'"
 
 #: ../src/data.cc:246
 msgid "Only integers can be primary keys"
@@ -814,7 +833,7 @@ msgstr ""
 
 #: ../src/device_manager.cc:134
 msgid "There are no DVB devices available"
-msgstr ""
+msgstr "Það eru engin DVB tæki tiltæk"
 
 #: ../src/dvb_demuxer.cc:37
 msgid "Failed to open demux device"
@@ -879,11 +898,11 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:114
 msgid "Waiting for signal lock ..."
-msgstr ""
+msgstr "Bíð eftir læsingu á merki"
 
 #: ../src/dvb_frontend.cc:116
 msgid "Got signal lock"
-msgstr ""
+msgstr "Fékk læsingu á merki"
 
 #: ../src/dvb_frontend.cc:132
 msgid "Failed to set tone off"
@@ -891,7 +910,7 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:137
 msgid "Failed to set voltage"
-msgstr ""
+msgstr "Gat ekki stillt spennu"
 
 #: ../src/dvb_frontend.cc:143
 msgid "Failed to send master command"
@@ -907,11 +926,11 @@ msgstr ""
 
 #: ../src/dvb_frontend.cc:186
 msgid "Failed to lock to channel"
-msgstr ""
+msgstr "Gat ekki læst rás"
 
 #: ../src/dvb_frontend.cc:195
 msgid "Failed to get signal strength"
-msgstr ""
+msgstr "Fékk ekki styrk merkis"
 
 #: ../src/dvb_frontend.cc:205
 msgid "Failed to get signal to noise ratio"
@@ -931,11 +950,11 @@ msgstr ""
 
 #: ../src/dvb_si.cc:794
 msgid "No message"
-msgstr ""
+msgstr "Engin skilaboð"
 
 #: ../src/dvb_si.cc:801
 msgid "Failed to convert to UTF-8: %1"
-msgstr ""
+msgstr "Gat ekki breytt í UTF-8: %1"
 
 #: ../src/engine.cc:46
 msgid "Window ID was 0"
@@ -943,54 +962,54 @@ msgstr ""
 
 #: ../src/epg_event.cc:79
 msgid "Unknown title"
-msgstr ""
+msgstr "Óþekktur titill"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Óþekktur texti"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
-msgstr ""
+msgstr "Óþekkt lýsing"
 
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 klukkustund"
+msgstr[1] "%1 klukkustundir"
 
 #: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 mínúta"
+msgstr[1] "%1 mínútur"
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
-msgstr ""
+msgstr " "
 
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
-msgstr ""
+msgstr "Rás"
 
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr ""
+msgstr "Upphafstími"
 
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr ""
+msgstr "Lengd"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
-msgstr ""
+msgstr "Ekkert leitarorð skilgreint"
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
-msgstr ""
+msgstr "Engar niðurstöður"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
@@ -1027,7 +1046,7 @@ msgstr ""
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for GTK"
-msgstr ""
+msgstr "Me TV er stafrænt sjónvarpsforrit fyrir GTK"
 
 #: ../src/main.cc:30
 msgid ""
@@ -1038,11 +1057,11 @@ msgstr ""
 
 #: ../src/main.cc:84
 msgid "Enable verbose messages"
-msgstr ""
+msgstr "Virkja lengri skilaboð"
 
 #: ../src/main.cc:89
 msgid "Start in safe mode"
-msgstr ""
+msgstr "Ræsa upp í \"safe mode\""
 
 #: ../src/main.cc:94
 msgid "Start minimised in notification area"
