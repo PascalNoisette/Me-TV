@@ -2,20 +2,20 @@
 # Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the me-tv package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
-#
+# Efstathios Iosifidis <diamond_gr@freemail.gr>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2011-02-26 20:44+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Greek <el@li.org>\n"
+"PO-Revision-Date: 2011-02-27 17:11+0000\n"
+"Last-Translator: Stathis Iosifidis <Unknown>\n"
+"Language-Team: Greek <opensuse-translation-el@opensuse.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-02-27 05:26+0000\n"
+"X-Launchpad-Export-Date: 2011-02-28 05:00+0000\n"
 "X-Generator: Launchpad (build 12351)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -242,27 +242,27 @@ msgstr ""
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
-msgstr ""
+msgstr "Me TV"
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
-msgstr ""
+msgstr " ώρες"
 
 #: ../src/me-tv.ui.h:2
 msgid " minutes"
-msgstr ""
+msgstr " λεπτά"
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
-msgstr ""
+msgstr "00:00"
 
 #: ../src/me-tv.ui.h:4
 msgid ":"
-msgstr ""
+msgstr ":"
 
 #: ../src/me-tv.ui.h:5
 msgid "<b>Device:</b>"
-msgstr ""
+msgstr "<b>Συσκευή:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
@@ -278,7 +278,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
-msgstr ""
+msgstr "Για Προχωρημένους"
 
 #: ../src/me-tv.ui.h:9
 msgid "After:"
@@ -306,15 +306,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
-msgstr ""
+msgstr "Συχνότητα Καναλιού : "
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
-msgstr ""
+msgstr "Όνομα Καναλιού : "
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel:"
-msgstr ""
+msgstr "Κανάλι:"
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
@@ -411,7 +411,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
-msgstr ""
+msgstr "Me TV - Περί"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
@@ -467,11 +467,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:62
 msgid "Me TV project website"
-msgstr ""
+msgstr "Me TV Ιστοσελίδα project"
 
 #: ../src/me-tv.ui.h:63
 msgid "Now"
-msgstr ""
+msgstr "Τώρα"
 
 #: ../src/me-tv.ui.h:64
 msgid "Once"
@@ -483,7 +483,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
-msgstr ""
+msgstr "Σελίδα:"
 
 #: ../src/me-tv.ui.h:67
 msgid "Preferred language:"
@@ -535,7 +535,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:79
 msgid "Search:"
-msgstr ""
+msgstr "Αναζήτηση:"
 
 #: ../src/me-tv.ui.h:80
 msgid "See https://launchpad.net/me-tv"
@@ -551,11 +551,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:83
 msgid "Select a channels.conf file"
-msgstr ""
+msgstr "Επιλογή αρχείου channels.conf"
 
 #: ../src/me-tv.ui.h:84
 msgid "Select a file"
-msgstr ""
+msgstr "Επιλογή αρχείου"
 
 #: ../src/me-tv.ui.h:85
 msgid "Set \"Always on Top\" at startup"
@@ -583,15 +583,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:91
 msgid "Shutdown"
-msgstr ""
+msgstr "Τερματισμός"
 
 #: ../src/me-tv.ui.h:92
 msgid "Start Date:"
-msgstr ""
+msgstr "Ημερομηνία Έναρξης:"
 
 #: ../src/me-tv.ui.h:93
 msgid "Start Time:"
-msgstr ""
+msgstr "Ώρα Έναρξης:"
 
 #: ../src/me-tv.ui.h:94
 msgid "Text encoding:"
@@ -613,11 +613,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:98
 msgid "View Schedule"
-msgstr ""
+msgstr "Προβολή Προγράμματος"
 
 #: ../src/me-tv.ui.h:99
 msgid "Watch Now"
-msgstr ""
+msgstr "Παρακολούθηση Τώρα"
 
 #: ../src/me-tv.ui.h:100
 msgid ""
@@ -632,11 +632,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:105
 msgid "_Delete my old Me TV data!"
-msgstr ""
+msgstr "_Διαγραφή παλιών δεδομένων Me TV!"
 
 #: ../src/me-tv.ui.h:106
 msgid "channels"
-msgstr ""
+msgstr "κανάλια"
 
 #: ../src/application.cc:43
 msgid "Application has already been initialised"
@@ -648,27 +648,27 @@ msgstr ""
 
 #: ../src/application.cc:112
 msgid "_File"
-msgstr ""
+msgstr "_Αρχείο"
 
 #: ../src/application.cc:113
 msgid "_View"
-msgstr ""
+msgstr "_Προβολή"
 
 #: ../src/application.cc:114
 msgid "_Video"
-msgstr ""
+msgstr "_Βίντεο"
 
 #: ../src/application.cc:115
 msgid "_Audio"
-msgstr ""
+msgstr "_Ήχος"
 
 #: ../src/application.cc:116
 msgid "_Help"
-msgstr ""
+msgstr "_Βοήθεια"
 
 #: ../src/application.cc:118
 msgid "Subtitles"
-msgstr ""
+msgstr "Υπότιτλοι"
 
 #: ../src/application.cc:119
 msgid "_Streams"
@@ -676,7 +676,7 @@ msgstr ""
 
 #: ../src/application.cc:120
 msgid "_Channels"
-msgstr ""
+msgstr "_Κανάλια"
 
 #: ../src/application.cc:123
 msgid "_Both"
@@ -684,11 +684,11 @@ msgstr ""
 
 #: ../src/application.cc:124
 msgid "_Left"
-msgstr ""
+msgstr "_Αριστερά"
 
 #: ../src/application.cc:125
 msgid "_Right"
-msgstr ""
+msgstr "_Δεξιά"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
@@ -720,7 +720,7 @@ msgstr ""
 
 #: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
 msgid "Title"
-msgstr ""
+msgstr "Τίτλος"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
@@ -747,11 +747,11 @@ msgstr[1] ""
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
-msgstr ""
+msgstr "Όνομα Καναλιού"
 
 #: ../src/channels_dialog.cc:57
 msgid "Frequency (Hz)"
-msgstr ""
+msgstr "Συχνότητα (Hz)"
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
@@ -763,7 +763,7 @@ msgstr ""
 
 #: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
-msgstr ""
+msgstr "Επιλογή μόνο ενός καναλιού"
 
 #: ../src/data.cc:50 ../src/data.cc:55
 msgid "Failed to prepare statement: %1"
@@ -916,7 +916,7 @@ msgstr ""
 
 #: ../src/dvb_si.cc:794
 msgid "No message"
-msgstr ""
+msgstr "Κανένα μήνυμα"
 
 #: ../src/dvb_si.cc:801
 msgid "Failed to convert to UTF-8: %1"
@@ -928,15 +928,15 @@ msgstr ""
 
 #: ../src/epg_event.cc:79
 msgid "Unknown title"
-msgstr ""
+msgstr "Άγνωστος τίτλος"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Άγνωστος υπότιτλος"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
-msgstr ""
+msgstr "Άγνωστη περιγραφή"
 
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
@@ -952,22 +952,22 @@ msgstr[1] ""
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
-msgstr ""
+msgstr " "
 
 #: ../src/epg_event_search_dialog.cc:61
 #: ../src/scheduled_recordings_dialog.cc:51
 msgid "Channel"
-msgstr ""
+msgstr "Κανάλι"
 
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr ""
+msgstr "Ώρα Έναρξης"
 
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
 msgid "Duration"
-msgstr ""
+msgstr "Διάρκεια"
 
 #: ../src/epg_event_search_dialog.cc:78
 msgid "No search text specified"
@@ -975,7 +975,7 @@ msgstr ""
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
-msgstr ""
+msgstr "Κανένα Αποτέλεσμα"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
@@ -1004,7 +1004,7 @@ msgstr ""
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
@@ -1116,7 +1116,7 @@ msgstr ""
 
 #: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
 msgid "Unknown language"
-msgstr ""
+msgstr "Άγνωστη Γλώσσα"
 
 #: ../src/scan_dialog.cc:32
 msgid "Me TV - Error"
@@ -1124,7 +1124,7 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:138
 msgid "Service Name"
-msgstr ""
+msgstr "Όνομα Υπηρεσίας"
 
 #: ../src/scan_dialog.cc:139
 msgid "Signal Strength"
@@ -1132,55 +1132,55 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:159
 msgid "Australia"
-msgstr ""
+msgstr "Αυστραλία"
 
 #: ../src/scan_dialog.cc:160
 msgid "Canada"
-msgstr ""
+msgstr "Καναδάς"
 
 #: ../src/scan_dialog.cc:161
 msgid "Czech Republic"
-msgstr ""
+msgstr "Τσεχία"
 
 #: ../src/scan_dialog.cc:162
 msgid "Finland"
-msgstr ""
+msgstr "Φινλανδία"
 
 #: ../src/scan_dialog.cc:163
 msgid "France"
-msgstr ""
+msgstr "Γαλλία"
 
 #: ../src/scan_dialog.cc:164
 msgid "Germany"
-msgstr ""
+msgstr "Γερμανία"
 
 #: ../src/scan_dialog.cc:165
 msgid "Italy"
-msgstr ""
+msgstr "Ιταλία"
 
 #: ../src/scan_dialog.cc:166
 msgid "Lithuania"
-msgstr ""
+msgstr "Λιθουανία"
 
 #: ../src/scan_dialog.cc:167
 msgid "New Zealand"
-msgstr ""
+msgstr "Νέα Ζηλανδία"
 
 #: ../src/scan_dialog.cc:168
 msgid "Spain"
-msgstr ""
+msgstr "Ισπανία"
 
 #: ../src/scan_dialog.cc:169
 msgid "Slovenia"
-msgstr ""
+msgstr "Σλοβενία"
 
 #: ../src/scan_dialog.cc:170
 msgid "United Kingdom"
-msgstr ""
+msgstr "Ηνωμένο Βασίλειο"
 
 #: ../src/scan_dialog.cc:171
 msgid "United States"
-msgstr ""
+msgstr "Ηνωμένες Πολιτείες"
 
 #: ../src/scan_dialog.cc:299
 msgid "Importing channels"
@@ -1254,19 +1254,19 @@ msgstr ""
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
-msgstr ""
+msgstr "Περιγραφή"
 
 #: ../src/scheduled_recordings_dialog.cc:54
 msgid "Record"
-msgstr ""
+msgstr "Εγγραφή"
 
 #: ../src/scheduled_recordings_dialog.cc:55
 msgid "After"
-msgstr ""
+msgstr "Μετά"
 
 #: ../src/scheduled_recordings_dialog.cc:56
 msgid "Device"
-msgstr ""
+msgstr "Συσκευή"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
