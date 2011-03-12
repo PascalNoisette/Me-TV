@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2011-01-12 08:26+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2011-03-11 22:33+0000\n"
+"Last-Translator: Colix <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2011-01-29 05:18+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-03-12 05:18+0000\n"
+"X-Generator: Launchpad (build 12559)\n"
 
 #: ../me-tv.schemas.in.h:1
 msgid ""
@@ -99,6 +99,8 @@ msgid ""
 "Me TV uses libvlc to play sound, this setting tells libvlc which mechanism "
 "to use when playing sound."
 msgstr ""
+"Me TV использует libvlc для воспроизведения звука, этот параметр сообщает "
+"libvlc, какой механизм использовать при воспроизведении звука."
 
 #: ../me-tv.schemas.in.h:13
 msgid ""
@@ -112,6 +114,8 @@ msgstr ""
 msgid ""
 "Me TV will schedule programs that have titles that contain these words."
 msgstr ""
+"Me TV составит расписание программ с названиями, в которых содержатся эти "
+"слова."
 
 #: ../me-tv.schemas.in.h:15
 msgid ""
@@ -190,7 +194,7 @@ msgstr ""
 
 #: ../me-tv.schemas.in.h:30
 msgid "The last channel tuned to."
-msgstr ""
+msgstr "Последний канал настроен."
 
 #: ../me-tv.schemas.in.h:31
 msgid ""
