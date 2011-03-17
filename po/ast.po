@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2011-03-15 03:42+0000\n"
+"PO-Revision-Date: 2011-03-17 01:52+0000\n"
 "Last-Translator: Xuacu Saturio <xuacusk8@gmail.com>\n"
 "Language-Team: Asturian <ast@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-03-16 05:05+0000\n"
+"X-Launchpad-Export-Date: 2011-03-17 05:15+0000\n"
 "X-Generator: Launchpad (build 12559)\n"
 
 #: ../me-tv.schemas.in.h:1
@@ -206,100 +206,114 @@ msgid ""
 "The number of channels to show before paging, this is deliberately set low "
 "to reduce preformance issues."
 msgstr ""
+"Pa evitar problemes de rindimientu, el númberu de canales que s'amuesa "
+"enantes de paxinar ye adrémente baxu."
 
 #: ../me-tv.schemas.in.h:32
 msgid "The number of channels to show before paging."
-msgstr ""
+msgstr "Númberu de canales que s'amuesa enantes de paxinar."
 
 #: ../me-tv.schemas.in.h:33
 msgid "The number of hours for the EPG to span on one page."
-msgstr ""
+msgstr "Númberu d'hores que cubre la EPG nuna sola páxina."
 
 #: ../me-tv.schemas.in.h:34
 msgid "The text endoding that the DVB information is in."
-msgstr ""
+msgstr "Codificación del testu na que ta la información DVB."
 
 #: ../me-tv.schemas.in.h:35
 msgid "The width of the window before Me TV was last closed"
-msgstr ""
+msgstr "Anchor de la ventana enantes de zarrar Me Tv la cabera vegada."
 
 #: ../me-tv.schemas.in.h:36
 msgid ""
 "The width of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
+"L'anchor de la ventana enantes de zarrar Me Tv la cabera vegada. Me TV "
+"utiliza esti valor pa tratar de restaurar la ventana principal cola "
+"xeometría anterior."
 
 #: ../me-tv.schemas.in.h:37
 msgid "The x position of the window before Me TV was last closed"
-msgstr ""
+msgstr "La posición x de la ventana enantes de zarrar Me TV la cabera vegada"
 
 #: ../me-tv.schemas.in.h:38
 msgid ""
 "The x position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"La posición x de la ventana enantes de zarrar Me TV la cabera vegada. Me TV "
+"utiliza esti valor para tratar de restaurar la ventana principal cola "
+"xeometría anterior."
 
 #: ../me-tv.schemas.in.h:39
 msgid "The y position of the window before Me TV was last closed"
-msgstr ""
+msgstr "La posición y de la ventana enantes de zarrar Me TV la cabera vegada"
 
 #: ../me-tv.schemas.in.h:40
 msgid ""
 "The y position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
+"La posición y de la ventana enantes de zarrar Me TV la cabera vegada. Me TV "
+"utiliza esti valor para tratar de restaurar la ventana principal cola "
+"xeometría anterior."
 
 #: ../me-tv.schemas.in.h:41
 msgid ""
 "This is used to store what channel the user was last watching so it can be "
 "returned when restarting."
 msgstr ""
+"Esto s'utiliza p'almacenar la canal que l'usuariu taba viendo y que se pueda "
+"restaurar al reaniciar el programa."
 
 #: ../me-tv.schemas.in.h:42
 msgid "This will show the timespan of an EPG event in a tooltip."
-msgstr ""
+msgstr "Esto amosará la duración d'una actividá de la EPG nun gabitu."
 
 #: ../me-tv.schemas.in.h:43
 msgid ""
 "When this setting is false Me TV will terminate when the main window is "
 "closed."
 msgstr ""
+"Cuando esti valor ye falso, Me TV terminará al zarrar la ventana principal."
 
 #: ../me-tv.schemas.in.h:44
 msgid "Whether the video should be deinterlaced."
-msgstr ""
+msgstr "Si el videu tien de desentrellazase."
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
-msgstr ""
+msgstr "Visor de televisión dixital (DVB) pa GNOME"
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
-msgstr ""
+msgstr "Me TV"
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
-msgstr ""
+msgstr " hores"
 
 #: ../src/me-tv.ui.h:2
 msgid " minutes"
-msgstr ""
+msgstr " minutos"
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
-msgstr ""
+msgstr "00:00"
 
 #: ../src/me-tv.ui.h:4
 msgid ":"
-msgstr ""
+msgstr ":"
 
 #: ../src/me-tv.ui.h:5
 msgid "<b>Device:</b>"
-msgstr ""
+msgstr "<b>Preséu:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
-msgstr ""
+msgstr "Yá esiste una canal col nome 'xxx'"
 
 #: ../src/me-tv.ui.h:7
 msgid ""
@@ -308,14 +322,18 @@ msgid ""
 "application. The <i>scan</i> command line application is the most common way "
 "to generate a channels.conf file."
 msgstr ""
+"El ficheru channels,conf ye un formatu común de ficheru p'almacenar canales "
+"y puen lleelu munches aplicaciones. Seique tengas unu d'otra aplicación DVB. "
+"L'aplicación de terminal <i>scan</i> ye la manera más utilizada pa xenerar "
+"un ficheru channels.conf."
 
 #: ../src/me-tv.ui.h:8
 msgid "Advanced"
-msgstr ""
+msgstr "Avanzáu"
 
 #: ../src/me-tv.ui.h:9
 msgid "After:"
-msgstr ""
+msgstr "Dempués:"
 
 #: ../src/me-tv.ui.h:10
 msgid ""
@@ -324,62 +342,67 @@ msgid ""
 "from the LinuxTV dvb-apps package which is included in most Linux "
 "distributions.  Look for <i>dvb-apps</i> in your package management system."
 msgstr ""
+"S'utiliza un ficheru de sintonización inicial pa da-y a la sintonizadora "
+"dellos parámetros d'aniciu que-y permitan guetar servicios DVB. El paquete "
+"LinuxTV dvb-apps, disponible na mayoría de les distribuciones Linux, contién "
+"munchos ficheros populares de sintonización inicial . Busca <i>dvb-apps</i> "
+"nel sistema d'alministración de paquetes."
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
-msgstr ""
+msgstr "Controlador de soníu:"
 
 #: ../src/me-tv.ui.h:12
 msgid "Auto scan"
-msgstr ""
+msgstr "Barríu automáticu"
 
 #: ../src/me-tv.ui.h:13
 msgid "Cancel channel import"
-msgstr ""
+msgstr "Encaboxar la importación de canal"
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
-msgstr ""
+msgstr "Frecuencia de la canal: "
 
 #: ../src/me-tv.ui.h:15
 msgid "Channel Name : "
-msgstr ""
+msgstr "Nome de la canal: "
 
 #: ../src/me-tv.ui.h:16
 msgid "Channel:"
-msgstr ""
+msgstr "Canal:"
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
-msgstr ""
+msgstr "Zarrar Me TV"
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
-msgstr ""
+msgstr "Copyright &#xA9; Michael Lamothe"
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
-msgstr ""
+msgstr "Triba de desentrellazáu:"
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
-msgstr ""
+msgstr "Descripción:"
 
 #: ../src/me-tv.ui.h:21
 msgid "Device Text"
-msgstr ""
+msgstr "Testu del preséu"
 
 #: ../src/me-tv.ui.h:22
 msgid "Do Nothing"
-msgstr ""
+msgstr "Nun facer ren"
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
-msgstr ""
+msgstr "Arrastrar y soltar les canales pa reordenales"
 
 #: ../src/me-tv.ui.h:24
 msgid "Duration:"
-msgstr ""
+msgstr "Duración:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
