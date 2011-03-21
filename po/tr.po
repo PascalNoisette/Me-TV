@@ -2,21 +2,22 @@
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the me-tv package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Muhammet Kara <muhammet.k@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-10-18 07:47+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2011-03-20 23:27+0000\n"
+"Last-Translator: Muhammet Kara <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2011-01-29 05:18+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-03-21 05:31+0000\n"
+"X-Generator: Launchpad (build 12559)\n"
 
 #: ../me-tv.schemas.in.h:1
 msgid ""
@@ -244,7 +245,7 @@ msgstr "GNOME için sayısal televizyon (DVB) görüntüleyici."
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
-msgstr ""
+msgstr "Me TV"
 
 #: ../src/me-tv.ui.h:1
 msgid " hours"
@@ -256,11 +257,11 @@ msgstr " dakika"
 
 #: ../src/me-tv.ui.h:3
 msgid "00:00"
-msgstr ""
+msgstr "00:00"
 
 #: ../src/me-tv.ui.h:4
 msgid ":"
-msgstr ""
+msgstr ":"
 
 #: ../src/me-tv.ui.h:5
 msgid "<b>Device:</b>"
@@ -268,7 +269,7 @@ msgstr "<b>Aygıt:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
-msgstr ""
+msgstr "'xxx' adlı bir kanal zaten var."
 
 #: ../src/me-tv.ui.h:7
 msgid ""
@@ -328,7 +329,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
-msgstr ""
+msgstr "Görüntü Netleştirme Türü:"
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
@@ -348,11 +349,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:24
 msgid "Duration:"
-msgstr ""
+msgstr "Süre:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
-msgstr ""
+msgstr "EPG olay bilgisi"
 
 #: ../src/me-tv.ui.h:26
 msgid ""
@@ -362,7 +363,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:27
 msgid "EPG page size: "
-msgstr ""
+msgstr "EPG sayfa boyutu: "
 
 #: ../src/me-tv.ui.h:28
 msgid "EPG span: "
@@ -370,15 +371,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:29
 msgid "Every day"
-msgstr ""
+msgstr "Her gün"
 
 #: ../src/me-tv.ui.h:30
 msgid "Every week"
-msgstr ""
+msgstr "Her hafta"
 
 #: ../src/me-tv.ui.h:31
 msgid "Every weekday"
-msgstr ""
+msgstr "Hafta içi her gün"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:33
@@ -405,35 +406,35 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
-msgstr ""
+msgstr "channels.conf içe aktar"
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
-msgstr ""
+msgstr "Mevcut kanalı sakla"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
-msgstr ""
+msgstr "Me TV - Hakkında"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
-msgstr ""
+msgstr "Me TV - Otomatik Kayıt"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
-msgstr ""
+msgstr "Me TV - Channel çakışması"
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
-msgstr ""
+msgstr "Me TV - Kanal Düzenleyici"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
-msgstr ""
+msgstr "Me TV - EPG Olay Arama"
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
-msgstr ""
+msgstr "Me TV - Kanalı Düzenle"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - It's TV for me computer"
@@ -441,55 +442,55 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Main Window"
-msgstr ""
+msgstr "Me TV - Ana Pencere"
 
 #: ../src/me-tv.ui.h:56
 msgid "Me TV - Preferences Window"
-msgstr ""
+msgstr "Me TV - Tercihler Penceresi"
 
 #: ../src/me-tv.ui.h:57
 msgid "Me TV - Program Details"
-msgstr ""
+msgstr "Me TV - Program Ayrıntıları"
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scan Wizard"
-msgstr ""
+msgstr "Me TV - Tarama Sihirbazı"
 
 #: ../src/me-tv.ui.h:59
 msgid "Me TV - Scheduled Recording"
-msgstr ""
+msgstr "Me TV - Zamanlanmış Kayıt"
 
 #: ../src/me-tv.ui.h:60
 msgid "Me TV - Scheduled Recordings"
-msgstr ""
+msgstr "Me TV - Zamanlanmış Kayıtlar"
 
 #: ../src/me-tv.ui.h:61
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
-msgstr ""
+msgstr "Me TV, GNOME için bir Sayısal Televizyon (DVB) göstericisidir"
 
 #: ../src/me-tv.ui.h:62
 msgid "Me TV project website"
-msgstr ""
+msgstr "Me TV projesi web sitesi"
 
 #: ../src/me-tv.ui.h:63
 msgid "Now"
-msgstr ""
+msgstr "Şimdi"
 
 #: ../src/me-tv.ui.h:64
 msgid "Once"
-msgstr ""
+msgstr "Bir kez"
 
 #: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
-msgstr ""
+msgstr "Mevcut kanalın üzerine yaz"
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
-msgstr ""
+msgstr "Sayfa:"
 
 #: ../src/me-tv.ui.h:67
 msgid "Preferred language:"
-msgstr ""
+msgstr "Tercih edilen dil:"
 
 #: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
@@ -549,7 +550,7 @@ msgstr "Bir Kayıt Dizini Seçiniz"
 
 #: ../src/me-tv.ui.h:82
 msgid "Select Scan File"
-msgstr ""
+msgstr "Tarama Dosyası Seç"
 
 #: ../src/me-tv.ui.h:83
 msgid "Select a channels.conf file"
@@ -573,7 +574,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:88
 msgid "Show channel number"
-msgstr ""
+msgstr "Kanal numarasını göster"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
@@ -593,11 +594,11 @@ msgstr "Başlama Tarihi:"
 
 #: ../src/me-tv.ui.h:93
 msgid "Start Time:"
-msgstr ""
+msgstr "Başlangıç Zamanı:"
 
 #: ../src/me-tv.ui.h:94
 msgid "Text encoding:"
-msgstr ""
+msgstr "Metin kodlaması:"
 
 #: ../src/me-tv.ui.h:95
 msgid ""
@@ -611,7 +612,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:97
 msgid "Video driver:"
-msgstr ""
+msgstr "Video sürücü:"
 
 #: ../src/me-tv.ui.h:98
 msgid "View Schedule"
@@ -638,7 +639,7 @@ msgstr "_Eski Me tv veri dosyalarını  sil !"
 
 #: ../src/me-tv.ui.h:106
 msgid "channels"
-msgstr ""
+msgstr "kanallar"
 
 #: ../src/application.cc:43
 msgid "Application has already been initialised"
@@ -650,27 +651,27 @@ msgstr ""
 
 #: ../src/application.cc:112
 msgid "_File"
-msgstr ""
+msgstr "_Dosya"
 
 #: ../src/application.cc:113
 msgid "_View"
-msgstr ""
+msgstr "_Görünüm"
 
 #: ../src/application.cc:114
 msgid "_Video"
-msgstr ""
+msgstr "_Video"
 
 #: ../src/application.cc:115
 msgid "_Audio"
-msgstr ""
+msgstr "_Ses"
 
 #: ../src/application.cc:116
 msgid "_Help"
-msgstr ""
+msgstr "_Yardım"
 
 #: ../src/application.cc:118
 msgid "Subtitles"
-msgstr ""
+msgstr "Altyazılar"
 
 #: ../src/application.cc:119
 msgid "_Streams"
@@ -678,19 +679,19 @@ msgstr "_Yayın"
 
 #: ../src/application.cc:120
 msgid "_Channels"
-msgstr ""
+msgstr "_Kanallar"
 
 #: ../src/application.cc:123
 msgid "_Both"
-msgstr ""
+msgstr "_Her İkisi"
 
 #: ../src/application.cc:124
 msgid "_Left"
-msgstr ""
+msgstr "S_ol"
 
 #: ../src/application.cc:125
 msgid "_Right"
-msgstr ""
+msgstr "_Sağ"
 
 #: ../src/application.cc:137
 msgid "Failed to get DBus session"
@@ -726,7 +727,7 @@ msgstr "Başlık"
 
 #: ../src/auto_record_dialog.cc:93
 msgid "No row selected"
-msgstr ""
+msgstr "Hiçbir satır seçilmedi"
 
 #: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
 #: ../src/scan_dialog.cc:90
@@ -739,7 +740,7 @@ msgstr ""
 
 #: ../src/channel_manager.cc:272
 msgid "Channel '%1' not found"
-msgstr ""
+msgstr "'%1' kanalı bulunamadı"
 
 #: ../src/channel_manager.cc:295
 msgid "Failed to add channel: You cannot have more than 1 channel"
@@ -749,7 +750,7 @@ msgstr[1] ""
 
 #: ../src/channels_dialog.cc:56
 msgid "Channel Name"
-msgstr ""
+msgstr "Kanal Adı"
 
 #: ../src/channels_dialog.cc:57
 msgid "Frequency (Hz)"
@@ -757,7 +758,7 @@ msgstr "Frekans (Hz)"
 
 #: ../src/channels_dialog.cc:102
 msgid "A channel named <b>'%1'</b> already exists."
-msgstr ""
+msgstr "<b>'%1'</b>  adlı bir kanal zaten var."
 
 #: ../src/channels_dialog.cc:231
 msgid "No channel selected"
@@ -821,7 +822,7 @@ msgstr ""
 
 #: ../src/dvb_demuxer.cc:103
 msgid "Read timeout"
-msgstr ""
+msgstr "Okuma zamanaşımı"
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
@@ -837,7 +838,7 @@ msgstr ""
 
 #: ../src/dvb_demuxer.cc:138
 msgid "CRC32 check failed"
-msgstr ""
+msgstr "CRC32 kontrolü başarısız oldu"
 
 #: ../src/dvb_demuxer.cc:146
 msgid "Failed to stop demuxer"
@@ -918,7 +919,7 @@ msgstr ""
 
 #: ../src/dvb_si.cc:794
 msgid "No message"
-msgstr ""
+msgstr "Mesaj yok"
 
 #: ../src/dvb_si.cc:801
 msgid "Failed to convert to UTF-8: %1"
@@ -926,19 +927,19 @@ msgstr ""
 
 #: ../src/engine.cc:46
 msgid "Window ID was 0"
-msgstr ""
+msgstr "Pencre kimliği (ID) 0"
 
 #: ../src/epg_event.cc:79
 msgid "Unknown title"
-msgstr ""
+msgstr "Bilinmeyen başlık"
 
 #: ../src/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Bilinmeyen altyazı"
 
 #: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
 msgid "Unknown description"
-msgstr ""
+msgstr "Bilinmeyen tanım"
 
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
@@ -962,7 +963,7 @@ msgstr "Kanal"
 #: ../src/epg_event_search_dialog.cc:62
 #: ../src/scheduled_recordings_dialog.cc:52
 msgid "Start Time"
-msgstr ""
+msgstr "Başlama Zamanı"
 
 #: ../src/epg_event_search_dialog.cc:63
 #: ../src/scheduled_recordings_dialog.cc:53
@@ -975,7 +976,7 @@ msgstr ""
 
 #: ../src/epg_event_search_dialog.cc:142
 msgid "No results"
-msgstr ""
+msgstr "Sonuç yok"
 
 #: ../src/epg_event_search_dialog.cc:154
 msgid "No EPG event selected"
@@ -1008,7 +1009,7 @@ msgstr "-"
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
-msgstr ""
+msgstr "Bilinmeyen program"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for GTK"
@@ -1023,7 +1024,7 @@ msgstr ""
 
 #: ../src/main.cc:84
 msgid "Enable verbose messages"
-msgstr ""
+msgstr "Ayrıntılı mesajları etkinleştir"
 
 #: ../src/main.cc:89
 msgid "Start in safe mode"
@@ -1065,7 +1066,7 @@ msgstr ""
 
 #: ../src/main.cc:161
 msgid "An unhandled error occurred"
-msgstr ""
+msgstr "Beklenmeyen bir hata oluştu"
 
 #: ../src/main_window.cc:197
 msgid "Please stop all recordings before editing channels"
@@ -1096,7 +1097,7 @@ msgstr ""
 
 #: ../src/me-tv.cc:172
 msgid "Failed to find a value for '%1'"
-msgstr ""
+msgstr "'%1' için bir değer bulunamadı"
 
 #: ../src/me-tv.cc:197
 msgid "Failed to find a text value for '%1'"
@@ -1116,11 +1117,11 @@ msgstr ""
 
 #: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
 msgid "Unknown language"
-msgstr ""
+msgstr "Bilinmeyen dil"
 
 #: ../src/scan_dialog.cc:32
 msgid "Me TV - Error"
-msgstr ""
+msgstr "Me TV - Hata"
 
 #: ../src/scan_dialog.cc:138
 msgid "Service Name"
@@ -1128,7 +1129,7 @@ msgstr "Hizmet Adı"
 
 #: ../src/scan_dialog.cc:139
 msgid "Signal Strength"
-msgstr ""
+msgstr "Sinyal Gücü"
 
 #: ../src/scan_dialog.cc:159
 msgid "Australia"
@@ -1211,7 +1212,7 @@ msgstr "Tarayıcı başlıyor"
 
 #: ../src/scan_dialog.cc:630
 msgid "%1/%2 (%3 channels)"
-msgstr ""
+msgstr "%1/%2 (%3 kanallar)"
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
@@ -1250,7 +1251,7 @@ msgstr ""
 
 #: ../src/scheduled_recording_manager.cc:464
 msgid "Scheduled recording '%1' not found"
-msgstr ""
+msgstr "Zamanlanmış kayıt '%1' bulunamıyor"
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
