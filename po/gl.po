@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2010-10-04 06:51+0000\n"
-"Last-Translator: Michael Lamothe <Unknown>\n"
+"PO-Revision-Date: 2011-03-25 07:30+0000\n"
+"Last-Translator: Miguel Anxo Bouzada <mbouzada@gmail.com>\n"
 "Language-Team: Galician <gl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-01-29 05:18+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-03-26 05:48+0000\n"
+"X-Generator: Launchpad (build 12559)\n"
 
 #: ../me-tv.schemas.in.h:1
 msgid ""
@@ -1151,6 +1151,8 @@ msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 msgstr ""
+"Só emprega o dispositivo cliente especificado (ex. --"
+"devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 
 #: ../src/main.cc:114
 msgid ""
@@ -1393,18 +1395,19 @@ msgstr "Me TV está inactivo"
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
 msgstr ""
+"Produciuse un erro ao buscar o cliente «%1» para a gravación programada"
 
 #: ../src/stream_manager.cc:207 ../src/stream_manager.cc:293
 msgid "Failed to get available frontend"
-msgstr ""
+msgstr "Produciuse un erro ao  obter un cliente dispoñíbel"
 
 #: ../src/stream_manager.cc:332
 msgid "Failed to get display stream"
-msgstr ""
+msgstr "Produciuse un erro ao  obter un fluxo de imaxe"
 
 #: ../src/stream_manager.cc:379
 msgid "Failed to get display frontend thread"
-msgstr ""
+msgstr "Produciuse un erro ao  obter un proceso paralelo para fluxo de imaxe"
 
 #: ../src/thread.cc:49
 msgid " thread has already been started"
