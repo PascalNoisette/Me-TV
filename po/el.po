@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: me-tv\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
-"PO-Revision-Date: 2011-02-27 17:11+0000\n"
+"PO-Revision-Date: 2011-03-28 13:16+0000\n"
 "Last-Translator: Stathis Iosifidis <Unknown>\n"
-"Language-Team: Greek <opensuse-translation-el@opensuse.org>\n"
+"Language-Team: Greek <opensuse-translation@opensuse.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-02-28 05:00+0000\n"
-"X-Generator: Launchpad (build 12351)\n"
+"X-Launchpad-Export-Date: 2011-03-29 05:09+0000\n"
+"X-Generator: Launchpad (build 12559)\n"
 
 #: ../me-tv.schemas.in.h:1
 msgid ""
@@ -82,12 +82,16 @@ msgid ""
 "Me TV uses libvlc to play sound, this setting tells libvlc which mechanism "
 "to use when playing sound."
 msgstr ""
+"Το Me TV χρησιμοποιεί το libvlc για αναπαραγωγή ήχου, αυτή η επιλογή "
+"ενημερώνει το libvlc ποιόν μηχανισμό να χρησιμοποιήσει για αναπαραγωγή ήχου."
 
 #: ../me-tv.schemas.in.h:13
 msgid ""
 "Me TV uses libvlc to render video, this setting tells libvlc which mechanism "
 "to use when drawing."
 msgstr ""
+"Το Me TV χρησιμοποιεί το libvlc για την αποτύπωση βίντεο, αυτή η επιλογή "
+"ενημερώνει το libvlc ποιόν μηχανισμό να χρησιμοποιήσει κατά την σχεδίαση."
 
 #: ../me-tv.schemas.in.h:14
 msgid ""
@@ -238,7 +242,7 @@ msgstr ""
 
 #: ../me-tv.desktop.in.h:1
 msgid "A digital television (DVB) viewer for GNOME"
-msgstr ""
+msgstr "Πρόγραμμα προβολής ψηφιακής τηλεόρασης (DVB) για GNOME"
 
 #: ../me-tv.desktop.in.h:2
 msgid "Me TV"
@@ -266,7 +270,7 @@ msgstr "<b>Συσκευή:</b>"
 
 #: ../src/me-tv.ui.h:6
 msgid "A channel named 'xxx' already exists."
-msgstr ""
+msgstr "Το κανάλι με το όνομα 'xxx' υπάρχει ήδη"
 
 #: ../src/me-tv.ui.h:7
 msgid ""
@@ -282,7 +286,7 @@ msgstr "Για Προχωρημένους"
 
 #: ../src/me-tv.ui.h:9
 msgid "After:"
-msgstr ""
+msgstr "Μετά:"
 
 #: ../src/me-tv.ui.h:10
 msgid ""
@@ -294,15 +298,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:11
 msgid "Audio driver:"
-msgstr ""
+msgstr "Οδηγός Ήχου:"
 
 #: ../src/me-tv.ui.h:12
 msgid "Auto scan"
-msgstr ""
+msgstr "Αυτόματη ανίχνευση"
 
 #: ../src/me-tv.ui.h:13
 msgid "Cancel channel import"
-msgstr ""
+msgstr "Ακύρωση εισαγωγής καναλιών"
 
 #: ../src/me-tv.ui.h:14
 msgid "Channel Frequency : "
@@ -318,11 +322,11 @@ msgstr "Κανάλι:"
 
 #: ../src/me-tv.ui.h:17
 msgid "Close Me TV"
-msgstr ""
+msgstr "Τερματισμός Me TV"
 
 #: ../src/me-tv.ui.h:18
 msgid "Copyright &#xA9; Michael Lamothe"
-msgstr ""
+msgstr "Μετάφραση &#xA9; Ευστάθιος Ιωσηφίδης"
 
 #: ../src/me-tv.ui.h:19
 msgid "Deinterlace Type:"
@@ -330,15 +334,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:20
 msgid "Description:"
-msgstr ""
+msgstr "Περιγραφή:"
 
 #: ../src/me-tv.ui.h:21
 msgid "Device Text"
-msgstr ""
+msgstr "Κείμενο συσκευής"
 
 #: ../src/me-tv.ui.h:22
 msgid "Do Nothing"
-msgstr ""
+msgstr "Καμία ενέργεια"
 
 #: ../src/me-tv.ui.h:23
 msgid "Drag and drop the channels to reorder them."
@@ -346,7 +350,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:24
 msgid "Duration:"
-msgstr ""
+msgstr "Διάρκεια:"
 
 #: ../src/me-tv.ui.h:25
 msgid "EPG event information"
@@ -368,15 +372,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:29
 msgid "Every day"
-msgstr ""
+msgstr "Κάθε μέρα"
 
 #: ../src/me-tv.ui.h:30
 msgid "Every week"
-msgstr ""
+msgstr "Κάθε εβδομάδα"
 
 #: ../src/me-tv.ui.h:31
 msgid "Every weekday"
-msgstr ""
+msgstr "Κάθε ημέρα"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../src/me-tv.ui.h:33
@@ -403,11 +407,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:46
 msgid "Import a channels.conf"
-msgstr ""
+msgstr "Εισαγωγή αρχείου channels.conf"
 
 #: ../src/me-tv.ui.h:47
 msgid "Keep the existing channel"
-msgstr ""
+msgstr "Διατήρηση υπάρχοντος καναλιού"
 
 #: ../src/me-tv.ui.h:48
 msgid "Me TV - About"
@@ -415,7 +419,7 @@ msgstr "Me TV - Περί"
 
 #: ../src/me-tv.ui.h:49
 msgid "Me TV - Auto Record"
-msgstr ""
+msgstr "Me TV - Αυτόματη Εγγραφή"
 
 #: ../src/me-tv.ui.h:50
 msgid "Me TV - Channel conflict"
@@ -423,7 +427,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:51
 msgid "Me TV - Channels Editor"
-msgstr ""
+msgstr "Me TV - Επεξεργαστής Καναλιών"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - EPG Event Search"
@@ -431,7 +435,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:53
 msgid "Me TV - Edit Channel"
-msgstr ""
+msgstr "Me TV - Επεξεργασία Καναλιού"
 
 #: ../src/me-tv.ui.h:54
 msgid "Me TV - It's TV for me computer"
@@ -439,15 +443,15 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:55
 msgid "Me TV - Main Window"
-msgstr ""
+msgstr "Me TV - Κυρίως Παράθυρο"
 
 #: ../src/me-tv.ui.h:56
 msgid "Me TV - Preferences Window"
-msgstr ""
+msgstr "Me TV - Παράθυρο Προτιμήσεων"
 
 #: ../src/me-tv.ui.h:57
 msgid "Me TV - Program Details"
-msgstr ""
+msgstr "Me TV - Πληροφορίες Προγράμματος"
 
 #: ../src/me-tv.ui.h:58
 msgid "Me TV - Scan Wizard"
@@ -479,7 +483,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:65
 msgid "Overwrite the existing channel"
-msgstr ""
+msgstr "Αντικατάσταση υπάρχοντος καναλιού"
 
 #: ../src/me-tv.ui.h:66
 msgid "Page:"
@@ -487,7 +491,7 @@ msgstr "Σελίδα:"
 
 #: ../src/me-tv.ui.h:67
 msgid "Preferred language:"
-msgstr ""
+msgstr "Προτιμώμενη γλώσσα:"
 
 #: ../src/me-tv.ui.h:68
 msgid "Record extra after: "
@@ -499,11 +503,11 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:70
 msgid "Recording directory: "
-msgstr ""
+msgstr "Κατάλογος Εγγραφής: "
 
 #: ../src/me-tv.ui.h:71
 msgid "Recurring:"
-msgstr ""
+msgstr "Επανάληψη:"
 
 #: ../src/me-tv.ui.h:72
 msgid "Remove colon from recording filenames"
@@ -511,7 +515,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:73
 msgid "Rename the new channel to a unique name"
-msgstr ""
+msgstr "Μετονομασία νέου καναλιού σε μοναδικό όνομα"
 
 #: ../src/me-tv.ui.h:74
 msgid "Repeat this action for all channel conflicts"
@@ -531,7 +535,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:78
 msgid "Search description"
-msgstr ""
+msgstr "Αναζήτηση περιγραφής"
 
 #: ../src/me-tv.ui.h:79
 msgid "Search:"
@@ -571,7 +575,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:88
 msgid "Show channel number"
-msgstr ""
+msgstr "Εμφάνιση αριθμού καναλιού"
 
 #: ../src/me-tv.ui.h:89
 msgid "Show time on EPG event buttons"
@@ -759,7 +763,7 @@ msgstr ""
 
 #: ../src/channels_dialog.cc:231
 msgid "No channel selected"
-msgstr ""
+msgstr "Κανένα επιλεγμένο κανάλι"
 
 #: ../src/channels_dialog.cc:236
 msgid "Select only one channel"
@@ -799,7 +803,7 @@ msgstr ""
 
 #: ../src/device_manager.cc:134
 msgid "There are no DVB devices available"
-msgstr ""
+msgstr "Δεν υπάρχουν διαθέσιμες ψηφιακές συσκευές DVB"
 
 #: ../src/dvb_demuxer.cc:37
 msgid "Failed to open demux device"
@@ -819,7 +823,7 @@ msgstr ""
 
 #: ../src/dvb_demuxer.cc:103
 msgid "Read timeout"
-msgstr ""
+msgstr "Λήξη χρόνου ανάγνωσης"
 
 #: ../src/dvb_demuxer.cc:109
 msgid "Failed to read data from demuxer"
@@ -941,14 +945,14 @@ msgstr "Άγνωστη περιγραφή"
 #: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 ώρα"
+msgstr[1] "%1 ώρες"
 
 #: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 λεπτό"
+msgstr[1] "%1 λεπτά"
 
 #: ../src/epg_event_search_dialog.cc:59
 msgid " "
@@ -1008,11 +1012,11 @@ msgstr "-"
 
 #: ../src/gtk_epg_widget.cc:290 ../src/gtk_epg_widget.cc:360
 msgid "Unknown program"
-msgstr ""
+msgstr "Άγνωστο πρόγραμμα"
 
 #: ../src/main.cc:29
 msgid "Me TV is a digital television viewer for GTK"
-msgstr ""
+msgstr "Το Me TV είναι πρόγραμμα προβολής ψηφιακής τηλεόρασης για GTK"
 
 #: ../src/main.cc:30
 msgid ""
@@ -1027,7 +1031,7 @@ msgstr ""
 
 #: ../src/main.cc:89
 msgid "Start in safe mode"
-msgstr ""
+msgstr "Έναρξη σε ασφαλή λειτουργία"
 
 #: ../src/main.cc:94
 msgid "Start minimised in notification area"
@@ -1061,7 +1065,7 @@ msgstr ""
 
 #: ../src/main.cc:116
 msgid "Show Me TV help options"
-msgstr ""
+msgstr "Εμφάνιση βοήθειας επιλογών Me TV"
 
 #: ../src/main.cc:161
 msgid "An unhandled error occurred"
@@ -1073,7 +1077,7 @@ msgstr ""
 
 #: ../src/main_window.cc:208
 msgid "Cannot update channels while recording"
-msgstr ""
+msgstr "Αδυναμία ενημέρωσης καναλιών κατά την εγγραφή"
 
 #: ../src/main_window.cc:558
 msgid "Failed to start engine: Engine has already been started"
@@ -1120,7 +1124,7 @@ msgstr "Άγνωστη Γλώσσα"
 
 #: ../src/scan_dialog.cc:32
 msgid "Me TV - Error"
-msgstr ""
+msgstr "Σφάλμα Me TV"
 
 #: ../src/scan_dialog.cc:138
 msgid "Service Name"
@@ -1128,7 +1132,7 @@ msgstr "Όνομα Υπηρεσίας"
 
 #: ../src/scan_dialog.cc:139
 msgid "Signal Strength"
-msgstr ""
+msgstr "Ισχύς σήματος"
 
 #: ../src/scan_dialog.cc:159
 msgid "Australia"
@@ -1207,15 +1211,15 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:551
 msgid "Starting scanner"
-msgstr ""
+msgstr "Έναρξη ανίχνευσης"
 
 #: ../src/scan_dialog.cc:630
 msgid "%1/%2 (%3 channels)"
-msgstr ""
+msgstr "%1/%2 (%3 κανάλια)"
 
 #: ../src/scan_dialog.cc:657
 msgid "Scan complete"
-msgstr ""
+msgstr "Ολοκλήρωση ανίχνευσης"
 
 #: ../src/scan_dialog.cc:715
 msgid "No auto scan range was specified"
@@ -1223,7 +1227,7 @@ msgstr ""
 
 #: ../src/scan_dialog.cc:809
 msgid "Unknown scan range '%1'"
-msgstr ""
+msgstr "Άγνωστο εύρος ανίχνευσης '%1'"
 
 #: ../src/scan_dialog.cc:824
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
@@ -1250,7 +1254,7 @@ msgstr ""
 
 #: ../src/scheduled_recording_manager.cc:464
 msgid "Scheduled recording '%1' not found"
-msgstr ""
+msgstr "Η προγραμματισμένη εγγραφή '%1' δεν βρέθηκε"
 
 #: ../src/scheduled_recordings_dialog.cc:50
 msgid "Description"
@@ -1270,11 +1274,11 @@ msgstr "Συσκευή"
 
 #: ../src/scheduled_recordings_dialog.cc:66
 msgid "No scheduled recording selected"
-msgstr ""
+msgstr "Δεν επιλέχθηκε προγραμματισμένη εγγραφή"
 
 #: ../src/status_icon.cc:112
 msgid "Me TV is idle"
-msgstr ""
+msgstr "Το Me TV σε αδράνεια"
 
 #: ../src/stream_manager.cc:123
 msgid "Failed to find frontend '%1' for scheduled recording"
