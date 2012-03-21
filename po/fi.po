@@ -9,14 +9,14 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-09-29 20:05-0400\n"
 "PO-Revision-Date: 2012-01-04 05:37+0000\n"
-"Last-Translator: Timo Jyrinki <timo.jyrinki@gmail.com>\n"
+"Last-Translator: Timo Jyrinki <timo.jyrinki@canonical.com>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-01-05 06:02+0000\n"
-"X-Generator: Launchpad (build 14625)\n"
+"X-Launchpad-Export-Date: 2012-03-21 05:24+0000\n"
+"X-Generator: Launchpad (build 14981)\n"
 
 #: ../client/me-tv.schemas.in.h:1
 msgid ""
@@ -1053,11 +1053,11 @@ msgstr ""
 msgid "Failed to open FIFO for reading '%1'"
 msgstr ""
 
-#: ../client/main_window.cc:1047 ../client/main_window.cc:1119
+#: ../client/main_window.cc:1042 ../client/main_window.cc:1114
 msgid "-"
 msgstr "-"
 
-#: ../client/main_window.cc:1047 ../client/main_window.cc:1119
+#: ../client/main_window.cc:1042 ../client/main_window.cc:1114
 msgid "Unknown program"
 msgstr "Tuntematon ohjelma"
 
@@ -1114,7 +1114,7 @@ msgstr ""
 msgid "Show Me TV help options"
 msgstr "Näytä Me TV:n ohjevalitsimet"
 
-#: ../client/me-tv-client.cc:287 ../console/me-tv-console.cc:160
+#: ../client/me-tv-client.cc:280 ../console/me-tv-console.cc:160
 msgid "An unhandled error occurred"
 msgstr "Tapahtui käsittelemätön virhe"
 
@@ -1126,7 +1126,7 @@ msgstr ""
 msgid "Cannot update channels while recording"
 msgstr ""
 
-#: ../client/main_window.cc:542
+#: ../client/main_window.cc:541
 msgid "Failed to start engine: Engine has already been started"
 msgstr "Moottoria ei voi käynnistää: moottori on jo käynnistetty"
 
@@ -1243,7 +1243,7 @@ msgstr "Tuodaan kanavia"
 msgid "Invalid parameter count on line %1"
 msgstr "Virheellinen parametrien lukumäärä rivillä %1"
 
-#: ../server/request_handler.cc:453
+#: ../server/request_handler.cc:443
 msgid ""
 "Failed to import: importing a channels.conf is only supported with DVB-T, "
 "DVB-C, DVB-S and ATSC"
