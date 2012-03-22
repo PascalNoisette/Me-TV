@@ -342,9 +342,6 @@ void TableAdapter::replace_rows(DataTable& data_table)
 
 	if (data_table.rows.size() > 0)
 	{
-		Statement statementBegin(connection, "BEGIN");
-		statementBegin.step();
-
 		for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 		{
 			Data::Row& row = *i;
@@ -380,9 +377,6 @@ void TableAdapter::replace_rows(DataTable& data_table)
 			
 			statement.reset();
 		}
-
-		Statement statementEnd(connection, "End");
-		statementEnd.step();
 	}
 }
 
