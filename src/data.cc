@@ -74,6 +74,7 @@ Statement::~Statement()
 	{
 		throw SQLiteException(connection, _("Failed to finalise statement"));
 	}
+	statement = NULL;
 }
 
 void Statement::reset()
@@ -178,6 +179,22 @@ void Connection::open(const Glib::ustring& filename)
 	}
 	
 	database_created = !database_exists;
+	
+	// Enable WAL journal
+	Statement* stmnt = new Statement(*this, "PRAGMA journal_mode=WAL");
+	stmnt->step();
+	delete stmnt;
+
+	// Set page size
+	stmnt = new Statement(*this, "PRAGMA page_size=8192");
+	stmnt->step();
+	delete stmnt;
+
+	// Synchronous mode
+	stmnt = new Statement(*this, "PRAGMA synchronous=NORMAL");
+	stmnt->step();
+	delete stmnt;
+	
 }
 
 Connection::~Connection()

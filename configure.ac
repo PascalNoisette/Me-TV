@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([Me TV], [1.3.7], [http://launchpad.net/me-tv], me-tv)
+AC_INIT([Me TV], [1.3.8], [http://launchpad.net/me-tv], me-tv)
 AC_COPYRIGHT([Michael Lamothe <michael.lamothe@gmail.com>])
 AC_CONFIG_SRCDIR([src/main.cc])
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -120,7 +120,7 @@ AM_GLIB_DEFINE_LOCALEDIR(PACKAGE_LOCALE_DIR)
 IT_PROG_INTLTOOL([0.35.0])
 
 # required versions
-SQLITE_REQUIRED=3.0
+SQLITE_REQUIRED=3.7.0
 GTKMM_REQUIRED=2.12.0
 GIOMM_REQUIRED=2.10.0
 GCONF_REQUIRED=2.0
