@@ -15,24 +15,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2012-03-23 05:02+0000\n"
-"X-Generator: Launchpad (build 14996)\n"
+"X-Launchpad-Export-Date: 2012-06-18 05:34+0000\n"
+"X-Generator: Launchpad (build 15419)\n"
 
-#: ../me-tv.schemas.in.h:1
+#: ../client/me-tv.schemas.in.h:10
 msgid ""
 "By default, the EPG header is visible but disabling it can minimise screen "
 "real estate by reducing the vertical EPG size."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:2
+#: ../client/me-tv.schemas.in.h:22
 msgid "Display a channel number next to the channel name in the EPG."
 msgstr "電子節目表頻道名後顯示頻道號"
 
-#: ../me-tv.schemas.in.h:3
+#: ../client/me-tv.schemas.in.h:28
 msgid "Display the time span in the EPG buttons."
 msgstr "於電子節目表按鍵顯示時間區間"
 
-#: ../me-tv.schemas.in.h:4
+#: ../client/me-tv.schemas.in.h:9
 msgid "Displays the date/time header in the EPG"
 msgstr ""
 
@@ -40,32 +40,32 @@ msgstr ""
 msgid "EPG event titles to auto record"
 msgstr ""
 
-#: ../me-tv.schemas.in.h:6
+#: ../client/me-tv.schemas.in.h:13
 msgid ""
 "Extra default time (in minutes) to append to the end of a scheduled recording"
 msgstr "預錄後附加之額外時間（分鐘）"
 
-#: ../me-tv.schemas.in.h:7
+#: ../client/me-tv.schemas.in.h:14
 msgid ""
 "Extra default time (in minutes) to append to the end of a scheduled "
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr "預錄後附加之額外時間（分鐘）。此為預設值，實際值可在預錄設定變更。"
 
-#: ../me-tv.schemas.in.h:8
+#: ../client/me-tv.schemas.in.h:11
 msgid ""
 "Extra default time (in minutes) to append to the start of a scheduled "
 "recording"
 msgstr ""
 
-#: ../me-tv.schemas.in.h:9
+#: ../client/me-tv.schemas.in.h:12
 msgid ""
 "Extra default time (in minutes) to append to the start of a scheduled "
 "recording. This default value can be overriden when setting up a scheduled "
 "recording."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:10
+#: ../client/me-tv.schemas.in.h:29
 msgid ""
 "If you want to reduce the vertical size of your EPG then use this setting in "
 "combination with show_epg_tooltips."
@@ -75,13 +75,13 @@ msgstr ""
 msgid "Ignore TeleText streams when viewing and recording"
 msgstr ""
 
-#: ../me-tv.schemas.in.h:12
+#: ../client/me-tv.schemas.in.h:19
 msgid ""
 "Me TV uses libvlc to play sound, this setting tells libvlc which mechanism "
 "to use when playing sound."
 msgstr "Me TV 使用 libvlc 發聲，此設定通知 libvlc 以何機制發聲。"
 
-#: ../me-tv.schemas.in.h:13
+#: ../client/me-tv.schemas.in.h:17
 msgid ""
 "Me TV uses libvlc to render video, this setting tells libvlc which mechanism "
 "to use when drawing."
@@ -92,19 +92,19 @@ msgid ""
 "Me TV will schedule programs that have titles that contain these words."
 msgstr "Me TV 會錄影名稱有此字詞之節目。"
 
-#: ../me-tv.schemas.in.h:15
+#: ../client/me-tv.schemas.in.h:25
 msgid ""
 "Most digital video is transmitted in an interlaced format which should be "
 "corrected before viewing. Options are \"none\", \"standard\", \"tvtime\""
 msgstr "數碼視訊多以交錯格式傳送，觀看前要修正。選擇有「無」、「標準」、「電視時間」。"
 
-#: ../me-tv.schemas.in.h:16
+#: ../client/me-tv.schemas.in.h:27
 msgid ""
 "Most of the time the text encoding can be automatically determined but "
 "sometimes it needs a hint such as iso6937."
 msgstr "文字編碼通常能自動分辨，但有時要配以修飾詞如「iso6937」。"
 
-#: ../me-tv.schemas.in.h:17
+#: ../client/me-tv.schemas.in.h:34
 msgid "Recent EPG event searches"
 msgstr ""
 
@@ -112,19 +112,19 @@ msgstr ""
 msgid "Remove the colon ':' from the recording filename"
 msgstr "錄影檔名不要冒號「:」"
 
-#: ../me-tv.schemas.in.h:19
+#: ../client/me-tv.schemas.in.h:15
 msgid "Sets the \"Always On Top\" attribute on the main window."
 msgstr "主視窗置頂"
 
-#: ../me-tv.schemas.in.h:20
+#: ../client/me-tv.schemas.in.h:18
 msgid "Sets the audio driver for libvlc to use."
 msgstr "設定 libvlc 使用之音訊驅動程式"
 
-#: ../me-tv.schemas.in.h:21
+#: ../client/me-tv.schemas.in.h:16
 msgid "Sets the video driver for the player to use."
 msgstr "設定播放器使用之視訊驅動程式"
 
-#: ../me-tv.schemas.in.h:22
+#: ../client/me-tv.schemas.in.h:32
 msgid "Show a tool tip when hovering over an EPG event."
 msgstr ""
 
@@ -154,75 +154,75 @@ msgid ""
 "directory."
 msgstr "置放錄影之目錄。預設為用戶家目錄。"
 
-#: ../me-tv.schemas.in.h:28
+#: ../client/me-tv.schemas.in.h:3
 msgid "The height of the window before Me TV was last closed"
 msgstr "Me TV 對上一次關閉時視窗高度"
 
-#: ../me-tv.schemas.in.h:29
+#: ../client/me-tv.schemas.in.h:4
 msgid ""
 "The height of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:30
+#: ../client/me-tv.schemas.in.h:20
 msgid "The last channel tuned to."
 msgstr "最後觀看頻道"
 
-#: ../me-tv.schemas.in.h:31
+#: ../client/me-tv.schemas.in.h:31
 msgid ""
 "The number of channels to show before paging, this is deliberately set low "
 "to reduce preformance issues."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:32
+#: ../client/me-tv.schemas.in.h:30
 msgid "The number of channels to show before paging."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:33
+#: ../client/me-tv.schemas.in.h:23
 msgid "The number of hours for the EPG to span on one page."
 msgstr "電子節目表每版顯示時間"
 
-#: ../me-tv.schemas.in.h:34
+#: ../client/me-tv.schemas.in.h:26
 msgid "The text encoding that the DVB information is in."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:35
+#: ../client/me-tv.schemas.in.h:1
 msgid "The width of the window before Me TV was last closed"
 msgstr "Me TV 對上一次關閉時視窗寬度"
 
-#: ../me-tv.schemas.in.h:36
+#: ../client/me-tv.schemas.in.h:2
 msgid ""
 "The width of the window before Me TV was last closed. Me TV uses this value "
 "to try to restore the main window to its previous geometry."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:37
+#: ../client/me-tv.schemas.in.h:5
 msgid "The x position of the window before Me TV was last closed"
 msgstr ""
 
-#: ../me-tv.schemas.in.h:38
+#: ../client/me-tv.schemas.in.h:6
 msgid ""
 "The x position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:39
+#: ../client/me-tv.schemas.in.h:7
 msgid "The y position of the window before Me TV was last closed"
 msgstr ""
 
-#: ../me-tv.schemas.in.h:40
+#: ../client/me-tv.schemas.in.h:8
 msgid ""
 "The y position of the window before Me TV was last closed. Me TV uses this "
 "value to try to restore the main window to its previous geometry."
 msgstr ""
 
-#: ../me-tv.schemas.in.h:41
+#: ../client/me-tv.schemas.in.h:21
 msgid ""
 "This is used to store what channel the user was last watching so it can be "
 "returned when restarting."
 msgstr "記起最後觀看頻道好讓下次開啟時自動打開"
 
-#: ../me-tv.schemas.in.h:42
+#: ../client/me-tv.schemas.in.h:33
 msgid "This will show the timespan of an EPG event in a tooltip."
 msgstr ""
 
@@ -232,35 +232,35 @@ msgid ""
 "closed."
 msgstr "此值為否時關閉主視窗 Me TV 自動結束"
 
-#: ../me-tv.schemas.in.h:44
+#: ../client/me-tv.schemas.in.h:24
 msgid "Whether the video should be deinterlaced."
 msgstr ""
 
-#: ../me-tv.desktop.in.h:1
+#: ../client/me-tv.desktop.in.h:2
 msgid "A digital television (DVB) viewer for GNOME"
 msgstr "GNOME 數碼電視觀賞程式"
 
-#: ../me-tv.desktop.in.h:2
+#: ../client/me-tv.desktop.in.h:1
 msgid "Me TV"
 msgstr ""
 
-#: ../src/me-tv.ui.h:1
+#: ../client/me-tv.ui.h:53
 msgid " hours"
 msgstr " 小時"
 
-#: ../src/me-tv.ui.h:2
+#: ../client/me-tv.ui.h:38
 msgid " minutes"
 msgstr " 分鐘"
 
-#: ../src/me-tv.ui.h:3
+#: ../client/me-tv.ui.h:79
 msgid "00:00"
 msgstr ""
 
-#: ../src/me-tv.ui.h:4
+#: ../client/me-tv.ui.h:37
 msgid ":"
 msgstr ""
 
-#: ../src/me-tv.ui.h:5
+#: ../client/me-tv.ui.h:61
 msgid "<b>Device:</b>"
 msgstr "<b>裝置:</b>"
 
@@ -268,7 +268,7 @@ msgstr "<b>裝置:</b>"
 msgid "A channel named 'xxx' already exists."
 msgstr "已有名為「xxx」之頻道"
 
-#: ../src/me-tv.ui.h:7
+#: ../client/me-tv.ui.h:67
 msgid ""
 "A channels.conf file is a common file format for storing channels and can be "
 "read by many applications.  You may have one of these from another DVB "
@@ -276,15 +276,15 @@ msgid ""
 "to generate a channels.conf file."
 msgstr ""
 
-#: ../src/me-tv.ui.h:8
+#: ../client/me-tv.ui.h:42
 msgid "Advanced"
 msgstr "進階"
 
-#: ../src/me-tv.ui.h:9
+#: ../client/me-tv.ui.h:41
 msgid "After:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:10
+#: ../client/me-tv.ui.h:68
 msgid ""
 "An initial scan file is used to seed the tuner with some initial parameters "
 "to help it find DVB services.  Many popular initial scan files are available "
@@ -296,7 +296,7 @@ msgstr ""
 msgid "Audio driver:"
 msgstr "音訊驅動:"
 
-#: ../src/me-tv.ui.h:12
+#: ../client/me-tv.ui.h:69
 msgid "Auto scan"
 msgstr "自動掃描"
 
@@ -312,15 +312,15 @@ msgstr "頻道頻率: "
 msgid "Channel Name : "
 msgstr "頻道名稱: "
 
-#: ../src/me-tv.ui.h:16
+#: ../client/me-tv.ui.h:34
 msgid "Channel:"
 msgstr "頻道:"
 
-#: ../src/me-tv.ui.h:17
+#: ../client/me-tv.ui.h:30
 msgid "Close Me TV"
 msgstr "關閉 Me TV"
 
-#: ../src/me-tv.ui.h:18
+#: ../client/me-tv.ui.h:7
 msgid "Copyright © Michael Lamothe"
 msgstr ""
 
@@ -328,67 +328,67 @@ msgstr ""
 msgid "Deinterlace Type:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:20
+#: ../client/me-tv.ui.h:35
 msgid "Description:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:21
+#: ../client/me-tv.ui.h:62
 msgid "Device Text"
 msgstr ""
 
-#: ../src/me-tv.ui.h:22
+#: ../client/me-tv.ui.h:29
 msgid "Do Nothing"
 msgstr ""
 
-#: ../src/me-tv.ui.h:23
+#: ../client/me-tv.ui.h:59
 msgid "Drag and drop the channels to reorder them."
 msgstr ""
 
-#: ../src/me-tv.ui.h:24
+#: ../client/me-tv.ui.h:33
 msgid "Duration:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:25
+#: ../client/me-tv.ui.h:75
 msgid "EPG Event Search"
 msgstr ""
 
-#: ../src/me-tv.ui.h:26
+#: ../client/me-tv.ui.h:2
 msgid "EPG event information"
 msgstr "電子節目指南事件資訊"
 
-#: ../src/me-tv.ui.h:27
+#: ../client/me-tv.ui.h:90
 msgid ""
 "EPG event titles that contain the following entries will be automatically "
 "recorded.  The order is important, programs that are higher in the list get "
 "priority over the lower ones."
 msgstr ""
 
-#: ../src/me-tv.ui.h:28
+#: ../client/me-tv.ui.h:46
 msgid "EPG page size: "
 msgstr ""
 
-#: ../src/me-tv.ui.h:29
+#: ../client/me-tv.ui.h:47
 msgid "EPG span: "
 msgstr ""
 
-#: ../src/me-tv.ui.h:30
+#: ../client/me-tv.ui.h:26
 msgid "Every day"
 msgstr "每天"
 
-#: ../src/me-tv.ui.h:31
+#: ../client/me-tv.ui.h:27
 msgid "Every week"
 msgstr "每週"
 
-#: ../src/me-tv.ui.h:32
+#: ../client/me-tv.ui.h:28
 msgid "Every weekday"
 msgstr "週一至五"
 
-#: ../src/me-tv.ui.h:33
+#: ../client/me-tv.ui.h:77
 msgid "Fullscreen"
 msgstr ""
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
-#: ../src/me-tv.ui.h:35
+#: ../client/me-tv.ui.h:11
 msgid ""
 "GNU General Public License:\n"
 "\n"
@@ -410,7 +410,7 @@ msgid ""
 "found in /usr/share/common-licenses/GPL file."
 msgstr ""
 
-#: ../src/me-tv.ui.h:48
+#: ../client/me-tv.ui.h:65
 msgid "Import a channels.conf"
 msgstr "匯入channels.conf"
 
@@ -418,11 +418,11 @@ msgstr "匯入channels.conf"
 msgid "Keep the existing channel"
 msgstr "保留現有頻道"
 
-#: ../src/me-tv.ui.h:50
+#: ../client/me-tv.ui.h:6
 msgid "Me TV - About"
 msgstr ""
 
-#: ../src/me-tv.ui.h:51
+#: ../client/me-tv.ui.h:89
 msgid "Me TV - Auto Record"
 msgstr "Me TV - 自動錄影"
 
@@ -430,11 +430,11 @@ msgstr "Me TV - 自動錄影"
 msgid "Me TV - Channel conflict"
 msgstr ""
 
-#: ../src/me-tv.ui.h:53
+#: ../client/me-tv.ui.h:58
 msgid "Me TV - Channels Editor"
 msgstr ""
 
-#: ../src/me-tv.ui.h:54
+#: ../client/me-tv.ui.h:86
 msgid "Me TV - EPG Event Search"
 msgstr ""
 
@@ -442,55 +442,55 @@ msgstr ""
 msgid "Me TV - Edit Channel"
 msgstr ""
 
-#: ../src/me-tv.ui.h:56
+#: ../client/me-tv.ui.h:78
 msgid "Me TV - It's TV for me computer"
 msgstr ""
 
-#: ../src/me-tv.ui.h:57
+#: ../client/me-tv.ui.h:74
 msgid "Me TV - Main Window"
 msgstr ""
 
-#: ../src/me-tv.ui.h:58
+#: ../client/me-tv.ui.h:44
 msgid "Me TV - Preferences Window"
 msgstr ""
 
-#: ../src/me-tv.ui.h:59
+#: ../client/me-tv.ui.h:1
 msgid "Me TV - Program Details"
 msgstr ""
 
-#: ../src/me-tv.ui.h:60
+#: ../client/me-tv.ui.h:60
 msgid "Me TV - Scan Wizard"
 msgstr ""
 
-#: ../src/me-tv.ui.h:61
+#: ../client/me-tv.ui.h:32
 msgid "Me TV - Scheduled Recording"
 msgstr "Me TV - 預錄"
 
-#: ../src/me-tv.ui.h:62
+#: ../client/me-tv.ui.h:43
 msgid "Me TV - Scheduled Recordings"
 msgstr "Me TV - 預錄"
 
-#: ../src/me-tv.ui.h:63
+#: ../client/me-tv.ui.h:8
 msgid "Me TV is a Digital Television (DVB) viewer for GNOME"
 msgstr "Me TV 是專為GNOME而設的數碼電視(DVB)播放器"
 
-#: ../src/me-tv.ui.h:64
+#: ../client/me-tv.ui.h:9
 msgid "Me TV project website"
 msgstr ""
 
-#: ../src/me-tv.ui.h:65
+#: ../client/me-tv.ui.h:83
 msgid "Next"
 msgstr ""
 
-#: ../src/me-tv.ui.h:66
+#: ../client/me-tv.ui.h:84
 msgid "Next Day"
 msgstr ""
 
-#: ../src/me-tv.ui.h:67
+#: ../client/me-tv.ui.h:81
 msgid "Now"
 msgstr ""
 
-#: ../src/me-tv.ui.h:68
+#: ../client/me-tv.ui.h:25
 msgid "Once"
 msgstr ""
 
@@ -498,19 +498,19 @@ msgstr ""
 msgid "Overwrite the existing channel"
 msgstr "覆蓋已有頻道"
 
-#: ../src/me-tv.ui.h:70
+#: ../client/me-tv.ui.h:85
 msgid "Page:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:71
+#: ../client/me-tv.ui.h:80
 msgid "Previous"
 msgstr ""
 
-#: ../src/me-tv.ui.h:72
+#: ../client/me-tv.ui.h:91
 msgid "Previous Day"
 msgstr ""
 
-#: ../src/me-tv.ui.h:73 ../src/scheduled_recordings_dialog.cc:54
+#: ../client/scheduled_recordings_dialog.cc:60
 msgid "Record"
 msgstr "錄影"
 
@@ -522,15 +522,15 @@ msgstr ""
 msgid "Record extra before: "
 msgstr ""
 
-#: ../src/me-tv.ui.h:76
+#: ../client/me-tv.ui.h:54
 msgid "Recording directory: "
 msgstr "錄影目錄: "
 
-#: ../src/me-tv.ui.h:77
+#: ../client/me-tv.ui.h:40
 msgid "Recurring:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:78
+#: ../client/me-tv.ui.h:57
 msgid "Remove colon from recording filenames"
 msgstr "自錄影檔名刪除冒號"
 
@@ -542,55 +542,55 @@ msgstr "將新頻道改為獨有名稱"
 msgid "Repeat this action for all channel conflicts"
 msgstr ""
 
-#: ../src/me-tv.ui.h:81
+#: ../client/me-tv.ui.h:72
 msgid "Scan Progress"
 msgstr "掃描進度"
 
-#: ../src/me-tv.ui.h:82
+#: ../client/me-tv.ui.h:63
 msgid "Scan using an initial scan file"
 msgstr ""
 
-#: ../src/me-tv.ui.h:83
+#: ../client/me-tv.ui.h:73
 msgid "Scanning/Importing"
 msgstr "正掃描或匯入"
 
-#: ../src/me-tv.ui.h:84
+#: ../client/me-tv.ui.h:76
 msgid "Scheduled Recordings"
 msgstr ""
 
-#: ../src/me-tv.ui.h:85
+#: ../client/me-tv.ui.h:87
 msgid "Search description"
 msgstr ""
 
-#: ../src/me-tv.ui.h:86
+#: ../client/me-tv.ui.h:88
 msgid "Search:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:87
+#: ../client/me-tv.ui.h:24
 msgid "See https://launchpad.net/me-tv"
 msgstr ""
 
-#: ../src/me-tv.ui.h:88
+#: ../client/me-tv.ui.h:55
 msgid "Select A Recording Directory"
 msgstr "選擇錄影檔存放資料夾"
 
-#: ../src/me-tv.ui.h:89
+#: ../client/me-tv.ui.h:71
 msgid "Select Scan File"
 msgstr "選取掃描檔"
 
-#: ../src/me-tv.ui.h:90
+#: ../client/me-tv.ui.h:64
 msgid "Select a channels.conf file"
 msgstr "選取 channels.conf 檔案"
 
-#: ../src/me-tv.ui.h:91
+#: ../client/me-tv.ui.h:66
 msgid "Select a file"
 msgstr "選取檔案"
 
-#: ../src/me-tv.ui.h:92
+#: ../client/me-tv.ui.h:49
 msgid "Set \"Always on Top\" at startup"
 msgstr "開始時將視窗設為「置頂」"
 
-#: ../src/me-tv.ui.h:93
+#: ../client/me-tv.ui.h:52
 msgid "Show EPG header"
 msgstr ""
 
@@ -598,41 +598,41 @@ msgstr ""
 msgid "Show a status icon in the notification area"
 msgstr "在系統通告區顯示狀態圖示"
 
-#: ../src/me-tv.ui.h:95
+#: ../client/me-tv.ui.h:56
 msgid "Show channel number"
 msgstr "顯示頻道編號"
 
-#: ../src/me-tv.ui.h:96
+#: ../client/me-tv.ui.h:51
 msgid "Show time on EPG event buttons"
 msgstr ""
 
-#: ../src/me-tv.ui.h:97
+#: ../client/me-tv.ui.h:50
 msgid "Show tooltips for EPG event buttons"
 msgstr ""
 
-#: ../src/me-tv.ui.h:98
+#: ../client/me-tv.ui.h:31
 msgid "Shutdown"
 msgstr ""
 
-#: ../src/me-tv.ui.h:99
+#: ../client/me-tv.ui.h:36
 msgid "Start Date:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:100
+#: ../client/me-tv.ui.h:39
 msgid "Start Time:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:101
+#: ../client/me-tv.ui.h:48
 msgid "Text encoding:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:102
+#: ../client/me-tv.ui.h:70
 msgid ""
 "This option will only work if your DVB setup supports auto scanning.  "
 "Currently, this feature is only supported on DVB-T and ATSC devices."
 msgstr ""
 
-#: ../src/me-tv.ui.h:103
+#: ../client/me-tv.ui.h:3
 msgid "This program is scheduled for recording."
 msgstr "本節目已加入預錄"
 
@@ -640,15 +640,15 @@ msgstr "本節目已加入預錄"
 msgid "Video driver:"
 msgstr ""
 
-#: ../src/me-tv.ui.h:105
+#: ../client/me-tv.ui.h:5
 msgid "View Schedule"
 msgstr "檢視預錄表"
 
-#: ../src/me-tv.ui.h:106
+#: ../client/me-tv.ui.h:4
 msgid "Watch Now"
 msgstr "立即看"
 
-#: ../src/me-tv.ui.h:107
+#: ../client/me-tv.ui.h:82
 msgid "What's on now"
 msgstr ""
 
@@ -673,7 +673,7 @@ msgstr ""
 msgid "_Delete my old Me TV data!"
 msgstr "刪除我的舊 Me TV 資料(_D)！"
 
-#: ../src/me-tv.ui.h:114
+#: ../client/me-tv.ui.h:45
 msgid "channels"
 msgstr "頻道"
 
@@ -681,55 +681,55 @@ msgstr "頻道"
 msgid "Application has already been initialised"
 msgstr "應用程式已初始化"
 
-#: ../src/application.cc:58
+#: ../server/me-tv-server.cc:448
 msgid "The SQLite version is not thread-safe"
 msgstr ""
 
-#: ../src/application.cc:112
+#: ../client/me-tv-client.cc:218
 msgid "_File"
 msgstr "檔案(_F)"
 
-#: ../src/application.cc:113
+#: ../client/me-tv-client.cc:219
 msgid "_View"
 msgstr "檢視(_V)"
 
-#: ../src/application.cc:114
+#: ../client/me-tv-client.cc:220
 msgid "_Video"
 msgstr "影片(_V)"
 
-#: ../src/application.cc:115
+#: ../client/me-tv-client.cc:221
 msgid "_Audio"
 msgstr "音訊(_A)"
 
-#: ../src/application.cc:116
+#: ../client/me-tv-client.cc:222
 msgid "_Help"
 msgstr ""
 
-#: ../src/application.cc:118
+#: ../client/me-tv-client.cc:224
 msgid "Subtitles"
 msgstr "字幕"
 
-#: ../src/application.cc:119
+#: ../client/me-tv-client.cc:225
 msgid "_Streams"
 msgstr "串流(_S)"
 
-#: ../src/application.cc:120
+#: ../client/me-tv-client.cc:226
 msgid "_Channels"
 msgstr "頻道(_C)"
 
-#: ../src/application.cc:123
+#: ../client/me-tv-client.cc:229
 msgid "_Both"
 msgstr ""
 
-#: ../src/application.cc:124
+#: ../client/me-tv-client.cc:230
 msgid "_Left"
 msgstr "左聲道(_L)"
 
-#: ../src/application.cc:125
+#: ../client/me-tv-client.cc:231
 msgid "_Right"
 msgstr "右聲道(_R)"
 
-#: ../src/application.cc:137
+#: ../client/me-tv-client.cc:242
 msgid "Failed to get DBus session"
 msgstr "無法取得 DBus 工作階段"
 
@@ -737,7 +737,7 @@ msgstr "無法取得 DBus 工作階段"
 msgid "Failed to start recording"
 msgstr "無法錄影"
 
-#: ../src/application.cc:378
+#: ../server/me-tv-server.cc:503
 msgid "Failed to initialise database"
 msgstr ""
 
@@ -745,33 +745,32 @@ msgstr ""
 msgid "Application has not been initialised"
 msgstr "應用程式還未初始化"
 
-#: ../src/auto_record_dialog.cc:38 ../src/epg_event_search_dialog.cc:60
+#: ../client/auto_record_dialog.cc:41 ../client/epg_event_search_dialog.cc:62
 msgid "Title"
 msgstr "節目名"
 
-#: ../src/auto_record_dialog.cc:93
+#: ../client/auto_record_dialog.cc:94
 msgid "No row selected"
 msgstr ""
 
-#: ../src/channel_manager.cc:113 ../src/channel_manager.cc:186
-#: ../src/scan_dialog.cc:90
+#: ../server/channel_manager.cc:113 ../server/channel_manager.cc:187
 msgid "Unknown frontend type"
 msgstr "前端類型不明"
 
-#: ../src/channel_manager.cc:258
+#: ../server/channel_manager.cc:257
 msgid "Invalid channel index"
 msgstr "頻道索引無效"
 
-#: ../src/channel_manager.cc:272
+#: ../server/channel_manager.cc:282
 msgid "Channel '%1' not found"
 msgstr "找不到「%1」頻道"
 
-#: ../src/channel_manager.cc:295
+#: ../server/channel_manager.cc:311
 msgid "Failed to add channel: You cannot have more than 1 channel"
 msgid_plural "Failed to add channel: You cannot have more than %1 channels"
 msgstr[0] "無法添加頻道：不能多於 %1 個頻道"
 
-#: ../src/channels_dialog.cc:56
+#: ../client/channels_dialog.cc:54
 msgid "Channel Name"
 msgstr "頻道名"
 
@@ -791,160 +790,160 @@ msgstr "未選取頻道"
 msgid "Select only one channel"
 msgstr ""
 
-#: ../src/data.cc:50 ../src/data.cc:55
+#: ../server/data.cc:50 ../server/data.cc:55
 msgid "Failed to prepare statement: %1"
 msgstr ""
 
-#: ../src/data.cc:62
+#: ../server/data.cc:62
 msgid "Prepared statement had remaining data: %1"
 msgstr ""
 
-#: ../src/data.cc:67
+#: ../server/data.cc:67
 msgid "Failed to create statement"
 msgstr ""
 
-#: ../src/data.cc:75
+#: ../server/data.cc:75
 msgid "Failed to finalise statement"
 msgstr ""
 
-#: ../src/data.cc:105
+#: ../server/data.cc:106
 msgid "Failed to execute statement: %1"
 msgstr ""
 
-#: ../src/data.cc:176
+#: ../server/data.cc:177
 msgid "Failed to connect to Me TV database '%1'"
 msgstr ""
 
-#: ../src/data.cc:246
+#: ../server/data.cc:263
 msgid "Only integers can be primary keys"
 msgstr ""
 
-#: ../src/data.cc:315
+#: ../server/data.cc:332
 msgid "Failed to create TableAdapter: Table has no columns"
 msgstr ""
 
-#: ../src/device_manager.cc:134
+#: ../server/device_manager.cc:135
 msgid "There are no DVB devices available"
 msgstr "無可用 DVB 裝置"
 
-#: ../src/dvb_demuxer.cc:37
+#: ../server/dvb_demuxer.cc:38
 msgid "Failed to open demux device"
 msgstr ""
 
-#: ../src/dvb_demuxer.cc:68
+#: ../server/dvb_demuxer.cc:69
 msgid "Failed to set PES filter"
 msgstr ""
 
-#: ../src/dvb_demuxer.cc:87
+#: ../server/dvb_demuxer.cc:91
 msgid "Failed to set section filter for demuxer"
 msgstr ""
 
-#: ../src/dvb_demuxer.cc:95
+#: ../server/dvb_demuxer.cc:102
 msgid "Failed to set demuxer buffer size"
 msgstr ""
 
-#: ../src/dvb_demuxer.cc:103
+#: ../server/dvb_demuxer.cc:110
 msgid "Read timeout"
 msgstr ""
 
-#: ../src/dvb_demuxer.cc:109
+#: ../server/dvb_demuxer.cc:116
 msgid "Failed to read data from demuxer"
 msgstr ""
 
-#: ../src/dvb_demuxer.cc:122
+#: ../server/dvb_demuxer.cc:129
 msgid "Failed to read header"
 msgstr ""
 
-#: ../src/dvb_demuxer.cc:133
+#: ../server/dvb_demuxer.cc:140
 msgid "Failed to read section"
 msgstr ""
 
-#: ../src/dvb_demuxer.cc:138
+#: ../server/dvb_demuxer.cc:145
 msgid "CRC32 check failed"
 msgstr ""
 
-#: ../src/dvb_demuxer.cc:146
+#: ../server/dvb_demuxer.cc:153
 msgid "Failed to stop demuxer"
 msgstr ""
 
-#: ../src/dvb_demuxer.cc:161
+#: ../server/dvb_demuxer.cc:168
 msgid "Failed to poll"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:51
+#: ../server/dvb_frontend.cc:50
 msgid "Failed to open tuner"
 msgstr "無法打開調頻器"
 
-#: ../src/dvb_frontend.cc:56
+#: ../server/dvb_frontend.cc:55
 msgid "Failed to get tuner info"
 msgstr "無法取得調頻器資訊"
 
-#: ../src/dvb_frontend.cc:75
+#: ../server/dvb_frontend.cc:74
 #, c-format
 msgid "Frontend::tune_to(%d)"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:111
+#: ../server/dvb_frontend.cc:112
 msgid "Failed to tune device"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:114
+#: ../server/dvb_frontend.cc:115
 msgid "Waiting for signal lock ..."
 msgstr "正等待訊號鎖定..."
 
-#: ../src/dvb_frontend.cc:116
+#: ../server/dvb_frontend.cc:117
 msgid "Got signal lock"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:132
+#: ../server/dvb_frontend.cc:133
 msgid "Failed to set tone off"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:137
+#: ../server/dvb_frontend.cc:138
 msgid "Failed to set voltage"
 msgstr "無法設定電壓"
 
-#: ../src/dvb_frontend.cc:143
+#: ../server/dvb_frontend.cc:144
 msgid "Failed to send master command"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:149
+#: ../server/dvb_frontend.cc:150
 msgid "Failed to send burst"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:155
+#: ../server/dvb_frontend.cc:156
 msgid "Failed to set tone"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:186
+#: ../server/dvb_frontend.cc:187
 msgid "Failed to lock to channel"
 msgstr ""
 
-#: ../src/dvb_frontend.cc:195
+#: ../server/dvb_frontend.cc:196
 msgid "Failed to get signal strength"
 msgstr "無法取得訊號強度"
 
-#: ../src/dvb_frontend.cc:205
+#: ../server/dvb_frontend.cc:206
 msgid "Failed to get signal to noise ratio"
 msgstr "無法取得訊噪比"
 
-#: ../src/dvb_si.cc:411
+#: ../server/dvb_si.cc:412
 msgid "Failed to convert channel name"
 msgstr "無法轉換頻道名"
 
-#: ../src/dvb_si.cc:568
+#: ../server/dvb_si.cc:569
 msgid "ASSERT: offset > end_descriptor_offset"
 msgstr ""
 
-#: ../src/dvb_si.cc:579
+#: ../server/dvb_si.cc:580
 msgid "ASSERT: offset > end_section_offset"
 msgstr ""
 
-#: ../src/dvb_si.cc:794
+#: ../server/dvb_si.cc:795
 msgid "No message"
 msgstr "無訊息"
 
-#: ../src/dvb_si.cc:801
+#: ../server/dvb_si.cc:802
 msgid "Failed to convert to UTF-8: %1"
 msgstr "無法轉換至 UTF-8: %1"
 
@@ -952,69 +951,69 @@ msgstr "無法轉換至 UTF-8: %1"
 msgid "Window ID was 0"
 msgstr ""
 
-#: ../src/epg_event.cc:79
+#: ../server/epg_event.cc:79
 msgid "Unknown title"
 msgstr "不知名節目"
 
-#: ../src/epg_event.cc:80
+#: ../server/epg_event.cc:80
 msgid "Unknown subtitle"
 msgstr "不知名字幕"
 
-#: ../src/epg_event.cc:81 ../src/scheduled_recording_dialog.cc:126
+#: ../server/epg_event.cc:81
 msgid "Unknown description"
 msgstr ""
 
-#: ../src/epg_event.cc:100 ../src/scheduled_recording.cc:47
+#: ../server/epg_event.cc:100 ../server/scheduled_recording.cc:47
 msgid "1 hour"
 msgid_plural "%1 hours"
 msgstr[0] "%1 小時"
 
-#: ../src/epg_event.cc:108 ../src/scheduled_recording.cc:55
+#: ../server/epg_event.cc:108 ../server/scheduled_recording.cc:55
 msgid "1 minute"
 msgid_plural "%1 minutes"
 msgstr[0] "%1 分鐘"
 
-#: ../src/epg_event_search_dialog.cc:59
+#: ../client/epg_event_search_dialog.cc:61
 msgid " "
 msgstr ""
 
-#: ../src/epg_event_search_dialog.cc:61
-#: ../src/scheduled_recordings_dialog.cc:51
+#: ../client/epg_event_search_dialog.cc:63
+#: ../client/scheduled_recordings_dialog.cc:57
 msgid "Channel"
 msgstr "頻道"
 
-#: ../src/epg_event_search_dialog.cc:62
-#: ../src/scheduled_recordings_dialog.cc:52
+#: ../client/epg_event_search_dialog.cc:64
+#: ../client/scheduled_recordings_dialog.cc:58
 msgid "Start Time"
 msgstr ""
 
-#: ../src/epg_event_search_dialog.cc:63
-#: ../src/scheduled_recordings_dialog.cc:53
+#: ../client/epg_event_search_dialog.cc:65
+#: ../client/scheduled_recordings_dialog.cc:59
 msgid "Duration"
 msgstr "長度"
 
-#: ../src/epg_event_search_dialog.cc:78
+#: ../client/epg_event_search_dialog.cc:81
 msgid "No search text specified"
 msgstr ""
 
-#: ../src/epg_event_search_dialog.cc:142
+#: ../client/epg_event_search_dialog.cc:134
 msgid "No results"
 msgstr "無結果"
 
-#: ../src/epg_event_search_dialog.cc:154
+#: ../client/epg_event_search_dialog.cc:146
 msgid "No EPG event selected"
 msgstr ""
 
-#: ../src/epg_thread.cc:71
+#: ../server/epg_thread.cc:70
 msgid "No demuxers"
 msgstr ""
 
-#: ../src/epg_thread.cc:210
+#: ../server/epg_thread.cc:209
 #, c-format
 msgid "Unknown source_id %u"
 msgstr ""
 
-#: ../src/exception.cc:31
+#: ../common/exception.h:48
 msgid "Failed to get error message"
 msgstr ""
 
@@ -1026,52 +1025,52 @@ msgstr ""
 msgid "Failed to open FIFO for reading '%1'"
 msgstr ""
 
-#: ../src/gtk_epg_widget.cc:299 ../src/gtk_epg_widget.cc:371
+#: ../client/main_window.cc:1042 ../client/main_window.cc:1114
 msgid "-"
 msgstr ""
 
-#: ../src/gtk_epg_widget.cc:299 ../src/gtk_epg_widget.cc:371
+#: ../client/main_window.cc:1042 ../client/main_window.cc:1114
 msgid "Unknown program"
 msgstr "不知名節目"
 
-#: ../src/main.cc:29
+#: ../client/me-tv-client.cc:34 ../server/me-tv-server.cc:40
 msgid "Me TV is a digital television viewer for GTK"
 msgstr "Me TV 是為 GTK 而設之數碼電視觀賞程式"
 
-#: ../src/main.cc:30
+#: ../client/me-tv-client.cc:35 ../server/me-tv-server.cc:41
 msgid ""
 "Me TV was developed for the modern digital lounge room with a PC for a media "
 "centre that is capable of normal PC tasks (web surfing, word processing and "
 "watching TV).\n"
 msgstr ""
 
-#: ../src/main.cc:84
+#: ../client/me-tv-client.cc:96 ../server/me-tv-server.cc:456
 msgid "Enable verbose messages"
 msgstr "啟用詳盡訊息"
 
-#: ../src/main.cc:89
+#: ../client/me-tv-client.cc:101
 msgid "Start in safe mode"
 msgstr ""
 
-#: ../src/main.cc:94
+#: ../client/me-tv-client.cc:106
 msgid "Start minimised in notification area"
 msgstr ""
 
-#: ../src/main.cc:98
+#: ../client/me-tv-client.cc:110 ../server/me-tv-server.cc:460
 msgid "Disable the EPG thread.  Me TV will stop collecting EPG events."
 msgstr ""
 
-#: ../src/main.cc:102
+#: ../client/me-tv-client.cc:114
 msgid "Stops the rendering of the EPG event buttons on the UI."
 msgstr ""
 
-#: ../src/main.cc:106
+#: ../client/me-tv-client.cc:123
 msgid ""
 "Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME "
 "Screensaver."
 msgstr ""
 
-#: ../src/main.cc:110
+#: ../client/me-tv-client.cc:127 ../server/me-tv-server.cc:464
 msgid ""
 "Only use the specified frontend devices (e.g. --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
@@ -1079,17 +1078,17 @@ msgstr ""
 "只用特定前端金裝置 (如 --"
 "devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"
 
-#: ../src/main.cc:114
+#: ../client/me-tv-client.cc:139 ../server/me-tv-server.cc:468
 msgid ""
 "How long to wait (in seconds) before timing out while waiting for data from "
 "demuxer (default 5)."
 msgstr ""
 
-#: ../src/main.cc:116
+#: ../client/me-tv-client.cc:141 ../console/me-tv-console.cc:45
 msgid "Show Me TV help options"
 msgstr ""
 
-#: ../src/main.cc:161
+#: ../client/me-tv-client.cc:280 ../console/me-tv-console.cc:160
 msgid "An unhandled error occurred"
 msgstr ""
 
@@ -1101,7 +1100,7 @@ msgstr "修改頻道前請先停止錄影"
 msgid "Cannot update channels while recording"
 msgstr "錄影時不能更新頻道"
 
-#: ../src/main_window.cc:557
+#: ../client/main_window.cc:541
 msgid "Failed to start engine: Engine has already been started"
 msgstr ""
 
@@ -1109,39 +1108,40 @@ msgstr ""
 msgid "None"
 msgstr "無"
 
-#: ../src/me-tv.cc:93
+#: ../common/common.cc:47
 msgid "Failed to get time"
 msgstr "無法取得時間"
 
-#: ../src/me-tv.cc:172
+#: ../server/me-tv-server.cc:97
 msgid "Failed to find a value for '%1'"
 msgstr "找不到 '%1'"
 
-#: ../src/me-tv.cc:197
+#: ../server/me-tv-server.cc:122
 msgid "Failed to find a text value for '%1'"
 msgstr "找不到 '%1' 文字"
 
-#: ../src/me-tv-ui.cc:88 ../src/me-tv-ui.cc:103
+#: ../client/me-tv-ui.cc:90 ../client/me-tv-ui.cc:105
 msgid "Failed to get active text value"
 msgstr ""
 
-#: ../src/me-tv-ui.cc:225
+#: ../client/me-tv-ui.cc:227
 msgid "Failed to get active integer value"
 msgstr ""
 
-#: ../src/mpeg_stream.cc:317
+#: ../server/mpeg_stream.cc:318
 msgid "Failed to find Program Map PID for service"
 msgstr ""
 
-#: ../src/mpeg_stream.h:68 ../src/mpeg_stream.h:80 ../src/mpeg_stream.h:105
+#: ../server/mpeg_stream.h:68 ../server/mpeg_stream.h:80
+#: ../server/mpeg_stream.h:105
 msgid "Unknown language"
 msgstr "不知名語言"
 
-#: ../src/scan_dialog.cc:32
+#: ../client/scan_dialog.cc:30
 msgid "Me TV - Error"
 msgstr ""
 
-#: ../src/scan_dialog.cc:141
+#: ../client/scan_dialog.cc:67
 msgid "Service Name"
 msgstr "服務名稱"
 
@@ -1197,11 +1197,11 @@ msgstr "英國"
 msgid "United States"
 msgstr "美國"
 
-#: ../src/scan_dialog.cc:301
+#: ../client/scan_dialog.cc:215
 msgid "Importing channels"
 msgstr "正匯入頻道"
 
-#: ../src/scan_dialog.cc:320
+#: ../client/scan_dialog.cc:234
 msgid ""
 "Failed to read data from file.  Please ensure that the channels file is UTF-"
 "8 encoded."
@@ -1212,7 +1212,7 @@ msgstr ""
 msgid "Invalid parameter count on line %1"
 msgstr "第 %1 行之參數數目有問題"
 
-#: ../src/scan_dialog.cc:418
+#: ../server/request_handler.cc:443
 msgid ""
 "Failed to import: importing a channels.conf is only supported with DVB-T, "
 "DVB-C, DVB-S and ATSC"
@@ -1250,26 +1250,26 @@ msgstr "無法理解掃描範圍 '%1'"
 msgid "Auto scanning is only supported on DVB-T and ATSC devices"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:265
+#: ../server/scheduled_recording_manager.cc:258
 msgid ""
 "Failed to set scheduled recording for '%1' at %2: There are no devices "
 "available at that time"
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:287
+#: ../server/scheduled_recording_manager.cc:280
 msgid ""
 "Failed to save scheduled recording because it conflicts with another "
 "scheduled recording called '%1'."
 msgstr "無法儲存預錄，因其與另一預錄 '%1' 有衝突"
 
-#: ../src/scheduled_recording_manager.cc:308
+#: ../server/scheduled_recording_manager.cc:301
 msgid ""
 "Failed to save scheduled recording because you have already have a scheduled "
 "recording called '%1' which is scheduled for the same time on the same "
 "channel."
 msgstr ""
 
-#: ../src/scheduled_recording_manager.cc:483
+#: ../server/scheduled_recording_manager.cc:497
 msgid "Scheduled recording '%1' not found"
 msgstr "找不到預錄 '%1'"
 
@@ -1285,7 +1285,8 @@ msgstr ""
 msgid "Failed to call Shutdown method"
 msgstr ""
 
-#: ../src/scheduled_recordings_dialog.cc:50
+#: ../client/scheduled_recording_dialog.cc:123
+#: ../client/scheduled_recordings_dialog.cc:56
 msgid "Description"
 msgstr ""
 
@@ -1293,11 +1294,12 @@ msgstr ""
 msgid "After"
 msgstr ""
 
-#: ../src/scheduled_recordings_dialog.cc:56
+#. tree_view_scheduled_recordings->append_column(_("After"),columns.column_action_after);
+#: ../client/scheduled_recordings_dialog.cc:62
 msgid "Device"
 msgstr "裝置"
 
-#: ../src/scheduled_recordings_dialog.cc:66
+#: ../client/scheduled_recordings_dialog.cc:75
 msgid "No scheduled recording selected"
 msgstr "未選取預錄"
 
@@ -1305,11 +1307,11 @@ msgstr "未選取預錄"
 msgid "Me TV is idle"
 msgstr "Me TV 未有工作"
 
-#: ../src/stream_manager.cc:123
+#: ../server/stream_manager.cc:84
 msgid "Failed to find frontend '%1' for scheduled recording"
 msgstr "找不到用於預錄之前端 '%1'"
 
-#: ../src/stream_manager.cc:207 ../src/stream_manager.cc:293
+#: ../server/stream_manager.cc:156
 msgid "Failed to get available frontend"
 msgstr "找不到可用前端裝置"
 
@@ -1321,7 +1323,7 @@ msgstr "找不到顯示串流"
 msgid "Failed to get display frontend thread"
 msgstr ""
 
-#: ../src/thread.cc:49
+#: ../server/thread.cc:49
 msgid " thread has already been started"
 msgstr ""
 
