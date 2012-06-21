@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: trunk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-22 18:24-0400\n"
-"PO-Revision-Date: 2012-01-04 05:37+0000\n"
+"PO-Revision-Date: 2012-06-20 15:33+0000\n"
 "Last-Translator: Timo Jyrinki <timo.jyrinki@canonical.com>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-06-18 05:33+0000\n"
-"X-Generator: Launchpad (build 15419)\n"
+"X-Launchpad-Export-Date: 2012-06-21 05:38+0000\n"
+"X-Generator: Launchpad (build 15435)\n"
 
 #: ../client/me-tv.schemas.in.h:10
 msgid ""
@@ -100,7 +100,7 @@ msgstr ""
 #: ../me-tv.schemas.in.h:14
 msgid ""
 "Me TV will schedule programs that have titles that contain these words."
-msgstr ""
+msgstr "Me TV nauhoittaa ohjelmat, joiden nimissä esiintyy nämä sanat."
 
 #: ../client/me-tv.schemas.in.h:25
 msgid ""
@@ -387,7 +387,7 @@ msgstr "Kesto:"
 
 #: ../client/me-tv.ui.h:75
 msgid "EPG Event Search"
-msgstr ""
+msgstr "EPG-tapahtumahaku"
 
 #: ../client/me-tv.ui.h:2
 msgid "EPG event information"
@@ -422,7 +422,7 @@ msgstr "Joka viikonpäivä"
 
 #: ../client/me-tv.ui.h:77
 msgid "Fullscreen"
-msgstr ""
+msgstr "Kokoruutu"
 
 #. TRANSLATORS: See the directions on translating the license http://www.gnu.org/licenses/translations.html
 #: ../client/me-tv.ui.h:11
@@ -474,7 +474,7 @@ msgstr "Me TV - Tietoja"
 
 #: ../client/me-tv.ui.h:89
 msgid "Me TV - Auto Record"
-msgstr ""
+msgstr "Me TV - automaattitallennus"
 
 #: ../src/me-tv.ui.h:52
 msgid "Me TV - Channel conflict"
@@ -530,11 +530,11 @@ msgstr "Me TV:n projektisivusto"
 
 #: ../client/me-tv.ui.h:83
 msgid "Next"
-msgstr ""
+msgstr "Seuraava"
 
 #: ../client/me-tv.ui.h:84
 msgid "Next Day"
-msgstr ""
+msgstr "Seuraava päivä"
 
 #: ../client/me-tv.ui.h:81
 msgid "Now"
@@ -546,7 +546,7 @@ msgstr "Kerran"
 
 #: ../src/me-tv.ui.h:69
 msgid "Overwrite the existing channel"
-msgstr ""
+msgstr "Kirjoita olemassa olevan kanavan yli"
 
 #: ../client/me-tv.ui.h:85
 msgid "Page:"
@@ -554,11 +554,11 @@ msgstr "Sivu:"
 
 #: ../client/me-tv.ui.h:80
 msgid "Previous"
-msgstr ""
+msgstr "EdellinenE"
 
 #: ../client/me-tv.ui.h:91
 msgid "Previous Day"
-msgstr ""
+msgstr "Edellinen päivä"
 
 #: ../client/scheduled_recordings_dialog.cc:60
 msgid "Record"
@@ -582,7 +582,7 @@ msgstr "Toistuva:"
 
 #: ../client/me-tv.ui.h:57
 msgid "Remove colon from recording filenames"
-msgstr ""
+msgstr "Poista kaksoispiste tallennusten tiedostonimistä"
 
 #: ../src/me-tv.ui.h:79
 msgid "Rename the new channel to a unique name"
@@ -598,7 +598,7 @@ msgstr "Etsinnän edistyminen"
 
 #: ../client/me-tv.ui.h:63
 msgid "Scan using an initial scan file"
-msgstr ""
+msgstr "Hae kanavat käyttäen alustavaa hakutiedostoa"
 
 #: ../client/me-tv.ui.h:73
 msgid "Scanning/Importing"
@@ -606,11 +606,11 @@ msgstr "Etsitään/tuodaan"
 
 #: ../client/me-tv.ui.h:76
 msgid "Scheduled Recordings"
-msgstr ""
+msgstr "Ajastetut tallennukset"
 
 #: ../client/me-tv.ui.h:87
 msgid "Search description"
-msgstr ""
+msgstr "Haun kuvaus"
 
 #: ../client/me-tv.ui.h:88
 msgid "Search:"
@@ -684,7 +684,7 @@ msgstr ""
 
 #: ../client/me-tv.ui.h:3
 msgid "This program is scheduled for recording."
-msgstr ""
+msgstr "Tämä ohjelma on ajastettu nauhoitettavaksi"
 
 #: ../src/me-tv.ui.h:104
 msgid "Video driver:"
@@ -715,7 +715,7 @@ msgstr ""
 
 #: ../src/me-tv.ui.h:113
 msgid "_Delete my old Me TV data!"
-msgstr ""
+msgstr "_Poista vanhat Me TV:n tiedot"
 
 #: ../client/me-tv.ui.h:45
 msgid "channels"
@@ -829,7 +829,7 @@ msgstr ""
 
 #: ../src/channels_dialog.cc:228
 msgid "No channel selected"
-msgstr ""
+msgstr "Kanavaa ei valittuna"
 
 #: ../src/channels_dialog.cc:233
 msgid "Select only one channel"
@@ -869,7 +869,7 @@ msgstr ""
 
 #: ../server/device_manager.cc:135
 msgid "There are no DVB devices available"
-msgstr ""
+msgstr "DVB-laitteita ei saatavilla"
 
 #: ../server/dvb_demuxer.cc:38
 msgid "Failed to open demux device"
@@ -889,7 +889,7 @@ msgstr "Limityksenpurun puskurin koon asettaminen epäonnistui"
 
 #: ../server/dvb_demuxer.cc:110
 msgid "Read timeout"
-msgstr ""
+msgstr "Lukemisen aikakatkaisu"
 
 #: ../server/dvb_demuxer.cc:116
 msgid "Failed to read data from demuxer"
@@ -1002,7 +1002,7 @@ msgstr "Tuntematon nimike"
 
 #: ../server/epg_event.cc:80
 msgid "Unknown subtitle"
-msgstr ""
+msgstr "Tuntematon tekstitys"
 
 #: ../server/epg_event.cc:81
 msgid "Unknown description"
@@ -1082,7 +1082,7 @@ msgstr "Tuntematon ohjelma"
 
 #: ../client/me-tv-client.cc:34 ../server/me-tv-server.cc:40
 msgid "Me TV is a digital television viewer for GTK"
-msgstr ""
+msgstr "Me TV on digitaalisen television katselin"
 
 #: ../client/me-tv-client.cc:35 ../server/me-tv-server.cc:41
 msgid ""
@@ -1316,7 +1316,7 @@ msgstr ""
 
 #: ../server/scheduled_recording_manager.cc:497
 msgid "Scheduled recording '%1' not found"
-msgstr ""
+msgstr "Ajastettua nauhoitusta '%1' ei löydy"
 
 #: ../src/scheduled_recording_manager.cc:537
 msgid "DBus connection not available"
