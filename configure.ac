@@ -49,7 +49,6 @@ if test x"$enable_more_warnings" != xno ; then
 -Wcast-qual \
 -Wcomment \
 -Wformat \
--Wimplicit \
 -Wmissing-braces \
 -Wpacked \
 -Wparentheses \
