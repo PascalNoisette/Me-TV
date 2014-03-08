@@ -1,10 +1,10 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.53)
-AC_INIT([Me TV], [1.3.8], [http://launchpad.net/me-tv], me-tv)
+AC_PREREQ(2.69)
+AC_INIT([Me TV], [1.3.8-SNAPSHOT], [http://launchpad.net/me-tv], me-tv)
 AC_COPYRIGHT([Michael Lamothe <michael.lamothe@gmail.com>])
 AC_CONFIG_SRCDIR([src/main.cc])
-AM_INIT_AUTOMAKE([1.9 foreign])
+AM_INIT_AUTOMAKE([1.13 foreign])
 AC_GNU_SOURCE
 AM_MAINTAINER_MODE
 
@@ -12,7 +12,6 @@ AM_MAINTAINER_MODE
 AC_PROG_CXX
 AC_PROG_CC
 AC_ISC_POSIX
-AM_PROG_CC_STDC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
