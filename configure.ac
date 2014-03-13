@@ -1,8 +1,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.69)
-AC_INIT([Me TV], [1.3.8-SNAPSHOT], [http://launchpad.net/me-tv], me-tv)
-AC_COPYRIGHT([Michael Lamothe <michael.lamothe@gmail.com>])
+AC_INIT([Me TV], [1.5.0-SNAPSHOT], [http://launchpad.net/me-tv], me-tv)
+AC_COPYRIGHT([Michael Lamothe <michael.lamothe@gmail.com>, Russel Winder <russel@winder.org.uk>])
 AC_CONFIG_SRCDIR([src/main.cc])
 AM_INIT_AUTOMAKE([1.13 foreign])
 AC_GNU_SOURCE
@@ -36,6 +36,7 @@ fi
 GNOME_DEBUG_CHECK
 GNOME_MAINTAINER_MODE_DEFINES
 GNOME_CXX_WARNINGS
+CXXFLAGS="-std=c++1y -O3 $CFLAGS"
 AC_ARG_ENABLE(more-warnings,
    AC_HELP_STRING([--enable-more-warnings],
                   [enable more compiler warnings (default=no)]),
@@ -115,7 +116,7 @@ AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext domain string])
 AM_GLIB_GNU_GETTEXT
 AM_GLIB_DEFINE_LOCALEDIR(PACKAGE_LOCALE_DIR)
-IT_PROG_INTLTOOL([0.35.0])
+IT_PROG_INTLTOOL([0.50.2])
 
 # required versions
 SQLITE_REQUIRED=3.7.0
