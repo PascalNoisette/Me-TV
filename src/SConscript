@@ -1,0 +1,36 @@
+import subprocess
+
+Import('environment')
+
+def PkgCheckModules(context, library, versionSpecification):
+    pattern = '{} {}'.format(library, versionSpecification) if versionSpecification else library
+    context.Message('Checking for ' + pattern + ' ... ')
+    returnCode = subprocess.call(['pkg-config', '--exists', pattern])
+    if returnCode == 0:
+        context.Result('ok')
+        context.env.MergeFlags('!pkg-config --cflags --libs ' + library)
+        return True
+    context.Result('failed')
+    return False
+
+configuration = Configure(environment, custom_tests={'PkgCheckModules': PkgCheckModules}, config_h='config.h')  # , clean=False, help=False)
+failedConfiguration = False
+for library, versionPattern in configuration.env['dependencies']:
+    if not configuration.PkgCheckModules(library, versionPattern):
+        failedConfiguration = True
+if failedConfiguration:
+    Exit(1)
+for entry in ['VERSION', 'GETTEXT_PACKAGE', 'PACKAGE_NAME', 'PACKAGE_DATA_DIR', 'PIXMAPDIR', 'LOCALEDIR']:
+    configuration.Define(entry, '"' + environment[entry] + '"')
+configuration.env.Append(CPPDEFINES='HAVE_CONFIG_H')
+configuration.env.Append(CPPPATH='.')  # This is crucial for triggering entering config.h in the DAG.
+environment = configuration.Finish()
+
+sources = Glob('*.cc')
+special = File('me-tv-player.cc')
+sources.remove(special)
+
+metv = environment.Program('me-tv', sources)
+metvplayer = environment.Program(special)
+
+Return('metv', 'metvplayer')

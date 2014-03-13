@@ -22,3 +22,7 @@ src/me-tv
 src/me-tv-player
 me-tv.desktop
 me-tv.schemas
+Build
+.sconf_temp
+.sconsign.dblite
+local_build_options.scons
