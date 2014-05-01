@@ -9,10 +9,8 @@ AC_GNU_SOURCE
 AM_MAINTAINER_MODE
 
 # Checks for programs.
-AC_PROG_CXX
-AC_PROG_CC
+AC_PROG_CXX([g++-4.9])
 AC_ISC_POSIX
-AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -20,30 +18,21 @@ AC_PROG_RANLIB
 
 # GNOME aclocal, debug and maintainer flags
 GNOME_COMMON_INIT
-# debug, warnings, deprecated
-if test x"$enable_more_warnings" = xyes ; then
-	enable_cxx_warnings=yes
-fi
-if test x"$USE_MAINTAINER_MODE" != xno; then
-	enable_debug=yes
-	CFLAGS=""
-fi
-if test x"$enable_debug" = xyes ; then
-#	enable_cxx_warnings=yes
-	enable_more_warnings=yes
-	CFLAGS="$CFLAGS -O0 -g"
-fi
 GNOME_DEBUG_CHECK
 GNOME_MAINTAINER_MODE_DEFINES
 GNOME_CXX_WARNINGS
-CXXFLAGS="-std=c++1y -O3 $CFLAGS"
-AC_ARG_ENABLE(more-warnings,
-   AC_HELP_STRING([--enable-more-warnings],
-                  [enable more compiler warnings (default=no)]),
-                  [enable_more_warnings="$enableval"], [enable_more_warnings=no])
-AC_MSG_CHECKING([what more warning flags to pass to the C compiler])
-if test x"$enable_more_warnings" != xno ; then
-	more_options=" \
+
+if test x"$USE_MAINTAINER_MODE" != xno; then
+	enable_debug=yes
+fi
+
+CXXFLAGS="$CXXFLAGS \
+-std=c++1y \
+-W \
+-Wall \
+-Wundef \
+-Wcast-align \
+-Wno-unused-parameter \
 -Wextra \
 -Wcast-align \
 -Wcast-qual \
@@ -60,28 +49,6 @@ if test x"$enable_more_warnings" != xno ; then
 -Wswitch-default \
 -Wundef \
 "
-	previous_CXXFLAGS="$CXXFLAGS"
-	CXXFLAGS="${WARN_CXXFLAGS}"
-	for option in ${more_options} ; do
-		SAVE_CXXFLAGS="$CXXFLAGS"
-		CXXFLAGS="$CXXFLAGS $option"
-		AC_TRY_COMPILE([], [],
-			has_option=yes,
-			has_option=no,)
-		if test $has_option = no; then
-			CXXFLAGS="$SAVE_CXXFLAGS"
-		fi
-		unset has_option
-		unset SAVE_CXXFLAGS
-	done
-	unset option more_options
-	WARN_CXXFLAGS="$CXXFLAGS"
-	CXXFLAGS="${previous_CXXFLAGS}"
-	unset previous_CXXFLAGS
-	AC_MSG_RESULT([$WARN_CXXFLAGS])
-else
-	AC_MSG_RESULT(none)
-fi
 
 # Checks for header files.
 AC_PATH_X
@@ -134,19 +101,31 @@ AC_SUBST(GTHREAD_REQUIRED)
 AC_SUBST(GNET_REQUIRED)
 AC_SUBST(LIBXINE_REQUIRED)
 
-# check for sqlite
-PKG_CHECK_MODULES(SQLITE, [sqlite3 >= $SQLITE_REQUIRED])
-
 PKG_CHECK_MODULES(ME_TV, [
+        sqlite3 >= $SQLITE_REQUIRED
 	gtkmm-2.4 >= $GTKMM_REQUIRED
 	giomm-2.4 >= $GIOMM_REQUIRED
 	gthread-2.0 >= $GTHREAD_REQUIRED
 	gconfmm-2.6 >= $GCONF_REQUIRED
 	unique-1.0
 	x11
-	dbus-1 dbus-glib-1])
+	dbus-1
+        dbus-glib-1
+])
 AC_SUBST(ME_TV_CFLAGS)
 AC_SUBST(ME_TV_LIBS)
+
+PKG_CHECK_MODULES(ME_TV_PLAYER, [
+        libxine >= $LIBXINE_REQUIRED
+        x11
+        dbus-glib-1
+])
+
+PKG_CHECK_MODULES(ME_TV_PLAYER_XINE, [
+        libxine >= $LIBXINE_REQUIRED
+        x11
+        dbus-glib-1
+])
 
 # GConf
 AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
@@ -196,7 +175,7 @@ src/Makefile
 po/Makefile.in
 ])
 AC_CONFIG_HEADERS([config.h:config.h.in])
-PKG_CHECK_MODULES(ME_TV_PLAYER, libxine >= $LIBXINE_REQUIRED dbus-glib-1)
+
 AC_OUTPUT
 
 
@@ -206,8 +185,8 @@ echo "
 Configure summary:
 
 	Source code location .......: ${srcdir}
-	Compiler ...................: ${CC}
-	Compiler flags .............: ${CFLAGS}
+	C++ Compiler ...................: ${CXX}
+	C++ Compiler flags .............: ${CXXFLAGS}
 	Enable compile warnings ....: ${enable_cxx_warnings}
 	Enable more warnings .......: ${enable_more_warnings}
 	Extra Compiler Warnings ....: ${WARN_CXXFLAGS}

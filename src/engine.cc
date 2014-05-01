@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -7,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -21,6 +22,7 @@
 #include "engine.h"
 #include "exception.h"
 #include "application.h"
+#include "me-tv.h"
 #include <gtkmm.h>
 #include <gdk/gdkx.h>
 #include <sys/wait.h>
@@ -56,11 +58,16 @@ void Engine::play(const Glib::ustring& mrl)
 {
 	Application& application = get_application();
 	this->mrl = mrl;
-	
+
 	g_debug("Engine::play(\"%s\")", mrl.c_str());
 
+  Glib::ustring engine_name = "me-tv-player";
+  if (engine != "") {
+    engine_name = Glib::ustring::compose("%1-%2", engine_name, engine);
+  }
+
 	StringList argv;
-	argv.push_back("me-tv-player");
+  argv.push_back(engine_name);
 	argv.push_back(Glib::ustring::compose("fifo://%1", mrl));
 	argv.push_back(Glib::ustring::compose("%1", window));
 	argv.push_back(configuration_manager.get_string_value("video_driver"));
@@ -77,7 +84,7 @@ void Engine::play(const Glib::ustring& mrl)
 		g_debug("> %s", (*i).c_str());
 	}
 	g_debug("=================================================");
-										  
+
 	try
 	{
 		Glib::spawn_async_with_pipes("/tmp",
@@ -105,13 +112,13 @@ void Engine::stop()
 	{
 		g_debug("Quitting Engine");
 		kill(pid, SIGHUP);
-		
+
 		gboolean done = false;
 		gint elapsed_time = 0;
 		while (!done)
 		{
 			pid_t pid_result = ::waitpid(pid, NULL, WNOHANG);
-			
+
 			if (pid_result < 0)
 			{
 				done = true;
@@ -154,12 +161,12 @@ void Engine::stop()
 gboolean Engine::is_running()
 {
 	int result = -1;
-	
+
 	if (pid != -1)
 	{
 		result = ::waitpid(pid, NULL, WNOHANG | __WALL);
 	}
-	
+
 	return result == 0;
 }
 
@@ -225,11 +232,11 @@ void Engine::set_audio_channel_state(AudioChannelState state)
 		{
 			int modifiers = 0;
 			switch(state)
-			{					
+			{
 			case AUDIO_CHANNEL_STATE_LEFT:
 				modifiers = XK_Control_L;
 				break;
-				
+
 			case AUDIO_CHANNEL_STATE_RIGHT:
 				modifiers = XK_Control_R;
 				break;
@@ -247,7 +254,7 @@ void Engine::set_volume(float value)
 {
 	g_debug("Setting volume: %f", value);
 	volume = value;
-	
+
 	if (pid != -1)
 	{
 		// At value = 1.0 the key will be a colon (XK_colon)

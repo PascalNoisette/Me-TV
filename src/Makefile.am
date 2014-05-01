@@ -7,28 +7,29 @@ glade_DATA = me-tv.ui \
 	me-tv.xpm
 
 AM_CPPFLAGS = \
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
 	$(ME_TV_CFLAGS) \
-	$(SQLITE_CFLAGS) \
-	$(VLC_LIB_CFLAGS) \
 	$(WARN_CXXFLAGS) \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" 
+	-DPACKAGE_DATA_DIR=\""$(datadir)/me-tv"\"
 
-AM_CFLAGS =\
+AM_CXXFLAGS =\
 	 -Wall\
 	 -g
 
 bin_PROGRAMS = me-tv \
-	 me-tv-player
+	me-tv-player \
+	me-tv-player-xine
 
 me_tv_player_SOURCES = \
 	me-tv-player.cc
 
 me_tv_player_LDADD =        \
-	$(ME_TV_PLAYER_LIBS) \
-	-lX11
+	$(ME_TV_PLAYER_LIBS)
+
+me_tv_player_xine_SOURCES = \
+	me-tv-player-xine.cpp
+
+me_tv_player_xine_LDADD =        \
+	$(ME_TV_PLAYER_XINE_LIBS)
 
 me_tv_SOURCES = \
 	../config.h \
@@ -127,8 +128,6 @@ me_tv_LDFLAGS = \
 	LFS64_LDFLAGS`
 
 me_tv_LDADD = \
-	$(ME_TV_LIBS) \
-	$(SQLITE_LIBS)
+	$(ME_TV_LIBS)
 
 EXTRA_DIST = $(glade_DATA)
-

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -7,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -45,7 +46,7 @@ static UniqueResponse on_message_received (
 			action_present->activate();
 			response = UNIQUE_RESPONSE_OK;
 			break;
-			
+
 		default:
 			break;
 	}
@@ -54,7 +55,7 @@ static UniqueResponse on_message_received (
 }
 
 int main (int argc, char *argv[])
-{	
+{
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -112,7 +113,11 @@ int main (int argc, char *argv[])
 	Glib::OptionEntry read_timeout_option_entry;
 	read_timeout_option_entry.set_long_name("read-timeout");
 	read_timeout_option_entry.set_description(_("How long to wait (in seconds) before timing out while waiting for data from demuxer (default 5)."));
-	
+
+  Glib::OptionEntry engine_entry;
+  engine_entry.set_long_name("engine");
+  engine_entry.set_description(_("Which video/audio rendering engine to use (default xine)."));
+
 	Glib::OptionGroup option_group(PACKAGE_NAME, "", _("Show Me TV help options"));
 	option_group.add_entry(verbose_option_entry, verbose_logging);
 	option_group.add_entry(safe_mode_option_entry, safe_mode);
@@ -122,12 +127,13 @@ int main (int argc, char *argv[])
 	option_group.add_entry(no_screensaver_inhibit_option_entry, no_screensaver_inhibit);
 	option_group.add_entry(devices_option_entry, devices);
 	option_group.add_entry(read_timeout_option_entry, read_timeout);
+  option_group.add_entry(engine_entry, engine);
 
 	Glib::OptionContext option_context;
 	option_context.set_summary(ME_TV_SUMMARY);
 	option_context.set_description(ME_TV_DESCRIPTION);
 	option_context.set_main_group(option_group);
-		
+
 	try
 	{
 		option_context.parse(argc, argv);
@@ -158,8 +164,8 @@ int main (int argc, char *argv[])
 	}
 	catch (...)
 	{
-		g_message(_("An unhandled error occurred"));		
+		g_message(_("An unhandled error occurred"));
 	}
-	
+
 	return 0;
 }

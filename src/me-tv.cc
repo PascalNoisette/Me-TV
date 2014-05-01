@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -7,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -32,6 +33,7 @@ bool			disable_epg				= false;
 bool			no_screensaver_inhibit	= false;
 Glib::ustring	devices;
 gint			read_timeout			= 5;
+Glib::ustring engine = "";
 
 Glib::ustring preferred_language;
 
@@ -93,14 +95,14 @@ Glib::ustring get_local_time_text(time_t t, const gchar* format)
 		throw Exception(_("Failed to get time"));
 	}
 	strftime(buffer, 100, format, &tp);
-	
+
 	return buffer;
 }
 
 Glib::ustring encode_xml(const Glib::ustring& s)
 {
 	Glib::ustring result = s;
-	
+
 	replace_text(result, "&", "&amp;");
 	replace_text(result, "<", "&lt;");
 	replace_text(result, ">", "&gt;");
@@ -166,12 +168,12 @@ guint convert_string_to_value(const StringTable* table, const Glib::ustring& tex
 			current++;
 		}
 	}
-	
+
 	if (!found)
 	{
 		throw Exception(Glib::ustring::compose(_("Failed to find a value for '%1'"), text));
 	}
-	
+
 	return (guint)current->value;
 }
 
@@ -191,18 +193,18 @@ Glib::ustring convert_value_to_string(const StringTable* table, guint value)
 			current++;
 		}
 	}
-	
+
 	if (!found)
 	{
 		throw Exception(Glib::ustring::compose(_("Failed to find a text value for '%1'"), value));
 	}
-	
+
 	return current->text;
 }
 
 void split_string(std::vector<Glib::ustring>& parts, const Glib::ustring& text, const char* delimiter, gboolean remove_empty, gsize max_length)
 {
-	gchar** temp_parts = g_strsplit_set(text.c_str(), delimiter, max_length);	
+	gchar** temp_parts = g_strsplit_set(text.c_str(), delimiter, max_length);
 	gchar** iterator = temp_parts;
 	guint count = 0;
 	while (*iterator != NULL)
@@ -220,7 +222,7 @@ void split_string(std::vector<Glib::ustring>& parts, const Glib::ustring& text, 
 Glib::ustring trim_string(const Glib::ustring& s)
 {
 	Glib::ustring result;
-	
+
 	glong length = s.bytes();
 	if (length > 0)
 	{

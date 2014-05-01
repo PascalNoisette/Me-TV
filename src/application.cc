@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -7,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -42,7 +43,7 @@ Application::Application()
 	{
 		throw Exception(_("Application has already been initialised"));
 	}
-	
+
 	g_static_rec_mutex_init(mutex.gobj());
 
 	current					= this;
@@ -50,7 +51,7 @@ Application::Application()
 	timeout_source			= 0;
 	database_initialised	= false;
 	dbus_connection			= NULL;
-	
+
 #ifndef IGNORE_SQLITE3_THREADSAFE_CHECK
 	g_debug("sqlite3_threadsafe() = %d", sqlite3_threadsafe());
 	if (sqlite3_threadsafe() == 0)
@@ -60,20 +61,20 @@ Application::Application()
 #endif
 
 	Crc32::init();
-		
+
 	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	make_directory_with_parents (application_dir);
 
 	Glib::ustring data_directory = Glib::get_home_dir() + "/.local/share/me-tv";
 	make_directory_with_parents (data_directory);
-	
+
 	database_filename = Glib::build_filename(data_directory, "me-tv.db");
 	connection.open(database_filename);
-	
+
 	g_debug("Loading UI files");
-	
-	builder = Gtk::Builder::create_from_file(PACKAGE_DATA_DIR"/me-tv/glade/me-tv.ui");
-	
+
+	builder = Gtk::Builder::create_from_file(PACKAGE_DATA_DIR"/glade/me-tv.ui");
+
 	toggle_action_fullscreen = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_fullscreen"));
 	toggle_action_mute = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_mute"));
 	toggle_action_record_current = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(builder->get_object("toggle_action_record_current"));
@@ -114,7 +115,7 @@ Application::Application()
 	action_group->add(Gtk::Action::create("action_video", _("_Video")));
 	action_group->add(Gtk::Action::create("action_audio", _("_Audio")));
 	action_group->add(Gtk::Action::create("action_help", _("_Help")));
-	
+
 	action_group->add(Gtk::Action::create("action_subtitle_streams", _("Subtitles")));
 	action_group->add(Gtk::Action::create("action_audio_streams", _("_Streams")));
 	action_group->add(Gtk::Action::create("action_audio_channels", _("_Channels")));
@@ -123,31 +124,31 @@ Application::Application()
 	action_group->add(Gtk::RadioAction::create(radio_button_group_audio_channel, "action_audio_channel_both", _("_Both")));
 	action_group->add(Gtk::RadioAction::create(radio_button_group_audio_channel, "action_audio_channel_left", _("_Left")));
 	action_group->add(Gtk::RadioAction::create(radio_button_group_audio_channel, "action_audio_channel_right", _("_Right")));
-	
+
 	action_quit->signal_activate().connect(sigc::ptr_fun(Gtk::Main::quit));
 	toggle_action_record_current->signal_activate().connect(sigc::mem_fun(*this, &Application::on_record_current));
 
 	ui_manager = Gtk::UIManager::create();
 	ui_manager->insert_action_group(action_group);
-	
+
 	GError *error = NULL;
 	dbus_connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 	if (dbus_connection == NULL)
 	{
 		g_message(_("Failed to get DBus session"));
 	}
-	
+
 	g_debug("Application constructed");
 }
 
 Application::~Application()
-{	
+{
 	g_debug("Application destructor started");
 	if (timeout_source != 0)
 	{
 		g_source_remove(timeout_source);
 	}
-	
+
 	if (status_icon != NULL)
 	{
 		delete status_icon;
@@ -170,7 +171,7 @@ void Application::on_record_current()
 	if (toggle_action_record_current->get_active())
 	{
 		device_manager.check_frontend();
-		
+
 		try
 		{
 			start_recording(stream_manager.get_display_channel());
@@ -188,7 +189,7 @@ void Application::on_record_current()
 	}
 	else
 	{
-		stream_manager.stop_recording(stream_manager.get_display_channel());			
+		stream_manager.stop_recording(stream_manager.get_display_channel());
 		g_debug("Recording stopped");
 	}
 
@@ -224,7 +225,7 @@ const Glib::ustring& Application::get_database_filename()
 gboolean Application::initialise_database()
 {
 	gboolean result = false;
-	
+
 	Data::Table table_channel;
 	table_channel.name = "channel";
 	table_channel.columns.add("channel_id",				Data::DATA_TYPE_INTEGER, 0, false);
@@ -251,7 +252,7 @@ gboolean Application::initialise_database()
 	table_channel_unique_columns.push_back("name");
 	table_channel.constraints.add_unique(table_channel_unique_columns);
 	schema.tables.add(table_channel);
-	
+
 	Data::Table table_epg_event;
 	table_epg_event.name = "epg_event";
 	table_epg_event.columns.add("epg_event_id",		Data::DATA_TYPE_INTEGER, 0, false);
@@ -266,7 +267,7 @@ gboolean Application::initialise_database()
 	table_epg_event_unique_columns.push_back("event_id");
 	table_epg_event.constraints.add_unique(table_epg_event_unique_columns);
 	schema.tables.add(table_epg_event);
-			
+
 	Data::Table table_epg_event_text;
 	table_epg_event_text.name = "epg_event_text";
 	table_epg_event_text.columns.add("epg_event_text_id",	Data::DATA_TYPE_INTEGER, 0, false);
@@ -299,22 +300,22 @@ gboolean Application::initialise_database()
 	table_version.name = "version";
 	table_version.columns.add("value",	Data::DATA_TYPE_INTEGER, 0, false);
 	schema.tables.add(table_version);
-	
+
 	Data::SchemaAdapter adapter(connection, schema);
 	adapter.initialise_table(table_version);
-	
+
 	Data::TableAdapter adapter_version(connection, table_version);
-	
+
 	if (connection.get_database_created())
 	{
 		adapter.initialise_schema();
-		
+
 		Data::DataTable data_table_version(table_version);
 		Data::Row row;
 		row["value"].int_value = CURRENT_DATABASE_VERSION;
 		data_table_version.rows.add(row);
 		adapter_version.replace_rows(data_table_version);
-		
+
 		result = true;
 	}
 	else
@@ -326,7 +327,7 @@ gboolean Application::initialise_database()
 		{
 			database_version = data_table.rows[0]["value"].int_value;
 		}
-		
+
 		g_debug("Required Database version: %d", CURRENT_DATABASE_VERSION);
 		g_debug("Actual Database version: %d", database_version);
 
@@ -365,7 +366,7 @@ gboolean Application::initialise_database()
 	}
 
 	database_initialised = true;
-		
+
 	return result;
 }
 
@@ -394,27 +395,27 @@ void Application::run()
 		stream_manager.initialise();
 		stream_manager.start();
 
-		ChannelArray& channels = channel_manager.get_channels();	
+		ChannelArray& channels = channel_manager.get_channels();
 
-		const FrontendList& frontends = device_manager.get_frontends();	
+		const FrontendList& frontends = device_manager.get_frontends();
 		if (!frontends.empty())
 		{
-			scheduled_recording_manager.load(connection);	
-		}	
+			scheduled_recording_manager.load(connection);
+		}
 
-		if (!minimised_mode)	
+		if (!minimised_mode)
 		{
 			action_present->activate();
-	
-			if (safe_mode)	
+
+			if (safe_mode)
 			{
 				action_preferences->activate();
-			}	
+			}
 		}
 
 		// Check that there's a device
 		device_manager.check_frontend();
-		
+
 		if (channels.empty())
 		{
 			action_channels->activate();
@@ -435,7 +436,7 @@ Application& Application::get_current()
 	{
 		throw Exception(_("Application has not been initialised"));
 	}
-	
+
 	return *current;
 }
 
@@ -497,7 +498,7 @@ gboolean Application::on_timeout()
 				channel_manager.save(connection);
 				check_auto_record();
 			}
-			
+
 			check_scheduled_recordings();
 			scheduled_recording_manager.save(connection);
 			channel_manager.prune_epg();
@@ -510,7 +511,7 @@ gboolean Application::on_timeout()
 	{
 		on_error();
 	}
-	
+
 	return true;
 }
 
@@ -545,7 +546,7 @@ void Application::check_auto_record()
 					catch(...)
 					{
 						on_error();
-					}			
+					}
 				}
 			}
 		}
