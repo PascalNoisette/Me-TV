@@ -47,14 +47,27 @@ bindir = ARGUMENTS.get('bindir', bindir)
 datadir = ARGUMENTS.get('datadir', datadir)
 
 environment = Environment(
-    tools=['c++', 'link'],
-    VERSION=version, GETTEXT_PACKAGE='me-tv', PACKAGE_NAME='Me TV',
-    PREFIX=prefix, BINDIR=bindir, DATADIR=datadir,
-    PIXMAPDIR=datadir + '/pixmaps', PACKAGE_DATA_DIR=datadir + '/me-tv', LOCALEDIR=datadir + '/locale',
+    tools=['g++', 'gnulink'],
+    CXX = 'g++-4.9',
+    PREFIX=prefix,
+    BINDIR=bindir,
+    DATADIR=datadir,
+    VERSION=version,
+    GETTEXT_PACKAGE='me-tv',
+    PACKAGE_NAME='Me TV',
+    PACKAGE_DATA_DIR=datadir + '/me-tv',
+    PACKAGE_LOCALE_DIR=datadir + '/locale',
     CXXFLAGS=[
-        #'--std=c++1y',
-        '-O3',
-        '-W', '-Wall', '-Wundef', '-Wcast-align', '-Wno-unused-parameter', #'-Wshadow', #'-Wredundant-decls',
+        '-std=c++1y',
+        '-g',
+        '-O2',
+        '-W',
+        '-Wall',
+        '-Wundef',
+        '-Wcast-align',
+        '-Wno-unused-parameter',
+        #'-Wshadow',
+        #'-Wredundant-decls',
         '-Wextra',
         '-Wcast-align',
         '-Wcast-qual',
@@ -73,7 +86,7 @@ environment = Environment(
     ]
 )
 
-environment['dependencies'] = (
+environment['main_dependencies'] = (
     ('sqlite3', '>= 3.8.3'),
     ('gtkmm-2.4', '>= 2.24.4'),
     ('giomm-2.4', '>= 2.10.0'),
@@ -83,9 +96,14 @@ environment['dependencies'] = (
     ('x11', ''),
     ('dbus-1', ''),
     ('dbus-glib-1', ''),
-    ('libxine', '>= 1.1.7'),
+)
+
+environment['xine_player_dependencies'] = (
+    ('libxine', '>= 1.2.5'),
+    ('x11', ''),
+    ('dbus-glib-1', ''),
 )
 
 Export('environment')
 
-metv, metvplayer = SConscript('src/SConscript', variant_dir=buildDirectory, duplicate=0)
+metv, metvDefaultPlayer, metvXinePlayer = SConscript('src/SConscript', variant_dir=buildDirectory, duplicate=0)
