@@ -19,7 +19,7 @@ po/Makefile.in.in
 po/POTFILES
 po/stamp-it
 src/me-tv
-src/me-tv-player
+src/me-tv-player*
 me-tv.desktop
 me-tv.schemas
 Build
