@@ -1,3 +1,22 @@
+# -*- mode:python; coding:utf-8; -*-
+
+#  Me TV — A DVB-T player.
+#
+#  Copyright © 2014 Russel Winder
+#
+#  This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+#  General Public License as published by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+#  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+#  License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with this program.  If not, see
+#  <http://www.gnu.org/licenses/>.
+#
+#  Author : Russel Winder <russel@winder.org.uk>
+
 import os
 
 try:
@@ -106,4 +125,10 @@ environment['xine_player_dependencies'] = (
 
 Export('environment')
 
-metv, metvDefaultPlayer, metvXinePlayer = SConscript('src/SConscript', variant_dir=buildDirectory, duplicate=0)
+metv, metvDefaultPlayer, metvXinePlayer = SConscript('src/SConscript', variant_dir=buildDirectory + '/src', duplicate=0)
+SConscript('po/SConscript', variant_dir=buildDirectory + '/po', duplicate=0)
+
+Alias('install', [
+    Install(datadir + '/pixmaps/', Glob('*.png')),
+    Install(datadir + '/man/man1/', Glob('me-tv*.1')),
+])
