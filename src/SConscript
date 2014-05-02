@@ -67,7 +67,10 @@ metv = mainEnvironment.Program('me-tv', sources)
 metvDefaultPlayer = defaultPlayerEnvironment.Program(defaultPlayer)
 metvXinePlayer = xinePlayerEnvironment.Program(xinePlayer)
 
-environment.Alias('install', environment.Install(environment['BINDIR'], [metv, metvDefaultPlayer, metvXinePlayer]))
-environment.Alias('install', environment.Install(environment['DATADIR'] +'/pixmaps/', Glob('*.xpm')))
+environment.Alias('install', [
+    environment.Install(environment['BINDIR'], [metv, metvDefaultPlayer, metvXinePlayer]),
+    environment.Install(environment['DATADIR'] +'/pixmaps/', Glob('*.xpm')),
+    environment.Install(environment['DATADIR'] +'/me-tv/glade/', ['me-tv.ui', 'me-tv.xpm']),
+])
 
 Return('metv', 'metvDefaultPlayer', 'metvXinePlayer')
