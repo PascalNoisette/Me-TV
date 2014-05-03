@@ -26,3 +26,7 @@ Build
 .sconf_temp
 .sconsign.dblite
 local_build_options.scons
+.cproject
+.project
+.pydevproject
+.settings/
