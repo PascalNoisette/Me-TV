@@ -16,14 +16,7 @@ AM_CXXFLAGS =\
 	 -g
 
 bin_PROGRAMS = me-tv \
-	me-tv-player \
 	me-tv-player-xine
-
-me_tv_player_SOURCES = \
-	me-tv-player.cc
-
-me_tv_player_LDADD =        \
-	$(ME_TV_PLAYER_LIBS)
 
 me_tv_player_xine_SOURCES = \
 	me-tv-player-xine.cpp

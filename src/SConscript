@@ -54,23 +54,20 @@ def createConfiguration(environment, dependenciesKey):
     return configuration.Finish()
 
 mainEnvironment = createConfiguration(environment.Clone(), 'main_dependencies')
-defaultPlayerEnvironment = createConfiguration(environment.Clone(), 'xine_player_dependencies')
 xinePlayerEnvironment = createConfiguration(environment.Clone(), 'xine_player_dependencies')
 
-sources = Glob('*.cc') + Glob('*.cpp')
-defaultPlayer = File('me-tv-player.cc')
-xinePlayer = File('me-tv-player-xine.cpp')
+sources = Glob('*.cc')
+xinePlayer = File('me-tv-player-xine.cc')
 
-for player in (defaultPlayer, xinePlayer,): sources.remove(player)
+for player in (xinePlayer,): sources.remove(player)
 
 metv = mainEnvironment.Program('me-tv', sources)
-metvDefaultPlayer = defaultPlayerEnvironment.Program(defaultPlayer)
 metvXinePlayer = xinePlayerEnvironment.Program(xinePlayer)
 
 environment.Alias('install', [
-    environment.Install(environment['BINDIR'], [metv, metvDefaultPlayer, metvXinePlayer]),
+    environment.Install(environment['BINDIR'], [metv, metvXinePlayer]),
     environment.Install(environment['DATADIR'] +'/pixmaps/', Glob('*.xpm')),
     environment.Install(environment['DATADIR'] +'/me-tv/glade/', ['me-tv.ui', 'me-tv.xpm']),
 ])
 
-Return('metv', 'metvDefaultPlayer', 'metvXinePlayer')
+Return('metv', 'metvXinePlayer')

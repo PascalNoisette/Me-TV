@@ -61,13 +61,9 @@ void Engine::play(const Glib::ustring& mrl)
 
 	g_debug("Engine::play(\"%s\")", mrl.c_str());
 
-  Glib::ustring engine_name = "me-tv-player";
-  if (engine != "") {
-    engine_name = Glib::ustring::compose("%1-%2", engine_name, engine);
-  }
-
-	StringList argv;
-  argv.push_back(engine_name);
+	// TODO: Put some protections in place to ensure no fails here. Especially the engine search.
+    StringList argv;
+    argv.push_back(Glib::ustring::compose("me-tv-player-%1", engine));
 	argv.push_back(Glib::ustring::compose("fifo://%1", mrl));
 	argv.push_back(Glib::ustring::compose("%1", window));
 	argv.push_back(configuration_manager.get_string_value("video_driver"));

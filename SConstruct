@@ -125,7 +125,7 @@ environment['xine_player_dependencies'] = (
 
 Export('environment')
 
-metv, metvDefaultPlayer, metvXinePlayer = SConscript('src/SConscript', variant_dir=buildDirectory + '/src', duplicate=0)
+metv, metvXinePlayer = SConscript('src/SConscript', variant_dir=buildDirectory + '/src', duplicate=0)
 SConscript('po/SConscript', variant_dir=buildDirectory + '/po', duplicate=0)
 
 Alias('install', [

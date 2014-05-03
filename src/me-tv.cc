@@ -33,7 +33,7 @@ bool			disable_epg				= false;
 bool			no_screensaver_inhibit	= false;
 Glib::ustring	devices;
 gint			read_timeout			= 5;
-Glib::ustring engine = "";
+Glib::ustring engine = "xine";
 
 Glib::ustring preferred_language;
 
