@@ -198,46 +198,44 @@ void set_subtitle_stream(int channel) {
 }
 
 void inhibit_screensaver(gboolean activate) {
-  g_debug("inhibit_screensaver: enter");
   GError* error = NULL;
   if (dbus_connection == NULL) {
-    g_debug("No DBus connection, can't (un)inhibit");
+    g_debug("inhibit_screensaver: No DBus connection, can't (un)inhibit");
   } else {
     DBusGProxy* proxy = dbus_g_proxy_new_for_name(dbus_connection,
         "org.gnome.ScreenSaver", "/org/gnome/ScreenSaver",
         "org.gnome.ScreenSaver");
     if (proxy == NULL) {
-      g_debug("Failed to get org.gnome.ScreenSaver proxy");
+      g_debug("inhibit_screensaver: Failed to get org.gnome.ScreenSaver proxy");
       return;
     }
     if (activate) {
       if (screensaver_inhibit_cookie != 0) {
-        g_debug("Screensaver is already being inhibited by Me TV");
+        g_debug("inhibit_screensaver: Screensaver is already being inhibited by Me TV");
       } else {
         if (!dbus_g_proxy_call(proxy, "Inhibit", &error,
             G_TYPE_STRING, "Me TV Player", G_TYPE_STRING, "Watching TV", G_TYPE_INVALID,
             G_TYPE_UINT, &screensaver_inhibit_cookie, G_TYPE_INVALID)) {
-          g_debug("Failed to call Inhibit method\n");
+          g_debug("inhibit_screensaver: Failed to call Inhibit method\n");
           return;
         }
-        g_debug("Got screensaver inhibit cookie: %d", screensaver_inhibit_cookie);
-        g_debug("Screensaver inhibited");
+        g_debug("inhibit_screensaver: Got screensaver inhibit cookie: %d", screensaver_inhibit_cookie);
+        g_debug("inhibit_screensaver: Screensaver inhibited");
       }
     } else {
       if (screensaver_inhibit_cookie == 0) {
-        g_debug("Screensaver is not currently inhibited");
+        g_debug("inhibit_screensaver: Screensaver is not currently inhibited");
       } else {
         if (!dbus_g_proxy_call(proxy, "UnInhibit", &error,
             G_TYPE_UINT, &screensaver_inhibit_cookie, G_TYPE_INVALID, G_TYPE_INVALID)) {
-          g_debug("Failed to call UnInhibit method");
+          g_debug("inhibit_screensaver: Failed to call UnInhibit method");
           return;
         }
         screensaver_inhibit_cookie = 0;
-        g_debug("Screensaver uninhibited");
+        g_debug("inhibit_screensaver: Screensaver uninhibited");
       }
     }
   }
-  g_debug("inhibit_screensaver:exit");
 }
 
 int main(int argc, char **argv) {
