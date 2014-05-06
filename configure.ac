@@ -121,7 +121,7 @@ AC_SUBST(LIBXINE_REQUIRED)
 PKG_CHECK_MODULES(ME_TV_PLAYER_XINE, [
         libxine >= $LIBXINE_REQUIRED
         x11 >= $X11_REQUIRED
-        dbus-glib-1 >= $DBUS_GLIB_1_REQUIRED
+        giomm-2.4 >= $GIOMM_REQUIRED
 ])
 
 # GConf
