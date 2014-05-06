@@ -23,15 +23,14 @@
 #include <string>
 #include <cmath>
 
+#include <giomm.h>
+
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 #include <xine.h>
 #include <xine/xineutils.h>
-
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 
 typedef enum {
   AUDIO_CHANNEL_STATE_BOTH = 0,
@@ -52,8 +51,6 @@ static double pixel_aspect;
 static bool running = false;
 static int width = 320, height = 200;
 static AudioChannelState audio_channel_state = AUDIO_CHANNEL_STATE_BOTH;
-static uint screensaver_inhibit_cookie = 0;
-static DBusGConnection* dbus_connection = NULL;
 
 #define INPUT_MOTION (ExposureMask | KeyPressMask | StructureNotifyMask | PropertyChangeMask)
 
@@ -198,43 +195,38 @@ void set_subtitle_stream(int channel) {
 }
 
 void inhibit_screensaver(gboolean activate) {
-  GError* error = NULL;
-  if (dbus_connection == NULL) {
-    g_debug("inhibit_screensaver: No DBus connection, can't (un)inhibit");
-  } else {
-    DBusGProxy* proxy = dbus_g_proxy_new_for_name(dbus_connection,
-        "org.gnome.ScreenSaver", "/org/gnome/ScreenSaver",
-        "org.gnome.ScreenSaver");
-    if (proxy == NULL) {
-      g_debug("inhibit_screensaver: Failed to get org.gnome.ScreenSaver proxy");
-      return;
-    }
+  try {
+    static Glib::VariantContainerBase screensaver_inhibit_cookie;
+    auto proxy = Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BusType::BUS_TYPE_SESSION,
+                                               "org.freedesktop.ScreenSaver",
+                                               "/org/freedesktop/ScreenSaver",
+                                               "org.freedesktop.ScreenSaver");
     if (activate) {
-      if (screensaver_inhibit_cookie != 0) {
-        g_debug("inhibit_screensaver: Screensaver is already being inhibited by Me TV");
-      } else {
-        if (!dbus_g_proxy_call(proxy, "Inhibit", &error,
-            G_TYPE_STRING, "Me TV Player", G_TYPE_STRING, "Watching TV", G_TYPE_INVALID,
-            G_TYPE_UINT, &screensaver_inhibit_cookie, G_TYPE_INVALID)) {
-          g_debug("inhibit_screensaver: Failed to call Inhibit method\n");
-          return;
-        }
-        g_debug("inhibit_screensaver: Got screensaver inhibit cookie: %d", screensaver_inhibit_cookie);
-        g_debug("inhibit_screensaver: Screensaver inhibited");
+      try {
+        std::vector<Glib::VariantBase> values {
+        	Glib::Variant<Glib::ustring>::create("Me TV"),
+        	Glib::Variant<Glib::ustring>::create("Watching television")
+        };
+        auto parameters = Glib::VariantContainerBase::create_tuple(values);
+        screensaver_inhibit_cookie = proxy->call_sync("Inhibit", parameters);
+        std::cout << "me-tv-player (xine): Sent the Inhibit message to the screensaver service" << std::endl;
       }
-    } else {
-      if (screensaver_inhibit_cookie == 0) {
-        g_debug("inhibit_screensaver: Screensaver is not currently inhibited");
-      } else {
-        if (!dbus_g_proxy_call(proxy, "UnInhibit", &error,
-            G_TYPE_UINT, &screensaver_inhibit_cookie, G_TYPE_INVALID, G_TYPE_INVALID)) {
-          g_debug("inhibit_screensaver: Failed to call UnInhibit method");
-          return;
-        }
-        screensaver_inhibit_cookie = 0;
-        g_debug("inhibit_screensaver: Screensaver uninhibited");
+      catch (Gio::DBus::Error error) {
+        std::cout << "me-tv-player (xine): Could not send Inhibit message to the screensaver service.\nGot a: " << error.what() << std:: endl;
       }
     }
+    else {
+      try {
+        proxy->call_sync("Uninhibit", screensaver_inhibit_cookie);
+        std::cout << "me-tv-player (xine): Sent the Uninhibit message to the screensaver service" << std::endl;
+      }
+      catch (Gio::DBus::Error error) {
+        std::cout << "me-tv-player (xine): Could not send Uninhibit message to the screensaver service.\nGot a: " << error.what() << std:: endl;
+      }
+    }
+  }
+  catch (Gio::DBus::Error error) {
+    std::cout << "me-tv-player (xine): Could not connect to screensaver service.\nGot a: " << error.what() << std:: endl;
   }
 }
 
@@ -248,12 +240,7 @@ int main(int argc, char **argv) {
     std::cerr << "me-tv-player (xine): Invalid number of parameters" << std::endl;
     return -1;
   }
-  g_type_init();
-  GError *error = NULL;
-  dbus_connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-  if (dbus_connection == NULL) {
-    g_debug("Failed to get DBus session");
-  }
+  Gio::init();
   mrl = argv[1];
   window = atoi(argv[2]);
   if (strlen(argv[3]) > 0) {
