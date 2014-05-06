@@ -25,7 +25,7 @@ except:
     print 'Version file not present, build will not be undertaken.'
     Exit(1)
 
-osName, _, _, _, archName = os.uname()
+osName, _, versionNumber, _, archName = os.uname()
 
 buildDirectory = 'Build'
 
@@ -67,7 +67,7 @@ datadir = ARGUMENTS.get('datadir', datadir)
 
 environment = Environment(
     tools=['g++', 'gnulink'],
-    CXX = 'g++-4.9',
+    CXX = 'g++-4.9' if 'fc2' not in versionNumber else 'g++',
     PREFIX=prefix,
     BINDIR=bindir,
     DATADIR=datadir,
