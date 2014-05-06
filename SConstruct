@@ -108,19 +108,19 @@ environment = Environment(
 environment['main_dependencies'] = (
     ('sqlite3', '>= 3.8.4.3'),
     ('gtkmm-2.4', '>= 2.24.4'),
-    ('giomm-2.4', '>= 2.40.0'),
-    ('gthread-2.0', '>= 2.40.0'),
+    ('giomm-2.4', '>= 2.38.2'),  # 2.40.0
+    ('gthread-2.0', '>= 2.38.2'),  # 2.40.0
     ('gconfmm-2.6', '>= 2.28.0'),
     ('unique-1.0', '>= 1.1.6'),
-    ('x11', '>= 1.6.2'),
-    ('dbus-1', '>= 1.8.2'),
-    ('dbus-glib-1', '>= 0.102'),
+    ('x11', '>= 1.6.1'),  # 1.6.2
+    ('dbus-1', '>= 1.6.12'),  # 1.8.2
+    ('dbus-glib-1', '>= 0.100.2'),  # 0.102
 )
 
 environment['xine_player_dependencies'] = (
     ('libxine', '>= 1.2.5'),
-    ('x11', '>= 1.6.2'),
-    ('giomm-2.4', '>= 2.40.0'),
+    ('x11', '>= 1.6.1'),  # 1.6.2
+    ('giomm-2.4', '>= 2.38.2'),
 )
 
 Export('environment')
