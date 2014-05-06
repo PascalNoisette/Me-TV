@@ -194,7 +194,7 @@ void set_subtitle_stream(int channel) {
   xine_set_param(stream, XINE_PARAM_SPU_CHANNEL, channel);
 }
 
-void inhibit_screensaver(gboolean activate) {
+void inhibit_screensaver_freedesktop(gboolean activate) {
   try {
     static Glib::VariantContainerBase screensaver_inhibit_cookie;
     auto proxy = Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BusType::BUS_TYPE_SESSION,
@@ -225,9 +225,51 @@ void inhibit_screensaver(gboolean activate) {
       }
     }
   }
-  catch (Gio::DBus::Error error) {
+  catch (Gio::Error error) {
     std::cout << "me-tv-player (xine): Could not connect to screensaver service.\nGot a: " << error.what() << std:: endl;
   }
+}
+
+void inhibit_screensaver_gnome3(gboolean activate) {
+  try {
+    static Glib::VariantContainerBase screensaver_inhibit_cookie;
+    auto proxy = Gio::DBus::Proxy::create_for_bus_sync(Gio::DBus::BusType::BUS_TYPE_SESSION,
+                                               "org.gnome.SessionManager",
+                                               "/org/gnome/SessionManager",
+                                               "org.gnome.SessionManager");
+    if (activate) {
+      try {
+        std::vector<Glib::VariantBase> values {
+        	Glib::Variant<Glib::ustring>::create("Me TV"),
+            Glib::Variant<guint32>::create(0),
+        	Glib::Variant<Glib::ustring>::create("Watching television"),
+        	Glib::Variant<guint32>::create(8) // TODO: Find out why this number has to be 8.
+        };
+        auto parameters = Glib::VariantContainerBase::create_tuple(values);
+        screensaver_inhibit_cookie = proxy->call_sync("Inhibit", parameters);
+        std::cout << "me-tv-player (xine): Sent the Inhibit message to the session manager service" << std::endl;
+      }
+      catch (Gio::DBus::Error error) {
+        std::cout << "me-tv-player (xine): Could not send Inhibit message to the session manager service.\nGot a: " << error.what() << std:: endl;
+      }
+    }
+    else {
+      try {
+        proxy->call_sync("Uninhibit", screensaver_inhibit_cookie);
+        std::cout << "me-tv-player (xine): Sent the Uninhibit message to the session manager service" << std::endl;
+      }
+      catch (Gio::DBus::Error error) {
+        std::cout << "me-tv-player (xine): Could not send Uninhibit message to the session manager service.\nGot a: " << error.what() << std:: endl;
+      }
+    }
+  }
+  catch (Gio::Error error) {
+    std::cout << "me-tv-player (xine): Could not connect to session manager service.\nGot a: " << error.what() << std:: endl;
+  }
+}
+
+void inhibit_screensaver(gboolean activate) {
+	inhibit_screensaver_gnome3(activate);
 }
 
 int main(int argc, char **argv) {
