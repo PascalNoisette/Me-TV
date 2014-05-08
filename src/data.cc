@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -7,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -23,7 +24,7 @@
 #include "exception.h"
 #include <giomm.h>
 
-Glib::RecMutex statement_mutex;
+Glib::Threads::RecMutex statement_mutex;
 
 using namespace Data;
 
@@ -41,7 +42,7 @@ Statement::Statement(Connection& connection, const Glib::ustring& command) :
 {
 	statement = NULL;
 	const char* remaining = NULL;
-	
+
 	if (sqlite3_prepare_v2(connection.get_connection(), command.c_str(), -1, &statement, &remaining) != 0)
 	{
 		if (remaining == NULL || *remaining == 0)
@@ -55,13 +56,13 @@ Statement::Statement(Connection& connection, const Glib::ustring& command) :
 				_("Failed to prepare statement: %1"), Glib::ustring(remaining)));
 		}
 	}
-	
+
 	if (remaining != NULL && *remaining != 0)
 	{
 		throw SQLiteException(connection, Glib::ustring::compose(
 			_("Prepared statement had remaining data: %1"), Glib::ustring(remaining)));
 	}
-	
+
 	if (statement == NULL)
 	{
 		throw SQLiteException(connection, _("Failed to create statement"));
@@ -82,11 +83,11 @@ void Statement::reset()
 	sqlite3_reset(statement);
 	sqlite3_clear_bindings(statement);
 }
-	
+
 guint Statement::step()
 {
 	int result = sqlite3_step(statement);
-	
+
 	while (result == SQLITE_BUSY)
 	{
 		g_debug("Database busy, trying again");
@@ -105,10 +106,10 @@ guint Statement::step()
 			connection,
 			Glib::ustring::compose(_("Failed to execute statement: %1"), command));
 	}
-	
+
 	return result;
 }
-	
+
 gint Statement::get_int(guint column)
 {
 	return sqlite3_column_int(statement, column);
@@ -167,9 +168,9 @@ void Connection::open(const Glib::ustring& filename)
 	{
 		throw Exception("Database connection already open");
 	}
-	
+
 	gboolean database_exists = Gio::File::create_for_path(filename)->query_exists();
-	
+
 	g_debug("Database '%s' ", database_exists ? "exists" : "does not exist");
 	g_debug("Opening database file '%s'", filename.c_str());
 	if (sqlite3_open(filename.c_str(), &connection) != 0)
@@ -177,9 +178,9 @@ void Connection::open(const Glib::ustring& filename)
 		Glib::ustring message = Glib::ustring::compose(_("Failed to connect to Me TV database '%1'"), filename);
 		throw SQLiteException(connection, message);
 	}
-	
+
 	database_created = !database_exists;
-	
+
 	// Enable WAL journal
 	Statement* stmnt = new Statement(*this, "PRAGMA journal_mode=WAL");
 	stmnt->step();
@@ -194,7 +195,7 @@ void Connection::open(const Glib::ustring& filename)
 	stmnt = new Statement(*this, "PRAGMA synchronous=NORMAL");
 	stmnt->step();
 	delete stmnt;
-	
+
 }
 
 Connection::~Connection()
@@ -223,7 +224,7 @@ void SchemaAdapter::initialise_schema()
 void SchemaAdapter::initialise_table(Table& table)
 {
 	g_debug("Initialising table '%s'", table.name.c_str());
-	
+
 	Glib::ustring command = "CREATE TABLE IF NOT EXISTS ";
 	command += table.name;
 	command += " (";
@@ -231,7 +232,7 @@ void SchemaAdapter::initialise_table(Table& table)
 	for (Columns::const_iterator j = table.columns.begin(); j != table.columns.end(); j++)
 	{
 		const Column& column = *j;
-		
+
 		if (first_column)
 		{
 			first_column = false;
@@ -240,10 +241,10 @@ void SchemaAdapter::initialise_table(Table& table)
 		{
 			command += ", ";
 		}
-		
+
 		command += column.name;
 		command += " ";
-		
+
 		switch (column.type)
 		{
 		case DATA_TYPE_INTEGER:
@@ -255,14 +256,14 @@ void SchemaAdapter::initialise_table(Table& table)
 		default:
 			break;
 		}
-		
+
 		if (column.name == table.primary_key)
 		{
 			if (column.type != DATA_TYPE_INTEGER)
 			{
 				throw Exception(_("Only integers can be primary keys"));
 			}
-			
+
 			command += " PRIMARY KEY AUTOINCREMENT";
 		}
 		else
@@ -273,7 +274,7 @@ void SchemaAdapter::initialise_table(Table& table)
 			}
 		}
 	}
-	
+
 	for (Constraints::const_iterator j = table.constraints.begin(); j != table.constraints.end(); j++)
 	{
 		const Constraint& constraint = *j;
@@ -284,7 +285,7 @@ void SchemaAdapter::initialise_table(Table& table)
 			for (StringList::const_iterator k = constraint.columns.begin(); k != constraint.columns.end(); k++)
 			{
 				Glib::ustring column = *k;
-				
+
 				if (first_constraint)
 				{
 					first_constraint = false;
@@ -293,15 +294,15 @@ void SchemaAdapter::initialise_table(Table& table)
 				{
 					command += ", ";
 				}
-				
+
 				command += column;
 			}
 			command += ")";
 		}
 	}
-	
+
 	command += ");";
-	
+
 	Statement statement(connection, command);
 	statement.step();
 }
@@ -311,9 +312,9 @@ void SchemaAdapter::drop_schema()
 	for (Tables::const_iterator i = schema.tables.begin(); i != schema.tables.end(); i++)
 	{
 		const Table& table = i->second;
-		
+
 		g_debug("Dropping table '%s'", table.name.c_str());
-		
+
 		Glib::ustring command = Glib::ustring::compose("DROP TABLE %1", table.name);
         Statement statement(connection, command);
 		statement.step();
@@ -330,21 +331,21 @@ TableAdapter::TableAdapter(Connection& connection, Table& table)
 	if (table.columns.size() == 0)
 	{
 		throw Exception(_("Failed to create TableAdapter: Table has no columns"));
-	}	
+	}
 
 	for (Columns::const_iterator j = table.columns.begin(); j != table.columns.end(); j++)
 	{
 		const Column& column = *j;
-		
+
 		if (fields.length() > 0) fields += ", ";
 		if (replace_fields.length() > 0) replace_fields += ", ";
 		if (replace_values.length() > 0) replace_values += ", ";
-		
+
 		fields += column.name;
 		replace_fields += column.name;
 		replace_values += ":" + column.name;
 	}
-	
+
 	select_command = Glib::ustring::compose("SELECT %1 FROM %2", fields, table.name);
 	replace_command = Glib::ustring::compose("REPLACE INTO %1 (%2) VALUES (%3)", table.name, replace_fields, replace_values);
 	delete_command = Glib::ustring::compose("DELETE FROM %1", table.name);
@@ -354,7 +355,7 @@ TableAdapter::TableAdapter(Connection& connection, Table& table)
 void TableAdapter::replace_rows(DataTable& data_table)
 {
 	Glib::ustring primary_key = data_table.table.primary_key;
-	
+
 	Statement statement(connection, replace_command);
 
 	if (data_table.rows.size() > 0)
@@ -362,7 +363,7 @@ void TableAdapter::replace_rows(DataTable& data_table)
 		for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 		{
 			Data::Row& row = *i;
-			
+
 			for (Columns::iterator j = data_table.table.columns.begin(); j != data_table.table.columns.end(); j++)
 			{
 				Column& column = *j;
@@ -382,16 +383,16 @@ void TableAdapter::replace_rows(DataTable& data_table)
 					}
 				}
 			}
-			
+
 			statement.step();
-						
+
 			if (row.auto_increment != NULL && *row.auto_increment == 0)
 			{
 				*(row.auto_increment) = connection.get_last_insert_rowid();
 				g_debug("%s row replaced for id %d",
 					data_table.table.name.c_str(), *(row.auto_increment));
 			}
-			
+
 			statement.reset();
 		}
 	}
@@ -416,16 +417,16 @@ DataTable TableAdapter::select_rows(const Glib::ustring& where, const Glib::ustr
 	{
 		command += Glib::ustring::compose(" ORDER BY %1", sort);
 	}
-	
+
     Statement statement(connection, command);
 	while (statement.step() == SQLITE_ROW)
 	{
 		Row row;
-		
+
 		for (Columns::const_iterator j = table.columns.begin(); j != table.columns.end(); j++)
 		{
 			const Column& column = *j;
-			
+
 			switch (column.type)
 			{
 			case DATA_TYPE_INTEGER:
@@ -473,7 +474,7 @@ void TableAdapter::update_rows(const Glib::ustring& set, const Glib::ustring& wh
 	{
 		command += Glib::ustring::compose(" WHERE %1", where);
 	}
-	
+
     Statement statement(connection, command);
 	statement.step();
 }

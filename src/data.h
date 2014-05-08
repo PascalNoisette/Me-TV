@@ -7,12 +7,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -33,8 +33,8 @@ namespace Data
 		int				int_value;
 		Glib::ustring	string_value;
 	};
-	
-	typedef std::map<Glib::ustring, Value> Parameters;	
+
+	typedef std::map<Glib::ustring, Value> Parameters;
 
 	class Connection
 	{
@@ -50,15 +50,15 @@ namespace Data
 		guint get_last_insert_rowid();
 		gboolean get_database_created() const { return database_created; }
 		void vacuum();
-		
+
 		sqlite3* get_connection() { return connection; }
 		Glib::ustring get_error_message() { return sqlite3_errmsg(connection); }
 	};
-	
+
 	class Statement
 	{
 	private:
-		Glib::RecMutex::Lock	lock;
+		Glib::Threads::RecMutex::Lock	lock;
 		sqlite3_stmt*			statement;
 		Connection&				connection;
 		Glib::ustring			command;
@@ -73,7 +73,7 @@ namespace Data
 		const Glib::ustring get_text(guint column);
 
 		guint get_parameter_index(const Glib::ustring& name);
-			
+
 		void set_int_parameter(guint index, int value);
 		void set_string_parameter(guint index, const Glib::ustring& value);
 		void set_int_parameter(const Glib::ustring& name, int value);
@@ -111,13 +111,13 @@ namespace Data
 			gboolean nullable)
 		{
 			Column column;
-			
+
 			column.index = std::vector<Column>::size();
 			column.name = name;
 			column.type = type;
 			column.size = size;
 			column.nullable = nullable;
-			
+
 			push_back(column);
 			columns_by_name[name] = column;
 		}
@@ -127,14 +127,14 @@ namespace Data
 	{
 		ConstraintTypeUnique
 	} ConstraintType;
-	
+
 	class Constraint
 	{
 	public:
 		ConstraintType	type;
 		StringList		columns;
 	};
-	
+
 	class Constraints : public std::list<Constraint>
 	{
 	public:
@@ -142,7 +142,7 @@ namespace Data
 		{
 			add(ConstraintTypeUnique, columns);
 		}
-			
+
 		void add(ConstraintType constraint_type, const StringList& columns)
 		{
 			Constraint constraint;
@@ -151,7 +151,7 @@ namespace Data
 			push_back(constraint);
 		}
 	};
-	
+
 	class Table
 	{
 	public:
@@ -160,7 +160,7 @@ namespace Data
 		Columns			columns;
 		Constraints		constraints;
 	};
-	
+
 	class Tables : public std::map<Glib::ustring, Table>
 	{
 	public:
@@ -169,13 +169,13 @@ namespace Data
 			(*this)[table.name] = table;
 		}
 	};
-	
+
 	class Schema
 	{
 	public:
 		Tables tables;
 	};
-	
+
 	class SchemaAdapter
 	{
 	private:
@@ -189,7 +189,7 @@ namespace Data
 		void initialise_table(Table& table);
 		void drop_schema();
 	};
-		
+
 	class Row : public std::map<Glib::ustring, Value>
 	{
 	public:
@@ -197,7 +197,7 @@ namespace Data
 		{
 			auto_increment = NULL;
 		}
-		
+
 		guint* auto_increment;
 	};
 
@@ -209,7 +209,7 @@ namespace Data
 			std::vector<Row>::push_back(row);
 		}
 	};
-		
+
 	class DataTable
 	{
 	public:
@@ -237,7 +237,7 @@ namespace Data
 
 		DataTable select_row(guint key);
 		DataTable select_rows(const Glib::ustring& where = "", const Glib::ustring& sort = "");
-			
+
 		void update_rows(const Glib::ustring& set = "", const Glib::ustring& where = "");
 
 		void replace_rows(DataTable& data_table);
