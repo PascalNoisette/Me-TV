@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -27,7 +28,6 @@
 
 void ChannelManager::initialise()
 {
-	g_static_rec_mutex_init(mutex.gobj());
 	dirty = true;
 }
 
@@ -35,7 +35,7 @@ gboolean ChannelManager::is_dirty()
 {
 	gboolean result = dirty;
 
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	if (!result)
 	{
 		for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
@@ -55,7 +55,7 @@ gboolean ChannelManager::is_dirty()
 
 void ChannelManager::load(Data::Connection& connection)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	Application& application = get_application();
 
@@ -132,7 +132,7 @@ void ChannelManager::save(Data::Connection& connection)
 	// Update sort_order = 0 to flag unused channels for removal later
 	adapter_channel.update_rows("sort_order = 0");
 
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	int channel_count = 0;
 	for (ChannelArray::iterator i = channels.begin(); i != channels.end(); i++)
@@ -235,7 +235,7 @@ Channel* ChannelManager::find_channel(guint channel_id)
 {
 	Channel* channel = NULL;
 
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	
 	for (ChannelArray::iterator iterator = channels.begin(); iterator != channels.end() && channel == NULL; iterator++)
 	{
@@ -251,7 +251,7 @@ Channel* ChannelManager::find_channel(guint channel_id)
 
 Channel& ChannelManager::get_channel_by_index(guint index)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	if (index >= channels.size())
 	{
@@ -263,7 +263,7 @@ Channel& ChannelManager::get_channel_by_index(guint index)
 
 Channel& ChannelManager::get_channel_by_id(guint channel_id)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	Channel* channel = find_channel(channel_id);
 
@@ -277,7 +277,7 @@ Channel& ChannelManager::get_channel_by_id(guint channel_id)
 
 void ChannelManager::add_channels(const ChannelArray& c)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	for (ChannelArray::const_iterator iterator = c.begin(); iterator != c.end(); iterator++)
 	{
@@ -287,7 +287,7 @@ void ChannelManager::add_channels(const ChannelArray& c)
 
 void ChannelManager::add_channel(const Channel& channel)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	if (channels.size() >= MAX_CHANNELS)
 	{
@@ -322,7 +322,7 @@ const ChannelArray& ChannelManager::get_channels() const
 
 void ChannelManager::clear()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	channels.clear();
 	g_debug("Channels cleared");
 }
@@ -331,7 +331,7 @@ Channel* ChannelManager::find_channel(guint frequency, guint service_id)
 {
 	Channel* result = NULL;
 	
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	for (ChannelArray::iterator iterator = channels.begin(); iterator != channels.end() && result == NULL; iterator++)
 	{
 		Channel& channel = *iterator;
@@ -348,7 +348,7 @@ void ChannelManager::set_channels(const ChannelArray& new_channels)
 {
 	g_debug("Setting channels");
 	
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	clear();
 	add_channels(new_channels);
@@ -361,7 +361,7 @@ void ChannelManager::set_channels(const ChannelArray& new_channels)
 
 void ChannelManager::prune_epg()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	ChannelArray::iterator iterator = channels.begin();
 	while (iterator != channels.end())
 	{

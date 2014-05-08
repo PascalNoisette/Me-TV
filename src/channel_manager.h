@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -27,7 +28,7 @@
 class ChannelManager
 {
 private:
-	Glib::StaticRecMutex mutex;
+	Glib::Threads::RecMutex mutex;
 	ChannelArray channels;
 	gboolean dirty;
 	
@@ -38,7 +39,7 @@ public:
 	void save(Data::Connection& connection);
 	void prune_epg();
 	
-	Glib::StaticRecMutex& get_mutex() { return mutex; }
+	Glib::Threads::RecMutex& get_mutex() { return mutex; }
 		
 	const ChannelArray& get_channels() const;
 	ChannelArray& get_channels();
