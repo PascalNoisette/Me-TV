@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -18,6 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <algorithm>
+
 #include "epg_events.h"
 #include "me-tv.h"
 #include "data.h"
@@ -25,13 +28,35 @@
 
 EpgEvents::EpgEvents()
 {
-	g_static_rec_mutex_init(mutex.gobj());
 	dirty = true;
 }
 
 EpgEvents::~EpgEvents()
 {
 }
+
+EpgEvents::EpgEvents(EpgEvents const & other)
+{
+	dirty = other.dirty;
+	list = other.list;
+}
+
+void EpgEvents::swap(EpgEvents & other) {
+	// TODO: This is unsafe.
+	auto t1 = other.dirty;
+	other.dirty = dirty;
+	dirty = t1;
+	auto t2 = other.list;
+	other.list = list;
+	list = t2;
+}
+
+EpgEvents & EpgEvents::operator=(EpgEvents other)
+{
+	other.swap(*this);
+	return *this;
+}
+
 
 bool sort_function(const EpgEvent& a, const EpgEvent& b)
 {
@@ -42,7 +67,7 @@ gboolean EpgEvents::add_epg_event(const EpgEvent& epg_event)
 {
 	gboolean add = true;
 	
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	EpgEventList::iterator i = list.begin();
 	
 	while (i != list.end() && add == true)
@@ -95,7 +120,7 @@ gboolean EpgEvents::get_current(EpgEvent& epg_event)
 	gboolean found = false;
 	time_t now = get_local_time();
 	
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	for (EpgEventList::iterator i = list.begin(); i != list.end() && found == false; i++)
 	{
 		EpgEvent& current = *i;
@@ -113,7 +138,7 @@ EpgEventList EpgEvents::get_list(time_t start_time, time_t end_time)
 {
 	EpgEventList result;
 	
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
 	{
 		EpgEvent& epg_event = *i;
@@ -140,7 +165,7 @@ bool is_old(EpgEvent& epg_event)
 
 void EpgEvents::prune()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	prune_before_time = get_local_time() - 36000; // Back 10 hours
 	list.remove_if(is_old);
 }
@@ -212,7 +237,7 @@ void EpgEvents::save(Data::Connection& connection, guint channel_id)
 	Data::DataTable data_table_epg_event(table_epg_event);
 	Data::DataTable data_table_epg_event_text(table_epg_event_text);
 
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	g_debug("Saving %d EPG events", (int)list.size());
 	for (EpgEventList::iterator j = list.begin(); j != list.end(); j++)
@@ -276,7 +301,7 @@ EpgEventList EpgEvents::search(const Glib::ustring& text, gboolean search_descri
 
 	time_t now = get_local_time();
 
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	for (EpgEventList::iterator i = list.begin(); i != list.end(); i++)
 	{
 		EpgEvent& epg_event = *i;

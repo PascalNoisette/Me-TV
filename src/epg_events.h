@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -30,13 +31,19 @@ class EpgEvents
 {
 private:
 	EpgEventList			list;
-	Glib::StaticRecMutex	mutex;
+	Glib::Threads::RecMutex	mutex;
 	gboolean				dirty;
 	
 	void set_saved(guint epg_event_id);
+
+	void swap(EpgEvents &);
+
 public:
 	EpgEvents();
 	~EpgEvents();
+
+	EpgEvents(EpgEvents const &);
+	EpgEvents & operator=(EpgEvents);
 		
 	gboolean		add_epg_event(const EpgEvent& epg_event);
 	gboolean		get_current(EpgEvent& epg_event);
