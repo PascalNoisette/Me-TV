@@ -128,13 +128,13 @@ Export('environment')
 metv, metvXinePlayer = SConscript('src/SConscript', variant_dir=buildDirectory + '/src', duplicate=0)
 SConscript('po/SConscript', variant_dir=buildDirectory + '/po', duplicate=0)
 
-desktop = Command('me-tv.desktop', ['me-tv.desktop.in', 'po/.intltool-merge-cache'],
+desktop = Command('me-tv.desktop', 'me-tv.desktop.in',
     'intltool-merge  -d -u -c ./po/.intltool-merge-cache ./po $SOURCE $TARGET'
 )
-
-schemas = Command('me-tv.schemas', ['me-tv.schemas.in', 'po/.intltool-merge-cache'],
+schemas = Command('me-tv.schemas', 'me-tv.schemas.in',
     'intltool-merge  -s -u -c ./po/.intltool-merge-cache ./po $SOURCE $TARGET'
 )
+SideEffect('po/.intltool-merge-cache', [desktop, schemas])
 
 Alias('install', [
     Install(datadir + '/pixmaps/', Glob('*.png')),
