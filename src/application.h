@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -44,7 +45,7 @@ private:
 	static Application*					current;
 	Glib::RefPtr<Gtk::Builder>			builder;
 	StatusIcon*							status_icon;
-	Glib::StaticRecMutex				mutex;
+	Glib::Threads::RecMutex				mutex;
 	guint								timeout_source;
 	Glib::ustring						application_dir;
 	Data::Schema						schema;
@@ -71,7 +72,7 @@ public:
 	
 	Data::Connection			connection;
 
-	Glib::StaticRecMutex&	get_mutex();
+	Glib::Threads::RecMutex&	get_mutex();
 	gboolean				initialise_database();
 	Data::Schema			get_schema() const { return schema; }
 

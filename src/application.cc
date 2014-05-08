@@ -44,8 +44,6 @@ Application::Application()
 		throw Exception(_("Application has already been initialised"));
 	}
 
-	g_static_rec_mutex_init(mutex.gobj());
-
 	current					= this;
 	status_icon				= NULL;
 	timeout_source			= 0;
@@ -166,7 +164,7 @@ Application::~Application()
 
 void Application::on_record_current()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	if (toggle_action_record_current->get_active())
 	{
@@ -553,7 +551,7 @@ void Application::check_auto_record()
 	}
 }
 
-Glib::StaticRecMutex& Application::get_mutex()
+Glib::Threads::RecMutex& Application::get_mutex()
 {
 	return mutex;
 }
