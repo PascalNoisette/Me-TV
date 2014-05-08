@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -21,19 +22,17 @@
 #include "channel_stream.h"
 #include "dvb_si.h"
 
-class Lock : public Glib::RecMutex::Lock
+class Lock : public Glib::Threads::RecMutex::Lock
 {
 public:
-	Lock(Glib::StaticRecMutex& mutex, const Glib::ustring& name) :
-		Glib::RecMutex::Lock(mutex) {}
+	Lock(Glib::Threads::RecMutex& mutex, const Glib::ustring& name) :
+		Glib::Threads::RecMutex::Lock(mutex) {}
 	~Lock() {}
 };
 
 ChannelStream::ChannelStream(ChannelStreamType t, Channel& c, const Glib::ustring& f,
 	const Glib::ustring& d) : channel(c)
 {
-	g_static_rec_mutex_init(mutex.gobj());
-
 	type = t;
 	filename = f;
 	description = d;

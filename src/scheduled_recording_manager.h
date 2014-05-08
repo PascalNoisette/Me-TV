@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -30,8 +31,7 @@ typedef std::list<ScheduledRecording> ScheduledRecordingList;
 class ScheduledRecordingManager
 {
 private:
-	Glib::StaticRecMutex	mutex;
-
+	Glib::Threads::RecMutex mutex;
 	gboolean dirty;
 
 	gboolean is_device_available(const Glib::ustring& device, const ScheduledRecording& scheduled_recording);

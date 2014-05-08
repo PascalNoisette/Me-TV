@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -23,12 +24,11 @@
 
 void ScheduledRecordingManager::initialise()
 {
-	g_static_rec_mutex_init(mutex.gobj());
 }
 
 void ScheduledRecordingManager::load(Data::Connection& connection)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	
 	g_debug("Loading scheduled recordings");
 	
@@ -75,7 +75,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	}
 	g_debug("Scheduled recordings are dirty, saving");
 	
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	g_debug("Saving %d scheduled recordings", (int)scheduled_recordings.size());
 	
@@ -245,7 +245,7 @@ void ScheduledRecordingManager::select_device(ScheduledRecording& scheduled_reco
 
 void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& scheduled_recording)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	ScheduledRecordingList::iterator iupdated;
 	gboolean updated  = false;
 	gboolean is_same  = false;
@@ -353,7 +353,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 
 void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recording_id)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	g_debug("Deleting scheduled recording %d", scheduled_recording_id);
 	
@@ -384,7 +384,7 @@ void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recor
 
 void ScheduledRecordingManager::remove_scheduled_recording(EpgEvent& epg_event)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
@@ -407,7 +407,7 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 	time_t now = time(NULL);
 
 	g_debug("Checking scheduled recordings");
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	g_debug("Now: %u", (guint)now);
 	g_debug("Removing scheduled recordings older than %u", (guint)now);
@@ -465,7 +465,7 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 
 ScheduledRecording ScheduledRecordingManager::get_scheduled_recording(guint scheduled_recording_id)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	ScheduledRecording* result = NULL;
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && result == NULL; i++)
@@ -489,7 +489,7 @@ ScheduledRecording ScheduledRecordingManager::get_scheduled_recording(guint sche
 
 guint ScheduledRecordingManager::is_recording(const Channel& channel)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	guint now = time(NULL);
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
@@ -505,7 +505,7 @@ guint ScheduledRecordingManager::is_recording(const Channel& channel)
 
 gboolean ScheduledRecordingManager::is_recording(const EpgEvent& epg_event)
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -37,7 +38,7 @@ class ChannelStream
 {
 private:
 	Dvb::DemuxerList				demuxers;
-	Glib::StaticRecMutex			mutex;
+	Glib::Threads::RecMutex			mutex;
 	guint					last_insert_time;
 
 	void open();
