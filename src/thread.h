@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -29,7 +30,7 @@ class Thread
 private:
 	gboolean				terminated;
 	Glib::Thread*			thread;
-	Glib::StaticRecMutex	mutex;
+	Glib::Threads::RecMutex	mutex;
 	Glib::ustring			name;
 	gboolean				join_on_destroy;
 	gboolean				started;

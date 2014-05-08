@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -25,7 +26,6 @@
 Thread::Thread(const Glib::ustring& thread_name, gboolean join_thread_on_destroy)
 	: join_on_destroy(join_thread_on_destroy)
 {
-	g_static_rec_mutex_init(mutex.gobj());
 	terminated = true;
 	started = false;
 	thread = NULL;
@@ -43,7 +43,7 @@ Thread::~Thread()
 
 void Thread::start()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	if (thread != NULL)
 	{
 		throw Exception("'" + name + "'" + _(" thread has already been started"));
@@ -74,7 +74,7 @@ void Thread::join(gboolean set_terminate)
 	gboolean do_join = false;
 	
 	{
-		Glib::RecMutex::Lock lock(mutex);
+		Glib::Threads::RecMutex::Lock lock(mutex);
 		if (thread != NULL)
 		{
 			if (set_terminate)
@@ -93,7 +93,7 @@ void Thread::join(gboolean set_terminate)
 		thread->join();
 		g_debug("Thread '%s' joined", name.c_str());
 
-		Glib::RecMutex::Lock lock(mutex);
+		Glib::Threads::RecMutex::Lock lock(mutex);
 		thread = NULL;
 		terminated = true;
 	}
@@ -101,14 +101,14 @@ void Thread::join(gboolean set_terminate)
 
 void Thread::terminate()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	terminated = true;
 	g_debug("Thread '%s' marked for termination", name.c_str());
 }
 
 gboolean Thread::is_started()
 {
-	Glib::RecMutex::Lock lock(mutex);
+	Glib::Threads::RecMutex::Lock lock(mutex);
 	return (thread != NULL);
 }
 
