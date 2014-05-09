@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014 Russel Winder
  *
  * This file is part of Me TV
  *
@@ -7,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -52,11 +53,11 @@ private:
 	guint								timeout_source;
 	Engine*								engine;
 	gint								output_fd;
-	Glib::StaticRecMutex				mutex;
+	Glib::Threads::RecMutex				mutex;
 	gboolean							mute_state;
 	guint								channel_change_timeout;
 	guint								temp_channel_number;
-	
+
 	void stop();
 	void set_view_mode(ViewMode display_mode);
 	void load_devices();
@@ -97,7 +98,7 @@ private:
 
 	void on_show();
 	void on_hide();
-			
+
 	void on_about();
 	void on_auto_record();
 	void on_audio_channel_both();
@@ -123,9 +124,9 @@ private:
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	virtual ~MainWindow();
-		
+
 	static MainWindow* create(Glib::RefPtr<Gtk::Builder> builder);
-		
+
 	void on_exception();
 
 	void show_channels_dialog();
