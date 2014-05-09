@@ -27,8 +27,8 @@
 #include "application.h"
 
 EpgEvents::EpgEvents()
+  : dirty(true)
 {
-	dirty = true;
 }
 
 EpgEvents::~EpgEvents()
@@ -42,19 +42,10 @@ EpgEvents::EpgEvents(EpgEvents const & other)
 	list = other.list;
 }
 
-void EpgEvents::swap(EpgEvents & other) {
-	// TODO: This is unsafe.
-	auto t1 = other.dirty;
-	other.dirty = dirty;
-	dirty = t1;
-	auto t2 = other.list;
-	other.list = list;
-	list = t2;
-}
-
-EpgEvents & EpgEvents::operator=(EpgEvents other)
+EpgEvents & EpgEvents::operator=(EpgEvents const & other)
 {
-	other.swap(*this);
+	dirty = other.dirty;
+  list = other.list;
 	return *this;
 }
 

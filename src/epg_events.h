@@ -43,7 +43,7 @@ public:
 	~EpgEvents();
 
 	EpgEvents(EpgEvents const &);
-	EpgEvents & operator=(EpgEvents);
+	EpgEvents & operator=(EpgEvents const &);
 
 	gboolean		add_epg_event(const EpgEvent& epg_event);
 	gboolean		get_current(EpgEvent& epg_event);
