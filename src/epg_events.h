@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -33,7 +33,7 @@ private:
 	EpgEventList			list;
 	Glib::Threads::RecMutex	mutex;
 	gboolean				dirty;
-	
+
 	void set_saved(guint epg_event_id);
 
 	void swap(EpgEvents &);
@@ -44,7 +44,7 @@ public:
 
 	EpgEvents(EpgEvents const &);
 	EpgEvents & operator=(EpgEvents);
-		
+
 	gboolean		add_epg_event(const EpgEvent& epg_event);
 	gboolean		get_current(EpgEvent& epg_event);
 	EpgEventList	get_list(time_t start_time, time_t end_time);
