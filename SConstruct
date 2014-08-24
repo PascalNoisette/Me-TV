@@ -67,7 +67,6 @@ datadir = ARGUMENTS.get('datadir', datadir)
 
 environment = Environment(
     tools=['g++', 'gnulink'],
-    CXX = 'g++-4.9' if 'fc2' not in versionNumber else 'g++',
     PREFIX=prefix,
     BINDIR=bindir,
     DATADIR=datadir,
@@ -111,7 +110,6 @@ environment['main_dependencies'] = (
     ('giomm-2.4', '>= 2.38.2'),  # 2.40.0
     ('gthread-2.0', '>= 2.38.2'),  # 2.40.0
     ('gconfmm-2.6', '>= 2.28.0'),
-    ('unique-1.0', '>= 1.1.6'),
     ('x11', '>= 1.6.1'),  # 1.6.2
     ('dbus-1', '>= 1.6.12'),  # 1.8.2
     ('dbus-glib-1', '>= 0.100.2'),  # 0.102
@@ -125,20 +123,6 @@ environment['xine_player_dependencies'] = (
 
 Export('environment')
 
-metv, metvXinePlayer = SConscript('src/SConscript', variant_dir=buildDirectory + '/src', duplicate=0)
+SConscript('src/SConscript', variant_dir=buildDirectory + '/src', duplicate=0)
 SConscript('po/SConscript', variant_dir=buildDirectory + '/po', duplicate=0)
-
-desktop = Command('me-tv.desktop', 'me-tv.desktop.in',
-    'intltool-merge  -d -u -c ./po/.intltool-merge-cache ./po $SOURCE $TARGET'
-)
-schemas = Command('me-tv.schemas', 'me-tv.schemas.in',
-    'intltool-merge  -s -u -c ./po/.intltool-merge-cache ./po $SOURCE $TARGET'
-)
-SideEffect('po/.intltool-merge-cache', [desktop, schemas])
-
-Alias('install', [
-    Install(datadir + '/pixmaps/', Glob('*.png')),
-    Install(datadir + '/man/man1/', Glob('me-tv*.1')),
-    Install(datadir + '/applications/', desktop),
-    Install(prefix + '/etc/gconf/schemas/', schemas),
-])
+SConscript('SConscript', variant_dir=buildDirectory, duplicate=0)

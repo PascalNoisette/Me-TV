@@ -69,5 +69,3 @@ environment.Alias('install', [
     environment.Install(environment['DATADIR'] +'/pixmaps/', Glob('*.xpm')),
     environment.Install(environment['DATADIR'] +'/me-tv/glade/', ['me-tv.ui', 'me-tv.xpm']),
 ])
-
-Return('metv', 'metvXinePlayer')
