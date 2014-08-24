@@ -25,34 +25,10 @@
 #include <gconfmm.h>
 #include <glib/gprintf.h>
 #include <X11/Xlib.h>
-#include <unique/unique.h>
 
 #define ME_TV_SUMMARY _("Me TV is a digital television viewer for GTK")
 #define ME_TV_DESCRIPTION _("Me TV was developed for the modern digital lounge room with a PC for a media centre that is capable "\
 	"of normal PC tasks (web surfing, word processing and watching TV).\n")
-
-static UniqueResponse on_message_received (
-	UniqueApp*			app,
-	UniqueCommand		command,
-	UniqueMessageData*  message,
-	guint          		time_,
-	gpointer       		user_data)
-{
-	UniqueResponse response = UNIQUE_RESPONSE_FAIL;
-
-	switch (command)
-    {
-		case 1:
-			action_present->activate();
-			response = UNIQUE_RESPONSE_OK;
-			break;
-
-		default:
-			break;
-	}
-
-	return response;
-}
 
 int main (int argc, char *argv[])
 {
@@ -137,27 +113,9 @@ int main (int argc, char *argv[])
 	try
 	{
 		option_context.parse(argc, argv);
-
-		UniqueApp* unique_application = unique_app_new_with_commands(
-			"org.lamothe.me-tv", NULL,
-		    "run", (UniqueCommand)1,
-			(char*)NULL);
-
-		if (unique_app_is_running(unique_application))
-		{
-			g_debug("Me TV is already running");
-
-			UniqueMessageData* message = unique_message_data_new();
-			unique_app_send_message(unique_application, (UniqueCommand)1, message);
-		}
-		else
-		{
-			g_signal_connect(unique_application, "message-received", G_CALLBACK (on_message_received), NULL);
-
-			Application application;
-			application.run();
-		}
-	}
+    Application application;
+    application.run();
+  }
 	catch (const Glib::Exception& exception)
 	{
 		g_message("Exception: %s", exception.what().c_str());
