@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014 Russel Winder
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -33,29 +33,28 @@
 #include "stream_manager.h"
 #include "configuration_manager.h"
 
-extern ChannelManager				channel_manager;
-extern ScheduledRecordingManager	scheduled_recording_manager;
-extern DeviceManager				device_manager;
-extern StreamManager				stream_manager;
-extern ConfigurationManager			configuration_manager;
+extern ChannelManager channel_manager;
+extern ScheduledRecordingManager scheduled_recording_manager;
+extern DeviceManager	 device_manager;
+extern StreamManager stream_manager;
+extern ConfigurationManager configuration_manager;
 
-class Application
-{
+class Application : Gtk::Application {
 private:
-	static Application*					current;
-	Glib::RefPtr<Gtk::Builder>			builder;
-	StatusIcon*							status_icon;
-	Glib::Threads::RecMutex				mutex;
-	guint								timeout_source;
-	Glib::ustring						application_dir;
-	Data::Schema						schema;
-	Glib::ustring						database_filename;
-	gboolean							database_initialised;
-	DBusGConnection*					dbus_connection;
+	static Application * current;
+	Glib::RefPtr<Gtk::Builder> builder;
+	StatusIcon * status_icon;
+	Glib::Threads::RecMutex mutex;
+	guint timeout_source;
+	Glib::ustring application_dir;
+	Data::Schema schema;
+	Glib::ustring database_filename;
+	gboolean database_initialised;
+	DBusGConnection * dbus_connection;
 	
-	void make_directory_with_parents(const Glib::ustring& path);
+	void make_directory_with_parents(Glib::ustring const & path);
 		
-	void on_display_channel_changed(const Channel& channel);
+	void on_display_channel_changed(Channel const & channel);
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
 
@@ -70,26 +69,26 @@ public:
 	void quit();
 	static Application& get_current();
 	
-	Data::Connection			connection;
+	Data::Connection connection;
 
 	Glib::Threads::RecMutex&	get_mutex();
-	gboolean				initialise_database();
-	Data::Schema			get_schema() const { return schema; }
+	gboolean initialise_database();
+	Data::Schema get_schema() const { return schema; }
 
-	const Glib::ustring& get_database_filename();
+	Glib::ustring const & get_database_filename() const { return database_filename; };
 	
-	Glib::RefPtr<Gtk::Builder> get_builder() { return builder; }
+	Glib::RefPtr<Gtk::Builder> get_builder() const { return builder; }
 	
 	void check_auto_record();
 	void check_scheduled_recordings();
-	void start_recording(Channel& channel);
-	void start_recording(Channel& channel, const ScheduledRecording& scheduled_recording);
-	void stop_recording(Channel& channel);
+	void start_recording(Channel & channel);
+	void start_recording(Channel & channel, ScheduledRecording const & scheduled_recording);
+	void stop_recording(Channel & channel);
 		
-	const Glib::ustring& get_application_dir() const { return application_dir; }
+	Glib::ustring const & get_application_dir() const { return application_dir; }
 	DBusGConnection* get_dbus_connection() const { return dbus_connection; }
 };
 
-Application& get_application();
+Application & get_application();
 
 #endif

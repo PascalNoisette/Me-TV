@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -25,104 +26,18 @@
 
 Glib::RefPtr<Gtk::UIManager> ui_manager;
 
-ComboBoxText::ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml)
-	: Gtk::ComboBox(cobject)
-{
-	list_store = Gtk::ListStore::create(columns);
-	clear();
-	set_model(list_store);
-	pack_start(columns.column_text);
-	set_active(0);
-}
-
-void ComboBoxText::append_text(const Glib::ustring& text, const Glib::ustring& value)
-{
-	Gtk::TreeModel::Row row = *list_store->append();
-	row[columns.column_text] = text;
-	row[columns.column_value] = value;
-}
-
-void ComboBoxText::set_active_text(const Glib::ustring& text)
-{
-	Gtk::TreeNodeChildren children = get_model()->children();
-	for (Gtk::TreeNodeChildren::iterator i = children.begin(); i != children.end(); i++)
-	{
-		Gtk::TreeModel::Row row = *i;
-		if (row[columns.column_text] == text)
-		{
-			set_active(i);
-		}
-	}
-}
-
-void ComboBoxText::set_active_value(const Glib::ustring& value)
-{
-	Gtk::TreeNodeChildren children = get_model()->children();
-	for (Gtk::TreeNodeChildren::iterator i = children.begin(); i != children.end(); i++)
-	{
-		Gtk::TreeModel::Row row = *i;
-		if (row[columns.column_value] == value)
-		{
-			set_active(i);
-		}
-	}
-}
-
-void ComboBoxText::clear_items()
-{
-	list_store->clear();
-}
-
-Glib::ustring ComboBoxText::get_active_text()
-{
-	Gtk::TreeModel::iterator i = get_active();
-	if (i)
-	{
-		Gtk::TreeModel::Row row = *i;
-		if (row)
-		{
-			return row[columns.column_text];
-		}
-	}
-	
-	throw Exception(_("Failed to get active text value"));
-}
-
-Glib::ustring ComboBoxText::get_active_value()
-{
-	Gtk::TreeModel::iterator i = get_active();
-	if (i)
-	{
-		Gtk::TreeModel::Row row = *i;
-		if (row)
-		{
-			return row[columns.column_value];
-		}
-	}
-	
-	throw Exception(_("Failed to get active text value"));
-}
-
-ComboBoxEntryText::ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml)
-	: Gtk::ComboBoxEntryText(cobject)
-{
-}
-
-ChannelComboBox::ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml)
-	: Gtk::ComboBox(cobject)
-{
+ChannelComboBox::ChannelComboBox(BaseObjectType *const cobject, Glib::RefPtr<Gtk::Builder> const & xml)
+	: Gtk::ComboBox(cobject) {
 	list_store = Gtk::ListStore::create(columns);
 }
 
-void ChannelComboBox::load(const ChannelArray& channels)
-{
+void ChannelComboBox::load(ChannelArray const & channels) {
 	clear();
 	set_model(list_store);
 	pack_start(columns.column_name);
 	list_store->clear();
-	for (ChannelArray::const_iterator i = channels.begin(); i != channels.end(); i++)
-	{
-		const Channel& channel = *i;
+	for (ChannelArray::const_iterator i = channels.begin(); i != channels.end(); i++) {
+		Channel const & channel = *i;
 		Gtk::TreeModel::Row row = *list_store->append();
 		row[columns.column_id] = channel.channel_id;
 		row[columns.column_name] = channel.name;
@@ -130,48 +45,21 @@ void ChannelComboBox::load(const ChannelArray& channels)
 	set_active(0);
 }
 
-void ChannelComboBox::set_selected_channel_id(guint channel_id)
-{
+void ChannelComboBox::set_selected_channel_id(guint channel_id) {
 	Gtk::TreeNodeChildren children = get_model()->children();
-	for (Gtk::TreeNodeChildren::iterator i = children.begin(); i != children.end(); i++)
-	{
+	for (Gtk::TreeNodeChildren::iterator i = children.begin(); i != children.end(); i++) {
 		Gtk::TreeModel::Row row = *i;
-		if (row[columns.column_id] == channel_id)
-		{
-			set_active(i);
-		}
+		if (row[columns.column_id] == channel_id) { set_active(i); }
 	}
 }
 
-guint ChannelComboBox::get_selected_channel_id()
-{
+guint ChannelComboBox::get_selected_channel_id() {
 	Gtk::TreeModel::Row row = *get_active();
 	return row[columns.column_id];
 }
 
-GdkLock::GdkLock()
-{
-	gdk_threads_enter();
-}
-
-GdkLock::~GdkLock()
-{
-	gdk_threads_leave();
-}
-
-GdkUnlock::GdkUnlock()
-{
-	gdk_threads_leave();
-}
-
-GdkUnlock::~GdkUnlock()
-{
-	gdk_threads_enter();
-}
-
-IntComboBox::IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml)
-	: Gtk::ComboBox(cobject)
-{
+IntComboBox::IntComboBox(BaseObjectType *const cobject, Glib::RefPtr<Gtk::Builder> const & xml)
+	: Gtk::ComboBox(cobject) {
 	list_store = Gtk::ListStore::create(columns);
 	clear();
 	set_model(list_store);
@@ -180,47 +68,31 @@ IntComboBox::IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	set_active(0);
 }
 
-void IntComboBox::set_size(guint size)
-{	
+void IntComboBox::set_size(guint size) {
 	g_debug("Setting integer combo box size to %d", size);
 
 	list_store->clear();
-	for (guint i = 0; i < size; i++)
-	{
+	for (guint i = 0; i < size; i++) {
 		Gtk::TreeModel::Row row = *list_store->append();
 		row[columns.column_int] = (i+1);
-		
-		if (list_store->children().size() == 1)
-		{
-			set_active(0);
-		}
+		if (list_store->children().size() == 1) { set_active(0); }
 	}
-	
-	if (size == 0)
-	{
+	if (size == 0) {
 		Gtk::TreeModel::Row row = *list_store->append();
 		row[columns.column_int] = 1;
 	}
-	
 	set_sensitive(size > 1);
 }
 
-guint IntComboBox::get_size()
-{
+guint IntComboBox::get_size() {
 	return list_store->children().size();
 }
 
-guint IntComboBox::get_active_value()
-{
+guint IntComboBox::get_active_value() {
 	Gtk::TreeModel::iterator i = get_active();
-	if (i)
-	{
+	if (i) {
 		Gtk::TreeModel::Row row = *i;
-		if (row)
-		{
-			return row[columns.column_int];
-		}
+		if (row) { return row[columns.column_int]; }
 	}
-	
 	throw Exception(_("Failed to get active integer value"));
 }

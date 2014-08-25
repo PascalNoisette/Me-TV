@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -28,106 +29,42 @@
 
 extern Glib::RefPtr<Gtk::UIManager>	ui_manager;
 
-// This class exists because I can't get Gtk::ComboBoxText to work properly
-// it seems to have 2 columns
-class ComboBoxText : public Gtk::ComboBox
-{
+class IntComboBox : public Gtk::ComboBox {
 private:
-	class ModelColumns : public Gtk::TreeModel::ColumnRecord
-	{
+	class ModelColumns : public Gtk::TreeModel::ColumnRecord {
 	public:
-		ModelColumns()
-		{
-			add(column_text);
-			add(column_value);
-		}
-
-		Gtk::TreeModelColumn<Glib::ustring> column_text;
-		Gtk::TreeModelColumn<Glib::ustring> column_value;
-	};
-	
-	ModelColumns columns;
-	Glib::RefPtr<Gtk::ListStore> list_store;
-	
-public:
-	ComboBoxText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
-	
-	void clear_items();
-	void append_text(const Glib::ustring& text, const Glib::ustring& value = "");
-	void set_active_text(const Glib::ustring& text);
-	void set_active_value(const Glib::ustring& value);
-	Glib::ustring get_active_text();
-	Glib::ustring get_active_value();
-};
-
-class IntComboBox : public Gtk::ComboBox
-{
-private:
-	class ModelColumns : public Gtk::TreeModel::ColumnRecord
-	{
-	public:
-		ModelColumns()
-		{
-			add(column_int);
-		}
-
+		ModelColumns() { add(column_int); }
 		Gtk::TreeModelColumn<guint> column_int;
 	};
-	
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;
 		
 public:
-	IntComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
+	IntComboBox(BaseObjectType *const cobject, Glib::RefPtr<Gtk::Builder> const & xml);
 	void set_size(guint size);
 	guint get_size();
 	guint get_active_value();
 };
 
-class ComboBoxEntryText : public Gtk::ComboBoxEntryText
-{
-public:
-	ComboBoxEntryText(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
-};
-
-class ChannelComboBox : public Gtk::ComboBox
-{
+class ChannelComboBox : public Gtk::ComboBox {
 private:
-	class ModelColumns : public Gtk::TreeModel::ColumnRecord
-	{
+	class ModelColumns : public Gtk::TreeModel::ColumnRecord {
 	public:
-		ModelColumns()
-		{
+		ModelColumns() {
 			add(column_id);
 			add(column_name);
 		}
-
 		Gtk::TreeModelColumn<guint>			column_id;
 		Gtk::TreeModelColumn<Glib::ustring>	column_name;
 	};
-	
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;
 		
 public:
-	ChannelComboBox(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& xml);
-	void load(const ChannelArray& channels);
+	ChannelComboBox(BaseObjectType *const cobject, Glib::RefPtr<Gtk::Builder> const & xml);
+	void load(const ChannelArray & channels);
 	guint get_selected_channel_id();
 	void set_selected_channel_id(guint channel_id);
-};
-
-class GdkLock
-{
-public:
-	GdkLock();
-	~GdkLock();
-};
-
-class GdkUnlock
-{
-public:
-	GdkUnlock();
-	~GdkUnlock();
 };
 
 #endif
