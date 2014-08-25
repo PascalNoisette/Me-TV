@@ -19,16 +19,17 @@
 
 Import('environment')
 
-poFiles = Glob('*.po')
-compiledExtension = '.mo'
+desktop = Command('me-tv.desktop', 'me-tv.desktop.in',
+    'intltool-merge  -d -u -c ./po/.intltool-merge-cache ./po $SOURCE $TARGET'
+)
+schemas = Command('me-tv.schemas', 'me-tv.schemas.in',
+    'intltool-merge  -s -u -c ./po/.intltool-merge-cache ./po $SOURCE $TARGET'
+)
+SideEffect('po/.intltool-merge-cache', [desktop, schemas])
 
-for poFile in poFiles :
-    countryCode = poFile.name[:-3]
-    built = environment.Command(countryCode + compiledExtension, poFile, "msgfmt -o $TARGET $SOURCES")
-    environment.Alias('install', environment.InstallAs(environment['PACKAGE_LOCALE_DIR'] + '/' + countryCode + '/LC_MESSAGES/me-tv.mo', built))
-
-#env = Environment(tools = ["default", "gettext"])
-#env.MOFiles(LINGUAS_FILE=1)
-
-#env['XGETTEXTPATH'] = ['../']
-#env.Translate(LINGUAS_FILE=1, XGETTEXTFROM='POTFILES.in')
+Alias('install', [
+    Install(environment['DATADIR'] + '/pixmaps/', Glob('*.png')),
+    Install(environment['DATADIR'] + '/man/man1/', Glob('me-tv*.1')),
+    Install(environment['DATADIR'] + '/applications/', desktop),
+    Install(environment['PREFIX'] + '/etc/gconf/schemas/', schemas),
+])
