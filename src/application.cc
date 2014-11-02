@@ -174,7 +174,7 @@ gboolean Application::initialise_database() {
 	Data::Table table_channel;
 	table_channel.name = "channel";
 	table_channel.columns.add("channel_id", Data::DATA_TYPE_INTEGER, 0, false);
-	table_channel.columns.add("name",	 Data::DATA_TYPE_STRING, 50, false);
+	table_channel.columns.add("name", Data::DATA_TYPE_STRING, 50, false);
 	table_channel.columns.add("type", Data::DATA_TYPE_INTEGER, 0, false);
 	table_channel.columns.add("sort_order", Data::DATA_TYPE_INTEGER, 0, false);
 	table_channel.columns.add("mrl", Data::DATA_TYPE_STRING, 1024, true);
@@ -330,7 +330,7 @@ void Application::run() {
 	Gtk::Main::run();
 }
 
-Application& Application::get_current() {
+Application & Application::get_current() {
 	if (current == NULL) {
 		throw Exception(_("Application has not been initialised"));
 	}
@@ -406,15 +406,12 @@ void Application::check_auto_record() {
 			for (EpgEventList::iterator j = list.begin(); j != list.end(); ++j) {
 				EpgEvent& epg_event = *j;
 				gboolean record = scheduled_recording_manager.is_recording(epg_event);
-				if (!record)
-				{
-					try
-					{
+				if (!record)	{
+					try {
 						g_debug("Trying to auto record '%s' (%d)", epg_event.get_title().c_str(), epg_event.event_id);
 						scheduled_recording_manager.set_scheduled_recording(epg_event);
 					}
-					catch(...)
-					{
+					catch(...) {
 						on_error();
 					}
 				}

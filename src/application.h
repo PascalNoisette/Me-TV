@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -35,11 +35,11 @@
 
 extern ChannelManager channel_manager;
 extern ScheduledRecordingManager scheduled_recording_manager;
-extern DeviceManager	 device_manager;
+extern DeviceManager device_manager;
 extern StreamManager stream_manager;
 extern ConfigurationManager configuration_manager;
 
-class Application : Gtk::Application {
+class Application: public Gtk::Application {
 private:
 	static Application * current;
 	Glib::RefPtr<Gtk::Builder> builder;
@@ -51,40 +51,30 @@ private:
 	Glib::ustring database_filename;
 	gboolean database_initialised;
 	DBusGConnection * dbus_connection;
-	
 	void make_directory_with_parents(Glib::ustring const & path);
-		
 	void on_display_channel_changed(Channel const & channel);
 	static gboolean on_timeout(gpointer data);
 	gboolean on_timeout();
-
 	void on_record_current();
 	void on_quit();
-	
+
 public:
 	Application();
 	~Application();
-
 	void run();
 	void quit();
-	static Application& get_current();
-	
+	static Application & get_current();
 	Data::Connection connection;
-
 	Glib::Threads::RecMutex&	get_mutex();
 	gboolean initialise_database();
 	Data::Schema get_schema() const { return schema; }
-
 	Glib::ustring const & get_database_filename() const { return database_filename; };
-	
 	Glib::RefPtr<Gtk::Builder> get_builder() const { return builder; }
-	
 	void check_auto_record();
 	void check_scheduled_recordings();
 	void start_recording(Channel & channel);
 	void start_recording(Channel & channel, ScheduledRecording const & scheduled_recording);
 	void stop_recording(Channel & channel);
-		
 	Glib::ustring const & get_application_dir() const { return application_dir; }
 	DBusGConnection* get_dbus_connection() const { return dbus_connection; }
 };
