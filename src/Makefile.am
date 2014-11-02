@@ -19,7 +19,7 @@ bin_PROGRAMS = me-tv \
 	me-tv-player-xine
 
 me_tv_player_xine_SOURCES = \
-	me-tv-player-xine.cpp
+	me-tv-player-xine.cc
 
 me_tv_player_xine_LDADD =        \
 	$(ME_TV_PLAYER_XINE_LIBS)
