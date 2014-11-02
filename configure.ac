@@ -1,15 +1,15 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.69)
-AC_INIT([Me TV], [1.5.0-SNAPSHOT], [http://launchpad.net/me-tv], me-tv)
+AC_INIT([Me TV], [3.0.0-SNAPSHOT], [http://launchpad.net/me-tv], me-tv)
 AC_COPYRIGHT([Michael Lamothe <michael.lamothe@gmail.com>, Russel Winder <russel@winder.org.uk>])
 AC_CONFIG_SRCDIR([src/main.cc])
-AM_INIT_AUTOMAKE([1.13 foreign])
+AM_INIT_AUTOMAKE([1.14 foreign])
 AC_GNU_SOURCE
 AM_MAINTAINER_MODE
 
 # Checks for programs.
-AC_PROG_CXX([g++-4.9])
+AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_LN_S
@@ -91,7 +91,6 @@ GTKMM_REQUIRED=2.24.4
 GIOMM_REQUIRED=2.38.2
 GTHREAD_REQUIRED=2.38.2
 GCONFMM_REQUIRED=2.28.0
-UNIQUE1_REQUIRED=1.1.6
 X11_REQUIRED=1.6.1
 DBUS_1_REQUIRED=1.6.12
 DBUS_GLIB_1_REQUIRED=0.100.2
@@ -107,7 +106,6 @@ PKG_CHECK_MODULES(ME_TV, [
 	giomm-2.4 >= $GIOMM_REQUIRED
 	gthread-2.0 >= $GTHREAD_REQUIRED
 	gconfmm-2.6 >= $GCONFMM_REQUIRED
-	unique-1.0 >= $UNIQUE1_REQUIRED
 	x11 >= $X11_REQUIRED
 	dbus-1 >= $DBUS_1_REQUIRED
         dbus-glib-1 >= $DBUS_GLIB_1_REQUIRED
