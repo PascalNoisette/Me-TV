@@ -65,7 +65,7 @@ public:
 	void quit();
 	static Application & get_current();
 	Data::Connection connection;
-	Glib::Threads::RecMutex&	get_mutex();
+	Glib::Threads::RecMutex & get_mutex();
 	gboolean initialise_database();
 	Data::Schema get_schema() const { return schema; }
 	Glib::ustring const & get_database_filename() const { return database_filename; };
@@ -76,7 +76,7 @@ public:
 	void start_recording(Channel & channel, ScheduledRecording const & scheduled_recording);
 	void stop_recording(Channel & channel);
 	Glib::ustring const & get_application_dir() const { return application_dir; }
-	DBusGConnection* get_dbus_connection() const { return dbus_connection; }
+	DBusGConnection * get_dbus_connection() const { return dbus_connection; }
 };
 
 Application & get_the_application();
