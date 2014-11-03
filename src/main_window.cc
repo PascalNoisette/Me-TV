@@ -93,7 +93,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	is_cursor_visible = true;
 	gchar bits[] = {0};
 	GdkColor color = {0, 0, 0, 0};
-	GdkPixmap* pixmap = gdk_bitmap_create_from_data(NULL, bits, 1, 1);
+  Gdk::Pixbuf * pixmap = Gdk::Pixbuf::create_from_data(NULL, bits, 1, 1);
 	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
 	add_accel_group(ui_manager->get_accel_group());
 	ui_manager->add_ui_from_string(ui_info);
@@ -105,18 +105,18 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget_derived("scrolled_window_epg", widget_epg);
 	builder->get_widget("hbox_controls", hbox_controls);
 	menu_bar = (Gtk::MenuBar*)ui_manager->get_widget("/menu_bar");
-	Gtk::EventBox* event_box_video = NULL;
+	Gtk::EventBox * event_box_video = NULL;
 	builder->get_widget("event_box_video", event_box_video);
 	event_box_video->signal_button_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_event_box_video_button_pressed));
 	event_box_video->modify_fg(		Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video->modify_fg(	Gtk::STATE_NORMAL, Gdk::Color("black"));
 	event_box_video->modify_bg(		Gtk::STATE_NORMAL, Gdk::Color("black"));
 	drawing_area_video->modify_bg(	Gtk::STATE_NORMAL, Gdk::Color("black"));
-	Gtk::AboutDialog* dialog_about = NULL;
+	Gtk::AboutDialog * dialog_about = NULL;
 	builder->get_widget("dialog_about", dialog_about);
 	dialog_about->set_version(VERSION);
 	set_keep_above(configuration_manager.get_boolean_value("keep_above"));
-	Gtk::VBox* vbox_main_window = NULL;
+	Gtk::VBox * vbox_main_window = NULL;
 	builder->get_widget("vbox_main_window", vbox_main_window);
 	vbox_main_window->pack_start(*menu_bar, Gtk::PACK_SHRINK);
 	vbox_main_window->reorder_child(*menu_bar, 0);
@@ -442,7 +442,7 @@ void MainWindow::create_engine() {
 		throw Exception(_("Failed to start engine: Engine has already been started"));
 	}
 	g_debug("Creating engine");
-	Application& application = get_application();
+	Application & application = get_the_application();
 	engine = new Engine();
 	engine->set_mute_state(mute_state);
 	engine->set_volume(volume_button->get_value());

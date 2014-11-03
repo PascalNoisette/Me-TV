@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -29,24 +29,24 @@ void ScheduledRecordingManager::initialise()
 void ScheduledRecordingManager::load(Data::Connection& connection)
 {
 	Glib::Threads::RecMutex::Lock lock(mutex);
-	
+
 	g_debug("Loading scheduled recordings");
-	
-	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
+
+	Data::Table table = get_the_application().get_schema().tables["scheduled_recording"];
 	Data::TableAdapter adapter(connection, table);
-	
+
 	Glib::ustring where = Glib::ustring::compose(
 		"((start_time + duration) > %1 OR recurring_type != 0)", time(NULL));
 	Data::DataTable data_table = adapter.select_rows(where, "start_time");
 
 	dirty = false;
-	
+
 	scheduled_recordings.clear();
 	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 	{
 		ScheduledRecording scheduled_recording;
 		Data::Row& row = *i;
-		
+
 		scheduled_recording.scheduled_recording_id	= row["scheduled_recording_id"].int_value;
 		scheduled_recording.channel_id				= row["channel_id"].int_value;
 		scheduled_recording.description				= row["description"].string_value;
@@ -74,12 +74,12 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 		return;
 	}
 	g_debug("Scheduled recordings are dirty, saving");
-	
+
 	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	g_debug("Saving %d scheduled recordings", (int)scheduled_recordings.size());
-	
-	Data::Table table = get_application().get_schema().tables["scheduled_recording"];	
+
+	Data::Table table = get_the_application().get_schema().tables["scheduled_recording"];
 	Data::DataTable data_table(table);
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
 	{
@@ -103,7 +103,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 
 		g_debug("Scheduled recording '%s' (%d) saved", scheduled_recording.description.c_str(), scheduled_recording.scheduled_recording_id);
 	}
-	
+
 	Data::TableAdapter adapter(connection, table);
 	adapter.replace_rows(data_table);
 
@@ -116,7 +116,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 	for (Data::Rows::iterator i = data_table.rows.begin(); i != data_table.rows.end(); i++)
 	{
 		Data::Row& row = *i;
-		g_debug("ScheduledRecordingManager::save/clear ID: %d", row["scheduled_recording_id"].int_value); 
+		g_debug("ScheduledRecordingManager::save/clear ID: %d", row["scheduled_recording_id"].int_value);
 
 		if(row["recurring_type"].int_value == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYDAY)
 		{
@@ -139,7 +139,7 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 				case 6 : row["start_time"].int_value += 172800; break;
 				default: row["start_time"].int_value +=  86400; break;
 			}
-		}  
+		}
 		updated = true;
 	}
 	if(updated)
@@ -158,21 +158,21 @@ void ScheduledRecordingManager::save(Data::Connection& connection)
 void ScheduledRecordingManager::set_scheduled_recording(EpgEvent& epg_event)
 {
 	ScheduledRecording scheduled_recording;
-	
-	Application& application = get_application();
+
+	Application & application = get_the_application();
 	guint before = configuration_manager.get_int_value("record_extra_before");
 	guint after = configuration_manager.get_int_value("record_extra_after");
 
 	guint now = get_local_time();
-	
+
 	scheduled_recording.channel_id		= epg_event.channel_id;
 	scheduled_recording.description		= epg_event.get_title();
 	scheduled_recording.recurring_type	= SCHEDULED_RECORDING_RECURRING_TYPE_ONCE;
 	scheduled_recording.action_after	= SCHEDULED_RECORDING_ACTION_AFTER_NONE;
 	scheduled_recording.start_time		= convert_to_utc_time(epg_event.start_time - (before * 60));
- 	scheduled_recording.duration		= epg_event.duration + ((before + after) * 60);	
+ 	scheduled_recording.duration		= epg_event.duration + ((before + after) * 60);
 	scheduled_recording.device			= "";
-	
+
 	set_scheduled_recording(scheduled_recording);
 }
 
@@ -205,7 +205,7 @@ gboolean ScheduledRecordingManager::is_device_available(const Glib::ustring& dev
 void ScheduledRecordingManager::select_device(ScheduledRecording& scheduled_recording)
 {
 	g_debug("Looking for an available device for scheduled recording");
-	
+
 	Channel& channel = channel_manager.get_channel_by_id(scheduled_recording.channel_id);
 
 	FrontendList& frontends = device_manager.get_frontends();
@@ -252,7 +252,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 	gboolean conflict = false;
 
 	g_debug("Setting scheduled recording");
-	
+
 	Channel& channel = channel_manager.get_channel_by_id(scheduled_recording.channel_id);
 
 	if (scheduled_recording.device.empty())
@@ -320,7 +320,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 			is_same = true;
 		}
 	}
-	
+
 	// If there is an update an not conflict on scheduled recording, update it.
 	if (updated && !conflict && !is_same)
 	{
@@ -335,7 +335,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 		current.duration = scheduled_recording.duration;
 		dirty = true;
 	}
-	
+
 	// If the scheduled recording is new then add it
 	if (scheduled_recording.scheduled_recording_id == 0)
 	{
@@ -345,7 +345,7 @@ void ScheduledRecordingManager::set_scheduled_recording(ScheduledRecording& sche
 	}
 
 	// Have to save to update the scheduled recording ID
-	Application& application = get_application();
+	Application & application = get_the_application();
 	Data::Connection connection(application.get_database_filename());
 	save(connection);
 	application.check_scheduled_recordings();
@@ -356,7 +356,7 @@ void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recor
 	Glib::Threads::RecMutex::Lock lock(mutex);
 
 	g_debug("Deleting scheduled recording %d", scheduled_recording_id);
-	
+
 	gboolean found = false;
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end() && !found; i++)
 	{
@@ -368,18 +368,18 @@ void ScheduledRecordingManager::remove_scheduled_recording(guint scheduled_recor
 				scheduled_recording.scheduled_recording_id);
 			scheduled_recordings.erase(i);
 
-			Data::Connection connection(get_application().get_database_filename());
-			Data::Table table = get_application().get_schema().tables["scheduled_recording"];
+			Data::Connection connection(get_the_application().get_database_filename());
+			Data::Table table = get_the_application().get_schema().tables["scheduled_recording"];
 			Data::TableAdapter adapter(connection, table);
 			adapter.delete_row(scheduled_recording_id);
-			
+
 			found = true;
 			dirty = true;
 		}
-	}	
+	}
 	g_debug("Scheduled recording deleted");
 
-	get_application().check_scheduled_recordings();
+	get_the_application().check_scheduled_recordings();
 }
 
 void ScheduledRecordingManager::remove_scheduled_recording(EpgEvent& epg_event)
@@ -397,13 +397,13 @@ void ScheduledRecordingManager::remove_scheduled_recording(EpgEvent& epg_event)
 			remove_scheduled_recording(scheduled_recording.scheduled_recording_id);
 			return;
 		}
-	}	
+	}
 }
 
 ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 {
 	ScheduledRecordingList results;
-	
+
 	time_t now = time(NULL);
 
 	g_debug("Checking scheduled recordings");
@@ -411,7 +411,7 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 
 	g_debug("Now: %u", (guint)now);
 	g_debug("Removing scheduled recordings older than %u", (guint)now);
-	
+
 	ScheduledRecordingList::iterator i = scheduled_recordings.begin();
 	while (i != scheduled_recordings.end())
 	{
@@ -428,16 +428,16 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 			i++;
 		}
 	}
-	
+
 	if (!scheduled_recordings.empty())
 	{
 		g_debug("=============================================================================================");
 		g_debug("#ID | Start Time | Duration | Record | Channel    | Device                      | Description");
 		g_debug("=============================================================================================");
 		for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
-		{			
+		{
 			ScheduledRecording& scheduled_recording = *i;
-				
+
 			gboolean record = scheduled_recording.is_in(now);
 			g_debug("%3d | %u | %8d | %s | %10s | %27s | %s",
 				scheduled_recording.scheduled_recording_id,
@@ -447,19 +447,19 @@ ScheduledRecordingList ScheduledRecordingManager::check_scheduled_recordings()
 				channel_manager.get_channel_by_id(scheduled_recording.channel_id).name.c_str(),
 				scheduled_recording.device.c_str(),
 				scheduled_recording.description.c_str());
-			
+
 			if (record)
 			{
 				results.push_back(scheduled_recording);
 			}
-			
+
 			if (scheduled_recording.get_end_time() < now)
 			{
 				dirty = true;
 			}
 		}
 	}
-		
+
 	return results;
 }
 
@@ -473,17 +473,17 @@ ScheduledRecording ScheduledRecordingManager::get_scheduled_recording(guint sche
 		ScheduledRecording& scheduled_recording = *i;
 		if (scheduled_recording.scheduled_recording_id == scheduled_recording_id)
 		{
-			result = &scheduled_recording;			
+			result = &scheduled_recording;
 		}
 	}
-	
+
 	if (result == NULL)
 	{
 		Glib::ustring message = Glib::ustring::compose(
 			_("Scheduled recording '%1' not found"), scheduled_recording_id);
 		throw Exception(message);
 	}
-	
+
 	return *result;
 }
 
@@ -493,7 +493,7 @@ guint ScheduledRecordingManager::is_recording(const Channel& channel)
 
 	guint now = time(NULL);
 	for (ScheduledRecordingList::iterator i = scheduled_recordings.begin(); i != scheduled_recordings.end(); i++)
-	{			
+	{
 		ScheduledRecording& scheduled_recording = *i;
 		if (scheduled_recording.is_in(now) && scheduled_recording.channel_id == channel.channel_id)
 		{
@@ -518,7 +518,7 @@ gboolean ScheduledRecordingManager::is_recording(const EpgEvent& epg_event)
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -531,14 +531,14 @@ void ScheduledRecordingManager::action_after(guint action)
 	}
 	else if (action == SCHEDULED_RECORDING_ACTION_AFTER_SHUTDOWN)
 	{
-		DBusGConnection* dbus_connection = get_application().get_dbus_connection();
+		DBusGConnection* dbus_connection = get_the_application().get_dbus_connection();
 		if (dbus_connection == NULL)
 		{
 			throw Exception(_("DBus connection not available"));
 		}
-		
+
 		g_message("Computer shutdown by scheduled recording");
-		
+
 		DBusGProxy* proxy = dbus_g_proxy_new_for_name(dbus_connection,
 			"org.gnome.SessionManager",
 			"/org/gnome/SessionManager",
@@ -547,7 +547,7 @@ void ScheduledRecordingManager::action_after(guint action)
 		{
 			throw Exception(_("Failed to get org.gnome.SessionManager proxy"));
 		}
-		
+
 		GError* error = NULL;
 		if (!dbus_g_proxy_call(proxy, "Shutdown", &error, G_TYPE_INVALID, G_TYPE_INVALID))
 		{

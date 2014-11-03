@@ -58,12 +58,7 @@ void AutoRecordDialog::run() {
 			}
 		}
 		configuration_manager.set_string_list_value("auto_record", auto_record_list);
-    // TODO: So why does:
-    //
-    //get_application().check_auto_record();
-    //
-    // fail to work but the followung is fine?
-    Application::get_current().check_auto_record();
+    get_the_application().check_auto_record();
 	}
 	hide();
 }

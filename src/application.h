@@ -79,6 +79,6 @@ public:
 	DBusGConnection* get_dbus_connection() const { return dbus_connection; }
 };
 
-Application & get_application();
+Application & get_the_application();
 
 #endif

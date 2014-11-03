@@ -7,12 +7,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -27,7 +27,7 @@
 FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Frontend"), frontend(f)
 {
 	g_debug("Creating FrontendThread (%s)", frontend.get_path().c_str());
-	
+
 	epg_thread = NULL;
 
 	Glib::ustring input_path = frontend.get_adapter().get_dvr_path();
@@ -37,20 +37,20 @@ FrontendThread::FrontendThread(Dvb::Frontend& f) : Thread("Frontend"), frontend(
 	{
 		throw SystemException("Failed to open frontend device");
 	}
-	
+
 	g_debug("FrontendThread created (%s)", frontend.get_path().c_str());
 }
 
 FrontendThread::~FrontendThread()
 {
 	g_debug("Destroying FrontendThread (%s)", frontend.get_path().c_str());
-	
+
 	g_debug("About to close input channel ...");
 	::close(fd);
-	
+
 	stop();
 	stop_epg_thread();
-	
+
 	g_debug("FrontendThread destroyed (%s)", frontend.get_path().c_str());
 }
 
@@ -77,7 +77,7 @@ void FrontendThread::run()
 	struct pollfd pfds[1];
 	pfds[0].fd = fd;
 	pfds[0].events = POLLIN;
-	
+
 	guchar buffer[TS_PACKET_SIZE * PACKET_BUFFER_SIZE];
 
 	g_debug("Entering FrontendThread loop (%s)", frontend.get_path().c_str());
@@ -88,7 +88,7 @@ void FrontendThread::run()
 			usleep(100000);
 			continue;
 		}
-	
+
 		try
 		{
 			if (::poll(pfds, 1, READ_TIMEOUT) < 0)
@@ -128,7 +128,7 @@ void FrontendThread::run()
 			// The show must go on!
 		}
 	}
-		
+
 	g_debug("FrontendThread loop exited (%s)", frontend.get_path().c_str());
 }
 
@@ -138,7 +138,7 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 
 	Buffer buffer;
 	const Channel& channel = channel_stream.channel;
-	
+
 	channel_stream.clear_demuxers();
 	if (channel.transponder != frontend.get_frontend_parameters())
 	{
@@ -146,7 +146,7 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 		frontend.tune_to(channel.transponder);
 	}
 	start_epg_thread();
-	
+
 	Dvb::Demuxer demuxer_pat(demux_path);
 	demuxer_pat.set_filter(PAT_PID, PAT_ID);
 	demuxer_pat.read_section(buffer);
@@ -154,9 +154,9 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 
 	Mpeg::Stream& stream = channel_stream.stream;
 	stream.clear();
-	
+
 	stream.set_pmt_pid(buffer, channel.service_id);
-	
+
 	Dvb::Demuxer demuxer_pmt(demux_path);
 	demuxer_pmt.set_filter(stream.get_pmt_pid(), PMT_ID);
 	demuxer_pmt.read_section(buffer);
@@ -169,7 +169,7 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 	{
 		channel_stream.add_pes_demuxer(demux_path, pcr_pid, DMX_PES_OTHER, "PCR");
 	}
-	
+
 	gsize video_streams_size = stream.video_streams.size();
 	for (guint i = 0; i < video_streams_size; i++)
 	{
@@ -181,7 +181,7 @@ void FrontendThread::setup_dvb(ChannelStream& channel_stream)
 	{
 		channel_stream.add_pes_demuxer(demux_path, stream.audio_streams[i].pid, DMX_PES_OTHER, "audio");
 	}
-				
+
 	gsize subtitle_streams_size = stream.subtitle_streams.size();
 	for (guint i = 0; i < subtitle_streams_size; i++)
 	{
@@ -228,10 +228,10 @@ void FrontendThread::start_display(Channel& channel)
 {
 	g_debug("FrontendThread::start_display(%s)", channel.name.c_str());
 	stop();
-	
+
 	g_debug("Creating new stream output");
-	
-	Glib::ustring fifo_path = Glib::build_filename(get_application().get_application_dir(), "me-tv.fifo");
+
+	Glib::ustring fifo_path = Glib::build_filename(get_the_application().get_application_dir(), "me-tv.fifo");
 
 	if (Glib::file_test(fifo_path, Glib::FILE_TEST_EXISTS))
 	{
@@ -295,7 +295,7 @@ Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& des
 	Glib::ustring start_time = get_local_time_text("%c");
 	Glib::ustring filename;
 	Glib::ustring title = description;
-	
+
 	if (title.empty())
 	{
 		filename = Glib::ustring::compose
@@ -332,7 +332,7 @@ Glib::ustring make_recording_filename(Channel& channel, const Glib::ustring& des
 	}
 
 	Glib::ustring fixed_filename = Glib::filename_from_utf8(filename);
-	
+
 	return Glib::build_filename(
 	    configuration_manager.get_string_value("recording_directory"),
 	    fixed_filename);
@@ -345,14 +345,14 @@ bool is_recording_stream(ChannelStream* channel_stream)
 
 void FrontendThread::start_recording(Channel& channel, const Glib::ustring& description, gboolean scheduled)
 {
-	stop();	
+	stop();
 
 	ChannelStreamType requested_type = scheduled ? CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING :
 		CHANNEL_STREAM_TYPE_RECORDING;
 	ChannelStreamType current_type = CHANNEL_STREAM_TYPE_NONE;
 
 	ChannelStreamList::iterator iterator = streams.begin();
-	
+
 	while (iterator != streams.end())
 	{
 		ChannelStream* channel_stream = *iterator;
@@ -396,7 +396,7 @@ void FrontendThread::start_recording(Channel& channel, const Glib::ustring& desc
 				{
 					g_debug("This frontend is being used for the display so we need to switch display channels also");
 				}
-				
+
 				// Need to kill all current streams
 				ChannelStreamList::iterator iterator = streams.begin();
 				while (iterator != streams.end())
@@ -419,7 +419,7 @@ void FrontendThread::start_recording(Channel& channel, const Glib::ustring& desc
 			streams.push_back(channel_stream);
 		}
 	}
-	
+
 	g_debug("New recording channel created (%s)", frontend.get_path().c_str());
 
 	start();
@@ -456,7 +456,7 @@ guint FrontendThread::get_last_epg_update_time()
 	{
 		result = epg_thread->get_last_epg_update_time();
 	}
-	
+
 	return result;
 }
 
@@ -468,7 +468,7 @@ gboolean FrontendThread::is_recording()
 		{
 			return true;
 		}
-	} 
+	}
 
 	return false;
 }
@@ -481,7 +481,7 @@ gboolean FrontendThread::is_display()
 		{
 			return true;
 		}
-	} 
+	}
 
 	return false;
 }

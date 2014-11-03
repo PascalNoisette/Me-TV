@@ -30,7 +30,7 @@
 
 Application * Application::current = NULL;
 
-Application & get_application() {
+Application & get_the_application() {
 	return Application::get_current();
 }
 
