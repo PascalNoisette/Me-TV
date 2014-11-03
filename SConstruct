@@ -76,7 +76,7 @@ environment = Environment(
     PACKAGE_DATA_DIR=datadir + '/me-tv',
     PACKAGE_LOCALE_DIR=datadir + '/locale',
     CXXFLAGS=[
-        '-std=c++1y',
+        '-std=c++14',
         '-g',
         '-O2',
         '-W',
