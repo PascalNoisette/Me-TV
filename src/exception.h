@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -26,28 +27,27 @@
 #include <errno.h>
 #include <string.h>
 
-class Exception : public Glib::Exception
-{
+class Exception: public Glib::Exception {
 protected:
 	Glib::ustring message;
+
 public:
-	Exception(const Glib::ustring& exception_message);
+	Exception(Glib::ustring const & exception_message);
 	~Exception() throw() {}
 	Glib::ustring what() const { return message; }
 };
 
-class SystemException : public Exception
-{
+class SystemException: public Exception {
 private:
-	Glib::ustring create_message(gint error_number, const Glib::ustring& message);
+	Glib::ustring create_message(gint error_number, Glib::ustring const & message);
+
 public:
-	SystemException(const Glib::ustring& m) : Exception(create_message(errno, m)) {}
+	SystemException(Glib::ustring const & m) : Exception(create_message(errno, m)) {}
 };
 
-class TimeoutException : public Exception
-{
+class TimeoutException: public Exception {
 public:
-	TimeoutException(const Glib::ustring& m) : Exception(m) {}
+	TimeoutException(Glib::ustring const & m) : Exception(m) {}
 };
 
 #endif

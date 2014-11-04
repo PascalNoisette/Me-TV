@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -24,35 +25,30 @@
 #include <glibmm.h>
 #include <list>
 
-class EpgEventText
-{
+class EpgEventText {
 public:
-	guint			epg_event_text_id;
-	guint			epg_event_id;
-	Glib::ustring	language;
-	Glib::ustring	title;
-	Glib::ustring	subtitle;
-	Glib::ustring	description;
-		
+	guint epg_event_text_id;
+	guint epg_event_id;
+	Glib::ustring language;
+	Glib::ustring title;
+	Glib::ustring subtitle;
+	Glib::ustring description;
 	EpgEventText();
 };
 
 typedef std::list<EpgEventText> EpgEventTextList;
 
-class EpgEvent
-{
+class EpgEvent {
 public:
-	guint				epg_event_id;
-	guint				channel_id;
-	guint				version_number;
-	guint				event_id;
-	time_t				start_time;
-	guint				duration;
-	gboolean			save;
-	EpgEventTextList	texts;
-	
+	guint epg_event_id;
+	guint channel_id;
+	guint version_number;
+	guint event_id;
+	time_t start_time;
+	guint duration;
+	gboolean save;
+	EpgEventTextList texts;
 	EpgEvent();
-		
 	time_t get_end_time() const { return start_time + duration; }
 	EpgEventText get_default_text() const;
 	Glib::ustring get_title() const;

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -21,20 +22,15 @@
 #include "exception.h"
 #include "me-tv-i18n.h"
 
-Exception::Exception(const Glib::ustring& exception_message) : message(exception_message)
-{
+Exception::Exception(Glib::ustring const & exception_message) : message(exception_message) {
 	g_debug("Exception: %s", message.c_str());
 }
 
-Glib::ustring SystemException::create_message(gint error_number, const Glib::ustring& exception_message)
-{
+Glib::ustring SystemException::create_message(gint error_number, Glib::ustring const & exception_message) {
 	Glib::ustring detail = _("Failed to get error message");
-	
 	char* system_error_message = strerror(error_number);
-	if (system_error_message != NULL)
-	{
+	if (system_error_message != NULL) {
 		detail = system_error_message;
 	}
-	
 	return Glib::ustring::compose("%1: %2", exception_message, detail);
 }

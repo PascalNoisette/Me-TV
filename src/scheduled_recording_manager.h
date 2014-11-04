@@ -28,32 +28,27 @@
 
 typedef std::list<ScheduledRecording> ScheduledRecordingList;
 
-class ScheduledRecordingManager
-{
+class ScheduledRecordingManager {
 private:
 	Glib::Threads::RecMutex mutex;
 	gboolean dirty;
-
-	gboolean is_device_available(const Glib::ustring& device, const ScheduledRecording& scheduled_recording);
-	void select_device(ScheduledRecording& scheduled_recording);
+	gboolean is_device_available(Glib::ustring const & device, ScheduledRecording const & scheduled_recording);
+	void select_device(ScheduledRecording & scheduled_recording);
 
 public:
 	void initialise();
-		
 	ScheduledRecordingList scheduled_recordings;
-
-	void load(Data::Connection& connection);
-	void save(Data::Connection& connection);
-
+	void load(Data::Connection & connection);
+	void save(Data::Connection & connection);
 	void action_after(guint action);
-	void set_scheduled_recording(EpgEvent& epg_event);
-	void set_scheduled_recording(ScheduledRecording& scheduled_recording);
+	void set_scheduled_recording(EpgEvent & epg_event);
+	void set_scheduled_recording(ScheduledRecording & scheduled_recording);
 	void remove_scheduled_recording(guint scheduled_recording_id);		
-	void remove_scheduled_recording(EpgEvent& epg_event);
+	void remove_scheduled_recording(EpgEvent & epg_event);
 	ScheduledRecording get_scheduled_recording(guint scheduled_recording_id);
 	ScheduledRecordingList check_scheduled_recordings();
-	guint is_recording(const Channel& channel);
-	gboolean is_recording(const EpgEvent& epg_event);
+	guint is_recording(Channel const & channel);
+	gboolean is_recording(EpgEvent const & epg_event);
 };
 
 #endif

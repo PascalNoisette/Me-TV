@@ -28,77 +28,67 @@
 #include <dbus/dbus.h>
 #include <gtkmm/volumebutton.h>
 
-typedef enum
-{
+typedef enum {
 	VIEW_MODE_VIDEO,
 	VIEW_MODE_CONTROLS
 } ViewMode;
 
-class MainWindow : public Gtk::Window
-{
+class MainWindow: public Gtk::Window {
 private:
-	const Glib::RefPtr<Gtk::Builder>	builder;
-	Gtk::DrawingArea*					drawing_area_video;
-	GtkEpgWidget*						widget_epg;
-	guint								last_motion_time;
-	GdkCursor*							hidden_cursor;
-	gboolean							is_cursor_visible;
-	Gtk::MenuBar*						menu_bar;
-	Gtk::VolumeButton*					volume_button;
-	Gtk::HBox*							hbox_controls;
-	Gtk::Label*							label_time;
-	ViewMode							view_mode;
-	ViewMode							prefullscreen_view_mode;
-	guint								last_update_time;
-	guint								timeout_source;
-	Engine*								engine;
-	gint								output_fd;
-	Glib::Threads::RecMutex				mutex;
-	gboolean							mute_state;
-	guint								channel_change_timeout;
-	guint								temp_channel_number;
-
+	const Glib::RefPtr<Gtk::Builder> builder;
+	Gtk::DrawingArea * drawing_area_video;
+	GtkEpgWidget * widget_epg;
+	guint last_motion_time;
+	GdkCursor * hidden_cursor;
+	gboolean is_cursor_visible;
+	Gtk::MenuBar * menu_bar;
+	Gtk::VolumeButton * volume_button;
+	Gtk::HBox * hbox_controls;
+	Gtk::Label * label_time;
+	ViewMode view_mode;
+	ViewMode prefullscreen_view_mode;
+	guint last_update_time;
+	guint timeout_source;
+	Engine * engine;
+	gint output_fd;
+	Glib::Threads::RecMutex mutex;
+	gboolean mute_state;
+	guint channel_change_timeout;
+	guint temp_channel_number;
 	void stop();
 	void set_view_mode(ViewMode display_mode);
 	void load_devices();
-	void set_state(const Glib::ustring& name, gboolean state);
+	void set_state(Glib::ustring const & name, gboolean state);
 	void add_channel_number(guint channel_number);
 	void toggle_mute();
 	void set_mute_state(gboolean state);
-	void set_status_text(const Glib::ustring& text);
+	void set_status_text(Glib::ustring const & text);
 	void select_channel_to_play();
-
-	void play(const Glib::ustring& mrl);
+	void play(Glib::ustring const & mrl);
 	void pause(gboolean state);
 	void restart_engine();
 	void start_engine();
 	void stop_engine();
-
 	void toggle_visibility();
 	void save_geometry();
-
 	void fullscreen(gboolean change_mode = true);
 	void unfullscreen(gboolean restore_mode = true);
 	gboolean is_fullscreen();
-
-	bool on_delete_event(GdkEventAny* event);
-	bool on_motion_notify_event(GdkEventMotion* event);
-	bool on_drawing_area_expose_event(GdkEventExpose* event);
+	bool on_delete_event(GdkEventAny * event);
+	bool on_motion_notify_event(GdkEventMotion * event);
+	bool on_drawing_area_expose_event(GdkEventExpose * event);
 	static gboolean on_timeout(gpointer data);
 	void on_timeout();
-	bool on_key_press_event(GdkEventKey* event);
-	bool on_event_box_video_button_pressed(GdkEventButton* event);
+	bool on_key_press_event(GdkEventKey * event);
+	bool on_event_box_video_button_pressed(GdkEventButton * event);
 	void on_menu_item_audio_stream_activate(guint audio_stream_index);
 	void on_menu_item_subtitle_stream_activate(guint audio_stream_index);
-
 	void on_start_display(guint channel_id);
 	void on_stop_display();
 	void on_update();
-	void on_error(const Glib::ustring& message);
-
+	void on_error(Glib::ustring const & message);
 	void on_show();
 	void on_hide();
-
 	void on_about();
 	void on_auto_record();
 	void on_audio_channel_both();
@@ -119,21 +109,18 @@ private:
 	void on_previous_channel();
 	void on_present();
 	void on_scheduled_recordings();
-
 	void create_engine();
+
 public:
-	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
+	MainWindow(BaseObjectType * cobject, Glib::RefPtr<Gtk::Builder> const & builder);
 	virtual ~MainWindow();
-
-	static MainWindow* create(Glib::RefPtr<Gtk::Builder> builder);
-
+	static MainWindow * create(Glib::RefPtr<Gtk::Builder> builder);
 	void on_exception();
-
 	void show_channels_dialog();
 	void show_preferences_dialog();
 	void show_scheduled_recordings_dialog();
 	void show_epg_event_search_dialog();
-	void show_error(const Glib::ustring& message);
+	void show_error(Glib::ustring const & message);
 };
 
 #endif

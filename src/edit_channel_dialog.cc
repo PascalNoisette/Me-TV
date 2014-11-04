@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -21,35 +22,27 @@
 #include "edit_channel_dialog.h"
 #include <gtkmm.h>
 
-EditChannelDialog& EditChannelDialog::create(Glib::RefPtr<Gtk::Builder> builder)
-{
-	EditChannelDialog* edit_channel_dialog = NULL;
+EditChannelDialog & EditChannelDialog::create(Glib::RefPtr<Gtk::Builder> builder) {
+	EditChannelDialog * edit_channel_dialog = NULL;
 	builder->get_widget_derived("dialog_edit_channel", edit_channel_dialog);
 	return *edit_channel_dialog;
 }
 
 EditChannelDialog::EditChannelDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) :
-	Gtk::Dialog(cobject), builder(builder)
-{
+	Gtk::Dialog(cobject), builder(builder) {
 }
 
-gint EditChannelDialog::run(Gtk::Window* transient_for)
-{
+gint EditChannelDialog::run(Gtk::Window* transient_for) {
 	gint dialog_response = Gtk::RESPONSE_CANCEL;
-	if (transient_for != NULL)
-		set_transient_for(*transient_for);
-
+	if (transient_for != NULL) { set_transient_for(*transient_for); }
 	dialog_response = Gtk::Dialog::run();
-	
 	return dialog_response;
 }
 
-void EditChannelDialog::on_button_edit_channel_save_clicked()
-{
+void EditChannelDialog::on_button_edit_channel_save_clicked() {
 }
 
-void EditChannelDialog::on_button_edit_channel_cancel_clicked()
-{
+void EditChannelDialog::on_button_edit_channel_cancel_clicked() {
 }
 
 

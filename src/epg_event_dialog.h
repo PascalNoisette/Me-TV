@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -24,16 +25,14 @@
 #include "me-tv-ui.h"
 #include "epg_event.h"
 
-class EpgEventDialog : public Gtk::Dialog
-{
+class EpgEventDialog: public Gtk::Dialog {
 private:
 	const Glib::RefPtr<Gtk::Builder> builder;
+
 public:	
-	EpgEventDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
-
-	static EpgEventDialog& create(Glib::RefPtr<Gtk::Builder> builder);
-
-	void show_epg_event(EpgEvent& epg_event);
+	EpgEventDialog(BaseObjectType * cobject, Glib::RefPtr<Gtk::Builder> const & builder);
+	static EpgEventDialog & create(Glib::RefPtr<Gtk::Builder> builder);
+	void show_epg_event(EpgEvent & epg_event);
 };
 
 #endif

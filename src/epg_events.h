@@ -27,32 +27,27 @@
 
 typedef std::list<EpgEvent> EpgEventList;
 
-class EpgEvents
-{
+class EpgEvents {
 private:
-	EpgEventList			list;
-	Glib::Threads::RecMutex	mutex;
-	gboolean				dirty;
-
+	EpgEventList list;
+	Glib::Threads::RecMutex mutex;
+	gboolean dirty;
 	void set_saved(guint epg_event_id);
-
 	void swap(EpgEvents &);
 
 public:
 	EpgEvents();
 	~EpgEvents();
-
 	EpgEvents(EpgEvents const &);
 	EpgEvents & operator=(EpgEvents const &);
-
-	gboolean		add_epg_event(const EpgEvent& epg_event);
-	gboolean		get_current(EpgEvent& epg_event);
+	gboolean add_epg_event(const EpgEvent& epg_event);
+	gboolean get_current(EpgEvent& epg_event);
 	EpgEventList	get_list(time_t start_time, time_t end_time);
-	void			prune();
-	void			load(Data::Connection& connection, guint channel_id);
-	void			save(Data::Connection& connection, guint channel_id);
+	void prune();
+	void load(Data::Connection& connection, guint channel_id);
+	void save(Data::Connection& connection, guint channel_id);
 	EpgEventList	search(const Glib::ustring& text, gboolean search_description);
-	gboolean		is_dirty() const { return dirty; }
+	gboolean is_dirty() const { return dirty; }
 };
 
 #endif
