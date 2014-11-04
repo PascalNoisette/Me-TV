@@ -80,9 +80,9 @@ void FrontendThread::run() {
 			}
 			for (guint offset = 0; offset < (guint)bytes_read; offset += TS_PACKET_SIZE) {
 				guint pid = ((buffer[offset+1] & 0x1f) << 8) + buffer[offset+2];
-				for (auto const & channel_stream: streams) {
-					if (channel_stream.stream.contains_pid(pid)) {
-						channel_stream.write(buffer+offset, TS_PACKET_SIZE);
+				for (auto const channel_stream: streams) {
+					if (channel_stream->stream.contains_pid(pid)) {
+						channel_stream->write(buffer+offset, TS_PACKET_SIZE);
 					}
 				}
 			}
@@ -343,7 +343,7 @@ gboolean FrontendThread::is_display() {
 }
 
 gboolean FrontendThread::is_recording(Channel const & channel) {
-	for (auto const & channel_stream: streams) {
+	for (auto const stream: streams) {
 		if (stream->channel == channel && is_recording_stream(stream)) { return true; }
 	}
 	return false;
