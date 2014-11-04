@@ -65,21 +65,21 @@ void StatusIcon::update() {
 	Application & application = get_the_application();
 	Glib::ustring title;
 	status_icon->set_visible(configuration_manager.get_boolean_value("display_status_icon"));
-	FrontendThreadList& frontend_threads = stream_manager.get_frontend_threads();
-	for (auto const & frontend_thread: frontend_threads) {
-		Glib::ustring device = frontend_thread.frontend.get_path();
-		ChannelStreamList& streams = frontend_thread.get_streams();
-    for (auto const & stream: streams) {
+	FrontendThreadList & frontend_threads = stream_manager.get_frontend_threads();
+	for (auto const frontend_thread: frontend_threads) {
+		Glib::ustring device = frontend_thread->frontend.get_path();
+		ChannelStreamList & streams = frontend_thread->get_streams();
+		for (auto const stream: streams) {
 			if (!title.empty()) {
 				title += "\n";
 			}
-			switch (stream.type) {
+			switch (stream->type) {
 			case CHANNEL_STREAM_TYPE_DISPLAY: title += "Now showing: "; break;
 			case CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING: title += "Recording (Scheduled): "; break;
 			case CHANNEL_STREAM_TYPE_RECORDING: title += "Recording: "; break;
 			default: break;
 			}
-			title += stream.description;
+			title += stream->description;
 		}
 	}
 	if (title.empty()) {

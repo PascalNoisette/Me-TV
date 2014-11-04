@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -22,14 +23,12 @@
 #include "me-tv.h"
 #include "application.h"
 
-EpgEventText::EpgEventText()
-{
+EpgEventText::EpgEventText() {
 	epg_event_text_id = 0;
 	epg_event_id = 0;
 }
 
-EpgEvent::EpgEvent()
-{
+EpgEvent::EpgEvent() {
 	epg_event_id = 0;
 	channel_id = 0;
 	event_id = 0;
@@ -38,18 +37,15 @@ EpgEvent::EpgEvent()
 	save = true;
 }
 
-Glib::ustring EpgEvent::get_title() const
-{
+Glib::ustring EpgEvent::get_title() const {
 	return get_default_text().title;
 }
 
-Glib::ustring EpgEvent::get_subtitle() const
-{
+Glib::ustring EpgEvent::get_subtitle() const {
 	return get_default_text().subtitle;
 }
 
-Glib::ustring EpgEvent::get_description() const
-{
+Glib::ustring EpgEvent::get_description() const {
 	return get_default_text().description;
 }
 
@@ -57,56 +53,43 @@ EpgEventText EpgEvent::get_default_text() const
 {
 	EpgEventText result;
 	gboolean found = false;
-	
-	for (EpgEventTextList::const_iterator i = texts.begin(); i != texts.end() && !found; i++)
-	{
-		EpgEventText text = *i;
-		if (!preferred_language.empty() && preferred_language == text.language)
-		{
+	for (auto const text: texts) {
+		if (!preferred_language.empty() && preferred_language == text.language) {
 			found = true;
 			result = text;
+			break;
 		}
 	}
 
-	if (!found)
-	{
-		if (!texts.empty())
-		{
+	if (!found) {
+		if (!texts.empty()) {
 			result = *(texts.begin());
 		}
-		else
-		{
+		else {
 			result.title = _("Unknown title");	
 			result.subtitle = _("Unknown subtitle");
 			result.description = _("Unknown description");
 		}
 	}
-	
 	return result;
 }
 
-Glib::ustring EpgEvent::get_start_time_text() const
-{
+Glib::ustring EpgEvent::get_start_time_text() const {
 	return get_local_time_text(convert_to_utc_time(start_time), "%A, %d %B %Y, %H:%M");
 }
 
-Glib::ustring EpgEvent::get_duration_text() const
-{
+Glib::ustring EpgEvent::get_duration_text() const {
 	Glib::ustring result;
 	guint hours = duration / (60*60);
 	guint minutes = (duration % (60*60)) / 60;
-	if (hours > 0)
-	{
+	if (hours > 0) {
 		result = Glib::ustring::compose(ngettext("1 hour", "%1 hours", hours), hours);
 	}
-	if (hours > 0 && minutes > 0)
-	{
+	if (hours > 0 && minutes > 0) {
 		result += ", ";
 	}
-	if (minutes > 0)
-	{
+	if (minutes > 0) {
 		result += Glib::ustring::compose(ngettext("1 minute", "%1 minutes", minutes), minutes);
 	}
-	
 	return result;
 }

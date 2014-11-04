@@ -38,7 +38,7 @@ private:
 	gint pid;
 	gboolean mute_state;
 	gboolean deinterlacer_state;
-	AudioChannelState	audio_channel_state;
+	AudioChannelState audio_channel_state;
 	gint audio_stream;
 	gint subtitle_stream;
 	float volume;
@@ -56,7 +56,6 @@ public:
 	void set_audio_stream(gint stream);
 	void set_audio_channel_state(AudioChannelState state);
 	gboolean is_running();
-
 	Engine();
 	~Engine();
 };

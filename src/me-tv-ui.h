@@ -29,9 +29,9 @@
 
 extern Glib::RefPtr<Gtk::UIManager>	ui_manager;
 
-class IntComboBox : public Gtk::ComboBox {
+class IntComboBox: public Gtk::ComboBox {
 private:
-	class ModelColumns : public Gtk::TreeModel::ColumnRecord {
+	class ModelColumns: public Gtk::TreeModel::ColumnRecord {
 	public:
 		ModelColumns() { add(column_int); }
 		Gtk::TreeModelColumn<guint> column_int;
@@ -46,16 +46,16 @@ public:
 	guint get_active_value();
 };
 
-class ChannelComboBox : public Gtk::ComboBox {
+class ChannelComboBox: public Gtk::ComboBox {
 private:
-	class ModelColumns : public Gtk::TreeModel::ColumnRecord {
+	class ModelColumns: public Gtk::TreeModel::ColumnRecord {
 	public:
 		ModelColumns() {
 			add(column_id);
 			add(column_name);
 		}
-		Gtk::TreeModelColumn<guint>			column_id;
-		Gtk::TreeModelColumn<Glib::ustring>	column_name;
+		Gtk::TreeModelColumn<guint> column_id;
+		Gtk::TreeModelColumn<Glib::ustring> column_name;
 	};
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;

@@ -54,8 +54,8 @@ void Engine::play(Glib::ustring const & mrl) {
 	this->mrl = mrl;
 	g_debug("Engine::play(\"%s\")", mrl.c_str());
 	// TODO: Put some protections in place to ensure no fails here. Especially the engine search.
-  StringList argv;
-  argv.push_back(Glib::ustring::compose("me-tv-player-%1", engine));
+	StringList argv;
+	argv.push_back(Glib::ustring::compose("me-tv-player-%1", engine));
 	argv.push_back(Glib::ustring::compose("fifo://%1", mrl));
 	argv.push_back(Glib::ustring::compose("%1", window));
 	argv.push_back(configuration_manager.get_string_value("video_driver"));
@@ -82,7 +82,7 @@ void Engine::play(Glib::ustring const & mrl) {
 		set_mute_state(mute_state);
 		g_debug("Spawned engine on pid %d", pid);
 	}
-	catch (const Exception& exception) {
+	catch (Exception const & exception) {
 		g_debug("Failed to spawn engine: %s", exception.what().c_str());
 		stop();
 	}
@@ -139,7 +139,7 @@ gboolean Engine::is_running() {
 
 void Engine::sendKeyEvent(int keycode, int modifiers) {
 	XKeyEvent event;
-  Display * display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+	Display * display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
 	event.display = display;
 	event.window = window;
 	event.root = XDefaultRootWindow(display);

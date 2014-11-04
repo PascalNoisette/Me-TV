@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014 Russel Winder
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -41,7 +41,7 @@ EpgEvents::EpgEvents(EpgEvents const & other) {
 
 EpgEvents & EpgEvents::operator=(EpgEvents const & other) {
 	dirty = other.dirty;
-  list = other.list;
+	list = other.list;
 	return *this;
 }
 
@@ -94,10 +94,10 @@ gboolean EpgEvents::get_current(EpgEvent & epg_event) {
 	gboolean found = false;
 	time_t now = get_local_time();
 	Glib::Threads::RecMutex::Lock lock(mutex);
-  for (auto const current: list) {
+	for (auto const current: list) {
 		if (current.start_time <= now && current.get_end_time() >= now) {
 			epg_event = current;
-      break;
+			break;
 		}
 	}
 	return found;
@@ -106,7 +106,7 @@ gboolean EpgEvents::get_current(EpgEvent & epg_event) {
 EpgEventList EpgEvents::get_list(time_t start_time, time_t end_time) {
 	EpgEventList result;
 	Glib::Threads::RecMutex::Lock lock(mutex);
-  for (auto const & epg_event: list) {
+	for (auto const & epg_event: list) {
 		time_t epg_event_end_time = epg_event.get_end_time();
 		if(
 			(epg_event.start_time >= start_time && epg_event.start_time <= end_time) ||
@@ -139,7 +139,7 @@ void EpgEvents::load(Data::Connection& connection, guint channel_id) {
 	Data::TableAdapter adapter_epg_event_text(connection, table_epg_event_text);
 	Glib::ustring clause = Glib::ustring::compose("channel_id = %1", channel_id);
 	Data::DataTable data_table_epg_event = adapter_epg_event.select_rows(clause, "start_time");
-  for (auto & row_epg_event: data_table_epg_event.rows) {
+	for (auto & row_epg_event: data_table_epg_event.rows) {
 		EpgEvent epg_event;
 		epg_event.save = false;
 		epg_event.epg_event_id = row_epg_event["epg_event_id"].int_value;
@@ -150,7 +150,7 @@ void EpgEvents::load(Data::Connection& connection, guint channel_id) {
 		epg_event.duration = row_epg_event["duration"].int_value;
 		Glib::ustring clause = Glib::ustring::compose("epg_event_id = %1", epg_event.epg_event_id);
 		Data::DataTable data_table_epg_event_text = adapter_epg_event_text.select_rows(clause);
-    for (auto & row_epg_event_text: data_table_epg_event_text.rows) {
+		for (auto & row_epg_event_text: data_table_epg_event_text.rows) {
 			EpgEventText epg_event_text;
 			epg_event_text.epg_event_text_id	= row_epg_event_text["epg_event_text_id"].int_value;
 			epg_event_text.epg_event_id = epg_event.epg_event_id;
@@ -179,7 +179,7 @@ void EpgEvents::save(Data::Connection & connection, guint channel_id) {
 	Data::DataTable data_table_epg_event_text(table_epg_event_text);
 	Glib::Threads::RecMutex::Lock lock(mutex);
 	g_debug("Saving %d EPG events", (int)list.size());
-  for (auto & epg_event: list) {
+	for (auto & epg_event: list) {
 		if (epg_event.save) {
 			Data::Row row_epg_event;
 			row_epg_event.auto_increment = &(epg_event.epg_event_id);
@@ -195,9 +195,9 @@ void EpgEvents::save(Data::Connection & connection, guint channel_id) {
 	// Have to do this before updating the EPG event texts to get the correct epg_event_id
 	adapter_epg_event.replace_rows(data_table_epg_event);
 	g_debug("Saving EPG event texts");
-  for (auto & epg_event: list) {
+	for (auto & epg_event: list) {
 		if (epg_event.save) {
-      for (auto & epg_event_text: epg_event.texts) {
+			for (auto & epg_event_text: epg_event.texts) {
 				Data::Row row_epg_event_text;
 				row_epg_event_text.auto_increment = &(epg_event_text.epg_event_text_id);
 				row_epg_event_text["epg_event_text_id"].int_value = epg_event_text.epg_event_text_id;
@@ -220,7 +220,7 @@ EpgEventList EpgEvents::search(const Glib::ustring& text, gboolean search_descri
 	EpgEventList result;
 	time_t now = get_local_time();
 	Glib::Threads::RecMutex::Lock lock(mutex);
-  for (auto const & epg_event: list) {
+	for (auto const & epg_event: list) {
 		if (
 		    epg_event.get_end_time() >= now &&
 		    (

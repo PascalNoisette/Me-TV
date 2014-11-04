@@ -24,12 +24,12 @@
 
 #include <gtkmm.h>
 
-class AutoRecordDialog : public Gtk::Dialog {
+class AutoRecordDialog: public Gtk::Dialog {
 private:
-	class ModelColumns : public Gtk::TreeModel::ColumnRecord {
+	class ModelColumns: public Gtk::TreeModel::ColumnRecord {
 	public:
-		ModelColumns() {	add(column_title);	}
-		Gtk::TreeModelColumn<Glib::ustring>	column_title;
+		ModelColumns() { add(column_title); }
+		Gtk::TreeModelColumn<Glib::ustring> column_title;
 	};
 	ModelColumns columns;
 	Glib::RefPtr<Gtk::ListStore> list_store;
@@ -39,7 +39,7 @@ private:
 	void on_delete();
 
 public:
-	AutoRecordDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
+	AutoRecordDialog(BaseObjectType * cobject, Glib::RefPtr<Gtk::Builder> const & builder);
 	void run();
 	static AutoRecordDialog& create(Glib::RefPtr<Gtk::Builder> builder);
 };

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -24,17 +25,14 @@
 #include "thread.h"
 #include "dvb_frontend.h"
 
-class EpgThread : public Thread
-{
+class EpgThread: public Thread {
 private:
 	guint last_update_time;
 	Dvb::Frontend& frontend;
 	
 public:
-	EpgThread(Dvb::Frontend& frontend);
-
+	EpgThread(Dvb::Frontend & frontend);
 	void run();
-		
 	guint get_last_epg_update_time() const { return last_update_time; }
 };
 

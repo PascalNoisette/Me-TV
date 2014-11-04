@@ -50,11 +50,11 @@ EpgEventSearchDialog::EpgEventSearchDialog(BaseObjectType * cobject, Glib::RefPt
 	    sigc::mem_fun(*this, &EpgEventSearchDialog::on_row_activated));
 	list_store_results = Gtk::ListStore::create(results_columns);
 	tree_view_epg_event_search->set_model(list_store_results);
- 	tree_view_epg_event_search->append_column(_(" "),			results_columns.column_image);
- 	tree_view_epg_event_search->append_column(_("Title"),		results_columns.column_title);
-	tree_view_epg_event_search->append_column(_("Channel"),		results_columns.column_channel_name);
-	tree_view_epg_event_search->append_column(_("Start Time"),	results_columns.column_start_time_text);
-	tree_view_epg_event_search->append_column(_("Duration"),	results_columns.column_duration);
+ 	tree_view_epg_event_search->append_column(_(" "), results_columns.column_image);
+ 	tree_view_epg_event_search->append_column(_("Title"), results_columns.column_title);
+	tree_view_epg_event_search->append_column(_("Channel"), results_columns.column_channel_name);
+	tree_view_epg_event_search->append_column(_("Start Time"), results_columns.column_start_time_text);
+	tree_view_epg_event_search->append_column(_("Duration"), results_columns.column_duration);
 	list_store_results->set_sort_column(results_columns.column_start_time, Gtk::SORT_ASCENDING);
 }
 
@@ -70,8 +70,8 @@ void EpgEventSearchDialog::search() {
 	bool found = false;
 	StringList recent_searches = configuration_manager.get_string_list_value("recent_searches");
 	list_store_search->clear();
-  for (auto const recent_search: recent_searches) {
-    (*list_store_search->append())[search_columns.column_text] = recent_search;
+	for (auto const recent_search: recent_searches) {
+		(*list_store_search->append())[search_columns.column_text] = recent_search;
 		if (recent_search.uppercase() == text_uppercase) {
 			found = true;
 		}
@@ -92,14 +92,14 @@ void EpgEventSearchDialog::search() {
 			if (record) {
 				row[results_columns.column_image] = pixbuf_record;
 			}
-			row[results_columns.column_id]				= epg_event.epg_event_id;
-			row[results_columns.column_title]			= epg_event.get_title();
-			row[results_columns.column_start_time]		= epg_event.start_time;
-			row[results_columns.column_start_time_text]	= epg_event.get_start_time_text();
-			row[results_columns.column_duration]		= epg_event.get_duration_text();
-			row[results_columns.column_channel]			= epg_event.channel_id;
-			row[results_columns.column_channel_name]	= channel_manager.get_channel_by_id(epg_event.channel_id).name;
-			row[results_columns.column_epg_event]		= epg_event;
+			row[results_columns.column_id] = epg_event.epg_event_id;
+			row[results_columns.column_title] = epg_event.get_title();
+			row[results_columns.column_start_time] = epg_event.start_time;
+			row[results_columns.column_start_time_text] = epg_event.get_start_time_text();
+			row[results_columns.column_duration] = epg_event.get_duration_text();
+			row[results_columns.column_channel] = epg_event.channel_id;
+			row[results_columns.column_channel_name] = channel_manager.get_channel_by_id(epg_event.channel_id).name;
+			row[results_columns.column_epg_event] = epg_event;
 		}
 		got_results = got_results || !list.empty();
 	}

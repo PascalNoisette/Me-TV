@@ -93,7 +93,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	is_cursor_visible = true;
 	gchar bits[] = {0};
 	GdkColor color = {0, 0, 0, 0};
-  Gdk::Pixbuf * pixmap = Gdk::Pixbuf::create_from_data(NULL, bits, 1, 1);
+	Gdk::Pixbuf * pixmap = Gdk::Pixbuf::create_from_data(NULL, bits, 1, 1);
 	hidden_cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
 	add_accel_group(ui_manager->get_accel_group());
 	ui_manager->add_ui_from_string(ui_info);
@@ -170,7 +170,6 @@ void MainWindow::show_channels_dialog() {
 	if (stream_manager.is_recording()) {
 		throw Exception(_("Please stop all recordings before editing channels"));
 	}
-
 	ChannelsDialog & channels_dialog = ChannelsDialog::create(builder);
 	gint dialog_result = channels_dialog.run();
 	channels_dialog.hide();

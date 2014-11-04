@@ -37,63 +37,47 @@ int main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 #endif
-
 	g_printf("Me TV %s\n", VERSION);
-
-	if (!Glib::thread_supported())
-	{
+	if (!Glib::thread_supported()) {
 		Glib::thread_init();
 	}
 	gdk_threads_init();
-
 	Gnome::Conf::init();
 	Gtk::Main main(argc, argv);
-
 	Glib::add_exception_handler(&on_error);
-
 	g_log_set_handler(G_LOG_DOMAIN,
 		(GLogLevelFlags)(G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION),
 		log_handler, NULL);
-
 	Glib::OptionEntry verbose_option_entry;
 	verbose_option_entry.set_long_name("verbose");
 	verbose_option_entry.set_short_name('v');
 	verbose_option_entry.set_description(_("Enable verbose messages"));
-
 	Glib::OptionEntry safe_mode_option_entry;
 	safe_mode_option_entry.set_long_name("safe-mode");
 	safe_mode_option_entry.set_short_name('s');
 	safe_mode_option_entry.set_description(_("Start in safe mode"));
-
 	Glib::OptionEntry minimised_option_entry;
 	minimised_option_entry.set_long_name("minimised");
 	minimised_option_entry.set_short_name('m');
 	minimised_option_entry.set_description(_("Start minimised in notification area"));
-
 	Glib::OptionEntry disable_epg_thread_option_entry;
 	disable_epg_thread_option_entry.set_long_name("disable-epg-thread");
 	disable_epg_thread_option_entry.set_description(_("Disable the EPG thread.  Me TV will stop collecting EPG events."));
-
 	Glib::OptionEntry disable_epg_option_entry;
 	disable_epg_option_entry.set_long_name("disable-epg");
 	disable_epg_option_entry.set_description(_("Stops the rendering of the EPG event buttons on the UI."));
-
 	Glib::OptionEntry no_screensaver_inhibit_option_entry;
 	no_screensaver_inhibit_option_entry.set_long_name("no-screensaver-inhibit");
 	no_screensaver_inhibit_option_entry.set_description(_("Tells Me TV not to call the screensaver Inhibit/UnInhibit methods for GNOME Screensaver."));
-
 	Glib::OptionEntry devices_option_entry;
 	devices_option_entry.set_long_name("devices");
 	devices_option_entry.set_description(_("Only use the specified frontend devices (e.g. --devices=/dev/dvb/adapter0/frontend0,/dev/dvb/adapter0/frontend1)"));
-
 	Glib::OptionEntry read_timeout_option_entry;
 	read_timeout_option_entry.set_long_name("read-timeout");
 	read_timeout_option_entry.set_description(_("How long to wait (in seconds) before timing out while waiting for data from demuxer (default 5)."));
-
-  Glib::OptionEntry engine_entry;
-  engine_entry.set_long_name("engine");
-  engine_entry.set_description(_("Which video/audio rendering engine to use (default xine)."));
-
+	Glib::OptionEntry engine_entry;
+	engine_entry.set_long_name("engine");
+	engine_entry.set_description(_("Which video/audio rendering engine to use (default xine)."));
 	Glib::OptionGroup option_group(PACKAGE_NAME, "", _("Show Me TV help options"));
 	option_group.add_entry(verbose_option_entry, verbose_logging);
 	option_group.add_entry(safe_mode_option_entry, safe_mode);
@@ -103,27 +87,22 @@ int main (int argc, char *argv[])
 	option_group.add_entry(no_screensaver_inhibit_option_entry, no_screensaver_inhibit);
 	option_group.add_entry(devices_option_entry, devices);
 	option_group.add_entry(read_timeout_option_entry, read_timeout);
-  option_group.add_entry(engine_entry, engine);
-
+	option_group.add_entry(engine_entry, engine);
 	Glib::OptionContext option_context;
 	option_context.set_summary(ME_TV_SUMMARY);
 	option_context.set_description(ME_TV_DESCRIPTION);
 	option_context.set_main_group(option_group);
-
 	try
 	{
 		option_context.parse(argc, argv);
-    Application application;
-    application.run();
-  }
-	catch (const Glib::Exception& exception)
-	{
+		Application application;
+		application.run();
+	}
+	catch (Glib::Exception const & exception) {
 		g_message("Exception: %s", exception.what().c_str());
 	}
-	catch (...)
-	{
+	catch (...) {
 		g_message(_("An unhandled error occurred"));
 	}
-
 	return 0;
 }

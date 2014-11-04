@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -27,38 +28,34 @@
 #include "channel_stream.h"
 #include "dvb_frontend.h"
 
-class FrontendThread : public Thread
-{
+class FrontendThread: public Thread {
 private:
-	ChannelStreamList	streams;
-	EpgThread*			epg_thread;
-	int					fd;
-		
-	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar* buffer, gsize length);
+	ChannelStreamList streams;
+	EpgThread * epg_thread;
+	int fd;
+	void write(Glib::RefPtr<Glib::IOChannel> channel, guchar * buffer, gsize length);
 	void run();
-	void setup_dvb(ChannelStream& stream);
+	void setup_dvb(ChannelStream & stream);
 	void start_epg_thread();
 	void stop_epg_thread();
 
 public:
-	FrontendThread(Dvb::Frontend& frontend);
+	FrontendThread(Dvb::Frontend & frontend);
 	~FrontendThread();
-
-	Dvb::Frontend& frontend;
-
+	Dvb::Frontend & frontend;
 	gboolean is_display();
 	gboolean is_recording();
-	gboolean is_recording(const Channel& channel);
-	void start_recording(Channel& channel, const Glib::ustring& description, gboolean scheduled);
+	gboolean is_recording(Channel const & channel);
+	void start_recording(Channel & channel, Glib::ustring const & description, gboolean scheduled);
 	void stop_recording(const Channel& channel);
 	guint get_last_epg_update_time();
 	void start();
 	void stop();
-	void start_display(Channel& channel);
+	void start_display(Channel & channel);
 	void stop_display();
-	ChannelStreamList& get_streams() { return streams; }
+	ChannelStreamList & get_streams() { return streams; }
 };
 
-typedef std::list<FrontendThread*> FrontendThreadList;
+typedef std::list<FrontendThread *> FrontendThreadList;
 
 #endif

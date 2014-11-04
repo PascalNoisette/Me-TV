@@ -339,8 +339,8 @@ Application & Application::get_current() {
 
 void Application::check_scheduled_recordings() {
 	ScheduledRecordingList scheduled_recordings = scheduled_recording_manager.check_scheduled_recordings();
-  for (auto & scheduled_recording: scheduled_recordings) {
-		Channel* channel = channel_manager.find_channel(scheduled_recording.channel_id);
+	for (auto & scheduled_recording: scheduled_recordings) {
+		Channel * channel = channel_manager.find_channel(scheduled_recording.channel_id);
 		if (channel != NULL) {
 			start_recording(*channel, scheduled_recording);
 		}
@@ -348,8 +348,8 @@ void Application::check_scheduled_recordings() {
 	gboolean check = true;
 	while (check) {
 		check = false;
-    for (auto frontend_thread:  stream_manager.get_frontend_threads()) {
-      for (auto channel_stream: frontend_thread->get_streams()) {
+		for (auto frontend_thread:  stream_manager.get_frontend_threads()) {
+			for (auto channel_stream: frontend_thread->get_streams()) {
 				guint scheduled_recording_id = scheduled_recording_manager.is_recording(channel_stream->channel);
 				if (channel_stream->type == CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING && scheduled_recording_id == 0) {
 					stream_manager.stop_recording(channel_stream->channel);
@@ -391,12 +391,12 @@ gboolean Application::on_timeout() {
 void Application::check_auto_record() {
 	StringList auto_record_list = configuration_manager.get_string_list_value("auto_record");
 	g_debug("Searching for auto record EPG events");
-  for (auto item: auto_record_list) {
+	for (auto item: auto_record_list) {
 		Glib::ustring title = item.uppercase();
 		g_debug("Searching for '%s'", title.c_str());
-    for (auto & channel: channel_manager.get_channels()) {
+		for (auto & channel: channel_manager.get_channels()) {
 			EpgEventList list = channel.epg_events.search(title, false);
-      for (auto & epg_event: list) {
+			for (auto & epg_event: list) {
 				gboolean record = scheduled_recording_manager.is_recording(epg_event);
 				if (!record) {
 					try {

@@ -45,20 +45,20 @@ AutoRecordDialog::AutoRecordDialog(BaseObjectType* cobject, const Glib::RefPtr<G
 void AutoRecordDialog::run() {
 	StringList auto_record_list = configuration_manager.get_string_list_value("auto_record");
 	list_store->clear();
-  for (auto const item: auto_record_list) {
+	for (auto const item: auto_record_list) {
 		(*(list_store->append()))[columns.column_title] = item;
 	}
 	if (Gtk::Dialog::run() == 0) {
 		auto_record_list.clear();
 		Gtk::TreeModel::Children children = list_store->children();
-    for (auto const item: children) {
+		for (auto const item: children) {
 			Glib::ustring title = trim_string(item[columns.column_title]);
 			if (!title.empty()) {
 				auto_record_list.push_back(title);
 			}
 		}
 		configuration_manager.set_string_list_value("auto_record", auto_record_list);
-    get_the_application().check_auto_record();
+		get_the_application().check_auto_record();
 	}
 	hide();
 }

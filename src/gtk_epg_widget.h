@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -25,45 +26,39 @@
 #include "data.h"
 #include "me-tv-ui.h"
 
-class GtkEpgWidget : public Gtk::ScrolledWindow
-{
+class GtkEpgWidget: public Gtk::ScrolledWindow {
 private:
-	gint								offset;
-	gsize								span_hours;
-	gsize								span_minutes;
-	gsize								span_seconds;
-	const Glib::RefPtr<Gtk::Builder>	builder;
-	guint								epg_span_hours;
-	Gtk::SpinButton*					spin_button_epg_page;
-	Gtk::Label*							label_epg_page;
-	Gtk::Table*							table_epg;
-	Gtk::ScrolledWindow*				scrolled_window_epg;
-	
+	gint offset;
+	gsize span_hours;
+	gsize span_minutes;
+	gsize span_seconds;
+	Glib::RefPtr<Gtk::Builder> const builder;
+	guint epg_span_hours;
+	Gtk::SpinButton * spin_button_epg_page;
+	Gtk::Label * label_epg_page;
+	Gtk::Table * table_epg;
+	Gtk::ScrolledWindow * scrolled_window_epg;
 	void previous();
 	void next();
 	void previous_day();
 	void next_day();
-		
-	bool on_channel_button_press_event(GdkEventButton* event, guint channel_id);
-	void on_channel_button_toggled(Gtk::RadioButton* button, guint channel_id);
-	bool on_program_button_press_event(GdkEventButton* event, EpgEvent& epg_event);
-	void on_program_button_clicked(EpgEvent& epg_event);
+	bool on_channel_button_press_event(GdkEventButton * event, guint channel_id);
+	void on_channel_button_toggled(Gtk::RadioButton * button, guint channel_id);
+	bool on_program_button_press_event(GdkEventButton * event, EpgEvent & epg_event);
+	void on_program_button_clicked(EpgEvent & epg_event);
 	void on_spin_button_epg_page_changed();
-		
 	void clear();
 	void update_pages();
-	
-	Gtk::RadioButton& attach_radio_button(Gtk::RadioButtonGroup& group, const Glib::ustring& text, gboolean record, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
-	Gtk::Button& attach_button(const Glib::ustring& text, gboolean record, gboolean ellipsize, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
-	Gtk::Label& attach_label(const Glib::ustring& text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
-	void attach_widget(Gtk::Widget& widget, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
-	void create_channel_row(Gtk::RadioButtonGroup& group, Channel& const_channel,
+	Gtk::RadioButton & attach_radio_button(Gtk::RadioButtonGroup & group, Glib::ustring const & text, gboolean record, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
+	Gtk::Button& attach_button(const Glib::ustring & text, gboolean record, gboolean ellipsize, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
+	Gtk::Label& attach_label(const Glib::ustring & text, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
+	void attach_widget(Gtk::Widget & widget, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, Gtk::AttachOptions attach_options = Gtk::FILL);
+	void create_channel_row(Gtk::RadioButtonGroup & group, Channel & const_channel,
 		guint table_row, gboolean selected, time_t start_time, guint channel_number,
 		gboolean show_channel_number, gboolean show_epg_time, gboolean show_epg_tooltips);
 
 public:
-	GtkEpgWidget(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
-	
+	GtkEpgWidget(BaseObjectType * cobject, Glib::RefPtr<Gtk::Builder> const & builder);
 	void update_table();
 	void update();
 	void set_offset(gint value);

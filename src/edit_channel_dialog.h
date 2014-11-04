@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -23,17 +24,15 @@
 
 #include <gtkmm.h>
 
-class EditChannelDialog : public Gtk::Dialog
-{
+class EditChannelDialog: public Gtk::Dialog {
 private:
-	const Glib::RefPtr<Gtk::Builder>	builder;
+	Glib::RefPtr<Gtk::Builder> const builder;
 	void on_button_edit_channel_save_clicked();
 	void on_button_edit_channel_cancel_clicked();
 public:
-	EditChannelDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
-	static EditChannelDialog& create(Glib::RefPtr<Gtk::Builder> builder);
-
-	gint run(Gtk::Window* transient_for);
+	EditChannelDialog(BaseObjectType * cobject, Glib::RefPtr<Gtk::Builder> const & builder);
+	static EditChannelDialog & create(Glib::RefPtr<Gtk::Builder> builder);
+	gint run(Gtk::Window * transient_for);
 };
 
 #endif

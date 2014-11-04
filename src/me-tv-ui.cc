@@ -36,8 +36,7 @@ void ChannelComboBox::load(ChannelArray const & channels) {
 	set_model(list_store);
 	pack_start(columns.column_name);
 	list_store->clear();
-	for (ChannelArray::const_iterator i = channels.begin(); i != channels.end(); i++) {
-		Channel const & channel = *i;
+	for (auto const & channel: channels) {
 		Gtk::TreeModel::Row row = *list_store->append();
 		row[columns.column_id] = channel.channel_id;
 		row[columns.column_name] = channel.name;
@@ -47,8 +46,7 @@ void ChannelComboBox::load(ChannelArray const & channels) {
 
 void ChannelComboBox::set_selected_channel_id(guint channel_id) {
 	Gtk::TreeNodeChildren children = get_model()->children();
-	for (Gtk::TreeNodeChildren::iterator i = children.begin(); i != children.end(); i++) {
-		Gtk::TreeModel::Row row = *i;
+	for (auto const row: children) {
 		if (row[columns.column_id] == channel_id) { set_active(i); }
 	}
 }

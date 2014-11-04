@@ -82,7 +82,7 @@ void GtkEpgWidget::update() {
 }
 
 void GtkEpgWidget::clear() {
-  // TODO: This can surely be simplified.
+	// TODO: This can surely be simplified.
 	std::vector<Gtk::Widget*> children = table_epg->get_children();
 	std::vector<Gtk::Widget*>::iterator iterator = children.begin();
 	while (iterator != children.end()) {
@@ -97,10 +97,10 @@ void GtkEpgWidget::update_pages() {
 	guint epg_page_size = configuration_manager.get_int_value("epg_page_size");
 	if (epg_page_size == 0) { return; }
 	double min = 0;
-  double max = 0;
+	double max = 0;
 	spin_button_epg_page->get_range(min, max);
 	guint epg_page_count = max;
-	const ChannelArray & channels = channel_manager.get_channels();
+	ChannelArray const & channels = channel_manager.get_channels();
 	guint channel_count = channels.size();
 	guint new_epg_page_count = channel_count == 0 ? 1 : ((channel_count-1) / epg_page_size) + 1;
 	if (new_epg_page_count != epg_page_count) {
@@ -111,8 +111,8 @@ void GtkEpgWidget::update_pages() {
 }
 
 void GtkEpgWidget::update_table() {
-  Glib::RefPtr<Gtk::Adjustment> hadjustment = scrolled_window_epg->get_hadjustment();
-  Glib::RefPtr<Gtk::Adjustment> vadjustment = scrolled_window_epg->get_vadjustment();
+	Glib::RefPtr<Gtk::Adjustment> hadjustment = scrolled_window_epg->get_hadjustment();
+	Glib::RefPtr<Gtk::Adjustment> vadjustment = scrolled_window_epg->get_vadjustment();
 	gdouble hvalue = hadjustment->get_value();
 	gdouble vvalue = vadjustment->get_value();
 	if (get_window()) {
@@ -209,7 +209,7 @@ void GtkEpgWidget::create_channel_row(Gtk::RadioButtonGroup& group, Channel& cha
 	if (!disable_epg) {
 		EpgEventList events = channel.epg_events.get_list(start_time, end_time);
 		gboolean first = true;
-    for (auto & epg_event: events) {
+		for (auto & epg_event: events) {
 			guint event_end_time = epg_event.start_time + epg_event.duration;
 			guint start_column = 0;
 			if (epg_event.start_time < start_time) {
