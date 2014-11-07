@@ -9,7 +9,7 @@ Home Page: http://launchpad.net/me-tv
 Launchapd remains the project's home page and location, GitHub is being used really just for code
 development purposes – and to gain access to the variety of CI resources, and the like, which work with
 GitHub but not with Launchpad. So, if you have questions, bug reports, issues, etc.  please go to the
-[Home Page]{http://launchpad.net/me-tv). Repository forking and pull requests should all happen on GitHub.
+[Home Page](http://launchpad.net/me-tv). Repository forking and pull requests should all happen on GitHub.
 
 ## Nota Bene
 
