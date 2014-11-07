@@ -24,3 +24,9 @@ GTK+3. Once the gtk3 branch compiles and runs, which it doesn't as yet, it will 
 
 The original Autotools system remains and is kept up to date, but a [SCons](http://www.scons.org) build has
 been added and this is what is used for development.
+
+## Work plan
+
+As well as the ongoing C/C++ to C++14 amendments, and the GTK+2 to GTK+3 work in the gtk3 branch, there is a
+need to create a VLC engine for this version. The 1.3 system only had a Xine-based engine. In the 2.0 (and
+hence 1.4) systems, Xine, VLC, and other engines are supported. There needs to be a VLC engine for this code.
