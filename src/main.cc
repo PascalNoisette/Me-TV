@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014 Russel Winder
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -30,8 +30,7 @@
 #define ME_TV_DESCRIPTION _("Me TV was developed for the modern digital lounge room with a PC for a media centre that is capable "\
 	"of normal PC tasks (web surfing, word processing and watching TV).\n")
 
-int main (int argc, char *argv[])
-{
+int main (int argc, char *argv[]) {
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -92,8 +91,7 @@ int main (int argc, char *argv[])
 	option_context.set_summary(ME_TV_SUMMARY);
 	option_context.set_description(ME_TV_DESCRIPTION);
 	option_context.set_main_group(option_group);
-	try
-	{
+	try {
 		option_context.parse(argc, argv);
 		Application application;
 		application.run();

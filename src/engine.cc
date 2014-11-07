@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014 Russel Winder
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -50,7 +50,7 @@ Engine::~Engine() {
 }
 
 void Engine::play(Glib::ustring const & mrl) {
-	Application& application = get_the_application();
+	Application & application = get_the_application();
 	this->mrl = mrl;
 	g_debug("Engine::play(\"%s\")", mrl.c_str());
 	// TODO: Put some protections in place to ensure no fails here. Especially the engine search.
