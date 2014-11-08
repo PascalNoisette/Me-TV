@@ -76,7 +76,7 @@ environment = Environment(
     PACKAGE_DATA_DIR=datadir + '/me-tv',
     PACKAGE_LOCALE_DIR=datadir + '/locale',
     CXXFLAGS=[
-        '-std=c++14',
+        '-std=c++1y', # -std=c++14 really, but GCC 4.8 doesn't have this.
         '-g',
         '-O2',
         '-W',
