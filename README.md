@@ -8,15 +8,15 @@ Home Page: http://launchpad.net/me-tv
 
 Launchpad remains the project's home page and location, GitHub is being used really just for code
 development purposes – and to gain access to the variety of CI resources, and the like, which work with
-GitHub but not with Launchpad. So, if you have questions, bug reports, issues, etc.  please go to the
+GitHub but not with Launchpad. So, if you have questions, bug reports, issues, etc. please go to the
 [Home Page](http://launchpad.net/me-tv). Repository forking and pull requests should all happen on GitHub.
 
 ## Nota Bene
 
 This repository is not based on the mainline Bazaar branch to be found on Launchpad. That branch is numbered
-1.4 but is actually based on the 2.0 work rather than the 1.3 branch. The 2.0 architecture was a full
+1.4 but is based on the 2.0 work rather than the 1.3 branch. The 2.0 architecture was a full
 client–server architecture the idea being to make Me TV a complete entertainment centre. It is not clear
-that that is the right direction for this project. So instead this repository is based on the 1.3 branch
+that that is the right direction for this project. So instead, this repository is based on the 1.3 branch
 with the intention to create a very lightweight digital television viewer.
 
 The current codebase is GTK+2 based and is a mix of C and C++. The work here is to transform this into a
@@ -30,10 +30,4 @@ GTK+3. Once the gtk3 branch compiles and runs, which it doesn't as yet, it will 
 ## Building
 
 The original Autotools system remains and is kept up to date, but a [SCons](http://www.scons.org) build has
-been added and this is what is used for development.
-
-## Work plan
-
-As well as the ongoing C/C++ to C++14 amendments, and the GTK+2 to GTK+3 work in the gtk3 branch, there is a
-need to create a VLC engine for this version. The 1.3 system only had a Xine-based engine. In the 2.0 (and
-hence 1.4) systems, Xine, VLC, and other engines are supported. There needs to be a VLC engine for this code.
+been added and this is what is currently used for development.
