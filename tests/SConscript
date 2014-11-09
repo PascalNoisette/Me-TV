@@ -1,6 +1,6 @@
 # -*- mode:python; coding:utf-8; -*-
 
-#  Me TV — A DVB-T player.
+#  Me TV — A DVB player.
 #
 #  Copyright © 2014 Russel Winder
 #
@@ -19,21 +19,13 @@
 
 Import('environment', 'main_environment', 'xine_player_environment')
 
-sources = Glob('*.cc')
-xine_player = File('me-tv-player-xine.cc')
+test_main_environment = main_environment.Clone()
+test_main_environment.Append(CPPPATH=[
+    test_main_environment['catch_directory'],
+    '#src',
+    '#{}/src'.format(test_main_environment['build_directory'])]
+)
 
-for player in (xine_player,):
-    sources.remove(player)
+test_executables = [test_main_environment.Program(x) for x in Glob('*.cc')]
 
-executables = [
-    main_environment.Program('me-tv', sources),
-    xine_player_environment.Program(xine_player),
-]
-
-environment.Alias('install', [
-    environment.Install(environment['BINDIR'], executables),
-    environment.Install(environment['DATADIR'] +'/pixmaps/', Glob('*.xpm')),
-    environment.Install(environment['DATADIR'] +'/me-tv/glade/', ['me-tv.ui', 'me-tv.xpm']),
-])
-
-Return('executables')
+Return('test_executables')

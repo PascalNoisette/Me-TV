@@ -22,10 +22,14 @@ Import('environment')
 desktop = Command('me-tv.desktop', 'me-tv.desktop.in',
     'intltool-merge  -d -u -c ./po/.intltool-merge-cache ./po $SOURCE $TARGET'
 )
+
 schemas = Command('me-tv.schemas', 'me-tv.schemas.in',
     'intltool-merge  -s -u -c ./po/.intltool-merge-cache ./po $SOURCE $TARGET'
 )
-SideEffect('po/.intltool-merge-cache', [desktop, schemas])
+
+built_things = [desktop, schemas]
+
+SideEffect('po/.intltool-merge-cache', built_things)
 
 Alias('install', [
     Install(environment['DATADIR'] + '/pixmaps/', Glob('*.png')),
@@ -33,3 +37,5 @@ Alias('install', [
     Install(environment['DATADIR'] + '/applications/', desktop),
     Install(environment['PREFIX'] + '/etc/gconf/schemas/', schemas),
 ])
+
+Return('built_things')

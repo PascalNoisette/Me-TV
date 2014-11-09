@@ -19,16 +19,21 @@
 
 Import('environment')
 
-poFiles = Glob('*.po')
-compiledExtension = '.mo'
+po_extension = '.po'
+compiled_extension = '.mo'
 
-for poFile in poFiles :
-    countryCode = poFile.name[:-3]
-    built = environment.Command(countryCode + compiledExtension, poFile, "msgfmt -o $TARGET $SOURCES")
-    environment.Alias('install', environment.InstallAs(environment['PACKAGE_LOCALE_DIR'] + '/' + countryCode + '/LC_MESSAGES/me-tv.mo', built))
+built_po_files = []
+
+for po_file in Glob('*' + po_extension):
+    country_code = po_file.name[:-len(po_extension)]
+    built = environment.Command(country_code + compiled_extension, po_file, "msgfmt -o $TARGET $SOURCES")
+    environment.Alias('install', environment.InstallAs(environment['PACKAGE_LOCALE_DIR'] + '/' + country_code + '/LC_MESSAGES/me-tv.mo', built))
+    built_po_files.append(built)
 
 #env = Environment(tools = ["default", "gettext"])
 #env.MOFiles(LINGUAS_FILE=1)
 
 #env['XGETTEXTPATH'] = ['../']
 #env.Translate(LINGUAS_FILE=1, XGETTEXTFROM='POTFILES.in')
+
+Return('built_po_files')
