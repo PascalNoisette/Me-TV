@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -7,49 +8,46 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
+
 #include "dvb_si.h"
 #include "application.h"
 #include "exception.h"
 #include "atsc_text.h"
 
-#define CRC_BYTE_SIZE		4
-#define SHORT_EVENT			0x4D
-#define EXTENDED_EVENT		0x4E
+constexpr auto CRC_BYTE_SIZE = 4;
+constexpr auto SHORT_EVENT = 0x4D;
+constexpr auto EXTENDED_EVENT = 0x4E;
 
-#define GPS_EPOCH			315964800
+constexpr auto GPS_EPOCH = 315964800;
 
 using namespace Dvb;
 using namespace Dvb::SI;
 
-Dvb::SI::Event::Event()
-{
+Dvb::SI::Event::Event() {
 	event_id = 0;
 	start_time = 0;
 	duration = 0;
 	version_number = 0;
 }
 
-SectionParser::SectionParser()
-{
+SectionParser::SectionParser() {
 	text_encoding = configuration_manager.get_string_value("text_encoding");
 }
 
-// this method takes a bitmask as supplied by the NIT-section (satellite delivery system descriptor) for the FEC_INNER and converts them to a linux-style FEC value according to EN 300 468, v 1.9.1
-fe_code_rate_t SectionParser::parse_fec_inner(guint bitmask)
-{
-	switch(bitmask)
-	{
+// this method takes a bitmask as supplied by the NIT-section (satellite delivery system descriptor) for the
+// FEC_INNER and converts them to a linux-style FEC value according to EN 300 468, v 1.9.1
+fe_code_rate_t SectionParser::parse_fec_inner(guint bitmask) {
+	switch(bitmask) {
 		case 0x01:
 			return FEC_1_2;
 		case 0x02:
@@ -63,7 +61,11 @@ fe_code_rate_t SectionParser::parse_fec_inner(guint bitmask)
 		case 0x06:
 			return FEC_8_9;
 		case 0x07:
-			return FEC_AUTO; // EN 300 468 specifies this as "fec 3/5", which is apparently not supported by the linux kernel or is a typo. just setting to auto.
+			 // EN 300 468 specifies this as "fec 3/5", which is apparently not supported by the linux kernel or
+			 // is a typo. just setting to auto.
+			//
+			// TODO: check this. See code below using FEC_3_5.
+			return FEC_AUTO;
 		case 0x08:
 			return FEC_4_5;
 		default:
@@ -72,147 +74,108 @@ fe_code_rate_t SectionParser::parse_fec_inner(guint bitmask)
 	return FEC_AUTO; // this should never happen. but it wouldn't hurt.
 }
 
-void SectionParser::parse_sds (Demuxer& demuxer, ServiceDescriptionSection& section)
-{
+void SectionParser::parse_sds (Demuxer & demuxer, ServiceDescriptionSection & section) {
 	Buffer buffer;
 	demuxer.read_section(buffer);
 	gsize section_length = buffer.get_length();
-	
 	guint offset = 3;
 	section.transport_stream_id = buffer.get_bits(offset, 0, 16);
 	offset += 8;
-	
-	while (offset < section_length - 4)
-	{
+	while (offset < section_length - 4) {
 		Service service;
-
 		service.id = buffer.get_bits(offset, 0, 16);
 		offset += 2;
 		service.eit_schedule_flag = buffer.get_bits(offset, 6, 1) == 1;
-		if (service.eit_schedule_flag)
-		{
+		if (service.eit_schedule_flag) {
 			section.epg_events_available = true;
 		}
 		offset++;
-
 		guint descriptors_loop_length = buffer.get_bits(offset, 4, 12);
 		offset += 2;
 		guint descriptors_end_offset = offset + descriptors_loop_length;
-		while (offset < descriptors_end_offset)
-		{
+		while (offset < descriptors_end_offset) {
 			guint descriptor_tag = buffer[offset];
 			guint descriptor_length = buffer[offset + 1];
-			if (descriptor_tag == 0x48)
-			{
+			if (descriptor_tag == 0x48) {
 				service.type = buffer[offset + 2];
 				guint service_provider_name_length = get_text(service.provider_name, buffer.get_buffer() + offset + 3);
 				get_text(service.name, buffer.get_buffer() + offset + 3 + service_provider_name_length);
 			}
-
 			offset += descriptor_length + 2;
 		}
-		
 		section.services.push_back(service);
 	}
 }
 
-void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& section)
-{
+void SectionParser::parse_nis (Demuxer & demuxer, NetworkInformationSection & section) {
 	Buffer buffer;
 	demuxer.read_section(buffer);
 	gsize section_length = buffer.get_length();
-	
 	guint offset = 8;
 	guint network_descriptor_length = buffer.get_bits(offset, 4, 12);
 	offset += 2;
-	
-	// We don't care for the network descriptors, as we only want to get new frequencies out of the stream, and they are saved in the "Transport stream descriptor" section.
+	// We don't care for the network descriptors, as we only want to get new frequencies out of the stream,
+	// and they are saved in the "Transport stream descriptor" section.
 	offset += network_descriptor_length;
-	
 	// Now offset is at "transport_stream_loop_length" position.
 	guint transport_stream_length = buffer.get_bits(offset, 4, 12);
 	offset += 2;
-	
 	// loop through all transport descriptors and pick out 0x43 descriptors, as they contain new frequencies.
-	while (offset < section_length - 4)
-	{
+	while (offset < section_length - 4) {
 		offset += 4;
 		guint descriptors_loop_length = buffer.get_bits(offset, 4, 12);
 		offset += 2;
 		guint descriptors_end_offset = offset + descriptors_loop_length;
-		
-		while (offset < descriptors_end_offset)
-		{
+		while (offset < descriptors_end_offset) {
 			guint descriptor_tag = buffer[offset++];
 			guint descriptor_length = buffer[offset++];
-
-			if (descriptor_tag == 0x43)
-			{
+			if (descriptor_tag == 0x43) {
 				g_debug("Found Satellite Delivery System Descriptor");
-
-				struct dvb_frontend_parameters frontend_parameters;
-				
+				dvb_frontend_parameters frontend_parameters;
 				// extract data for new transponder, according to EN 300 468: dvb-s
 				frontend_parameters.frequency = 0;
-				for (int i=0; i<8; i++)
-				{
-					frontend_parameters.frequency = frontend_parameters.frequency*10 + buffer.get_bits(offset, i*4, 4);
+				for (int i = 0; i < 8; ++i) {
+					frontend_parameters.frequency = frontend_parameters.frequency * 10 + buffer.get_bits(offset, i * 4, 4);
 				}
 				frontend_parameters.frequency *= 10;
-				
-				guint polarisation = (buffer.get_bits(offset + 6, 2, 1) == 1) ?POLARISATION_VERTICAL :POLARISATION_HORIZONTAL;
-				
+				guint polarisation = (buffer.get_bits(offset + 6, 2, 1) == 1) ? POLARISATION_VERTICAL : POLARISATION_HORIZONTAL;
 				frontend_parameters.u.qpsk.symbol_rate = 0;
-				for(int i=0; i<7; i++)
-				{
-					frontend_parameters.u.qpsk.symbol_rate = frontend_parameters.u.qpsk.symbol_rate*10 + buffer.get_bits(offset + 7, i*4, 4);
+				for(int i = 0; i < 7; ++i) {
+					frontend_parameters.u.qpsk.symbol_rate = frontend_parameters.u.qpsk.symbol_rate * 10 + buffer.get_bits(offset + 7, i * 4, 4);
 				}
 				frontend_parameters.u.qpsk.symbol_rate *= 100;
-				
 				frontend_parameters.u.qpsk.fec_inner = parse_fec_inner(buffer.get_bits(offset + 7, 28, 4));
 				frontend_parameters.inversion = INVERSION_AUTO;
-				
 				Transponder transponder;
 				transponder.frontend_parameters = frontend_parameters;
 				transponder.polarisation = polarisation;
 				section.transponders.push_back(transponder);
-				
 				g_debug("New frequency: %d, New polarisation: %d, Symbol rate %d, fec_inner %d",
 					frontend_parameters.frequency, transponder.polarisation,
 					frontend_parameters.u.qpsk.symbol_rate, frontend_parameters.u.qpsk.fec_inner);
 			}
-			else if (descriptor_tag == 0x44)
-			{
+			else if (descriptor_tag == 0x44) {
 				Transponder transponder;
-
 				g_debug("Found Cable Delivery System Descriptor");
-
 				guint frequency = 0;
-				for (int i=0; i<8; i++)
-				{
-					frequency = frequency*10 + buffer.get_bits(offset, i*4, 4);
+				for (int i = 0; i < 8; ++i) {
+					frequency = frequency * 10 + buffer.get_bits(offset, i * 4, 4);
 				}
 				frequency *= 10;
-
 				// reserved_future_use (12)
 				guint fec_outer = buffer.get_bits(offset, 44, 4);
 				guint modulation = buffer.get_bits(offset, 48, 8);
 				guint symbol_rate = buffer.get_bits(offset, 56, 28);
 				guint fec_inner = buffer.get_bits(offset, 84, 4);
-
 				g_debug("frequency: %d", frequency);
 				g_debug("FEC_outer: %d", fec_outer);
 				g_debug("modulation: %d", modulation);
 				g_debug("symbol_rate: %d", symbol_rate);
 				g_debug("FEC_inner: %d", fec_inner);
-
 				transponder.frontend_parameters.frequency = frequency;
 				transponder.frontend_parameters.inversion = INVERSION_AUTO;
-
 				transponder.frontend_parameters.u.qam.symbol_rate = symbol_rate;
-
-				switch (modulation)
-				{
+				switch (modulation) {
 					case 1: transponder.frontend_parameters.u.qam.modulation = QAM_16; break;
 					case 2: transponder.frontend_parameters.u.qam.modulation = QAM_32; break;
 					case 3: transponder.frontend_parameters.u.qam.modulation = QAM_64; break;
@@ -220,9 +183,7 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 					case 5: transponder.frontend_parameters.u.qam.modulation = QAM_256; break;
 					default: transponder.frontend_parameters.u.qam.modulation = QAM_AUTO;
 				}
-
-				switch (fec_inner)
-				{
+				switch (fec_inner) {
 					case 1: transponder.frontend_parameters.u.qam.fec_inner = FEC_1_2; break;
 					case 2: transponder.frontend_parameters.u.qam.fec_inner = FEC_2_3; break;
 					case 3: transponder.frontend_parameters.u.qam.fec_inner = FEC_3_4; break;
@@ -238,17 +199,13 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 #endif
 					default: transponder.frontend_parameters.u.qam.fec_inner = FEC_AUTO;
 				}
-
 				section.transponders.push_back(transponder);
 			}
-			else if (descriptor_tag == 0x5A)
-			{
+			else if (descriptor_tag == 0x5A) {
 				Transponder transponder;
-
 				g_debug("Found Terrestrial Delivery System Descriptor");
 				guint centre_frequency = buffer.get_bits(offset, 0, 32) * 10;
 				offset += 4;
-
 				guint bandwidth = buffer.get_bits(offset, 0, 3);
 				// priority (1)
 				// Time_Slicing_indicator (1)
@@ -260,45 +217,35 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 				guint code_rate_LP = buffer.get_bits(offset, 17, 3);
 				guint guard_interval = buffer.get_bits(offset, 20, 2);
 				guint transmission_mode = buffer.get_bits(offset, 22, 2);
-
 				g_debug("centre_frequency: %d", centre_frequency);
 				g_debug("bandwidth: %d", bandwidth);
 				g_debug("constellation: %d", constellation);
-				g_debug("hierarchy_information: %d", hierarchy_information);				
+				g_debug("hierarchy_information: %d", hierarchy_information);
 				g_debug("code_rate_HP: %d", code_rate_HP);
 				g_debug("code_rate_LP: %d", code_rate_LP);
 				g_debug("guard_interval: %d", guard_interval);
 				g_debug("transmission_mode: %d", transmission_mode);
-
 				transponder.frontend_parameters.frequency = centre_frequency;
 				transponder.frontend_parameters.inversion = INVERSION_AUTO;
-					
-				switch (bandwidth)
-				{
+				switch (bandwidth) {
 					case 0: transponder.frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_8_MHZ; break;
 					case 1: transponder.frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_7_MHZ; break;
 					case 2: transponder.frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_6_MHZ; break;
 					default: transponder.frontend_parameters.u.ofdm.bandwidth = BANDWIDTH_AUTO;
 				}
-
-				switch (constellation)
-				{
+				switch (constellation) {
 					case 1: transponder.frontend_parameters.u.ofdm.constellation = QAM_16; break;
 					case 2: transponder.frontend_parameters.u.ofdm.constellation = QAM_64; break;
 					default: transponder.frontend_parameters.u.ofdm.constellation = QAM_AUTO;
 				}
-
-				switch (hierarchy_information)
-				{
+				switch (hierarchy_information) {
 					case 0: case 4: transponder.frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_NONE; break;
 					case 1: case 5: transponder.frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_1; break;
 					case 2: case 6: transponder.frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_2; break;
 					case 3: case 7: transponder.frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_4; break;
 					default: transponder.frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_AUTO;
 				}
-
-				switch (code_rate_HP)
-				{
+				switch (code_rate_HP) {
 					case 0: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_1_2; break;
 					case 1: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_2_3; break;
 					case 2: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_3_4; break;
@@ -306,9 +253,7 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 					case 4: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_7_8; break;
 					default: transponder.frontend_parameters.u.ofdm.code_rate_HP = FEC_AUTO;
 				}
-
-				switch (code_rate_LP)
-				{
+				switch (code_rate_LP) {
 					case 0: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_1_2; break;
 					case 1: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_2_3; break;
 					case 2: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_3_4; break;
@@ -316,101 +261,78 @@ void SectionParser::parse_nis (Demuxer& demuxer, NetworkInformationSection& sect
 					case 4: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_7_8; break;
 					default: transponder.frontend_parameters.u.ofdm.code_rate_LP = FEC_AUTO;
 				}
-
-				switch (guard_interval)
-				{
+				switch (guard_interval) {
 					case 0: transponder.frontend_parameters.u.ofdm.guard_interval = GUARD_INTERVAL_1_32; break;
 					case 1: transponder.frontend_parameters.u.ofdm.guard_interval = GUARD_INTERVAL_1_16; break;
 					case 2: transponder.frontend_parameters.u.ofdm.guard_interval = GUARD_INTERVAL_1_8; break;
 					case 3: transponder.frontend_parameters.u.ofdm.guard_interval = GUARD_INTERVAL_1_4; break;
 					default: transponder.frontend_parameters.u.ofdm.guard_interval = GUARD_INTERVAL_AUTO;
 				}
-
-				switch (transmission_mode)
-				{
+				switch (transmission_mode) {
 					case 0: transponder.frontend_parameters.u.ofdm.transmission_mode = TRANSMISSION_MODE_2K; break;
 					case 1: transponder.frontend_parameters.u.ofdm.transmission_mode = TRANSMISSION_MODE_8K; break;
 					default: transponder.frontend_parameters.u.ofdm.transmission_mode = TRANSMISSION_MODE_AUTO;
 				}
-
 				section.transponders.push_back(transponder);
 			}
-			else
-			{
+			else {
 				g_debug("Ignoring descriptor tag 0x%02X", descriptor_tag);
 			}
 			offset += descriptor_length;
 		}
 	}
-	
 	g_debug("transport_stream_length is %d, network_descriptor_length is %d and offset is %d", transport_stream_length, network_descriptor_length, offset);
 }
 
-gsize get_atsc_text(Glib::ustring& string, const guchar* buffer)
-{
+gsize get_atsc_text(Glib::ustring & string, guchar const * buffer) {
 	size_t text_position = 0;
 	gsize offset = 0;
-	
 	gsize number_strings = buffer[offset++];
-	for (guint i = 0; i < number_strings; i++)
-	{
+	for (guint i = 0; i < number_strings; i++) {
 		offset += 3;
 		gsize number_segments = buffer[offset++];
-		for (guint j = 0; j < number_segments; j++)
-		{
-			struct atsc_text_string_segment* segment = (struct atsc_text_string_segment*)&buffer[offset];
-			
-			uint8_t* text = NULL;
+		for (guint j = 0; j < number_segments; j++) {
+			atsc_text_string_segment * segment = (atsc_text_string_segment *)&buffer[offset];
+			uint8_t * text = NULL;
 			size_t text_length = 0;
 			offset += 2;
 			offset += buffer[offset];
 			offset++;
-			
 			atsc_text_segment_decode(segment, &text, &text_length, &text_position);
-
-			if (text)
-			{
-				string.append((const gchar*)text, g_utf8_strlen((const gchar*)text, (gssize)text_position));
+			if (text) {
+				string.append((gchar const *)text, g_utf8_strlen((gchar const *)text, (gssize)text_position));
 				free(text);
 			}
 		}
 	}
-	
 	return offset;
 }
 
-void SectionParser::parse_psip_stt(Demuxer& demuxer, SystemTimeTable& table)
-{
+void SectionParser::parse_psip_stt(Demuxer & demuxer, SystemTimeTable & table) {
 	Buffer buffer;
 	demuxer.read_section(buffer);
 	gsize section_length = buffer.get_length();
-
 	guint offset = 9;
-	table.system_time = buffer.get_bits(offset, 0, 32); offset += 4;
+	table.system_time = buffer.get_bits(offset, 0, 32);
+	offset += 4;
 	table.GPS_UTC_offset = buffer[offset++];
 	table.daylight_savings = buffer.get_bits(offset, 0, 16);
 }
 
-void SectionParser::parse_psip_vct(Demuxer& demuxer, VirtualChannelTable& section)
-{
+void SectionParser::parse_psip_vct(Demuxer & demuxer, VirtualChannelTable & section) {
 	Buffer buffer;
 	demuxer.read_section(buffer);
 	gsize section_length = buffer.get_length();
-
 	guint offset = 3;
 	section.transport_stream_id = buffer.get_bits(offset, 0, 16);
 	offset += 6;
 	guint num_channels_in_section = buffer[offset++];
-
-	for (guint i = 0; i < num_channels_in_section; i++)
-	{
+	for (guint i = 0; i < num_channels_in_section; ++i) {
 		VirtualChannel vc;
-		gchar* result = g_convert((const gchar*)buffer.get_buffer() + offset, 14, "UTF-8", "UTF-16BE", NULL, NULL, NULL);
-		if (!result)
-		{
+		gchar * result = g_convert((const gchar*)buffer.get_buffer() + offset, 14, "UTF-8", "UTF-16BE", NULL, NULL, NULL);
+		if (!result) {
 			throw Exception(_("Failed to convert channel name"));
 		}
-		
 		vc.short_name = result;
 		g_free(result);
 		offset += 14;
@@ -430,18 +352,14 @@ void SectionParser::parse_psip_vct(Demuxer& demuxer, VirtualChannelTable& sectio
 	}
 }
 
-void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTableArray& tables)
-{
+void SectionParser::parse_psip_mgt(Demuxer & demuxer, MasterGuideTableArray & tables) {
 	Buffer buffer;
 	demuxer.read_section(buffer);
 	gsize section_length = buffer.get_length();
-
 	guint offset = 9;
 	guint tables_defined = buffer.get_bits(offset, 0, 16);
 	offset += 2;
-	
-	for (guint i = 0; i < tables_defined; i++)
-	{
+	for (guint i = 0; i < tables_defined; ++i) {
 		MasterGuideTable mgt;
 		mgt.type = buffer.get_bits(offset, 0, 16);
 		offset += 2;
@@ -453,189 +371,141 @@ void SectionParser::parse_psip_mgt(Demuxer& demuxer, MasterGuideTableArray& tabl
 	}
 }
 
-void SectionParser::parse_psip_eis(Demuxer& demuxer, EventInformationSection& section)
-{
+void SectionParser::parse_psip_eis(Demuxer & demuxer, EventInformationSection & section) {
 	Buffer buffer;
 	demuxer.read_section(buffer);
 	gsize section_length = buffer.get_length();
-
 	guint offset = 3;
-
 	section.service_id = buffer.get_bits(offset, 0, 16);
 	section.version_number = buffer.get_bits(42, 5);
-	
 	offset += 6;
 	guint num_events_in_section = buffer[offset++];
-	
-	for (guint i = 0; i < num_events_in_section && (offset < (section_length - CRC_BYTE_SIZE)); i++)
-	{
+	for (guint i = 0; i < num_events_in_section && (offset < (section_length - CRC_BYTE_SIZE)); ++i) {
 		Event event;
-
 		event.version_number	= section.version_number;
-		event.event_id			= buffer.get_bits(offset, 2, 14); offset += 2;
-		event.start_time		= buffer.get_bits(offset, 0, 32); offset += 4;
-		event.duration			= buffer.get_bits(offset, 4, 20); offset += 3;
-
+		event.event_id = buffer.get_bits(offset, 2, 14);
+		offset += 2;
+		event.start_time = buffer.get_bits(offset, 0, 32);
+		offset += 4;
+		event.duration = buffer.get_bits(offset, 4, 20);
+		offset += 3;
 		event.start_time += GPS_EPOCH;
 		event.start_time += timezone;
-		
 		gsize title_length = buffer[offset++];
-		if (title_length > 0)
-		{
+		if (title_length > 0) {
 			EventText event_text;
 			get_atsc_text(event_text.title, buffer.get_buffer() + offset);
 			event.texts[event_text.language] = event_text;
 			offset += title_length;
 		}
-		
 		guint descriptors_length = buffer.get_bits(offset, 4, 12);
 		offset += 2 + descriptors_length;
-	
 		section.events.push_back(event);
 	}
 }
 
-void SectionParser::parse_eis(Demuxer& demuxer, EventInformationSection& section)
-{
+void SectionParser::parse_eis(Demuxer & demuxer, EventInformationSection & section) {
 	Buffer buffer;
 	demuxer.read_section(buffer);
 	gsize section_length = buffer.get_length();
-	
-	section.table_id =						buffer[0];
-	section.section_syntax_indicator =		buffer.get_bits(8, 1);
-	section.service_id =					buffer.get_bits(24, 16);
-	section.version_number =				buffer.get_bits(42, 5);
-	section.current_next_indicator =		buffer.get_bits(47, 1);
-	section.section_number =				buffer.get_bits(48, 8);
-	section.last_section_number =			buffer.get_bits(56, 8);
-	section.transport_stream_id =			buffer.get_bits(64, 16);
-	section.original_network_id =			buffer.get_bits(80, 16);
-	section.segment_last_section_number =	buffer.get_bits(96, 8);
-	section.last_table_id =					buffer.get_bits(104, 8);
-
+	section.table_id = buffer[0];
+	section.section_syntax_indicator = buffer.get_bits(8, 1);
+	section.service_id = buffer.get_bits(24, 16);
+	section.version_number = buffer.get_bits(42, 5);
+	section.current_next_indicator = buffer.get_bits(47, 1);
+	section.section_number = buffer.get_bits(48, 8);
+	section.last_section_number = buffer.get_bits(56, 8);
+	section.transport_stream_id = buffer.get_bits(64, 16);
+	section.original_network_id = buffer.get_bits(80, 16);
+	section.segment_last_section_number = buffer.get_bits(96, 8);
+	section.last_table_id = buffer.get_bits(104, 8);
 	unsigned int offset = 14;
-
-	while (offset < (section_length - CRC_BYTE_SIZE))
-	{
+	while (offset < (section_length - CRC_BYTE_SIZE)) {
 		Event event;
-
 		gulong	start_time_MJD;  // 16
 		gulong	start_time_UTC;  // 24
 		gulong	duration;
-
-		event.version_number	= section.version_number;
-		event.event_id			= buffer.get_bits(offset, 0, 16);
-		start_time_MJD			= buffer.get_bits(offset, 16, 16);
-		start_time_UTC			= buffer.get_bits(offset, 32, 24);
-		duration				= buffer.get_bits(offset, 56, 24);
-		
+		event.version_number = section.version_number;
+		event.event_id = buffer.get_bits(offset, 0, 16);
+		start_time_MJD = buffer.get_bits(offset, 16, 16);
+		start_time_UTC = buffer.get_bits(offset, 32, 24);
+		duration = buffer.get_bits(offset, 56, 24);
 		unsigned int descriptors_loop_length  = buffer.get_bits(offset, 84, 12);
 		offset += 12;
 		unsigned int end_descriptor_offset = descriptors_loop_length + offset;
-
-		guint event_dur_hour = ((duration >> 20)&0xf)*10+((duration >> 16)&0xf);
-		guint event_dur_min =  ((duration >> 12)&0xf)*10+((duration >>  8)&0xf);
-		guint event_dur_sec =  ((duration >>  4)&0xf)*10+((duration      )&0xf);
-
-		event.duration = (event_dur_hour*60 + event_dur_min) * 60 + event_dur_sec;
-				
-		if (start_time_MJD > 0 && event.event_id != 0)
-		{
+		guint event_dur_hour = ((duration >> 20) & 0xf) * 10 + ((duration >> 16) & 0xf);
+		guint event_dur_min = ((duration >> 12) & 0xf) * 10 + ((duration >> 8) & 0xf);
+		guint event_dur_sec = ((duration >>  4) & 0xf) * 10 + ((duration) & 0xf);
+		event.duration = (event_dur_hour * 60 + event_dur_min) * 60 + event_dur_sec;
+		if (start_time_MJD > 0 && event.event_id != 0) {
 			long year =  (long) ((start_time_MJD  - 15078.2) / 365.25);
 			long month =  (long) ((start_time_MJD - 14956.1 - (long)(year * 365.25) ) / 30.6001);
 			long day =  (long) (start_time_MJD - 14956 - (long)(year * 365.25) - (long)(month * 30.6001));
-
-			struct tm t;
-
-			memset(&t, 0, sizeof(struct tm));
-
-			t.tm_sec	= ((start_time_UTC >>  4)&0xf)*10+((start_time_UTC      )&0xf);
-			t.tm_min	= ((start_time_UTC >> 12)&0xf)*10+((start_time_UTC >>  8)&0xf);
-			t.tm_hour	= ((start_time_UTC >> 20)&0xf)*10+((start_time_UTC >> 16)&0xf);
+			tm t;
+			memset(&t, 0, sizeof(tm));
+			t.tm_sec	= ((start_time_UTC >> 4) & 0xf) * 10 + ((start_time_UTC) & 0xf);
+			t.tm_min	= ((start_time_UTC >> 12) & 0xf) * 10 + ((start_time_UTC >> 8) & 0xf);
+			t.tm_hour	= ((start_time_UTC >> 20) & 0xf) * 10 + ((start_time_UTC >> 16) & 0xf);
 			t.tm_mday	= day;
 			t.tm_mon	= month - 2;
 			t.tm_year	= year;
-			
 			event.start_time = mktime(&t);
-
-			while (offset < end_descriptor_offset)
-			{
+			while (offset < end_descriptor_offset) {
 				offset += decode_event_descriptor(buffer.get_buffer() + offset, event);
 			}
-
-			if (offset > end_descriptor_offset)
-			{
+			if (offset > end_descriptor_offset) {
 				throw Exception(_("ASSERT: offset > end_descriptor_offset"));
 			}
-
 			section.events.push_back(event);
 		}
 	}
 	section.crc = buffer.get_bits(offset, 0, 32);
 	offset += 4;
-	
-	if (offset > section_length)
-	{
+	if (offset > section_length) {
 		throw Exception(_("ASSERT: offset > end_section_offset"));
 	}
 }
 
-Glib::ustring get_lang_desc(const guchar* b)
-{
+Glib::ustring get_lang_desc(guchar const * b) {
 	char c[4];
 	Glib::ustring s;
-	memset( mempcpy( c, b+2, 3 ), 0, 1 );
+	memset(mempcpy(c, b+2, 3), 0, 1);
 	s = c;
 	return s;
 }
 
-gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event& event)
-{
-	if (event_buffer[1] == 0)
-	{
-		return 2;
-	}
-
+gsize SectionParser::decode_event_descriptor (guchar const * event_buffer, Event & event) {
+	if (event_buffer[1] == 0) { return 2; }
 	gsize descriptor_length = event_buffer[1] + 2;
-	
-	guint descriptor_tag = event_buffer[0];	
-	switch(descriptor_tag)
-	{		
+	guint descriptor_tag = event_buffer[0];
+	switch(descriptor_tag) {
 	case EXTENDED_EVENT:
 		{
 			Glib::ustring language = get_lang_desc (event_buffer + 1);
-			
-			if (!event.texts.contains(language))
-			{
+			if (!event.texts.contains(language)) {
 				EventText event_text_temp;
 				event.texts[language] = event_text_temp;
 				event_text_temp.language = language;
 			}
-			EventText& event_text = event.texts[language];
-			
+			EventText & event_text = event.texts[language];
 			unsigned int offset = 6;
 			guint length_of_items = event_buffer[offset++];
-			while (length_of_items > offset - 7)
-			{
+			while (length_of_items > offset - 7) {
 				offset += get_text(event_text.title, &event_buffer[offset]);
 				offset += get_text(event_text.description, &event_buffer[offset]);
 			}
 			offset += get_text(event_text.description, &event_buffer[offset]);
 		}
 		break;
-
 	case SHORT_EVENT:
 		{
 			Glib::ustring language = get_lang_desc (event_buffer);
-			
-			if (!event.texts.contains(language))
-			{
+			if (!event.texts.contains(language)) {
 				EventText event_text_temp;
 				event.texts[language] = event_text_temp;
 				event_text_temp.language = language;
 			}
-			EventText& event_text = event.texts[language];
-
+			EventText & event_text = event.texts[language];
 			event_text.language = language;
 			unsigned int offset = 5;
 			offset += get_text(event_text.title, &event_buffer[offset]);
@@ -645,46 +515,33 @@ gsize SectionParser::decode_event_descriptor (const guchar* event_buffer, Event&
 	default:
 		break;
 	}
-
 	return descriptor_length;
 }
 
-guint SectionParser::get_bits(const guchar* b, guint bitpos, gsize bitcount)
-{
-	gsize i;
+guint SectionParser::get_bits(guchar const * b, guint bitpos, gsize bitcount) {
 	gsize val = 0;
-
-	for (i = bitpos; i < bitcount + bitpos; i++)
-	{
+	for (gsize i = bitpos; i < bitcount + bitpos; ++i) {
 		val = val << 1;
 		val = val + ((b[i >> 3] & (0x80 >> (i & 7))) ? 1 : 0);
 	}
 	return val;
 }
 
-gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
-{
+gsize SectionParser::get_text(Glib::ustring & s, guchar const * text_buffer) {
 	gsize length = text_buffer[0];
 	guint text_index = 0;
 	gchar text[length];
 	guint index = 0;
-	const gchar* codeset = "ISO-8859-15";
-	
-	if (length > 0)
-	{
+	gchar const * codeset = "ISO-8859-15"; // TODO: why is this the default rather than UTF-8?
+	if (length > 0) {
 		// Skip over length byte
-		index++;
-
-		if (text_encoding.length() > 0 && text_encoding != "auto")
-		{
+		++index;
+		if (text_encoding.length() > 0 && text_encoding != "auto") {
 			codeset = text_encoding.c_str();
 		}
-		else // Determine codeset from stream
-		{			
-			if (text_buffer[index] < 0x20)
-			{
-				switch (text_buffer[index])
-				{
+		else { // Determine codeset from stream
+			if (text_buffer[index] < 0x20) {
+				switch (text_buffer[index]) {
 				case 0x01: codeset = "ISO-8859-5"; break;
 				case 0x02: codeset = "ISO-8859-6"; break;
 				case 0x03: codeset = "ISO-8859-7"; break;
@@ -698,20 +555,15 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 				case 0x0B: codeset = "ISO-8859-15"; break;
 				case 0x11: codeset = "UTF-16BE"; break;
 				case 0x14: codeset = "UTF-16BE"; break;
-
 				case 0x10:
 					{
 						// Skip 0x00
-						index++;
-						if (text_buffer[index] != 0x00)
-						{
+						++index;
+						if (text_buffer[index] != 0x00) {
 							g_warning("Second byte of code table id was not 0");
 						}
-						
-						index++;
-						
-						switch(text_buffer[index])
-						{
+						++index;
+						switch(text_buffer[index]) {
 						case 0x01: codeset = "ISO-8859-1"; break;
 						case 0x02: codeset = "ISO-8859-2"; break;
 						case 0x03: codeset = "ISO-8859-3"; break;
@@ -732,55 +584,39 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 					}
 					default: break;
 				}
-				
-				index++;
+				++index;
 			}
 		}
-		
-		if (text_encoding == "iso6937")
-		{
+		if (text_encoding == "iso6937") {
 			s += convert_iso6937(text_buffer + index, length);
 		}
-		else
-		{
-			if (index < (length + 1))
-			{
-				while (index < (length + 1))
-				{
+		else {
+			if (index < (length + 1)) {
+				while (index < (length + 1)) {
 					u_char ch = text_buffer[index];
-
-					if (strcmp(codeset, "UTF-16BE") == 0)
-					{
+					if (strcmp(codeset, "UTF-16BE") == 0) {
 						text[text_index++] = ch;
 					}
-					else
-					{
-						if (ch == 0x86 || ch == 0x87)
-						{
+					else {
+						if (ch == 0x86 || ch == 0x87) {
 							// Ignore formatting
 						}
-						else if (ch == 0x8A)
-						{
+						else if (ch == 0x8A) {
 							text[text_index++] = '\n';
 						}
-						else if (ch >= 0x80 && ch < 0xA0)
-						{
+						else if (ch >= 0x80 && ch < 0xA0) {
 							text[text_index++] = '.';
 						}
-						else
-						{
+						else {
 							text[text_index++] = ch;
 						}
 					}
-					
-					index++;
+					++index;
 				}
-				
 				gsize bytes_read;
 				gsize bytes_written;
-				GError* error = NULL;
-				
-				gchar* result = g_convert(
+				GError * error = NULL;
+				gchar * result = g_convert(
 					text,
 					text_index,
 					"UTF-8",
@@ -788,70 +624,45 @@ gsize SectionParser::get_text(Glib::ustring& s, const guchar* text_buffer)
 					&bytes_read,
 					&bytes_written,
 					&error);
-				
-				if (error != NULL || result == NULL)
-				{
+				if (error != NULL || result == NULL) {
 					const gchar* error_message = _("No message");
-					if (error != NULL)
-					{
+					if (error != NULL) {
 						error_message = error->message;
 					}
-					
 					Glib::ustring message = Glib::ustring::compose(
 						_("Failed to convert to UTF-8: %1"),
 						Glib::ustring(error_message));
 					g_debug("%s", message.c_str());
 					g_debug("Codeset: %s", codeset);
 					g_debug("Length: %zu", length);
-					for (guint i = 0; i < (length+1); i++)
-					{
+					for (guint i = 0; i < (length+1); ++i) {
 						gchar ch = text_buffer[i];
-						if (!isprint(ch))
-						{
+						if (!isprint(ch)) {
 							g_debug("text_buffer[%d]\t= 0x%02X", i, ch);
 						}
-						else
-						{
+						else {
 							g_debug("text_buffer[%d]\t= 0x%02X '%c'", i, ch, ch);
 						}
 					}
 					throw Exception(message);
 				}
-				
 				s += result;
 				g_free(result);
 			}
 		}
 	}
-	
 	return length + 1;
 }
 
-Glib::ustring SectionParser::convert_iso6937(const guchar* text_buffer, gsize length)
-{
+Glib::ustring SectionParser::convert_iso6937(guchar const * text_buffer, gsize length) {
 	Glib::ustring result;
-	gint val;
-	guint i;
-	
-	for (i=0; i<length; i++ )
-	{
-		if ( text_buffer[i]<0x20 || (text_buffer[i]>=0x80 && text_buffer[i]<=0x9f) )
-		{
-			continue; // control codes
-		}
-		
-		if ( text_buffer[i]>=0xC0 && text_buffer[i]<=0xCF ) // next char has accent
-		{
-			if ( i==length-1 ) // Accent char not followed by char
-			{
-				continue;
-			}
-			
-			val = ( text_buffer[i]<<8 ) + text_buffer[i+1];
+	for (guint i = 0; i < length; ++i) {
+		if (text_buffer[i] < 0x20 || (text_buffer[i] >= 0x80 && text_buffer[i] <= 0x9f)) { continue; } // control codes
+		if (text_buffer[i] >= 0xC0 && text_buffer[i] <= 0xCF) { // next char has accent
+			if (i == length - 1) { continue; } // Accent char not followed by char
+			gint const val = (text_buffer[i] << 8) + text_buffer[i+1];
 			++i;
-			
-			switch (val)
-			{
+			switch (val) {
 				case 0xc141: result += gunichar(0x00C0); break; //LATIN CAPITAL LETTER A WITH GRAVE
 				case 0xc145: result += gunichar(0x00C8); break; //LATIN CAPITAL LETTER E WITH GRAVE
 				case 0xc149: result += gunichar(0x00CC); break; //LATIN CAPITAL LETTER I WITH GRAVE
@@ -1020,10 +831,8 @@ Glib::ustring SectionParser::convert_iso6937(const guchar* text_buffer, gsize le
 				default: break; // unknown
 			}
 		}
-		else
-		{
-			switch ( text_buffer[i] )
-			{
+		else {
+			switch (text_buffer[i]) {
 				case 0xa0: result += gunichar(0x00A0); break; //NO-BREAK SPACE
 				case 0xa1: result += gunichar(0x00A1); break; //INVERTED EXCLAMATION MARK
 				case 0xa2: result += gunichar(0x00A2); break; //CENT SIGN
@@ -1104,15 +913,11 @@ Glib::ustring SectionParser::convert_iso6937(const guchar* text_buffer, gsize le
 	return result;
 }
 
-gboolean EventTextMap::contains(const Glib::ustring& language)
-{
-	for (const_iterator i = begin(); i != end(); i++)
-	{
-		if (i->first == language)
-		{
+gboolean EventTextMap::contains(Glib::ustring const & language) {
+	for (const_iterator i = begin(); i != end(); ++i) {
+		if (i->first == language) {
 			return true;
 		}
 	}
-	
 	return false;
 }

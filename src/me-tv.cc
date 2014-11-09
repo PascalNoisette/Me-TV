@@ -25,23 +25,23 @@
 #include <glib/gprintf.h>
 #include "application.h"
 
-bool			verbose_logging			= false;
-bool			safe_mode				= false;
-bool			minimised_mode			= false;
-bool			disable_epg_thread		= false;
-bool			disable_epg				= false;
-bool			no_screensaver_inhibit	= false;
+bool verbose_logging = false;
+bool safe_mode = false;
+bool minimised_mode = false;
+bool disable_epg_thread = false;
+bool disable_epg = false;
+bool no_screensaver_inhibit = false;
 Glib::ustring	devices;
-gint			read_timeout			= 5;
+gint read_timeout = 5;
 Glib::ustring engine = "xine";
 
 Glib::ustring preferred_language;
 
-ChannelManager				channel_manager;
-ScheduledRecordingManager	scheduled_recording_manager;
-DeviceManager				device_manager;
-StreamManager				stream_manager;
-ConfigurationManager		configuration_manager;
+ChannelManager channel_manager;
+ScheduledRecordingManager scheduled_recording_manager;
+DeviceManager device_manager;
+StreamManager stream_manager;
+ConfigurationManager configuration_manager;
 
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_fullscreen;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;
@@ -65,167 +65,109 @@ sigc::signal<void> signal_stop_display;
 sigc::signal<void> signal_update;
 sigc::signal<void, Glib::ustring> signal_error;
 
-void replace_text(Glib::ustring& text, const Glib::ustring& from, const Glib::ustring& to)
-{
+void replace_text(Glib::ustring & text, Glib::ustring const & from, Glib::ustring const & to) {
 	Glib::ustring::size_type position = 0;
-	while ((position = text.find(from, position)) != Glib::ustring::npos)
-	{
+	while ((position = text.find(from, position)) != Glib::ustring::npos) {
 		text.replace(position, from.size(), to);
 		position += to.size();
 	}
 }
 
-time_t get_local_time()
-{
+time_t get_local_time() {
 	return convert_to_local_time(time(NULL));
 }
 
-Glib::ustring get_local_time_text(const gchar* format)
-{
+Glib::ustring get_local_time_text(gchar const * format) {
 	return get_local_time_text(time(NULL), format);
 }
 
-Glib::ustring get_local_time_text(time_t t, const gchar* format)
-{
-	struct tm tp;
+Glib::ustring get_local_time_text(time_t t, gchar const * format) {
+	tm tp;
 	char buffer[100];
-
-	if (localtime_r(&t, &tp) == NULL)
-	{
-		throw Exception(_("Failed to get time"));
-	}
+	if (localtime_r(&t, &tp) == NULL) { throw Exception(_("Failed to get time")); }
 	strftime(buffer, 100, format, &tp);
-
 	return buffer;
 }
 
-Glib::ustring encode_xml(const Glib::ustring& s)
-{
+Glib::ustring encode_xml(Glib::ustring const & s) {
 	Glib::ustring result = s;
-
 	replace_text(result, "&", "&amp;");
 	replace_text(result, "<", "&lt;");
 	replace_text(result, ">", "&gt;");
 	replace_text(result, "'", "&apos;");
 	replace_text(result, "\"", "&quot;");
-
 	return result;
 }
 
-guint convert_to_local_time(guint utc)
-{
+guint convert_to_local_time(guint utc) {
 	return utc + timezone;
 }
 
-guint convert_to_utc_time(guint local_time)
-{
+guint convert_to_utc_time(guint local_time) {
 	return local_time - timezone;
 }
 
-void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
-{
-	if (log_level != G_LOG_LEVEL_DEBUG || verbose_logging)
-	{
+void log_handler(gchar const * log_domain, GLogLevelFlags log_level, gchar const * message, gpointer user_data) {
+	if (log_level != G_LOG_LEVEL_DEBUG || verbose_logging) {
 		Glib::ustring time_text = get_local_time_text("%x %T");
 		g_printf("%s: %s\n", time_text.c_str(), message);
 	}
 }
 
-void on_error()
-{
-	try
-	{
-		throw;
-	}
-	catch (const Exception& exception)
-	{
-		signal_error(exception.what());
-	}
-	catch (const Glib::Error& exception)
-	{
-		signal_error(exception.what());
-	}
-	catch (...)
-	{
+void on_error() {
+	try { throw; }
+	catch (Exception const & exception) { signal_error(exception.what()); }
+	catch (Glib::Error const & exception) { signal_error(exception.what()); }
+	catch (...) {
 		g_message("Unhandled exception");
 		signal_error("Unhandled exception");
 	}
 }
 
-guint convert_string_to_value(const StringTable* table, const Glib::ustring& text)
-{
+guint convert_string_to_value(StringTable const * table, Glib::ustring const & text) {
 	gboolean found = false;
-	const StringTable*	current = table;
-
-	while (current->text != NULL && !found)
-	{
-		if (text == current->text)
-		{
-			found = true;
-		}
-		else
-		{
-			current++;
-		}
+	StringTable const * current = table;
+	while (current->text != NULL && !found) {
+		if (text == current->text) { found = true; }
+		else { ++current; }
 	}
-
-	if (!found)
-	{
+	if (!found) {
 		throw Exception(Glib::ustring::compose(_("Failed to find a value for '%1'"), text));
 	}
-
 	return (guint)current->value;
 }
 
-Glib::ustring convert_value_to_string(const StringTable* table, guint value)
-{
+Glib::ustring convert_value_to_string(StringTable const * table, guint value) {
 	gboolean found = false;
-	const StringTable*	current = table;
-
-	while (current->text != NULL && !found)
-	{
-		if (value == current->value)
-		{
-			found = true;
-		}
-		else
-		{
-			current++;
-		}
+	StringTable const * current = table;
+	while (current->text != NULL && !found) {
+		if (value == current->value) { found = true; }
+		else { ++current; }
 	}
-
-	if (!found)
-	{
+	if (!found) {
 		throw Exception(Glib::ustring::compose(_("Failed to find a text value for '%1'"), value));
 	}
-
 	return current->text;
 }
 
-void split_string(std::vector<Glib::ustring>& parts, const Glib::ustring& text, const char* delimiter, gboolean remove_empty, gsize max_length)
-{
-	gchar** temp_parts = g_strsplit_set(text.c_str(), delimiter, max_length);
-	gchar** iterator = temp_parts;
+void split_string(std::vector<Glib::ustring> & parts, Glib::ustring const & text, char const * delimiter, gboolean remove_empty, gsize max_length) {
+	gchar ** temp_parts = g_strsplit_set(text.c_str(), delimiter, max_length);
+	gchar ** iterator = temp_parts;
 	guint count = 0;
-	while (*iterator != NULL)
-	{
+	while (*iterator != NULL) {
 		gchar* part = *iterator++;
-		if (part[0] != 0)
-		{
-			count++;
+		if (part[0] != 0) {
+			++count;
 			parts.push_back(part);
 		}
 	}
 	g_strfreev(temp_parts);
 }
 
-Glib::ustring trim_string(const Glib::ustring& s)
-{
+Glib::ustring trim_string(Glib::ustring const & s) {
 	Glib::ustring result;
-
 	glong length = s.bytes();
-	if (length > 0)
-	{
+	if (length > 0) {
 		gchar buffer[length + 1];
 		s.copy(buffer, length);
 		buffer[length] = 0;

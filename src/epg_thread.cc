@@ -63,8 +63,8 @@ gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::Even
 	if (eit_demuxers == NULL) {
 		throw Exception(_("No demuxers"));
 	}
-	Dvb::Demuxer* selected_eit_demuxer = NULL;
-	struct pollfd fds[demuxer_count];
+	Dvb::Demuxer * selected_eit_demuxer = NULL;
+	pollfd fds[demuxer_count];
 	guint count = 0;
 	GSList* eit_demuxer = eit_demuxers;
 	while (eit_demuxer != NULL) {

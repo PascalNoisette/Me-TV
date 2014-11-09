@@ -18,6 +18,7 @@
 #  Author : Russel Winder <russel@winder.org.uk>
 
 import os
+import subprocess
 
 try:
     version = file('VERSION').read().strip()
@@ -25,45 +26,50 @@ except:
     print 'Version file not present, build will not be undertaken.'
     Exit(1)
 
-osName, _, versionNumber, _, archName = os.uname()
+osName, _, version_number, _, archName = os.uname()
 
-buildDirectory = 'Build'
+build_directory = 'Build'
 
-defaultBindirSubdirectory = '/bin'
-defaultDatadirSubdirectory = '/share'
+default_bindir_subdirectory = '/bin'
+default_datadir_subdirectory = '/share'
 
-defaultPrefix = '/usr/local'
-defaultBindir = defaultPrefix + defaultBindirSubdirectory
-defaultDatadir = defaultPrefix + defaultDatadirSubdirectory
+default_prefix = '/usr/local'
+default_bindir = default_prefix + default_bindir_subdirectory
+default_datadir = default_prefix + default_datadir_subdirectory
 
-prefix = defaultPrefix
-bindir = defaultBindir
-datadir = defaultDatadir
+prefix = default_prefix
+bindir = default_bindir
+datadir = default_datadir
 if 'PREFIX' in os.environ:
     prefix = os.environ['PREFIX']
-    bindir = prefix + defaultBindirSubdirectory
-    datadir = prefix + defaultDatadirSubdirectory
+    bindir = prefix + default_bindir_subdirectory
+    datadir = prefix + default_datadir_subdirectory
 if 'BINDIR' in os.environ:
     bindir = os.environ['BINDIR']
 if 'DATADIR' in os.environ:
     datadir = os.environ['DATADIR']
-defaultPrefix = prefix
-defaultBindir = bindir
-defaultDatadir = datadir
-localBuildOptions = 'local_build_options.scons'
-if os.access(localBuildOptions, os.R_OK):
-    execfile(localBuildOptions)
-if prefix != defaultPrefix:
-    if bindir == defaultBindir:
-        bindir = prefix + defaultBindirSubdirectory
-    if datadir == defaultDatadir:
-        datadir = prefix + defaultDatadirSubdirectory
+default_prefix = prefix
+default_bindir = bindir
+default_datadir = datadir
+local_build_options = 'local_build_options.scons'
+if os.access(local_build_options, os.R_OK):
+    execfile(local_build_options)
+if prefix != default_prefix:
+    if bindir == default_bindir:
+        bindir = prefix + default_bindir_subdirectory
+    if datadir == default_datadir:
+        datadir = prefix + default_datadir_subdirectory
 if 'prefix' in ARGUMENTS:
     prefix = ARGUMENTS.get('prefix')
-    bindir = prefix + defaultBindirSubdirectory
-    datadir = prefix + defaultDatadirSubdirectory
+    bindir = prefix + default_bindir_subdirectory
+    datadir = prefix + default_datadir_subdirectory
 bindir = ARGUMENTS.get('bindir', bindir)
 datadir = ARGUMENTS.get('datadir', datadir)
+
+try:
+    catch_directory
+except NameError:
+    catch_directory = '/usr/include/catch'
 
 environment = Environment(
     tools=['g++', 'gnulink'],
@@ -76,7 +82,7 @@ environment = Environment(
     PACKAGE_DATA_DIR=datadir + '/me-tv',
     PACKAGE_LOCALE_DIR=datadir + '/locale',
     CXXFLAGS=[
-        '-std=c++14',
+        '-std=c++1y', # -std=c++14 really, but GCC 4.8 doesn't have this.
         '-g',
         '-O2',
         '-W',
@@ -101,10 +107,12 @@ environment = Environment(
         '-Wstrict-aliasing=2',
         '-Wswitch-default',
         '-Wundef',
-    ]
+    ],
+    build_directory=build_directory,
+    catch_directory=catch_directory,
 )
 
-environment['main_dependencies'] = (
+main_dependencies = (
     ('sqlite3', '>= 3.8.4.3'),
     ('gtkmm-3.0', '>= 3.12.0'),
     #('giomm-2.4', '>= 2.38.2'),  # 2.40.0
@@ -115,14 +123,69 @@ environment['main_dependencies'] = (
     ('dbus-glib-1', '>= 0.100.2'),  # 0.102
 )
 
-environment['xine_player_dependencies'] = (
+xine_player_dependencies = (
     ('libxine', '>= 1.2.5'),
     ('x11', '>= 1.6.1'),  # 1.6.2
     ('giomm-2.4', '>= 2.38.2'),
 )
 
-Export('environment')
+def PkgCheckModules(context, library, versionSpecification):
+    pattern = '{} {}'.format(library, versionSpecification) if versionSpecification else library
+    context.Message('Checking for ' + pattern + ' ... ')
+    returnCode = subprocess.call(['pkg-config', '--exists', pattern])
+    if returnCode == 0:
+        context.Result('ok')
+        context.env.MergeFlags('!pkg-config --cflags --libs ' + library)
+        return True
+    context.Result('failed')
+    return False
 
-SConscript('src/SConscript', variant_dir=buildDirectory + '/src', duplicate=0)
-SConscript('po/SConscript', variant_dir=buildDirectory + '/po', duplicate=0)
-SConscript('SConscript', variant_dir=buildDirectory, duplicate=0)
+# Since create_configuration may be called many times and yet only a single copy of the various symbols
+# should be written to the config.h file, employ a module scope flag to determine whether to write the
+# symbols or not.
+
+config_file_written = False
+
+def create_configuration(environment, dependencies):
+    global config_file_written
+    configuration = Configure(environment, custom_tests={'PkgCheckModules': PkgCheckModules}, config_h='config.h')  # , clean=False, help=False)
+    failedConfiguration = False
+    for library, versionPattern in dependencies:
+        if not configuration.PkgCheckModules(library, versionPattern):
+            failedConfiguration = True
+    if failedConfiguration:
+        Exit(1)
+    for entry in ['VERSION', 'GETTEXT_PACKAGE', 'PACKAGE_NAME', 'PACKAGE_DATA_DIR', 'PACKAGE_LOCALE_DIR']:
+        if not config_file_written:
+            configuration.Define(entry, '"' + environment[entry] + '"')
+        configuration.env.Append(CPPDEFINES='{}=\\"{}\\"'.format(entry, environment[entry]))
+    if not config_file_written:
+        configuration.Define('ENABLE_NLS', 1)
+    config_file_written = True
+    configuration.env.Append(CPPDEFINES='HAVE_CONFIG_H')
+    configuration.env.Append(CPPPATH='.')  # This is crucial for triggering entering config.h in the DAG.
+    return configuration.Finish()
+
+main_environment = create_configuration(environment.Clone(), main_dependencies)
+xine_player_environment = create_configuration(environment.Clone(), xine_player_dependencies)
+
+Export('environment', 'main_environment', 'xine_player_environment')
+
+executables = SConscript('src/SConscript', variant_dir=build_directory + '/src', duplicate=0)
+built_po_files = SConscript('po/SConscript', variant_dir=build_directory + '/po', duplicate=0)
+test_executables = SConscript('tests/SConscript', variant_dir=build_directory + '/tests', duplicate=0)
+built_things = SConscript('SConscript', variant_dir=build_directory, duplicate=0)
+
+Alias('executables', executables)
+Alias('mo_files', built_po_files)
+Alias('tests', test_executables)
+Alias('odds', built_things)
+
+def run_tests(target, source, env):
+    assert target[0].name == 'test'
+    assert isinstance(source[0].name, str)
+    assert subprocess.call(source[0].abspath) == 0
+
+Command('test', test_executables, run_tests)
+
+Default([executables, built_po_files, built_things])
