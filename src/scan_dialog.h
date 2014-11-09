@@ -37,7 +37,7 @@ class ScanThread: public Thread {
 public:
 	Dvb::Scanner scanner;
 	Dvb::TransponderList transponders;
-	Dvb::Frontend& frontend;
+	Dvb::Frontend & frontend;
 
 public:
 	ScanThread(Dvb::Frontend & scan_frontend, Dvb::TransponderList & transponders);
@@ -70,7 +70,7 @@ private:
 		}
 		Gtk::TreeModelColumn<guint> column_id;
 		Gtk::TreeModelColumn<Glib::ustring> column_name;
-		Gtk::TreeModelColumn<struct dvb_frontend_parameters> column_frontend_parameters;
+		Gtk::TreeModelColumn<dvb_frontend_parameters> column_frontend_parameters;
 		Gtk::TreeModelColumn<guint> column_polarisation;
 		Gtk::TreeModelColumn<Glib::ustring> column_signal_strength;
 	};
@@ -83,7 +83,7 @@ private:
 	void on_button_scan_wizard_cancel_clicked();
 	void on_button_scan_wizard_add_clicked();
 	void on_button_scan_stop_clicked();
-	void on_signal_service(struct dvb_frontend_parameters const & frontend_parameters,
+	void on_signal_service(dvb_frontend_parameters const & frontend_parameters,
 		guint id, Glib::ustring const & name, guint const polarisation, guint signal_strength);
 	void on_signal_progress(guint step, gsize total);
 	void on_signal_complete();
@@ -99,11 +99,9 @@ private:
 	void process_satellite_line(Glib::ustring const & line);
 	void process_cable_line(Glib::ustring const & line);
 	void process_atsc_line(Glib::ustring const & line);
-	void add_transponder(struct dvb_frontend_parameters frontend_parameters);
-	void add_scan_range(guint start, guint end, guint step,
-	    struct dvb_frontend_parameters frontend_parameters);
-	void add_scan_list(int const  * si, int length,
-	    struct dvb_frontend_parameters frontend_parameters);
+	void add_transponder(dvb_frontend_parameters frontend_parameters);
+	void add_scan_range(guint start, guint end, guint step, dvb_frontend_parameters frontend_parameters);
+	void add_scan_list(int const  * si, int length, dvb_frontend_parameters frontend_parameters);
 	void add_auto_scan_range(fe_type_t frontend_type, Glib::ustring const & range);
 	void on_show();
 

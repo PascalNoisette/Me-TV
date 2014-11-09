@@ -96,7 +96,7 @@ void ScheduledRecordingManager::save(Data::Connection & connection) {
 		}
 		else if (row["recurring_type"].int_value == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYWEEKDAY) {
 			time_t tim = row["start_time"].int_value;
-			struct tm *ts;
+			tm *ts;
 			char buf[80];
 			ts = localtime(&tim);
 			strftime(buf, sizeof(buf), "%w", ts);

@@ -60,7 +60,7 @@ void FrontendThread::stop() {
 
 void FrontendThread::run() {
 	g_debug("Frontend thread running (%s)", frontend.get_path().c_str());
-	struct pollfd pfds[1];
+	pollfd pfds[1];
 	pfds[0].fd = fd;
 	pfds[0].events = POLLIN;
 	guchar buffer[TS_PACKET_SIZE * PACKET_BUFFER_SIZE];

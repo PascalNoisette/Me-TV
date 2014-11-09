@@ -360,7 +360,6 @@ void ScanDialog::load_initial_tuning_file(Glib::ustring const & initial_tuning_f
 		if (!line.empty()) { lines.push_back(line); }
 		status = initial_tuning_file->read_line(line);
 	}
-	guint size = lines.size();
 	for (auto const process_line: lines) {
 		if (!process_line.empty()) {
 			g_debug("Processing line: '%s'", process_line.c_str());
@@ -429,7 +428,7 @@ void ScanDialog::on_button_scan_wizard_add_clicked() {
 	hide();
 }
 
-void ScanDialog::on_signal_service(struct dvb_frontend_parameters const & frontend_parameters, guint service_id, Glib::ustring const & name, guint const polarisation, guint signal_strength) {
+void ScanDialog::on_signal_service(dvb_frontend_parameters const & frontend_parameters, guint service_id, Glib::ustring const & name, guint const polarisation, guint signal_strength) {
 	if (scan_thread != NULL && !scan_thread->is_terminated()) {
 		GdkLock gdk_lock; // TODO: Find ot why this lock is needed.
 		Gtk::TreeModel::Children children = list_store->children();
@@ -438,7 +437,7 @@ void ScanDialog::on_signal_service(struct dvb_frontend_parameters const & fronte
 		while (iterator != children.end()) {
 			Gtk::TreeModel::Row row  = *iterator;
 			guint existing_service_id;
-			struct dvb_frontend_parameters	existing_frontend_parameters;
+			dvb_frontend_parameters	existing_frontend_parameters;
 			existing_service_id = row.get_value(columns.column_id);
 			existing_frontend_parameters = row.get_value(columns.column_frontend_parameters);
 			if (abs(frontend_parameters.frequency - existing_frontend_parameters.frequency) < 500000 &&
@@ -519,7 +518,7 @@ ChannelArray ScanDialog::get_selected_channels() {
 	return result;
 }
 
-void ScanDialog::add_scan_range(guint start, guint end, guint step, struct dvb_frontend_parameters frontend_parameters) {
+void ScanDialog::add_scan_range(guint start, guint end, guint step, dvb_frontend_parameters frontend_parameters) {
 	for (guint frequency = start; frequency <= end; frequency += step) {
 		g_debug("Adding %d Hz", frequency);
 		frontend_parameters.frequency = frequency;
@@ -527,7 +526,7 @@ void ScanDialog::add_scan_range(guint start, guint end, guint step, struct dvb_f
 	}
 }
 
-void ScanDialog::add_scan_list(int const * si, int length, struct dvb_frontend_parameters frontend_parameters) {
+void ScanDialog::add_scan_list(int const * si, int length, dvb_frontend_parameters frontend_parameters) {
 	for (int index = 0; index < length; ++index) {
 		frontend_parameters.frequency = si[index];
 		add_transponder(frontend_parameters);
@@ -538,7 +537,7 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, Glib::ustring cons
 	if (range.empty()) {
 		throw Exception(_("No auto scan range was specified"));
 	}
-	struct dvb_frontend_parameters frontend_parameters;
+	dvb_frontend_parameters frontend_parameters;
 	if (frontend_type == FE_OFDM) {
 		frontend_parameters.inversion = INVERSION_AUTO;
 		frontend_parameters.u.ofdm.hierarchy_information = HIERARCHY_NONE;
@@ -622,14 +621,14 @@ void ScanDialog::add_auto_scan_range(fe_type_t frontend_type, Glib::ustring cons
 	}
 }
 
-void ScanDialog::add_transponder(struct dvb_frontend_parameters frontend_parameters) {
+void ScanDialog::add_transponder(dvb_frontend_parameters frontend_parameters) {
 	Dvb::Transponder transponder;
 	transponder.frontend_parameters = frontend_parameters;
 	transponders.push_back(transponder);
 }
 
 void ScanDialog::process_terrestrial_line(Glib::ustring const & line) {
-	struct dvb_frontend_parameters frontend_parameters;
+	dvb_frontend_parameters frontend_parameters;
 	InitialScanLine initial_scan_line {line};
 	frontend_parameters.frequency = initial_scan_line.get_frequency(1);
 	frontend_parameters.inversion = INVERSION_AUTO;
@@ -647,7 +646,7 @@ void ScanDialog::process_terrestrial_line(Glib::ustring const & line) {
 }
 
 void ScanDialog::process_atsc_line(Glib::ustring const & line) {
-	struct dvb_frontend_parameters frontend_parameters;
+	dvb_frontend_parameters frontend_parameters;
 	InitialScanLine initial_scan_line(line);
 	frontend_parameters.frequency = initial_scan_line.get_frequency(1);
 	frontend_parameters.u.vsb.modulation = initial_scan_line.get_modulation(2);
@@ -659,7 +658,7 @@ void ScanDialog::process_atsc_line(Glib::ustring const & line) {
 }
 
 void ScanDialog::process_satellite_line(Glib::ustring const & line) {
-	struct dvb_frontend_parameters frontend_parameters;
+	dvb_frontend_parameters frontend_parameters;
 	InitialScanLine initial_scan_line(line);
 	frontend_parameters.frequency = initial_scan_line.get_frequency(1);
 	frontend_parameters.inversion = INVERSION_AUTO;
@@ -674,7 +673,7 @@ void ScanDialog::process_satellite_line(Glib::ustring const & line) {
 }
 
 void ScanDialog::process_cable_line(Glib::ustring const & line) {
-	struct dvb_frontend_parameters frontend_parameters;
+	dvb_frontend_parameters frontend_parameters;
 	InitialScanLine initial_scan_line(line);
 	frontend_parameters.frequency = initial_scan_line.get_frequency(1);
 	frontend_parameters.inversion = INVERSION_AUTO;

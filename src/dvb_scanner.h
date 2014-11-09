@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -7,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -26,23 +27,18 @@
 #include "dvb_service.h"
 #include "dvb_transponder.h"
 
-namespace Dvb
-{	
-	class Scanner
-	{
+namespace Dvb {
+	class Scanner {
 	private:
 		gboolean terminated;
 		TransponderList transponders;
-			
-		void tune_to(Frontend& frontend, const Transponder& transponder);
-		void atsc_tune_to(Frontend& frontend, const Transponder& transponder);
+		void tune_to(Frontend & frontend, const Transponder & transponder);
+		void atsc_tune_to(Frontend & frontend, const Transponder & transponder);
 	public:
 		Scanner();
-
-		void start(Frontend& frontend, TransponderList& transponders);
+		void start(Frontend & frontend, TransponderList & transponders);
 		void terminate();
-			
-		sigc::signal<void,const struct dvb_frontend_parameters&, guint, const Glib::ustring&, const guint, guint> signal_service;
+		sigc::signal<void, dvb_frontend_parameters const &, guint, Glib::ustring const &, const guint, guint> signal_service;
 		sigc::signal<void, guint, gsize> signal_progress;
 		sigc::signal<void> signal_complete;
 	};

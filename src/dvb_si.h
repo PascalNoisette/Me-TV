@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -7,17 +8,17 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
+
 #ifndef __DVB_SI_H__
 #define __DVB_SI_H__
 
@@ -31,63 +32,55 @@
 #include "me-tv.h"
 #include "me-tv-i18n.h"
 
-#define DVB_SECTION_BUFFER_SIZE	16*1024
-#define TS_PACKET_SIZE			188
-#define PACKET_BUFFER_SIZE		50
+constexpr auto DVB_SECTION_BUFFER_SIZE = 16*1024;
+constexpr auto TS_PACKET_SIZE = 188;
+constexpr auto PACKET_BUFFER_SIZE = 50;
 
-#define PAT_PID		0x00
-#define NIT_PID		0x10
-#define SDT_PID		0x11
-#define EIT_PID		0x12
-#define PSIP_PID	0x1FFB
+constexpr auto PAT_PID = 0x00;
+constexpr auto NIT_PID = 0x10;
+constexpr auto SDT_PID = 0x11;
+constexpr auto EIT_PID = 0x12;
+constexpr auto PSIP_PID = 0x1FFB;
 
-#define PAT_ID		0x00
-#define PMT_ID		0x02
-#define NIT_ID		0x40
-#define SDT_ID		0x42
-#define EIT_ID		0x4E
-#define MGT_ID		0xC7
-#define TVCT_ID		0xC8
-#define CVCT_ID		0xC9
-#define PSIP_EIT_ID	0xCB
-#define STT_ID		0xCD
+constexpr auto PAT_ID = 0x00;
+constexpr auto PMT_ID = 0x02;
+constexpr auto NIT_ID = 0x40;
+constexpr auto SDT_ID = 0x42;
+constexpr auto EIT_ID = 0x4E;
+constexpr auto MGT_ID = 0xC7;
+constexpr auto TVCT_ID = 0xC8;
+constexpr auto CVCT_ID = 0xC9;
+constexpr auto PSIP_EIT_ID = 0xCB;
+constexpr auto STT_ID = 0xCD;
 
-namespace Dvb
-{
-	namespace SI
-	{
-		class EventText
-		{
+namespace Dvb {
+	namespace SI {
+		class EventText {
 		public:
 			Glib::ustring language;
 			Glib::ustring title;
 			Glib::ustring subtitle;
 			Glib::ustring description;
 		};
-		
-		class EventTextMap : public std::map<Glib::ustring, EventText>
-		{
+
+		class EventTextMap : public std::map<Glib::ustring, EventText> {
 		public:
 			gboolean contains(const Glib::ustring& language);
 		};
-		
-		class Event
-		{
+
+		class Event {
 		public:
 			Event();
-
-			guint	event_id;
-			guint	version_number;
-			guint	start_time;
-			gulong	duration;
-			
+			guint event_id;
+			guint version_number;
+			guint start_time;
+			gulong duration;
 			EventTextMap texts;
 		};
 
 		typedef std::list<Event> EventList;
-		
-		class EventInformationSection
-		{
+
+		class EventInformationSection {
 		public:
 			u_int table_id;
 			u_int section_syntax_indicator;
@@ -104,8 +97,7 @@ namespace Dvb
 			std::vector<Event> events;
 		};
 
-		class Service
-		{
+		class Service {
 		public:
 			guint id;
 			guint type;
@@ -114,30 +106,26 @@ namespace Dvb
 			Glib::ustring name;
 		};
 
-		class ServiceDescriptionSection
-		{
+		class ServiceDescriptionSection {
 		public:
 			guint transport_stream_id;
 			gboolean epg_events_available;
 			std::vector<Service> services;
 		};
 
-		class NetworkInformationSection
-		{
+		class NetworkInformationSection {
 		public:
 			std::vector<Dvb::Transponder> transponders;
 		};
-		
-		class SystemTimeTable
-		{
+
+		class SystemTimeTable {
 		public:
 			gulong system_time;
 			guint GPS_UTC_offset;
 			guint daylight_savings;
 		};
 
-		class MasterGuideTable
-		{
+		class MasterGuideTable {
 		public:
 			guint type;
 			guint pid;
@@ -145,8 +133,7 @@ namespace Dvb
 
 		typedef std::vector<MasterGuideTable> MasterGuideTableArray;
 
-		class VirtualChannel
-		{
+		class VirtualChannel {
 		public:
 			Glib::ustring short_name;
 			guint major_channel_number;
@@ -157,38 +144,33 @@ namespace Dvb
 			guint source_id;
 		};
 
-		class VirtualChannelTable
-		{
+		class VirtualChannelTable {
 		public:
 			guint transport_stream_id;
 			std::vector<VirtualChannel> channels;
 		};
 
-		class SectionParser
-		{
+		class SectionParser {
 		private:
 			guchar buffer[DVB_SECTION_BUFFER_SIZE];
 			Glib::ustring text_encoding;
-				
-			guint get_bits(const guchar* buffer, guint bitpos, gsize bitcount);
-			Glib::ustring convert_iso6937(const guchar* buffer, gsize length);
-			gsize decode_event_descriptor (const guchar* buffer, Event& event);
-			gsize read_section(Demuxer& demuxer);
-		
+			guint get_bits(guchar const * buffer, guint bitpos, gsize bitcount);
+			Glib::ustring convert_iso6937(guchar const * buffer, gsize length);
+			gsize decode_event_descriptor (guchar const * buffer, Event & event);
+			gsize read_section(Demuxer & demuxer);
 			fe_code_rate_t parse_fec_inner(guint bitmask);
+
 		public:
 			SectionParser();
-			
-			gsize get_text(Glib::ustring& s, const guchar* buffer);
-			const guchar* get_buffer() const { return buffer; };
-
-			void parse_eis (Demuxer& demuxer, EventInformationSection& section);
-			void parse_psip_eis (Demuxer& demuxer, EventInformationSection& section);
-			void parse_psip_mgt(Demuxer& demuxer, MasterGuideTableArray& tables);
-			void parse_psip_vct(Demuxer& demuxer, VirtualChannelTable& section);
-			void parse_psip_stt(Demuxer& demuxer, SystemTimeTable& table);
-			void parse_sds (Demuxer& demuxer, ServiceDescriptionSection& section);
-			void parse_nis (Demuxer& demuxer, NetworkInformationSection& section);
+			gsize get_text(Glib::ustring & s, guchar const * buffer);
+			guchar const * get_buffer() const { return buffer; };
+			void parse_eis (Demuxer & demuxer, EventInformationSection & section);
+			void parse_psip_eis (Demuxer & demuxer, EventInformationSection & section);
+			void parse_psip_mgt(Demuxer & demuxer, MasterGuideTableArray & tables);
+			void parse_psip_vct(Demuxer & demuxer, VirtualChannelTable & section);
+			void parse_psip_stt(Demuxer & demuxer, SystemTimeTable & table);
+			void parse_sds (Demuxer & demuxer, ServiceDescriptionSection & section);
+			void parse_nis (Demuxer & demuxer, NetworkInformationSection & section);
 		};
 	}
 }
