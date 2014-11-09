@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2011 Michael Lamothe
  * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
@@ -19,31 +18,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef __BUFFER_H__
-#define __BUFFER_H__
+#include "catch.hpp"
 
-#include <glib.h>
+#include "buffer.h"
 
-class Buffer {
-private:
-	guchar * buffer;
-	gsize length;
-	static guint get_bits(guchar * buffer, guint position, gsize count);
-
-public:
-	Buffer();
-	Buffer(gsize length);
-	~Buffer();
-	void dump() const;
-	void clear();
-	void set_length(gsize length);
-	gsize get_length() const { return length; }
-	guchar * get_buffer() const { return buffer; }
-	guint get_bits(guint offset, guint position, gsize count) const;
-	guint get_bits(guint position, gsize count) const;
-	guint32 crc32() const;
-
-	guchar operator[](int index) const { return buffer[index]; };
-};
-
-#endif
+TEST_CASE("create an empty buffer, fill it a bit, and clear it") {
+	Buffer buffer;
+	REQUIRE(buffer.get_buffer() == NULL);
+	REQUIRE(buffer.get_length() == 0);
+	buffer.set_length(4);
+	REQUIRE(buffer.get_buffer() != NULL);
+	REQUIRE(buffer.get_length() == 4);
+	buffer.clear();
+	REQUIRE(buffer.get_buffer() == NULL);
+	REQUIRE(buffer.get_length() == 0);
+}

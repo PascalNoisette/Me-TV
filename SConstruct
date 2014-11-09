@@ -69,7 +69,7 @@ datadir = ARGUMENTS.get('datadir', datadir)
 try:
     catch_directory
 except NameError:
-    catch_directory = '/usr/include/catch'
+    catch_directory = '/usr/include/'
 
 environment = Environment(
     tools=['g++', 'gnulink'],
@@ -148,7 +148,7 @@ config_file_written = False
 
 def create_configuration(environment, dependencies):
     global config_file_written
-    configuration = Configure(environment, custom_tests={'PkgCheckModules': PkgCheckModules}, config_h='config.h')  # , clean=False, help=False)
+    configuration = Configure(environment, custom_tests={'PkgCheckModules': PkgCheckModules}, config_h='#src/config.h')  # , clean=False, help=False)
     failedConfiguration = False
     for library, versionPattern in dependencies:
         if not configuration.PkgCheckModules(library, versionPattern):
@@ -174,6 +174,7 @@ Export('environment', 'main_environment', 'xine_player_environment')
 executables = SConscript('src/SConscript', variant_dir=build_directory + '/src', duplicate=0)
 built_po_files = SConscript('po/SConscript', variant_dir=build_directory + '/po', duplicate=0)
 test_executables = SConscript('tests/SConscript', variant_dir=build_directory + '/tests', duplicate=0)
+Depends(test_executables, executables)
 built_things = SConscript('SConscript', variant_dir=build_directory, duplicate=0)
 
 Alias('executables', executables)

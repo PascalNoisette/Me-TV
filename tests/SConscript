@@ -26,6 +26,17 @@ test_main_environment.Append(CPPPATH=[
     '#{}/src'.format(test_main_environment['build_directory'])]
 )
 
-test_executables = [test_main_environment.Program(x) for x in Glob('*.cc')]
+test_main_objects = []
+
+for f in Glob('*.cc'):
+    root = f.name[:-3]
+    if root == 'main':
+        test_main_objects.append(test_main_environment.Object(root + '.o', f))
+    else:
+        test_main_objects.append(test_main_environment.Object('test_' + root + '.o', f))
+
+test_main_executable = test_main_environment.Program('test_main', test_main_objects + ['../src/' + f for f in main_environment['objects'] if f != 'main.o'])
+
+test_executables = [test_main_executable]
 
 Return('test_executables')

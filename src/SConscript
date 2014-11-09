@@ -36,4 +36,10 @@ environment.Alias('install', [
     environment.Install(environment['DATADIR'] +'/me-tv/glade/', ['me-tv.ui', 'me-tv.xpm']),
 ])
 
+# The list of object files is needed for creating the test executables, so put the data into the environments.
+# You have got to love global mutable data.
+
+main_environment['objects'] = [s.name.replace('.cc', '.o') for s in sources]
+xine_player_environment['objects'] = [xine_player.name.replace('.cc', '.o')]
+
 Return('executables')
