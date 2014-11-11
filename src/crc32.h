@@ -25,7 +25,6 @@
 #include <glib.h>
 
 namespace CRC32 {
-	void init();
 	guint32 calculate(guchar const * begin, guchar const * end);
 	guint32 calculate(guchar const * data, gsize length);
 }

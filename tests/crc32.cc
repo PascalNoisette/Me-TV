@@ -23,80 +23,31 @@
 #include "crc32.h"
 
 /*
- * This implementation of CRC32 always uses 0xffffffffUL as the seed.
+ * These test values stem from the entry for CRC32/MPEG-2 at
+ * http://reveng.sourceforge.net/crc-catalogue/all.htm
  */
 
+constexpr guchar const * zero_length_sequence = (guchar const *)"";
+constexpr gsize const length_of_zero_length_sequence = (gsize)0;
+constexpr guint32 result_for_zero_length_sequence = 0xffffffff;
 
-/*
- * Some test values gleaned from http://dox.ipxe.org/crc32__test_8c.html
- */
+constexpr guchar const * check_sequence = (guchar const *)"123456789";
+constexpr gsize const length_of_check_sequence = (gsize)9;
+constexpr guint32 result_for_check_sequence = 0x0376e6e7;
 
-TEST_CASE("0: CRC32 of empty string") {
-	std::string str {""};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)str.size()) == 0xffffffff);
+
+TEST_CASE("CRC32 of empty sequence, address, length") {
+	REQUIRE(CRC32::calculate(zero_length_sequence, length_of_zero_length_sequence) == result_for_zero_length_sequence);
 }
 
-TEST_CASE("0: CRC32 of hello") {
-	std::string str {"hello"};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)str.size()) == 0xc9ef5979);
+TEST_CASE("CRC32 of test sequence, address, length") {
+	REQUIRE(CRC32::calculate(check_sequence, length_of_check_sequence) == result_for_check_sequence);
 }
 
-TEST_CASE("0: CRC32 of the hello in hello world") {
-	std::string str {"hello world"};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)5) == 0xc9ef5979);
+TEST_CASE("CRC32 of empty sequence, address, address") {
+	REQUIRE(CRC32::calculate(zero_length_sequence, zero_length_sequence) == result_for_zero_length_sequence);
 }
 
-TEST_CASE("0: CRC32 of hello world") {
-	std::string str {"hello world"};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)str.size()) == 0xf2b5ee7a);
-}
-
-
-/*
- * From http://stackoverflow.com/questions/20963944/test-vectors-for-crc32c
- */
-
-TEST_CASE("1: CRC32 of the quick brown, etc.") {
-	std::string str {"The quick brown fox jumps over the lazy dog"};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)str.size()) == 0x22620404);
-}
-
-TEST_CASE("1: CRC32 of 123456789") {
-	std::string str {"123456789"};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)str.size()) == 0xe3069283);
-}
-
-
-/*
- * By using Boost::CRC..
- */
-
-TEST_CASE("Boost: CRC32 of empty string") {
-	std::string str {""};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)str.size()) == 0);
-}
-
-TEST_CASE("Boost: CRC32 of hello") {
-	std::string str {"hello"};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)str.size()) == 0x3610a686);
-}
-
-TEST_CASE("Boost: CRC32 of the hello in hello world") {
-	std::string str {"hello world"};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)5) == 0x3610a686);
-}
-
-TEST_CASE("Boost : CRC32 of hello world") {
-	std::string str {"hello world"};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)str.size()) == 0xd4a1185);
-}
-
-TEST_CASE("Boost: CRC32 of the quick brown, etc.") {
-	std::string str {"The quick brown fox jumps over the lazy dog"};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)str.size()) == 0xa4d8f35e);
-}
-
-TEST_CASE("Boost: CRC32 of 123456789") {
-	std::string str {"123456789"};
-	REQUIRE(CRC32::calculate((guchar const *)str.c_str(), (gsize)str.size()) == 0xcbf43926);
+TEST_CASE("CRC32 of test sequence, address, address") {
+	REQUIRE(CRC32::calculate(check_sequence, &(check_sequence[length_of_check_sequence])) == result_for_check_sequence);
 }
