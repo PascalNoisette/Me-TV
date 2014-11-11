@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 Michael Lamothe
+ * Copyright © 2014  Russel Winder
  *
  * This file is part of Me TV
  *
@@ -7,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -23,14 +24,10 @@
 
 #include <glib.h>
 
-class Crc32
-{
-private:
-	static guint crc_table[256];
-public:
-	static void init();
-	static guint32 calculate(const guchar* begin, const guchar* end);
-	static guint32 calculate(const guchar* data, gsize length);
-};
+namespace CRC32 {
+	void init();
+	guint32 calculate(guchar const * begin, guchar const * end);
+	guint32 calculate(guchar const * data, gsize length);
+}
 
 #endif

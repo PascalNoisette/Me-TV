@@ -74,5 +74,5 @@ guint Buffer::get_bits(guint position, gsize count) const {
 }
 
 guint32 Buffer::crc32() const {
-	return Crc32::calculate(buffer, length);
+	return CRC32::calculate(buffer, length);
 }

@@ -21,7 +21,6 @@
 
 #include "application.h"
 #include "data.h"
-#include "crc32.h"
 #include "me-tv-ui.h"
 #include "main_window.h"
 #include <dbus/dbus-glib-lowlevel.h>
@@ -50,7 +49,6 @@ Application::Application() {
 		throw Exception(_("The SQLite version is not thread-safe"));
 	}
 #endif
-	Crc32::init();
 	application_dir = Glib::build_filename(Glib::get_home_dir(), ".me-tv");
 	make_directory_with_parents (application_dir);
 	Glib::ustring data_directory = Glib::get_home_dir() + "/.local/share/me-tv";
