@@ -38,6 +38,8 @@ class WebRequest {
         Glib::ustring content;
         char * get_content();
         size_t get_content_length();
+        bool is(const char * method);
+        bool match(const char * url);
 };
 #endif
 

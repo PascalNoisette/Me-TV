@@ -41,3 +41,13 @@ size_t WebRequest::get_content_length()
 {
     return content.length();
 }
+
+bool WebRequest::is(const char * expected_method) 
+{
+    return method == expected_method;
+}
+
+bool WebRequest::match(const char * expected_url) 
+{
+    return url.compare(expected_url) == 0;
+}

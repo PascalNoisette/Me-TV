@@ -24,13 +24,28 @@
 
 #include <glibmm.h>
 #include "web_controller.h"
+#include "application.h"
 
 void WebController::sample_action(WebRequest & request)
 {
     request.code = MHD_HTTP_OK;
     request.content = "alive";
 }
+void WebController::get_channels_action(WebRequest & request)
+{
+    for (auto & channel: channel_manager.get_channels()) {
+        std::ostringstream text;
+        text << channel.channel_id << "\t" << channel.name << "\n";
+        request.content += text.str();
+    }
+    request.code = MHD_HTTP_OK;
+}
 void WebController::dispatch(WebRequest & request)
 {
+    if (request.is(MHD_HTTP_METHOD_GET)) {
+        if (request.match("/channel")) {
+            return get_channels_action(request);
+        }
+    }
     return sample_action(request);
 }
