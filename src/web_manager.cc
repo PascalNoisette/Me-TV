@@ -21,3 +21,39 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
+
+
+#include <glibmm.h>
+#include "web_manager.h"
+
+int WebManager::handler(void * cls, struct MHD_Connection * connection, const char * url, const char * method, const char * version, const char * upload_data, size_t * upload_data_size, void ** ptr) {
+    if (*ptr == NULL) {
+        *ptr = (void*) !NULL;
+        return MHD_YES;
+    } else {
+        *ptr = NULL;
+        char content[]  = "alive";
+        Glib::ustring contentString = content;
+        struct MHD_Response * response = MHD_create_response_from_data(contentString.length(), content, MHD_NO, MHD_NO);
+        int ret = MHD_queue_response(connection, 200, response);
+        MHD_destroy_response(response);
+
+        return ret;
+    }
+}
+
+void WebManager::start() {
+    g_debug("WebManager start");
+    daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION, WEB_PORT, NULL, NULL, handler, NULL, MHD_OPTION_END);
+    g_debug("WebManager started");
+}
+
+void WebManager::stop() {
+    g_debug("WebManager is stopping");
+    MHD_stop_daemon(daemon);
+    g_debug("WebManager stopped");
+}
+
+WebManager::~WebManager() {
+    stop();
+}

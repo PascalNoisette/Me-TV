@@ -42,6 +42,7 @@ ScheduledRecordingManager scheduled_recording_manager;
 DeviceManager device_manager;
 StreamManager stream_manager;
 ConfigurationManager configuration_manager;
+WebManager web_manager;
 
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_fullscreen;
 Glib::RefPtr<Gtk::ToggleAction> toggle_action_mute;
