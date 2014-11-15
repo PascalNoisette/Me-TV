@@ -24,5 +24,20 @@
 #ifndef    __WEB_REQUEST_H__
 #define    __WEB_REQUEST_H__
 
+#include <microhttpd.h>
+#include <glibmm.h>
+
+class WebRequest {
+    private:
+        Glib::ustring url;
+        Glib::ustring method;
+        struct MHD_Connection * connection;
+    public:
+        WebRequest(struct MHD_Connection * connection, const char * url, const char * method);
+        int code;
+        Glib::ustring content;
+        char * get_content();
+        size_t get_content_length();
+};
 #endif
 

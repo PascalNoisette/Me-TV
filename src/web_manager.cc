@@ -25,23 +25,35 @@
 
 #include <glibmm.h>
 #include "web_manager.h"
+#include "web_controller.h"
 
 int WebManager::handler(void * cls, struct MHD_Connection * connection, const char * url, const char * method, const char * version, const char * upload_data, size_t * upload_data_size, void ** ptr) {
-    if (*ptr == NULL) {
-        *ptr = (void*) !NULL;
-        return MHD_YES;
-    } else {
-        *ptr = NULL;
-        char content[]  = "alive";
-        Glib::ustring contentString = content;
-        struct MHD_Response * response = MHD_create_response_from_data(contentString.length(), content, MHD_NO, MHD_NO);
-        int ret = MHD_queue_response(connection, 200, response);
-        MHD_destroy_response(response);
+  WebRequest * request;
+  if (*ptr == NULL)
+  {
+      *ptr = (void*) new WebRequest(connection, url, method);
+      return MHD_YES;
+  }
+  else if (*upload_data_size > 0)
+  {
+      *upload_data_size = 0;
+      return MHD_YES;
+  }
+  else 
+  {
+    WebController controller;
+    request = (WebRequest *) *ptr;
+    *ptr = NULL;
+    controller.dispatch(*request);
 
-        return ret;
-    }
+    struct MHD_Response * response = MHD_create_response_from_data(request->get_content_length(), (void*) request->get_content(), MHD_YES, MHD_NO);
+    int ret = MHD_queue_response(connection, request->code, response);
+    MHD_destroy_response(response);
+    delete request;
+    return ret;
+  }
 }
-
+    
 void WebManager::start() {
     g_debug("WebManager start");
     daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION, WEB_PORT, NULL, NULL, handler, NULL, MHD_OPTION_END);

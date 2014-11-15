@@ -22,4 +22,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <glibmm.h>
 #include "web_controller.h"
+
+void WebController::sample_action(WebRequest & request)
+{
+    request.code = MHD_HTTP_OK;
+    request.content = "alive";
+}
+void WebController::dispatch(WebRequest & request)
+{
+    return sample_action(request);
+}

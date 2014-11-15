@@ -24,5 +24,17 @@
 #ifndef    __WEB_CONTROLLER_H__
 #define    __WEB_CONTROLLER_H__
 
+
+#include <microhttpd.h>
+#include "web_request.h"
+
+class WebController {
+
+    private:
+        void sample_action(WebRequest & request);
+    public:
+        void dispatch(WebRequest & request);
+      
+};
 #endif
 

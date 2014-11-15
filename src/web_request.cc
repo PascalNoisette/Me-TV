@@ -21,4 +21,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
+
+#include <cstring>
+#include <glibmm.h>
 #include "web_request.h"
+
+WebRequest::WebRequest(struct MHD_Connection * connection, const char * url, const char * method) 
+{
+      this->connection = connection;
+      this->url = url;
+      this->method = method;
+}
+char * WebRequest::get_content() 
+{
+    return strdup(content.c_str());
+}
+
+size_t WebRequest::get_content_length() 
+{
+    return content.length();
+}
