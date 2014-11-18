@@ -31,15 +31,21 @@ class WebRequest {
     private:
         Glib::ustring url;
         Glib::ustring method;
+        
         struct MHD_Connection * connection;
+        struct MHD_PostProcessor * postprocessor;
+        std::map<Glib::ustring, Glib::ustring> params;
+        static int iterate_post (void *coninfo_cls, enum MHD_ValueKind kind, const char *key, const char *filename, const char *content_type, const char *transfer_encoding, const char *data, uint64_t off, size_t size);
     public:
         WebRequest(struct MHD_Connection * connection, const char * url, const char * method);
+        int post_process(const char *post_data, size_t post_data_len);
         int code;
         Glib::ustring content;
         char * get_content();
         size_t get_content_length();
         bool is(const char * method);
         bool match(const char * url);
+        void addParam(Glib::ustring, Glib::ustring);
 };
 #endif
 

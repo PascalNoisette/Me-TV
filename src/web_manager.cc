@@ -24,6 +24,7 @@
 
 
 #include <glibmm.h>
+#include <map>
 #include "web_manager.h"
 #include "web_controller.h"
 
@@ -36,6 +37,8 @@ int WebManager::handler(void * cls, struct MHD_Connection * connection, const ch
   }
   else if (*upload_data_size > 0)
   {
+      request = (WebRequest *) *ptr;
+      request->post_process(upload_data, *upload_data_size);
       *upload_data_size = 0;
       return MHD_YES;
   }
@@ -45,7 +48,7 @@ int WebManager::handler(void * cls, struct MHD_Connection * connection, const ch
     request = (WebRequest *) *ptr;
     *ptr = NULL;
     controller.dispatch(*request);
-
+    
     struct MHD_Response * response = MHD_create_response_from_data(request->get_content_length(), (void*) request->get_content(), MHD_YES, MHD_NO);
     int ret = MHD_queue_response(connection, request->code, response);
     MHD_destroy_response(response);
@@ -53,7 +56,7 @@ int WebManager::handler(void * cls, struct MHD_Connection * connection, const ch
     return ret;
   }
 }
-    
+
 void WebManager::start() {
     g_debug("WebManager start");
     daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION, WEB_PORT, NULL, NULL, handler, NULL, MHD_OPTION_END);

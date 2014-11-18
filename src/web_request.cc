@@ -31,7 +31,25 @@ WebRequest::WebRequest(struct MHD_Connection * connection, const char * url, con
       this->connection = connection;
       this->url = url;
       this->method = method;
+      if (is(MHD_HTTP_METHOD_POST)) {
+        this->postprocessor = MHD_create_post_processor(connection, 512, iterate_post, (void *) this);
+      }
 }
+
+int WebRequest::post_process(const char *post_data, size_t post_data_len)
+{
+    if (is(MHD_HTTP_METHOD_POST)) {
+        return MHD_post_process (this->postprocessor, post_data, post_data_len);
+    }
+    return MHD_YES;
+}
+int WebRequest::iterate_post (void *coninfo_cls, enum MHD_ValueKind kind, const char *key, const char *filename, const char *content_type, const char *transfer_encoding, const char *data, uint64_t off, size_t size)
+{
+  WebRequest * request = (WebRequest *) coninfo_cls;
+  request->addParam(key, data);
+  return MHD_YES;
+}
+
 char * WebRequest::get_content() 
 {
     return strdup(content.c_str());
@@ -50,4 +68,9 @@ bool WebRequest::is(const char * expected_method)
 bool WebRequest::match(const char * expected_url) 
 {
     return url.compare(expected_url) == 0;
+}
+
+void WebRequest::addParam(Glib::ustring key, Glib::ustring value) 
+{
+    this->params[key] = value;
 }
