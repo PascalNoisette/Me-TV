@@ -33,6 +33,7 @@ class WebController {
     private:
         void sample_action(WebRequest & request);
         void get_channels_action(WebRequest & request);
+        void echo_action(WebRequest & request);
     public:
         void dispatch(WebRequest & request);
       

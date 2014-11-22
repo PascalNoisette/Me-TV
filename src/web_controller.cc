@@ -40,12 +40,23 @@ void WebController::get_channels_action(WebRequest & request)
     }
     request.code = MHD_HTTP_OK;
 }
+void WebController::echo_action(WebRequest & request)
+{
+    request.content += request.method + "\t" + request.url + "\n";
+    for (std::map<Glib::ustring, Glib::ustring>::iterator iter = request.params.begin(); iter != request.params.end(); ++iter) {
+        request.content += iter->first + "\t" + iter->second + "\n";
+    }
+    request.code = MHD_HTTP_OK;
+}
 void WebController::dispatch(WebRequest & request)
 {
     if (request.is(MHD_HTTP_METHOD_GET)) {
         if (request.match("/channel")) {
             return get_channels_action(request);
         }
+    }
+    if (request.match("/echo")) {
+        return echo_action(request);
     }
     return sample_action(request);
 }
