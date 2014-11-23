@@ -44,6 +44,22 @@ void WebController::get_channels_action(WebRequest & request)
     request.content = json.toStyledString();
     request.code = MHD_HTTP_OK;
 }
+void WebController::get_recordings_action(WebRequest & request)
+{
+    Json::Value json;
+    for (ScheduledRecording & recording: scheduled_recording_manager.scheduled_recordings) {
+        Json::Value json_recording;
+        json_recording["scheduled_recording_id"] = recording.scheduled_recording_id;
+        json_recording["description"] = recording.description.c_str();
+        json_recording["recurring_type"] = recording.recurring_type;
+        json_recording["action_after"] = recording.action_after;
+        json_recording["start_time"] = (int) (recording.start_time);
+        json_recording["duration"] = recording.duration;
+        json.append(json_recording);
+    }
+    request.content = json.toStyledString();
+    request.code = MHD_HTTP_OK;
+}
 void WebController::echo_action(WebRequest & request)
 {
     request.content += request.method + "\t" + request.url + "\n";
@@ -57,6 +73,9 @@ void WebController::dispatch(WebRequest & request)
     if (request.is(MHD_HTTP_METHOD_GET)) {
         if (request.match("/channel")) {
             return get_channels_action(request);
+        }
+        if (request.match("/recording")) {
+            return get_recordings_action(request);
         }
     }
     if (request.match("/echo")) {
