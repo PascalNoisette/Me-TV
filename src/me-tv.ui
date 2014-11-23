@@ -2285,7 +2285,7 @@ If you've just upgraded Me TV then this is probably what you want to do.
   </object>
   <object class="GtkAdjustment" id="adjustment_page_size">
     <property name="lower">1</property>
-    <property name="upper">100</property>
+    <property name="upper">200</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
