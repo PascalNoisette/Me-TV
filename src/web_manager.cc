@@ -50,6 +50,8 @@ int WebManager::handler(void * cls, struct MHD_Connection * connection, const ch
     controller.dispatch(*request);
     
     struct MHD_Response * response = MHD_create_response_from_data(request->get_content_length(), (void*) request->get_content(), MHD_YES, MHD_NO);
+    MHD_add_response_header (response, MHD_HTTP_HEADER_CONTENT_TYPE, "application/json");
+    MHD_add_response_header (response, MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, "*");
     int ret = MHD_queue_response(connection, request->code, response);
     MHD_destroy_response(response);
     delete request;

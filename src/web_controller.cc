@@ -25,6 +25,7 @@
 #include <glibmm.h>
 #include "web_controller.h"
 #include "application.h"
+#include <jsoncpp/json/json.h>
 
 void WebController::sample_action(WebRequest & request)
 {
@@ -33,11 +34,14 @@ void WebController::sample_action(WebRequest & request)
 }
 void WebController::get_channels_action(WebRequest & request)
 {
-    for (auto & channel: channel_manager.get_channels()) {
-        std::ostringstream text;
-        text << channel.channel_id << "\t" << channel.name << "\n";
-        request.content += text.str();
+    Json::Value json;
+    for (Channel & channel: channel_manager.get_channels()) {
+        Json::Value json_channel;
+        json_channel["channel_id"] = channel.channel_id;
+        json_channel["name"] = channel.name.c_str();
+        json.append(json_channel);
     }
+    request.content = json.toStyledString();
     request.code = MHD_HTTP_OK;
 }
 void WebController::echo_action(WebRequest & request)
