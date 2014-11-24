@@ -50,7 +50,9 @@ int WebManager::handler(void * cls, struct MHD_Connection * connection, const ch
     controller.dispatch(*request);
     
     struct MHD_Response * response = MHD_create_response_from_data(request->get_content_length(), (void*) request->get_content(), MHD_YES, MHD_NO);
-    MHD_add_response_header (response, MHD_HTTP_HEADER_CONTENT_TYPE, "application/json");
+    if (request->content_type != "") {
+        MHD_add_response_header (response, MHD_HTTP_HEADER_CONTENT_TYPE, request->content_type.c_str());
+    }
     MHD_add_response_header (response, MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, "*");
     MHD_add_response_header (response, "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     MHD_add_response_header (response, "Access-Control-Allow-Headers", "content-type");
