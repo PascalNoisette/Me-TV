@@ -54,7 +54,7 @@ void WebController::get_recordings_action(WebRequest & request)
         json_recording["recurring_type"] = recording.recurring_type;
         json_recording["action_after"] = recording.action_after;
         json_recording["channel_id"] = recording.channel_id;
-        json_recording["start_time"] = (int) (recording.start_time);
+        json_recording["start_time"] = (unsigned int) (recording.start_time);
         json_recording["duration"] = recording.duration;
         json.append(json_recording);
     }
