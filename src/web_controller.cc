@@ -90,6 +90,25 @@ void WebController::post_recordings_action(WebRequest & request)
     request.content_type = "application/json";
     request.code = MHD_HTTP_OK;
 }
+void WebController::delete_recording_action(WebRequest & request)
+{
+    Json::Value json;
+    guint scheduled_recording_id;
+    try {
+        scheduled_recording_id = atoi(request.params["scheduled_recording_id"].c_str());
+        g_debug("Removing %d", scheduled_recording_id);
+        scheduled_recording_manager.remove_scheduled_recording(scheduled_recording_id);
+        json["type"] = "success";
+        json["msg"] = "OK";
+    } catch (Exception e) {
+        json["type"] = "danger";
+        json["msg"] = e.what().c_str();
+    }
+    
+    request.content = json.toStyledString();
+    request.content_type = "application/json";
+    request.code = MHD_HTTP_OK;
+}
 void WebController::echo_action(WebRequest & request)
 {
     request.content += request.method + "\t" + request.url + "\n";
@@ -120,6 +139,11 @@ void WebController::dispatch(WebRequest & request)
     if (request.is(MHD_HTTP_METHOD_POST)) {
         if (request.match("/recording")) {
             return post_recordings_action(request);
+        }
+    }
+    if (request.is(MHD_HTTP_METHOD_DELETE)) {
+        if (request.match("/recording")) {
+            return delete_recording_action(request);
         }
     }
     if (request.match("/echo")) {
