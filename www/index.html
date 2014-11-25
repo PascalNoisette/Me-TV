@@ -97,10 +97,19 @@
                         $resource('recording/').delete(scheduled_recording).$promise.then(postFeedback);
                     }
                 };
+                function transformRequest(obj) {
+                    var str = [];
+                    for(var p in obj) {
+                        if (obj.hasOwnProperty(p)) {
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        }
+                    }
+                    return str.join("&");
+                }
                 $scope.schedule = function (scheduled_recording) {
                     scheduled_recording.start_time = Math.round(scheduled_recording.timestamp_start_time / 1000);
                     scheduled_recording.duration = scheduled_recording.minute_duration * 60;
-                    $resource('recording/').save(scheduled_recording).$promise.then(postFeedback);
+                    $resource('recording/', {}, {save:{method : 'POST', url : 'recording/',headers : {'Content-Type': 'application/x-www-form-urlencoded'}, transformRequest : transformRequest}}).save(scheduled_recording).$promise.then(postFeedback);
                 };
                 $scope.initScheduler = function () {
                     $scope.recording = {
