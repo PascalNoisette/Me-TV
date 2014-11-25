@@ -71,6 +71,11 @@ void WebController::echo_action(WebRequest & request)
     }
     request.code = MHD_HTTP_OK;
 }
+void WebController::www_action(WebRequest & request)
+{
+    request.content = Glib::file_get_contents(PACKAGE_DATA_DIR"/html/index.html");
+    request.code = MHD_HTTP_OK;
+}
 void WebController::dispatch(WebRequest & request)
 {
     if (request.is(MHD_HTTP_METHOD_GET)) {
@@ -80,6 +85,10 @@ void WebController::dispatch(WebRequest & request)
         if (request.match("/recording")) {
             return get_recordings_action(request);
         }
+        if (request.match("/echo")) {
+            return echo_action(request);
+        }
+        return www_action(request);
     }
     if (request.match("/echo")) {
         return echo_action(request);
