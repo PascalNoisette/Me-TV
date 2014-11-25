@@ -51,8 +51,8 @@
                     <input type="text" ng-model="recording.description" class="form-control"/>
                 </div>
                 <div class="form-group">
-                    <label>Duration (min):</label>
-                    <input type="number" ng-model="recording.minute_duration" class="form-control"/>
+                    <label>Duration</label>
+                    <timepicker ng-model="recording.timestamp_duration" show-meridian="false"></timepicker>
                 </div>
                 <div class="form-group">
                     <label>Start date:</label>
@@ -82,7 +82,10 @@
                 $scope.editScheduledRecording = function (scheduled_recording) {
                     $scope.schedulerform.open = true;
                     scheduled_recording.timestamp_start_time = scheduled_recording.start_time * 1000;
-                    scheduled_recording.minute_duration = scheduled_recording.duration / 60;
+                    var d = new Date();
+                    d.setHours(Math.round(scheduled_recording.duration/60/60));
+                    d.setMinutes(Math.round(scheduled_recording.duration/60)-d.getHours()*60);
+                    scheduled_recording.timestamp_duration = +d;
                     $scope.recording = scheduled_recording;
                 };
                 function postFeedback(data){
@@ -109,13 +112,17 @@
                 }
                 $scope.schedule = function (scheduled_recording) {
                     scheduled_recording.start_time = Math.round(scheduled_recording.timestamp_start_time / 1000);
-                    scheduled_recording.duration = scheduled_recording.minute_duration * 60;
+                    var d = new Date(scheduled_recording.timestamp_duration);
+                    scheduled_recording.duration = d.getHours() * 60 * 60 + d.getMinutes() * 60;
                     $resource('recording/', {}, {save:{method : 'POST', url : 'recording/',headers : {'Content-Type': 'application/x-www-form-urlencoded'}, transformRequest : transformRequest}}).save(scheduled_recording).$promise.then(postFeedback);
                 };
                 $scope.initScheduler = function () {
+                    var d = new Date();
+                    d.setHours(0);
+                    d.setMinutes(30);
                     $scope.recording = {
                         timestamp_start_time:Date.now(),
-                        minute_duration:60
+                        timestamp_duration:d,
                     };
                 };
                 $scope.openBlankScheduler = function () {
