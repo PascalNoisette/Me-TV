@@ -34,6 +34,7 @@ class WebController {
         void sample_action(WebRequest & request);
         void get_channels_action(WebRequest & request);
         void get_recordings_action(WebRequest & request);
+        void post_recordings_action(WebRequest & request);
         void echo_action(WebRequest & request);
         void www_action(WebRequest & request);
     public:

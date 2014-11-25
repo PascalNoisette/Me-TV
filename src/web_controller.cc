@@ -57,8 +57,35 @@ void WebController::get_recordings_action(WebRequest & request)
         json_recording["channel_id"] = recording.channel_id;
         json_recording["start_time"] = (unsigned int) (recording.start_time);
         json_recording["duration"] = recording.duration;
+        json_recording["device"] = recording.device.c_str();
         json.append(json_recording);
     }
+    request.content = json.toStyledString();
+    request.content_type = "application/json";
+    request.code = MHD_HTTP_OK;
+}
+void WebController::post_recordings_action(WebRequest & request)
+{
+    ScheduledRecording recording;
+    recording.device = request.params["device"];
+    recording.scheduled_recording_id = atoi(request.params["scheduled_recording_id"].c_str());
+    recording.recurring_type = atoi(request.params["recurring_type"].c_str());
+    recording.action_after = atoi(request.params["action_after"].c_str());
+    recording.description = request.params["description"];
+    recording.channel_id = atoi(request.params["channel_id"].c_str());
+    recording.start_time = atoi(request.params["start_time"].c_str());
+    recording.duration = atoi(request.params["duration"].c_str());
+    
+    Json::Value json;
+    try {
+        scheduled_recording_manager.set_scheduled_recording(recording);
+        json["type"] = "success";
+        json["msg"] = "OK";
+    } catch (Exception e) {
+        json["type"] = "danger";
+        json["msg"] = e.what().c_str();
+    }
+    
     request.content = json.toStyledString();
     request.content_type = "application/json";
     request.code = MHD_HTTP_OK;
@@ -89,6 +116,11 @@ void WebController::dispatch(WebRequest & request)
             return echo_action(request);
         }
         return www_action(request);
+    }
+    if (request.is(MHD_HTTP_METHOD_POST)) {
+        if (request.match("/recording")) {
+            return post_recordings_action(request);
+        }
     }
     if (request.match("/echo")) {
         return echo_action(request);
