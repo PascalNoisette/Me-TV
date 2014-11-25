@@ -1,29 +1,122 @@
 <!doctype html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Me-tv Web Interface</title>
-        <!--
-         *
-         * Copyright (C) 2014 Pascal Noisette
-         *
-         * This file is part of Me TV
-         *
-         * This program is free software; you can redistribute it and/or modify
-         * it under the terms of the GNU General Public License as published by
-         * the Free Software Foundation; either version 2 of the License, or
-         * (at your option) any later version.
-         * 
-         * This program is distributed in the hope that it will be useful,
-         * but WITHOUT ANY WARRANTY; without even the implied warranty of
-         * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-         * GNU Library General Public License for more details.
-         * 
-         * You should have received a copy of the GNU General Public License
-         * along with this program; if not, write to the Free Software
-         * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
-         *
-        -->
+	<!--
+	 *
+	 * Copyright (C) 2014 Pascal Noisette
+	 *
+	 * This file is part of Me TV
+	 *
+	 * This program is free software; you can redistribute it and/or modify
+	 * it under the terms of the GNU General Public License as published by
+	 * the Free Software Foundation; either version 2 of the License, or
+	 * (at your option) any later version.
+	 * 
+	 * This program is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 * GNU Library General Public License for more details.
+	 * 
+	 * You should have received a copy of the GNU General Public License
+	 * along with this program; if not, write to the Free Software
+	 * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+	 *
+	-->
     </head>
-    <body>
-    </body>
+    <body  ng-controller="Scheduler">
+    <accordion close-others="true">
+        <accordion-group heading="Scheduled recording" is-open="schedulelist.open">
+            <div class="panel panel-default">
+                <table class="table">
+                    <tr ng-repeat="scheduled_recording in recordings"><td><button class='btn btn-default' ng-click="editScheduledRecording(scheduled_recording)">Edit</button><button class='btn btn-default' ng-click="deleteScheduledRecording(scheduled_recording)">Delete</button></td><td>{{scheduled_recording.description}}</td><td ng-repeat="channel in channels| filter:{channel_id:scheduled_recording.channel_id}:true">{{channel.name}}</td><td>{{(scheduled_recording.start_time * 1000) | date : 'short'}}</td><td>{{scheduled_recording.duration / 60}} min</td></tr>
+                    <tr><td colspan="5"><button class='btn btn-default' ng-click="openBlankScheduler();">New</button></td></tr>
+                </table>
+            </div>
+        </accordion-group>
+        <accordion-group is-open="schedulerform.open">
+            <accordion-heading>
+                <span ng-click="initScheduler();">Schedule</span>
+            </accordion-heading>
+            <form>
+                <div class="form-group">
+                    <label>Channel:</label> 
+                    <select ng-model="recording.channel_id">
+                        <option ng-repeat="channel in channels" value="{{channel.channel_id}}">{{channel.name}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <input type="text" ng-model="recording.description" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label>Duration (min):</label>
+                    <input type="number" ng-model="recording.minute_duration" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label>Start date:</label>
+                    <datepicker ng-model="recording.timestamp_start_time" min-date="minDate" show-weeks="true" class="well well-sm"></datepicker>
+                </div>
+                <button type="submit" class="btn btn-default" ng-click="schedule(recording)">Submit</button>
+            </form>
+        </accordion-group>
+    </accordion>
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}">{{alert.msg}}</alert>
+
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-resource.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js"></script>
+
+    <script>
+        angular.module('myApp', ['ngResource']).controller('Scheduler', ['$scope', '$resource', '$timeout', function ($scope, $resource, $timeout) {
+                $scope.alerts = [];
+                $scope.channels = $resource('channel/').query();
+                $scope.recordings = $resource('recording/').query();
+                $scope.schedulerform = {open : false};
+                $scope.recordings.$promise.then(function() {$scope.schedulelist = {open : true}});
+                $scope.editScheduledRecording = function (scheduled_recording) {
+                    $scope.schedulerform.open = true;
+                    scheduled_recording.timestamp_start_time = scheduled_recording.start_time * 1000;
+                    scheduled_recording.minute_duration = scheduled_recording.duration / 60;
+                    $scope.recording = scheduled_recording;
+                };
+                function postFeedback(data){
+                    $scope.alerts = [data];
+                    $timeout(function(){$scope.alerts = [];}, 5000);
+                    if (data.type=="success") {
+                        $scope.schedulelist.open = true;
+                        $scope.recordings = $resource('recording/').query();
+                    }
+                }
+                $scope.deleteScheduledRecording = function (scheduled_recording) {
+                    if (confirm("Delete \"" + scheduled_recording.description + "\" ?")) {
+                        $resource('recording/').delete(scheduled_recording).$promise.then(postFeedback);
+                    }
+                };
+                $scope.schedule = function (scheduled_recording) {
+                    scheduled_recording.start_time = Math.round(scheduled_recording.timestamp_start_time / 1000);
+                    scheduled_recording.duration = scheduled_recording.minute_duration * 60;
+                    $resource('recording/').save(scheduled_recording).$promise.then(postFeedback);
+                };
+                $scope.initScheduler = function () {
+                    $scope.recording = {
+                        timestamp_start_time:Date.now(),
+                        minute_duration:60
+                    };
+                };
+                $scope.openBlankScheduler = function () {
+                    $scope.initScheduler();
+                    $scope.schedulerform.open = true;
+                };
+            }]);
+
+        angular.element(document).ready(function () {
+            angular.bootstrap(document, ['myApp', 'ui.bootstrap']);
+        });
+    </script>
+</body>
 </html>
