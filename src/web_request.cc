@@ -34,6 +34,7 @@ WebRequest::WebRequest(struct MHD_Connection * connection, const char * url, con
       if (is(MHD_HTTP_METHOD_POST)) {
         this->postprocessor = MHD_create_post_processor(connection, 512, iterate_post, (void *) this);
       }
+       MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, iterate_get, (void *) this);
 }
 
 int WebRequest::post_process(const char *post_data, size_t post_data_len)
@@ -48,6 +49,12 @@ int WebRequest::iterate_post (void *coninfo_cls, enum MHD_ValueKind kind, const 
   WebRequest * request = (WebRequest *) coninfo_cls;
   request->addParam(key, data);
   return MHD_YES;
+}
+int WebRequest::iterate_get (void *coninfo_cls, enum MHD_ValueKind kind, const char *key, const char *data)
+{
+    WebRequest * request = (WebRequest *) coninfo_cls;
+    request->addParam(key, data);
+    return MHD_YES;
 }
 
 char * WebRequest::get_content() 

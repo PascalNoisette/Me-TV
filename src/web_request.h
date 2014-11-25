@@ -33,6 +33,7 @@ class WebRequest {
         struct MHD_Connection * connection;
         struct MHD_PostProcessor * postprocessor;
         static int iterate_post (void *coninfo_cls, enum MHD_ValueKind kind, const char *key, const char *filename, const char *content_type, const char *transfer_encoding, const char *data, uint64_t off, size_t size);
+        static int iterate_get (void *coninfo_cls, enum MHD_ValueKind kind, const char *key, const char *data);
     public:
         WebRequest(struct MHD_Connection * connection, const char * url, const char * method);
         int post_process(const char *post_data, size_t post_data_len);
