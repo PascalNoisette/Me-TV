@@ -15,6 +15,9 @@ pixmaps_DATA = \
         src/me-tv.xpm \
         src/me-tv-recording.xpm
 
+wwwdir = $(datadir)/me-tv/html
+www_DATA = www/index.html
+
 schemasdir = $(GCONF_SCHEMA_FILE_DIR)
 schemas_in_files = me-tv.schemas.in
 schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
@@ -35,6 +38,7 @@ EXTRA_DIST = \
 	$(desktop_in_files) \
 	$(schemas_in_files) \
 	$(pixmaps_DATA) \
+	$(www_DATA) \
 	intltool-update.in \
 	intltool-merge.in \
 	intltool-extract.in
