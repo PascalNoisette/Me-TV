@@ -303,6 +303,34 @@
 			</locale>
 		</schema>
 
+                <schema>
+			<key>/schemas/apps/me-tv/enable_webinterface</key>
+			<applyto>/apps/me-tv/enable_webinterface</applyto>
+			<owner>me-tv</owner>
+			<type>bool</type>
+			<default>false</default>
+			<locale name="C">
+				<short>Enable webinterface</short>
+				<long>
+					Start webinterface deamon at startup
+				</long>
+			</locale>
+		</schema>
+
+                <schema>
+			<key>/schemas/apps/me-tv/listen_port_webinterface</key>
+			<applyto>/apps/me-tv/listen_port_webinterface</applyto>
+			<owner>me-tv</owner>
+			<type>int</type>
+			<default>1998</default>
+			<locale name="C">
+				<short>The webinterface listening port.</short>
+				<long>
+					The webinterface listening port.
+				</long>
+			</locale>
+		</schema>
+
 		<schema>
 			<key>/schemas/apps/me-tv/recent_searches</key>
 			<applyto>/apps/me-tv/recent_searches</applyto>

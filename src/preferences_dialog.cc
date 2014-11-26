@@ -41,6 +41,7 @@ void PreferencesDialog::run()
 	Gtk::SpinButton* spin_button_record_extra_after = NULL;
 	Gtk::SpinButton* spin_button_epg_span_hours = NULL;
 	Gtk::SpinButton* spin_button_epg_page_size = NULL;
+	Gtk::SpinButton* spin_button_listen_port_webinterface = NULL;
 	ComboBoxEntryText* combo_box_entry_video_driver = NULL;
 	ComboBoxEntryText* combo_box_entry_audio_driver = NULL;
 	ComboBoxText* combo_box_deinterlace_type = NULL;
@@ -52,12 +53,14 @@ void PreferencesDialog::run()
 	Gtk::CheckButton* check_button_display_status_icon = NULL;
 	Gtk::CheckButton* check_button_show_channel_number = NULL;
 	Gtk::CheckButton* check_button_remove_colon = NULL;
+	Gtk::CheckButton* check_button_enable_webinterface = NULL;
 
 	builder->get_widget("file_chooser_button_recording_directory", file_chooser_button_recording_directory);
 	builder->get_widget("spin_button_record_extra_before", spin_button_record_extra_before);
 	builder->get_widget("spin_button_record_extra_after", spin_button_record_extra_after);
 	builder->get_widget("spin_button_epg_span_hours", spin_button_epg_span_hours);
 	builder->get_widget("spin_button_epg_page_size", spin_button_epg_page_size);
+	builder->get_widget("spin_button_listen_port_webinterface", spin_button_listen_port_webinterface);
 	builder->get_widget_derived("combo_box_entry_video_driver", combo_box_entry_video_driver);
 	builder->get_widget_derived("combo_box_entry_audio_driver", combo_box_entry_audio_driver);
 	builder->get_widget_derived("combo_box_deinterlace_type", combo_box_deinterlace_type);
@@ -69,6 +72,7 @@ void PreferencesDialog::run()
 	builder->get_widget("check_button_display_status_icon", check_button_display_status_icon);
 	builder->get_widget("check_button_show_channel_number", check_button_show_channel_number);
 	builder->get_widget("check_button_remove_colon", check_button_remove_colon);
+	builder->get_widget("check_button_enable_webinterface", check_button_enable_webinterface);
 	
 	combo_box_entry_video_driver->clear_items();
 	combo_box_entry_video_driver->append_text("aadxr3");
@@ -109,6 +113,7 @@ void PreferencesDialog::run()
 	spin_button_record_extra_after->set_value(configuration_manager.get_int_value("record_extra_after"));
 	spin_button_epg_span_hours->set_value(configuration_manager.get_int_value("epg_span_hours"));
 	spin_button_epg_page_size->set_value(configuration_manager.get_int_value("epg_page_size"));
+	spin_button_listen_port_webinterface->set_value(configuration_manager.get_int_value("listen_port_webinterface"));
 	combo_box_entry_video_driver->get_entry()->set_text(configuration_manager.get_string_value("video_driver"));
 	combo_box_entry_audio_driver->get_entry()->set_text(configuration_manager.get_string_value("audio_driver"));
 	combo_box_deinterlace_type->set_active_text(configuration_manager.get_string_value("deinterlace_type"));
@@ -120,6 +125,7 @@ void PreferencesDialog::run()
 	check_button_display_status_icon->set_active(configuration_manager.get_boolean_value("display_status_icon"));
 	check_button_show_channel_number->set_active(configuration_manager.get_boolean_value("show_channel_number"));
 	check_button_remove_colon->set_active(configuration_manager.get_boolean_value("remove_colon"));
+	check_button_enable_webinterface->set_active(configuration_manager.get_boolean_value("enable_webinterface"));
 	
 	if (Dialog::run() == Gtk::RESPONSE_OK)
 	{
@@ -128,6 +134,7 @@ void PreferencesDialog::run()
 		configuration_manager.set_int_value("record_extra_after", (int)spin_button_record_extra_after->get_value());
 		configuration_manager.set_int_value("epg_span_hours", (int)spin_button_epg_span_hours->get_value());
 		configuration_manager.set_int_value("epg_page_size", (int)spin_button_epg_page_size->get_value());
+		configuration_manager.set_int_value("listen_port_webinterface", (int)spin_button_listen_port_webinterface->get_value());
 		configuration_manager.set_string_value("video_driver", combo_box_entry_video_driver->get_entry()->get_text());
 		configuration_manager.set_string_value("audio_driver", combo_box_entry_audio_driver->get_entry()->get_text());
 		configuration_manager.set_string_value("deinterlace_type", combo_box_deinterlace_type->get_active_text());
@@ -139,6 +146,7 @@ void PreferencesDialog::run()
 		configuration_manager.set_boolean_value("display_status_icon", check_button_display_status_icon->get_active());
 		configuration_manager.set_boolean_value("show_channel_number", check_button_show_channel_number->get_active());
 		configuration_manager.set_boolean_value("remove_colon", check_button_remove_colon->get_active());
+		configuration_manager.set_boolean_value("enable_webinterface", check_button_enable_webinterface->get_active());
 		
 		signal_update();
 	}

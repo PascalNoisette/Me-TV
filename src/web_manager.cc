@@ -25,6 +25,7 @@
 
 #include <glibmm.h>
 #include <map>
+#include "application.h"
 #include "web_manager.h"
 #include "web_controller.h"
 
@@ -64,15 +65,20 @@ int WebManager::handler(void * cls, struct MHD_Connection * connection, const ch
 }
 
 void WebManager::start() {
-    g_debug("WebManager start");
-    daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION, WEB_PORT, NULL, NULL, handler, NULL, MHD_OPTION_END);
-    g_debug("WebManager started");
+    if (configuration_manager.get_boolean_value("enable_webinterface")) {
+        g_debug("WebManager starts on port %d", configuration_manager.get_int_value("listen_port_webinterface"));
+        daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION, configuration_manager.get_int_value("listen_port_webinterface") , NULL, NULL, handler, NULL, MHD_OPTION_END);
+        g_debug("WebManager started");
+    }
 }
 
 void WebManager::stop() {
-    g_debug("WebManager is stopping");
-    MHD_stop_daemon(daemon);
-    g_debug("WebManager stopped");
+    if (daemon != NULL) {
+        g_debug("WebManager is stopping");
+        MHD_stop_daemon(daemon);
+        daemon = NULL;
+        g_debug("WebManager stopped");
+    }
 }
 
 WebManager::~WebManager() {
