@@ -35,6 +35,9 @@ WebRequest::WebRequest(struct MHD_Connection * connection, const char * url, con
         this->postprocessor = MHD_create_post_processor(connection, 512, iterate_post, (void *) this);
       }
        MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, iterate_get, (void *) this);
+       headers[MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN]= "*";
+       headers["Access-Control-Allow-Methods"]= "GET, POST, PUT, DELETE, OPTIONS";
+       headers["Access-Control-Allow-Headers"]= "content-type";
 }
 
 int WebRequest::post_process(const char *post_data, size_t post_data_len)
@@ -85,12 +88,9 @@ void WebRequest::addParam(Glib::ustring key, Glib::ustring value)
 int WebRequest::sendResponse()
 {
     struct MHD_Response * response = MHD_create_response_from_data(get_content_length(), (void*) get_content(), MHD_YES, MHD_NO);
-    if (content_type != "") {
-        MHD_add_response_header (response, MHD_HTTP_HEADER_CONTENT_TYPE, content_type.c_str());
+    for (std::map<const char*, Glib::ustring>::iterator iter = headers.begin(); iter != headers.end(); ++iter) {
+        MHD_add_response_header (response, iter->first, iter->second.c_str());
     }
-    MHD_add_response_header (response, MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-    MHD_add_response_header (response, "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    MHD_add_response_header (response, "Access-Control-Allow-Headers", "content-type");
     int ret = MHD_queue_response(connection, code, response);
     MHD_destroy_response(response);
     return ret;

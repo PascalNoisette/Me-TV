@@ -39,8 +39,8 @@ class WebRequest {
         int post_process(const char *post_data, size_t post_data_len);
         int code;
         Glib::ustring content;
-        Glib::ustring content_type;
         std::map<Glib::ustring, Glib::ustring> params;
+        std::map<const char *, Glib::ustring> headers;
         Glib::ustring url;
         Glib::ustring method;
         char * get_content();

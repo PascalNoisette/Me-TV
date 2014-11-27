@@ -42,7 +42,7 @@ void WebController::get_channels_action(WebRequest & request)
         json.append(json_channel);
     }
     request.content = json.toStyledString();
-    request.content_type = "application/json";
+    request.headers[MHD_HTTP_HEADER_CONTENT_TYPE] = "application/json";
     request.code = MHD_HTTP_OK;
 }
 void WebController::get_recordings_action(WebRequest & request)
@@ -61,7 +61,7 @@ void WebController::get_recordings_action(WebRequest & request)
         json.append(json_recording);
     }
     request.content = json.toStyledString();
-    request.content_type = "application/json";
+    request.headers[MHD_HTTP_HEADER_CONTENT_TYPE] = "application/json";
     request.code = MHD_HTTP_OK;
 }
 void WebController::post_recordings_action(WebRequest & request)
@@ -87,7 +87,7 @@ void WebController::post_recordings_action(WebRequest & request)
     }
     
     request.content = json.toStyledString();
-    request.content_type = "application/json";
+    request.headers[MHD_HTTP_HEADER_CONTENT_TYPE] = "application/json";
     request.code = MHD_HTTP_OK;
 }
 void WebController::delete_recording_action(WebRequest & request)
@@ -106,7 +106,7 @@ void WebController::delete_recording_action(WebRequest & request)
     }
     
     request.content = json.toStyledString();
-    request.content_type = "application/json";
+    request.headers[MHD_HTTP_HEADER_CONTENT_TYPE] = "application/json";
     request.code = MHD_HTTP_OK;
 }
 void WebController::echo_action(WebRequest & request)
