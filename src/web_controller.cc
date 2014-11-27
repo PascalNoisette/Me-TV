@@ -119,7 +119,7 @@ void WebController::echo_action(WebRequest & request)
 }
 void WebController::www_action(WebRequest & request)
 {
-    request.content = Glib::file_get_contents(PACKAGE_DATA_DIR"/html/index.html");
+    request.download_file = PACKAGE_DATA_DIR"/html/index.html";
     request.code = MHD_HTTP_OK;
 }
 void WebController::dispatch(WebRequest & request)
