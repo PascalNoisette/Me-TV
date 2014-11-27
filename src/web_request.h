@@ -48,6 +48,7 @@ class WebRequest {
         bool is(const char * method);
         bool match(const char * url);
         void addParam(Glib::ustring, Glib::ustring);
+        int sendResponse();
 };
 #endif
 
