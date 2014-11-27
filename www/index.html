@@ -75,8 +75,12 @@
     <script>
         angular.module('myApp', ['ngResource']).controller('Scheduler', ['$scope', '$resource', '$timeout', function ($scope, $resource, $timeout) {
                 $scope.alerts = [];
-                $scope.channels = $resource('channel/').query();
-                $scope.recordings = $resource('recording/').query();
+                var server = "";
+                if (window.location.protocol == "file:") {
+                    server = "http://127.0.0.1:1998/";
+                }
+                $scope.channels = $resource(server + 'channel/').query();
+                $scope.recordings = $resource(server + 'recording/').query();
                 $scope.schedulerform = {open : false};
                 $scope.recordings.$promise.then(function() {$scope.schedulelist = {open : true}});
                 $scope.editScheduledRecording = function (scheduled_recording) {
@@ -93,12 +97,12 @@
                     $timeout(function(){$scope.alerts = [];}, 5000);
                     if (data.type=="success") {
                         $scope.schedulelist.open = true;
-                        $scope.recordings = $resource('recording/').query();
+                        $scope.recordings = $resource(server + 'recording/').query();
                     }
                 }
                 $scope.deleteScheduledRecording = function (scheduled_recording) {
                     if (confirm("Delete \"" + scheduled_recording.description + "\" ?")) {
-                        $resource('recording/').delete(scheduled_recording).$promise.then(postFeedback);
+                        $resource(server + 'recording/').delete(scheduled_recording).$promise.then(postFeedback);
                     }
                 };
                 function transformRequest(obj) {
@@ -114,7 +118,7 @@
                     scheduled_recording.start_time = Math.round(scheduled_recording.timestamp_start_time / 1000);
                     var d = new Date(scheduled_recording.timestamp_duration);
                     scheduled_recording.duration = d.getHours() * 60 * 60 + d.getMinutes() * 60;
-                    $resource('recording/', {}, {save:{method : 'POST', url : 'recording/',headers : {'Content-Type': 'application/x-www-form-urlencoded'}, transformRequest : transformRequest}}).save(scheduled_recording).$promise.then(postFeedback);
+                    $resource(server + 'recording/', {}, {save:{method : 'POST', url : server +  'recording/',headers : {'Content-Type': 'application/x-www-form-urlencoded'}, transformRequest : transformRequest}}).save(scheduled_recording).$promise.then(postFeedback);
                 };
                 $scope.initScheduler = function () {
                     var d = new Date();
