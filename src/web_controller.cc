@@ -117,9 +117,25 @@ void WebController::echo_action(WebRequest & request)
     }
     request.code = MHD_HTTP_OK;
 }
+Glib::ustring WebController::secure_filename(Glib::ustring file)
+{
+    Glib::ustring::size_type pos = 0;
+    Glib::ustring find = "..";
+    Glib::ustring replace = ".";
+    while((pos = file.find(find, pos)) != Glib::ustring::npos)
+    {
+            file.replace(pos, find.size(), replace);
+            pos = 0;
+    }
+    return file;
+}
 void WebController::www_action(WebRequest & request)
 {
-    request.download_file = PACKAGE_DATA_DIR"/html/index.html";
+    Glib::ustring file = request.url;
+    if (file == "/") {
+        file = "/index.html";
+    }
+    request.download_file = PACKAGE_DATA_DIR"/html" + secure_filename(file);
     request.code = MHD_HTTP_OK;
 }
 void WebController::dispatch(WebRequest & request)

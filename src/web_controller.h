@@ -38,6 +38,7 @@ class WebController {
         void delete_recording_action(WebRequest & request);
         void echo_action(WebRequest & request);
         void www_action(WebRequest & request);
+        Glib::ustring secure_filename(Glib::ustring file);
     public:
         void dispatch(WebRequest & request);
       

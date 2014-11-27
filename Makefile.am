@@ -16,7 +16,13 @@ pixmaps_DATA = \
         src/me-tv-recording.xpm
 
 wwwdir = $(datadir)/me-tv/html
-www_DATA = www/index.html
+www_DATA = \
+	www/index.html \
+	www/angular.min.js \
+	www/ui-bootstrap.min.js \
+	www/angular-resource.min.js \
+	www/ui-bootstrap-tpls.min.js \
+	www/bootstrap.min.css
 
 schemasdir = $(GCONF_SCHEMA_FILE_DIR)
 schemas_in_files = me-tv.schemas.in
