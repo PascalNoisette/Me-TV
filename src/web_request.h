@@ -50,6 +50,8 @@ class WebRequest {
         bool match(const char * url);
         void addParam(Glib::ustring, Glib::ustring);
         int sendResponse();
+        bool authenticate();
+        int failAuthenticate();
 };
 #endif
 

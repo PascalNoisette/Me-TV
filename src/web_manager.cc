@@ -36,6 +36,11 @@ int WebManager::handler(void * cls, struct MHD_Connection * connection, const ch
       *ptr = (void*) new WebRequest(connection, url, method);
       return MHD_YES;
   }
+  else if (configuration_manager.get_boolean_value("enable_authentification") && ((WebRequest *) *ptr)->authenticate())
+  {
+      request = (WebRequest *) *ptr;
+      return request->failAuthenticate();
+  }
   else if (*upload_data_size > 0)
   {
       request = (WebRequest *) *ptr;

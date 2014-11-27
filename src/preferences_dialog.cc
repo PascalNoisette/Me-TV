@@ -45,6 +45,8 @@ void PreferencesDialog::run()
 	ComboBoxEntryText* combo_box_entry_video_driver = NULL;
 	ComboBoxEntryText* combo_box_entry_audio_driver = NULL;
 	ComboBoxText* combo_box_deinterlace_type = NULL;
+	ComboBoxEntryText* combo_box_webinterface_username = NULL;
+	ComboBoxEntryText* combo_box_webinterface_password = NULL;
 	ComboBoxEntryText* combo_box_entry_text_encoding = NULL;
 	Gtk::CheckButton* check_button_keep_above = NULL;
 	Gtk::CheckButton* check_button_show_epg_header = NULL;
@@ -54,6 +56,7 @@ void PreferencesDialog::run()
 	Gtk::CheckButton* check_button_show_channel_number = NULL;
 	Gtk::CheckButton* check_button_remove_colon = NULL;
 	Gtk::CheckButton* check_button_enable_webinterface = NULL;
+	Gtk::CheckButton* check_button_enable_authentification = NULL;
 
 	builder->get_widget("file_chooser_button_recording_directory", file_chooser_button_recording_directory);
 	builder->get_widget("spin_button_record_extra_before", spin_button_record_extra_before);
@@ -64,6 +67,8 @@ void PreferencesDialog::run()
 	builder->get_widget_derived("combo_box_entry_video_driver", combo_box_entry_video_driver);
 	builder->get_widget_derived("combo_box_entry_audio_driver", combo_box_entry_audio_driver);
 	builder->get_widget_derived("combo_box_deinterlace_type", combo_box_deinterlace_type);
+	builder->get_widget_derived("combo_box_webinterface_username", combo_box_webinterface_username);
+	builder->get_widget_derived("combo_box_webinterface_password", combo_box_webinterface_password);
 	builder->get_widget_derived("combo_box_entry_text_encoding", combo_box_entry_text_encoding);
 	builder->get_widget("check_button_keep_above", check_button_keep_above);
 	builder->get_widget("check_button_show_epg_header", check_button_show_epg_header);
@@ -73,6 +78,7 @@ void PreferencesDialog::run()
 	builder->get_widget("check_button_show_channel_number", check_button_show_channel_number);
 	builder->get_widget("check_button_remove_colon", check_button_remove_colon);
 	builder->get_widget("check_button_enable_webinterface", check_button_enable_webinterface);
+	builder->get_widget("check_button_enable_authentification", check_button_enable_authentification);
 	
 	combo_box_entry_video_driver->clear_items();
 	combo_box_entry_video_driver->append_text("aadxr3");
@@ -107,6 +113,9 @@ void PreferencesDialog::run()
 	combo_box_deinterlace_type->append_text("none");
 	combo_box_deinterlace_type->append_text("standard");
 	combo_box_deinterlace_type->append_text("tvtime");
+        
+        combo_box_webinterface_username->clear_items();
+        combo_box_webinterface_password->clear_items();
 	
 	file_chooser_button_recording_directory->set_filename(configuration_manager.get_string_value("recording_directory"));
 	spin_button_record_extra_before->set_value(configuration_manager.get_int_value("record_extra_before"));
@@ -117,6 +126,8 @@ void PreferencesDialog::run()
 	combo_box_entry_video_driver->get_entry()->set_text(configuration_manager.get_string_value("video_driver"));
 	combo_box_entry_audio_driver->get_entry()->set_text(configuration_manager.get_string_value("audio_driver"));
 	combo_box_deinterlace_type->set_active_text(configuration_manager.get_string_value("deinterlace_type"));
+        combo_box_webinterface_username->get_entry()->set_text(configuration_manager.get_string_value("webinterface_username"));
+	combo_box_webinterface_password->get_entry()->set_text(configuration_manager.get_string_value("webinterface_password"));
 	combo_box_entry_text_encoding->get_entry()->set_text(configuration_manager.get_string_value("text_encoding"));
 	check_button_keep_above->set_active(configuration_manager.get_boolean_value("keep_above"));
 	check_button_show_epg_header->set_active(configuration_manager.get_boolean_value("show_epg_header"));
@@ -126,6 +137,7 @@ void PreferencesDialog::run()
 	check_button_show_channel_number->set_active(configuration_manager.get_boolean_value("show_channel_number"));
 	check_button_remove_colon->set_active(configuration_manager.get_boolean_value("remove_colon"));
 	check_button_enable_webinterface->set_active(configuration_manager.get_boolean_value("enable_webinterface"));
+	check_button_enable_authentification->set_active(configuration_manager.get_boolean_value("enable_authentification"));
 	
 	if (Dialog::run() == Gtk::RESPONSE_OK)
 	{
@@ -138,6 +150,8 @@ void PreferencesDialog::run()
 		configuration_manager.set_string_value("video_driver", combo_box_entry_video_driver->get_entry()->get_text());
 		configuration_manager.set_string_value("audio_driver", combo_box_entry_audio_driver->get_entry()->get_text());
 		configuration_manager.set_string_value("deinterlace_type", combo_box_deinterlace_type->get_active_text());
+		configuration_manager.set_string_value("webinterface_username", combo_box_webinterface_username->get_entry()->get_text());
+		configuration_manager.set_string_value("webinterface_password", combo_box_webinterface_password->get_entry()->get_text());
 		configuration_manager.set_string_value("text_encoding", combo_box_entry_text_encoding->get_entry()->get_text());
 		configuration_manager.set_boolean_value("keep_above", check_button_keep_above->get_active());
 		configuration_manager.set_boolean_value("show_epg_header", check_button_show_epg_header->get_active());
@@ -147,6 +161,7 @@ void PreferencesDialog::run()
 		configuration_manager.set_boolean_value("show_channel_number", check_button_show_channel_number->get_active());
 		configuration_manager.set_boolean_value("remove_colon", check_button_remove_colon->get_active());
 		configuration_manager.set_boolean_value("enable_webinterface", check_button_enable_webinterface->get_active());
+		configuration_manager.set_boolean_value("enable_authentification", check_button_enable_authentification->get_active());
 		
 		signal_update();
 	}

@@ -331,6 +331,48 @@
 			</locale>
 		</schema>
 
+                <schema>
+			<key>/schemas/apps/me-tv/enable_authentification</key>
+			<applyto>/apps/me-tv/enable_authentification</applyto>
+			<owner>me-tv</owner>
+			<type>bool</type>
+			<default>true</default>
+			<locale name="C">
+				<short>enable authentification</short>
+				<long>
+					Ask password to access webinterface
+				</long>
+			</locale>
+		</schema>
+
+                <schema>
+			<key>/schemas/apps/me-tv/webinterface_username</key>
+			<applyto>/apps/me-tv/webinterface_username</applyto>
+			<owner>me-tv</owner>
+			<type>string</type>
+			<default>root</default>
+			<locale name="C">
+				<short>Webinterface username</short>
+				<long>
+					Username to access webinterface
+				</long>
+			</locale>
+		</schema>
+
+                <schema>
+			<key>/schemas/apps/me-tv/webinterface_password</key>
+			<applyto>/apps/me-tv/webinterface_password</applyto>
+			<owner>me-tv</owner>
+			<type>string</type>
+			<default>pa$$w0rd</default>
+			<locale name="C">
+				<short>Webinterface username</short>
+				<long>
+					Password to access webinterface
+				</long>
+			</locale>
+		</schema>
+
 		<schema>
 			<key>/schemas/apps/me-tv/recent_searches</key>
 			<applyto>/apps/me-tv/recent_searches</applyto>

@@ -28,6 +28,7 @@
  #include <sys/types.h>
  #include <sys/stat.h>
 #include "web_request.h"
+#include "application.h"
 
 WebRequest::WebRequest(struct MHD_Connection * connection, const char * url, const char * method) 
 {
@@ -111,4 +112,27 @@ struct MHD_Response * WebRequest::get_download_file()
         return NULL;
     }
     return MHD_create_response_from_fd(sbuf.st_size, fd);
+}
+
+bool WebRequest::authenticate()
+{
+    char *user = NULL;
+    char *pass = NULL;
+    user = MHD_basic_auth_get_username_password (connection, &pass);
+    int fail = ( (user == NULL) ||
+	   (0 != strcmp (user, configuration_manager.get_string_value("webinterface_username").c_str())) ||
+	   (0 != strcmp (pass, configuration_manager.get_string_value("webinterface_password").c_str()) ) );
+    if (user != NULL) free (user);
+    if (pass != NULL) free (pass);
+    return fail;
+}
+ 
+int WebRequest::failAuthenticate()
+{
+    content = "401";
+    code = MHD_HTTP_UNAUTHORIZED;
+    struct MHD_Response * response = get_content();
+    int ret = MHD_queue_basic_auth_fail_response (connection, "401", response);
+    MHD_destroy_response (response);
+    return ret;
 }
