@@ -39,12 +39,13 @@ class WebRequest {
         int post_process(const char *post_data, size_t post_data_len);
         int code;
         Glib::ustring content;
+        Glib::ustring download_file;
         std::map<Glib::ustring, Glib::ustring> params;
         std::map<const char *, Glib::ustring> headers;
         Glib::ustring url;
         Glib::ustring method;
-        char * get_content();
-        size_t get_content_length();
+        struct MHD_Response * get_content();
+        struct MHD_Response * get_download_file();
         bool is(const char * method);
         bool match(const char * url);
         void addParam(Glib::ustring, Glib::ustring);

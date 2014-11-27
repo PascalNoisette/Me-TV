@@ -24,6 +24,9 @@
 
 #include <cstring>
 #include <glibmm.h>
+ #include <fcntl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
 #include "web_request.h"
 
 WebRequest::WebRequest(struct MHD_Connection * connection, const char * url, const char * method) 
@@ -59,17 +62,10 @@ int WebRequest::iterate_get (void *coninfo_cls, enum MHD_ValueKind kind, const c
     request->addParam(key, data);
     return MHD_YES;
 }
-
-char * WebRequest::get_content() 
+struct MHD_Response * WebRequest::get_content() 
 {
-    return strdup(content.c_str());
+    return MHD_create_response_from_data(content.length(), (void*) strdup(content.c_str()), MHD_YES, MHD_NO);
 }
-
-size_t WebRequest::get_content_length() 
-{
-    return content.length();
-}
-
 bool WebRequest::is(const char * expected_method) 
 {
     return method == expected_method;
@@ -87,11 +83,32 @@ void WebRequest::addParam(Glib::ustring key, Glib::ustring value)
 
 int WebRequest::sendResponse()
 {
-    struct MHD_Response * response = MHD_create_response_from_data(get_content_length(), (void*) get_content(), MHD_YES, MHD_NO);
+    struct MHD_Response * response = NULL;
+    if (download_file != "") {
+        response = get_download_file();
+    }
+    if (response == NULL) {
+        response = get_content();
+    }
     for (std::map<const char*, Glib::ustring>::iterator iter = headers.begin(); iter != headers.end(); ++iter) {
         MHD_add_response_header (response, iter->first, iter->second.c_str());
     }
     int ret = MHD_queue_response(connection, code, response);
     MHD_destroy_response(response);
     return ret;
+}
+
+struct MHD_Response * WebRequest::get_download_file() 
+{
+    int fd;
+    struct stat sbuf;
+    if ((-1 == (fd = open(download_file.c_str(), O_RDONLY))) || (0 != fstat(fd, &sbuf))) {
+        if (fd != -1) {
+            (void) close(fd);
+        }
+        content = "404";
+        code = MHD_HTTP_NOT_FOUND;
+        return NULL;
+    }
+    return MHD_create_response_from_fd(sbuf.st_size, fd);
 }
