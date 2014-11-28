@@ -27,7 +27,7 @@
     </head>
     <body  ng-controller="Scheduler">
     <accordion close-others="true">
-        <accordion-group heading="Scheduled recording" is-open="schedulelist.open">
+        <accordion-group heading="Scheduled recordings" is-open="schedulelist.open">
             <div class="panel panel-default">
                 <table class="table">
                     <tr ng-repeat="scheduled_recording in recordings"><td><button class='btn btn-default' ng-click="editScheduledRecording(scheduled_recording)">Edit</button><button class='btn btn-default' ng-click="deleteScheduledRecording(scheduled_recording)">Delete</button></td><td>{{scheduled_recording.description}}</td><td ng-repeat="channel in channels| filter:{channel_id:scheduled_recording.channel_id}:true">{{channel.name}}</td><td>{{(scheduled_recording.start_time * 1000) | date : 'short'}}</td><td>{{scheduled_recording.duration / 60}} min</td></tr>
