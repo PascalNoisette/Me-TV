@@ -303,6 +303,76 @@
 			</locale>
 		</schema>
 
+                <schema>
+			<key>/schemas/apps/me-tv/enable_webinterface</key>
+			<applyto>/apps/me-tv/enable_webinterface</applyto>
+			<owner>me-tv</owner>
+			<type>bool</type>
+			<default>false</default>
+			<locale name="C">
+				<short>Enable web interface</short>
+				<long>
+					Start web interface deamon at startup
+				</long>
+			</locale>
+		</schema>
+
+                <schema>
+			<key>/schemas/apps/me-tv/listen_port_webinterface</key>
+			<applyto>/apps/me-tv/listen_port_webinterface</applyto>
+			<owner>me-tv</owner>
+			<type>int</type>
+			<default>1998</default>
+			<locale name="C">
+				<short>The web interface listening port.</short>
+				<long>
+					The web interface listening port.
+				</long>
+			</locale>
+		</schema>
+
+                <schema>
+			<key>/schemas/apps/me-tv/enable_authentification</key>
+			<applyto>/apps/me-tv/enable_authentification</applyto>
+			<owner>me-tv</owner>
+			<type>bool</type>
+			<default>true</default>
+			<locale name="C">
+				<short>enable authentification</short>
+				<long>
+					Ask password to access web interface
+				</long>
+			</locale>
+		</schema>
+
+                <schema>
+			<key>/schemas/apps/me-tv/webinterface_username</key>
+			<applyto>/apps/me-tv/webinterface_username</applyto>
+			<owner>me-tv</owner>
+			<type>string</type>
+			<default>root</default>
+			<locale name="C">
+				<short>Web username</short>
+				<long>
+					Username to access web interface
+				</long>
+			</locale>
+		</schema>
+
+                <schema>
+			<key>/schemas/apps/me-tv/webinterface_password</key>
+			<applyto>/apps/me-tv/webinterface_password</applyto>
+			<owner>me-tv</owner>
+			<type>string</type>
+			<default>pa$$w0rd</default>
+			<locale name="C">
+				<short>Web username</short>
+				<long>
+					Password to access web interface
+				</long>
+			</locale>
+		</schema>
+
 		<schema>
 			<key>/schemas/apps/me-tv/recent_searches</key>
 			<applyto>/apps/me-tv/recent_searches</applyto>

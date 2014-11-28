@@ -32,12 +32,14 @@
 #include "scheduled_recording_manager.h"
 #include "stream_manager.h"
 #include "configuration_manager.h"
+#include "web_manager.h"
 
 extern ChannelManager channel_manager;
 extern ScheduledRecordingManager scheduled_recording_manager;
 extern DeviceManager device_manager;
 extern StreamManager stream_manager;
 extern ConfigurationManager configuration_manager;
+extern WebManager web_manager;
 
 class Application {
 private:

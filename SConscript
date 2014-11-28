@@ -33,6 +33,7 @@ SideEffect('po/.intltool-merge-cache', built_things)
 
 Alias('install', [
     Install(environment['DATADIR'] + '/pixmaps/', Glob('*.png')),
+    Install(environment['DATADIR'] + '/me-tv/html/', Glob('www/*')),
     Install(environment['DATADIR'] + '/man/man1/', Glob('me-tv*.1')),
     Install(environment['DATADIR'] + '/applications/', desktop),
     Install(environment['PREFIX'] + '/etc/gconf/schemas/', schemas),

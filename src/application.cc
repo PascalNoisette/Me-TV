@@ -305,6 +305,7 @@ void Application::run() {
 		scheduled_recording_manager.initialise();
 		stream_manager.initialise();
 		stream_manager.start();
+                web_manager.start();
 		ChannelArray & channels = channel_manager.get_channels();
 		FrontendList const & frontends = device_manager.get_frontends();
 		if (!frontends.empty()) {
