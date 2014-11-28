@@ -54,13 +54,13 @@ int WebRequest::post_process(const char *post_data, size_t post_data_len)
 int WebRequest::iterate_post (void *coninfo_cls, enum MHD_ValueKind kind, const char *key, const char *filename, const char *content_type, const char *transfer_encoding, const char *data, uint64_t off, size_t size)
 {
   WebRequest * request = (WebRequest *) coninfo_cls;
-  request->addParam(key, data);
+  request->params[key] = data;
   return MHD_YES;
 }
 int WebRequest::iterate_get (void *coninfo_cls, enum MHD_ValueKind kind, const char *key, const char *data)
 {
     WebRequest * request = (WebRequest *) coninfo_cls;
-    request->addParam(key, data);
+    request->params[key] = data;
     return MHD_YES;
 }
 struct MHD_Response * WebRequest::get_content() 
@@ -77,12 +77,7 @@ bool WebRequest::match(const char * expected_url)
     return url.compare(expected_url) == 0;
 }
 
-void WebRequest::addParam(Glib::ustring key, Glib::ustring value) 
-{
-    this->params[key] = value;
-}
-
-int WebRequest::sendResponse()
+int WebRequest::send_response()
 {
     struct MHD_Response * response = NULL;
     if (download_file != "") {
@@ -127,7 +122,7 @@ bool WebRequest::authenticate()
     return fail;
 }
  
-int WebRequest::failAuthenticate()
+int WebRequest::fail_authenticate()
 {
     content = "401";
     code = MHD_HTTP_UNAUTHORIZED;

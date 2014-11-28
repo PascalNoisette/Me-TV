@@ -29,14 +29,11 @@
 
 class WebRequest {
     private:
-        
         struct MHD_Connection * connection;
         struct MHD_PostProcessor * postprocessor;
         static int iterate_post (void *coninfo_cls, enum MHD_ValueKind kind, const char *key, const char *filename, const char *content_type, const char *transfer_encoding, const char *data, uint64_t off, size_t size);
         static int iterate_get (void *coninfo_cls, enum MHD_ValueKind kind, const char *key, const char *data);
     public:
-        WebRequest(struct MHD_Connection * connection, const char * url, const char * method);
-        int post_process(const char *post_data, size_t post_data_len);
         int code;
         Glib::ustring content;
         Glib::ustring download_file;
@@ -44,14 +41,15 @@ class WebRequest {
         std::map<const char *, Glib::ustring> headers;
         Glib::ustring url;
         Glib::ustring method;
+        WebRequest(struct MHD_Connection * connection, const char * url, const char * method);
+        int post_process(const char *post_data, size_t post_data_len);
         struct MHD_Response * get_content();
         struct MHD_Response * get_download_file();
         bool is(const char * method);
         bool match(const char * url);
-        void addParam(Glib::ustring, Glib::ustring);
-        int sendResponse();
+        int send_response();
         bool authenticate();
-        int failAuthenticate();
+        int fail_authenticate();
 };
 #endif
 
