@@ -1204,7 +1204,7 @@ found in /usr/share/common-licenses/GPL file.</property>
             </child>
             <child>
 		<object class="GtkCheckButton" id="check_button_enable_webinterface">
-                <property name="label" translatable="yes">Start webinterface (restart required)</property>
+                <property name="label" translatable="yes">Start web interface (restart required)</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">true</property>
@@ -1221,7 +1221,7 @@ found in /usr/share/common-licenses/GPL file.</property>
 	      <object class="GtkLabel" id="label_listen_port_webinterface">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                <property name="label" translatable="yes">Listen port</property>
+                <property name="label" translatable="yes">Web interface port</property>
 		<property name="receives_default">True</property>
               </object>
               <packing>
@@ -1250,7 +1250,7 @@ found in /usr/share/common-licenses/GPL file.</property>
             </child>
             <child>
 	      <object class="GtkCheckButton" id="check_button_enable_authentification">
-                <property name="label" translatable="yes">Enable authentification</property>
+                <property name="label" translatable="yes">Enable web authentification</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">true</property>
@@ -1267,7 +1267,7 @@ found in /usr/share/common-licenses/GPL file.</property>
               <object class="GtkLabel" id="label_webinterface_username">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                <property name="label" translatable="yes">Webinterface username</property>
+                <property name="label" translatable="yes">Web username</property>
                 <property name="receives_default">True</property>
               </object>
               <packing>
@@ -1303,7 +1303,7 @@ found in /usr/share/common-licenses/GPL file.</property>
               <object class="GtkLabel" id="label_webinterface_password">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                <property name="label" translatable="yes">Webinterface password</property>
+                <property name="label" translatable="yes">Web password</property>
                 <property name="receives_default">True</property>
               </object>
               <packing>
