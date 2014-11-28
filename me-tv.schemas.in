@@ -310,9 +310,9 @@
 			<type>bool</type>
 			<default>false</default>
 			<locale name="C">
-				<short>Enable webinterface</short>
+				<short>Enable web interface</short>
 				<long>
-					Start webinterface deamon at startup
+					Start web interface deamon at startup
 				</long>
 			</locale>
 		</schema>
@@ -324,9 +324,9 @@
 			<type>int</type>
 			<default>1998</default>
 			<locale name="C">
-				<short>The webinterface listening port.</short>
+				<short>The web interface listening port.</short>
 				<long>
-					The webinterface listening port.
+					The web interface listening port.
 				</long>
 			</locale>
 		</schema>
@@ -340,7 +340,7 @@
 			<locale name="C">
 				<short>enable authentification</short>
 				<long>
-					Ask password to access webinterface
+					Ask password to access web interface
 				</long>
 			</locale>
 		</schema>
@@ -352,9 +352,9 @@
 			<type>string</type>
 			<default>root</default>
 			<locale name="C">
-				<short>Webinterface username</short>
+				<short>Web username</short>
 				<long>
-					Username to access webinterface
+					Username to access web interface
 				</long>
 			</locale>
 		</schema>
@@ -366,9 +366,9 @@
 			<type>string</type>
 			<default>pa$$w0rd</default>
 			<locale name="C">
-				<short>Webinterface username</short>
+				<short>Web username</short>
 				<long>
-					Password to access webinterface
+					Password to access web interface
 				</long>
 			</locale>
 		</schema>
