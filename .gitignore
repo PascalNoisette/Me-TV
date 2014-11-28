@@ -31,3 +31,6 @@ local_build_options.scons
 .pydevproject
 .settings/
 *~
+me-tv.anjuta
+.anjuta/
+.anjuta_sym_db.db
