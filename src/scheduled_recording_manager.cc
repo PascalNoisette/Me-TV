@@ -1,41 +1,38 @@
 /*
- * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014 Russel Winder
+ * Me TV — A GTK+ client for watching and recording DVB.
  *
- * This file is part of Me TV
+ *  Copyright (C) 2011 Michael Lamothe
+ *  Copyright © 2014  Russel Winder
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "scheduled_recording_manager.h"
 #include "application.h"
 
-void ScheduledRecordingManager::initialise() {
-}
+void ScheduledRecordingManager::initialise() { }
 
 void ScheduledRecordingManager::load(Data::Connection & connection) {
 	Glib::Threads::RecMutex::Lock lock(mutex);
 	g_debug("Loading scheduled recordings");
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
 	Data::TableAdapter adapter(connection, table);
-	Glib::ustring where = Glib::ustring::compose(
-		"((start_time + duration) > %1 OR recurring_type != 0)", time(NULL));
+	Glib::ustring where = Glib::ustring::compose("((start_time + duration) > %1 OR recurring_type != 0)", time(NULL));
 	Data::DataTable data_table = adapter.select_rows(where, "start_time");
 	dirty = false;
 	scheduled_recordings.clear();
-	for (auto & row: data_table.rows) {
+	for (auto && row: data_table.rows) {
 		ScheduledRecording scheduled_recording;
 		scheduled_recording.scheduled_recording_id = row["scheduled_recording_id"].int_value;
 		scheduled_recording.channel_id = row["channel_id"].int_value;
@@ -62,7 +59,7 @@ void ScheduledRecordingManager::save(Data::Connection & connection) {
 	g_debug("Saving %d scheduled recordings", (int)scheduled_recordings.size());
 	Data::Table table = get_application().get_schema().tables["scheduled_recording"];
 	Data::DataTable data_table(table);
-	for (auto & scheduled_recording: scheduled_recordings) {
+	for (auto && scheduled_recording: scheduled_recordings) {
 		time_t now = time(NULL);
 		if (scheduled_recording.get_end_time() > now || scheduled_recording.recurring_type != 0) {
 			Data::Row row;
@@ -86,7 +83,7 @@ void ScheduledRecordingManager::save(Data::Connection & connection) {
 	Glib::ustring where = Glib::ustring::compose("recurring_type != %1 AND (start_time + duration) < %2", SCHEDULED_RECORDING_RECURRING_TYPE_ONCE, now);
 	data_table = adapter.select_rows(where, "start_time");
 	gboolean updated = false;
-	for (auto & row: data_table.rows) {
+	for (auto && row: data_table.rows) {
 		g_debug("ScheduledRecordingManager::save/clear ID: %d", row["scheduled_recording_id"].int_value);
 		if (row["recurring_type"].int_value == SCHEDULED_RECORDING_RECURRING_TYPE_EVERYDAY) {
 			row["start_time"].int_value += 86400;
@@ -137,7 +134,7 @@ void ScheduledRecordingManager::set_scheduled_recording(EpgEvent & epg_event) {
 gboolean ScheduledRecordingManager::is_device_available(const Glib::ustring & device, ScheduledRecording const & scheduled_recording) {
 	Channel & channel = channel_manager.get_channel_by_id(scheduled_recording.channel_id);
 	for (auto const & current: scheduled_recordings) {
-		Channel& current_channel = channel_manager.get_channel_by_id(current.channel_id);
+		Channel & current_channel = channel_manager.get_channel_by_id(current.channel_id);
 		if (
 			channel.transponder != current_channel.transponder &&
 			scheduled_recording.overlaps(current) &&

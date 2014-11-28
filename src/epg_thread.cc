@@ -1,22 +1,21 @@
 /*
- * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014  Russel Winder
+ * Me TV — A GTK+ client for watching and recording DVB.
  *
- * This file is part of Me TV
+ *  Copyright (C) 2011 Michael Lamothe
+ *  Copyright © 2014  Russel Winder
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "me-tv.h"
@@ -29,27 +28,22 @@ private:
 	GSList * eit_demuxers;
 	guint demuxer_count;
 	Glib::ustring demuxer_path;
-
 public:
 	EITDemuxers(Glib::ustring const & path) {
 		demuxer_path = path;
 		demuxer_count = 0;
 		eit_demuxers = NULL;
 	}
-
 	~EITDemuxers() {
 		delete_all();
 	}
-
 	gboolean get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInformationSection& section, gboolean is_atsc);
-
-	Dvb::Demuxer* add() {
+	Dvb::Demuxer * add() {
 		Dvb::Demuxer * demuxer = new Dvb::Demuxer(demuxer_path);
 		eit_demuxers = g_slist_append(eit_demuxers, demuxer);
 		demuxer_count++;
 		return demuxer;
 	}
-
 	void delete_all() {
 		while (eit_demuxers != NULL) {
 			delete (Dvb::Demuxer*)eit_demuxers->data;
@@ -60,9 +54,7 @@ public:
 };
 
 gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::EventInformationSection& section, gboolean is_atsc) {
-	if (eit_demuxers == NULL) {
-		throw Exception(_("No demuxers"));
-	}
+	if (eit_demuxers == NULL) { throw Exception(_("No demuxers")); }
 	Dvb::Demuxer * selected_eit_demuxer = NULL;
 	pollfd fds[demuxer_count];
 	guint count = 0;
@@ -79,21 +71,15 @@ gboolean EITDemuxers::get_next_eit(Dvb::SI::SectionParser& parser, Dvb::SI::Even
 		eit_demuxer = eit_demuxers;
 		while (eit_demuxer != NULL && selected_eit_demuxer == NULL) {
 			Dvb::Demuxer* current = (Dvb::Demuxer*)eit_demuxer->data;
-			if ((fds[count++].revents&POLLIN) != 0) {
-				selected_eit_demuxer = current;
-			}
+			if ((fds[count++].revents&POLLIN) != 0) { selected_eit_demuxer = current; }
 			eit_demuxer = g_slist_next(eit_demuxer);
 		}
 		if (selected_eit_demuxer == NULL) {
 			g_debug("Failed to get an EIT demuxer with events");
 			return false;
 		}
-		if (is_atsc) {
-			parser.parse_psip_eis(*selected_eit_demuxer, section);
-		}
-		else {
-			parser.parse_eis(*selected_eit_demuxer, section);
-		}
+		if (is_atsc) { parser.parse_psip_eis(*selected_eit_demuxer, section); }
+		else { parser.parse_eis(*selected_eit_demuxer, section); }
 	}
 	return result >= 0;
 }

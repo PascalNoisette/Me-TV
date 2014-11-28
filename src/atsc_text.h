@@ -1,4 +1,4 @@
-	/*
+/*
  * section and descriptor parser
  *
  * Copyright (C) 2005 Andrew de Quincey (adq_dvb@lidskialf.net)
@@ -31,7 +31,7 @@ extern "C"
 
 typedef uint8_t iso639lang_t[3];
 typedef uint8_t iso639country_t[3];
-	
+
 enum atsc_vct_modulation {
 	ATSC_VCT_MODULATION_ANALOG 	= 0x01,
 	ATSC_VCT_MODULATION_SCTE_MODE1 	= 0x02,
