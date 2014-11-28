@@ -127,7 +127,7 @@ int WebRequest::fail_authenticate()
     content = "401";
     code = MHD_HTTP_UNAUTHORIZED;
     struct MHD_Response * response = get_content();
-    int ret = MHD_queue_basic_auth_fail_response (connection, "401", response);
+    int ret = MHD_queue_basic_auth_fail_response (connection, PACKAGE_NAME, response);
     MHD_destroy_response (response);
     return ret;
 }
