@@ -34,6 +34,7 @@ private:
 	void post_recordings_action(WebRequest & request);
 	void delete_recording_action(WebRequest & request);
 	void echo_action(WebRequest & request);
+        void translate_action(WebRequest & request);
 	void www_action(WebRequest & request);
 	Glib::ustring secure_filename(Glib::ustring file);
 public:
