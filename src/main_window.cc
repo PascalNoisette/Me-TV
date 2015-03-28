@@ -1,22 +1,21 @@
 /*
- * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014  Russel Winder
+ * Me TV — A GTK+ client for watching and recording DVB.
  *
- * This file is part of Me TV
+ *  Copyright (C) 2011 Michael Lamothe
+ *  Copyright © 2014  Russel Winder
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "me-tv.h"
@@ -233,16 +232,12 @@ bool MainWindow::on_motion_notify_event(GdkEventMotion * event_motion) {
 void MainWindow::unfullscreen(gboolean restore_mode) {
 	Gtk::Window::unfullscreen();
 	label_time->hide();
-	if (restore_mode) {
-		set_view_mode(prefullscreen_view_mode);
-	}
+	if (restore_mode) { set_view_mode(prefullscreen_view_mode); }
 }
 
 void MainWindow::fullscreen(gboolean change_mode) {
 	prefullscreen_view_mode = view_mode;
-	if (change_mode) {
-		set_view_mode(VIEW_MODE_VIDEO);
-	}
+	if (change_mode) { set_view_mode(VIEW_MODE_VIDEO); }
 	label_time->show();
 	Gtk::Window::fullscreen();
 }
@@ -261,9 +256,7 @@ void MainWindow::on_timeout() {
 	try {
 		guint now = time(NULL);
 		label_time->set_text(get_local_time_text(now,"%H:%M"));
-		if (channel_change_timeout > 1) {
-			channel_change_timeout--;
-		}
+		if (channel_change_timeout > 1) { --channel_change_timeout; }
 		else if (channel_change_timeout == 1) {
 			// Deactivate the countdown
 			channel_change_timeout = 0;
@@ -294,29 +287,23 @@ void MainWindow::on_timeout() {
 			last_update_time = now;
 		}
 		// Check on engine
-		if (engine != NULL && !engine->is_running()) {
-			stop_engine();
-		}
+		if (engine != NULL && !engine->is_running()) { stop_engine(); }
 	}
-	catch(...) {
-		on_exception();
-	}
+	catch(...) { on_exception(); }
 }
 
 void MainWindow::pause(gboolean state) {
-	if (engine != NULL) {
-		engine->pause(state);
-	}
+	if (engine != NULL) { engine->pause(state); }
 }
 
 void MainWindow::set_view_mode(ViewMode mode) {
-	Gtk::Widget* widget = NULL;
+	Gtk::Widget * widget = NULL;
 	widget = ui_manager->get_widget("/menu_bar");
 	widget->property_visible() = (mode == VIEW_MODE_CONTROLS);
 	builder->get_widget("scrolled_window_epg", widget);
 	widget->property_visible() = (mode == VIEW_MODE_CONTROLS);
 	hbox_controls->property_visible() = (mode == VIEW_MODE_CONTROLS);
-	Gtk::HBox* hbox_epg_controls = NULL;
+	Gtk::HBox * hbox_epg_controls = NULL;
 	builder->get_widget("hbox_epg_controls", hbox_epg_controls);
 	hbox_epg_controls->property_visible() = (mode == VIEW_MODE_CONTROLS);
 	view_mode = mode;
@@ -330,7 +317,7 @@ void MainWindow::show_scheduled_recordings_dialog() {
 }
 
 void MainWindow::show_epg_event_search_dialog() {
-	EpgEventSearchDialog& epg_event_search_dialog = EpgEventSearchDialog::get(builder);
+	EpgEventSearchDialog & epg_event_search_dialog = EpgEventSearchDialog::get(builder);
 	epg_event_search_dialog.run();
 	epg_event_search_dialog.hide();
 	signal_update();
@@ -338,16 +325,12 @@ void MainWindow::show_epg_event_search_dialog() {
 
 void MainWindow::on_menu_item_audio_stream_activate(guint index) {
 	g_debug("MainWindow::on_menu_item_audio_stream_activate(%d)", index);
-	if (engine != NULL) {
-		engine->set_audio_stream(index);
-	}
+	if (engine != NULL) { engine->set_audio_stream(index); }
 }
 
 void MainWindow::on_menu_item_subtitle_stream_activate(guint index) {
 	g_debug("MainWindow::on_menu_item_subtitle_stream_activate(%d)", index);
-	if (engine != NULL) {
-		engine->set_subtitle_stream(index);
-	}
+	if (engine != NULL) { engine->set_subtitle_stream(index); }
 }
 
 void MainWindow::on_show() {
@@ -362,10 +345,8 @@ void MainWindow::on_show() {
 	}
 	Gtk::Window::on_show();
 	Gdk::Window::process_all_updates();
-	if (configuration_manager.get_boolean_value("keep_above")) {
-		set_keep_above();
-	}
-	Gtk::EventBox* event_box_video = NULL;
+	if (configuration_manager.get_boolean_value("keep_above")) { set_keep_above(); }
+	Gtk::EventBox * event_box_video = NULL;
 	builder->get_widget("event_box_video", event_box_video);
 	event_box_video->resize_children();
 	select_channel_to_play();
@@ -375,9 +356,7 @@ void MainWindow::on_hide() {
 	save_geometry();
 	Gtk::Window::on_hide();
 	signal_stop_display();
-	if (!configuration_manager.get_boolean_value("display_status_icon")) {
-		Gtk::Main::quit();
-	}
+	if (!configuration_manager.get_boolean_value("display_status_icon")) { Gtk::Main::quit(); }
 }
 
 void MainWindow::save_geometry() {
@@ -404,9 +383,7 @@ void MainWindow::add_channel_number(guint channel_number) {
 	g_debug("Key %d pressed", channel_number);
 	temp_channel_number *= 10;
 	temp_channel_number += channel_number;
-	if (channel_change_timeout == 0) {
-		channel_change_timeout = SECONDS_UNTIL_CHANNEL_CHANGE;
-	}
+	if (channel_change_timeout == 0) { channel_change_timeout = SECONDS_UNTIL_CHANNEL_CHANGE; }
 }
 
 bool MainWindow::on_key_press_event(GdkEventKey* event_key) {
@@ -437,9 +414,7 @@ bool MainWindow::on_drawing_area_expose_event(GdkEventExpose* event_expose) {
 }
 
 void MainWindow::create_engine() {
-	if (engine != NULL) {
-		throw Exception(_("Failed to start engine: Engine has already been started"));
-	}
+	if (engine != NULL) { throw Exception(_("Failed to start engine: Engine has already been started")); }
 	g_debug("Creating engine");
 	Application & application = get_application();
 	engine = new Engine();
@@ -449,11 +424,9 @@ void MainWindow::create_engine() {
 }
 
 void MainWindow::play(const Glib::ustring& mrl) {
-	if (engine == NULL) {
-		create_engine();
-	}
-	Gtk::Menu* audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_audio/action_audio_streams"))->get_submenu();
-	Gtk::Menu* subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_video/action_subtitle_streams"))->get_submenu();
+	if (engine == NULL) { create_engine(); }
+	Gtk::Menu * audio_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_audio/action_audio_streams"))->get_submenu();
+	Gtk::Menu * subtitle_streams_menu = ((Gtk::MenuItem*)ui_manager->get_widget("/menu_bar/action_video/action_subtitle_streams"))->get_submenu();
 	Gtk::Menu_Helpers::MenuList & audio_items = audio_streams_menu->items();
 	audio_items.erase(audio_items.begin(), audio_items.end());
 	Gtk::Menu_Helpers::MenuList & subtitle_items = subtitle_streams_menu->items();
@@ -467,13 +440,9 @@ void MainWindow::play(const Glib::ustring& mrl) {
 	for (std::vector<Mpeg::AudioStream>::iterator i = audio_streams.begin(); i != audio_streams.end(); ++i) {
 		Mpeg::AudioStream audio_stream = *i;
 		Glib::ustring text = Glib::ustring::compose("%1: %2", count, audio_stream.language);
-		if (audio_stream.type == STREAM_TYPE_AUDIO_AC3) {
-			text += " (AC3)";
-		}
-		else if (audio_stream.type == STREAM_TYPE_AUDIO_MPEG4) {
-			text += " (MPEG4)";
-		}
-		Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
+		if (audio_stream.type == STREAM_TYPE_AUDIO_AC3) { text += " (AC3)"; }
+		else if (audio_stream.type == STREAM_TYPE_AUDIO_MPEG4) { text += " (MPEG4)"; }
+		Gtk::RadioMenuItem * menu_item = new Gtk::RadioMenuItem(audio_streams_menu_group, text);
 		menu_item->show_all();
 		audio_streams_menu->items().push_back(*menu_item);
 		menu_item->signal_activate().connect(
@@ -482,13 +451,13 @@ void MainWindow::play(const Glib::ustring& mrl) {
 				count
 			)
 		);
-		count++;
+		++count;
 	}
 	std::vector<Mpeg::SubtitleStream> & subtitle_streams = stream.subtitle_streams;
 	Gtk::RadioMenuItem::Group subtitle_streams_menu_group;
 	count = 0;
 	selected = false;
-	Gtk::RadioMenuItem* menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
+	Gtk::RadioMenuItem * menu_item_subtitle_none = new Gtk::RadioMenuItem(subtitle_streams_menu_group, _("None"));
 	menu_item_subtitle_none->show_all();
 	subtitle_streams_menu->items().push_back(*menu_item_subtitle_none);
 	menu_item_subtitle_none->signal_activate().connect(
@@ -498,10 +467,9 @@ void MainWindow::play(const Glib::ustring& mrl) {
 		)
 	);
 	g_debug("Subtitle streams: %zu", subtitle_streams.size());
-	for (std::vector<Mpeg::SubtitleStream>::iterator i = subtitle_streams.begin(); i != subtitle_streams.end(); ++i) {
-		Mpeg::SubtitleStream subtitle_stream = *i;
+	for (auto && subtitle_stream: subtitle_streams) {
 		Glib::ustring text = Glib::ustring::compose("%1: %2", count, subtitle_stream.language);
-		Gtk::RadioMenuItem* menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
+		Gtk::RadioMenuItem * menu_item = new Gtk::RadioMenuItem(subtitle_streams_menu_group, text);
 		menu_item->show_all();
 		subtitle_streams_menu->items().push_back(*menu_item);
 		menu_item->signal_activate().connect(
@@ -510,11 +478,9 @@ void MainWindow::play(const Glib::ustring& mrl) {
 				count
 			)
 		);
-		count++;
+		++count;
 	}
-	if (engine != NULL) {
-		engine->play(mrl);
-	}
+	if (engine != NULL) { engine->play(mrl); }
 }
 
 void MainWindow::on_update() {
@@ -538,9 +504,7 @@ void MainWindow::set_status_text(Glib::ustring const & text) {
 }
 
 void MainWindow::start_engine() {
-	if (property_visible()) {
-		play(stream_manager.get_display_stream().filename);
-	}
+	if (property_visible()) { play(stream_manager.get_display_stream().filename); }
 }
 
 void MainWindow::stop_engine() {
@@ -559,21 +523,15 @@ void MainWindow::restart_engine() {
 }
 
 void MainWindow::on_audio_channel_both() {
-	if (engine != NULL) {
-		engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_BOTH);
-	}
+	if (engine != NULL) { engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_BOTH); }
 }
 
 void MainWindow::on_audio_channel_left() {
-	if (engine != NULL) {
-		engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_LEFT);
-	}
+	if (engine != NULL) { engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_LEFT); }
 }
 
 void MainWindow::on_audio_channel_right() {
-	if (engine != NULL) {
-		engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_RIGHT);
-	}
+	if (engine != NULL) { engine->set_audio_channel_state(Engine::AUDIO_CHANNEL_STATE_RIGHT); }
 }
 
 void MainWindow::on_channels() {
@@ -624,17 +582,13 @@ void MainWindow::on_decrease_volume() {
 }
 
 void MainWindow::on_button_volume_value_changed(double value) {
-	if (engine != NULL) {
-		engine->set_volume(value);
-	}
+	if (engine != NULL) { engine->set_volume(value); }
 }
 
 void MainWindow::set_mute_state(gboolean state) {
 	mute_state = state;
 	toggle_action_mute->set_icon_name(state ? "audio-volume-muted" : "audio-volume-high");
-	if (engine != NULL) {
-		engine->set_mute_state(mute_state);
-	}
+	if (engine != NULL) { engine->set_mute_state(mute_state); }
 }
 
 void MainWindow::on_fullscreen() {
@@ -658,18 +612,10 @@ void MainWindow::show_error(Glib::ustring const & message) {
 }
 
 void MainWindow::on_exception() {
-	try {
-		throw;
-	}
-	catch (const Exception& exception) {
-		show_error(exception.what());
-	}
-	catch (const Glib::Error& exception) {
-		show_error(exception.what());
-	}
-	catch (...) {
-		show_error("Unhandled exception");
-	}
+	try { throw; }
+	catch (Exception const & exception) { show_error(exception.what()); }
+	catch (Glib::Error const & exception) { show_error(exception.what()); }
+	catch (...) { show_error("Unhandled exception"); }
 }
 
 void MainWindow::select_channel_to_play() {
@@ -687,9 +633,7 @@ void MainWindow::select_channel_to_play() {
 			g_debug("Last channel '%d' not found", channel_id);
 			channel_id = channels[0].channel_id;
 		}
-		if (!device_manager.get_frontends().empty()) {
-			signal_start_display(channel_id);
-		}
+		if (!device_manager.get_frontends().empty()) { signal_start_display(channel_id); }
 	}
 }
 
@@ -708,6 +652,4 @@ void MainWindow::on_stop_display() {
 	signal_update();
 }
 
-void MainWindow::on_error(Glib::ustring const & message) {
-	show_error(message);
-}
+void MainWindow::on_error(Glib::ustring const & message) { show_error(message); }

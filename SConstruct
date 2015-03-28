@@ -122,6 +122,8 @@ main_dependencies = (
     ('x11', '>= 1.6.1'),  # 1.6.2
     ('dbus-1', '>= 1.6.12'),  # 1.8.2
     ('dbus-glib-1', '>= 0.100.2'),  # 0.102
+    ('libmicrohttpd', '>= 0.9.34'),  # 0.9.37
+    ('jsoncpp', '>= 0.6'),
 )
 
 xine_player_dependencies = (

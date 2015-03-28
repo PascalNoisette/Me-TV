@@ -1,22 +1,21 @@
 /*
- * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014 Russel Winder
+ * Me TV — A GTK+ client for watching and recording DVB.
  *
- * This file is part of Me TV
+ *  Copyright (C) 2011 Michael Lamothe
+ *  Copyright © 2014  Russel Winder
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "engine.h"
@@ -40,17 +39,13 @@ Engine::Engine() {
 	Gtk::DrawingArea * drawing_area_video = NULL;
 	get_application().get_builder()->get_widget("drawing_area_video", drawing_area_video);
 	window = GDK_WINDOW_XID(drawing_area_video->get_window()->gobj());
-	if (window == 0) {
-		throw Exception(_("Window ID was 0"));
-	}
+	if (window == 0) { throw Exception(_("Window ID was 0")); }
 }
 
-Engine::~Engine() {
-	stop();
-}
+Engine::~Engine() { stop(); }
 
 void Engine::play(Glib::ustring const & mrl) {
-	Application& application = get_application();
+	Application & application = get_application();
 	this->mrl = mrl;
 	g_debug("Engine::play(\"%s\")", mrl.c_str());
 	// TODO: Put some protections in place to ensure no fails here. Especially the engine search.
@@ -66,9 +61,7 @@ void Engine::play(Glib::ustring const & mrl) {
 	argv.push_back(Glib::ustring::compose("%1", subtitle_stream));
 	argv.push_back(Glib::ustring::compose("%1", (int)(volume * 100)));
 	g_debug("=================================================");
-	for (auto const & arg: argv) {
-		g_debug("> %s", arg.c_str());
-	}
+	for (auto && arg: argv) { g_debug("> %s", arg.c_str()); }
 	g_debug("=================================================");
 	try {
 		Glib::spawn_async_with_pipes("/tmp",

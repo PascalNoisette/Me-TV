@@ -1,22 +1,21 @@
 /*
- * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014  Russel Winder
+ * Me TV — A GTK+ client for watching and recording DVB.
  *
- * This file is part of Me TV
+ *  Copyright (C) 2011 Michael Lamothe
+ *  Copyright © 2014  Russel Winder
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "status_icon.h"
@@ -45,21 +44,13 @@ StatusIcon::StatusIcon() {
 	g_debug("StatusIcon constructed");
 }
 
-void StatusIcon::on_popup_menu(guint button, guint32 activate_time) {
-	menu_status->popup(button, activate_time);
-}
+void StatusIcon::on_popup_menu(guint button, guint32 activate_time) { menu_status->popup(button, activate_time); }
 
-void StatusIcon::on_menu_item_status_quit_clicked() {
-	action_quit->activate();
-}
+void StatusIcon::on_menu_item_status_quit_clicked() { action_quit->activate(); }
 
-void StatusIcon::on_menu_item_status_me_tv_clicked() {
-	toggle_action_visibility->activate();
-}
+void StatusIcon::on_menu_item_status_me_tv_clicked() { toggle_action_visibility->activate(); }
 
-void StatusIcon::on_activate() {
-	toggle_action_visibility->activate();
-}
+void StatusIcon::on_activate() { toggle_action_visibility->activate(); }
 
 void StatusIcon::update() {
 	Application & application = get_application();
@@ -70,9 +61,7 @@ void StatusIcon::update() {
 		Glib::ustring device = frontend_thread->frontend.get_path();
 		ChannelStreamList & streams = frontend_thread->get_streams();
 		for (auto const stream: streams) {
-			if (!title.empty()) {
-				title += "\n";
-			}
+			if (!title.empty()) { title += "\n"; }
 			switch (stream->type) {
 			case CHANNEL_STREAM_TYPE_DISPLAY: title += "Now showing: "; break;
 			case CHANNEL_STREAM_TYPE_SCHEDULED_RECORDING: title += "Recording (Scheduled): "; break;
@@ -82,14 +71,8 @@ void StatusIcon::update() {
 			title += stream->description;
 		}
 	}
-	if (title.empty()) {
-		title = _("Me TV is idle");
-	}
+	if (title.empty()) { title = _("Me TV is idle"); }
 	status_icon->set_tooltip(title);
-	if (stream_manager.is_recording()) {
-		status_icon->set("me-tv-recording");
-	}
-	else {
-		status_icon->set("me-tv");
-	}
+	if (stream_manager.is_recording()) { status_icon->set("me-tv-recording"); }
+	else { status_icon->set("me-tv"); }
 }

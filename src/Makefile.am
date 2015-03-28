@@ -104,6 +104,12 @@ me_tv_SOURCES = \
 	crc32.h \
 	stream_manager.cc \
 	stream_manager.h \
+	web_manager.cc \
+	web_manager.h \
+	web_request.cc \
+	web_request.h \
+	web_controller.cc \
+	web_controller.h \
 	epg_event_search_dialog.cc \
 	epg_event_search_dialog.h \
 	epg_event_dialog.cc \

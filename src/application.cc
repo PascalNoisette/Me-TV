@@ -1,22 +1,21 @@
 /*
- * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014  Russel Winder
+ * Me TV — A GTK+ client for watching and recording DVB.
  *
- * This file is part of Me TV
+ *  Copyright (C) 2011 Michael Lamothe
+ *  Copyright © 2014  Russel Winder
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "application.h"
@@ -28,10 +27,6 @@
 #define CURRENT_DATABASE_VERSION	6
 
 Application * Application::current = NULL;
-
-Application & get_application() {
-	return Application::get_current();
-}
 
 Application::Application() {
 	g_debug("Application constructor");
@@ -114,9 +109,7 @@ Application::Application() {
 
 Application::~Application() {
 	g_debug("Application destructor started");
-	if (timeout_source != 0) {
-		g_source_remove(timeout_source);
-	}
+	if (timeout_source != 0) { g_source_remove(timeout_source); }
 	if (status_icon != NULL) {
 		delete status_icon;
 		status_icon = NULL;
@@ -305,6 +298,7 @@ void Application::run() {
 		scheduled_recording_manager.initialise();
 		stream_manager.initialise();
 		stream_manager.start();
+                web_manager.start();
 		ChannelArray & channels = channel_manager.get_channels();
 		FrontendList const & frontends = device_manager.get_frontends();
 		if (!frontends.empty()) {
@@ -330,9 +324,7 @@ void Application::run() {
 }
 
 Application & Application::get_current() {
-	if (current == NULL) {
-		throw Exception(_("Application has not been initialised"));
-	}
+	if (current == NULL) { throw Exception(_("Application has not been initialised")); }
 	return *current;
 }
 
@@ -340,9 +332,7 @@ void Application::check_scheduled_recordings() {
 	ScheduledRecordingList scheduled_recordings = scheduled_recording_manager.check_scheduled_recordings();
 	for (auto & scheduled_recording: scheduled_recordings) {
 		Channel * channel = channel_manager.find_channel(scheduled_recording.channel_id);
-		if (channel != NULL) {
-			start_recording(*channel, scheduled_recording);
-		}
+		if (channel != NULL) { start_recording(*channel, scheduled_recording); }
 	}
 	gboolean check = true;
 	while (check) {
@@ -429,3 +419,5 @@ void Application::stop_recording(Channel & channel) {
 	stream_manager.stop_recording(channel);
 	signal_update();
 }
+
+Application & get_application() { return Application::get_current(); }

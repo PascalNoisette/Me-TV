@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Me-tv Web Interface</title>
+	<!--
+	 *
+	 * Copyright (C) 2014 Pascal Noisette
+	 *
+	 * This file is part of Me TV
+	 *
+	 * This program is free software; you can redistribute it and/or modify
+	 * it under the terms of the GNU General Public License as published by
+	 * the Free Software Foundation; either version 2 of the License, or
+	 * (at your option) any later version.
+	 * 
+	 * This program is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 * GNU Library General Public License for more details.
+	 * 
+	 * You should have received a copy of the GNU General Public License
+	 * along with this program; if not, write to the Free Software
+	 * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+	 *
+	-->
+    </head>
+    <body  ng-controller="Scheduler">
+    <accordion close-others="true">
+        <accordion-group heading="Scheduled recordings" is-open="schedulelist.open">
+            <div class="panel panel-default">
+                <table class="table">
+                    <tr ng-repeat="scheduled_recording in recordings"><td><button class='btn btn-default' ng-click="editScheduledRecording(scheduled_recording)">Edit</button><button class='btn btn-default' ng-click="deleteScheduledRecording(scheduled_recording)">Delete</button></td><td>{{scheduled_recording.description}}</td><td ng-repeat="channel in channels| filter:{channel_id:scheduled_recording.channel_id}:true">{{channel.name}}</td><td>{{(scheduled_recording.start_time * 1000) | date : 'short'}}</td><td>{{scheduled_recording.duration / 60}} min</td></tr>
+                    <tr><td colspan="5"><button class='btn btn-default' ng-click="openBlankScheduler();">New</button></td></tr>
+                </table>
+            </div>
+        </accordion-group>
+        <accordion-group is-open="schedulerform.open">
+            <accordion-heading>
+                <span ng-click="initScheduler();">Schedule</span>
+            </accordion-heading>
+            <form>
+                <div class="form-group">
+                    <label>Channel:</label> 
+                    <select ng-model="recording.channel_id">
+                        <option ng-repeat="channel in channels" value="{{channel.channel_id}}">{{channel.name}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <input type="text" ng-model="recording.description" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label>Duration</label>
+                    <timepicker ng-model="recording.timestamp_duration" show-meridian="false"></timepicker>
+                </div>
+                <div class="form-group">
+                    <label>Start date:</label>
+                    <datepicker ng-model="recording.timestamp_start_time" min-date="minDate" show-weeks="true" class="well well-sm"></datepicker>
+                    <timepicker ng-model="recording.timestamp_start_time"></timepicker>
+                </div>
+                <button type="submit" class="btn btn-default" ng-click="schedule(recording)">Submit</button>
+            </form>
+        </accordion-group>
+    </accordion>
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}">{{alert.msg}}</alert>
+
+
+    <link rel="stylesheet" href="bootstrap.min.css"/>
+    <script src="angular.min.js"></script>
+    <script src="angular-resource.min.js"></script>
+    <script src="ui-bootstrap.min.js"></script>
+    <script src="ui-bootstrap-tpls.min.js"></script>
+
+    <script>
+        angular.module('myApp', ['ngResource']).controller('Scheduler', ['$scope', '$resource', '$timeout', function ($scope, $resource, $timeout) {
+                $scope.alerts = [];
+                var server = "";
+                if (window.location.protocol == "file:") {
+                    server = "http://127.0.0.1:1998/";
+                }
+                $scope.channels = $resource(server + 'channel/').query();
+                $scope.recordings = $resource(server + 'recording/').query();
+                $scope.schedulerform = {open : false};
+                $scope.recordings.$promise.then(function() {$scope.schedulelist = {open : true}});
+                $scope.editScheduledRecording = function (scheduled_recording) {
+                    $scope.schedulerform.open = true;
+                    scheduled_recording.timestamp_start_time = scheduled_recording.start_time * 1000;
+                    var d = new Date();
+                    d.setHours(Math.round(scheduled_recording.duration/60/60));
+                    d.setMinutes(Math.round(scheduled_recording.duration/60)-d.getHours()*60);
+                    scheduled_recording.timestamp_duration = +d;
+                    $scope.recording = scheduled_recording;
+                };
+                function postFeedback(data){
+                    $scope.alerts = [data];
+                    $timeout(function(){$scope.alerts = [];}, 5000);
+                    if (data.type=="success") {
+                        $scope.schedulelist.open = true;
+                        $scope.recordings = $resource(server + 'recording/').query();
+                    }
+                }
+                $scope.deleteScheduledRecording = function (scheduled_recording) {
+                    if (confirm("Delete \"" + scheduled_recording.description + "\" ?")) {
+                        $resource(server + 'recording/').delete(scheduled_recording).$promise.then(postFeedback);
+                    }
+                };
+                function transformRequest(obj) {
+                    var str = [];
+                    for(var p in obj) {
+                        if (obj.hasOwnProperty(p)) {
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        }
+                    }
+                    return str.join("&");
+                }
+                $scope.schedule = function (scheduled_recording) {
+                    scheduled_recording.start_time = Math.round(scheduled_recording.timestamp_start_time / 1000);
+                    var d = new Date(scheduled_recording.timestamp_duration);
+                    scheduled_recording.duration = d.getHours() * 60 * 60 + d.getMinutes() * 60;
+                    $resource(server + 'recording/', {}, {save:{method : 'POST', url : server +  'recording/',headers : {'Content-Type': 'application/x-www-form-urlencoded'}, transformRequest : transformRequest}}).save(scheduled_recording).$promise.then(postFeedback);
+                };
+                $scope.initScheduler = function () {
+                    var d = new Date();
+                    d.setHours(0);
+                    d.setMinutes(30);
+                    $scope.recording = {
+                        timestamp_start_time:Date.now(),
+                        timestamp_duration:d,
+                    };
+                };
+                $scope.openBlankScheduler = function () {
+                    $scope.initScheduler();
+                    $scope.schedulerform.open = true;
+                };
+            }]);
+
+        angular.element(document).ready(function () {
+            angular.bootstrap(document, ['myApp', 'ui.bootstrap']);
+        });
+    </script>
+    <style>
+        .btn {
+            min-width:70px;
+            margin-left:1px;
+            margin-bottom:1px;
+        }
+    </style>
+</body>
+</html>

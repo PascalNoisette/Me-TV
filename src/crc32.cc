@@ -1,22 +1,21 @@
 /*
- * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014  Russel Winder
+ * Me TV — A GTK+ client for watching and recording DVB.
  *
- * This file is part of Me TV
+ *  Copyright (C) 2011 Michael Lamothe
+ *  Copyright © 2014  Russel Winder
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "crc32.h"
@@ -71,22 +70,6 @@ constexpr guint32 crc_table[256] = {
 
 bool initialized = false;
 
-// Conjecture: the init function simply overwrites the values that were in the above table with the same
-// values. Given we have the values in place why run the code?
-
-/*
-void init() {
-	for (gint i = 0; i < 256; ++i) {
-		guint k = 0;
-		for (guint j = (i << 24) | 0x800000; j != 0x80000000; j <<= 1) {
-			k = (k << 1) ^ (((k ^ j) & 0x80000000) ? 0x04c11db7 : 0);
-		}
-		crc_table[i] = k;
-	}
-	initialized = true;
-}
-*/
-
 guint32 calculate(guchar const * begin, guchar const * end) {
 	//if (!initialized) { init(); }
 	guint i_crc = 0xffffffff;
@@ -96,7 +79,6 @@ guint32 calculate(guchar const * begin, guchar const * end) {
 	}
 	return i_crc;
 }
-
 
 guint32 calculate(guchar const * data, gsize length) {
 	return calculate(data, &(data[length]));

@@ -1,22 +1,21 @@
 /*
- * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014 Russel Winder
+ * Me TV — A GTK+ client for watching and recording DVB.
  *
- * This file is part of Me TV
+ *  Copyright (C) 2011 Michael Lamothe
+ *  Copyright © 2014  Russel Winder
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "me-tv.h"
@@ -49,17 +48,14 @@ static UniqueResponse on_message_received (
 	return response;
 }
 
-int main (int argc, char *argv[])
-{
+int main (int argc, char *argv[]) {
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 #endif
 	g_printf("Me TV %s\n", VERSION);
-	if (!Glib::thread_supported()) {
-		Glib::thread_init();
-	}
+	if (!Glib::thread_supported()) { Glib::thread_init(); }
 	gdk_threads_init();
 	Gnome::Conf::init();
 	Gtk::Main main(argc, argv);
@@ -111,35 +107,24 @@ int main (int argc, char *argv[])
 	option_context.set_summary(ME_TV_SUMMARY);
 	option_context.set_description(ME_TV_DESCRIPTION);
 	option_context.set_main_group(option_group);
-	try
-	{
+	try {
 		option_context.parse(argc, argv);
-
 		UniqueApp* unique_application = unique_app_new_with_commands(
 			"org.lamothe.me-tv", NULL,
 		    "run", (UniqueCommand)1,
 			(char*)NULL);
-
-		if (unique_app_is_running(unique_application))
-		{
+		if (unique_app_is_running(unique_application)) {
 			g_debug("Me TV is already running");
-
 			UniqueMessageData* message = unique_message_data_new();
 			unique_app_send_message(unique_application, (UniqueCommand)1, message);
 		}
-		else
-		{
+		else {
 			g_signal_connect(unique_application, "message-received", G_CALLBACK (on_message_received), NULL);
-
 			Application application;
 			application.run();
 		}
 	}
-	catch (Glib::Exception const & exception) {
-		g_message("Exception: %s", exception.what().c_str());
-	}
-	catch (...) {
-		g_message(_("An unhandled error occurred"));
-	}
+	catch (Glib::Exception const & exception) { g_message("Exception: %s", exception.what().c_str()); }
+	catch (...) { g_message(_("An unhandled error occurred")); }
 	return 0;
 }

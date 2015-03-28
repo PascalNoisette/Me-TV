@@ -1,22 +1,21 @@
 /*
- * Copyright (C) 2011 Michael Lamothe
- * Copyright © 2014 Russel Winder
+ * Me TV — A GTK+ client for watching and recording DVB.
  *
- * This file is part of Me TV
+ *  Copyright (C) 2011 Michael Lamothe
+ *  Copyright © 2014  Russel Winder
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "me-tv.h"
@@ -31,9 +30,7 @@ using namespace Dvb;
 
 Demuxer::Demuxer(Glib::ustring const & device_path) {
 	fd = -1;
-	if ((fd = open(device_path.c_str(),O_RDWR|O_NONBLOCK)) < 0) {
-		throw SystemException(_("Failed to open demux device"));
-	}
+	if ((fd = open(device_path.c_str(),O_RDWR|O_NONBLOCK)) < 0) { throw SystemException(_("Failed to open demux device")); }
 	pfd[0].fd = fd;
 	pfd[0].events = POLLIN | POLLOUT | POLLPRI;
 }
@@ -54,9 +51,7 @@ void Demuxer::set_pes_filter(uint16_t pid, dmx_pes_type_t pestype) {
 	parameters.output = DMX_OUT_TS_TAP;
 	parameters.pes_type = pestype;
 	parameters.flags = DMX_IMMEDIATE_START | DMX_CHECK_CRC;
-	if (ioctl(fd, DMX_SET_PES_FILTER, &parameters) < 0) {
-		throw SystemException(_("Failed to set PES filter"));
-	}
+	if (ioctl(fd, DMX_SET_PES_FILTER, &parameters) < 0) { throw SystemException(_("Failed to set PES filter")); }
 }
 
 void Demuxer::set_filter(ushort pid, ushort table_id, ushort mask) {
@@ -68,57 +63,39 @@ void Demuxer::set_filter(ushort pid, ushort table_id, ushort mask) {
 	parameters.filter.mask[0] = mask;
 	parameters.flags = DMX_IMMEDIATE_START | DMX_CHECK_CRC;
 	g_debug("Demuxer::set_filter(%d,%d,%d)", pid, table_id, mask);
-	if (ioctl(fd, DMX_SET_FILTER, &parameters) < 0) {
-		throw SystemException(_("Failed to set section filter for demuxer"));
-	}
+	if (ioctl(fd, DMX_SET_FILTER, &parameters) < 0) { throw SystemException(_("Failed to set section filter for demuxer")); }
 }
 
 void Demuxer::set_buffer_size(unsigned int buffer_size) {
-	if (ioctl(fd, DMX_SET_BUFFER_SIZE, buffer_size) < 0) {
-		throw SystemException(_("Failed to set demuxer buffer size"));
-	}
+	if (ioctl(fd, DMX_SET_BUFFER_SIZE, buffer_size) < 0) { throw SystemException(_("Failed to set demuxer buffer size")); }
 }
 
 gint Demuxer::read(unsigned char * buffer, size_t length, gint timeout) {
-	if (!poll(timeout)) {
-		throw TimeoutException(_("Read timeout"));
-	}
+	if (!poll(timeout)) { throw TimeoutException(_("Read timeout")); }
 	gint bytes_read = ::read(fd, buffer, length);
-	if (bytes_read == -1) {
-		throw SystemException(_("Failed to read data from demuxer"));
-	}
+	if (bytes_read == -1) { throw SystemException(_("Failed to read data from demuxer")); }
 	return bytes_read;
 }
 
 void Demuxer::read_section(Buffer & buffer, gint timeout) {
 	guchar header[3];
 	gsize bytes_read = read(header, 3, timeout);
-	if (bytes_read != 3) {
-		throw Exception(_("Failed to read header"));
-	}
+	if (bytes_read != 3) { throw Exception(_("Failed to read header")); }
 	gsize remaining_section_length = ((header[1] & 0x0f) << 8) + header[2];
 	gsize section_length = remaining_section_length + 3;
 	buffer.set_length(section_length);
 	memcpy(buffer.get_buffer(), header, 3);
 	bytes_read = read(buffer.get_buffer() + 3, remaining_section_length);
-	if (bytes_read != remaining_section_length) {
-		throw Exception(_("Failed to read section"));
-	}
-	if (buffer.crc32() != 0) {
-		throw Exception(_("CRC32 check failed"));
-	}
+	if (bytes_read != remaining_section_length) { throw Exception(_("Failed to read section")); }
+	if (buffer.crc32() != 0) { throw Exception(_("CRC32 check failed")); }
 }
 
 void Demuxer::stop() {
-	if (ioctl(fd, DMX_STOP) < 0) {
-		throw SystemException(_("Failed to stop demuxer"));
-	}
+	if (ioctl(fd, DMX_STOP) < 0) { throw SystemException(_("Failed to stop demuxer")); }
 }
 
 gboolean Demuxer::poll(gint timeout) {
 	gint result = ::poll(pfd, 1, timeout);
-	if (result == -1) {
-		throw SystemException (_("Failed to poll"));
-	}
+	if (result == -1) { throw SystemException (_("Failed to poll")); }
 	return result > 0;
 }
