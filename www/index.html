@@ -41,7 +41,7 @@
             </accordion-heading>
             <form>
                 <div class="form-group">
-                    <label>Channel:</label> 
+                    <label me-tv-translation>Channel:</label> 
                     <select ng-model="recording.channel_id">
                         <option ng-repeat="channel in channels" value="{{channel.channel_id}}">{{channel.name}}</option>
                     </select>
@@ -75,6 +75,8 @@
     <script>
         angular.module('myApp', ['ngResource']).controller('Scheduler', ['$scope', '$resource', '$timeout', function ($scope, $resource, $timeout) {
                 $scope.alerts = [];
+                $scope.translation = [];
+                $scope.translating = false;
                 var server = "";
                 if (window.location.protocol == "file:") {
                     server = "http://127.0.0.1:1998/";
@@ -132,6 +134,30 @@
                 $scope.openBlankScheduler = function () {
                     $scope.initScheduler();
                     $scope.schedulerform.open = true;
+                };
+                $scope.translate = function () {
+                    if ($scope.translation.length) {
+                        if ($scope.translating) {
+                            $timeout.cancel($scope.translating);
+                        }
+                        $scope.translating = $timeout(function() {
+                            $resource(server + 'translate/').query($scope.translation).$promise.then(function(data){
+                                for(var i in $scope.translation) {
+                                    if (typeof(data[0]["translation"][$scope.translation[i]]) != "undefined") {
+                                        $scope.translation[i] = data[0]["translation"][$scope.translation[i]]
+                                    }
+                                }
+                            });
+                        }, 500);
+                    }
+                }
+            }]).directive('meTvTranslation', ['$compile', function($compile) {
+                return function($scope, elem, attrs) {
+                    var length = $scope.translation.push(elem.html());
+                    var html = "<span>{{translation["+(length - 1)+"]}}</span>";
+                    elem.html("");
+                    elem.append($compile(html)($scope));
+                    $scope.translate();
                 };
             }]);
 
