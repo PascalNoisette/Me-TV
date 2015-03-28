@@ -28,6 +28,9 @@
     <body  ng-controller="Scheduler">
     <accordion close-others="true">
         <accordion-group heading="Scheduled recordings" is-open="schedulelist.open">
+            <accordion-heading>
+                <span me-tv-translation>Me TV - Scheduled Recordings</span>
+           </accordion-heading>
             <div class="panel panel-default">
                 <table class="table">
                     <tr ng-repeat="scheduled_recording in recordings"><td><button class='btn btn-default' ng-click="editScheduledRecording(scheduled_recording)">Edit</button><button class='btn btn-default' ng-click="deleteScheduledRecording(scheduled_recording)">Delete</button></td><td>{{scheduled_recording.description}}</td><td ng-repeat="channel in channels| filter:{channel_id:scheduled_recording.channel_id}:true">{{channel.name}}</td><td>{{(scheduled_recording.start_time * 1000) | date : 'short'}}</td><td>{{scheduled_recording.duration / 60}} min</td></tr>
@@ -47,19 +50,19 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Description:</label>
+                    <label me-tv-translation>Description:</label>
                     <input type="text" ng-model="recording.description" class="form-control"/>
                 </div>
                 <div class="form-group">
-                    <label>Duration</label>
+                    <label me-tv-translation>Duration:</label>
                     <timepicker ng-model="recording.timestamp_duration" show-meridian="false"></timepicker>
                 </div>
                 <div class="form-group">
-                    <label>Start date:</label>
+                    <label me-tv-translation>Start Date:</label>
                     <datepicker ng-model="recording.timestamp_start_time" min-date="minDate" show-weeks="true" class="well well-sm"></datepicker>
                     <timepicker ng-model="recording.timestamp_start_time"></timepicker>
                 </div>
-                <button type="submit" class="btn btn-default" ng-click="schedule(recording)">Submit</button>
+                <button type="submit" class="btn btn-default" ng-click="schedule(recording)" me-tv-translation>Record</button>
             </form>
         </accordion-group>
     </accordion>
