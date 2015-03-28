@@ -61,7 +61,7 @@ int WebRequest::iterate_get (void * coninfo_cls, MHD_ValueKind kind, char const 
 }
 
 MHD_Response * WebRequest::get_content() {
-	return MHD_create_response_from_data(content.length(), (void*)strdup(content.c_str()), MHD_YES, MHD_NO);
+	return MHD_create_response_from_data(content.bytes(), (void*)strdup(content.c_str()), MHD_YES, MHD_NO);
 }
 
 bool WebRequest::is(char const * expected_method) {
