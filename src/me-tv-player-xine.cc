@@ -325,6 +325,12 @@ int main(int argc, char **argv) {
   }
   if ((video_port = xine_open_video_driver(xine, video_driver, XINE_VISUAL_TYPE_X11, (void *) &vis)) == NULL) {
     std::cerr << "me-tv-player (xine): Failed to initialise video driver " << video_driver << std::endl;
+    const char* const* available_video_plugins = xine_list_video_output_plugins(xine);
+    std::cerr << "Available plugin are :\n";
+    for (int i=0;  available_video_plugins[i]; i++)
+    {
+        std::cerr << "\t * " << available_video_plugins[i] << "\n";
+    }
     return -1;
   }
   audio_port = xine_open_audio_driver(xine, audio_driver, NULL);
