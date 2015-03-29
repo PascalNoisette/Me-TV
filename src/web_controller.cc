@@ -134,6 +134,21 @@ void WebController::www_action(WebRequest & request) {
 	request.code = MHD_HTTP_OK;
 }
 
+void WebController::translate_action(WebRequest & request)
+{
+    Json::Value wrapper;
+    Json::Value json;
+    Json::Value translation;
+    for (std::map<Glib::ustring, Glib::ustring>::iterator iter = request.params.begin(); iter != request.params.end(); ++iter) {
+        translation[iter->second.c_str()]=_(iter->second.c_str());
+    }
+    json["translation"] =translation;
+    wrapper.append(json);
+    request.content = wrapper.toStyledString();
+    request.headers[MHD_HTTP_HEADER_CONTENT_TYPE] = "application/json; charset=utf-8";
+    request.code = MHD_HTTP_OK;
+}
+
 void WebController::dispatch(WebRequest & request) {
 	if (request.is(MHD_HTTP_METHOD_GET)) {
 		if (request.match("/channel")) {
@@ -145,6 +160,9 @@ void WebController::dispatch(WebRequest & request) {
 		if (request.match("/echo")) {
 			return echo_action(request);
 		}
+                if (request.match("/translate")) {
+                    return translate_action(request);
+                }
 		return www_action(request);
 	}
 	if (request.is(MHD_HTTP_METHOD_POST)) {
